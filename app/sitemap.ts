@@ -1,6 +1,19 @@
+import { createClient } from "@/lib/supabase/server";
 import type { MetadataRoute } from "next";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const supabase = await createClient();
+
+  const { data: brokers } = await supabase
+    .from("brokers")
+    .select("slug");
+
+  const brokerPages =
+    brokers?.map((b) => ({
+      url: `https://brokeralarab.com/brokers/${b.slug}`,
+      lastModified: new Date(),
+    })) || [];
+
   return [
     {
       url: "https://brokeralarab.com",
@@ -18,6 +31,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: "https://brokeralarab.com/best-brokers",
       lastModified: new Date(),
     },
+
     {
       url: "https://brokeralarab.com/best-brokers/saudi-arabia",
       lastModified: new Date(),
@@ -35,6 +49,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
     },
     {
+      url: "https://brokeralarab.com/best-brokers/qatar",
+      lastModified: new Date(),
+    },
+    {
       url: "https://brokeralarab.com/best-brokers/jordan",
       lastModified: new Date(),
     },
@@ -42,9 +60,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: "https://brokeralarab.com/best-brokers/oman",
       lastModified: new Date(),
     },
-    {
-      url: "https://brokeralarab.com/best-brokers/qatar",
-      lastModified: new Date(),
-    },
+
+    ...brokerPages,
   ];
 }
