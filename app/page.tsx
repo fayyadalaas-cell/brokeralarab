@@ -3,6 +3,36 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import BrokerFinder from "@/app/components/BrokerFinder";
 
+export const metadata: Metadata = {
+  title: "أفضل شركات التداول في 2026 | بروكر العرب",
+  description:
+    "مراجعات عربية احترافية لأفضل شركات التداول مع مقارنة الحسابات والتراخيص والرسوم والمنصات، وأداة ذكية لاختيار أفضل وسيط حسب بلدك ومبلغ الإيداع.",
+  keywords: [
+    "أفضل شركات التداول",
+    "أفضل شركات الفوركس",
+    "تقييم شركات التداول",
+    "مقارنة شركات الفوركس",
+    "أفضل وسيط تداول",
+    "شركات تداول موثوقة",
+    "أفضل شركات الفوركس في السعودية",
+    "أفضل شركات التداول الإسلامية",
+    "حساب إسلامي",
+    "بروكر العرب",
+  ],
+  alternates: {
+    canonical: "https://brokeralarab.com",
+  },
+  openGraph: {
+    title: "أفضل شركات التداول في 2026 | بروكر العرب",
+    description:
+      "منصة عربية لمراجعة وتقييم ومقارنة شركات التداول مع أداة اختيار ذكية للمتداول العربي.",
+    url: "https://brokeralarab.com",
+    siteName: "بروكر العرب",
+    type: "website",
+    locale: "ar_AR",
+  },
+};
+
 type Broker = {
   id: number;
   name: string | null;
@@ -34,36 +64,6 @@ type Broker = {
   islamic_account: string | null;
   arabic_support: string | null;
   trading_assets: string | null;
-};
-
-export const metadata: Metadata = {
-  title: "أفضل شركات التداول في 2026 | بروكر العرب",
-  description:
-    "مراجعات عربية احترافية لأفضل شركات التداول مع مقارنة الحسابات والتراخيص والرسوم والمنصات، وأداة ذكية لاختيار أفضل وسيط حسب بلدك ومبلغ الإيداع.",
-  keywords: [
-    "أفضل شركات التداول",
-    "أفضل شركات الفوركس",
-    "تقييم شركات التداول",
-    "مقارنة شركات الفوركس",
-    "أفضل وسيط تداول",
-    "شركات تداول موثوقة",
-    "أفضل شركات الفوركس في السعودية",
-    "أفضل شركات التداول الإسلامية",
-    "حساب إسلامي",
-    "بروكر العرب",
-  ],
-  alternates: {
-    canonical: "/",
-  },
-  openGraph: {
-    title: "أفضل شركات التداول في 2026 | بروكر العرب",
-    description:
-      "منصة عربية لمراجعة وتقييم ومقارنة شركات التداول مع أداة اختيار ذكية للمتداول العربي.",
-    url: "/",
-    siteName: "بروكر العرب",
-    type: "website",
-    locale: "ar_AR",
-  },
 };
 
 function money(value: number | null) {

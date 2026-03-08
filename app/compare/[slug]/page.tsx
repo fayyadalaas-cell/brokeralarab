@@ -172,26 +172,58 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!leftSlug || !rightSlug) {
     return {
       title: "مقارنة شركات التداول | بروكر العرب",
-      description: "مقارنات تفصيلية بين شركات التداول من حيث الحسابات والرسوم والتراخيص.",
+      description:
+        "مقارنات تفصيلية بين شركات التداول من حيث الحسابات والرسوم والتراخيص والمنصات لمساعدة المتداول العربي على اختيار الوسيط المناسب.",
+      alternates: {
+        canonical: "https://brokeralarab.com/compare",
+      },
+      openGraph: {
+        title: "مقارنة شركات التداول | بروكر العرب",
+        description:
+          "مقارنات تفصيلية بين شركات التداول من حيث الحسابات والرسوم والتراخيص والمنصات.",
+        url: "https://brokeralarab.com/compare",
+        siteName: "بروكر العرب",
+        type: "website",
+      },
     };
   }
 
-  const leftName = leftSlug.charAt(0).toUpperCase() + leftSlug.slice(1);
-  const rightName = rightSlug.charAt(0).toUpperCase() + rightSlug.slice(1);
+  const supabase = await createClient();
+
+  const { data } = await supabase
+    .from("brokers")
+    .select("name, slug")
+    .in("slug", [leftSlug, rightSlug]);
+
+  const brokers = (data ?? []) as { name: string | null; slug: string | null }[];
+
+  const leftBroker = brokers.find((b) => b.slug === leftSlug);
+  const rightBroker = brokers.find((b) => b.slug === rightSlug);
+
+  const leftName = leftBroker?.name || leftSlug;
+  const rightName = rightBroker?.name || rightSlug;
 
   return {
-    title: `${leftName} vs ${rightName} | مقارنة الحسابات والرسوم والتراخيص`,
-    description: `مقارنة شاملة بين ${leftName} و ${rightName} من حيث الحسابات، الرسوم، التراخيص، المنصات، والحد الأدنى للإيداع لمعرفة أيهما أنسب لك.`,
+    title: `مقارنة ${leftName} و ${rightName} | الرسوم والمنصات والتراخيص`,
+    description: `مقارنة شاملة بين ${leftName} و ${rightName} من حيث الحسابات والرسوم والتراخيص والمنصات والحد الأدنى للإيداع لمعرفة أيهما أنسب للمتداول العربي.`,
+    keywords: [
+      `مقارنة ${leftName} و ${rightName}`,
+      `${leftName} vs ${rightName}`,
+      `تقييم ${leftName}`,
+      `تقييم ${rightName}`,
+      "مقارنة شركات التداول",
+      "مقارنة شركات الفوركس",
+      "بروكر العرب",
+    ],
     alternates: {
-      canonical: `/compare/${slug}`,
+      canonical: `https://brokeralarab.com/compare/${slug}`,
     },
     openGraph: {
-      title: `${leftName} vs ${rightName} | مقارنة الحسابات والرسوم والتراخيص`,
-      description: `مقارنة بين ${leftName} و ${rightName} للمتداول العربي مع جدول سريع وخلاصة نهائية.`,
-      url: `/compare/${slug}`,
+      title: `مقارنة ${leftName} و ${rightName} | بروكر العرب`,
+      description: `مقارنة تفصيلية بين ${leftName} و ${rightName} من حيث الرسوم والمنصات والتراخيص والحسابات.`,
+      url: `https://brokeralarab.com/compare/${slug}`,
       siteName: "بروكر العرب",
       type: "article",
-      locale: "ar_AR",
     },
   };
 }

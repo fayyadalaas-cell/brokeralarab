@@ -2,6 +2,34 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 
+export const metadata: Metadata = {
+  title: "أفضل شركات التداول 2026 | دليل اختيار أفضل وسيط تداول",
+  description:
+    "اكتشف أفضل شركات التداول الموثوقة لعام 2026 مع مراجعات عربية ومقارنة التراخيص والمنصات والحسابات والإيداع. دليل شامل لاختيار أفضل وسيط تداول.",
+  keywords: [
+    "أفضل شركات التداول",
+    "أفضل شركات الفوركس",
+    "أفضل وسيط تداول",
+    "أفضل شركات التداول 2026",
+    "شركات تداول موثوقة",
+    "مقارنة شركات التداول",
+    "أفضل شركات التداول في السعودية",
+    "أفضل شركات التداول في الإمارات",
+    "بروكر العرب",
+  ],
+  alternates: {
+    canonical: "https://brokeralarab.com/best-brokers",
+  },
+  openGraph: {
+    title: "أفضل شركات التداول 2026 | بروكر العرب",
+    description:
+      "دليل شامل لاختيار أفضل شركات التداول الموثوقة مع صفحات مخصصة للدول العربية ومقارنات بين الوسطاء.",
+    url: "https://brokeralarab.com/best-brokers",
+    siteName: "بروكر العرب",
+    type: "website",
+  },
+};
+
 type Broker = {
   id: number;
   name: string | null;
@@ -10,23 +38,6 @@ type Broker = {
   min_deposit: number | null;
   logo: string | null;
   real_account_url: string | null;
-};
-
-export const metadata: Metadata = {
-  title: "أفضل شركات التداول في العالم 2026 | بروكر العرب",
-  description:
-    "تعرف على أفضل شركات التداول في العالم لعام 2026، مع صفحات مخصصة حسب الدولة تشمل السعودية، الإمارات، الكويت، قطر، مصر، البحرين، الأردن، وعمان.",
-  alternates: {
-    canonical: "/best-brokers",
-  },
-  openGraph: {
-    title: "أفضل شركات التداول في العالم 2026 | بروكر العرب",
-    description:
-      "صفحة رئيسية تجمع أفضل شركات التداول وصفحات الدول العربية المخصصة لمساعدة المستخدم على اختيار الوسيط المناسب.",
-    url: "/best-brokers",
-    siteName: "بروكر العرب",
-    type: "website",
-  },
 };
 
 const countries = [
