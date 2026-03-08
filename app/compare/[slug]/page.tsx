@@ -258,12 +258,31 @@ export default async function ComparePage({ params }: PageProps) {
   const leftAccounts = accounts.filter((a) => a.broker_id === left.id);
   const rightAccounts = accounts.filter((a) => a.broker_id === right.id);
 
+  const maxAccountsLength = Math.max(leftAccounts.length, rightAccounts.length);
+  const mobileAccountRows = Array.from({ length: maxAccountsLength }, (_, i) => ({
+    left: leftAccounts[i] ?? null,
+    right: rightAccounts[i] ?? null,
+    key: `mobile-row-${i}`,
+  }));
+
   const overallWinner = getHigherRatingLabel(left, right);
   const beginnerWinner = getBeginnerWinner(left, right);
   const scalpingWinner = getScalpingWinner(left, right);
   const depositWinner = getBetterValueLabel(left, right);
 
   const faqJsonLd = buildFaqJsonLd(left, right);
+
+  const comparisonRows = [
+    ["التقييم", `${left.rating?.toFixed(1) ?? "—"} / 10`, `${right.rating?.toFixed(1) ?? "—"} / 10`],
+    ["الحد الأدنى للإيداع", money(left.min_deposit), money(right.min_deposit)],
+    ["المنصات", shortPlatforms(left.platforms), shortPlatforms(right.platforms)],
+    ["الحساب الإسلامي", yesNoArabic(left.islamic_account), yesNoArabic(right.islamic_account)],
+    ["التراخيص", shortReg(left.regulation), shortReg(right.regulation)],
+    ["المقر", left.headquarters || "غير محدد", right.headquarters || "غير محدد"],
+    ["سنة التأسيس", left.founded_year || "غير محدد", right.founded_year || "غير محدد"],
+    ["الرافعة", left.max_leverage || "غير محدد", right.max_leverage || "غير محدد"],
+    ["الأصول", left.trading_assets || "غير محدد", right.trading_assets || "غير محدد"],
+  ] as const;
 
   return (
     <main dir="rtl" className="min-h-screen bg-[#f4f7fb] text-[#0f172a]">
@@ -273,34 +292,34 @@ export default async function ComparePage({ params }: PageProps) {
       />
 
       <section className="border-b border-slate-200 bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-          <div className="mb-4 text-sm font-bold text-[#1d4ed8]">
+        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+          <div className="mb-4 text-xs font-bold text-[#1d4ed8] sm:text-sm">
             المقارنات / {left.name} vs {right.name}
           </div>
 
-          <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
+          <div className="grid gap-6 lg:grid-cols-12 lg:items-center lg:gap-8">
             <div className="lg:col-span-8">
-              <h1 className="text-4xl font-black leading-tight sm:text-5xl">
+              <h1 className="text-3xl font-black leading-tight sm:text-4xl lg:text-5xl">
                 {compareTitle(left, right)}
               </h1>
 
-              <p className="mt-5 max-w-4xl text-lg leading-8 text-slate-600">
+              <p className="mt-4 max-w-4xl text-base leading-8 text-slate-600 sm:mt-5 sm:text-lg">
                 تعد شركتا <strong>{left.name}</strong> و <strong>{right.name}</strong> من
                 أشهر شركات التداول في العالم العربي. في هذه المقارنة سنقارن بين
                 الشركتين من حيث التراخيص، الحسابات، الرسوم، المنصات، الحد الأدنى
                 للإيداع، والحساب الإسلامي لمعرفة أيهما الأنسب لك.
               </p>
 
-              <div className="mt-8 flex flex-wrap gap-3">
+              <div className="mt-6 grid grid-cols-1 gap-3 sm:mt-8 sm:flex sm:flex-wrap">
                 <Link
                   href={`/brokers/${left.slug}`}
-                  className="inline-flex items-center justify-center rounded-2xl bg-[#2563eb] px-6 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
+                  className="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-[#2563eb] px-6 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
                 >
                   اقرأ تقييم {left.name}
                 </Link>
                 <Link
                   href={`/brokers/${right.slug}`}
-                  className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
+                  className="inline-flex min-h-[48px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
                 >
                   اقرأ تقييم {right.name}
                 </Link>
@@ -308,9 +327,10 @@ export default async function ComparePage({ params }: PageProps) {
             </div>
 
             <div className="lg:col-span-4">
-              <div className="rounded-[28px] border border-slate-200 bg-[#f8fbff] p-5 shadow-sm">
+              <div className="rounded-[28px] border border-slate-200 bg-[#f8fbff] p-4 shadow-sm sm:p-5">
                 <div className="text-sm font-bold text-[#1d4ed8]">القرار السريع</div>
-                <div className="mt-4 space-y-3">
+
+                <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-1">
                   <div className="rounded-2xl border border-slate-200 bg-white p-4">
                     <div className="text-xs font-bold text-slate-500">الأفضل إجمالًا</div>
                     <div className="mt-1 text-lg font-black text-[#0f172a]">{overallWinner}</div>
@@ -332,7 +352,7 @@ export default async function ComparePage({ params }: PageProps) {
             </div>
           </div>
 
-          <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-6 grid gap-3 sm:mt-8 md:grid-cols-2 xl:grid-cols-4">
             {[
               {
                 title: `اختر ${left.name}`,
@@ -351,7 +371,10 @@ export default async function ComparePage({ params }: PageProps) {
                 desc: "تركيز على الإيداع، الحساب الإسلامي، والتراخيص والمنصات.",
               },
             ].map((item) => (
-              <div key={item.title} className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm">
+              <div
+                key={item.title}
+                className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm"
+              >
                 <div className="text-base font-black">{item.title}</div>
                 <div className="mt-2 text-sm leading-7 text-slate-600">{item.desc}</div>
               </div>
@@ -360,47 +383,54 @@ export default async function ComparePage({ params }: PageProps) {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
         <div className="mb-6">
           <div className="text-sm font-bold text-[#1d4ed8]">مقارنة سريعة</div>
-          <h2 className="mt-2 text-3xl font-black">من الأفضل بين {left.name} و {right.name}؟</h2>
+          <h2 className="mt-2 text-2xl font-black sm:text-3xl">
+            من الأفضل بين {left.name} و {right.name}؟
+          </h2>
         </div>
 
-        <div className="grid gap-5 lg:grid-cols-2">
+        <div className="grid gap-4 lg:grid-cols-2 lg:gap-5">
           {[left, right].map((broker) => (
-            <div key={broker.id} className="rounded-[26px] border border-slate-200 bg-white p-5 shadow-sm">
+            <div
+              key={broker.id}
+              className="rounded-[26px] border border-slate-200 bg-white p-4 shadow-sm sm:p-5"
+            >
               <div className="mb-4 flex items-start justify-between gap-3">
                 <div>
-                  <h3 className="text-2xl font-black">{broker.name}</h3>
+                  <h3 className="text-xl font-black sm:text-2xl">{broker.name}</h3>
                   <p className="mt-1 text-xs font-bold text-[#1d4ed8]">
                     {broker.best_for || "مناسب لفئات متعددة"}
                   </p>
                 </div>
 
-                <div className="flex h-16 w-16 flex-col items-center justify-center rounded-2xl border border-[#bfdbfe] bg-[#eff6ff] text-[#1d4ed8]">
-                  <span className="text-xl font-black">{broker.rating?.toFixed(1) ?? "—"}</span>
+                <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl border border-[#bfdbfe] bg-[#eff6ff] text-[#1d4ed8] sm:h-16 sm:w-16">
+                  <span className="text-lg font-black sm:text-xl">
+                    {broker.rating?.toFixed(1) ?? "—"}
+                  </span>
                   <span className="text-[10px] font-bold">من 10</span>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <div className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
+                <div className="flex items-center justify-between gap-3 rounded-xl bg-slate-50 px-4 py-3">
                   <span className="text-sm text-slate-500">الحد الأدنى للإيداع</span>
                   <span className="text-sm font-black text-[#0f172a]">{money(broker.min_deposit)}</span>
                 </div>
-                <div className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
+                <div className="flex items-center justify-between gap-3 rounded-xl bg-slate-50 px-4 py-3">
                   <span className="text-sm text-slate-500">المنصات</span>
                   <span className="text-sm font-black text-[#0f172a]">{shortPlatforms(broker.platforms)}</span>
                 </div>
-                <div className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
+                <div className="flex items-center justify-between gap-3 rounded-xl bg-slate-50 px-4 py-3">
                   <span className="text-sm text-slate-500">التراخيص</span>
                   <span className="text-sm font-black text-[#0f172a]">{shortReg(broker.regulation)}</span>
                 </div>
-                <div className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
+                <div className="flex items-center justify-between gap-3 rounded-xl bg-slate-50 px-4 py-3">
                   <span className="text-sm text-slate-500">الحساب الإسلامي</span>
                   <span className="text-sm font-black text-[#0f172a]">{yesNoArabic(broker.islamic_account)}</span>
                 </div>
-                <div className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
+                <div className="flex items-center justify-between gap-3 rounded-xl bg-slate-50 px-4 py-3">
                   <span className="text-sm text-slate-500">الرافعة</span>
                   <span className="text-sm font-black text-[#0f172a]">{broker.max_leverage || "غير محدد"}</span>
                 </div>
@@ -409,13 +439,13 @@ export default async function ComparePage({ params }: PageProps) {
               <div className="mt-4 grid grid-cols-2 gap-3">
                 <Link
                   href={`/brokers/${broker.slug}`}
-                  className="inline-flex items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
+                  className="inline-flex min-h-[46px] items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
                 >
                   اقرأ التقييم
                 </Link>
                 <Link
                   href="/brokers"
-                  className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
+                  className="inline-flex min-h-[46px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
                 >
                   كل الشركات
                 </Link>
@@ -425,14 +455,45 @@ export default async function ComparePage({ params }: PageProps) {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-        <div className="rounded-[30px] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+      <section className="mx-auto max-w-7xl px-4 py-2 sm:px-6 sm:py-4 lg:px-8">
+        <div className="rounded-[30px] border border-slate-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
           <div className="mb-6">
             <div className="text-sm font-bold text-[#1d4ed8]">جدول المقارنة</div>
-            <h2 className="mt-2 text-3xl font-black">جدول مقارنة {left.name} و {right.name}</h2>
+            <h2 className="mt-2 text-2xl font-black sm:text-3xl">
+              جدول مقارنة {left.name} و {right.name}
+            </h2>
           </div>
 
-          <div className="overflow-x-auto">
+          {/* Mobile comparison cards */}
+          <div className="space-y-3 md:hidden">
+            {comparisonRows.map((row) => (
+              <div
+                key={row[0]}
+                className="rounded-2xl border border-slate-200 bg-[#f8fbff] p-4"
+              >
+                <div className="mb-3 text-sm font-black text-[#0f172a]">{row[0]}</div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="rounded-xl border border-slate-200 bg-white p-3">
+                    <div className="mb-1 text-xs font-bold text-[#1d4ed8]">{left.name}</div>
+                    <div className="text-sm font-black leading-6 text-slate-700 break-words">
+                      {row[1]}
+                    </div>
+                  </div>
+
+                  <div className="rounded-xl border border-slate-200 bg-white p-3">
+                    <div className="mb-1 text-xs font-bold text-[#1d4ed8]">{right.name}</div>
+                    <div className="text-sm font-black leading-6 text-slate-700 break-words">
+                      {row[2]}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop/tablet original table */}
+          <div className="hidden overflow-x-auto md:block">
             <table className="w-full min-w-[760px] border-separate border-spacing-0 overflow-hidden rounded-2xl border border-slate-200">
               <thead className="bg-[#f8fbff]">
                 <tr className="text-sm">
@@ -442,17 +503,7 @@ export default async function ComparePage({ params }: PageProps) {
                 </tr>
               </thead>
               <tbody className="text-sm">
-                {[
-                  ["التقييم", `${left.rating?.toFixed(1) ?? "—"} / 10`, `${right.rating?.toFixed(1) ?? "—"} / 10`],
-                  ["الحد الأدنى للإيداع", money(left.min_deposit), money(right.min_deposit)],
-                  ["المنصات", shortPlatforms(left.platforms), shortPlatforms(right.platforms)],
-                  ["الحساب الإسلامي", yesNoArabic(left.islamic_account), yesNoArabic(right.islamic_account)],
-                  ["التراخيص", shortReg(left.regulation), shortReg(right.regulation)],
-                  ["المقر", left.headquarters || "غير محدد", right.headquarters || "غير محدد"],
-                  ["سنة التأسيس", left.founded_year || "غير محدد", right.founded_year || "غير محدد"],
-                  ["الرافعة", left.max_leverage || "غير محدد", right.max_leverage || "غير محدد"],
-                  ["الأصول", left.trading_assets || "غير محدد", right.trading_assets || "غير محدد"],
-                ].map((row) => (
+                {comparisonRows.map((row) => (
                   <tr key={row[0]} className="bg-white">
                     <td className="border-b border-slate-200 p-4 font-black">{row[0]}</td>
                     <td className="border-b border-slate-200 p-4 text-center text-slate-700">{row[1]}</td>
@@ -465,13 +516,119 @@ export default async function ComparePage({ params }: PageProps) {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
         <div className="mb-6">
           <div className="text-sm font-bold text-[#1d4ed8]">أنواع الحسابات</div>
-          <h2 className="mt-2 text-3xl font-black">مقارنة الحسابات بين {left.name} و {right.name}</h2>
+          <h2 className="mt-2 text-2xl font-black sm:text-3xl">
+            مقارنة الحسابات بين {left.name} و {right.name}
+          </h2>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-2">
+        {/* Mobile redesigned accounts comparison */}
+        <div className="space-y-4 md:hidden">
+          {mobileAccountRows.length > 0 ? (
+            mobileAccountRows.map((row, index) => (
+              <div
+                key={row.key}
+                className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm"
+              >
+                <div className="mb-4 flex items-center justify-between">
+                  <div className="text-sm font-bold text-[#1d4ed8]">مقارنة حساب #{index + 1}</div>
+                  <div className="text-xs font-bold text-slate-500">نسخة موبايل</div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-3">
+                  <div className="rounded-2xl border border-slate-200 bg-[#f8fbff] p-4">
+                    <div className="mb-2 flex items-center justify-between gap-2">
+                      <div className="text-base font-black">{left.name}</div>
+                      <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-[#1d4ed8]">
+                        {row.left?.account_name || "لا يوجد حساب مطابق"}
+                      </span>
+                    </div>
+
+                    {row.left ? (
+                      <div className="space-y-2 text-sm">
+                        <div className="flex items-start justify-between gap-3 rounded-xl bg-white px-3 py-2">
+                          <span className="text-slate-500">السبريد</span>
+                          <span className="font-black text-[#0f172a]">{row.left.spread || "غير محدد"}</span>
+                        </div>
+                        <div className="flex items-start justify-between gap-3 rounded-xl bg-white px-3 py-2">
+                          <span className="text-slate-500">العمولة</span>
+                          <span className="font-black text-[#0f172a]">{row.left.commission || "غير محدد"}</span>
+                        </div>
+                        <div className="flex items-start justify-between gap-3 rounded-xl bg-white px-3 py-2">
+                          <span className="text-slate-500">الحد الأدنى للإيداع</span>
+                          <span className="font-black text-[#0f172a]">{row.left.min_deposit || "غير محدد"}</span>
+                        </div>
+                        <div className="flex items-start justify-between gap-3 rounded-xl bg-white px-3 py-2">
+                          <span className="text-slate-500">التنفيذ</span>
+                          <span className="font-black text-[#0f172a]">{row.left.execution_type || "غير محدد"}</span>
+                        </div>
+                        <div className="rounded-xl bg-white px-3 py-2">
+                          <div className="mb-1 text-slate-500">مناسب لـ</div>
+                          <div className="font-black leading-6 text-[#0f172a]">
+                            {row.left.best_for || "فئات متعددة"}
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="rounded-xl bg-white px-3 py-3 text-sm text-slate-500">
+                        لا توجد بيانات لهذا الحساب.
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200 bg-[#f8fbff] p-4">
+                    <div className="mb-2 flex items-center justify-between gap-2">
+                      <div className="text-base font-black">{right.name}</div>
+                      <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-[#1d4ed8]">
+                        {row.right?.account_name || "لا يوجد حساب مطابق"}
+                      </span>
+                    </div>
+
+                    {row.right ? (
+                      <div className="space-y-2 text-sm">
+                        <div className="flex items-start justify-between gap-3 rounded-xl bg-white px-3 py-2">
+                          <span className="text-slate-500">السبريد</span>
+                          <span className="font-black text-[#0f172a]">{row.right.spread || "غير محدد"}</span>
+                        </div>
+                        <div className="flex items-start justify-between gap-3 rounded-xl bg-white px-3 py-2">
+                          <span className="text-slate-500">العمولة</span>
+                          <span className="font-black text-[#0f172a]">{row.right.commission || "غير محدد"}</span>
+                        </div>
+                        <div className="flex items-start justify-between gap-3 rounded-xl bg-white px-3 py-2">
+                          <span className="text-slate-500">الحد الأدنى للإيداع</span>
+                          <span className="font-black text-[#0f172a]">{row.right.min_deposit || "غير محدد"}</span>
+                        </div>
+                        <div className="flex items-start justify-between gap-3 rounded-xl bg-white px-3 py-2">
+                          <span className="text-slate-500">التنفيذ</span>
+                          <span className="font-black text-[#0f172a]">{row.right.execution_type || "غير محدد"}</span>
+                        </div>
+                        <div className="rounded-xl bg-white px-3 py-2">
+                          <div className="mb-1 text-slate-500">مناسب لـ</div>
+                          <div className="font-black leading-6 text-[#0f172a]">
+                            {row.right.best_for || "فئات متعددة"}
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="rounded-xl bg-white px-3 py-3 text-sm text-slate-500">
+                        لا توجد بيانات لهذا الحساب.
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 text-sm text-slate-600 shadow-sm">
+              لا توجد بيانات حسابات متاحة حاليًا.
+            </div>
+          )}
+        </div>
+
+        {/* Desktop original layout */}
+        <div className="hidden gap-6 md:grid lg:grid-cols-2">
           <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-2xl font-black">{left.name}</h3>
@@ -486,13 +643,26 @@ export default async function ComparePage({ params }: PageProps) {
                   <div key={acc.id} className="rounded-2xl border border-slate-200 bg-[#f8fbff] p-4">
                     <div className="text-lg font-black">{acc.account_name || "حساب"}</div>
                     <div className="mt-2 grid gap-2 text-sm text-slate-600 sm:grid-cols-2">
-                      <div>السبريد: <span className="font-black text-[#0f172a]">{acc.spread || "غير محدد"}</span></div>
-                      <div>العمولة: <span className="font-black text-[#0f172a]">{acc.commission || "غير محدد"}</span></div>
-                      <div>الحد الأدنى للإيداع: <span className="font-black text-[#0f172a]">{acc.min_deposit || "غير محدد"}</span></div>
-                      <div>التنفيذ: <span className="font-black text-[#0f172a]">{acc.execution_type || "غير محدد"}</span></div>
+                      <div>
+                        السبريد:{" "}
+                        <span className="font-black text-[#0f172a]">{acc.spread || "غير محدد"}</span>
+                      </div>
+                      <div>
+                        العمولة:{" "}
+                        <span className="font-black text-[#0f172a]">{acc.commission || "غير محدد"}</span>
+                      </div>
+                      <div>
+                        الحد الأدنى للإيداع:{" "}
+                        <span className="font-black text-[#0f172a]">{acc.min_deposit || "غير محدد"}</span>
+                      </div>
+                      <div>
+                        التنفيذ:{" "}
+                        <span className="font-black text-[#0f172a]">{acc.execution_type || "غير محدد"}</span>
+                      </div>
                     </div>
                     <div className="mt-2 text-sm text-slate-600">
-                      مناسب لـ: <span className="font-black text-[#0f172a]">{acc.best_for || "فئات متعددة"}</span>
+                      مناسب لـ:{" "}
+                      <span className="font-black text-[#0f172a]">{acc.best_for || "فئات متعددة"}</span>
                     </div>
                   </div>
                 ))
@@ -518,13 +688,26 @@ export default async function ComparePage({ params }: PageProps) {
                   <div key={acc.id} className="rounded-2xl border border-slate-200 bg-[#f8fbff] p-4">
                     <div className="text-lg font-black">{acc.account_name || "حساب"}</div>
                     <div className="mt-2 grid gap-2 text-sm text-slate-600 sm:grid-cols-2">
-                      <div>السبريد: <span className="font-black text-[#0f172a]">{acc.spread || "غير محدد"}</span></div>
-                      <div>العمولة: <span className="font-black text-[#0f172a]">{acc.commission || "غير محدد"}</span></div>
-                      <div>الحد الأدنى للإيداع: <span className="font-black text-[#0f172a]">{acc.min_deposit || "غير محدد"}</span></div>
-                      <div>التنفيذ: <span className="font-black text-[#0f172a]">{acc.execution_type || "غير محدد"}</span></div>
+                      <div>
+                        السبريد:{" "}
+                        <span className="font-black text-[#0f172a]">{acc.spread || "غير محدد"}</span>
+                      </div>
+                      <div>
+                        العمولة:{" "}
+                        <span className="font-black text-[#0f172a]">{acc.commission || "غير محدد"}</span>
+                      </div>
+                      <div>
+                        الحد الأدنى للإيداع:{" "}
+                        <span className="font-black text-[#0f172a]">{acc.min_deposit || "غير محدد"}</span>
+                      </div>
+                      <div>
+                        التنفيذ:{" "}
+                        <span className="font-black text-[#0f172a]">{acc.execution_type || "غير محدد"}</span>
+                      </div>
                     </div>
                     <div className="mt-2 text-sm text-slate-600">
-                      مناسب لـ: <span className="font-black text-[#0f172a]">{acc.best_for || "فئات متعددة"}</span>
+                      مناسب لـ:{" "}
+                      <span className="font-black text-[#0f172a]">{acc.best_for || "فئات متعددة"}</span>
                     </div>
                   </div>
                 ))
@@ -538,11 +721,13 @@ export default async function ComparePage({ params }: PageProps) {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-        <div className="grid gap-5 lg:grid-cols-2">
-          <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
+      <section className="mx-auto max-w-7xl px-4 py-2 sm:px-6 sm:py-4 lg:px-8">
+        <div className="grid gap-4 lg:grid-cols-2 lg:gap-5">
+          <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
             <div className="text-sm font-bold text-[#1d4ed8]">اختر {left.name}</div>
-            <h2 className="mt-2 text-2xl font-black">متى تكون {left.name} الخيار الأنسب؟</h2>
+            <h2 className="mt-2 text-xl font-black sm:text-2xl">
+              متى تكون {left.name} الخيار الأنسب؟
+            </h2>
             <ul className="mt-4 space-y-3 text-sm leading-7 text-slate-600">
               <li>• إذا كنت تبحث عن تنفيذ سريع وبيئة تداول نشطة.</li>
               <li>• إذا كانت أولويةك هي التقييم الأعلى إجمالًا.</li>
@@ -552,16 +737,18 @@ export default async function ComparePage({ params }: PageProps) {
             <div className="mt-5">
               <Link
                 href={`/brokers/${left.slug}`}
-                className="inline-flex items-center justify-center rounded-2xl bg-[#2563eb] px-5 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
+                className="inline-flex min-h-[46px] w-full items-center justify-center rounded-2xl bg-[#2563eb] px-5 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8] sm:w-auto"
               >
                 افتح تقييم {left.name}
               </Link>
             </div>
           </div>
 
-          <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
             <div className="text-sm font-bold text-[#1d4ed8]">اختر {right.name}</div>
-            <h2 className="mt-2 text-2xl font-black">متى تكون {right.name} الخيار الأنسب؟</h2>
+            <h2 className="mt-2 text-xl font-black sm:text-2xl">
+              متى تكون {right.name} الخيار الأنسب؟
+            </h2>
             <ul className="mt-4 space-y-3 text-sm leading-7 text-slate-600">
               <li>• إذا كنت مبتدئًا وتريد بداية أوضح وأبسط.</li>
               <li>• إذا كان الحد الأدنى للإيداع عاملًا أساسيًا لك.</li>
@@ -571,7 +758,7 @@ export default async function ComparePage({ params }: PageProps) {
             <div className="mt-5">
               <Link
                 href={`/brokers/${right.slug}`}
-                className="inline-flex items-center justify-center rounded-2xl bg-[#2563eb] px-5 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
+                className="inline-flex min-h-[46px] w-full items-center justify-center rounded-2xl bg-[#2563eb] px-5 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8] sm:w-auto"
               >
                 افتح تقييم {right.name}
               </Link>
@@ -580,31 +767,31 @@ export default async function ComparePage({ params }: PageProps) {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <div className="rounded-[30px] border border-slate-200 bg-white p-8 shadow-sm">
+      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
+        <div className="rounded-[30px] border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
           <div className="text-sm font-bold text-[#1d4ed8]">الخلاصة النهائية</div>
-          <h2 className="mt-2 text-3xl font-black">
+          <h2 className="mt-2 text-2xl font-black sm:text-3xl">
             خلاصة مقارنة {left.name} و {right.name}
           </h2>
 
-          <div className="mt-6 grid gap-5 lg:grid-cols-3">
+          <div className="mt-6 grid gap-4 lg:grid-cols-3 lg:gap-5">
             <div className="rounded-[22px] border border-slate-200 bg-[#f8fbff] p-5">
               <div className="text-sm font-bold text-slate-500">الأفضل إجمالًا</div>
-              <div className="mt-2 text-2xl font-black">{overallWinner}</div>
+              <div className="mt-2 text-xl font-black sm:text-2xl">{overallWinner}</div>
             </div>
 
             <div className="rounded-[22px] border border-slate-200 bg-[#f8fbff] p-5">
               <div className="text-sm font-bold text-slate-500">الأفضل للمبتدئين</div>
-              <div className="mt-2 text-2xl font-black">{beginnerWinner}</div>
+              <div className="mt-2 text-xl font-black sm:text-2xl">{beginnerWinner}</div>
             </div>
 
             <div className="rounded-[22px] border border-slate-200 bg-[#f8fbff] p-5">
               <div className="text-sm font-bold text-slate-500">الأفضل للسبريد</div>
-              <div className="mt-2 text-2xl font-black">{scalpingWinner}</div>
+              <div className="mt-2 text-xl font-black sm:text-2xl">{scalpingWinner}</div>
             </div>
           </div>
 
-          <p className="mt-6 text-base leading-8 text-slate-600">
+          <p className="mt-6 text-sm leading-8 text-slate-600 sm:text-base">
             إذا كنت تبحث عن قرار سريع، فابدأ من البطاقات أعلاه: اختر{" "}
             <strong>{overallWinner}</strong> إذا كنت تريد الخيار الأقوى إجمالًا،
             أو راجع ترشيح المبتدئين والسبريد إذا كانت أولوياتك مختلفة. هذه
@@ -612,16 +799,16 @@ export default async function ComparePage({ params }: PageProps) {
             قرار عملي، لا مجرد قراءة معلومات عامة.
           </p>
 
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-8 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap">
             <Link
               href={`/brokers/${left.slug}`}
-              className="inline-flex items-center justify-center rounded-2xl bg-[#2563eb] px-6 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
+              className="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-[#2563eb] px-6 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
             >
               اقرأ تقييم {left.name}
             </Link>
             <Link
               href={`/brokers/${right.slug}`}
-              className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
+              className="inline-flex min-h-[48px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
             >
               اقرأ تقييم {right.name}
             </Link>
