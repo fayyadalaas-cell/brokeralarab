@@ -130,55 +130,105 @@ export default function RootLayout({
 
         <main>{children}</main>
 
-        <footer className="mt-10 border-t border-slate-200 bg-white md:mt-16">
-          <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 md:py-10">
-            <div className="grid gap-8 md:grid-cols-3">
-              <div>
-                <div className="text-xl font-black text-[#0f172a] md:text-2xl">
-                  بروكر العرب
-                </div>
-                <p className="mt-3 text-sm leading-7 text-slate-600">
-                  منصة عربية لمراجعة ومقارنة شركات التداول ومساعدة المتداول العربي
-                  على اتخاذ قرار أوضح قبل فتح الحساب.
-                </p>
-              </div>
+        <footer className="mt-8 border-t border-slate-200 bg-[#eef3f8] md:mt-14">
+  <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
+    {/* MOBILE */}
+    <div className="space-y-4 md:hidden">
+      <div className="rounded-[22px] border border-slate-200 bg-white px-5 py-5 shadow-sm">
+        <div className="text-xl font-black text-[#0f172a]">
+          بروكر العرب
+        </div>
 
-              <div>
-                <div className="text-sm font-black text-[#0f172a]">
-                  روابط مهمة
-                </div>
-                <div className="mt-4 grid gap-3 text-sm">
-                  <Link href="/" className="text-slate-600 hover:text-[#1d4ed8]">
-                    الرئيسية
-                  </Link>
-                  <Link href="/brokers" className="text-slate-600 hover:text-[#1d4ed8]">
-                    التقييمات
-                  </Link>
-                  <Link href="/compare" className="text-slate-600 hover:text-[#1d4ed8]">
-                    المقارنات
-                  </Link>
-                  <Link href="/best-brokers" className="text-slate-600 hover:text-[#1d4ed8]">
-                    أفضل الوسطاء
-                  </Link>
-                </div>
-              </div>
+        <p className="mt-3 text-sm leading-7 text-slate-600">
+          منصة عربية لمراجعة ومقارنة شركات التداول ومساعدة المتداول العربي
+          على اتخاذ قرار أوضح قبل فتح الحساب.
+        </p>
+      </div>
 
-              <div>
-                <div className="text-sm font-black text-[#0f172a]">
-                  تنويه
-                </div>
-                <p className="mt-4 text-sm leading-7 text-slate-600">
-                  المعلومات المعروضة لأغراض تعليمية ومقارنة فقط، ويجب على المستخدم
-                  مراجعة التفاصيل النهائية لدى الشركة قبل فتح أي حساب.
-                </p>
-              </div>
-            </div>
+      <div className="rounded-[22px] border border-slate-200 bg-white px-5 py-5 shadow-sm">
+        <div className="text-sm font-black text-[#0f172a]">
+          روابط مهمة
+        </div>
 
-            <div className="mt-8 border-t border-slate-200 pt-5 text-center text-xs text-slate-500">
-              © {new Date().getFullYear()} بروكر العرب - جميع الحقوق محفوظة
-            </div>
-          </div>
-        </footer>
+        <div className="mt-4 grid gap-3 text-sm">
+          <Link href="/" className="text-slate-600 hover:text-[#1d4ed8]">
+            الرئيسية
+          </Link>
+          <Link href="/brokers" className="text-slate-600 hover:text-[#1d4ed8]">
+            التقييمات
+          </Link>
+          <Link href="/compare" className="text-slate-600 hover:text-[#1d4ed8]">
+            المقارنات
+          </Link>
+          <Link href="/best-brokers" className="text-slate-600 hover:text-[#1d4ed8]">
+            أفضل الوسطاء
+          </Link>
+        </div>
+      </div>
+
+      <div className="rounded-[22px] border border-slate-200 bg-white px-5 py-5 shadow-sm">
+        <div className="text-sm font-black text-[#0f172a]">
+          تنويه
+        </div>
+
+        <p className="mt-3 text-sm leading-7 text-slate-600">
+          المعلومات المعروضة لأغراض تعليمية ومقارنة فقط، ويجب على المستخدم
+          مراجعة التفاصيل النهائية لدى الشركة قبل فتح أي حساب.
+        </p>
+      </div>
+    </div>
+
+    {/* DESKTOP */}
+    <div className="hidden md:grid md:grid-cols-3 md:gap-10">
+      <div className="md:text-right">
+        <div className="text-2xl font-black text-[#0f172a]">
+          بروكر العرب
+        </div>
+
+        <p className="mt-4 max-w-sm text-sm leading-8 text-slate-600">
+          منصة عربية لمراجعة ومقارنة شركات التداول ومساعدة المتداول العربي
+          على اتخاذ قرار أوضح قبل فتح الحساب.
+        </p>
+      </div>
+
+      <div className="md:text-center">
+        <div className="text-sm font-black text-[#0f172a]">
+          روابط مهمة
+        </div>
+
+        <div className="mt-4 grid gap-3 text-sm">
+          <Link href="/" className="text-slate-600 hover:text-[#1d4ed8]">
+            الرئيسية
+          </Link>
+          <Link href="/brokers" className="text-slate-600 hover:text-[#1d4ed8]">
+            التقييمات
+          </Link>
+          <Link href="/compare" className="text-slate-600 hover:text-[#1d4ed8]">
+            المقارنات
+          </Link>
+          <Link href="/best-brokers" className="text-slate-600 hover:text-[#1d4ed8]">
+            أفضل الوسطاء
+          </Link>
+        </div>
+      </div>
+
+      <div className="md:text-right">
+        <div className="text-sm font-black text-[#0f172a]">
+          تنويه
+        </div>
+
+        <p className="mt-4 max-w-sm text-sm leading-8 text-slate-600">
+          المعلومات المعروضة لأغراض تعليمية ومقارنة فقط، ويجب على المستخدم
+          مراجعة التفاصيل النهائية لدى الشركة قبل فتح أي حساب.
+        </p>
+      </div>
+    </div>
+
+    <div className="mt-8 border-t border-slate-200 pt-5 text-center text-xs text-slate-500">
+      © {new Date().getFullYear()} بروكر العرب - جميع الحقوق محفوظة
+    </div>
+  </div>
+</footer>
       </body>
     </html>
   );
