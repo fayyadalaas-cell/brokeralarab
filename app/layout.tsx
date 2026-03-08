@@ -51,14 +51,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-  <html lang="ar" dir="rtl">
-    <head>
-  <meta
-    name="impact-site-verification"
-    value="134bc83d-56d2-4943-8e7e-9ff9d37a1229"
-  />
-</head>
-    <body
+    <html lang="ar" dir="rtl">
+      <body
         className={`${cairo.variable} bg-[#f4f7fb] font-sans text-[#0f172a] antialiased`}
       >
         <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
