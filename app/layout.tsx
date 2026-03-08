@@ -53,11 +53,11 @@ export default function RootLayout({
   return (
   <html lang="ar" dir="rtl">
     <head>
-      <meta
-        name="impact-site-verification"
-        content="134bc83d-56d2-4943-8e7e-9ff9d37a1229"
-      />
-    </head>
+  <meta
+    name="impact-site-verification"
+    value="134bc83d-56d2-4943-8e7e-9ff9d37a1229"
+  />
+</head>
     <body
         className={`${cairo.variable} bg-[#f4f7fb] font-sans text-[#0f172a] antialiased`}
       >
