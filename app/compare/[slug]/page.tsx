@@ -19,6 +19,7 @@ type Broker = {
   fees: string | null;
   spreads: string | null;
   deposit_withdrawal: string | null;
+  real_account_url: string | null;
   platform_details: string | null;
   support: string | null;
   safety: string | null;
@@ -330,7 +331,7 @@ export default async function ComparePage({ params }: PageProps) {
               <div className="rounded-[28px] border border-slate-200 bg-[#f8fbff] p-4 shadow-sm sm:p-5">
                 <div className="text-sm font-bold text-[#1d4ed8]">القرار السريع</div>
 
-                <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-1">
+                <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-1">
                   <div className="rounded-2xl border border-slate-200 bg-white p-4">
                     <div className="text-xs font-bold text-slate-500">الأفضل إجمالًا</div>
                     <div className="mt-1 text-lg font-black text-[#0f172a]">{overallWinner}</div>
@@ -352,7 +353,7 @@ export default async function ComparePage({ params }: PageProps) {
             </div>
           </div>
 
-          <div className="mt-6 grid gap-3 sm:mt-8 md:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-6 hidden gap-3 sm:mt-8 md:grid md:grid-cols-2 xl:grid-cols-4">
             {[
               {
                 title: `اختر ${left.name}`,
@@ -444,11 +445,13 @@ export default async function ComparePage({ params }: PageProps) {
                   اقرأ التقييم
                 </Link>
                 <Link
-                  href="/brokers"
-                  className="inline-flex min-h-[46px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
-                >
-                  كل الشركات
-                </Link>
+  href={broker.real_account_url || "#"}
+  target="_blank"
+  rel="nofollow sponsored"
+  className="inline-flex min-h-[46px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
+>
+  افتح حساب حقيقي
+</Link>
               </div>
             </div>
           ))}
@@ -534,7 +537,6 @@ export default async function ComparePage({ params }: PageProps) {
               >
                 <div className="mb-4 flex items-center justify-between">
                   <div className="text-sm font-bold text-[#1d4ed8]">مقارنة حساب #{index + 1}</div>
-                  <div className="text-xs font-bold text-slate-500">نسخة موبايل</div>
                 </div>
 
                 <div className="grid grid-cols-1 gap-3">
