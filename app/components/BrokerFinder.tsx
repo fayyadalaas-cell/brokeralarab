@@ -159,7 +159,7 @@ export default function BrokerFinder({ brokers }: Props) {
             Smart Broker Finder
           </div>
           <h2 className="mt-1 text-xl font-black leading-tight text-[#0f172a] sm:text-2xl">
-            اعثر على أفضل 3 شركات لك
+            اعثر على أفضل 3 شركات تداول تناسبك
           </h2>
           <p className="mt-2 text-[13px] leading-6 text-slate-600 sm:text-sm sm:leading-7">
             اختر الدولة وبعض التفضيلات الأساسية، ثم سنرتب لك أفضل 3 شركات بشكل

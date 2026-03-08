@@ -28,8 +28,8 @@ type Broker = {
   final_verdict: string | null;
   meta_title: string | null;
   meta_descr: string | null;
-  real_account: string | null;
-  demo_account: string | null;
+  real_account_url: string | null;
+  demo_account_url: string | null;
   mt4_download: string | null;
   mt5_download: string | null;
   founded_year: string | null;
@@ -621,12 +621,12 @@ export default async function BrokerPage({
 
               <div className="grid grid-cols-1 gap-3">
                 <ActionButton
-                  href={broker.real_account || "#"}
+                  href={broker.real_account_url || "#"}
                   label="فتح حساب حقيقي"
                   primary
                 />
                 <ActionButton
-                  href={broker.demo_account || "#"}
+                  href={broker.demo_account_url || "#"}
                   label="فتح حساب ديمو"
                 />
                 <ActionButton
@@ -894,7 +894,7 @@ export default async function BrokerPage({
               </p>
 
               <a
-                href={broker.real_account || "#"}
+                href={broker.real_account_url || "#"}
                 className="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-8 py-4 text-base font-bold text-white transition hover:bg-emerald-700"
               >
                 فتح حساب في {broker.name} الآن
