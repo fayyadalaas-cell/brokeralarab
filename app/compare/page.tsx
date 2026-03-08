@@ -77,7 +77,8 @@ export default async function ComparePage() {
     }
   }
 
-  const featuredComparisons = comparisons.slice(0, 8);
+  const featuredComparisonsDesktop = comparisons.slice(0, 8);
+  const featuredComparisonsMobile = comparisons.slice(0, 5);
 
   const faqJsonLd = {
     "@context": "https://schema.org",
@@ -180,8 +181,8 @@ export default async function ComparePage() {
 
       {/* FEATURED COMPARISONS */}
       <section className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-        <div className="rounded-[30px] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-          <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div className="rounded-[30px] border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
+          <div className="mb-6 flex flex-col gap-3 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <div className="text-sm font-bold text-[#1d4ed8]">أشهر المقارنات</div>
               <h2 className="mt-2 text-3xl font-black">
@@ -193,8 +194,78 @@ export default async function ComparePage() {
             </div>
           </div>
 
-          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-            {featuredComparisons.map((item) => {
+          {/* MOBILE LIST / TABLE STYLE */}
+          <div className="md:hidden">
+            <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-[#f8fbff]">
+              <div className="grid grid-cols-[1.6fr_.8fr_.9fr] items-center gap-3 border-b border-slate-200 bg-[#eff6ff] px-4 py-3 text-xs font-extrabold text-slate-700">
+                <div>المقارنة</div>
+                <div className="text-center">التقييم</div>
+                <div className="text-center">الإيداع</div>
+              </div>
+
+              {featuredComparisonsMobile.map((item, index) => {
+                const slug = `${item.a.slug}-vs-${item.b.slug}`;
+                return (
+                  <Link
+                    key={slug}
+                    href={`/compare/${slug}`}
+                    className={`grid grid-cols-[1.6fr_.8fr_.9fr] items-center gap-3 px-4 py-4 transition hover:bg-white ${
+                      index !== featuredComparisonsMobile.length - 1
+                        ? "border-b border-slate-200"
+                        : ""
+                    }`}
+                  >
+                    <div className="min-w-0">
+                      <div className="text-[11px] font-bold text-[#1d4ed8]">
+                        مقارنة مباشرة
+                      </div>
+                      <h3 className="mt-1 line-clamp-2 text-base font-black leading-6 text-[#0f172a]">
+                        {item.a.name} vs {item.b.name}
+                      </h3>
+                      <div className="mt-1 text-xs text-slate-500">
+                        افتح المقارنة
+                      </div>
+                    </div>
+
+                    <div className="text-center">
+                      <div className="rounded-xl bg-white px-2 py-2">
+                        <div className="text-[10px] text-slate-500">المتوسط</div>
+                        <div className="text-sm font-black text-[#0f172a]">
+                          {(
+                            ((item.a.rating ?? 0) + (item.b.rating ?? 0)) /
+                            (((item.a.rating ?? 0) && (item.b.rating ?? 0)) ? 2 : 1)
+                          ).toFixed(1)}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="text-center">
+                      <div className="rounded-xl bg-white px-2 py-2">
+                        <div className="text-[10px] text-slate-500">يبدأ من</div>
+                        <div className="text-sm font-black text-[#0f172a]">
+                          {money(
+                            Math.min(
+                              item.a.min_deposit ?? Number.POSITIVE_INFINITY,
+                              item.b.min_deposit ?? Number.POSITIVE_INFINITY
+                            ) === Number.POSITIVE_INFINITY
+                              ? null
+                              : Math.min(
+                                  item.a.min_deposit ?? Number.POSITIVE_INFINITY,
+                                  item.b.min_deposit ?? Number.POSITIVE_INFINITY
+                                )
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* DESKTOP CARDS */}
+          <div className="hidden gap-5 md:grid md:grid-cols-2 xl:grid-cols-4">
+            {featuredComparisonsDesktop.map((item) => {
               const slug = `${item.a.slug}-vs-${item.b.slug}`;
 
               return (
@@ -204,19 +275,18 @@ export default async function ComparePage() {
                   className="group rounded-[24px] border border-slate-200 bg-[#f8fbff] p-5 transition hover:-translate-y-1 hover:border-[#bfdbfe] hover:bg-white hover:shadow-md"
                 >
                   <div className="mb-4 flex items-start justify-between gap-3">
-  <div>
-    <div className="text-xs font-bold text-slate-500">
-      مقارنة الحسابات والرسوم
-    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-500">
+                        مقارنة الحسابات والرسوم
+                      </div>
 
-    <div className="mt-2 flex items-center gap-2">
-      <h3 className="text-xl font-black text-[#0f172a]">
-        {item.a.name} vs {item.b.name}
-      </h3>
-
-    </div>
-  </div>
-</div>
+                      <div className="mt-2 flex items-center gap-2">
+                        <h3 className="text-xl font-black text-[#0f172a]">
+                          {item.a.name} vs {item.b.name}
+                        </h3>
+                      </div>
+                    </div>
+                  </div>
 
                   <p className="mt-2 text-sm leading-7 text-slate-600">
                     مقارنة بين {item.a.name} و {item.b.name} من حيث التراخيص،
@@ -256,7 +326,7 @@ export default async function ComparePage() {
       </section>
 
       {/* ALL BROKERS QUICK CARDS */}
-      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <section className="hidden md:block mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="mb-8">
           <div className="text-sm font-bold text-[#1d4ed8]">قبل المقارنة</div>
           <h2 className="mt-2 text-3xl font-black">
@@ -340,87 +410,88 @@ export default async function ComparePage() {
           ))}
         </div>
       </section>
+{/* LONG SEO CONTENT */}
+<section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+  <div className="rounded-[30px] border border-slate-200 bg-white p-8 shadow-sm">
+    
+    <div className="text-sm font-bold text-[#1d4ed8]">
+      دليل المقارنات
+    </div>
 
-      {/* LONG SEO CONTENT */}
-      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <div className="rounded-[30px] border border-slate-200 bg-white p-8 shadow-sm">
-          <div className="text-sm font-bold text-[#1d4ed8]">دليل المقارنات</div>
-          <h2 className="mt-2 text-3xl font-black">
-            لماذا تعتبر صفحات المقارنات مهمة قبل فتح الحساب؟
-          </h2>
+    <h2 className="mt-2 text-3xl font-black">
+      لماذا تعتبر صفحات المقارنات مهمة قبل فتح الحساب؟
+    </h2>
 
-          <div className="mt-6 space-y-6 text-base leading-9 text-slate-600">
-            <p>
-              كثير من المتداولين يزورون صفحات التقييم ثم يحتارون بين شركتين أو
-              أكثر، وهنا تأتي أهمية صفحات المقارنات. بدل الانتقال بين أكثر من
-              صفحة وجمع المعلومات يدويًا، تعرض لك صفحة المقارنة الفروقات في
-              مكان واحد بشكل مباشر وسهل.
-            </p>
+    <div className="mt-8 space-y-6 text-base leading-8 text-slate-600">
 
-            <p>
-              أقوى مقارنات شركات التداول لا تكتفي بعرض الاسم أو التقييم فقط، بل
-              توضح الحد الأدنى للإيداع، الحساب الإسلامي، المنصات، التراخيص،
-              أنواع الحسابات، الرسوم، والسبريد. هذه العناصر هي التي تؤثر فعلًا
-              على قرار المتداول العربي، خصوصًا إذا كان في بداية الطريق أو يبحث
-              عن شركة أنسب لطريقة تداوله.
-            </p>
+      {/* BLOCK 1 */}
+      <div className="rounded-xl bg-[#f8fbff] p-5">
+        <h3 className="mb-2 font-black text-[#0f172a]">
+          اختصار وقت البحث
+        </h3>
 
-            <p>
-              صفحة المقارنة الجيدة تساعدك على الوصول إلى قرار أسرع: هل تختار
-              شركة بإيداع أقل؟ أم شركة بتراخيص أقوى؟ أم وسيطًا يقدم حسابات
-              احترافية أفضل؟ لهذا تم تصميم صفحة المقارنات في بروكر العرب لتكون
-              قابلة للتوسع مع زيادة عدد الشركات، بحيث تستطيع لاحقًا مقارنة أي
-              شركتين بسهولة حتى لو أصبح عدد الشركات كبيرًا جدًا.
-            </p>
+        <p>
+          كثير من المتداولين يزورون صفحات تقييم شركات التداول ثم يحتارون بين
+          شركتين أو أكثر. بدل الانتقال بين أكثر من صفحة وجمع المعلومات يدويًا،
+          تعرض لك صفحة المقارنة الفروقات الأساسية بين الوسطاء في مكان واحد
+          بشكل مباشر وواضح، مما يساعدك على اتخاذ القرار بسرعة أكبر.
+        </p>
+      </div>
 
-            <p>
-              ومع استمرار إضافة شركات جديدة إلى الموقع، ستتولد صفحات المقارنات
-              تلقائيًا طالما أن الشركة موجودة في قاعدة البيانات ولها اسم وslug
-              صحيح. وهذا يجعل قسم المقارنات من أقوى أقسام الموقع للسيو ولرفع
-              معدل التفاعل وتحويل الزائر إلى قارئ جاد ثم إلى متخذ قرار.
-            </p>
-          </div>
-        </div>
-      </section>
+      {/* BLOCK 2 */}
+      <div className="rounded-xl bg-[#f8fbff] p-5">
+        <h3 className="mb-3 font-black text-[#0f172a]">
+          توضيح الفروقات الحقيقية بين الشركات
+        </h3>
 
-      {/* FAQ */}
-      <section className="mx-auto max-w-7xl px-4 pb-16 pt-4 sm:px-6 lg:px-8">
-        <div className="rounded-[30px] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-          <div className="mb-8">
-            <div className="text-sm font-bold text-[#1d4ed8]">الأسئلة الشائعة</div>
-            <h2 className="mt-2 text-3xl font-black">
-              أسئلة حول مقارنات شركات التداول
-            </h2>
-          </div>
+        <p className="mb-3">
+          أفضل صفحات المقارنة لا تكتفي بعرض الاسم أو التقييم فقط، بل تركز على
+          العوامل التي تؤثر فعليًا على اختيار شركة التداول المناسبة:
+        </p>
 
-          <div className="space-y-4">
-            {[
-              {
-                q: "هل صفحة المقارنة تتحدث تلقائيًا عند إضافة شركة جديدة؟",
-                a: "نعم، طالما أن الشركة الجديدة موجودة في جدول brokers ولها اسم وslug صحيح، فستظهر في أداة المقارنة ويمكن إنشاء صفحات مقارنة معها تلقائيًا.",
-              },
-              {
-                q: "هل الأفضل عرض كل المقارنات في صفحة واحدة؟",
-                a: "عندما يكون عدد الشركات قليلًا يمكن عرض أشهر المقارنات، لكن مع زيادة العدد يصبح الأفضل استخدام أداة اختيار شركتين للمقارنة بدل إغراق الصفحة بمئات الروابط.",
-              },
-              {
-                q: "ما أهم شيء يجب النظر إليه عند المقارنة؟",
-                a: "ابدأ بالتراخيص، ثم الحد الأدنى للإيداع، الحساب الإسلامي، المنصات، الرسوم، وملاءمة كل شركة لأسلوب تداولك.",
-              },
-            ].map((item) => (
-              <details
-                key={item.q}
-                className="group rounded-[22px] border border-slate-200 bg-[#f8fbff] p-5 open:bg-white"
-              >
-                <summary className="cursor-pointer list-none text-lg font-black text-[#0f172a]">
-                  {item.q}
-                </summary>
-                <p className="mt-3 text-sm leading-8 text-slate-600">{item.a}</p>
-              </details>
-            ))}
-          </div>
-        </div>
-      </section>
+        <ul className="space-y-1 pr-5 list-disc">
+          <li>الحد الأدنى للإيداع</li>
+          <li>الحساب الإسلامي</li>
+          <li>منصات التداول المتاحة</li>
+          <li>التراخيص والتنظيم</li>
+          <li>أنواع الحسابات</li>
+          <li>الرسوم والسبريد</li>
+        </ul>
+      </div>
+
+      {/* BLOCK 3 */}
+      <div className="rounded-xl bg-[#f8fbff] p-5">
+        <h3 className="mb-2 font-black text-[#0f172a]">
+          اختيار الوسيط المناسب لأسلوب تداولك
+        </h3>
+
+        <p>
+          صفحة المقارنة الجيدة تساعدك على الوصول إلى قرار أوضح: هل تبحث عن
+          شركة بحد أدنى منخفض للإيداع؟ أم وسيط بتراخيص قوية؟ أم شركة تقدم
+          منصات تداول احترافية؟ لهذا تم تصميم قسم المقارنات في موقع بروكر
+          العرب بحيث يمكنه التوسع مع زيادة عدد الشركات، ويتيح لك مقارنة أي
+          شركتين بسهولة حتى لو أصبح عدد الوسطاء كبيرًا جدًا.
+        </p>
+      </div>
+
+      {/* BLOCK 4 */}
+      <div className="rounded-xl bg-[#f8fbff] p-5">
+        <h3 className="mb-2 font-black text-[#0f172a]">
+          قسم المقارنات ينمو تلقائيًا
+        </h3>
+
+        <p>
+          مع إضافة شركات جديدة إلى قاعدة البيانات في الموقع، يتم إنشاء
+          المقارنات تلقائيًا بين الوسطاء. هذا يجعل قسم المقارنات من أقوى
+          أقسام الموقع من ناحية السيو، لأنه يولد صفحات مقارنة متعددة تستهدف
+          عمليات البحث مثل "Exness vs XM" أو "XS vs Vantage"، وهي كلمات
+          يبحث عنها المتداولون قبل فتح الحساب.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
     </main>
   );
 }

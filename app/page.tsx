@@ -253,7 +253,7 @@ export default async function HomePage() {
           </Link>
         </div>
 
-        <div className="mt-5 flex flex-wrap gap-2 sm:mt-8">
+        <div className="hidden mt-5 flex flex-wrap gap-2 sm:flex sm:mt-8">
           {[
             "تقييمات مفصلة",
             "مقارنات واضحة",
