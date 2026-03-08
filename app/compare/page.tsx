@@ -120,13 +120,10 @@ export default async function ComparePage() {
 
       {/* HERO */}
       <section className="border-b border-slate-200 bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
           <div className="mx-auto max-w-4xl text-center">
-            <span className="inline-flex rounded-full border border-[#bfdbfe] bg-[#eff6ff] px-4 py-1.5 text-xs font-extrabold text-[#1d4ed8]">
-              Comparison Hub
-            </span>
 
-            <h1 className="mt-6 text-4xl font-black leading-tight sm:text-5xl">
+            <h1 className="text-4xl font-black leading-tight sm:text-5xl">
               مقارنات شركات التداول
             </h1>
 
