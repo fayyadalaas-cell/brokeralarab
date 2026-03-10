@@ -280,7 +280,7 @@ export default async function HomePage() {
                 الشركة الأعلى تقييمًا
               </span>
               <span className="text-xs font-semibold text-slate-400">
-                Featured Broker
+                
               </span>
             </div>
 
