@@ -306,7 +306,7 @@ export default function BrokerFinder({ brokers }: Props) {
                       <div className="text-base font-black text-[#1d4ed8]">
                         {broker.rating?.toFixed(1) ?? "—"}
                       </div>
-                      <div className="text-[9px] font-bold text-slate-500">من 10</div>
+                      <div className="text-[9px] font-bold text-slate-500">من 5</div>
                     </div>
 
                     <span className="text-slate-400">{isOpen ? "⌃" : "⌄"}</span>
@@ -388,7 +388,7 @@ export default function BrokerFinder({ brokers }: Props) {
                     {broker.rating?.toFixed(1) ?? "—"}
                   </div>
                   <div className="text-[9px] font-bold text-slate-500 sm:text-[10px]">
-                    من 10
+                    من 5
                   </div>
                 </div>
               </div>

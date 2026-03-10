@@ -299,7 +299,7 @@ export default async function HomePage() {
                   <span className="text-2xl font-black">
                     {featured.rating?.toFixed(1) ?? "—"}
                   </span>
-                  <span className="text-[10px] font-bold">من 10</span>
+                  <span className="text-[10px] font-bold">من 5</span>
                 </div>
               </div>
 
@@ -416,7 +416,7 @@ export default async function HomePage() {
 
                 <div className="flex h-12 w-12 sm:h-16 sm:w-16 flex-col items-center justify-center rounded-2xl border border-[#bfdbfe] bg-[#eff6ff] text-[#1d4ed8]">
                   <span className="text-base sm:text-xl font-black">{broker.rating?.toFixed(1) ?? "—"}</span>
-                  <span className="text-[10px] font-bold">من 10</span>
+                  <span className="text-[10px] font-bold">من 5</span>
                 </div>
               </div>
 

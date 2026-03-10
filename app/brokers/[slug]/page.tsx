@@ -271,12 +271,12 @@ function ScoreCard({
         <div className="text-3xl font-extrabold text-slate-950">
           {value ?? "-"}
         </div>
-        <div className="text-sm font-bold text-emerald-600">/ 10</div>
+        <div className="text-sm font-bold text-emerald-600">/ 5</div>
       </div>
       <div className="mt-4 h-2 rounded-full bg-slate-200">
         <div
           className="h-2 rounded-full bg-emerald-500"
-          style={{ width: `${((value ?? 0) / 10) * 100}%` }}
+          style={{ width: `${((value ?? 0) / 5) * 100}%` }}
         />
       </div>
     </div>
