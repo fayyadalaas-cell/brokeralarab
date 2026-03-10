@@ -30,8 +30,8 @@ type Broker = {
   meta_descr: string | null;
   real_account_url: string | null;
   demo_account_url: string | null;
-  mt4_download: string | null;
-  mt5_download: string | null;
+  mt4_download_url: string | null;
+  mt5_download_url: string | null;
   founded_year: string | null;
   headquarters: string | null;
   max_leverage: string | null;
@@ -209,6 +209,8 @@ function ActionButton({
   return (
     <a
       href={href || "#"}
+      target="_blank"
+      rel="nofollow sponsored noopener noreferrer"
       className={`inline-flex items-center justify-center rounded-2xl border px-5 py-3 text-sm font-extrabold transition ${
         primary
           ? "border-emerald-600 bg-emerald-600 text-white hover:bg-emerald-700"
@@ -631,12 +633,12 @@ export default async function BrokerPage({
                   label="فتح حساب ديمو"
                 />
                 <ActionButton
-                  href={broker.mt5_download || "#"}
-                  label="تحميل منصة MetaTrader 5"
+                 href={broker.mt5_download_url || "#"}
+                 label="تحميل منصة MetaTrader 5"
                 />
                 <ActionButton
-                  href={broker.mt4_download || "#"}
-                  label="تحميل منصة MetaTrader 4"
+                href={broker.mt4_download_url || "#"}
+                label="تحميل منصة MetaTrader 4"
                 />
               </div>
             </div>
