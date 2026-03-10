@@ -466,6 +466,27 @@ function SectionNav() {
   );
 }
 
+function renderStars(rating: number | null) {
+  if (!rating) return null
+
+  const rounded = Math.round(rating * 2) / 2
+  const full = Math.floor(rounded)
+  const half = rounded % 1 !== 0
+  const empty = 5 - full - (half ? 1 : 0)
+
+  return (
+    <div className="flex items-center gap-0.5 text-amber-400 text-lg">
+      {Array.from({ length: full }).map((_, i) => (
+        <span key={"f"+i}>★</span>
+      ))}
+      {half && <span>⯨</span>}
+      {Array.from({ length: empty }).map((_, i) => (
+        <span key={"e"+i} className="text-slate-300">★</span>
+      ))}
+    </div>
+  )
+}
+
 export default async function BrokerPage({
   params,
 }: {
@@ -550,6 +571,18 @@ export default async function BrokerPage({
     ],
   };
 
+  const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: broker.name,
+  url: `https://brokeralarab.com/brokers/${broker.slug}`,
+  logo: broker.logo || undefined,
+  description:
+    broker.meta_descr ||
+    broker.intro ||
+    `مراجعة كاملة لشركة ${broker.name} تشمل الرسوم والمنصات والتراخيص.`,
+};
+
   return (
     <>
       <Script
@@ -570,7 +603,13 @@ export default async function BrokerPage({
           __html: JSON.stringify(breadcrumbSchema),
         }}
       />
-
+<Script
+  id="organization-schema"
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify(organizationSchema),
+  }}
+/>
       <main className="mx-auto max-w-7xl px-4 py-10 text-right">
         <div className="mb-4 text-sm text-slate-500">
           <Link href="/brokers" className="hover:text-slate-700">
@@ -595,18 +634,34 @@ export default async function BrokerPage({
                 {broker.intro || "مراجعة شاملة لشركة التداول."}
               </p>
 
-              <div className="mt-8 hidden gap-4 sm:grid sm:grid-cols-2 xl:grid-cols-4">
-                <StatCard label="التقييم" value={broker.rating ?? "-"} />
-                <StatCard
-                  label="الحد الأدنى للإيداع"
-                  value={broker.min_deposit ?? "-"}
-                />
-                <StatCard label="المنصات" value={broker.platforms || "-"} />
-                <StatCard
-                  label="التراخيص"
-                  value={broker.regulation_short || "-"}
-                />
-              </div>
+              <div className="mt-8 grid gap-4 grid-cols-2 sm:grid-cols-2 xl:grid-cols-4">
+  <div className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:shadow-sm">
+    <div className="mb-2 text-sm text-slate-500">التقييم</div>
+
+    <div className="flex items-center gap-2">
+      <span className="text-2xl font-extrabold text-slate-950">
+        {broker.rating ?? "-"}
+      </span>
+      <span className="text-sm text-slate-500">/5</span>
+    </div>
+
+    <div className="mt-2">
+      {renderStars(broker.rating)}
+    </div>
+  </div>
+
+  <StatCard
+    label="الحد الأدنى للإيداع"
+    value={broker.min_deposit ?? "-"}
+  />
+
+  <StatCard label="المنصات" value={broker.platforms || "-"} />
+
+  <StatCard
+    label="التراخيص"
+    value={broker.regulation_short || "-"}
+  />
+</div>
             </div>
 
             <div className="space-y-4">
