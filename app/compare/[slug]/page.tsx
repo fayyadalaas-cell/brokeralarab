@@ -273,6 +273,59 @@ export default async function ComparePage({ params }: PageProps) {
 
   const faqJsonLd = buildFaqJsonLd(left, right);
 
+  const comparisonSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: `مقارنة ${left.name} و ${right.name}`,
+    url: `https://brokeralarab.com/compare/${slug}`,
+    description: `مقارنة شاملة بين ${left.name} و ${right.name} من حيث الحسابات والرسوم والتراخيص والمنصات والحد الأدنى للإيداع لمعرفة أيهما أنسب للمتداول العربي.`,
+    mainEntity: {
+      "@type": "ItemList",
+      name: `${left.name} vs ${right.name}`,
+      itemListOrder: "https://schema.org/ItemListUnordered",
+      numberOfItems: 2,
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: left.name,
+          url: `https://brokeralarab.com/brokers/${left.slug}`,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: right.name,
+          url: `https://brokeralarab.com/brokers/${right.slug}`,
+        },
+      ],
+    },
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "الرئيسية",
+        item: "https://brokeralarab.com",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "المقارنات",
+        item: "https://brokeralarab.com/compare",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: `${left.name} vs ${right.name}`,
+        item: `https://brokeralarab.com/compare/${slug}`,
+      },
+    ],
+  };
+
   const comparisonRows = [
     ["التقييم", `${left.rating?.toFixed(1) ?? "—"} / 10`, `${right.rating?.toFixed(1) ?? "—"} / 10`],
     ["الحد الأدنى للإيداع", money(left.min_deposit), money(right.min_deposit)],
@@ -285,11 +338,19 @@ export default async function ComparePage({ params }: PageProps) {
     ["الأصول", left.trading_assets || "غير محدد", right.trading_assets || "غير محدد"],
   ] as const;
 
-  return (
+    return (
     <main dir="rtl" className="min-h-screen bg-[#f4f7fb] text-[#0f172a]">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(comparisonSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
       <section className="border-b border-slate-200 bg-white">
