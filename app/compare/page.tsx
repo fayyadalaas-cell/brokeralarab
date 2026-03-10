@@ -336,7 +336,7 @@ export default async function ComparePage() {
         <div className="mb-8">
           <div className="text-sm font-bold text-[#1d4ed8]">قبل المقارنة</div>
           <h2 className="mt-2 text-3xl font-black">
-            لمحة سريعة عن الشركات الموجودة
+            لمحة سريعة على افضل شركات تداول الفوركس
           </h2>
           <p className="mt-3 max-w-3xl text-base leading-8 text-slate-600">
             هذه البطاقات تعطيك نظرة مختصرة على الشركات المتاحة قبل اختيار شركتين
