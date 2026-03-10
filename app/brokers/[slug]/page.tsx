@@ -353,14 +353,15 @@ function ImageCard({
   if (!src) return null;
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-      <div className="mb-3 text-sm font-bold text-slate-700">{title}</div>
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-        <img
-          src={src}
-          alt={`${title} في ${brokerName}`}
-          className="h-auto w-full object-cover"
-        />
+    <div className="rounded-[24px] border border-slate-200 bg-gradient-to-b from-slate-50 to-white p-4 shadow-sm">
+      <div className="rounded-[20px] border border-slate-200 bg-white p-4 shadow-inner">
+        <div className="flex h-[340px] items-center justify-center overflow-hidden rounded-[16px] bg-slate-50">
+  <img
+    src={src}
+    alt={`${brokerName} trading platform`}
+    className="h-full w-full object-cover"
+  />
+</div>
       </div>
     </div>
   );
