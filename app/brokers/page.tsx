@@ -130,6 +130,7 @@ function getLogoWrapClass(name: string | null | undefined) {
   if (n === "xs") return "w-[145px]";
   if (n.includes("equiti")) return "w-[150px]";
   if (n.includes("avatrade")) return "w-[150px]";
+  if (n.includes("alpari")) return "w-[150px]";
 
   return "w-[145px]";
 }
@@ -144,6 +145,7 @@ function getLogoImgClass(name: string | null | undefined) {
   if (n === "xs") return "scale-[1.7]";
   if (n.includes("equiti")) return "scale-[1.65]";
   if (n.includes("avatrade")) return "scale-[1.65]";
+  if (n.includes("alpari")) return "scale-[1.65]";
 
   return "scale-100";
 }
