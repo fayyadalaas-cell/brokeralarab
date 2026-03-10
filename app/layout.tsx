@@ -122,30 +122,42 @@ export default function RootLayout({
                   <div className="space-y-1">
                     {navLinks.map((item) => (
                       <Link
-                        key={item.href}
-                        href={item.href}
-                        className="block rounded-xl px-3 py-3 text-sm font-extrabold text-slate-700 transition hover:bg-slate-50"
-                      >
-                        {item.label}
-                      </Link>
+  key={item.href}
+  href={item.href}
+  onClick={(e) => {
+    const details = (e.currentTarget.closest("details") as HTMLDetailsElement);
+    if (details) details.open = false;
+  }}
+  className="block rounded-xl px-3 py-3 text-sm font-extrabold text-slate-700 transition hover:bg-slate-50"
+>
+  {item.label}
+</Link>
                     ))}
                   </div>
 
                   <div className="mt-3 grid gap-2 border-t border-slate-100 pt-3">
-                    <Link
-                      href="/compare"
-                      className="inline-flex items-center justify-center rounded-xl border border-slate-300 px-4 py-3 text-sm font-extrabold text-slate-700 transition hover:bg-slate-50"
-                    >
-                      تصفح المقارنات
-                    </Link>
+  <Link
+    href="/compare"
+    onClick={(e) => {
+      const details = e.currentTarget.closest("details") as HTMLDetailsElement;
+      if (details) details.open = false;
+    }}
+    className="inline-flex items-center justify-center rounded-xl border border-slate-300 px-4 py-3 text-sm font-extrabold text-slate-700 transition hover:bg-slate-50"
+  >
+    تصفح المقارنات
+  </Link>
 
-                    <Link
-                      href="/brokers"
-                      className="inline-flex items-center justify-center rounded-xl bg-[#2563eb] px-4 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
-                    >
-                      أفضل الوسطاء
-                    </Link>
-                  </div>
+  <Link
+    href="/brokers"
+    onClick={(e) => {
+      const details = e.currentTarget.closest("details") as HTMLDetailsElement;
+      if (details) details.open = false;
+    }}
+    className="inline-flex items-center justify-center rounded-xl bg-[#2563eb] px-4 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
+  >
+    أفضل الوسطاء
+  </Link>
+</div>
                 </div>
               </details>
             </div>
