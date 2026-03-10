@@ -607,17 +607,17 @@ export default async function BrokerPage({
             </div>
 
             <div className="space-y-4">
-              <div className="flex h-32 items-center justify-center rounded-3xl border border-slate-200 bg-slate-50 p-4">
-                {broker.logo ? (
-                  <img
-                    src={broker.logo}
-                    alt={broker.name || "Broker logo"}
-                    className="h-full w-full object-contain"
-                  />
-                ) : (
-                  <span className="text-sm text-slate-400">No logo</span>
-                )}
-              </div>
+              <div className="flex h-[180px] items-center justify-center overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 px-6 py-4">
+  {broker.logo ? (
+    <img
+      src={broker.logo}
+      alt={broker.name || "Broker logo"}
+      className="max-h-[120px] w-full object-contain scale-[2]"
+    />
+  ) : (
+    <span className="text-sm text-slate-400">No logo</span>
+  )}
+</div>
 
               <div className="grid grid-cols-1 gap-3">
                 <ActionButton

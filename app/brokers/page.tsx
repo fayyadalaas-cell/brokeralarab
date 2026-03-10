@@ -120,6 +120,34 @@ function ratingLabel(rating: number | null) {
   return "مقبول";
 }
 
+function getLogoWrapClass(name: string | null | undefined) {
+  const n = (name || "").toLowerCase().trim();
+
+  if (n.includes("exness")) return "w-[190px]";
+  if (n === "xm") return "w-[180px]";
+  if (n.includes("vantage")) return "w-[175px]";
+  if (n.includes("justmarkets")) return "w-[170px]";
+  if (n === "xs") return "w-[170px]";
+  if (n.includes("equiti")) return "w-[175px]";
+  if (n.includes("avatrade")) return "w-[180px]";
+
+  return "w-[170px]";
+}
+
+function getLogoImgClass(name: string | null | undefined) {
+  const n = (name || "").toLowerCase().trim();
+
+  if (n.includes("exness")) return "scale-[2.2]";
+  if (n === "xm") return "scale-[2.0]";
+  if (n.includes("vantage")) return "scale-[1.9]";
+  if (n.includes("justmarkets")) return "scale-[1.7]";
+  if (n === "xs") return "scale-[2.0]";
+  if (n.includes("equiti")) return "scale-[2.1]";
+  if (n.includes("avatrade")) return "scale-[2.0]";
+
+  return "scale-100";
+}
+
 export default async function BrokersPage() {
   const supabase = await createClient();
 
@@ -358,21 +386,27 @@ export default async function BrokersPage() {
 
                   {/* BROKER */}
                   <div className="flex items-center gap-4 px-3">
-                    <div className="flex h-[40px] w-[110px] shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-white px-3 shadow-sm">
-                      {broker.logo ? (
-                        <Image
-                          src={broker.logo}
-                          alt={broker.name ?? "Broker"}
-                          width={110}
-                          height={40}
-                          className="h-[40px] w-[110px] object-contain"
-                        />
-                      ) : (
-                        <span className="text-sm font-extrabold text-slate-600">
-                          {getInitials(broker.name)}
-                        </span>
-                      )}
-                    </div>
+                    <div
+  className={`flex h-[64px] shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-white px-2 shadow-sm ${getLogoWrapClass(
+  broker.name
+)}`}
+>
+  {broker.logo ? (
+    <Image
+      src={broker.logo}
+      alt={broker.name ?? "Broker logo"}
+      width={220}
+      height={70}
+      className={`h-auto max-h-[48px] w-full object-contain transition ${getLogoImgClass(
+  broker.name
+)}`}
+    />
+  ) : (
+    <span className="flex h-full w-full items-center justify-center text-sm font-extrabold text-slate-600">
+      {getInitials(broker.name)}
+    </span>
+  )}
+</div>
 
                     <div className="min-w-0">
                       <Link
@@ -480,21 +514,25 @@ export default async function BrokersPage() {
                   </div>
 
                   <div className="flex items-center gap-4 px-3">
-                    <div className="flex h-[40px] w-[110px] shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-white px-3 shadow-sm">
-                      {broker.logo ? (
-                        <Image
-                          src={broker.logo}
-                          alt={broker.name ?? "Broker"}
-                          width={110}
-                          height={40}
-                          className="h-[40px] w-[110px] object-contain"
-                        />
-                      ) : (
-                        <span className="text-sm font-extrabold text-slate-600">
-                          {getInitials(broker.name)}
-                        </span>
-                      )}
-                    </div>
+                    <div
+  className={`flex h-[52px] shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-white px-2 shadow-sm ${getLogoWrapClass(
+    broker.name
+  )}`}
+>
+  {broker.logo ? (
+    <Image
+      src={broker.logo}
+      alt={broker.name ?? "Broker logo"}
+      width={220}
+      height={70}
+      className="h-auto max-h-[38px] w-full object-contain"
+    />
+  ) : (
+    <span className="flex h-full w-full items-center justify-center text-sm font-extrabold text-slate-600">
+      {getInitials(broker.name)}
+    </span>
+  )}
+</div>
 
                     <div className="min-w-0">
                       <Link

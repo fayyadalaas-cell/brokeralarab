@@ -114,7 +114,7 @@ function getComparisons(brokers: Broker[]) {
 function getCountryPages() {
   return [
     {
-      title: "أفضل شركات الفوركس في السعودية",
+      title: "أفضل شركات التداول في السعودية",
       href: "/best-brokers/saudi-arabia",
       desc: "وسطاء مناسبون للمتداولين في السعودية من حيث الحساب الإسلامي والإيداع والتراخيص.",
     },
