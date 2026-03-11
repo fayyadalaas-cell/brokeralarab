@@ -967,104 +967,108 @@ export default async function HomePage() {
 </section>
 
 {/* WHY US */}
-<section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
-  <div className="mb-6 sm:mb-8">
-    <div className="inline-flex rounded-full border border-[#bfdbfe] bg-[#eff6ff] px-3 py-1 text-xs font-extrabold text-[#1d4ed8] sm:text-sm">
-      لماذا بروكر العرب؟
+<section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm sm:rounded-[32px]">
+    <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-6 sm:px-8 sm:py-8">
+      <div className="inline-flex rounded-full border border-[#bfdbfe] bg-[#eff6ff] px-3 py-1 text-xs font-extrabold text-[#1d4ed8] sm:text-sm">
+        لماذا بروكر العرب؟
+      </div>
+
+      <h2 className="mt-3 text-[24px] font-black leading-[1.50] text-[#0f172a] sm:text-[36px] lg:text-[42px]">
+        منصة تساعد المتداول العربي
+        <span className="text-[#2563eb]"> على اختيار شركة التداول بثقة</span>
+      </h2>
+
+      <p className="mt-4 max-w-4xl text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
+        هدفنا في بروكر العرب هو تقديم مراجعات ومقارنات واضحة تساعد المتداول
+        العربي على فهم الفروقات الحقيقية بين شركات التداول قبل فتح الحساب،
+        عبر صفحات تقييم مفصلة ومقارنات مباشرة توضح التراخيص والحسابات والرسوم والمنصات.
+      </p>
     </div>
 
-    <h2 className="mt-3 text-[24px] font-black leading-[1.15] text-[#0f172a] sm:text-[40px]">
-      منصة تساعد المتداول العربي
-      <span className="text-[#2563eb]"> على اختيار شركة التداول بثقة</span>
-    </h2>
+    {/* MOBILE */}
+    <div className="grid gap-3 p-4 sm:hidden">
+      {[
+        {
+          title: "مراجعات منظمة",
+          desc: "صفحات مستقلة توضح الحسابات والتراخيص والرسوم.",
+        },
+        {
+          title: "مقارنات عملية",
+          desc: "مقارنات مباشرة توضح الفروق الحقيقية بسرعة.",
+        },
+        {
+          title: "تركيز على المتداول العربي",
+          desc: "اهتمام بالحساب الإسلامي والدعم العربي والإيداع المناسب.",
+        },
+        {
+          title: "بنية قابلة للتوسع",
+          desc: "ربط كل شركة بصفحات مقارنة ودول وفئات بشكل منظم.",
+        },
+      ].map((item, index) => (
+        <div
+          key={item.title}
+          className="rounded-[18px] border border-slate-200 bg-[#f8fbff] px-4 py-4 shadow-sm"
+        >
+          <div className="mb-3 flex items-center gap-3">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#bfdbfe] bg-[#eff6ff] text-xs font-black text-[#1d4ed8]">
+              {index + 1}
+            </span>
 
-    <p className="mt-4 max-w-4xl text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
-      هدفنا في بروكر العرب هو تقديم مراجعات ومقارنات واضحة تساعد المتداول
-      العربي على فهم الفروقات الحقيقية بين شركات التداول قبل فتح الحساب.
-      لذلك لا نعتمد على قوائم قصيرة أو توصيات عامة، بل نبني صفحات تقييم
-      مفصلة ومقارنات مباشرة بين الوسطاء توضح التراخيص والحسابات والرسوم
-      والمنصات، مما يجعل عملية اختيار شركة التداول أسهل وأكثر وضوحًا.
-    </p>
-  </div>
+            <h3 className="text-[15px] font-black leading-6 text-[#0f172a]">
+              {item.title}
+            </h3>
+          </div>
 
-  {/* MOBILE VERSION */}
-  <div className="space-y-3 sm:hidden">
-    {[
-      {
-        title: "مراجعات منظمة",
-        desc: "صفحات مستقلة توضح الحسابات، التراخيص، الرسوم والخلاصة النهائية.",
-      },
-      {
-        title: "مقارنات عملية",
-        desc: "مقارنات مباشرة توضح الفروق الحقيقية بين الوسطاء بسرعة.",
-      },
-      {
-        title: "تركيز على المتداول العربي",
-        desc: "اهتمام بالحساب الإسلامي، الدعم العربي، والإيداع المناسب.",
-      },
-      {
-        title: "بنية قابلة للتوسع",
-        desc: "ربط كل شركة بصفحات مقارنة ودول وفئات بشكل منظم.",
-      },
-    ].map((item, index) => (
-      <div
-        key={item.title}
-        className="flex items-start gap-3 rounded-[18px] border border-slate-200 bg-white px-4 py-4 shadow-sm"
-      >
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#eff6ff] text-xs font-black text-[#1d4ed8]">
-          {index + 1}
-        </div>
-
-        <div>
-          <h3 className="text-base font-black text-[#0f172a]">
-            {item.title}
-          </h3>
-          <p className="mt-1 text-sm leading-6 text-slate-600">
+          <p className="text-sm leading-6 text-slate-600">
             {item.desc}
           </p>
         </div>
-      </div>
-    ))}
-  </div>
+      ))}
+    </div>
 
-  {/* DESKTOP VERSION */}
-  <div className="hidden gap-5 sm:grid md:grid-cols-2 xl:grid-cols-4">
-    {[
-      {
-        title: "مراجعات منظمة",
-        desc: "كل شركة لها صفحة مستقلة تحتوي على الحسابات، المنصات، التراخيص، الرسوم، والخلاصة النهائية.",
-      },
-      {
-        title: "مقارنات عملية",
-        desc: "صفحات مقارنة توضح الفروق الفعلية بين الوسطاء بدل تنقل الزائر بين عدة صفحات منفصلة.",
-      },
-      {
-        title: "تركيز على المتداول العربي",
-        desc: "نهتم بالحساب الإسلامي، والدعم العربي، والحد الأدنى للإيداع، ومدى ملاءمة الشركة للمنطقة.",
-      },
-      {
-        title: "بنية قابلة للتوسع",
-        desc: "كل شركة جديدة يمكن ربطها مباشرة بصفحات مقارنة وصفحات دولة وصفحات فئة، وهذا ممتاز للسيو.",
-      },
-    ].map((item, index) => (
-      <div
-        key={item.title}
-        className="group rounded-[26px] border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(15,23,42,0.06)]"
-      >
-        <div className="mb-4 flex items-center justify-between">
-          <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-[#bfdbfe] bg-[#eff6ff] text-sm font-black text-[#1d4ed8]">
-            {index + 1}
-          </span>
-        </div>
+    {/* DESKTOP */}
+    <div className="hidden p-6 sm:block sm:p-8">
+      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+        {[
+          {
+            title: "مراجعات منظمة",
+            desc: "كل شركة لها صفحة مستقلة تحتوي على الحسابات، المنصات، التراخيص، الرسوم، والخلاصة النهائية.",
+          },
+          {
+            title: "مقارنات عملية",
+            desc: "صفحات مقارنة توضح الفروق الفعلية بين الوسطاء بدل تنقل الزائر بين عدة صفحات منفصلة.",
+          },
+          {
+            title: "تركيز على المتداول العربي",
+            desc: "نهتم بالحساب الإسلامي، والدعم العربي، والحد الأدنى للإيداع، ومدى ملاءمة الشركة للمنطقة.",
+          },
+          {
+            title: "بنية قابلة للتوسع",
+            desc: "كل شركة جديدة يمكن ربطها مباشرة بصفحات مقارنة وصفحات دولة وصفحات فئة، وهذا ممتاز للسيو.",
+          },
+        ].map((item, index) => (
+          <div
+            key={item.title}
+            className="group rounded-[24px] border border-slate-200 bg-[linear-gradient(180deg,#f8fbff_0%,#ffffff_100%)] p-5 shadow-sm transition hover:-translate-y-1 hover:border-[#bfdbfe] hover:shadow-[0_16px_40px_rgba(15,23,42,0.06)]"
+          >
+            <div className="mb-4 flex items-center justify-between">
+              <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-[#bfdbfe] bg-[#eff6ff] text-sm font-black text-[#1d4ed8]">
+                {index + 1}
+              </span>
+            </div>
 
-        <h3 className="text-[22px] font-black text-[#0f172a]">
-          {item.title}
-        </h3>
-        <p className="mt-3 text-sm leading-7 text-slate-600">
-          {item.desc}
-        </p>
+            <h3 className="text-[20px] font-black leading-[1.3] text-[#0f172a]">
+              {item.title}
+            </h3>
+
+            <p className="mt-3 text-sm leading-7 text-slate-600">
+              {item.desc}
+            </p>
+          </div>
+        ))}
       </div>
-    ))}
+    </div>
   </div>
 </section>
 

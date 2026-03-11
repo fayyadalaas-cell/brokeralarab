@@ -16,10 +16,9 @@ export const metadata: Metadata = {
     template: "%s | بروكر العرب",
   },
   description:
-    "بروكر العرب منصة عربية متخصصة في مراجعات ومقارنات شركات التداول لمساعدة المتداول العربي على اختيار الوسيط المناسب بناءً على التراخيص والرسوم والمنصات وتجربة الاستخدام.",
+    "بروكر العرب منصة عربية متخصصة في مراجعات ومقارنات شركات التداول لمساعدة المتداول العربي على اختيار الوسيط المناسب.",
   metadataBase: new URL("https://brokeralarab.com"),
-
-    verification: {
+  verification: {
     google: "eivw8RsaxU2SPjyhov7RFqS8gdAM0VTN8YsmxQncXm4",
   },
 };
@@ -48,14 +47,15 @@ const footerLegalLinks = [
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="ar" dir="rtl">
       <body
         className={`${cairo.variable} bg-[#f4f7fb] font-sans text-[#0f172a] antialiased`}
       >
+        {/* HEADER */}
         <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 items-center justify-between gap-3 md:h-20 md:gap-6">
@@ -103,106 +103,81 @@ export default function RootLayout({
 
         <main>{children}</main>
 
-        <footer className="mt-8 border-t border-slate-200 bg-[#eef3f8] md:mt-14">
-          <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
+        {/* FOOTER */}
+        <footer className="mt-6 border-t border-slate-800 bg-[#0f172a] text-slate-300 md:mt-12">
+          <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+
             {/* MOBILE */}
-            <div className="space-y-4 md:hidden">
-              <div className="rounded-[22px] border border-slate-200 bg-white px-5 py-5 shadow-sm">
-                <div className="text-xl font-black text-[#0f172a]">
-                  بروكر العرب
-                </div>
+            <div className="space-y-6 md:hidden">
 
-                <p className="mt-3 text-sm leading-7 text-slate-600">
-                  منصة عربية متخصصة في مراجعات ومقارنات شركات التداول، وتهدف إلى
-                  مساعدة المتداول العربي على فهم الفروقات بين الوسطاء قبل فتح أي
-                  حساب حقيقي أو تجريبي.
+              <div>
+                <div className="text-2xl font-black text-white">بروكر العرب</div>
+                <p className="mt-3 text-sm leading-7 text-slate-300">
+                  منصة عربية متخصصة في مراجعات ومقارنات شركات التداول
+                  لمساعدة المتداول العربي على اختيار الوسيط المناسب.
                 </p>
               </div>
 
-              <div className="rounded-[22px] border border-slate-200 bg-white px-5 py-5 shadow-sm">
-                <div className="text-sm font-black text-[#0f172a]">
-                  روابط الموقع
+              <div className="grid grid-cols-2 gap-4">
+
+                <div>
+                  <div className="text-sm font-black text-white">روابط الموقع</div>
+                  <div className="mt-3 grid gap-2 text-sm">
+                    {footerMainLinks.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="text-slate-300 hover:text-white transition"
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
 
-                <div className="mt-4 grid gap-3 text-sm">
-                  {footerMainLinks.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className="text-slate-600 transition hover:text-[#1d4ed8]"
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
+                <div>
+                  <div className="text-sm font-black text-white">صفحات مهمة</div>
+                  <div className="mt-3 grid gap-2 text-sm">
+                    {footerLegalLinks.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="text-slate-300 hover:text-white transition"
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
+
               </div>
 
-              <div className="rounded-[22px] border border-slate-200 bg-white px-5 py-5 shadow-sm">
-                <div className="text-sm font-black text-[#0f172a]">
-                  صفحات مهمة
-                </div>
-
-                <div className="mt-4 grid gap-3 text-sm">
-                  {footerLegalLinks.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className="text-slate-600 transition hover:text-[#1d4ed8]"
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                </div>
+              <div className="text-sm">
+                <span className="font-black text-white">البريد:</span>{" "}
+                info@brokeralarab.com
               </div>
 
-              <div className="rounded-[22px] border border-slate-200 bg-white px-5 py-5 shadow-sm">
-                <div className="text-sm font-black text-[#0f172a]">
-                  تواصل معنا
-                </div>
-
-                <div className="mt-3 text-sm leading-7 text-slate-600">
-                  info@brokeralarab.com
-                </div>
-              </div>
-
-              <div className="rounded-[22px] border border-amber-200 bg-amber-50 px-5 py-5 shadow-sm">
-                <div className="text-sm font-black text-[#0f172a]">
-                  إخلاء مسؤولية
-                </div>
-
-                <p className="mt-3 text-sm leading-7 text-slate-700">
-                  المعلومات المنشورة في بروكر العرب هي لأغراض تعليمية ومعلوماتية
-                  فقط، ولا تُعد توصية استثمارية أو ضمانًا لأي شركة. يتحمل
-                  المستخدم مسؤولية التحقق النهائي من شروط أي وسيط قبل التسجيل أو
-                  الإيداع أو بدء التداول.
-                </p>
-              </div>
             </div>
 
             {/* DESKTOP */}
-            <div className="hidden gap-10 md:grid md:grid-cols-4">
-              <div className="text-right">
-                <div className="text-2xl font-black text-[#0f172a]">
-                  بروكر العرب
-                </div>
+            <div className="hidden md:grid md:grid-cols-4 md:gap-10">
 
-                <p className="mt-4 max-w-sm text-sm leading-8 text-slate-600">
-                  منصة عربية متخصصة في مراجعات ومقارنات شركات التداول، وتهدف إلى
-                  مساعدة المتداول العربي على اتخاذ قرار أوضح قبل فتح الحساب.
+              <div>
+                <div className="text-3xl font-black text-white">بروكر العرب</div>
+                <p className="mt-4 text-sm leading-8 text-slate-300">
+                  منصة عربية متخصصة في مراجعات ومقارنات شركات التداول
+                  لمساعدة المتداول العربي على اتخاذ قرار أفضل قبل فتح الحساب.
                 </p>
               </div>
 
-              <div className="text-right">
-                <div className="text-sm font-black text-[#0f172a]">
-                  روابط الموقع
-                </div>
-
+              <div>
+                <div className="text-sm font-black text-white">روابط الموقع</div>
                 <div className="mt-4 grid gap-3 text-sm">
                   {footerMainLinks.map((item) => (
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="text-slate-600 transition hover:text-[#1d4ed8]"
+                      className="text-slate-300 hover:text-white transition"
                     >
                       {item.label}
                     </Link>
@@ -210,17 +185,14 @@ export default function RootLayout({
                 </div>
               </div>
 
-              <div className="text-right">
-                <div className="text-sm font-black text-[#0f172a]">
-                  صفحات مهمة
-                </div>
-
+              <div>
+                <div className="text-sm font-black text-white">صفحات مهمة</div>
                 <div className="mt-4 grid gap-3 text-sm">
                   {footerLegalLinks.map((item) => (
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="text-slate-600 transition hover:text-[#1d4ed8]"
+                      className="text-slate-300 hover:text-white transition"
                     >
                       {item.label}
                     </Link>
@@ -228,34 +200,30 @@ export default function RootLayout({
                 </div>
 
                 <div className="mt-6">
-                  <div className="text-sm font-black text-[#0f172a]">
-                    البريد الإلكتروني
-                  </div>
-                  <div className="mt-3 text-sm text-slate-600">
+                  <div className="text-sm font-black text-white">البريد</div>
+                  <div className="mt-2 text-sm text-slate-300">
                     info@brokeralarab.com
                   </div>
                 </div>
               </div>
 
-              <div className="text-right">
-                <div className="text-sm font-black text-[#0f172a]">
-                  إخلاء مسؤولية
-                </div>
-
-                <p className="mt-4 max-w-sm text-sm leading-8 text-slate-600">
-                  المعلومات المعروضة في هذا الموقع مخصصة لأغراض المقارنة
-                  والتعليم فقط، ولا تعتبر نصيحة استثمارية أو توصية مباشرة بفتح
-                  حساب مع أي شركة. بروكر العرب لا يدير حسابات تداول ولا يتحمل
-                  مسؤولية أي تعامل يتم بين المستخدم وأي وسيط مذكور في الموقع.
+              <div>
+                <div className="text-sm font-black text-white">إخلاء مسؤولية</div>
+                <p className="mt-4 text-sm leading-8 text-slate-300">
+                  المعلومات المعروضة في هذا الموقع لأغراض تعليمية فقط
+                  ولا تعتبر نصيحة استثمارية أو توصية بفتح حساب تداول.
                 </p>
               </div>
+
             </div>
 
-            <div className="mt-8 border-t border-slate-200 pt-5 text-center text-xs leading-6 text-slate-500">
+            <div className="mt-10 border-t border-slate-800 pt-6 text-center text-xs text-slate-400">
               © {new Date().getFullYear()} بروكر العرب - جميع الحقوق محفوظة
             </div>
+
           </div>
         </footer>
+
       </body>
     </html>
   );
