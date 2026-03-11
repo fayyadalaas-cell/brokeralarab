@@ -552,24 +552,26 @@ export default async function BrokerPage({
     },
   }));
 
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "التقييمات",
-        item: "/brokers",
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: `تقييم ${broker.name}`,
-        item: `/brokers/${broker.slug}`,
-      },
-    ],
-  };
+  const siteUrl = "https://brokeralarab.com";
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "التقييمات",
+      item: `${siteUrl}/brokers`,
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: `تقييم ${broker.name}`,
+      item: `${siteUrl}/brokers/${broker.slug}`,
+    },
+  ],
+};
 
   const organizationSchema = {
   "@context": "https://schema.org",
