@@ -222,11 +222,11 @@ export default async function HomePage() {
     <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.65)_0%,rgba(255,255,255,0)_100%)]" />
   </div>
 
-  <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-14">
+  <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
     <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
       {/* RIGHT CONTENT */}
-      <div className="lg:w-[58%]">
-        <span className="inline-flex rounded-full border border-[#bfdbfe] bg-white px-4 py-2 text-[11px] font-extrabold text-[#1d4ed8] shadow-sm sm:text-xs">
+      <div className="lg:w-[64%]">
+        <span className="inline-flex rounded-full border border-[#bfdbfe] bg-white px-4 py-3 text-[11px] font-extrabold text-[#1d4ed8] shadow-sm sm:text-xs">
           منصة عربية احترافية لمراجعة ومقارنة شركات التداول
         </span>
 
@@ -347,7 +347,7 @@ export default async function HomePage() {
                   </div>
 
                   <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between lg:gap-10">
                       <h3 className="text-lg font-black text-[#0f172a]">
                         {broker.name}
                       </h3>
