@@ -230,7 +230,7 @@ export default async function HomePage() {
           منصة عربية احترافية لمراجعة ومقارنة شركات التداول
         </span>
 
-        <h1 className="mt-5 max-w-4xl text-[30px] font-black leading-[1.12] tracking-[-0.02em] text-[#0f172a] sm:text-[40px] lg:text-[52px]">
+        <h1 className="max-w-4xl text-[30px] font-black leading-[1.12] tracking-[-0.02em] text-[#0f172a] sm:text-[40px] lg:text-[52px]">
           قارن الوسطاء بثقة
           <span className="mt-2 block text-[#2563eb]">
             واختر الأنسب لتجربتك
@@ -396,26 +396,23 @@ export default async function HomePage() {
       {/* FINDER */}
 <section
   id="finder"
-  className="scroll-mt-24 mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8"
+  className="scroll-mt-24 mx-auto max-w-7xl px-4 py-5 sm:px-6 sm:py-7 lg:px-8"
 >
   <BrokerFinder brokers={brokers} />
 </section>
 
      {/* HOW WE RATE */}
-<section className="mx-auto max-w-7xl px-4 pt-2 pb-6 sm:px-6 sm:pb-10 lg:px-8">
+<section className="mx-auto max-w-7xl px-4 pt-3 pb-1 sm:px-6 sm:pt-4 sm:pb-2 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm sm:rounded-[32px]">
     <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-6 sm:px-8 sm:py-8">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <div className="inline-flex rounded-full border border-[#bfdbfe] bg-[#eff6ff] px-3 py-1 text-xs font-extrabold text-[#1d4ed8] sm:text-sm">
-            منهجية التقييم
-          </div>
 
-          <h2 className="mt-3 text-[24px] font-black leading-[1.15] text-[#0f172a] sm:text-[38px]">
+          <h2 className="text-[24px] font-black leading-[1.15] text-[#0f172a] sm:text-[38px]">
             كيف نقيّم شركات التداول؟
           </h2>
 
-          <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
+          <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
             لا نعتمد على الوعود التسويقية، بل نراجع كل وسيط بناءً على عوامل
             عملية تؤثر فعلاً على تجربة المتداول العربي.
           </p>
@@ -511,19 +508,15 @@ export default async function HomePage() {
 </section>
 
 {/* TOP BROKERS */}
-<section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
-  <div className="mb-6 flex flex-col gap-3 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
+<section className="mx-auto max-w-7xl px-4 pt-4 pb-6 sm:px-6 sm:pt-5 sm:pb-8 lg:px-8">
+  <div className="mb-4 flex flex-col gap-3 sm:mb-5 sm:flex-row sm:items-end sm:justify-between">
     <div>
-      <div className="inline-flex rounded-full border border-[#bfdbfe] bg-[#eff6ff] px-3 py-1 text-xs font-extrabold text-[#1d4ed8] sm:text-sm">
-        أفضل الوسطاء
-      </div>
 
-      <h2 className="mt-3 text-[24px] font-black leading-[1.15] text-[#0f172a] sm:text-[40px]">
+      <h2 className="text-[24px] font-black leading-[1.15] text-[#0f172a] sm:text-[40px]">
   أفضل شركات الفوركس
-  <span className="sm:inline text-[#2563eb]"> </span>
 </h2>
 
-      <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
+      <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
         اختر من بين أبرز شركات التداول التي تحقق توازنًا جيدًا بين
         التراخيص، المنصات، الرسوم، وتجربة المستخدم.
       </p>
@@ -629,23 +622,19 @@ export default async function HomePage() {
 </section>
 
 {/* PROGRAMMATIC SEO - COUNTRIES */}
-<section className="border-y border-slate-200 bg-[#f4f7fb] py-8 sm:py-12">
+<section className="bg-[#f4f7fb] pt-3 pb-5 sm:pt-4 sm:pb-7">
   <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-    <div className="mb-6 sm:mb-8">
-
-      <div className="inline-flex rounded-full border border-[#bfdbfe] bg-[#eff6ff] px-3 py-1 text-xs font-extrabold text-[#1d4ed8] sm:text-sm">
-        صفحات الدول
-      </div>
+    <div className="mb-5 sm:mb-6">
 
       {/* TITLE */}
-      <h2 className="mt-3 text-[26px] font-black leading-[1.15] tracking-[-0.01em] text-[#0f172a] sm:text-[42px]">
+      <h2 className="text-[26px] font-black leading-[1.15] tracking-[-0.01em] text-[#0f172a] sm:text-[40px]">
         أفضل شركات الفوركس
         <span className="text-[#2563eb] sm:inline"> حسب الدولة</span>
       </h2>
 
       {/* DESCRIPTION */}
-      <p className="mt-4 max-w-4xl text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
+      <p className="mt-3 max-w-4xl text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
         تختلف احتياجات المتداولين من دولة إلى أخرى، لذلك أنشأنا صفحات مخصصة
         تساعدك على الوصول إلى أفضل شركات التداول المناسبة لبلدك، مع التركيز
         على عوامل مثل الحساب الإسلامي، الحد الأدنى للإيداع، المنصات،
@@ -720,20 +709,17 @@ export default async function HomePage() {
 </section>
 
      {/* COMPARISONS */}
-<section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+<section className="mx-auto max-w-7xl px-4 pt-4 pb-3 sm:px-6 sm:pt-5 sm:pb-4 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm sm:rounded-[32px]">
     <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-6 sm:px-8 sm:py-8">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <div className="inline-flex rounded-full border border-[#bfdbfe] bg-[#eff6ff] px-3 py-1 text-xs font-extrabold text-[#1d4ed8] sm:text-sm">
-            مقارنات سريعة
-          </div>
 
-          <h2 className="mt-3 text-[24px] font-black leading-[1.15] text-[#0f172a] sm:text-[38px]">
+          <h2 className="text-[24px] font-black leading-[1.15] text-[#0f172a] sm:text-[38px]">
             أشهر مقارنات شركات الفوركس
           </h2>
 
-          <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
+          <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
             استعرض أشهر المقارنات بين الوسطاء لمعرفة الفروقات في التراخيص،
             المنصات، الرسوم، والحسابات قبل اتخاذ قرارك.
           </p>
@@ -828,14 +814,12 @@ export default async function HomePage() {
 </section>
 
       {/* LONG SEO CONTENT */}
-<section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+<section className="mx-auto max-w-7xl px-4 pt-3 pb-5 sm:px-6 sm:pt-4 sm:pb-7 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm sm:rounded-[32px]">
     <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-6 sm:px-8 sm:py-8">
-      <div className="inline-flex rounded-full border border-[#bfdbfe] bg-[#eff6ff] px-3 py-1 text-xs font-extrabold text-[#1d4ed8] sm:text-sm">
-        دليل اختياري
-      </div>
+      
 
-      <h2 className="mt-3 text-[24px] font-black leading-[1.15] text-[#0f172a] sm:text-[40px]">
+      <h2 className="text-[24px] font-black leading-[1.15] text-[#0f172a] sm:text-[40px]">
         كيف تختار أفضل شركة تداول مناسبة لك؟
       </h2>
     </div>
@@ -967,7 +951,7 @@ export default async function HomePage() {
 </section>
 
 {/* WHY US */}
-<section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+<section className="mx-auto max-w-7xl px-4 pt-1 pb-4 sm:px-6 sm:pt-2 sm:pb-6 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm sm:rounded-[32px]">
     <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-6 sm:px-8 sm:py-8">
       <div className="inline-flex rounded-full border border-[#bfdbfe] bg-[#eff6ff] px-3 py-1 text-xs font-extrabold text-[#1d4ed8] sm:text-sm">
