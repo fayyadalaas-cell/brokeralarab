@@ -226,9 +226,6 @@ export default async function HomePage() {
     <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
       {/* RIGHT CONTENT */}
       <div className="lg:w-[64%]">
-        <span className="inline-flex rounded-full border border-[#bfdbfe] bg-white px-4 py-3 text-[11px] font-extrabold text-[#1d4ed8] shadow-sm sm:text-xs">
-          منصة عربية احترافية لمراجعة ومقارنة شركات التداول
-        </span>
 
         <h1 className="max-w-4xl text-[30px] font-black leading-[1.12] tracking-[-0.02em] text-[#0f172a] sm:text-[40px] lg:text-[52px]">
           قارن الوسطاء بثقة
