@@ -163,6 +163,7 @@ function getLogoWrapClass(name: string | null | undefined) {
   if (n.includes("equiti")) return "w-[180px] h-[80px]";
   if (n === "xs") return "w-[180px] h-[80px]";
   if (n.includes("alpari")) return "w-[180px] h-[80px]";
+  if (n.includes("fxpro")) return "w-[180px] h-[80px]";
 
   return "w-[190px] h-[88px]";
 }
