@@ -252,7 +252,7 @@ const featuredComparisonsMobile = sortedComparisons.slice(0, 5);
   <div className="relative">
 
     <h2 className="mt-4 text-2xl font-extrabold leading-tight text-slate-900 sm:text-[40px]">
-  اختر شركتين وافتح <span className="text-blue-700">المقارنة</span>
+  اختر شركتين وابدأ <span className="text-blue-700">المقارنة</span>
 </h2>
 
     <p className="mt-4 max-w-2xl text-sm leading-8 text-slate-600">
