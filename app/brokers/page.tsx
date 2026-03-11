@@ -238,41 +238,37 @@ function BrokerCard({
         </span>
       </div>
 
-      <div className="flex items-center gap-4">
-        <div className="relative flex h-[76px] w-[140px] shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-white">
-  {broker.logo ? (
-    <Image
-      src={broker.logo}
-      alt={broker.name ?? "Broker logo"}
-      fill
-      className={`object-contain ${getLogoImgClass(broker.name)}`}
-    />
-  ) : (
-    <span className="text-sm font-extrabold text-slate-600">
-      {getInitials(broker.name)}
-    </span>
-  )}
+      <div dir="ltr" className="flex items-center justify-between gap-4">
+  <div className="min-w-0 flex-1 text-left">
+    <h3 className="text-[20px] font-extrabold text-slate-950">
+      {broker.name ?? "شركة تداول"}
+    </h3>
+
+    <div className="mt-2 flex items-center gap-2">
+      {renderStars(broker.rating)}
+
+      <span className="text-base font-extrabold text-slate-900">
+        {formatRating(broker.rating)}
+        <span className="ml-1 text-xs font-bold text-slate-500">/5</span>
+      </span>
+    </div>
+  </div>
+
+  <div className="relative flex h-[76px] w-[140px] shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-white">
+    {broker.logo ? (
+      <Image
+        src={broker.logo}
+        alt={broker.name ?? "Broker logo"}
+        fill
+        className={`object-contain ${getLogoImgClass(broker.name)}`}
+      />
+    ) : (
+      <span className="text-sm font-extrabold text-slate-600">
+        {getInitials(broker.name)}
+      </span>
+    )}
+  </div>
 </div>
-
-        <div className="min-w-0 flex-1">
-          <h3 className="truncate text-[20px] font-extrabold text-slate-950">
-            {broker.name ?? "شركة تداول"}
-          </h3>
-
-        <div className="mt-2 flex items-center gap-2">
-  <span className="text-base font-extrabold text-slate-900">
-    {formatRating(broker.rating)}
-    <span className="mr-1 text-xs font-bold text-slate-500">/5</span>
-  </span>
-
-  {renderStars(broker.rating)}
-</div>
-
-          <div className="mt-2 flex flex-wrap gap-2">
-           
-          </div>
-        </div>
-      </div>
 
       <div className="mt-5 border-t border-slate-200 pt-4">
         <div className="space-y-2 text-sm">
