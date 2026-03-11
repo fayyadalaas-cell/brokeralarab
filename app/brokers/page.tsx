@@ -120,41 +120,6 @@ function ratingLabel(rating: number | null) {
   return "مقبول";
 }
 
-function getLogoWrapClass(name: string | null | undefined) {
-  const n = (name || "").toLowerCase().trim();
-
-  if (n.includes("exness")) return "w-[160px]";
-  if (n === "xm") return "w-[150px]";
-  if (n.includes("vantage")) return "w-[150px]";
-  if (n.includes("justmarkets")) return "w-[145px]";
-  if (n === "xs") return "w-[145px]";
-  if (n.includes("equiti")) return "w-[150px]";
-  if (n.includes("avatrade")) return "w-[150px]";
-  if (n.includes("alpari")) return "w-[150px]";
-
-  return "w-[145px]";
-}
-
-function getLogoImgClass(name: string | null | undefined) {
-  const n = (name || "").toLowerCase().trim();
-
-  if (n.includes("exness")) return "scale-[1.75]";
-  if (n === "xm") return "scale-[1.7]";
-  if (n.includes("vantage")) return "scale-[1.6]";
-  if (n.includes("justmarkets")) return "scale-[1.45]";
-  if (n === "xs") return "scale-[1.7]";
-  if (n.includes("equiti")) return "scale-[1.65]";
-  if (n.includes("avatrade")) return "scale-[1.65]";
-  if (n.includes("alpari")) return "scale-[1.65]";
-
-  return "scale-100";
-}
-
-function formatRatingOutOfFive(rating: number | null) {
-  if (rating === null || rating === undefined) return "—";
-  return Number(rating).toFixed(1);
-}
-
 function getRoundedStarValue(rating: number | null) {
   if (rating === null || rating === undefined) return 0;
   return Math.round(Number(rating) * 2) / 2;
@@ -169,18 +134,19 @@ function renderStars(rating: number | null) {
   return (
     <div
       className="flex items-center justify-center gap-0.5"
-      aria-label={`تقييم ${formatRatingOutOfFive(rating)} من 5`}
+      aria-label={`تقييم ${formatRating(rating)} من 5`}
+      dir="ltr"
     >
       {Array.from({ length: fullStars }).map((_, i) => (
-        <span key={`full-${i}`} className="text-[11px] leading-none text-amber-400">
+        <span key={`full-${i}`} className="text-[14px] leading-none text-amber-400">
           ★
         </span>
       ))}
       {hasHalfStar && (
-        <span className="text-[11px] leading-none text-amber-400">⯨</span>
+        <span className="text-[14px] leading-none text-amber-400">⯨</span>
       )}
       {Array.from({ length: emptyStars }).map((_, i) => (
-        <span key={`empty-${i}`} className="text-[11px] leading-none text-slate-300">
+        <span key={`empty-${i}`} className="text-[14px] leading-none text-slate-300">
           ★
         </span>
       ))}
@@ -188,130 +154,203 @@ function renderStars(rating: number | null) {
   );
 }
 
-function DesktopRows({
-  brokers,
-  startIndex = 0,
+function getLogoWrapClass(name: string | null | undefined) {
+  const n = (name || "").toLowerCase().trim();
+
+  if (n.includes("exness")) return "w-[180px] h-[80px]";
+  if (n === "xm") return "w-[180px] h-[80px]";
+  if (n.includes("vantage")) return "w-[180px] h-[80px]";
+  if (n.includes("equiti")) return "w-[180px] h-[80px]";
+  if (n === "xs") return "w-[180px] h-[80px]";
+  if (n.includes("alpari")) return "w-[180px] h-[80px]";
+
+  return "w-[190px] h-[88px]";
+}
+
+function getLogoImgClass(name: string | null | undefined) {
+  const n = (name || "").toLowerCase().trim();
+
+  if (n.includes("exness")) return "scale-[1.45]";
+  if (n === "xm") return "scale-[1.45]";
+  if (n.includes("vantage")) return "scale-[1.35]";
+  if (n.includes("equiti")) return "scale-[1.45]";
+  if (n === "xs") return "scale-[1.4]";
+  if (n.includes("alpari")) return "scale-[1.45]";
+
+  return "scale-[1.35]";
+}
+
+function regulationStrengthLabel(value: string | null | undefined) {
+  const text = (value || "").toLowerCase();
+
+  if (
+    text.includes("fca") ||
+    text.includes("asic") ||
+    text.includes("cysec") ||
+    text.includes("dfsa")
+  ) {
+    return "قوية";
+  }
+
+  if (text.trim()) {
+    return "جيدة";
+  }
+
+  return "غير واضحة";
+}
+
+function beginnerFriendlyLabel(value: string | null | undefined) {
+  const text = (value || "").toLowerCase();
+
+  if (
+    text.includes("مبتدئ") ||
+    text.includes("المبتدئين") ||
+    text.includes("beginners") ||
+    text.includes("novice")
+  ) {
+    return "نعم";
+  }
+
+  return "متوسطة";
+}
+
+function BrokerCard({
+  broker,
+  index,
 }: {
-  brokers: Broker[];
-  startIndex?: number;
+  broker: Broker;
+  index: number;
 }) {
+  const realLink = hasRealAccountLink(broker.real_account_url);
+  const platformBadges = splitToBadges(broker.platforms).slice(0, 2);
+  const regulationBadges = splitToBadges(broker.regulation).slice(0, 2);
+  const islamicLabel = islamicAccountLabel(broker.islamic_account);
+
   return (
-    <tbody>
-      {brokers.map((broker, index) => {
-        const realLink = hasRealAccountLink(broker.real_account_url);
-        const platformBadges = splitToBadges(broker.platforms).slice(0, 3);
+    <article className="group rounded-[22px] border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+      <div className="mb-4 flex items-start justify-between gap-3">
+        <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-sm font-extrabold text-slate-700">
+          {index + 1}
+        </span>
 
-        return (
-          <tr
-            key={broker.id}
-            className="border-b border-slate-100 last:border-b-0 hover:bg-slate-50/60"
+        <span className="inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-extrabold text-emerald-700">
+          موصى بها
+        </span>
+      </div>
+
+      <div className="flex items-center gap-4">
+        <div className="relative flex h-[76px] w-[140px] shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-white">
+  {broker.logo ? (
+    <Image
+      src={broker.logo}
+      alt={broker.name ?? "Broker logo"}
+      fill
+      className={`object-contain ${getLogoImgClass(broker.name)}`}
+    />
+  ) : (
+    <span className="text-sm font-extrabold text-slate-600">
+      {getInitials(broker.name)}
+    </span>
+  )}
+</div>
+
+        <div className="min-w-0 flex-1">
+          <h3 className="truncate text-[20px] font-extrabold text-slate-950">
+            {broker.name ?? "شركة تداول"}
+          </h3>
+
+        <div className="mt-2 flex items-center gap-2">
+  <span className="text-base font-extrabold text-slate-900">
+    {formatRating(broker.rating)}
+    <span className="mr-1 text-xs font-bold text-slate-500">/5</span>
+  </span>
+
+  {renderStars(broker.rating)}
+</div>
+
+          <div className="mt-2 flex flex-wrap gap-2">
+           
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-5 border-t border-slate-200 pt-4">
+        <div className="space-y-2 text-sm">
+          <div className="flex items-center justify-between gap-4">
+            <span className="text-slate-500">الحد الأدنى للإيداع</span>
+            <span className="font-extrabold text-slate-900">
+              {formatDeposit(broker.min_deposit)}
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between gap-4">
+            <span className="text-slate-500">الحساب الإسلامي</span>
+            <span
+              className={`font-extrabold ${
+                islamicLabel === "متوفر"
+                  ? "text-emerald-700"
+                  : islamicLabel === "غير متوفر"
+                  ? "text-rose-700"
+                  : "text-slate-700"
+              }`}
+            >
+              {islamicLabel}
+            </span>
+          </div>
+
+          <div className="flex items-start justify-between gap-4">
+            <span className="text-slate-500">التراخيص</span>
+            <span className="text-left font-bold text-slate-900">
+              {regulationBadges.join("، ") || "غير محدد"}
+            </span>
+          </div>
+
+          <div className="flex items-start justify-between gap-4">
+            <span className="text-slate-500">المنصات</span>
+            <span className="text-left font-bold text-slate-900">
+              {platformBadges.join("، ") || "غير محدد"}
+            </span>
+          </div>
+
+          <div className="flex items-start justify-between gap-4">
+            <span className="text-slate-500">الأنسب لـ</span>
+            <span className="text-left font-bold text-slate-900">
+              {normalizeText(broker.best_for, "المبتدئين والمتداولين العرب")}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-5">
+        {realLink ? (
+          <a
+            href={broker.real_account_url as string}
+            target="_blank"
+            rel="nofollow sponsored noopener noreferrer"
+            className="inline-flex min-h-[48px] w-full items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-extrabold text-white transition hover:bg-blue-700"
           >
-            {/* RANK */}
-            <td className="px-3 py-5 text-center align-middle">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-sm font-extrabold text-slate-700">
-                {startIndex + index + 1}
-              </span>
-            </td>
+            افتح حساب حقيقي
+          </a>
+        ) : (
+          <span className="inline-flex min-h-[48px] w-full cursor-not-allowed items-center justify-center rounded-2xl bg-slate-200 px-5 py-3 text-sm font-extrabold text-slate-500">
+            فتح حساب قريبًا
+          </span>
+        )}
 
-            {/* COMPANY */}
-            <td className="px-3 py-5 align-middle">
-              <div className="flex flex-col items-center justify-center text-center">
-                <div
-                  className={`flex h-[62px] items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-white px-3 shadow-sm ${getLogoWrapClass(
-                    broker.name
-                  )}`}
-                >
-                  {broker.logo ? (
-                    <Image
-                      src={broker.logo}
-                      alt={broker.name ?? "Broker logo"}
-                      width={220}
-                      height={70}
-                      className={`h-auto max-h-[44px] w-full object-contain ${getLogoImgClass(
-                        broker.name
-                      )}`}
-                    />
-                  ) : (
-                    <span className="text-sm font-extrabold text-slate-600">
-                      {getInitials(broker.name)}
-                    </span>
-                  )}
-                </div>
+        <div className="mt-3 text-center text-[11px] font-medium text-slate-400">
+          راجع تفاصيل الترخيص والرسوم قبل التسجيل
+        </div>
 
-                <Link
-                  href={`/brokers/${broker.slug}`}
-                  className="mt-2 text-sm font-extrabold text-slate-900 transition hover:text-blue-700"
-                >
-                  {broker.name ?? "شركة تداول"}
-                </Link>
-              </div>
-            </td>
-
-            {/* RATING */}
-            <td className="px-3 py-5 text-center align-middle">
-              <div className="inline-flex min-w-[92px] flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 py-2 shadow-sm">
-                <div className="text-lg font-extrabold leading-none text-slate-900">
-                  {formatRating(broker.rating)}
-                  <span className="mr-1 text-[11px] font-bold text-slate-500">/5</span>
-                </div>
-                <div className="mt-1">{renderStars(broker.rating)}</div>
-                <div className="mt-1 text-[11px] font-bold text-slate-500">
-                  {ratingLabel(broker.rating)}
-                </div>
-              </div>
-            </td>
-
-            {/* DEPOSIT */}
-            <td className="px-3 py-5 text-center align-middle">
-              <span className="inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-extrabold text-emerald-700">
-                {formatDeposit(broker.min_deposit)}
-              </span>
-            </td>
-
-            {/* PLATFORMS */}
-            <td className="px-3 py-5 text-center align-middle">
-              <div className="flex flex-wrap justify-center gap-2">
-                {platformBadges.map((item, idx) => (
-                  <span
-                    key={`${broker.id}-platform-${idx}`}
-                    className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700"
-                  >
-                    {item}
-                  </span>
-                ))}
-              </div>
-            </td>
-
-            {/* ACTIONS */}
-            <td className="px-3 py-5 align-middle">
-              <div className="mx-auto flex max-w-[190px] flex-col gap-2">
-                <Link
-                  href={`/brokers/${broker.slug}`}
-                  className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-bold text-slate-800 transition hover:border-slate-400 hover:bg-slate-100"
-                >
-                  عرض التقييم
-                </Link>
-
-                {realLink ? (
-                  <a
-                    href={broker.real_account_url as string}
-                    target="_blank"
-                    rel="nofollow sponsored noopener noreferrer"
-                    className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700"
-                  >
-                    فتح حساب حقيقي
-                  </a>
-                ) : (
-                  <span className="inline-flex cursor-not-allowed items-center justify-center rounded-xl bg-slate-200 px-4 py-2.5 text-sm font-bold text-slate-500">
-                    فتح حساب قريبًا
-                  </span>
-                )}
-              </div>
-            </td>
-          </tr>
-        );
-      })}
-    </tbody>
+        <div className="mt-3 flex items-center justify-center">
+          <Link
+            href={`/brokers/${broker.slug}`}
+            className="inline-flex items-center gap-1 text-sm font-extrabold text-slate-900 underline decoration-amber-400 decoration-2 underline-offset-4 transition hover:text-blue-700"
+          >
+            اقرأ التقييم
+          </Link>
+        </div>
+      </div>
+    </article>
   );
 }
 
@@ -326,8 +365,6 @@ export default async function BrokersPage() {
     .order("rating", { ascending: false });
 
   const brokers = (data as Broker[] | null) ?? [];
-  const desktopTopBrokers = brokers.slice(0, 10);
-  const desktopRemainingBrokers = brokers.slice(10);
 
   const faqSchema = {
     "@context": "https://schema.org",
@@ -354,7 +391,7 @@ export default async function BrokersPage() {
         name: "هل يمكنني فتح حساب حقيقي مباشرة من هذه الصفحة؟",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "نعم، عند توفر رابط فتح الحساب الحقيقي للشركة سيظهر زر مخصص لذلك داخل الجدول وبطاقات الموبايل، مما يسهل الانتقال مباشرة إلى صفحة التسجيل.",
+          text: "نعم، عند توفر رابط فتح الحساب الحقيقي للشركة سيظهر زر مخصص لذلك داخل البطاقات، مما يسهل الانتقال مباشرة إلى صفحة التسجيل.",
         },
       },
       {
@@ -405,348 +442,87 @@ export default async function BrokersPage() {
       <main className="bg-slate-50">
         {/* HERO */}
         <section className="border-b border-slate-200 bg-gradient-to-b from-white to-slate-50">
-          <div className="mx-auto max-w-7xl px-4 py-8 md:py-10 lg:py-12">
-            <div className="mx-auto max-w-5xl text-center">
+          <div className="mx-auto max-w-7xl px-4 py-10 md:py-14">
+            <div className="mx-auto max-w-4xl text-center">
               <h1 className="text-3xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-5xl">
-                تقييم شركات التداول
-                <span className="mt-1 block text-blue-700 md:mt-0">
-                  واختيار الوسيط المناسب لفتح حساب حقيقي
-                </span>
+                تقييم شركات التداول الموثوقة
               </h1>
 
-              <p className="mx-auto mt-4 max-w-3xl text-base leading-8 text-slate-600 md:mt-5 md:text-lg">
-                في بروكر العرب نعرض لك تقييم شركات التداول بطريقة منظمة واحترافية
-                تساعدك على فهم الفروقات بين الوسطاء من حيث الترخيص، الإيداع،
-                المنصات، الحساب الإسلامي، والفئات المناسبة لكل شركة، ثم الانتقال
-                بسهولة إلى صفحة التقييم الكامل أو إلى فتح حساب حقيقي عند توفر
-                الرابط.
+              <p className="mx-auto mt-4 max-w-3xl text-base leading-8 text-slate-600 md:text-lg">
+                راجع تقييمات الوسطاء، وقارن بين التراخيص والمنصات والحد الأدنى للإيداع
+                والحساب الإسلامي، ثم اختر شركة التداول الأنسب لك قبل فتح حساب حقيقي.
               </p>
 
               <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
                 <Link
                   href="/compare"
-                  className="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-6 py-3 text-sm font-bold text-white transition hover:bg-blue-700"
+                  className="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-6 py-3 text-sm font-extrabold text-white transition hover:bg-blue-700"
                 >
                   ابدأ مقارنة الوسطاء
                 </Link>
 
-                <Link
-                  href="#brokers-table"
-                  className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-bold text-slate-800 transition hover:bg-slate-100"
+                <a
+                  href="#brokers-grid"
+                  className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-100"
                 >
-                  تصفح جدول التقييمات
-                </Link>
+                  تصفح التقييمات
+                </a>
               </div>
             </div>
           </div>
         </section>
 
-        {/* STATS */}
-        <section className="mx-auto max-w-7xl px-4 py-5 md:py-10">
-          <div className="grid gap-3 md:grid-cols-3 md:gap-4">
-            <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
-              <div className="text-sm font-semibold text-slate-500">
-                عدد الشركات الحالية
-              </div>
-              <div className="mt-2 text-3xl font-extrabold text-slate-900">
+        {/* STATS BOXES */}
+        <section className="mx-auto max-w-7xl px-4 py-6 md:py-8">
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="text-sm font-semibold text-slate-500">عدد الشركات الحالية</div>
+              <div className="mt-2 text-4xl font-extrabold text-slate-900">
                 {brokers.length}
               </div>
             </div>
 
-            <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
-              <div className="text-sm font-semibold text-slate-500">
-                أعلى تقييم حالي
-              </div>
-              <div className="mt-2 text-3xl font-extrabold text-slate-900">
+            <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="text-sm font-semibold text-slate-500">أعلى تقييم حالي</div>
+              <div className="mt-2 text-4xl font-extrabold text-slate-900">
                 {brokers.length ? formatRating(brokers[0]?.rating ?? null) : "—"}
               </div>
             </div>
 
-            <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
-              <div className="text-sm font-semibold text-slate-500">
-                طريقة عرض التقييمات
-              </div>
-              <div className="mt-2 text-2xl font-extrabold text-slate-900">
-                تقييم + فتح حساب
+            <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="text-sm font-semibold text-slate-500">طريقة عرض التقييمات</div>
+              <div className="mt-2 text-3xl font-extrabold text-slate-900">
+                بطاقات احترافية
               </div>
             </div>
           </div>
         </section>
 
-        {/* SUPPORTING CONTENT */}
-        <section className="mx-auto hidden max-w-7xl px-4 pb-8 md:block">
-          <div className="grid gap-4 lg:grid-cols-3">
-            <div className="rounded-[28px] border border-blue-200 bg-blue-50 p-6 shadow-sm lg:col-span-2">
-              <h2 className="text-2xl font-extrabold text-slate-900">
-                لماذا تبدأ من صفحة التقييمات قبل فتح حساب حقيقي؟
+        {/* CARDS GRID */}
+        <section id="brokers-grid" className="mx-auto max-w-7xl px-4 pb-10 md:pb-14">
+          <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div>
+              <h2 className="text-20xl font-extrabold text-slate-900 md:text-3xl">
+                تقييم شركات التداول
               </h2>
-              <p className="mt-3 text-base leading-8 text-slate-700">
-                لأن اختيار الوسيط لا يجب أن يكون عشوائيًا. هذه الصفحة تعطيك نظرة
-                سريعة وواضحة على الشركات المتاحة، ثم تساعدك على الانتقال إلى
-                التقييم الكامل لكل وسيط قبل اتخاذ قرار فتح حساب حقيقي.
-              </p>
+              <p className="mt-2 text-sm leading-7 text-slate-600 md:text-base">
+  قارن بين الوسطاء بسرعة من حيث التقييم، التراخيص، المنصات، والحد الأدنى للإيداع،
+  ثم انتقل مباشرة إلى صفحة التقييم أو التسجيل.
+</p>
             </div>
 
-            <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="text-sm font-bold text-slate-500">مهم للمتداول العربي</div>
-              <div className="mt-3 text-lg font-extrabold leading-8 text-slate-900">
-                الترخيص + الحساب الإسلامي + سهولة الإيداع + قوة المنصة
-              </div>
+            <div className="inline-flex items-center self-start rounded-2xl border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-bold text-blue-700">
+              مرتبة تلقائيًا حسب التقييم
             </div>
           </div>
-        </section>
 
-        {/* TABLE / MOBILE CARDS */}
-        <section id="brokers-table" className="mx-auto max-w-7xl px-4 pb-8">
-          <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm md:rounded-[28px]">
-            <div className="border-b border-slate-200 px-4 py-4 md:px-8 md:py-5">
-              <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-                <div>
-                  <h2 className="text-2xl font-extrabold text-slate-900 md:text-3xl">
-                    جدول تقييم شركات التداول
-                  </h2>
-                  <p className="mt-2 text-sm leading-7 text-slate-600 md:text-base">
-                    جدول جديد أوضح وأسهل للقراءة، مع محاذاة ثابتة بين العناوين
-                    والصفوف.
-                  </p>
-                </div>
-
-                <div className="inline-flex items-center self-start rounded-2xl border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-bold text-blue-700">
-                  ترتيب تلقائي حسب التقييم
-                </div>
-              </div>
-            </div>
-
-            {/* DESKTOP TABLE */}
-            <div className="hidden xl:block">
-              <div className="p-5">
-                <div className="overflow-hidden rounded-[24px] border border-slate-200">
-                  <table className="min-w-full table-fixed text-right">
-                    <colgroup>
-                      <col className="w-[72px]" />
-                      <col className="w-[240px]" />
-                      <col className="w-[140px]" />
-                      <col className="w-[120px]" />
-                      <col className="w-[160px]" />
-                      <col className="w-[220px]" />
-                    </colgroup>
-
-                    <thead className="bg-slate-50">
-                      <tr className="text-sm font-extrabold text-slate-700">
-                        <th className="border-b border-slate-200 px-3 py-4 text-center">#</th>
-                        <th className="border-b border-slate-200 px-3 py-4 text-center">الشركة</th>
-                        <th className="border-b border-slate-200 px-3 py-4 text-center">التقييم</th>
-                        <th className="border-b border-slate-200 px-3 py-4 text-center">الإيداع</th>
-                        <th className="border-b border-slate-200 px-3 py-4 text-center">المنصات</th>
-                        <th className="border-b border-slate-200 px-3 py-4 text-center">الإجراءات</th>
-                      </tr>
-                    </thead>
-
-                    <DesktopRows brokers={desktopTopBrokers} />
-                  </table>
-                </div>
-
-                {desktopRemainingBrokers.length > 0 && (
-                  <div className="mt-4">
-                    <details className="group">
-                      <summary className="flex cursor-pointer list-none items-center justify-center gap-2 rounded-2xl border border-blue-200 bg-blue-50 px-5 py-3 text-sm font-bold text-blue-700 transition hover:bg-blue-100">
-                        <span>عرض كل الشركات ({brokers.length})</span>
-                        <span className="text-lg transition group-open:rotate-180">⌄</span>
-                      </summary>
-
-                      <div className="mt-4 overflow-hidden rounded-[24px] border border-slate-200">
-                        <table className="min-w-full table-fixed text-right">
-                          <colgroup>
-                            <col className="w-[72px]" />
-                            <col className="w-[240px]" />
-                            <col className="w-[140px]" />
-                            <col className="w-[120px]" />
-                            <col className="w-[160px]" />
-                            <col className="w-[220px]" />
-                          </colgroup>
-
-                          <thead className="bg-slate-50">
-                            <tr className="text-sm font-extrabold text-slate-700">
-                              <th className="border-b border-slate-200 px-3 py-4 text-center">#</th>
-                              <th className="border-b border-slate-200 px-3 py-4 text-center">الشركة</th>
-                              <th className="border-b border-slate-200 px-3 py-4 text-center">التقييم</th>
-                              <th className="border-b border-slate-200 px-3 py-4 text-center">الإيداع</th>
-                              <th className="border-b border-slate-200 px-3 py-4 text-center">المنصات</th>
-                              <th className="border-b border-slate-200 px-3 py-4 text-center">الإجراءات</th>
-                            </tr>
-                          </thead>
-
-                          <DesktopRows
-                            brokers={desktopRemainingBrokers}
-                            startIndex={desktopTopBrokers.length}
-                          />
-                        </table>
-                      </div>
-                    </details>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* MOBILE / TABLET CARDS */}
-            <div className="grid gap-4 p-4 md:p-5 xl:hidden">
-              {brokers.map((broker, index) => {
-                const realLink = hasRealAccountLink(broker.real_account_url);
-                const regulationBadges = splitToBadges(broker.regulation).slice(0, 3);
-                const platformBadges = splitToBadges(broker.platforms).slice(0, 3);
-                const islamicLabel = islamicAccountLabel(broker.islamic_account);
-
-                return (
-                  <article
-                    key={broker.id}
-                    className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm"
-                  >
-                    <div className="border-b border-slate-100 bg-slate-50 px-4 py-4">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex min-w-0 items-center gap-3">
-                          <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                            {broker.logo ? (
-                              <Image
-                                src={broker.logo}
-                                alt={broker.name ?? "Broker"}
-                                width={48}
-                                height={48}
-                                className="h-full w-full object-contain p-2"
-                              />
-                            ) : (
-                              <span className="text-xs font-extrabold text-slate-600">
-                                {getInitials(broker.name)}
-                              </span>
-                            )}
-                          </div>
-
-                          <div className="min-w-0">
-                            <div className="text-[11px] font-bold text-slate-500">
-                              الترتيب #{index + 1}
-                            </div>
-                            <h3 className="truncate text-lg font-extrabold text-slate-900">
-                              {broker.name ?? "شركة تداول"}
-                            </h3>
-                            <div className="mt-1 text-xs font-bold text-slate-500">
-                              {ratingLabel(broker.rating)}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="shrink-0 rounded-2xl bg-blue-600 px-3 py-2 text-center text-white shadow-sm">
-                          <div className="text-[10px] font-bold text-blue-100">
-                            التقييم
-                          </div>
-                          <div className="text-lg font-extrabold">
-  {formatRating(broker.rating)}
-</div>
-
-<div className="mt-1 flex items-center justify-center gap-0.5">
-  {Array.from({ length: Math.floor(getRoundedStarValue(broker.rating)) }).map((_, i) => (
-    <span key={i} className="text-[11px] leading-none text-yellow-300">
-      ★
-    </span>
-  ))}
-</div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="p-4">
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                          <div className="text-xs font-bold text-slate-500">الإيداع</div>
-                          <div className="mt-1 text-sm font-extrabold text-slate-900">
-                            {formatDeposit(broker.min_deposit)}
-                          </div>
-                        </div>
-
-                        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                          <div className="text-xs font-bold text-slate-500">الحساب الإسلامي</div>
-                          <div
-                            className={`mt-1 text-sm font-extrabold ${
-                              islamicLabel === "متوفر"
-                                ? "text-emerald-700"
-                                : islamicLabel === "غير متوفر"
-                                ? "text-rose-700"
-                                : "text-slate-700"
-                            }`}
-                          >
-                            {islamicLabel}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="mt-4">
-                        <div className="mb-2 text-xs font-bold text-slate-500">التراخيص</div>
-                        <div className="flex flex-wrap gap-2">
-                          {regulationBadges.map((item, idx) => (
-                            <span
-                              key={`${broker.id}-m-reg-${idx}`}
-                              className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700"
-                            >
-                              {item}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="mt-4">
-                        <div className="mb-2 text-xs font-bold text-slate-500">المنصات</div>
-                        <div className="flex flex-wrap gap-2">
-                          {platformBadges.map((item, idx) => (
-                            <span
-                              key={`${broker.id}-m-platform-${idx}`}
-                              className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700"
-                            >
-                              {item}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                        <div className="text-xs font-bold text-slate-500">مناسبة لـ</div>
-                        <p className="mt-1 line-clamp-2 text-sm leading-7 text-slate-700">
-                          {normalizeText(
-                            broker.best_for,
-                            "مناسبة لمجموعة واسعة من المتداولين"
-                          )}
-                        </p>
-                      </div>
-
-                      <div className="mt-4 flex flex-col gap-2 sm:grid sm:grid-cols-2">
-                        <Link
-                          href={`/brokers/${broker.slug}`}
-                          className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-5 py-3 text-sm font-bold text-slate-800 transition hover:bg-slate-100"
-                        >
-                          عرض التقييم
-                        </Link>
-
-                        {realLink ? (
-                          <a
-                            href={broker.real_account_url as string}
-                            target="_blank"
-                            rel="nofollow sponsored noopener noreferrer"
-                            className="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-blue-700"
-                          >
-                            فتح حساب حقيقي
-                          </a>
-                        ) : (
-                          <span className="inline-flex cursor-not-allowed items-center justify-center rounded-2xl bg-slate-200 px-5 py-3 text-sm font-bold text-slate-500">
-                            فتح حساب حقيقي قريبًا
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {brokers.map((broker, index) => (
+              <BrokerCard key={broker.id} broker={broker} index={index} />
+            ))}
           </div>
         </section>
       </main>
     </>
   );
 }
-        

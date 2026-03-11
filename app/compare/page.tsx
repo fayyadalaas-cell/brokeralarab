@@ -196,7 +196,6 @@ export default async function ComparePage() {
               </h2>
             </div>
             <div className="text-sm text-slate-500">
-              يتم توليد المقارنات تلقائيًا بناءً على الشركات الموجودة في قاعدة البيانات.
             </div>
           </div>
 
