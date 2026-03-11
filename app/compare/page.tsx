@@ -13,19 +13,21 @@ type Broker = {
   regulation: string | null;
   platforms: string | null;
   islamic_account: string | null;
+  logo: string | null;
 };
 
 export const metadata: Metadata = {
   title: "مقارنة شركات التداول | بروكر العرب",
   description:
-    "قارن بين أشهر شركات التداول العالمية من حيث التراخيص والمنصات والرسوم والحد الأدنى للإيداع لمعرفة أي وسيط يناسبك.",
+    "قارن بين أشهر شركات التداول العالمية من حيث التراخيص والمنصات والحد الأدنى للإيداع والحساب الإسلامي لمعرفة أي وسيط يناسبك.",
   keywords: [
     "مقارنة شركات التداول",
     "مقارنة شركات الفوركس",
     "أفضل شركات التداول",
     "أفضل وسيط تداول",
     "مقارنة الوسطاء",
-    "مقارنة شركات الفوركس",
+    "Exness vs XM",
+    "XS vs Vantage",
     "بروكر العرب",
   ],
   alternates: {
@@ -59,7 +61,10 @@ function shortReg(value: string | null) {
 
 function shortPlatforms(value: string | null) {
   if (!value) return "غير محدد";
-  return value.replace("JustMarkets Mobile App", "Mobile").trim();
+  return value
+    .replace("JustMarkets Mobile App", "Mobile")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function yesNoArabic(value: string | null) {
@@ -69,25 +74,63 @@ function yesNoArabic(value: string | null) {
   return value || "غير محدد";
 }
 
+function avgRating(a: number | null, b: number | null) {
+  const values = [a, b].filter((v): v is number => typeof v === "number");
+  if (!values.length) return null;
+  return values.reduce((sum, v) => sum + v, 0) / values.length;
+}
+
+function minDeposit(a: number | null, b: number | null) {
+  const values = [a, b].filter((v): v is number => typeof v === "number");
+  if (!values.length) return null;
+  return Math.min(...values);
+}
+
+function renderStars(rating: number | null, size: "sm" | "md" = "sm") {
+  const stars = Math.round(rating ?? 0);
+  const starClass = size === "md" ? "text-[13px]" : "text-[11px]";
+
+  return (
+    <div className={`flex items-center gap-0.5 text-amber-400 ${starClass}`}>
+      {Array.from({ length: 5 }).map((_, i) => (
+        <span key={i} className={i < stars ? "opacity-100" : "opacity-30"}>
+          ★
+        </span>
+      ))}
+    </div>
+  );
+}
+
 export default async function ComparePage() {
   const supabase = await createClient();
 
-  const { data } = await supabase
-    .from("brokers")
-    .select("id,name,slug,rating,min_deposit,best_for,regulation,platforms,islamic_account")
-    .order("rating", { ascending: false });
+const { data } = await supabase
+  .from("brokers")
+  .select(
+    "id,name,slug,rating,min_deposit,best_for,regulation,platforms,islamic_account,logo"
+  )
+  .order("rating", { ascending: false });
 
   const brokers = ((data ?? []) as Broker[]).filter((b) => b.name && b.slug);
 
-  const comparisons: { a: Broker; b: Broker }[] = [];
+  const comparisons: { a: Broker; b: Broker; score: number }[] = [];
   for (let i = 0; i < brokers.length; i++) {
     for (let j = i + 1; j < brokers.length; j++) {
-      comparisons.push({ a: brokers[i], b: brokers[j] });
+      comparisons.push({
+        a: brokers[i],
+        b: brokers[j],
+        score: avgRating(brokers[i].rating, brokers[j].rating) ?? 0,
+      });
     }
   }
 
-  const featuredComparisonsDesktop = comparisons.slice(0, 8);
-  const featuredComparisonsMobile = comparisons.slice(0, 5);
+const sortedComparisons = comparisons.sort(
+  (x, y) => (y.score ?? 0) - (x.score ?? 0)
+);
+
+const featuredComparisonsDesktop = sortedComparisons.slice(0, 15);
+const featuredComparisonsMobile = sortedComparisons.slice(0, 5);
+  const topBrokers = brokers.slice(0, 6);
 
   const faqJsonLd = {
     "@context": "https://schema.org",
@@ -98,15 +141,7 @@ export default async function ComparePage() {
         name: "كيف أقارن بين شركتين تداول؟",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "اختر شركتين من أداة المقارنة في أعلى الصفحة، ثم انتقل مباشرة إلى صفحة المقارنة التي تعرض الفروقات في التراخيص، الحسابات، الرسوم، المنصات، والحد الأدنى للإيداع.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "هل صفحات المقارنات مفيدة قبل فتح الحساب؟",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "نعم، لأن صفحة المقارنة تختصر الوقت وتوضح الفروقات الحقيقية بين الشركات بدل قراءة كل تقييم بشكل منفصل.",
+          text: "اختر شركتين من أداة المقارنة في أعلى الصفحة، ثم انتقل مباشرة إلى صفحة المقارنة التي تعرض الفروقات في التراخيص والمنصات والحد الأدنى للإيداع والحساب الإسلامي.",
         },
       },
       {
@@ -114,35 +149,86 @@ export default async function ComparePage() {
         name: "ما أهم العناصر التي يجب مقارنتها بين الوسطاء؟",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "أهم العناصر تشمل التراخيص، الحد الأدنى للإيداع، أنواع الحسابات، الرسوم، السبريد، المنصات، الحساب الإسلامي، والدعم المناسب للمتداول العربي.",
+          text: "أهم العناصر تشمل التراخيص، الحد الأدنى للإيداع، المنصات، الحساب الإسلامي، والتقييم العام ومدى ملاءمة الوسيط لأسلوب التداول.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "هل صفحة المقارنة مفيدة قبل فتح الحساب؟",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "نعم، لأنها تختصر الوقت وتعرض أهم الفروقات الأساسية بين وسيطين في مكان واحد بشكل واضح ومباشر.",
         },
       },
     ],
   };
 
   return (
-    <main dir="rtl" className="min-h-screen bg-[#f4f7fb] text-[#0f172a]">
+    <main dir="rtl" className="min-h-screen bg-[#f3f6fb] text-[#0f172a]">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
 
       {/* HERO */}
-      <section className="border-b border-slate-200 bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-          <div className="mx-auto max-w-4xl text-center">
+<section className="relative overflow-hidden border-b border-slate-200 bg-white">
+  <div className="mx-auto max-w-7xl px-4 py-10 md:py-14">
+    <div className="mx-auto max-w-4xl text-center">
+      <h1 className="text-3xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-5xl">
+        مقارنة شركات التداول
+      </h1>
 
-            <h1 className="text-4xl font-black leading-tight sm:text-5xl">
-              مقارنات شركات التداول
-            </h1>
+      <p className="mx-auto mt-4 max-w-3xl text-base leading-8 text-slate-600 md:text-lg">
+        قارن بين أشهر شركات التداول من حيث التراخيص، المنصات، الحد الأدنى
+        للإيداع، والحساب الإسلامي، ثم افتح صفحة مقارنة واضحة تساعدك على اختيار
+        الوسيط الأنسب قبل فتح الحساب.
+      </p>
 
-            <p className="mt-5 text-lg leading-8 text-slate-600">
-              قارن بين أشهر شركات التداول من حيث التراخيص، الحسابات، الرسوم،
-              المنصات، والحد الأدنى للإيداع لمعرفة أي وسيط يناسبك قبل فتح الحساب.
+      <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
+        <a
+          href="#compare-tool"
+          className="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-6 py-3 text-sm font-extrabold text-white transition hover:bg-blue-700"
+        >
+          ابدأ المقارنة الآن
+        </a>
+
+        <a
+          href="#featured-comparisons"
+          className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-100"
+        >
+          تصفح أشهر المقارنات
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{/* COMPARE TOOL */}
+<section
+  id="compare-tool"
+  className="mx-auto max-w-7xl px-4 pt-4 pb-8 sm:px-6 lg:px-8 md:pt-4 md:pb-10"
+>
+  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_12px_35px_rgba(15,23,42,0.05)]">
+    <div className="grid lg:grid-cols-[1.02fr_.98fr]">
+      {/* LEFT / TOOL */}
+      <div className="bg-[linear-gradient(180deg,#0f172a_0%,#172554_100%)] p-5 sm:p-6 lg:p-7">
+        <div className="mx-auto max-w-xl">
+          <div className="mb-4 text-center">
+            <div className="inline-flex rounded-full bg-white/10 px-3 py-1 text-[11px] font-extrabold text-blue-100">
+              ابدأ الآن
+            </div>
+
+            <h3 className="mt-3 text-xl font-extrabold text-white sm:text-2xl">
+              اختر شركتين للمقارنة
+            </h3>
+
+            <p className="mt-2 text-sm leading-7 text-blue-100/90">
+              حدد الشركة الأولى والثانية، ثم انتقل مباشرة إلى صفحة المقارنة
+              التفصيلية بينهما.
             </p>
           </div>
 
-          <div className="mt-10">
+          <div className="rounded-[22px] border border-white/10 bg-white p-4 shadow-[0_16px_35px_rgba(0,0,0,0.16)] sm:p-5">
             <ComparePicker
               brokers={brokers.map((b) => ({
                 name: b.name || "",
@@ -150,350 +236,469 @@ export default async function ComparePage() {
               }))}
             />
           </div>
-        </div>
-      </section>
 
-      {/* QUICK WHY */}
-      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <div className="grid gap-5 md:grid-cols-3">
-          <div className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="text-sm font-bold text-[#1d4ed8]">قرار أسرع</div>
-            <h2 className="mt-2 text-2xl font-black">قارن بدل التشتت</h2>
-            <p className="mt-3 text-sm leading-7 text-slate-600">
-              بدل قراءة صفحتين منفصلتين، تعرض لك صفحة المقارنة الفروقات الحقيقية
-              بين الشركتين في مكان واحد.
-            </p>
-          </div>
-
-          <div className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="text-sm font-bold text-[#1d4ed8]">مفيد للسيو وللزائر</div>
-            <h2 className="mt-2 text-2xl font-black">نية بحث واضحة</h2>
-            <p className="mt-3 text-sm leading-7 text-slate-600">
-              صفحات مثل Exness vs XM أو XS vs Vantage تستهدف زائرًا جاهزًا
-              للمقارنة واتخاذ القرار، وهي من أقوى صفحات البحث.
-            </p>
-          </div>
-
-          <div className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="text-sm font-bold text-[#1d4ed8]">مقارنة عملية</div>
-            <h2 className="mt-2 text-2xl font-black">قبل فتح الحساب</h2>
-            <p className="mt-3 text-sm leading-7 text-slate-600">
-              نركز على العناصر التي تؤثر فعلًا على الاختيار: الإيداع، الحساب
-              الإسلامي، التراخيص، المنصات، والخلاصة النهائية.
-            </p>
+          <div className="mt-3 rounded-2xl border border-blue-400/20 bg-white/5 px-4 py-3 text-center text-[11px] font-medium leading-6 text-blue-100/90">
+            قارن بين شركتين متقاربتين في التقييم أو الترخيص حتى تظهر لك الفروقات
+            بشكل أوضح وأسهل.
           </div>
         </div>
-      </section>
+      </div>
+
+      {/* RIGHT / INTRO */}
+<div className="relative hidden overflow-hidden border-t border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] p-5 sm:p-6 lg:block lg:border-t-0 lg:border-r lg:p-6">
+  <div className="absolute left-0 top-0 h-32 w-32 rounded-full bg-blue-50 blur-3xl" />
+  <div className="absolute bottom-0 right-0 h-32 w-32 rounded-full bg-slate-100 blur-3xl" />
+
+  <div className="relative">
+
+    <h2 className="mt-4 text-2xl font-extrabold leading-tight text-slate-900 sm:text-[40px]">
+  اختر شركتين وافتح <span className="text-blue-700">المقارنة</span>
+</h2>
+
+    <p className="mt-4 max-w-2xl text-sm leading-8 text-slate-600">
+      بدل قراءة مراجعتين كاملتين ومحاولة معرفة الفروقات بنفسك، استخدم هذه
+      الأداة للوصول مباشرة إلى صفحة مقارنة واضحة تعرض أهم النقاط التي
+      يحتاجها المتداول قبل فتح الحساب.
+    </p>
+
+    <div className="mt-7 space-y-4">
+      <div className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-50 text-sm font-extrabold text-blue-700">
+          1
+        </div>
+        <div>
+          <h3 className="text-sm font-extrabold text-slate-900">
+            قارن بين أهم المعايير فقط
+          </h3>
+          <p className="mt-1 text-xs leading-6 text-slate-500">
+            التراخيص، الحد الأدنى للإيداع، المنصات، والحساب الإسلامي بدون
+            حشو أو تشتت.
+          </p>
+        </div>
+      </div>
+
+      <div className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-50 text-sm font-extrabold text-blue-700">
+          2
+        </div>
+        <div>
+          <h3 className="text-sm font-extrabold text-slate-900">
+            قرار أسرع قبل التسجيل
+          </h3>
+          <p className="mt-1 text-xs leading-6 text-slate-500">
+            بدل التنقل بين صفحات كثيرة وجمع المعلومات يدويًا، سترى الفروقات
+            بشكل مباشر في صفحة واحدة.
+          </p>
+        </div>
+      </div>
+
+      <div className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-50 text-sm font-extrabold text-blue-700">
+          3
+        </div>
+        <div>
+          <h3 className="text-sm font-extrabold text-slate-900">
+            مناسبة للمتداول العربي
+          </h3>
+          <p className="mt-1 text-xs leading-6 text-slate-500">
+            الأداة تساعدك على اختيار الوسيط الأنسب لك قبل فتح الحساب الحقيقي،
+            خصوصًا إذا كنت تهتم بالترخيص أو الحساب الإسلامي.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div className="mt-6 rounded-[20px] border border-blue-100 bg-[linear-gradient(180deg,#eff6ff_0%,#f8fbff_100%)] p-4">
+      <div className="text-xs font-extrabold text-blue-700">
+        ماذا ستشاهد في صفحة المقارنة؟
+      </div>
+
+      <div className="mt-3 flex flex-wrap gap-2">
+        <span className="rounded-full bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm">
+          التراخيص
+        </span>
+        <span className="rounded-full bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm">
+          الإيداع
+        </span>
+        <span className="rounded-full bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm">
+          المنصات
+        </span>
+        <span className="rounded-full bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm">
+          الحساب الإسلامي
+        </span>
+        <span className="rounded-full bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm">
+          الفروقات الأساسية
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+    </div>
+  </div>
+</section>
 
       {/* FEATURED COMPARISONS */}
-      <section className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-        <div className="rounded-[30px] border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
-          <div className="mb-6 flex flex-col gap-3 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <div className="text-sm font-bold text-[#1d4ed8]">أشهر المقارنات</div>
-              <h2 className="mt-2 text-3xl font-black">
-                المقارنات الأكثر أهمية الآن
-              </h2>
-            </div>
-            <div className="text-sm text-slate-500">
-            </div>
-          </div>
+<section className="mx-auto max-w-7xl px-4 pt-2 pb-10 sm:px-6 lg:px-8">
+  <div className="rounded-[30px] border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
+    <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <div className="text-sm font-extrabold text-[#2563eb]">
+          أشهر المقارنات
+        </div>
+        <h2 className="mt-2 text-3xl font-black text-[#0f172a] sm:text-4xl">
+          صفحات المقارنة الأكثر زيارة
+        </h2>
+        <p className="mt-3 max-w-3xl text-base leading-8 text-slate-600">
+          اختر من بين أشهر المقارنات الجاهزة بين الوسطاء، أو استخدم أداة
+          المقارنة في الأعلى لفتح أي مقارنة تريدها.
+        </p>
+      </div>
+    </div>
 
-          {/* MOBILE LIST / TABLE STYLE */}
-          <div className="md:hidden">
-            <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-[#f8fbff]">
-              <div className="grid grid-cols-[1.6fr_.8fr_.9fr] items-center gap-3 border-b border-slate-200 bg-[#eff6ff] px-4 py-3 text-xs font-extrabold text-slate-700">
-                <div>المقارنة</div>
-                <div className="text-center">التقييم</div>
-                <div className="text-center">الإيداع</div>
+    {/* MOBILE: 5 only */}
+    <div className="grid gap-4 md:hidden">
+      {featuredComparisonsMobile.map((item) => {
+        const slug = `${item.a.slug}-vs-${item.b.slug}`;
+
+        return (
+          <Link
+            key={slug}
+            href={`/compare/${slug}`}
+            className="group rounded-[24px] border border-slate-200 bg-slate-50 p-5 transition hover:bg-white hover:shadow-md"
+          >
+            <div className="mb-4 flex items-center justify-between gap-3">
+              {/* Broker A */}
+              <div className="flex flex-col items-center text-center">
+                <div className="flex h-20 w-20 items-center justify-center rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+                  {item.a.logo ? (
+                    <img
+                      src={item.a.logo}
+                      alt={item.a.name || "Broker logo"}
+                      className="h-full w-full object-contain"
+                    />
+                  ) : (
+                    <span className="text-xs text-slate-400">No logo</span>
+                  )}
+                </div>
+
+                <div className="mt-2 text-sm font-bold text-slate-900">
+                  {item.a.name}
+                </div>
+
+                <div className="mt-1 flex items-center justify-center gap-1">
+                  <span className="text-[11px] font-bold text-slate-600">
+                    {item.a.rating?.toFixed(1) ?? "-"}
+                  </span>
+                  {renderStars(item.a.rating, "sm")}
+                </div>
               </div>
 
-              {featuredComparisonsMobile.map((item, index) => {
-                const slug = `${item.a.slug}-vs-${item.b.slug}`;
-                return (
-                  <Link
-                    key={slug}
-                    href={`/compare/${slug}`}
-                    className={`grid grid-cols-[1.6fr_.8fr_.9fr] items-center gap-3 px-4 py-4 transition hover:bg-white ${
-                      index !== featuredComparisonsMobile.length - 1
-                        ? "border-b border-slate-200"
-                        : ""
-                    }`}
-                  >
-                    <div className="min-w-0">
-                      <div className="text-[11px] font-bold text-[#1d4ed8]">
-                        مقارنة مباشرة
-                      </div>
-                      <h3 className="mt-1 line-clamp-2 text-base font-black leading-6 text-[#0f172a]">
-                        {item.a.name} vs {item.b.name}
-                      </h3>
-                      <div className="mt-1 text-xs text-slate-500">
-                        افتح المقارنة
-                      </div>
-                    </div>
+              {/* VS */}
+              <div className="text-sm font-black text-slate-400">VS</div>
 
-                    <div className="text-center">
-                      <div className="rounded-xl bg-white px-2 py-2">
-                        <div className="text-[10px] text-slate-500">المتوسط</div>
-                        <div className="text-sm font-black text-[#0f172a]">
-                          {(
-                            ((item.a.rating ?? 0) + (item.b.rating ?? 0)) /
-                            (((item.a.rating ?? 0) && (item.b.rating ?? 0)) ? 2 : 1)
-                          ).toFixed(1)}
-                        </div>
-                      </div>
-                    </div>
+              {/* Broker B */}
+              <div className="flex flex-col items-center text-center">
+                <div className="flex h-20 w-20 items-center justify-center rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+                  {item.b.logo ? (
+                    <img
+                      src={item.b.logo}
+                      alt={item.b.name || "Broker logo"}
+                      className="h-full w-full object-contain"
+                    />
+                  ) : (
+                    <span className="text-xs text-slate-400">No logo</span>
+                  )}
+                </div>
 
-                    <div className="text-center">
-                      <div className="rounded-xl bg-white px-2 py-2">
-                        <div className="text-[10px] text-slate-500">يبدأ من</div>
-                        <div className="text-sm font-black text-[#0f172a]">
-                          {money(
-                            Math.min(
-                              item.a.min_deposit ?? Number.POSITIVE_INFINITY,
-                              item.b.min_deposit ?? Number.POSITIVE_INFINITY
-                            ) === Number.POSITIVE_INFINITY
-                              ? null
-                              : Math.min(
-                                  item.a.min_deposit ?? Number.POSITIVE_INFINITY,
-                                  item.b.min_deposit ?? Number.POSITIVE_INFINITY
-                                )
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                );
-              })}
+                <div className="mt-2 text-sm font-bold text-slate-900">
+                  {item.b.name}
+                </div>
+
+                <div className="mt-1 flex items-center justify-center gap-1">
+                  <span className="text-[11px] font-bold text-slate-600">
+                    {item.b.rating?.toFixed(1) ?? "-"}
+                  </span>
+                  {renderStars(item.b.rating, "sm")}
+                </div>
+              </div>
             </div>
+
+            <div className="text-center text-base font-extrabold text-slate-900">
+              مقارنة {item.a.name} مع {item.b.name}
+            </div>
+
+            <p className="mt-3 text-center text-sm leading-7 text-slate-600">
+              تعرّف على الفروقات بين {item.a.name} و{item.b.name} من حيث
+              التراخيص، الرسوم، الإيداع، والمنصات.
+            </p>
+
+            <div className="mt-4 flex items-center justify-between rounded-xl bg-slate-100 px-4 py-3">
+              <span className="text-xs text-slate-500">متوسط التقييم</span>
+              <span className="text-sm font-extrabold text-slate-900">
+                {avgRating(item.a.rating, item.b.rating)?.toFixed(2) ?? "-"} / 5
+              </span>
+            </div>
+
+            <div className="mt-4 text-center text-sm font-extrabold text-emerald-700">
+              اقرأ المقارنة ←
+            </div>
+          </Link>
+        );
+      })}
+    </div>
+
+    {/* DESKTOP: 15 */}
+    <div className="hidden gap-4 md:grid md:grid-cols-2 xl:grid-cols-3">
+      {featuredComparisonsDesktop.map((item) => {
+        const slug = `${item.a.slug}-vs-${item.b.slug}`;
+
+        return (
+          <Link
+            key={slug}
+            href={`/compare/${slug}`}
+            className="group rounded-[24px] border border-slate-200 bg-slate-50 p-6 transition hover:-translate-y-1 hover:bg-white hover:shadow-md"
+          >
+            <div className="mb-5 flex items-center justify-between gap-4">
+              {/* Broker A */}
+              <div className="flex flex-col items-center text-center">
+                <div className="flex h-28 w-28 items-center justify-center rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+                  {item.a.logo ? (
+                    <img
+                      src={item.a.logo}
+                      alt={item.a.name || "Broker logo"}
+                      className="max-h-20 w-auto object-contain"
+                    />
+                  ) : (
+                    <span className="text-xs text-slate-400">No logo</span>
+                  )}
+                </div>
+
+                <div className="mt-2 text-sm font-bold text-slate-900">
+                  {item.a.name}
+                </div>
+
+                <div className="mt-1 flex items-center justify-center gap-1">
+                  <span className="text-xs font-bold text-slate-600">
+                    {item.a.rating?.toFixed(1) ?? "-"}
+                  </span>
+                  {renderStars(item.a.rating, "md")}
+                </div>
+              </div>
+
+              {/* VS */}
+              <div className="text-base font-black text-slate-400">VS</div>
+
+              {/* Broker B */}
+              <div className="flex flex-col items-center text-center">
+                <div className="flex h-28 w-28 items-center justify-center rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+                  {item.b.logo ? (
+                    <img
+                      src={item.b.logo}
+                      alt={item.b.name || "Broker logo"}
+                      className="h-full w-full object-contain"
+                    />
+                  ) : (
+                    <span className="text-xs text-slate-400">No logo</span>
+                  )}
+                </div>
+
+                <div className="mt-2 text-sm font-bold text-slate-900">
+                  {item.b.name}
+                </div>
+
+                <div className="mt-1 flex items-center justify-center gap-1">
+                  <span className="text-xs font-bold text-slate-600">
+                    {item.b.rating?.toFixed(1) ?? "-"}
+                  </span>
+                  {renderStars(item.b.rating, "md")}
+                </div>
+              </div>
+            </div>
+
+            <div className="text-center text-lg font-extrabold text-slate-900">
+              مقارنة {item.a.name} مع {item.b.name}
+            </div>
+
+            <p className="mt-3 text-center text-sm leading-7 text-slate-600">
+              تعرّف على الفروقات بين {item.a.name} و{item.b.name} من حيث
+              التراخيص، الرسوم، الحد الأدنى للإيداع، المنصات، ومدى ملاءمة كل
+              شركة للمتداول العربي.
+            </p>
+
+            <div className="mt-5 flex items-center justify-between rounded-xl bg-slate-100 px-4 py-3">
+              <span className="text-sm text-slate-500">متوسط التقييم</span>
+              <span className="text-sm font-extrabold text-slate-900">
+                {avgRating(item.a.rating, item.b.rating)?.toFixed(2) ?? "-"} / 5
+              </span>
+            </div>
+
+            <div className="mt-4 text-center text-sm font-extrabold text-emerald-700 transition group-hover:text-emerald-800">
+              اقرأ المقارنة ←
+            </div>
+          </Link>
+        );
+      })}
+    </div>
+  </div>
+</section>
+
+      {/* USEFUL INTERNAL SEO SECTIONS */}
+<section className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
+  <div className="grid gap-6 lg:grid-cols-[1.05fr_.95fr]">
+    {/* INTERNAL LINKS */}
+    <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+      <div className="text-sm font-extrabold text-[#2563eb]">
+        صفحات مهمة داخل الموقع
+      </div>
+
+      <h2 className="mt-2 text-2xl font-black text-[#0f172a] sm:text-3xl">
+        انتقل إلى الصفحات الأكثر فائدة
+      </h2>
+
+      <p className="mt-3 max-w-3xl text-sm leading-8 text-slate-600 sm:text-base">
+        إذا كنت ما زلت تقارن بين أكثر من وسيط، فهذه الصفحات الداخلية تساعدك
+        على الوصول إلى التقييمات والتصنيفات والمراجعات المهمة بسرعة أكبر.
+      </p>
+
+      <div className="mt-6 grid gap-4 sm:grid-cols-2">
+        <Link
+          href="/brokers"
+          className="group rounded-[22px] border border-slate-200 bg-[#f8fbff] p-5 transition hover:border-blue-200 hover:bg-white hover:shadow-sm"
+        >
+          <div className="text-lg font-black text-[#0f172a]">
+            تقييم شركات التداول
           </div>
-
-          {/* DESKTOP CARDS */}
-          <div className="hidden gap-5 md:grid md:grid-cols-2 xl:grid-cols-4">
-            {featuredComparisonsDesktop.map((item) => {
-              const slug = `${item.a.slug}-vs-${item.b.slug}`;
-
-              return (
-                <Link
-                  key={slug}
-                  href={`/compare/${slug}`}
-                  className="group rounded-[24px] border border-slate-200 bg-[#f8fbff] p-5 transition hover:-translate-y-1 hover:border-[#bfdbfe] hover:bg-white hover:shadow-md"
-                >
-                  <div className="mb-4 flex items-start justify-between gap-3">
-                    <div>
-                      <div className="text-xs font-bold text-slate-500">
-                        مقارنة الحسابات والرسوم
-                      </div>
-
-                      <div className="mt-2 flex items-center gap-2">
-                        <h3 className="text-xl font-black text-[#0f172a]">
-                          {item.a.name} vs {item.b.name}
-                        </h3>
-                      </div>
-                    </div>
-                  </div>
-
-                  <p className="mt-2 text-sm leading-7 text-slate-600">
-                    مقارنة بين {item.a.name} و {item.b.name} من حيث التراخيص،
-                    الحسابات، الرسوم، المنصات، والحد الأدنى للإيداع.
-                  </p>
-
-                  <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-                    <div className="rounded-xl bg-white p-3">
-                      <div className="text-slate-500">التقييم</div>
-                      <div className="font-black text-[#0f172a]">
-                        {item.a.rating?.toFixed(1) ?? "—"}
-                      </div>
-                    </div>
-                    <div className="rounded-xl bg-white p-3">
-                      <div className="text-slate-500">التقييم</div>
-                      <div className="font-black text-[#0f172a]">
-                        {item.b.rating?.toFixed(1) ?? "—"}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 flex items-center justify-between text-sm">
-                    <span className="text-slate-500">الحد الأدنى للإيداع</span>
-                    <span className="font-black text-[#0f172a]">
-                      {money(item.a.min_deposit)} / {money(item.b.min_deposit)}
-                    </span>
-                  </div>
-
-                  <div className="mt-5 text-sm font-extrabold text-[#1d4ed8]">
-                    افتح المقارنة
-                  </div>
-                </Link>
-              );
-            })}
+          <p className="mt-2 text-sm leading-7 text-slate-600">
+            راجع تقييمات الوسطاء وتفاصيل التراخيص والمنصات والحساب الإسلامي.
+          </p>
+          <div className="mt-4 text-sm font-extrabold text-[#2563eb]">
+            تصفح الصفحة ←
           </div>
+        </Link>
+
+        <Link
+          href="/best-brokers"
+          className="group rounded-[22px] border border-slate-200 bg-[#f8fbff] p-5 transition hover:border-blue-200 hover:bg-white hover:shadow-sm"
+        >
+          <div className="text-lg font-black text-[#0f172a]">
+            أفضل الوسطاء
+          </div>
+          <p className="mt-2 text-sm leading-7 text-slate-600">
+            صفحة مختصرة لعرض الوسطاء الأقوى حسب التقييم العام والانطباع العام.
+          </p>
+          <div className="mt-4 text-sm font-extrabold text-[#2563eb]">
+            اذهب الآن ←
+          </div>
+        </Link>
+
+        <Link
+          href="/brokers/saudi-arabia"
+          className="group rounded-[22px] border border-slate-200 bg-[#f8fbff] p-5 transition hover:border-blue-200 hover:bg-white hover:shadow-sm"
+        >
+          <div className="text-lg font-black text-[#0f172a]">
+            أفضل الوسطاء في السعودية
+          </div>
+          <p className="mt-2 text-sm leading-7 text-slate-600">
+            تصفح الوسطاء المناسبين للمتداولين في السعودية حسب المعايير المهمة.
+          </p>
+          <div className="mt-4 text-sm font-extrabold text-[#2563eb]">
+            افتح الصفحة ←
+          </div>
+        </Link>
+
+        <Link
+          href="/compare"
+          className="group rounded-[22px] border border-slate-200 bg-[#f8fbff] p-5 transition hover:border-blue-200 hover:bg-white hover:shadow-sm"
+        >
+          <div className="text-lg font-black text-[#0f172a]">
+            جميع صفحات المقارنات
+          </div>
+          <p className="mt-2 text-sm leading-7 text-slate-600">
+            ارجع إلى صفحة المقارنات الرئيسية واختر أي شركتين تريد المقارنة بينهما.
+          </p>
+          <div className="mt-4 text-sm font-extrabold text-[#2563eb]">
+            صفحة المقارنات ←
+          </div>
+        </Link>
+      </div>
+
+      <div className="mt-6 rounded-[22px] border border-blue-100 bg-[linear-gradient(180deg,#eff6ff_0%,#f8fbff_100%)] p-4">
+        <div className="text-sm font-extrabold text-[#2563eb]">
+          نصيحة سريعة
         </div>
-      </section>
+        <p className="mt-2 text-sm leading-7 text-slate-700">
+          إذا كنت مترددًا بين شركتين فقط، افتح صفحة المقارنة أولًا. وإذا كنت
+          ما زلت في مرحلة البحث العام، ابدأ من صفحة تقييمات الوسطاء أو أفضل
+          الوسطاء.
+        </p>
+      </div>
+    </div>
 
-      {/* ALL BROKERS QUICK CARDS */}
-      <section className="hidden md:block mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <div className="text-sm font-bold text-[#1d4ed8]">قبل المقارنة</div>
-          <h2 className="mt-2 text-3xl font-black">
-            لمحة سريعة على افضل شركات تداول الفوركس
-          </h2>
-          <p className="mt-3 max-w-3xl text-base leading-8 text-slate-600">
-            هذه البطاقات تعطيك نظرة مختصرة على الشركات المتاحة قبل اختيار شركتين
-            للمقارنة التفصيلية.
+    {/* QUICK GUIDE */}
+    <div className="hidden rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm sm:p-6 lg:block">
+      <div className="text-sm font-extrabold text-[#2563eb]">
+        دليل مختصر
+      </div>
+
+      <h2 className="mt-2 text-2xl font-black text-[#0f172a] sm:text-3xl">
+        كيف تستفيد من صفحة المقارنة؟
+      </h2>
+
+      <div className="mt-6 space-y-4">
+        <div className="rounded-[20px] border border-slate-200 bg-[#f8fbff] p-4">
+          <h3 className="text-base font-black text-[#0f172a]">
+            1) اختر وسيطين متقاربين
+          </h3>
+          <p className="mt-2 text-sm leading-7 text-slate-600">
+            أفضل نتيجة تظهر عندما تقارن بين شركتين فعلاً محتار بينهما، وليس بين
+            وسيطين مختلفين جدًا من حيث الفئة أو نوع الخدمة.
           </p>
         </div>
 
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {brokers.map((broker) => (
-            <article
-              key={broker.id}
-              className="rounded-[26px] border border-slate-200 bg-white p-5 shadow-sm"
-            >
-              <div className="mb-4 flex items-start justify-between gap-3">
-                <div>
-                  <h3 className="text-2xl font-black text-[#0f172a]">
-                    {broker.name}
-                  </h3>
-                  <p className="mt-1 text-xs font-bold text-[#1d4ed8]">
-                    {broker.best_for || "مناسب لفئات متعددة"}
-                  </p>
-                </div>
-
-                <div className="flex h-16 w-16 flex-col items-center justify-center rounded-2xl border border-[#bfdbfe] bg-[#eff6ff] text-[#1d4ed8]">
-                  <span className="text-xl font-black">
-                    {broker.rating?.toFixed(1) ?? "—"}
-                  </span>
-                  <span className="text-[10px] font-bold">من 10</span>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
-                  <span className="text-sm text-slate-500">الحد الأدنى للإيداع</span>
-                  <span className="text-sm font-black text-[#0f172a]">
-                    {money(broker.min_deposit)}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
-                  <span className="text-sm text-slate-500">المنصات</span>
-                  <span className="text-sm font-black text-[#0f172a]">
-                    {shortPlatforms(broker.platforms)}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
-                  <span className="text-sm text-slate-500">التراخيص</span>
-                  <span className="text-sm font-black text-[#0f172a]">
-                    {shortReg(broker.regulation)}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
-                  <span className="text-sm text-slate-500">الحساب الإسلامي</span>
-                  <span className="text-sm font-black text-[#0f172a]">
-                    {yesNoArabic(broker.islamic_account)}
-                  </span>
-                </div>
-              </div>
-
-              <div className="mt-4 grid grid-cols-2 gap-3">
-                <Link
-                  href={`/brokers/${broker.slug}`}
-                  className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
-                >
-                  اقرأ التقييم
-                </Link>
-                <Link
-                  href="/compare"
-                  className="inline-flex items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-sm font-extrabold !text-white transition hover:bg-[#1d4ed8]"
-                >
-                  قارن الآن
-                </Link>
-              </div>
-            </article>
-          ))}
+        <div className="rounded-[20px] border border-slate-200 bg-[#f8fbff] p-4">
+          <h3 className="text-base font-black text-[#0f172a]">
+            2) ركّز على المعايير المهمة لك
+          </h3>
+          <p className="mt-2 text-sm leading-7 text-slate-600">
+            بعض الزوار يهتمون أكثر بالترخيص، وآخرون يهتمون بالحد الأدنى للإيداع
+            أو الحساب الإسلامي أو المنصات.
+          </p>
         </div>
-      </section>
-{/* LONG SEO CONTENT */}
-<section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-  <div className="rounded-[30px] border border-slate-200 bg-white p-8 shadow-sm">
-    
-    <div className="text-sm font-bold text-[#1d4ed8]">
-      دليل المقارنات
-    </div>
 
-    <h2 className="mt-2 text-3xl font-black">
-      لماذا تعتبر صفحات المقارنات مهمة قبل فتح الحساب؟
-    </h2>
-
-    <div className="mt-8 space-y-6 text-base leading-8 text-slate-600">
-
-      {/* BLOCK 1 */}
-      <div className="rounded-xl bg-[#f8fbff] p-5">
-        <h3 className="mb-2 font-black text-[#0f172a]">
-          اختصار وقت البحث
-        </h3>
-
-        <p>
-          كثير من المتداولين يزورون صفحات تقييم شركات التداول ثم يحتارون بين
-          شركتين أو أكثر. بدل الانتقال بين أكثر من صفحة وجمع المعلومات يدويًا،
-          تعرض لك صفحة المقارنة الفروقات الأساسية بين الوسطاء في مكان واحد
-          بشكل مباشر وواضح، مما يساعدك على اتخاذ القرار بسرعة أكبر.
-        </p>
+        <div className="rounded-[20px] border border-slate-200 bg-[#f8fbff] p-4">
+          <h3 className="text-base font-black text-[#0f172a]">
+            3) بعد المقارنة اقرأ التقييم الكامل
+          </h3>
+          <p className="mt-2 text-sm leading-7 text-slate-600">
+            صفحة المقارنة تختصر الطريق، لكن صفحة التقييم تعطيك الصورة الكاملة عن
+            مزايا وعيوب كل شركة بشكل أوسع.
+          </p>
+        </div>
       </div>
 
-      {/* BLOCK 2 */}
-      <div className="rounded-xl bg-[#f8fbff] p-5">
-        <h3 className="mb-3 font-black text-[#0f172a]">
-          توضيح الفروقات الحقيقية بين الشركات
-        </h3>
+      <div className="mt-6 rounded-[22px] border border-slate-200 bg-slate-50 p-4">
+        <div className="text-sm font-extrabold text-slate-900">
+          أهم ما ستجده في صفحات المقارنة
+        </div>
 
-        <p className="mb-3">
-          أفضل صفحات المقارنة لا تكتفي بعرض الاسم أو التقييم فقط، بل تركز على
-          العوامل التي تؤثر فعليًا على اختيار شركة التداول المناسبة:
-        </p>
-
-        <ul className="space-y-1 pr-5 list-disc">
-          <li>الحد الأدنى للإيداع</li>
-          <li>الحساب الإسلامي</li>
-          <li>منصات التداول المتاحة</li>
-          <li>التراخيص والتنظيم</li>
-          <li>أنواع الحسابات</li>
-          <li>الرسوم والسبريد</li>
-        </ul>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <span className="rounded-full bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm">
+            التراخيص
+          </span>
+          <span className="rounded-full bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm">
+            الحد الأدنى للإيداع
+          </span>
+          <span className="rounded-full bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm">
+            المنصات
+          </span>
+          <span className="rounded-full bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm">
+            الحساب الإسلامي
+          </span>
+          <span className="rounded-full bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm">
+            الصورة العامة
+          </span>
+        </div>
       </div>
-
-      {/* BLOCK 3 */}
-      <div className="rounded-xl bg-[#f8fbff] p-5">
-        <h3 className="mb-2 font-black text-[#0f172a]">
-          اختيار الوسيط المناسب لأسلوب تداولك
-        </h3>
-
-        <p>
-          صفحة المقارنة الجيدة تساعدك على الوصول إلى قرار أوضح: هل تبحث عن
-          شركة بحد أدنى منخفض للإيداع؟ أم وسيط بتراخيص قوية؟ أم شركة تقدم
-          منصات تداول احترافية؟ لهذا تم تصميم قسم المقارنات في موقع بروكر
-          العرب بحيث يمكنه التوسع مع زيادة عدد الشركات، ويتيح لك مقارنة أي
-          شركتين بسهولة حتى لو أصبح عدد الوسطاء كبيرًا جدًا.
-        </p>
-      </div>
-
-      {/* BLOCK 4 */}
-      <div className="rounded-xl bg-[#f8fbff] p-5">
-        <h3 className="mb-2 font-black text-[#0f172a]">
-          قسم المقارنات ينمو تلقائيًا
-        </h3>
-
-        <p>
-          مع إضافة شركات جديدة إلى قاعدة البيانات في الموقع، يتم إنشاء
-          المقارنات تلقائيًا بين الوسطاء. هذا يجعل قسم المقارنات من أقوى
-          أقسام الموقع من ناحية السيو، لأنه يولد صفحات مقارنة متعددة تستهدف
-          عمليات البحث مثل "Exness vs XM" أو "XS vs Vantage"، وهي كلمات
-          يبحث عنها المتداولون قبل فتح الحساب.
-        </p>
-      </div>
-
     </div>
   </div>
 </section>

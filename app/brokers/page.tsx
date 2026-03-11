@@ -472,7 +472,21 @@ export default async function BrokersPage() {
 
         {/* CARDS GRID */}
         <section id="brokers-grid" className="mx-auto max-w-7xl px-4 pt-6 pb-10 md:pt-5 md:pb-14">
-          
+          <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div>
+              <h2 className="text-2xl font-extrabold text-slate-900 md:text-3xl">
+                تقييم شركات التداول
+              </h2>
+              <p className="mt-2 text-sm leading-7 text-slate-600 md:text-base">
+  قارن بين الوسطاء بسرعة من حيث التقييم، التراخيص، المنصات، والحد الأدنى للإيداع،
+  ثم انتقل مباشرة إلى صفحة التقييم أو التسجيل.
+</p>
+            </div>
+
+            <div className="inline-flex items-center self-start rounded-2xl border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-bold text-blue-700">
+              مرتبة تلقائيًا حسب التقييم
+            </div>
+          </div>
 
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {brokers.map((broker, index) => (
