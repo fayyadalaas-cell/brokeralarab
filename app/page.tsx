@@ -284,112 +284,117 @@ export default async function HomePage() {
       </div>
 
       {/* LEFT PANEL - DESKTOP ONLY */}
-      <div className="hidden lg:block lg:w-[42%] lg:max-w-[460px]">
-        <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
-          <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-[11px] font-bold text-slate-400 sm:text-xs">
-                  لمحة سريعة
-                </p>
-                <h2 className="mt-1 text-base font-black text-[#0f172a] sm:text-lg">
-                  مقارنة بين أبرز الوسطاء
-                </h2>
-              </div>
-
-              <span className="inline-flex rounded-full border border-[#bfdbfe] bg-[#eff6ff] px-3 py-1.5 text-[11px] font-extrabold text-[#1d4ed8] sm:text-xs">
-                محدثة باستمرار
-              </span>
-            </div>
-          </div>
-
-          <div className="p-4 sm:p-5">
-            <div className="overflow-hidden rounded-[24px] border border-slate-200">
-              <div className="grid grid-cols-[70px_1fr_90px] bg-slate-50 px-4 py-3 text-[11px] font-bold text-slate-500 sm:text-xs">
-                <div className="text-center">التقييم</div>
-                <div>الوسيط</div>
-                <div className="text-left">الإيداع</div>
-              </div>
-
-              {[
-                {
-                  name: featured?.name || "Exness",
-                  rating: featured?.rating?.toFixed(1) || "4.5",
-                  deposit: money(featured?.min_deposit) || "$10",
-                  subtitle: featured?.best_for || "للمبتدئين والمتداولين العرب",
-                  tag: "الأعلى تقييمًا",
-                },
-                {
-                  name: "XM",
-                  rating: "4.5",
-                  deposit: "$5",
-                  subtitle: "للمبتدئين وتداول الفوركس",
-                  tag: "إيداع منخفض",
-                },
-                {
-                  name: "Equiti",
-                  rating: "4.4",
-                  deposit: "$30",
-                  subtitle: "للتداول في الشرق الأوسط",
-                  tag: "حضور إقليمي",
-                },
-              ].map((broker, index) => (
-                <div
-                  key={broker.name}
-                  className={`grid grid-cols-[70px_1fr_90px] items-center gap-3 px-4 py-4 ${
-                    index !== 2 ? "border-b border-slate-100" : ""
-                  }`}
-                >
-                  <div className="text-center">
-                    <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-2xl bg-[#eff6ff] text-sm font-black text-[#1d4ed8] ring-1 ring-[#bfdbfe]">
-                      {broker.rating}
-                    </div>
-                  </div>
-
-                  <div className="min-w-0">
-                    <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between lg:gap-10">
-                      <h3 className="text-lg font-black text-[#0f172a]">
-                        {broker.name}
-                      </h3>
-                      <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-bold text-slate-500">
-                        {broker.tag}
-                      </span>
-                    </div>
-                    <p className="mt-1 truncate text-xs text-slate-500 sm:text-sm">
-                      {broker.subtitle}
-                    </p>
-                  </div>
-
-                  <div className="text-left">
-                    <div className="text-sm font-black text-[#0f172a]">
-                      {broker.deposit}
-                    </div>
-                    <div className="mt-1 text-[11px] font-bold text-slate-400">
-                      حد أدنى
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-4 grid grid-cols-2 gap-3">
-              <a
-                href="#finder"
-                className="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
-              >
-                اعرض أفضل الخيارات
-              </a>
-
-              <Link
-                href="/compare"
-                className="inline-flex min-h-[48px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
-              >
-                تصفح المقارنات
-              </Link>
-            </div>
-          </div>
+<div className="hidden lg:block lg:w-[42%] lg:max-w-[460px]">
+  <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
+    <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-[11px] font-bold text-slate-400 sm:text-xs">
+            لمحة سريعة
+          </p>
+          <h2 className="mt-1 text-base font-black text-[#0f172a] sm:text-lg">
+            مقارنة بين أبرز الوسطاء
+          </h2>
         </div>
+
+        <span className="inline-flex rounded-full border border-[#bfdbfe] bg-[#eff6ff] px-3 py-1.5 text-[11px] font-extrabold text-[#1d4ed8] sm:text-xs">
+          محدثة باستمرار
+        </span>
       </div>
+    </div>
+
+    <div className="p-4 sm:p-5">
+      <div className="overflow-hidden rounded-[24px] border border-slate-200">
+        <div className="grid grid-cols-[70px_1fr_90px] bg-slate-50 px-4 py-3 text-[11px] font-bold text-slate-500 sm:text-xs">
+          <div className="text-center">التقييم</div>
+          <div>الوسيط</div>
+          <div className="text-left">الإيداع</div>
+        </div>
+
+        {[
+          {
+            name: featured?.name || "Exness",
+            slug: featured?.slug || "exness",
+            rating: featured?.rating?.toFixed(1) || "4.5",
+            deposit: money(featured?.min_deposit) || "$10",
+            subtitle: featured?.best_for || "للمبتدئين والمتداولين العرب",
+            tag: "الأعلى تقييمًا",
+          },
+          {
+            name: "XM",
+            slug: "xm",
+            rating: "4.5",
+            deposit: "$5",
+            subtitle: "للمبتدئين وتداول الفوركس",
+            tag: "إيداع منخفض",
+          },
+          {
+            name: "Equiti",
+            slug: "equiti",
+            rating: "4.4",
+            deposit: "$30",
+            subtitle: "للتداول في الشرق الأوسط",
+            tag: "حضور إقليمي",
+          },
+        ].map((broker, index) => (
+          <Link
+            key={broker.slug}
+            href={`/brokers/${broker.slug}`}
+            className={`grid grid-cols-[70px_1fr_90px] items-center gap-3 px-4 py-4 transition hover:bg-slate-50 ${
+              index !== 2 ? "border-b border-slate-100" : ""
+            }`}
+          >
+            <div className="text-center">
+              <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-2xl bg-[#eff6ff] text-sm font-black text-[#1d4ed8] ring-1 ring-[#bfdbfe]">
+                {broker.rating}
+              </div>
+            </div>
+
+            <div className="min-w-0">
+              <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between lg:gap-4">
+                <h3 className="text-lg font-black text-[#0f172a] transition hover:text-[#2563eb]">
+                  {broker.name}
+                </h3>
+                <span className="inline-flex w-fit rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-bold text-slate-500">
+                  {broker.tag}
+                </span>
+              </div>
+
+              <p className="mt-1 truncate text-xs text-slate-500 sm:text-sm">
+                {broker.subtitle}
+              </p>
+            </div>
+
+            <div className="text-left">
+              <div className="text-sm font-black text-[#0f172a]">
+                {broker.deposit}
+              </div>
+              <div className="mt-1 text-[11px] font-bold text-slate-400">
+                حد أدنى
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      <div className="mt-4 grid grid-cols-2 gap-3">
+        <a
+          href="#finder"
+          className="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
+        >
+          اعرض أفضل الخيارات
+        </a>
+
+        <Link
+          href="/compare"
+          className="inline-flex min-h-[48px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
+        >
+          تصفح المقارنات
+        </Link>
+      </div>
+    </div>
+  </div>
+</div>
     </div>
   </div>
 </section>

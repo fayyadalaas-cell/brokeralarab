@@ -1024,40 +1024,98 @@ const breadcrumbSchema = {
             </div>
           </SectionCard>
 
-          <SectionCard title="شركات مشابهة">
-            {relatedBrokers.length ? (
-              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                {relatedBrokers.map((item) => (
-                  <Link
-                    key={item.id}
-                    href={`/brokers/${item.slug}`}
-                    className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition hover:bg-white hover:shadow-sm"
-                  >
-                    <div className="mb-4 flex h-16 items-center justify-center rounded-xl bg-white p-3">
-                      {item.logo ? (
-                        <img
-                          src={item.logo}
-                          alt={item.name || "Broker logo"}
-                          className="max-h-full w-auto object-contain"
-                        />
-                      ) : (
-                        <span className="text-sm text-slate-400">No logo</span>
-                      )}
-                    </div>
+          <SectionCard title={`مقارنات ${broker.name} مع شركات أخرى`}>
+  {relatedBrokers.length ? (
+    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      {relatedBrokers.map((item) => (
+        <Link
+          key={item.id}
+          href={`/compare/${broker.slug}-vs-${item.slug}`}
+          className="group rounded-2xl border border-slate-200 bg-slate-50 p-6 transition hover:-translate-y-1 hover:bg-white hover:shadow-md"
+        >
+          {/* Top logos */}
+          <div className="mb-5 flex items-center justify-between gap-4">
 
-                    <div className="text-lg font-extrabold text-slate-900">
-                      {item.name || "-"}
-                    </div>
-                    <div className="mt-2 text-sm text-slate-600">
-                      التقييم: {item.rating ?? "-"}
-                    </div>
-                  </Link>
-                ))}
+            {/* Current broker (right side) */}
+            <div className="flex flex-col items-center text-center">
+              <div className="flex h-24 w-24 items-center justify-center rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                {broker.logo ? (
+                  <img
+                    src={broker.logo}
+                    alt={broker.name || "Broker logo"}
+                    className="max-h-14 w-auto object-contain"
+                  />
+                ) : (
+                  <span className="text-xs text-slate-400">No logo</span>
+                )}
               </div>
-            ) : (
-              <p className="text-slate-500">لا توجد شركات مشابهة حاليًا.</p>
-            )}
-          </SectionCard>
+
+              <div className="mt-2 text-sm font-bold text-slate-900">
+                {broker.name}
+              </div>
+            </div>
+
+            {/* VS */}
+            <div className="text-base font-black text-slate-400">
+              VS
+            </div>
+
+            {/* Other broker */}
+            <div className="flex flex-col items-center text-center">
+              <div className="flex h-24 w-24 items-center justify-center rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                {item.logo ? (
+                  <img
+                    src={item.logo}
+                    alt={item.name || "Broker logo"}
+                    className="max-h-14 w-auto object-contain"
+                  />
+                ) : (
+                  <span className="text-xs text-slate-400">No logo</span>
+                )}
+              </div>
+
+              <div className="mt-2 text-sm font-bold text-slate-900">
+                {item.name}
+              </div>
+            </div>
+
+          </div>
+
+          {/* Title */}
+          <div className="text-lg font-extrabold text-slate-900 text-center">
+            مقارنة {broker.name} مع {item.name}
+          </div>
+
+          {/* Description */}
+          <p className="mt-3 text-sm text-slate-600 text-center leading-7">
+            تعرّف على الفروقات بين {broker.name} و{item.name} من حيث التراخيص،
+            الرسوم، الحد الأدنى للإيداع، المنصات، ومدى ملاءمة كل شركة
+            للمتداول العربي.
+          </p>
+
+          {/* Rating */}
+          <div className="mt-5 flex items-center justify-between rounded-xl bg-slate-100 px-4 py-3">
+            <span className="text-sm text-slate-500">
+              تقييم {item.name}
+            </span>
+
+            <span className="text-sm font-extrabold text-slate-900">
+              {item.rating ?? "-"} / 5
+            </span>
+          </div>
+
+          {/* CTA */}
+          <div className="mt-4 text-sm font-extrabold text-emerald-700 text-center transition group-hover:text-emerald-800">
+            اقرأ المقارنة ←
+          </div>
+
+        </Link>
+      ))}
+    </div>
+  ) : (
+    <p className="text-slate-500">لا توجد مقارنات متاحة حاليًا.</p>
+  )}
+</SectionCard>
         </div>
       </main>
     </>
