@@ -44,12 +44,31 @@ export async function GET(
   const referrer = request.headers.get("referer") || null;
   const userAgent = request.headers.get("user-agent") || null;
 
+  // استخراج IP
+  const ip =
+    request.headers.get("x-forwarded-for")?.split(",")[0] ||
+    request.headers.get("x-real-ip") ||
+    "unknown";
+
+  // تحديد الدولة من IP
+  let country = "unknown";
+
+  try {
+    const geo = await fetch(`https://ipapi.co/${ip}/json/`);
+    const geoData = await geo.json();
+    country = geoData.country_name || "unknown";
+  } catch {
+    country = "unknown";
+  }
+
   await supabase.from("broker_clicks").insert({
     broker_slug: slug,
     click_type: type,
     page_url: pageUrl,
     referrer,
     user_agent: userAgent,
+    ip,
+    country,
   });
 
   return NextResponse.redirect(targetUrl);
