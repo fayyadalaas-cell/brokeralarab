@@ -100,9 +100,7 @@ export default async function BestBrokersPage() {
     <div className="grid items-center gap-10 lg:grid-cols-[1.15fr_0.85fr]">
       {/* RIGHT CONTENT */}
       <div className="text-center lg:text-right">
-        <div className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700">
-          مقارنة احترافية لأفضل الوسطاء
-        </div>
+        
 
         <h1 className="mt-5 text-4xl font-extrabold leading-[1.1] tracking-tight text-slate-950 sm:text-5xl lg:text-[56px] xl:text-[64px]">
           أفضل شركات التداول في 2026
