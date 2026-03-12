@@ -592,7 +592,7 @@ const featuredComparisonsMobile = sortedComparisons.slice(0, 5);
         </Link>
 
         <Link
-          href="/brokers/saudi-arabia"
+          href="/best-brokers/saudi-arabia"
           className="group rounded-[22px] border border-slate-200 bg-[#f8fbff] p-5 transition hover:border-blue-200 hover:bg-white hover:shadow-sm"
         >
           <div className="text-lg font-black text-[#0f172a]">
