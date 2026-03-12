@@ -44,22 +44,18 @@ export async function GET(
   const referrer = request.headers.get("referer") || null;
   const userAgent = request.headers.get("user-agent") || null;
 
-  // استخراج IP
   const ip =
-    request.headers.get("x-forwarded-for")?.split(",")[0] ||
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
     request.headers.get("x-real-ip") ||
+    null;
+
+  const vercelCountry = request.headers.get("x-vercel-ip-country");
+  const cloudflareCountry = request.headers.get("cf-ipcountry");
+
+  const country =
+    (vercelCountry && vercelCountry !== "XX" ? vercelCountry : null) ||
+    (cloudflareCountry && cloudflareCountry !== "XX" ? cloudflareCountry : null) ||
     "unknown";
-
-  // تحديد الدولة من IP
-  let country = "unknown";
-
-  try {
-    const geo = await fetch(`https://ipapi.co/${ip}/json/`);
-    const geoData = await geo.json();
-    country = geoData.country_name || "unknown";
-  } catch {
-    country = "unknown";
-  }
 
   await supabase.from("broker_clicks").insert({
     broker_slug: slug,
