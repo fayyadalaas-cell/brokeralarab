@@ -695,7 +695,10 @@ export default async function BestBrokersPage() {
 
 {/* 4) SMART BROKER FINDER */}
 <section className="border-t border-slate-200 bg-white">
-  <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+  <div
+    id="broker-finder"
+    className="scroll-mt-40 mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8"
+  >
     {/* DESKTOP */}
     <div className="hidden overflow-hidden rounded-[30px] border border-slate-200 bg-slate-950 shadow-[0_20px_60px_rgba(15,23,42,0.16)] lg:block">
       <div className="grid gap-0 lg:grid-cols-[0.95fr_1.05fr]">
@@ -837,7 +840,10 @@ export default async function BestBrokersPage() {
 </section>
 
 {/* 5) BEST BROKERS BY CATEGORY */}
-<section className="border-t border-slate-200 bg-white">
+<section
+  id="broker-finder"
+  className="scroll-mt-28 border-t border-slate-200 bg-white"
+>
   <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
     {(() => {
       const used = new Set<number>();
