@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { Cairo } from "next/font/google";
 import "./globals.css";
 import MobileNavMenu from "@/app/components/MobileNavMenu";
@@ -20,6 +21,11 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://brokeralarab.com"),
   verification: {
     google: "eivw8RsaxU2SPjyhov7RFqS8gdAM0VTN8YsmxQncXm4",
+  },
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
   },
 };
 
@@ -60,11 +66,15 @@ export default function RootLayout({
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 items-center justify-between gap-3 md:h-20 md:gap-6">
               <Link href="/" className="min-w-0 shrink-0">
-                <div className="text-2xl font-black tracking-tight text-[#0f172a] md:text-3xl">
-                  بروكر العرب
-                </div>
-                <div className="mt-0.5 text-[10px] font-semibold text-slate-500 md:mt-1 md:text-xs">
-                  مراجعات ومقارنات شركات التداول
+                <div className="flex items-center">
+                  <Image
+  src="/brokers/BrokerAlArab.png"
+  alt="بروكر العرب"
+  width={260}
+  height={80}
+  priority
+  className="h-auto w-[150px] translate-y-2 md:w-[220px] md:translate-y-2"
+/>
                 </div>
               </Link>
 
@@ -106,12 +116,16 @@ export default function RootLayout({
         {/* FOOTER */}
         <footer className="mt-6 border-t border-slate-800 bg-[#0f172a] text-slate-300 md:mt-12">
           <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-
             {/* MOBILE */}
             <div className="space-y-6 md:hidden">
-
               <div>
-                <div className="text-2xl font-black text-white">بروكر العرب</div>
+                <Image
+                  src="/brokers/BrokerAlArab.png"
+                  alt="بروكر العرب"
+                  width={240}
+                  height={80}
+                  className="h-auto w-[150px] brightness-0 invert"
+                />
                 <p className="mt-3 text-sm leading-7 text-slate-300">
                   منصة عربية متخصصة في مراجعات ومقارنات شركات التداول
                   لمساعدة المتداول العربي على اختيار الوسيط المناسب.
@@ -119,7 +133,6 @@ export default function RootLayout({
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-
                 <div>
                   <div className="text-sm font-black text-white">روابط الموقع</div>
                   <div className="mt-3 grid gap-2 text-sm">
@@ -127,7 +140,7 @@ export default function RootLayout({
                       <Link
                         key={item.href}
                         href={item.href}
-                        className="text-slate-300 hover:text-white transition"
+                        className="text-slate-300 transition hover:text-white"
                       >
                         {item.label}
                       </Link>
@@ -142,28 +155,31 @@ export default function RootLayout({
                       <Link
                         key={item.href}
                         href={item.href}
-                        className="text-slate-300 hover:text-white transition"
+                        className="text-slate-300 transition hover:text-white"
                       >
                         {item.label}
                       </Link>
                     ))}
                   </div>
                 </div>
-
               </div>
 
               <div className="text-sm">
                 <span className="font-black text-white">البريد:</span>{" "}
                 info@brokeralarab.com
               </div>
-
             </div>
 
             {/* DESKTOP */}
             <div className="hidden md:grid md:grid-cols-4 md:gap-10">
-
               <div>
-                <div className="text-3xl font-black text-white">بروكر العرب</div>
+                <Image
+                  src="/brokers/BrokerAlArab.png"
+                  alt="بروكر العرب"
+                  width={280}
+                  height={90}
+                  className="h-auto w-[180px] brightness-0 invert"
+                />
                 <p className="mt-4 text-sm leading-8 text-slate-300">
                   منصة عربية متخصصة في مراجعات ومقارنات شركات التداول
                   لمساعدة المتداول العربي على اتخاذ قرار أفضل قبل فتح الحساب.
@@ -177,7 +193,7 @@ export default function RootLayout({
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="text-slate-300 hover:text-white transition"
+                      className="text-slate-300 transition hover:text-white"
                     >
                       {item.label}
                     </Link>
@@ -192,7 +208,7 @@ export default function RootLayout({
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="text-slate-300 hover:text-white transition"
+                      className="text-slate-300 transition hover:text-white"
                     >
                       {item.label}
                     </Link>
@@ -214,16 +230,13 @@ export default function RootLayout({
                   ولا تعتبر نصيحة استثمارية أو توصية بفتح حساب تداول.
                 </p>
               </div>
-
             </div>
 
             <div className="mt-10 border-t border-slate-800 pt-6 text-center text-xs text-slate-400">
               © {new Date().getFullYear()} بروكر العرب - جميع الحقوق محفوظة
             </div>
-
           </div>
         </footer>
-
       </body>
     </html>
   );
