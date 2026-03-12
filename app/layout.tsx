@@ -214,7 +214,6 @@ export default function RootLayout({
                     </Link>
                   ))}
                 </div>
-
                 <div className="mt-6">
                   <div className="text-sm font-black text-white">البريد</div>
                   <div className="mt-2 text-sm text-slate-300">
