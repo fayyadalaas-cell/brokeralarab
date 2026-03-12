@@ -680,23 +680,26 @@ const breadcrumbSchema = {
 </div>
 
               <div className="grid grid-cols-1 gap-3">
-                <ActionButton
-                  href={broker.real_account_url || "#"}
-                  label="فتح حساب حقيقي"
-                  primary
-                />
-                <ActionButton
-                  href={broker.demo_account_url || "#"}
-                  label="فتح حساب ديمو"
-                />
-                <ActionButton
-                 href={broker.mt5_download_url || "#"}
-                 label="تحميل منصة MetaTrader 5"
-                />
-                <ActionButton
-                href={broker.mt4_download_url || "#"}
-                label="تحميل منصة MetaTrader 4"
-                />
+               <ActionButton
+  href={`/go/${broker.slug}?type=real`}
+  label="فتح حساب حقيقي"
+  primary
+/>
+
+<ActionButton
+  href={`/go/${broker.slug}?type=demo`}
+  label="فتح حساب ديمو"
+/>
+
+<ActionButton
+  href={`/go/${broker.slug}?type=mt5`}
+  label="تحميل منصة MetaTrader 5"
+/>
+
+<ActionButton
+  href={`/go/${broker.slug}?type=mt4`}
+  label="تحميل منصة MetaTrader 4"
+/>
               </div>
             </div>
           </div>
@@ -954,11 +957,13 @@ const breadcrumbSchema = {
               </p>
 
               <a
-                href={broker.real_account_url || "#"}
-                className="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-8 py-4 text-base font-bold text-white transition hover:bg-emerald-700"
-              >
-                فتح حساب في {broker.name} الآن
-              </a>
+  href={`/go/${broker.slug}?type=real`}
+  target="_blank"
+  rel="nofollow sponsored noopener noreferrer"
+  className="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-8 py-4 text-base font-bold text-white transition hover:bg-emerald-700"
+>
+  فتح حساب في {broker.name} الآن
+</a>
             </div>
           </SectionCard>
 

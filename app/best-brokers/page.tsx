@@ -222,15 +222,15 @@ export default async function BestBrokersPage() {
                 </Link>
 
                 {topPicks.overall.real_account_url ? (
-                  <a
-                    href={topPicks.overall.real_account_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex flex-1 items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 transition hover:border-slate-400 hover:bg-slate-50"
-                  >
-                    فتح حساب
-                  </a>
-                ) : null}
+  <a
+    href={`/go/${topPicks.overall.slug}?type=real`}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-flex flex-1 items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 transition hover:border-slate-400 hover:bg-slate-50"
+  >
+    فتح حساب
+  </a>
+) : null}
               </div>
             </div>
           ) : (
@@ -366,7 +366,7 @@ export default async function BestBrokersPage() {
 
             {broker.real_account_url ? (
               <a
-                href={broker.real_account_url}
+                href={`/go/${broker.slug}?type=real`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex flex-1 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
@@ -526,7 +526,7 @@ export default async function BestBrokersPage() {
 
                   {broker.real_account_url ? (
                     <a
-                      href={broker.real_account_url}
+                      href={`/go/${broker.slug}?type=real`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-extrabold text-slate-800 transition hover:bg-slate-50"
@@ -670,7 +670,7 @@ export default async function BestBrokersPage() {
 
                 {broker.real_account_url ? (
                   <a
-                    href={broker.real_account_url}
+                    href={`/go/${broker.slug}?type=real`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex flex-1 items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"

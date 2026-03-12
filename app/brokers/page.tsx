@@ -319,20 +319,18 @@ function BrokerCard({
       </div>
 
       <div className="mt-5">
-        {realLink ? (
-          <a
-            href={broker.real_account_url as string}
-            target="_blank"
-            rel="nofollow sponsored noopener noreferrer"
-            className="inline-flex min-h-[48px] w-full items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-extrabold text-white transition hover:bg-blue-700"
-          >
-            افتح حساب حقيقي
-          </a>
-        ) : (
-          <span className="inline-flex min-h-[48px] w-full cursor-not-allowed items-center justify-center rounded-2xl bg-slate-200 px-5 py-3 text-sm font-extrabold text-slate-500">
-            فتح حساب قريبًا
-          </span>
-        )}
+       {realLink ? (
+  <a
+  href={`/go/${broker.slug}?type=real`}
+  className="inline-flex min-h-[48px] w-full items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-extrabold text-white transition hover:bg-blue-700"
+>
+  افتح حساب حقيقي
+</a>
+) : (
+  <span className="inline-flex min-h-[48px] w-full cursor-not-allowed items-center justify-center rounded-2xl bg-slate-200 px-5 py-3 text-sm font-extrabold text-slate-500">
+    فتح حساب قريبًا
+  </span>
+)}
 
         <div className="mt-3 text-center text-[11px] font-medium text-slate-400">
           راجع تفاصيل الترخيص والرسوم قبل التسجيل

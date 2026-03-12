@@ -505,14 +505,12 @@ export default async function ComparePage({ params }: PageProps) {
                 >
                   اقرأ التقييم
                 </Link>
-                <Link
-  href={broker.real_account_url || "#"}
-  target="_blank"
-  rel="nofollow sponsored"
+                <a
+  href={`/go/${broker.slug}?type=real`}
   className="inline-flex min-h-[46px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
 >
   افتح حساب حقيقي
-</Link>
+</a>
               </div>
             </div>
           ))}
