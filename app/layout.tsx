@@ -120,7 +120,7 @@ export default function RootLayout({
             <div className="space-y-6 md:hidden">
               <div>
                 <Image
-                  src="/brokers/BrokerAlArab.png"
+                  src="/brokers/BrokerAlarab.png"
                   alt="بروكر العرب"
                   width={240}
                   height={80}
