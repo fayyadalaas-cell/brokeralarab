@@ -68,12 +68,12 @@ export default function RootLayout({
               <Link href="/" className="min-w-0 shrink-0">
                 <div className="flex items-center">
                   <Image
-  src="/brokers/BrokerAlarab.png"
+  src="/brokers/BrokerLogo.png"
   alt="بروكر العرب"
   width={260}
   height={80}
   priority
-  className="h-auto w-[150px] translate-y-2 md:w-[220px] md:translate-y-2"
+  className="h-auto w-[150px] -translate-y-1 md:w-[220px] md:-translate-y-0"
 />
                 </div>
               </Link>
@@ -120,7 +120,7 @@ export default function RootLayout({
             <div className="space-y-6 md:hidden">
               <div>
                 <Image
-                  src="/brokers/BrokerAlarab.png"
+                  src="/brokers/BrokerLogo.png"
                   alt="بروكر العرب"
                   width={240}
                   height={80}
@@ -174,7 +174,7 @@ export default function RootLayout({
             <div className="hidden md:grid md:grid-cols-4 md:gap-10">
               <div>
                 <Image
-                  src="/brokers/BrokerAlarab.png"
+                  src="/brokers/BrokerLogo.png"
                   alt="بروكر العرب"
                   width={280}
                   height={90}
