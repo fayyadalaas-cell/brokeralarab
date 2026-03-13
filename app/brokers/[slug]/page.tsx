@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import Script from "next/script";
 import Link from "next/link";
+import ShareButtons from "@/app/components/ShareButtons";
 
 type Broker = {
   id: number;
@@ -137,6 +138,7 @@ export async function generateMetadata({
 }) {
   const { slug } = await params;
   const broker = await getBroker(slug);
+  const siteUrl = "https://brokeralarab.com";
 
   if (!broker) {
     return {
@@ -145,17 +147,43 @@ export async function generateMetadata({
     };
   }
 
+  const rawImage = broker.logo || broker.company_image || "";
+  const imageUrl = rawImage.startsWith("http")
+    ? rawImage
+    : `${siteUrl}${rawImage.startsWith("/") ? rawImage : `/${rawImage}`}`;
+
+  const title = broker.meta_title || `تقييم ${broker.name} | Broker Arab`;
+  const description =
+    broker.meta_descr ||
+    `مراجعة كاملة لشركة ${broker.name} تشمل الرسوم والمنصات والتراخيص.`;
+
   return {
-    title: broker.meta_title || `تقييم ${broker.name} | Broker Arab`,
-    description:
-      broker.meta_descr ||
-      `مراجعة كاملة لشركة ${broker.name} تشمل الرسوم والمنصات والتراخيص.`,
+    metadataBase: new URL(siteUrl),
+    title,
+    description,
     openGraph: {
-      title: broker.meta_title || `تقييم ${broker.name} | Broker Arab`,
-      description:
-        broker.meta_descr ||
-        `مراجعة كاملة لشركة ${broker.name} تشمل الرسوم والمنصات والتراخيص.`,
-      images: broker.logo ? [broker.logo] : [],
+      title,
+      description,
+      url: `${siteUrl}/brokers/${broker.slug}`,
+      siteName: "Broker Al Arab",
+      locale: "ar_AR",
+      type: "article",
+      images: imageUrl
+        ? [
+            {
+              url: imageUrl,
+              width: 800,
+              height: 800,
+              alt: broker.name || "Broker logo",
+            },
+          ]
+        : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: imageUrl ? [imageUrl] : [],
     },
   };
 }
@@ -487,6 +515,8 @@ function renderStars(rating: number | null) {
   )
 }
 
+
+
 export default async function BrokerPage({
   params,
 }: {
@@ -553,6 +583,8 @@ export default async function BrokerPage({
   }));
 
   const siteUrl = "https://brokeralarab.com";
+  const pageUrl = `${siteUrl}/brokers/${broker.slug}`;
+const shareTitle = `تقييم ${broker.name} | بروكر العرب`;
 
 const breadcrumbSchema = {
   "@context": "https://schema.org",
@@ -635,7 +667,6 @@ const breadcrumbSchema = {
               <p className="max-w-4xl text-lg leading-9 text-slate-600">
                 {broker.intro || "مراجعة شاملة لشركة التداول."}
               </p>
-
               <div className="mt-8 grid gap-4 grid-cols-2 sm:grid-cols-2 xl:grid-cols-4">
   <div className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:shadow-sm">
     <div className="mb-2 text-sm text-slate-500">التقييم</div>
@@ -700,6 +731,9 @@ const breadcrumbSchema = {
   href={`/go/${broker.slug}?type=mt4`}
   label="تحميل منصة MetaTrader 4"
 />
+<div className="mt-1">
+  <ShareButtons url={pageUrl} title={shareTitle} />
+</div>
               </div>
             </div>
           </div>
