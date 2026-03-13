@@ -43,22 +43,22 @@ export default async function Image({
           height: "630px",
           display: "flex",
           position: "relative",
-          background: "linear-gradient(135deg, #0f172a 0%, #111827 55%, #1e293b 100%)",
+          overflow: "hidden",
+          background:
+            "linear-gradient(135deg, #081224 0%, #0b1b35 50%, #102746 100%)",
           color: "#ffffff",
           fontFamily: "Arial, sans-serif",
-          overflow: "hidden",
         }}
       >
-        {/* soft glow */}
         <div
           style={{
             position: "absolute",
-            top: "-140px",
-            left: "-120px",
-            width: "420px",
-            height: "420px",
+            top: "-120px",
+            left: "-90px",
+            width: "320px",
+            height: "320px",
             borderRadius: "9999px",
-            background: "rgba(245, 158, 11, 0.16)",
+            background: "rgba(245, 158, 11, 0.14)",
             display: "flex",
           }}
         />
@@ -66,32 +66,31 @@ export default async function Image({
         <div
           style={{
             position: "absolute",
-            bottom: "-120px",
-            right: "-80px",
-            width: "360px",
-            height: "360px",
+            bottom: "-100px",
+            right: "-60px",
+            width: "260px",
+            height: "260px",
             borderRadius: "9999px",
             background: "rgba(16, 185, 129, 0.10)",
             display: "flex",
           }}
         />
 
-        {/* left content */}
         <div
           style={{
-            width: "68%",
+            width: "60%",
+            height: "100%",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            padding: "68px 64px",
+            padding: "56px 40px 56px 64px",
             zIndex: 2,
           }}
         >
           <div
             style={{
               display: "flex",
-              alignItems: "center",
-              marginBottom: "22px",
+              marginBottom: "18px",
             }}
           >
             <div
@@ -102,7 +101,7 @@ export default async function Image({
                 color: "#e5e7eb",
                 borderRadius: "999px",
                 padding: "10px 18px",
-                fontSize: "24px",
+                fontSize: "22px",
                 fontWeight: 700,
               }}
             >
@@ -113,12 +112,12 @@ export default async function Image({
           <div
             style={{
               display: "flex",
-              fontSize: "78px",
+              fontSize: "92px",
               fontWeight: 800,
-              lineHeight: 1.05,
-              marginBottom: "26px",
+              lineHeight: 1,
               color: "#ffffff",
               letterSpacing: "-1px",
+              marginBottom: "22px",
             }}
           >
             {name}
@@ -127,32 +126,43 @@ export default async function Image({
           <div
             style={{
               display: "flex",
-              alignItems: "center",
-              marginBottom: "28px",
+              marginBottom: "24px",
             }}
           >
             <div
               style={{
                 display: "flex",
                 alignItems: "center",
+                gap: "10px",
                 background: "#f59e0b",
                 color: "#111827",
                 borderRadius: "18px",
-                padding: "12px 20px",
+                padding: "12px 22px",
                 fontSize: "34px",
                 fontWeight: 800,
+                boxShadow: "0 12px 30px rgba(245, 158, 11, 0.22)",
               }}
             >
-              {`★ ${rating} / 5`}
+              <span
+                style={{
+                  display: "flex",
+                  color: "#ffffff",
+                  fontSize: "30px",
+                  lineHeight: 1,
+                }}
+              >
+                
+              </span>
+              <span style={{ display: "flex" }}>{rating} / 5</span>
             </div>
           </div>
 
           <div
             style={{
               display: "flex",
-              fontSize: "30px",
-              color: "#cbd5e1",
-              marginBottom: "46px",
+              fontSize: "29px",
+              color: "#dbe4f0",
+              marginBottom: "30px",
             }}
           >
             Fees • Platforms • Regulation
@@ -163,7 +173,7 @@ export default async function Image({
               display: "flex",
               alignItems: "center",
               gap: "14px",
-              fontSize: "28px",
+              fontSize: "26px",
               color: "#94a3b8",
             }}
           >
@@ -180,26 +190,26 @@ export default async function Image({
           </div>
         </div>
 
-        {/* right panel */}
         <div
           style={{
-            width: "32%",
+            width: "40%",
+            height: "100%",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            padding: "50px 48px 50px 0",
+            padding: "44px 56px 44px 24px",
             zIndex: 2,
           }}
         >
           <div
             style={{
               display: "flex",
-              width: "290px",
-              height: "290px",
+              width: "300px",
+              height: "300px",
               borderRadius: "30px",
-              background: "rgba(255,255,255,0.96)",
+              background: "rgba(255,255,255,0.97)",
               border: "1px solid rgba(255,255,255,0.18)",
-              boxShadow: "0 20px 60px rgba(0,0,0,0.30)",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.28)",
               alignItems: "center",
               justifyContent: "center",
               overflow: "hidden",
@@ -208,8 +218,8 @@ export default async function Image({
             {logo ? (
               <img
                 src={logo}
-                width="190"
-                height="190"
+                width="195"
+                height="195"
                 alt={name}
                 style={{
                   objectFit: "contain",
@@ -219,7 +229,7 @@ export default async function Image({
               <div
                 style={{
                   display: "flex",
-                  fontSize: "44px",
+                  fontSize: "42px",
                   fontWeight: 800,
                   color: "#0f172a",
                 }}

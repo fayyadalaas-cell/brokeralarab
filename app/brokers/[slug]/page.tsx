@@ -497,17 +497,41 @@ function renderStars(rating: number | null) {
   const half = rounded % 1 !== 0
   const empty = 5 - full - (half ? 1 : 0)
 
-  return (
-    <div className="flex items-center gap-0.5 text-amber-400 text-lg">
+return (
+  <div
+    className="flex items-center gap-2 px-3 py-1 rounded-md"
+    style={{
+      background: "#0f172a",
+      fontFamily: "Arial, Helvetica, sans-serif",
+      fontSize: "18px"
+    }}
+  >
+    {/* النجمة قبل التقييم */}
+    <span style={{ color: "#f59e0b", fontSize: "20px" }}>★</span>
+
+    {/* النجوم */}
+    <div style={{ display: "flex", gap: "2px" }}>
       {Array.from({ length: full }).map((_, i) => (
-        <span key={"f"+i}>★</span>
+        <span key={"f" + i} style={{ color: "#f59e0b" }}>
+          ★
+        </span>
       ))}
-      {half && <span>⯨</span>}
+
+      {half && <span style={{ color: "#f59e0b" }}>☆</span>}
+
       {Array.from({ length: empty }).map((_, i) => (
-        <span key={"e"+i} className="text-slate-300">★</span>
+        <span key={"e" + i} style={{ color: "#475569" }}>
+          ★
+        </span>
       ))}
     </div>
-  )
+
+    {/* الرقم */}
+    <span style={{ color: "#e2e8f0", fontWeight: 600 }}>
+      {rating}
+    </span>
+  </div>
+);
 }
 
 
