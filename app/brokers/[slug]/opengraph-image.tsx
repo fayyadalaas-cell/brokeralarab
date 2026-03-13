@@ -143,7 +143,7 @@ export default async function Image({
                 fontWeight: 800,
               }}
             >
-              {`⭐ ${rating} / 5`}
+              {`★ ${rating} / 5`}
             </div>
           </div>
 
