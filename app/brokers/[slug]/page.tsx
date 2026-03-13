@@ -147,11 +147,6 @@ export async function generateMetadata({
     };
   }
 
-  const rawImage = broker.logo || broker.company_image || "";
-  const imageUrl = rawImage.startsWith("http")
-    ? rawImage
-    : `${siteUrl}${rawImage.startsWith("/") ? rawImage : `/${rawImage}`}`;
-
   const title = broker.meta_title || `تقييم ${broker.name} | Broker Arab`;
   const description =
     broker.meta_descr ||
@@ -162,29 +157,26 @@ export async function generateMetadata({
     title,
     description,
     openGraph: {
-      title,
-      description,
-      url: `${siteUrl}/brokers/${broker.slug}`,
-      siteName: "Broker Al Arab",
-      locale: "ar_AR",
-      type: "article",
-      images: imageUrl
-        ? [
-            {
-              url: imageUrl,
-              width: 800,
-              height: 800,
-              alt: broker.name || "Broker logo",
-            },
-          ]
-        : [],
+  title,
+  description,
+  url: `${siteUrl}/brokers/${broker.slug}`,
+  siteName: "Broker Al Arab",
+  locale: "ar_AR",
+  type: "article",
+  images: [
+    {
+      url: `${siteUrl}/brokers/${broker.slug}/opengraph-image`,
+      width: 1200,
+      height: 630,
     },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: imageUrl ? [imageUrl] : [],
-    },
+  ],
+},
+twitter: {
+  card: "summary_large_image",
+  title,
+  description,
+  images: [`${siteUrl}/brokers/${broker.slug}/opengraph-image`],
+},
   };
 }
 
