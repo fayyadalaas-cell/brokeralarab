@@ -731,7 +731,7 @@ const breadcrumbSchema = {
             <img
               src={broker.logo}
               alt={broker.name || "Broker logo"}
-              className="max-h-[110px] w-full object-contain"
+              className="h-full w-full object-contain scale-110"
             />
           ) : (
             <span className="text-sm text-slate-400">No logo</span>
@@ -792,70 +792,70 @@ const breadcrumbSchema = {
   </div>
 
   {/* Mobile / Tablet */}
-  <div className="lg:hidden">
-    <div className="space-y-4">
-      <div className="flex min-h-[170px] items-center justify-center overflow-hidden rounded-[28px] border border-slate-200 bg-slate-50 px-6 py-5">
-        {broker.logo ? (
-          <img
-            src={broker.logo}
-            alt={broker.name || "Broker logo"}
-            className="max-h-[110px] w-full object-contain"
-          />
-        ) : (
-          <span className="text-sm text-slate-400">No logo</span>
-        )}
+<div className="lg:hidden">
+  <div className="space-y-4">
+    <div className="flex min-h-[170px] items-center justify-center overflow-hidden rounded-[28px] border border-slate-200 bg-slate-50 px-6 py-5">
+      {broker.logo ? (
+        <img
+          src={broker.logo}
+          alt={broker.name || "Broker logo"}
+          className="h-full w-full object-contain scale-105"
+        />
+      ) : (
+        <span className="text-sm text-slate-400">No logo</span>
+      )}
+    </div>
+
+    <div className="flex flex-wrap items-center gap-3">
+      <div className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 md:text-sm">
+        مراجعة شركة تداول
       </div>
 
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 md:text-sm">
-          مراجعة شركة تداول
+      {broker.rating ? (
+        <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-sm font-bold text-slate-800">
+          <span className="text-amber-500">★</span>
+          <span>{broker.rating}</span>
+          <span className="text-slate-500">من 5</span>
         </div>
+      ) : null}
+    </div>
 
-        {broker.rating ? (
-          <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-sm font-bold text-slate-800">
-            <span className="text-amber-500">★</span>
-            <span>{broker.rating}</span>
-            <span className="text-slate-500">من 5</span>
-          </div>
-        ) : null}
-      </div>
+    <h1 className="text-3xl font-black leading-tight text-slate-950 md:text-4xl">
+      تقييم {broker.name}
+    </h1>
 
-      <h1 className="text-3xl font-black leading-tight text-slate-950 md:text-4xl">
-        تقييم {broker.name}
-      </h1>
+    <ExpandableText
+      text={broker.intro || "مراجعة شاملة لشركة التداول."}
+    />
 
-      <ExpandableText
-        text={broker.intro || "مراجعة شاملة لشركة التداول."}
+    <div className="grid grid-cols-1 gap-3">
+      <ActionButton
+        href={`/go/${broker.slug}?type=real`}
+        label="فتح حساب حقيقي"
+        primary
       />
 
-      <div className="grid grid-cols-1 gap-3">
-        <ActionButton
-          href={`/go/${broker.slug}?type=real`}
-          label="فتح حساب حقيقي"
-          primary
-        />
+      <ActionButton
+        href={`/go/${broker.slug}?type=demo`}
+        label="فتح حساب ديمو"
+      />
 
-        <ActionButton
-          href={`/go/${broker.slug}?type=demo`}
-          label="فتح حساب ديمو"
-        />
+      <ActionButton
+        href={`/go/${broker.slug}?type=mt5`}
+        label="تحميل منصة MetaTrader 5"
+      />
 
-        <ActionButton
-          href={`/go/${broker.slug}?type=mt5`}
-          label="تحميل منصة MetaTrader 5"
-        />
+      <ActionButton
+        href={`/go/${broker.slug}?type=mt4`}
+        label="تحميل منصة MetaTrader 4"
+      />
+    </div>
 
-        <ActionButton
-          href={`/go/${broker.slug}?type=mt4`}
-          label="تحميل منصة MetaTrader 4"
-        />
-      </div>
-
-      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-        <ShareButtons url={pageUrl} title={shareTitle} />
-      </div>
+    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+      <ShareButtons url={pageUrl} title={shareTitle} />
     </div>
   </div>
+</div>
 </section>
         <SectionNav />
 
@@ -1203,10 +1203,10 @@ const breadcrumbSchema = {
               <div className="flex h-24 w-24 items-center justify-center rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                 {broker.logo ? (
                   <img
-                    src={broker.logo}
-                    alt={broker.name || "Broker logo"}
-                    className="max-h-14 w-auto object-contain"
-                  />
+  src={broker.logo}
+  alt={broker.name || "Broker logo"}
+  className="h-[150px] w-full object-contain scale-110"
+/>
                 ) : (
                   <span className="text-xs text-slate-400">No logo</span>
                 )}
