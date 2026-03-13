@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import Script from "next/script";
 import Link from "next/link";
 import ShareButtons from "@/app/components/ShareButtons";
+import ExpandableText from "@/app/components/ExpandableText";
 
 type Broker = {
   id: number;
@@ -211,14 +212,45 @@ function StatCard({
   value: string | number | null;
 }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:shadow-sm">
-      <div className="mb-2 text-sm text-slate-500">{label}</div>
-      <div className="text-2xl font-extrabold text-slate-950 break-words">
+    <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 md:p-5">
+      <div className="mb-1 text-xs font-medium text-slate-500 md:text-sm">
+        {label}
+      </div>
+      <div className="text-lg font-extrabold text-slate-900 md:text-[26px] leading-tight break-words">
         {value ?? "-"}
       </div>
     </div>
   );
 }
+
+function HeroStatCard({
+  label,
+  value,
+  suffix,
+}: {
+  label: string;
+  value: string | number | null;
+  suffix?: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 md:p-5">
+      <div className="mb-1 text-xs font-medium text-slate-500 md:text-sm">
+        {label}
+      </div>
+      <div className="flex items-end gap-1">
+        <span className="text-xl font-extrabold leading-none text-slate-900 md:text-[28px]">
+          {value ?? "-"}
+        </span>
+        {suffix ? (
+          <span className="text-sm font-semibold text-slate-500 md:text-base">
+            {suffix}
+          </span>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
 
 function ActionButton({
   href,
@@ -234,7 +266,7 @@ function ActionButton({
       href={href || "#"}
       target="_blank"
       rel="nofollow sponsored noopener noreferrer"
-      className={`inline-flex items-center justify-center rounded-2xl border px-5 py-3 text-sm font-extrabold transition ${
+      className={`inline-flex min-h-[50px] items-center justify-center rounded-2xl border px-5 py-3 text-sm font-extrabold transition md:text-base ${
         primary
           ? "border-emerald-600 bg-emerald-600 text-white hover:bg-emerald-700"
           : "border-slate-300 bg-white text-slate-900 hover:bg-slate-50"
@@ -245,36 +277,27 @@ function ActionButton({
   );
 }
 
-function SummaryCard({
+function normalizeValue(value: string | number | null) {
+  if (value === null || value === "") return "-";
+  if (value === "Yes") return "نعم";
+  if (value === "No") return "لا";
+  return value;
+}
+
+function SummaryRow({
   label,
   value,
 }: {
   label: string;
   value: string | number | null;
 }) {
-  const icons: Record<string, string> = {
-    "اسم الشركة": "🏢",
-    "سنة التأسيس": "📅",
-    "المقر الرئيسي": "🌍",
-    "التقييم العام": "⭐",
-    "الحد الأدنى للإيداع": "💰",
-    "الرافعة المالية": "⚖️",
-    المنصات: "💻",
-    "التنظيم والتراخيص": "🛡️",
-    "حساب إسلامي": "🕌",
-    "دعم عربي": "🌐",
-    "أنسب فئة": "👥",
-    "الأصول المتاحة": "📊",
-  };
-
   return (
-    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition hover:bg-white hover:shadow-sm">
-      <div className="mb-2 flex items-center gap-2 text-sm text-slate-500">
-        <span>{icons[label] || "ℹ️"}</span>
-        <span>{label}</span>
+    <div className="flex items-center justify-between gap-4 border-b border-slate-200 py-3 last:border-b-0">
+      <div className="text-sm font-medium text-slate-400">
+        {label}
       </div>
-      <div className="text-lg font-extrabold text-slate-900 break-words">
-        {value ?? "-"}
+      <div className="text-left text-[17px] md:text-[18px] font-extrabold text-slate-900 break-words">
+        {normalizeValue(value)}
       </div>
     </div>
   );
@@ -283,10 +306,35 @@ function SummaryCard({
 function ScoreCard({
   label,
   value,
+  row = false,
 }: {
   label: string;
   value: number | null;
+  row?: boolean;
 }) {
+  if (row) {
+    return (
+      <div className="border-b border-slate-100 py-3 last:border-b-0">
+        <div className="mb-2 flex items-center justify-between gap-3">
+          <div className="text-sm font-medium text-slate-400">{label}</div>
+          <div className="flex items-end gap-1">
+            <span className="text-xl font-extrabold text-slate-900">
+              {value ?? "-"}
+            </span>
+            <span className="text-xs font-bold text-emerald-600">/ 5</span>
+          </div>
+        </div>
+
+        <div className="h-2 rounded-full bg-slate-200">
+          <div
+            className="h-2 rounded-full bg-emerald-500"
+            style={{ width: `${((value ?? 0) / 5) * 100}%` }}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
       <div className="mb-3 text-sm text-slate-500">{label}</div>
@@ -672,135 +720,193 @@ const breadcrumbSchema = {
           <span>تقييم {broker.name}</span>
         </div>
 
-        <section className="mb-8 rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-          <div className="grid gap-8 lg:grid-cols-[1fr_280px] lg:items-start">
-            <div>
-              <div className="mb-4 inline-flex rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-600">
-                مراجعة شركة تداول
-              </div>
+        <section className="mb-8 rounded-[32px] border border-slate-200 bg-white p-5 shadow-sm md:p-8">
+  {/* Desktop */}
+  <div className="hidden lg:block">
+    <div className="flex items-stretch gap-8">
+      {/* Right sidebar */}
+      <aside className="flex w-[260px] shrink-0 flex-col justify-between">
+        <div className="flex min-h-[170px] items-center justify-center overflow-hidden rounded-[28px] border border-slate-200 bg-slate-50 px-6 py-5">
+          {broker.logo ? (
+            <img
+              src={broker.logo}
+              alt={broker.name || "Broker logo"}
+              className="max-h-[110px] w-full object-contain"
+            />
+          ) : (
+            <span className="text-sm text-slate-400">No logo</span>
+          )}
+        </div>
 
-              <h1 className="mb-4 text-4xl font-extrabold leading-tight text-slate-950 md:text-6xl">
-                تقييم {broker.name}
-              </h1>
+          <ShareButtons url={pageUrl} title={shareTitle} />
+      </aside>
 
-              <p className="max-w-4xl text-lg leading-9 text-slate-600">
-                {broker.intro || "مراجعة شاملة لشركة التداول."}
-              </p>
-              <div className="mt-8 grid gap-4 grid-cols-2 sm:grid-cols-2 xl:grid-cols-4">
-  <div className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:shadow-sm">
-    <div className="mb-2 text-sm text-slate-500">التقييم</div>
+      {/* Main content */}
+      <div className="min-w-0 flex-1">
+        <div className="mb-4 flex flex-wrap items-center gap-3">
+          <div className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600">
+            مراجعة شركة تداول
+          </div>
 
-    <div className="flex items-center gap-2">
-      <span className="text-2xl font-extrabold text-slate-950">
-        {broker.rating ?? "-"}
-      </span>
-      <span className="text-sm text-slate-500">/5</span>
+          {broker.rating ? (
+            <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-sm font-bold text-slate-800">
+              <span className="text-amber-600">★</span>
+              <span>{broker.rating}</span>
+              <span className="text-slate-500">من 5</span>
+            </div>
+          ) : null}
+        </div>
+
+        <h1 className="mb-4 text-5xl font-black leading-tight text-slate-950">
+          تقييم {broker.name}
+        </h1>
+
+        <p className="max-w-4xl text-lg leading-9 text-slate-600 line-clamp-6">
+          {broker.intro || "مراجعة شاملة لشركة التداول."}
+        </p>
+
+        <div className="mt-8 flex flex-wrap gap-3">
+          <ActionButton
+            href={`/go/${broker.slug}?type=real`}
+            label="فتح حساب حقيقي"
+            primary
+          />
+
+          <ActionButton
+            href={`/go/${broker.slug}?type=demo`}
+            label="فتح حساب ديمو"
+          />
+
+          <ActionButton
+            href={`/go/${broker.slug}?type=mt5`}
+            label="تحميل منصة MT5"
+          />
+
+          <ActionButton
+            href={`/go/${broker.slug}?type=mt4`}
+            label="تحميل منصة MT4"
+          />
+        </div>
+      </div>
     </div>
-
-    
   </div>
 
-  <StatCard
-    label="الحد الأدنى للإيداع"
-    value={broker.min_deposit ?? "-"}
-  />
+  {/* Mobile / Tablet */}
+  <div className="lg:hidden">
+    <div className="space-y-4">
+      <div className="flex min-h-[170px] items-center justify-center overflow-hidden rounded-[28px] border border-slate-200 bg-slate-50 px-6 py-5">
+        {broker.logo ? (
+          <img
+            src={broker.logo}
+            alt={broker.name || "Broker logo"}
+            className="max-h-[110px] w-full object-contain"
+          />
+        ) : (
+          <span className="text-sm text-slate-400">No logo</span>
+        )}
+      </div>
 
-  <StatCard label="المنصات" value={broker.platforms || "-"} />
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 md:text-sm">
+          مراجعة شركة تداول
+        </div>
 
-  <StatCard
-    label="التراخيص"
-    value={broker.regulation_short || "-"}
-  />
-</div>
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex h-[180px] items-center justify-center overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 px-6 py-4">
-  {broker.logo ? (
-    <img
-      src={broker.logo}
-      alt={broker.name || "Broker logo"}
-      className="max-h-[120px] w-full object-contain scale-[2]"
-    />
-  ) : (
-    <span className="text-sm text-slate-400">No logo</span>
-  )}
-</div>
-
-              <div className="grid grid-cols-1 gap-3">
-               <ActionButton
-  href={`/go/${broker.slug}?type=real`}
-  label="فتح حساب حقيقي"
-  primary
-/>
-
-<ActionButton
-  href={`/go/${broker.slug}?type=demo`}
-  label="فتح حساب ديمو"
-/>
-
-<ActionButton
-  href={`/go/${broker.slug}?type=mt5`}
-  label="تحميل منصة MetaTrader 5"
-/>
-
-<ActionButton
-  href={`/go/${broker.slug}?type=mt4`}
-  label="تحميل منصة MetaTrader 4"
-/>
-<div className="mt-1">
-  <ShareButtons url={pageUrl} title={shareTitle} />
-</div>
-              </div>
-            </div>
+        {broker.rating ? (
+          <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-sm font-bold text-slate-800">
+            <span className="text-amber-500">★</span>
+            <span>{broker.rating}</span>
+            <span className="text-slate-500">من 5</span>
           </div>
-        </section>
+        ) : null}
+      </div>
 
+      <h1 className="text-3xl font-black leading-tight text-slate-950 md:text-4xl">
+        تقييم {broker.name}
+      </h1>
+
+      <ExpandableText
+        text={broker.intro || "مراجعة شاملة لشركة التداول."}
+      />
+
+      <div className="grid grid-cols-1 gap-3">
+        <ActionButton
+          href={`/go/${broker.slug}?type=real`}
+          label="فتح حساب حقيقي"
+          primary
+        />
+
+        <ActionButton
+          href={`/go/${broker.slug}?type=demo`}
+          label="فتح حساب ديمو"
+        />
+
+        <ActionButton
+          href={`/go/${broker.slug}?type=mt5`}
+          label="تحميل منصة MetaTrader 5"
+        />
+
+        <ActionButton
+          href={`/go/${broker.slug}?type=mt4`}
+          label="تحميل منصة MetaTrader 4"
+        />
+      </div>
+
+      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+        <ShareButtons url={pageUrl} title={shareTitle} />
+      </div>
+    </div>
+  </div>
+</section>
         <SectionNav />
 
         <SectionCard title="ملخص سريع عن الشركة" id="summary">
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            <SummaryCard label="اسم الشركة" value={broker.name} />
-            <SummaryCard label="سنة التأسيس" value={broker.founded_year} />
-            <SummaryCard label="المقر الرئيسي" value={broker.headquarters} />
-            <SummaryCard label="التقييم العام" value={broker.rating ?? "-"} />
-            <SummaryCard
-              label="الحد الأدنى للإيداع"
-              value={broker.min_deposit ?? "-"}
-            />
-            <SummaryCard label="الرافعة المالية" value={broker.max_leverage} />
-            <SummaryCard label="المنصات" value={broker.platforms} />
-            <SummaryCard
-              label="التنظيم والتراخيص"
-              value={broker.regulation_short}
-            />
-            <SummaryCard label="حساب إسلامي" value={broker.islamic_account} />
-            <SummaryCard label="دعم عربي" value={broker.arabic_support} />
-            <SummaryCard label="أنسب فئة" value={broker.best_for} />
-            <SummaryCard
-              label="الأصول المتاحة"
-              value={tradingAssets.length ? tradingAssets.join("، ") : "-"}
-            />
-          </div>
-        </SectionCard>
+  <div className="grid gap-4 lg:grid-cols-2">
+
+    <div className="rounded-3xl border border-slate-200 bg-white px-5 py-4">
+      <SummaryRow label="اسم الشركة" value={broker.name} />
+      <SummaryRow label="سنة التأسيس" value={broker.founded_year} />
+      <SummaryRow label="المقر الرئيسي" value={broker.headquarters} />
+      <SummaryRow label="التقييم العام" value={broker.rating ?? "-"} />
+      <SummaryRow label="الحد الأدنى للإيداع" value={broker.min_deposit ?? "-"} />
+      <SummaryRow label="الرافعة المالية" value={broker.max_leverage} />
+    </div>
+
+    <div className="rounded-3xl border border-slate-200 bg-white px-5 py-4">
+      <SummaryRow label="المنصات" value={broker.platforms} />
+      <SummaryRow label="التنظيم والتراخيص" value={broker.regulation_short} />
+      <SummaryRow label="حساب إسلامي" value={broker.islamic_account} />
+      <SummaryRow label="دعم عربي" value={broker.arabic_support} />
+      <SummaryRow label="أنسب فئة" value={broker.best_for} />
+      <SummaryRow
+        label="الأصول المتاحة"
+        value={tradingAssets.length ? tradingAssets.join(" | ") : "-"}
+      />
+    </div>
+
+  </div>
+</SectionCard>
 
         <div className="mt-8">
-          <SectionCard title="التقييم التفصيلي" id="scores">
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-              <ScoreCard label="الأمان والتنظيم" value={broker.score_safety} />
-              <ScoreCard label="الرسوم والسبريد" value={broker.score_fees} />
-              <ScoreCard
-                label="منصات التداول"
-                value={broker.score_platforms}
-              />
-              <ScoreCard
-                label="الإيداع والسحب"
-                value={broker.score_deposit}
-              />
-              <ScoreCard label="دعم العملاء" value={broker.score_support} />
-            </div>
-          </SectionCard>
-        </div>
+  <SectionCard title="التقييم التفصيلي" id="scores">
+    {/* Mobile */}
+    <div className="md:hidden rounded-3xl border border-slate-200 bg-white px-5 py-4">
+      <ScoreCard label="الأمان والتنظيم" value={broker.score_safety} row />
+      <ScoreCard label="الرسوم والسبريد" value={broker.score_fees} row />
+      <ScoreCard label="منصات التداول" value={broker.score_platforms} row />
+      <ScoreCard label="الإيداع والسحب" value={broker.score_deposit} row />
+      <ScoreCard label="دعم العملاء" value={broker.score_support} row />
+    </div>
+
+    {/* Desktop */}
+    <div className="hidden md:grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+      <ScoreCard label="الأمان والتنظيم" value={broker.score_safety} />
+      <ScoreCard label="الرسوم والسبريد" value={broker.score_fees} />
+      <ScoreCard label="منصات التداول" value={broker.score_platforms} />
+      <ScoreCard label="الإيداع والسحب" value={broker.score_deposit} />
+      <ScoreCard label="دعم العملاء" value={broker.score_support} />
+    </div>
+  </SectionCard>
+</div>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
           <ListSection title="المميزات" items={pros} type="pros" />
