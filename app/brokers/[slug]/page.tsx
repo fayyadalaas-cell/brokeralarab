@@ -697,9 +697,7 @@ const breadcrumbSchema = {
       <span className="text-sm text-slate-500">/5</span>
     </div>
 
-    <div className="mt-2">
-      {renderStars(broker.rating)}
-    </div>
+    
   </div>
 
   <StatCard
