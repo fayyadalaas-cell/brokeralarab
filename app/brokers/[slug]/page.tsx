@@ -731,7 +731,7 @@ const breadcrumbSchema = {
             <img
               src={broker.logo}
               alt={broker.name || "Broker logo"}
-              className="max-h-[110px] w-full object-contain"
+              className="w-full max-w-[220px] h-auto object-contain"
             />
           ) : (
             <span className="text-sm text-slate-400">No logo</span>
@@ -794,14 +794,14 @@ const breadcrumbSchema = {
   {/* Mobile / Tablet */}
   <div className="lg:hidden">
     <div className="space-y-4">
-      <div className="flex min-h-[170px] items-center justify-center overflow-hidden rounded-[28px] border border-slate-200 bg-slate-50 px-6 py-5">
-        {broker.logo ? (
-          <img
-            src={broker.logo}
-            alt={broker.name || "Broker logo"}
-            className="max-h-[110px] w-full object-contain"
-          />
-        ) : (
+      <div className="flex min-h-[220px] items-center justify-center overflow-hidden rounded-[28px] border border-slate-200 bg-slate-50 px-6 py-5">
+  {broker.logo ? (
+    <img
+      src={broker.logo}
+      alt={broker.name || "Broker logo"}
+      className="max-h-[230px] w-auto max-w-full object-contain"
+    />
+  ) : (
           <span className="text-sm text-slate-400">No logo</span>
         )}
       </div>
