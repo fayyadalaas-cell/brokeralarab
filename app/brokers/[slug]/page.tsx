@@ -165,7 +165,7 @@ export async function generateMetadata({
   type: "article",
   images: [
     {
-      url: `${siteUrl}/brokers/${broker.slug}/opengraph-image`,
+      url: `${siteUrl}/brokers/${broker.slug}/opengraph-image?v=2`,
       width: 1200,
       height: 630,
       alt: `Review ${broker.name}`,
@@ -177,7 +177,7 @@ twitter: {
   card: "summary_large_image",
   title,
   description,
-  images: [`${siteUrl}/brokers/${broker.slug}/opengraph-image`],
+  images: [`${siteUrl}/brokers/${broker.slug}/opengraph-image?v=2`],
   creator: "@brokeralarab",
 },
   };
