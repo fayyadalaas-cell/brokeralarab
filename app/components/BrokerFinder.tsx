@@ -155,9 +155,7 @@ export default function BrokerFinder({ brokers }: Props) {
     <div className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-[0_18px_60px_rgba(15,23,42,0.08)] sm:rounded-[30px] sm:p-6">
       <div className="mb-4 flex items-start justify-between gap-3 sm:mb-6 sm:flex-wrap sm:items-center">
         <div>
-          <div className="text-xs font-bold text-[#1d4ed8] sm:text-sm">
-            Smart Broker Finder
-          </div>
+          
           <h2 className="mt-1 text-xl font-black leading-tight text-[#0f172a] sm:text-2xl">
             اعثر على أفضل 3 شركات تداول تناسبك
           </h2>
