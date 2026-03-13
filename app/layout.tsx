@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Cairo } from "next/font/google";
 import "./globals.css";
+import Script from "next/script";
 import MobileNavMenu from "@/app/components/MobileNavMenu";
 
 const cairo = Cairo({
@@ -58,6 +59,24 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ar" dir="rtl">
+      <head>
+        <Script
+          id="organization-schema"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "بروكر العرب",
+              alternateName: "Broker Al Arab",
+              url: "https://brokeralarab.com",
+              logo: "https://brokeralarab.com/brokers/BrokerLogo.png",
+              sameAs: ["https://www.facebook.com/BrokerAlArab"],
+            }),
+          }}
+        />
+      </head>
+
       <body
         className={`${cairo.variable} bg-[#f4f7fb] font-sans text-[#0f172a] antialiased`}
       >
@@ -68,13 +87,13 @@ export default function RootLayout({
               <Link href="/" className="min-w-0 shrink-0">
                 <div className="flex items-center">
                   <Image
-  src="/brokers/BrokerLogo.png"
-  alt="بروكر العرب"
-  width={260}
-  height={80}
-  priority
-  className="h-auto w-[150px] -translate-y-1 md:w-[220px] md:-translate-y-0"
-/>
+                    src="/brokers/BrokerLogo.png"
+                    alt="بروكر العرب"
+                    width={260}
+                    height={80}
+                    priority
+                    className="h-auto w-[150px] -translate-y-1 md:w-[220px] md:-translate-y-0"
+                  />
                 </div>
               </Link>
 
