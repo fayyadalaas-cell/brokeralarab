@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import ShareButtons from "@/app/components/ShareButtons";
 
 type Broker = {
   id: number;
@@ -260,22 +261,31 @@ function buildFaqJsonLd(left: Broker, right: Broker) {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const [leftSlug, rightSlug] = slug.split("-vs-");
+  const siteUrl = "https://brokeralarab.com";
 
   if (!leftSlug || !rightSlug) {
     return {
+      metadataBase: new URL(siteUrl),
       title: "مقارنة شركات التداول | بروكر العرب",
       description:
         "مقارنات تفصيلية بين شركات التداول من حيث الحسابات والرسوم والتراخيص والمنصات لمساعدة المتداول العربي على اختيار الوسيط المناسب.",
       alternates: {
-        canonical: "https://brokeralarab.com/compare",
+        canonical: `${siteUrl}/compare`,
       },
       openGraph: {
         title: "مقارنة شركات التداول | بروكر العرب",
         description:
           "مقارنات تفصيلية بين شركات التداول من حيث الحسابات والرسوم والتراخيص والمنصات.",
-        url: "https://brokeralarab.com/compare",
-        siteName: "بروكر العرب",
+        url: `${siteUrl}/compare`,
+        siteName: "Broker Al Arab",
+        locale: "ar_AR",
         type: "website",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: "مقارنة شركات التداول | بروكر العرب",
+        description:
+          "مقارنات تفصيلية بين شركات التداول من حيث الحسابات والرسوم والتراخيص والمنصات.",
       },
     };
   }
@@ -295,9 +305,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const leftName = leftBroker?.name || leftSlug;
   const rightName = rightBroker?.name || rightSlug;
 
+  const title = `مقارنة ${leftName} و ${rightName} | الرسوم والمنصات والتراخيص`;
+  const description = `مقارنة شاملة بين ${leftName} و ${rightName} من حيث الحسابات والرسوم والتراخيص والمنصات والحد الأدنى للإيداع لمعرفة أيهما أنسب للمتداول العربي.`;
+  const imageUrl = `${siteUrl}/compare/${slug}/opengraph-image?v=3`;
+
   return {
-    title: `مقارنة ${leftName} و ${rightName} | الرسوم والمنصات والتراخيص`,
-    description: `مقارنة شاملة بين ${leftName} و ${rightName} من حيث الحسابات والرسوم والتراخيص والمنصات والحد الأدنى للإيداع لمعرفة أيهما أنسب للمتداول العربي.`,
+    metadataBase: new URL(siteUrl),
+    title,
+    description,
     keywords: [
       `مقارنة ${leftName} و ${rightName}`,
       `${leftName} vs ${rightName}`,
@@ -308,14 +323,30 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       "بروكر العرب",
     ],
     alternates: {
-      canonical: `https://brokeralarab.com/compare/${slug}`,
+      canonical: `${siteUrl}/compare/${slug}`,
     },
     openGraph: {
-      title: `مقارنة ${leftName} و ${rightName} | بروكر العرب`,
-      description: `مقارنة تفصيلية بين ${leftName} و ${rightName} من حيث الرسوم والمنصات والتراخيص والحسابات.`,
-      url: `https://brokeralarab.com/compare/${slug}`,
-      siteName: "بروكر العرب",
+      title,
+      description,
+      url: `${siteUrl}/compare/${slug}`,
+      siteName: "Broker Al Arab",
+      locale: "ar_AR",
       type: "article",
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: `مقارنة ${leftName} و ${rightName}`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [imageUrl],
+      creator: "@brokeralarab",
     },
   };
 }
@@ -458,6 +489,7 @@ export default async function ComparePage({ params }: PageProps) {
   const [leftSlug, rightSlug] = slug.split("-vs-");
 
   if (!leftSlug || !rightSlug) notFound();
+  
 
   const supabase = await createClient();
 
@@ -488,6 +520,9 @@ export default async function ComparePage({ params }: PageProps) {
   const scalpingWinner = getScalpingWinner(left, right);
   const depositWinner = getBetterValueLabel(left, right);
   const safetyWinner = getSafetyWinner(left, right);
+  const siteUrl = "https://brokeralarab.com";
+  const pageUrl = `${siteUrl}/compare/${slug}`;
+  const shareTitle = `مقارنة ${left.name} و ${right.name} | بروكر العرب`;
 
   const faqJsonLd = buildFaqJsonLd(left, right);
 
@@ -705,10 +740,11 @@ export default async function ComparePage({ params }: PageProps) {
 
   <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8">
     {/* Top intro */}
-    <div className="mb-5 rounded-[28px] border border-[#dbeafe] bg-white/85 p-5 shadow-sm sm:p-6">
+    <div className="relative mb-5 rounded-[28px] border border-[#dbeafe] bg-white/85 p-5 shadow-sm sm:p-6">
       <div className="text-xs font-bold text-[#1d4ed8] sm:text-sm">
         المقارنات / {left.name} vs {right.name}
       </div>
+      
 
       <div className="mt-3 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="min-w-0">
@@ -723,6 +759,7 @@ export default async function ComparePage({ params }: PageProps) {
             <strong>{right.name}</strong> من حيث التقييم، الإيداع، الحساب
             الإسلامي، التراخيص، وأنواع الحسابات حتى تصل إلى قرار أوضح.
           </p>
+          
         </div>
 
         <div className="shrink-0 rounded-2xl border border-[#dbeafe] bg-white px-4 py-3 text-center shadow-sm">
@@ -2282,6 +2319,24 @@ export default async function ComparePage({ params }: PageProps) {
       القرار النهائي يعتمد دائمًا على نوع الحساب الذي ستفتحه فعليًا وطبيعة أسلوبك
       في التداول.
     </p>
+  </div>
+</section>
+
+<section className="mx-auto max-w-7xl px-4 pb-6 sm:px-6 lg:px-8">
+  <div className="rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-sm">
+
+    <h3 className="text-lg font-bold text-[#0f172a]">
+      شارك هذه المقارنة مع أصدقائك
+    </h3>
+
+    <p className="mt-1 text-sm text-slate-500">
+      قد تساعد هذه المقارنة متداولين آخرين على اختيار الوسيط المناسب
+    </p>
+
+    <div className="mt-4 flex justify-center">
+      <ShareButtons url={pageUrl} title={shareTitle} />
+    </div>
+
   </div>
 </section>
 
