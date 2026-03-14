@@ -392,7 +392,7 @@ function BrokerHeadToHeadCard({
           <span className="text-xl font-black sm:text-2xl">
             {broker.rating?.toFixed(1) ?? "—"}
           </span>
-          <span className="text-[10px] font-bold">من 10</span>
+          <span className="text-[10px] font-bold">من 5</span>
         </div>
       </div>
 
@@ -582,8 +582,8 @@ export default async function ComparePage({ params }: PageProps) {
   const comparisonRows = [
     {
       label: "التقييم",
-      leftValue: `${left.rating?.toFixed(1) ?? "—"} / 10`,
-      rightValue: `${right.rating?.toFixed(1) ?? "—"} / 10`,
+      leftValue: `${left.rating?.toFixed(1) ?? "—"} / 5`,
+      rightValue: `${right.rating?.toFixed(1) ?? "—"} / 5`,
       winner:
         (left.rating ?? 0) > (right.rating ?? 0)
           ? left.name
@@ -803,7 +803,7 @@ export default async function ComparePage({ params }: PageProps) {
                 <span className="text-xl font-black sm:text-2xl">
                   {left.rating?.toFixed(1) ?? "—"}
                 </span>
-                <span className="text-[10px] font-bold">من 10</span>
+                <span className="text-[10px] font-bold">من 5</span>
               </div>
             </div>
 
@@ -911,7 +911,7 @@ export default async function ComparePage({ params }: PageProps) {
                 <span className="text-xl font-black sm:text-2xl">
                   {right.rating?.toFixed(1) ?? "—"}
                 </span>
-                <span className="text-[10px] font-bold">من 10</span>
+                <span className="text-[10px] font-bold">من 5</span>
               </div>
             </div>
 
@@ -1005,7 +1005,7 @@ export default async function ComparePage({ params }: PageProps) {
 
               <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl border border-[#bfdbfe] bg-white text-[#1d4ed8]">
                 <span className="text-lg font-black">{left.rating?.toFixed(1) ?? "—"}</span>
-                <span className="text-[10px] font-bold">من 10</span>
+                <span className="text-[10px] font-bold">من 5</span>
               </div>
             </div>
 
@@ -1086,7 +1086,7 @@ export default async function ComparePage({ params }: PageProps) {
 
               <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl border border-[#bfdbfe] bg-white text-[#1d4ed8]">
                 <span className="text-lg font-black">{right.rating?.toFixed(1) ?? "—"}</span>
-                <span className="text-[10px] font-bold">من 10</span>
+                <span className="text-[10px] font-bold">من 5</span>
               </div>
             </div>
 
