@@ -71,7 +71,10 @@ export default function RootLayout({
               alternateName: "Broker Al Arab",
               url: "https://brokeralarab.com",
               logo: "https://brokeralarab.com/brokers/BrokerLogo.png",
-              sameAs: ["https://www.facebook.com/BrokerAlArab"],
+              sameAs: [
+              "https://www.facebook.com/BrokerAlArab",
+              "https://x.com/brokeralarab"
+                      ],
             }),
           }}
         />
