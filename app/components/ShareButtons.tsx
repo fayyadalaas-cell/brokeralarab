@@ -13,30 +13,33 @@ export default function ShareButtons({
   const iconBtnClass =
     "inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-300 bg-white transition hover:bg-slate-50 hover:border-slate-400";
 
-  const handleFacebookClick = async () => {
-    const isMobile =
-      /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(
-        navigator.userAgent
-      );
+const handleFacebookClick = async () => {
+  const isMobile =
+    /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(
+      navigator.userAgent
+    );
 
-    if (isMobile && navigator.share) {
-      try {
-        await navigator.share({
-          title,
-          url,
-        });
+  if (isMobile && navigator.share) {
+    try {
+      await navigator.share({
+        title,
+        url,
+      });
+      return;
+    } catch (error: any) {
+      // إذا المستخدم أغلق نافذة الشير، لا تعمل شيئًا
+      if (error?.name === "AbortError") {
         return;
-      } catch {
-        // إذا المستخدم سكر نافذة الشير أو فشل، نرجع للفيسبوك العادي
       }
     }
+  }
 
-    window.open(
-      `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
-      "_blank",
-      "noopener,noreferrer"
-    );
-  };
+  window.open(
+    `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+    "_blank",
+    "noopener,noreferrer"
+  );
+};
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
