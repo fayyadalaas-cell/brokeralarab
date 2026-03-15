@@ -914,7 +914,6 @@ const breadcrumbSchema = {
         </div>
 
         <div className="mt-8 space-y-8">
-          <TextSection title="نظرة عامة على الشركة" text={broker.intro} />
 
           <SectionCard title="أنواع حسابات التداول" id="accounts">
   <div className="space-y-5">
