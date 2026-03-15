@@ -13,6 +13,31 @@ export default function ShareButtons({
   const iconBtnClass =
     "inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-300 bg-white transition hover:bg-slate-50 hover:border-slate-400";
 
+  const handleFacebookClick = async () => {
+    const isMobile =
+      /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(
+        navigator.userAgent
+      );
+
+    if (isMobile && navigator.share) {
+      try {
+        await navigator.share({
+          title,
+          url,
+        });
+        return;
+      } catch {
+        // إذا المستخدم سكر نافذة الشير أو فشل، نرجع للفيسبوك العادي
+      }
+    }
+
+    window.open(
+      `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
+  };
+
   return (
     <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
       <div className="mb-3 text-center text-sm font-bold text-slate-700">
@@ -21,10 +46,9 @@ export default function ShareButtons({
 
       <div className="flex items-center justify-center gap-3">
         {/* Facebook */}
-        <a
-          href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`}
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          type="button"
+          onClick={handleFacebookClick}
           aria-label="Share on Facebook"
           title="Facebook"
           className={`${iconBtnClass} text-[#1877F2]`}
@@ -36,7 +60,7 @@ export default function ShareButtons({
           >
             <path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.88 3.77-3.88 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0 0 22 12z" />
           </svg>
-        </a>
+        </button>
 
         {/* X */}
         <a
