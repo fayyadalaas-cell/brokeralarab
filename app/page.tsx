@@ -214,187 +214,160 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
 
-{/* HERO - NEW STYLE */}
-<section className="relative overflow-hidden border-b border-slate-200 bg-[#f7faff]">
+{/* HERO - DESKTOP REDESIGN / MOBILE KEEP */}
+<section className="relative overflow-hidden border-b border-slate-800 bg-[#07111f]">
   <div className="absolute inset-0">
-    <div className="absolute right-[-140px] top-[-120px] h-[320px] w-[320px] rounded-full bg-[rgba(37,99,235,0.10)] blur-3xl" />
-    <div className="absolute left-[-100px] bottom-[-140px] h-[280px] w-[280px] rounded-full bg-[rgba(16,185,129,0.06)] blur-3xl" />
-    <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.65)_0%,rgba(255,255,255,0)_100%)]" />
+    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.18),transparent_24%)]" />
+    <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(14,165,233,0.10),transparent_30%)]" />
+    <div className="absolute right-[-120px] top-[-120px] h-[320px] w-[320px] rounded-full bg-[#2563eb]/15 blur-3xl" />
+    <div className="absolute left-[-80px] bottom-[-100px] h-[260px] w-[260px] rounded-full bg-[#0ea5e9]/10 blur-3xl" />
+    <div className="absolute inset-0 opacity-[0.04] [background-image:linear-gradient(rgba(255,255,255,0.7)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.7)_1px,transparent_1px)] [background-size:48px_48px]" />
   </div>
 
-  <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
-    <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
-      {/* RIGHT CONTENT */}
-      <div className="lg:w-[64%]">
+  {(() => {
+    const heroBrokers = Array.from(
+      ((brokers || []) as Broker[]).reduce((acc, broker) => {
+        if (!broker || !broker.name) return acc;
 
-        <h1 className="max-w-4xl text-[30px] font-black leading-[1.12] tracking-[-0.02em] text-[#0f172a] sm:text-[40px] lg:text-[52px]">
-          قارن الوسطاء بثقة
-          <span className="mt-2 block text-[#2563eb]">
-            واختر الأنسب لتجربتك
-          </span>
-        </h1>
+        const key = String(broker.name).trim().toLowerCase();
+        const existing = acc.get(key);
 
-        <p className="mt-5 max-w-2xl text-[15px] leading-8 text-slate-600 sm:text-[17px]">
-          راجع التراخيص، الرسوم، المنصات وأنواع الحسابات في مكان واحد،
-          ثم اعثر على شركة التداول الأقرب لاحتياجاتك الفعلية بدلًا من
-          الاختيار العشوائي أو التأثر بالإعلانات.
-        </p>
+        if (!existing || Number(broker.rating || 0) > Number(existing.rating || 0)) {
+          acc.set(key, broker);
+        }
 
-        <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-          <a
-            href="#finder"
-            className="inline-flex min-h-[50px] items-center justify-center rounded-2xl bg-[#2563eb] px-6 py-3 text-sm font-extrabold text-white shadow-[0_14px_34px_rgba(37,99,235,0.24)] transition hover:-translate-y-0.5 hover:bg-[#1d4ed8]"
-          >
-            ابدأ المقارنة السريعة
-          </a>
+        return acc;
+      }, new Map<string, Broker>()).values()
+    )
+      .sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0))
+      .slice(0, 3)
+      .map((b, index) => ({
+        id: b.id,
+        name: b.name || "Broker",
+        slug: b.slug || "",
+        rating: b.rating ? Number(b.rating).toFixed(1) : "—",
+        deposit:
+          b.min_deposit !== null && b.min_deposit !== undefined
+            ? money(b.min_deposit)
+            : "غير محدد",
+        subtitle: b.best_for || "شركة تداول موصى بها",
+        logo: b.logo || null,
+        rank: index + 1,
+      }));
 
-          <Link
-            href="/compare"
-            className="inline-flex min-h-[50px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-extrabold text-slate-800 shadow-sm transition hover:bg-slate-50"
-          >
-            تصفح المقارنات
-          </Link>
-        </div>
+    return (
+      <>
+        {/* DESKTOP */}
+<div className="hidden lg:block">
+  <div className="relative mx-auto max-w-7xl px-6 pt-4 pb-10">
 
-        <div className="mt-7 grid max-w-2xl grid-cols-1 gap-3 sm:grid-cols-3">
-          <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-            <div className="text-[11px] font-bold text-slate-400">التركيز</div>
-            <div className="mt-1 text-sm font-black text-[#0f172a]">
-              مراجعات واضحة
-            </div>
-          </div>
+    <div className="mx-auto max-w-[980px] text-center">
+        
+      
 
-          <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-            <div className="text-[11px] font-bold text-slate-400">النتيجة</div>
-            <div className="mt-1 text-sm font-black text-[#0f172a]">
-              مقارنة سهلة وسريعة
-            </div>
-          </div>
+      <h1 className="mt-7 mx-auto max-w-[880px] text-[54px] xl:text-[64px] font-black leading-[1.15] tracking-[-0.02em] text-white">
 
-          <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-            <div className="text-[11px] font-bold text-slate-400">الملاءمة</div>
-            <div className="mt-1 text-sm font-black text-[#0f172a]">
-              مناسب للمتداول العربي
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* LEFT PANEL - DESKTOP ONLY */}
-<div className="hidden lg:block lg:w-[42%] lg:max-w-[460px]">
-  <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
-    <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-[11px] font-bold text-slate-400 sm:text-xs">
-            لمحة سريعة
-          </p>
-          <h2 className="mt-1 text-base font-black text-[#0f172a] sm:text-lg">
-            مقارنة بين أبرز الوسطاء
-          </h2>
-        </div>
-
-        <span className="inline-flex rounded-full border border-[#bfdbfe] bg-[#eff6ff] px-3 py-1.5 text-[11px] font-extrabold text-[#1d4ed8] sm:text-xs">
-          محدثة باستمرار
+        قارن الوسطاء بثقة
+        <span className="mt-3 block bg-[linear-gradient(90deg,#93c5fd_0%,#60a5fa_25%,#3b82f6_58%,#93c5fd_100%)] bg-clip-text text-transparent">
+          واختر الأنسب لتداولك
         </span>
-      </div>
-    </div>
+      </h1>
 
-    <div className="p-4 sm:p-5">
-      <div className="overflow-hidden rounded-[24px] border border-slate-200">
-        <div className="grid grid-cols-[70px_1fr_90px] bg-slate-50 px-4 py-3 text-[11px] font-bold text-slate-500 sm:text-xs">
-          <div className="text-center">التقييم</div>
-          <div>الوسيط</div>
-          <div className="text-left">الإيداع</div>
-        </div>
+      <p className="mx-auto mt-7 max-w-[850px] text-[20px] leading-10 text-slate-300">
+        راجع التراخيص والرسوم والمنصات وأنواع الحسابات في مكان واحد بشكل واضح
+        وعملي، ثم اختر شركة التداول الأقرب لاحتياجاتك الفعلية بدلًا من الاعتماد
+        على الإعلانات أو الاختيار العشوائي.
+      </p>
 
-        {[
-          {
-            name: featured?.name || "Exness",
-            slug: featured?.slug || "exness",
-            rating: featured?.rating?.toFixed(1) || "4.5",
-            deposit: money(featured?.min_deposit) || "$10",
-            subtitle: featured?.best_for || "للمبتدئين والمتداولين العرب",
-            tag: "الأعلى تقييمًا",
-          },
-          {
-            name: "XM",
-            slug: "xm",
-            rating: "4.5",
-            deposit: "$5",
-            subtitle: "للمبتدئين وتداول الفوركس",
-            tag: "إيداع منخفض",
-          },
-          {
-            name: "Equiti",
-            slug: "equiti",
-            rating: "4.4",
-            deposit: "$30",
-            subtitle: "للتداول في الشرق الأوسط",
-            tag: "حضور إقليمي",
-          },
-        ].map((broker, index) => (
-          <Link
-            key={broker.slug}
-            href={`/brokers/${broker.slug}`}
-            className={`grid grid-cols-[70px_1fr_90px] items-center gap-3 px-4 py-4 transition hover:bg-slate-50 ${
-              index !== 2 ? "border-b border-slate-100" : ""
-            }`}
-          >
-            <div className="text-center">
-              <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-2xl bg-[#eff6ff] text-sm font-black text-[#1d4ed8] ring-1 ring-[#bfdbfe]">
-                {broker.rating}
-              </div>
-            </div>
-
-            <div className="min-w-0">
-              <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between lg:gap-4">
-                <h3 className="text-lg font-black text-[#0f172a] transition hover:text-[#2563eb]">
-                  {broker.name}
-                </h3>
-                <span className="inline-flex w-fit rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-bold text-slate-500">
-                  {broker.tag}
-                </span>
-              </div>
-
-              <p className="mt-1 truncate text-xs text-slate-500 sm:text-sm">
-                {broker.subtitle}
-              </p>
-            </div>
-
-            <div className="text-left">
-              <div className="text-sm font-black text-[#0f172a]">
-                {broker.deposit}
-              </div>
-              <div className="mt-1 text-[11px] font-bold text-slate-400">
-                حد أدنى
-              </div>
-            </div>
-          </Link>
-        ))}
-      </div>
-
-      <div className="mt-4 grid grid-cols-2 gap-3">
+      <div className="mt-10 flex items-center justify-center gap-4">
         <a
           href="#finder"
-          className="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
+          className="inline-flex min-h-[62px] min-w-[250px] items-center justify-center rounded-2xl bg-[#2563eb] px-7 py-3 text-[15px] font-extrabold text-white shadow-[0_22px_50px_rgba(37,99,235,0.34)] transition duration-200 hover:-translate-y-0.5 hover:bg-[#1d4ed8]"
         >
-          اعرض أفضل الخيارات
+          ابدأ مقارنة الوسطاء
         </a>
 
         <Link
-          href="/compare"
-          className="inline-flex min-h-[48px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
+          href="/best-brokers"
+          className="inline-flex min-h-[62px] min-w-[230px] items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-7 py-3 text-[15px] font-extrabold text-white backdrop-blur transition duration-200 hover:bg-white/10"
         >
-          تصفح المقارنات
+          تصفح أفضل الوسطاء
         </Link>
       </div>
-    </div>
-  </div>
-</div>
-    </div>
-  </div>
+
+      <div className="mt-12 grid grid-cols-3 gap-4">
+        <div className="rounded-[24px] border border-white/10 bg-white/[0.04] px-6 py-5 backdrop-blur">
+          <div className="text-[13px] font-bold text-slate-400">مقارنة واضحة</div>
+          <div className="mt-2 text-[20px] font-black text-white">
+            التراخيص والرسوم والمنصات
+          </div>
+        </div>
+
+        <div className="rounded-[24px] border border-white/10 bg-white/[0.04] px-6 py-5 backdrop-blur">
+          <div className="text-[13px] font-bold text-slate-400">ترشيحات عملية</div>
+          <div className="mt-2 text-[20px] font-black text-white">
+            حسب احتياجك الفعلي
+          </div>
+        </div>
+
+        <div className="rounded-[24px] border border-white/10 bg-white/[0.04] px-6 py-5 backdrop-blur">
+          <div className="text-[13px] font-bold text-slate-400">واجهة عربية</div>
+          <div className="mt-2 text-[20px] font-black text-white">
+            مناسبة للمتداول العربي
+          </div>
+        </div>
+      </div>
+
+
+
+            
+            </div>
+          </div>
+        </div>
+
+        {/* MOBILE - KEEP AS IS */}
+        <div className="lg:hidden">
+          <div className="relative mx-auto max-w-7xl px-4 pt-2 pb-6 sm:px-6">
+            <div className="grid items-center gap-10">
+              <div className="order-1">
+                <h1 className="mt-3 max-w-4xl text-[30px] font-black leading-[1.2] tracking-[-0.03em] text-white sm:text-[46px]">
+                  قارن الوسطاء بثقة
+                  <span className="mt-2 block bg-[linear-gradient(90deg,#60a5fa_0%,#3b82f6_45%,#93c5fd_100%)] bg-clip-text text-transparent">
+                    واختر الأنسب لتجربتك
+                  </span>
+                </h1>
+
+                <p className="mt-5 max-w-2xl text-[15px] leading-8 text-slate-300 sm:text-[17px] sm:leading-8">
+                  راجع التراخيص والرسوم والمنصات وأنواع الحسابات في مكان واحد، ثم
+                  اعثر على شركة التداول الأقرب لاحتياجاتك الفعلية بدلًا من الاختيار
+                  العشوائي أو التأثر بالإعلانات.
+                </p>
+
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                  <a
+                    href="#finder"
+                    className="inline-flex min-h-[56px] items-center justify-center rounded-2xl bg-[#2563eb] px-6 py-3 text-sm font-extrabold text-white shadow-[0_18px_40px_rgba(37,99,235,0.26)] transition hover:-translate-y-0.5 hover:bg-[#1d4ed8] sm:min-w-[220px]"
+                  >
+                    ابدأ مقارنة الوسطاء
+                  </a>
+
+                  <Link
+                    href="/best-brokers"
+                    className="inline-flex min-h-[56px] items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-6 py-3 text-sm font-extrabold text-white backdrop-blur transition hover:bg-white/15 sm:min-w-[200px]"
+                  >
+                    تصفح أفضل الوسطاء
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  })()}
 </section>
+
       {/* FINDER */}
 <section
   id="finder"

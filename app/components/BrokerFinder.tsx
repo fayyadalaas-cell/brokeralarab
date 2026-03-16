@@ -14,6 +14,17 @@ type Broker = {
   best_for: string | null;
   islamic_account: string | null;
   arabic_support: string | null;
+  logo?: string | null;
+  open_account_url?: string | null;
+
+  priority_jordan?: number | null;
+  priority_saudi?: number | null;
+  priority_kuwait?: number | null;
+  priority_uae?: number | null;
+  priority_qatar?: number | null;
+  priority_bahrain?: number | null;
+  priority_oman?: number | null;
+  priority_egypt?: number | null;
 };
 
 type Props = {
@@ -47,6 +58,91 @@ function shortText(value: string | null | undefined, max = 26) {
   return `${text.slice(0, max)}...`;
 }
 
+function getBrokerInitials(name: string | null | undefined) {
+  const text = (name || "Broker").trim();
+  return text.slice(0, 2).toUpperCase();
+}
+
+function getCountryPriority(broker: Broker, country: string) {
+  switch (country) {
+    case "sa":
+      return broker.priority_saudi ?? 3;
+    case "jo":
+      return broker.priority_jordan ?? 3;
+    case "kw":
+      return broker.priority_kuwait ?? 3;
+    case "ae":
+      return broker.priority_uae ?? 3;
+    case "qa":
+      return broker.priority_qatar ?? 3;
+    case "bh":
+      return broker.priority_bahrain ?? 3;
+    case "om":
+      return broker.priority_oman ?? 3;
+    case "eg":
+      return broker.priority_egypt ?? 3;
+    default:
+      return 3;
+  }
+}
+
+function priorityScore(priority: number | null | undefined) {
+  switch (priority) {
+    case 1:
+      return 8;
+    case 2:
+      return 4;
+    case 3:
+      return 1;
+    default:
+      return 0;
+  }
+}
+
+function getRecommendationLabel(
+  broker: Broker,
+  index: number,
+  experience: Experience | "",
+  deposit: DepositRange | "",
+  hasSearched: boolean
+) {
+  const bestFor = normalize(broker.best_for);
+
+  if (index === 0) return "أفضل اختيار";
+  if (bestFor.includes("مبتدئ") || bestFor.includes("المبتدئين")) return "مناسب للمبتدئين";
+  if ((broker.min_deposit ?? 999999) <= 10) return "إيداع منخفض";
+  if ((broker.min_deposit ?? 999999) <= 50) return "بداية سهلة";
+  if (bestFor.includes("سكالب") || bestFor.includes("المحترفين")) return "للمتداول المحترف";
+  if (bestFor.includes("اليومي") || bestFor.includes("النشط")) return "للتداول النشط";
+
+  if (hasSearched) {
+    if (experience === "beginner") return "يناسب خبرتك";
+    if (experience === "intermediate") return "خيار متوازن";
+    if (experience === "pro") return "مناسب للمحترفين";
+    if (deposit === "under50") return "ميزانية منخفضة";
+  }
+
+  return "خيار موصى به";
+}
+
+function getLogoNode(broker: Broker) {
+  if (broker.logo) {
+    return (
+      <img
+        src={broker.logo}
+        alt={broker.name || "Broker logo"}
+        className="h-14 w-14 rounded-2xl object-contain sm:h-16 sm:w-16"
+      />
+    );
+  }
+
+  return (
+    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#eff6ff] to-[#dbeafe] text-base font-black text-[#1d4ed8] sm:h-16 sm:w-16 sm:text-lg">
+      {getBrokerInitials(broker.name)}
+    </div>
+  );
+}
+
 export default function BrokerFinder({ brokers }: Props) {
   const [country, setCountry] = useState("");
   const [deposit, setDeposit] = useState<DepositRange | "">("");
@@ -68,6 +164,7 @@ export default function BrokerFinder({ brokers }: Props) {
 
     const scored = brokers.map((broker) => {
       let score = 0;
+
       const reg = normalize(broker.regulation);
       const bestFor = normalize(broker.best_for);
       const platforms = normalize(broker.platforms);
@@ -75,6 +172,15 @@ export default function BrokerFinder({ brokers }: Props) {
         normalize(broker.islamic_account).includes("yes") ||
         normalize(broker.islamic_account).includes("متوفر");
 
+      const countryPriority = getCountryPriority(broker, country);
+
+      // 1) التقييم أولًا
+      score += (broker.rating || 0) * 5;
+
+      // 2) أولوية الدولة ثانيًا
+      score += priorityScore(countryPriority);
+
+      // 3) تحسين النتائج حسب الفلاتر
       if (hasActiveFilters) {
         const maxDeposit = depositValue(deposit as DepositRange);
 
@@ -119,7 +225,16 @@ export default function BrokerFinder({ brokers }: Props) {
           }
         }
 
-        if (country === "sa" || country === "ae" || country === "kw" || country === "eg") {
+        if (
+          country === "sa" ||
+          country === "ae" ||
+          country === "kw" ||
+          country === "qa" ||
+          country === "bh" ||
+          country === "om" ||
+          country === "eg" ||
+          country === "jo"
+        ) {
           if (
             reg.includes("cysec") ||
             reg.includes("fca") ||
@@ -132,12 +247,22 @@ export default function BrokerFinder({ brokers }: Props) {
         }
       }
 
-      score += Math.round((broker.rating || 0) / 2);
-
-      return { ...broker, score };
+      return {
+        ...broker,
+        score,
+        countryPriority,
+      };
     });
 
-    return scored.sort((a, b) => b.score - a.score).slice(0, 3);
+    return scored
+      .sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        if ((a.countryPriority ?? 3) !== (b.countryPriority ?? 3)) {
+          return (a.countryPriority ?? 3) - (b.countryPriority ?? 3);
+        }
+        return (b.rating || 0) - (a.rating || 0);
+      })
+      .slice(0, 3);
   }, [brokers, country, deposit, experience, islamic, platform, hasSearched, canSearch]);
 
   function handleSearch() {
@@ -152,287 +277,431 @@ export default function BrokerFinder({ brokers }: Props) {
   }
 
   return (
-    <div className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-[0_18px_60px_rgba(15,23,42,0.08)] sm:rounded-[30px] sm:p-6">
-      <div className="mb-4 flex items-start justify-between gap-3 sm:mb-6 sm:flex-wrap sm:items-center">
-        <div>
-          
-          <h2 className="mt-1 text-xl font-black leading-tight text-[#0f172a] sm:text-2xl">
-            اعثر على أفضل 3 شركات تداول تناسبك
-          </h2>
-          <p className="mt-2 text-[13px] leading-6 text-slate-600 sm:text-sm sm:leading-7">
-            اختر الدولة وبعض التفضيلات الأساسية، ثم سنرتب لك أفضل 3 شركات بشكل
-            سريع وواضح.
-          </p>
-        </div>
+    <section className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_22px_70px_rgba(15,23,42,0.08)] sm:rounded-[34px]">
+      <div className="border-b border-slate-200 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-5 sm:px-6 sm:py-7">
+        <div className="flex items-start justify-between gap-4">
+          <div className="max-w-3xl">
+            
 
-        <div className="hidden sm:block">
-          <span className="rounded-full border border-[#bfdbfe] bg-[#eff6ff] px-3 py-1 text-xs font-bold text-[#1d4ed8]">
-            فلتر ذكي
-          </span>
-        </div>
-      </div>
+            <h2 className="mt-3 text-2xl font-black leading-tight text-[#0f172a] sm:text-[2rem]">
+              اعثر على أفضل 3 شركات تداول تناسبك
+            </h2>
 
-      <div className="mb-4 sm:hidden">
-        <button
-          type="button"
-          onClick={() => setShowMobileFilters((prev) => !prev)}
-          className="inline-flex w-full items-center justify-center rounded-2xl border border-[#bfdbfe] bg-[#eff6ff] px-4 py-3 text-sm font-extrabold text-[#1d4ed8] transition hover:bg-[#dbeafe]"
-        >
-          {showMobileFilters ? "إخفاء خيارات البحث" : "اختيار الدولة والتفضيلات"}
-        </button>
-      </div>
-
-      <div className={`${showMobileFilters ? "block" : "hidden"} sm:block`}>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <div>
-            <label className="mb-2 block text-sm font-bold text-slate-700">الدولة</label>
-            <select
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
-              className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-[#2563eb]"
-            >
-              <option value="">اختر الدولة</option>
-              <option value="sa">السعودية</option>
-              <option value="ae">الإمارات</option>
-              <option value="kw">الكويت</option>
-              <option value="eg">مصر</option>
-              <option value="jo">الأردن</option>
-              <option value="other">دول أخرى</option>
-            </select>
+            <p className="mt-2 max-w-2xl text-[13px] leading-7 text-slate-600 sm:text-sm">
+              اختر الدولة وبعض التفضيلات الأساسية، وسنعرض لك أفضل الشركات المناسبة
+              بناءً على التقييم العام وأولوية كل شركة داخل الدولة المختارة.
+            </p>
           </div>
 
-          <div>
-            <label className="mb-2 block text-sm font-bold text-slate-700">قيمة الإيداع</label>
-            <select
-              value={deposit}
-              onChange={(e) => setDeposit(e.target.value as DepositRange | "")}
-              className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-[#2563eb]"
-            >
-              <option value="">اختر قيمة الإيداع</option>
-              <option value="under50">أقل من 50$</option>
-              <option value="50to200">من 50$ إلى 200$</option>
-              <option value="200to1000">من 200$ إلى 1000$</option>
-              <option value="over1000">أكثر من 1000$</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-bold text-slate-700">مستوى الخبرة</label>
-            <select
-              value={experience}
-              onChange={(e) => setExperience(e.target.value as Experience | "")}
-              className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-[#2563eb]"
-            >
-              <option value="">اختر مستوى الخبرة</option>
-              <option value="beginner">مبتدئ</option>
-              <option value="intermediate">متوسط</option>
-              <option value="pro">محترف</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-bold text-slate-700">المنصة</label>
-            <select
-              value={platform}
-              onChange={(e) => setPlatform(e.target.value as PlatformPref | "")}
-              className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-[#2563eb]"
-            >
-              <option value="">اختر المنصة</option>
-              <option value="any">أي منصة</option>
-              <option value="mt4">MT4</option>
-              <option value="mt5">MT5</option>
-            </select>
-          </div>
-        </div>
-
-        <div className="mt-3 sm:mt-4">
-          <button
-            type="button"
-            onClick={handleSearch}
-            disabled={!canSearch}
-            className={`inline-flex w-full items-center justify-center rounded-2xl px-4 py-3 text-sm font-extrabold transition sm:w-auto sm:min-w-[220px] ${
-              canSearch
-                ? "bg-[#2563eb] text-white shadow-[0_12px_24px_rgba(37,99,235,0.22)] hover:bg-[#1d4ed8]"
-                : "cursor-not-allowed bg-slate-200 text-slate-400"
-            }`}
-          >
-            اعرض أفضل 3 شركات
-          </button>
-        </div>
-      </div>
-
-      <div className="mt-5 rounded-[20px] border border-slate-200 bg-[#f8fbff] p-3 sm:mt-6 sm:rounded-[24px] sm:p-4">
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <div className="text-sm font-black text-[#0f172a]">أفضل 3 نتائج لك</div>
-          <div className="text-[11px] font-bold text-slate-500 sm:text-xs">
-            {hasSearched ? "بناءً على اختياراتك" : "أفضل الخيارات الحالية"}
-          </div>
-        </div>
-
-        {/* MOBILE LIST */}
-        <div className="space-y-2 sm:hidden">
-          {results.map((broker, index) => {
-            const isOpen = expandedMobileId === broker.id;
-
-            return (
-              <div
-                key={broker.id}
-                className="overflow-hidden rounded-[18px] border border-slate-200 bg-white"
-              >
-                <button
-                  type="button"
-                  onClick={() => toggleMobileRow(broker.id)}
-                  className="flex w-full items-center justify-between gap-3 px-3 py-3 text-right"
-                >
-                  <div className="flex min-w-0 items-center gap-3">
-                    <span className="inline-flex h-7 min-w-7 items-center justify-center rounded-full bg-[#2563eb] px-2 text-xs font-black text-white">
-                      {index + 1}
-                    </span>
-
-                    <div className="min-w-0">
-                      <div className="truncate text-base font-black text-[#0f172a]">
-                        {broker.name}
-                      </div>
-                      <div className="mt-0.5 text-[11px] font-bold text-[#1d4ed8]">
-                        {shortText(broker.best_for || "مناسب لفئات متعددة", 22)}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <div className="text-center">
-                      <div className="text-base font-black text-[#1d4ed8]">
-                        {broker.rating?.toFixed(1) ?? "—"}
-                      </div>
-                      <div className="text-[9px] font-bold text-slate-500">من 5</div>
-                    </div>
-
-                    <span className="text-slate-400">{isOpen ? "⌃" : "⌄"}</span>
-                  </div>
-                </button>
-
-                {isOpen && (
-                  <div className="border-t border-slate-100 px-3 pb-3 pt-2">
-                    <div className="space-y-2">
-                      <div className="grid grid-cols-[90px_1fr] items-center gap-2 rounded-xl bg-slate-50 px-3 py-2 text-sm">
-                        <span className="text-slate-500">الإيداع</span>
-                        <span className="truncate font-black text-[#0f172a]">
-                          {broker.min_deposit !== null ? `$${broker.min_deposit}` : "غير محدد"}
-                        </span>
-                      </div>
-
-                      <div className="grid grid-cols-[90px_1fr] items-center gap-2 rounded-xl bg-slate-50 px-3 py-2 text-sm">
-                        <span className="text-slate-500">المنصات</span>
-                        <span className="truncate font-black text-[#0f172a]">
-                          {shortText(broker.platforms || "غير محدد", 18)}
-                        </span>
-                      </div>
-
-                      <div className="grid grid-cols-[90px_1fr] items-center gap-2 rounded-xl bg-slate-50 px-3 py-2 text-sm">
-                        <span className="text-slate-500">التراخيص</span>
-                        <span className="truncate font-black text-[#0f172a]">
-                          {shortText(broker.regulation || "غير محدد", 20)}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="mt-3 grid grid-cols-2 gap-2">
-                      <Link
-                        href={`/brokers/${broker.slug}`}
-                        className="inline-flex items-center justify-center rounded-2xl bg-[#2563eb] px-3 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
-                      >
-                        اقرأ التقييم
-                      </Link>
-
-                      <Link
-                        href="/compare"
-                        className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-3 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
-                      >
-                        قارن الآن
-                      </Link>
-                    </div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-
-        {/* DESKTOP CARDS - unchanged style */}
-        <div className="hidden gap-3 sm:grid lg:grid-cols-3 lg:gap-4">
-          {results.map((broker, index) => (
-            <div
-              key={broker.id}
-              className="rounded-[20px] border border-slate-200 bg-white p-3 sm:rounded-[22px] sm:p-4"
-            >
-              <div className="mb-3 flex items-start justify-between gap-3 sm:mb-4">
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-[#2563eb] px-2 text-[11px] font-black text-white sm:h-7 sm:min-w-7 sm:text-xs">
-                      {index + 1}
-                    </span>
-                    <h3 className="truncate text-lg font-black text-[#0f172a] sm:text-xl">
-                      {broker.name}
-                    </h3>
-                  </div>
-
-                  <p className="mt-1 text-[11px] font-bold text-[#1d4ed8] sm:text-xs">
-                    {shortText(broker.best_for || "مناسب لفئات متعددة", 24)}
-                  </p>
-                </div>
-
-                <div className="rounded-2xl border border-[#bfdbfe] bg-[#eff6ff] px-3 py-2 text-center">
-                  <div className="text-base font-black text-[#1d4ed8] sm:text-lg">
-                    {broker.rating?.toFixed(1) ?? "—"}
-                  </div>
-                  <div className="text-[9px] font-bold text-slate-500 sm:text-[10px]">
-                    من 5
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-between gap-3 rounded-xl bg-slate-50 px-3 py-2 text-sm">
-                  <span className="shrink-0 text-slate-500">الإيداع</span>
-                  <span className="truncate font-black text-[#0f172a]">
-                    {broker.min_deposit !== null ? `$${broker.min_deposit}` : "غير محدد"}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between gap-3 rounded-xl bg-slate-50 px-3 py-2 text-sm">
-                  <span className="shrink-0 text-slate-500">المنصات</span>
-                  <span className="truncate font-black text-[#0f172a]">
-                    {shortText(broker.platforms || "غير محدد", 18)}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between gap-3 rounded-xl bg-slate-50 px-3 py-2 text-sm">
-                  <span className="shrink-0 text-slate-500">التراخيص</span>
-                  <span className="truncate font-black text-[#0f172a]">
-                    {shortText(broker.regulation || "غير محدد", 20)}
-                  </span>
-                </div>
-              </div>
-
-              <div className="mt-4 grid grid-cols-2 gap-2 sm:gap-3">
-                <Link
-                  href={`/brokers/${broker.slug}`}
-                  className="inline-flex items-center justify-center rounded-2xl bg-[#2563eb] px-3 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8] sm:px-4"
-                >
-                  اقرأ التقييم
-                </Link>
-
-                <Link
-                  href="/compare"
-                  className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-3 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50 sm:px-4"
-                >
-                  قارن الآن
-                </Link>
-              </div>
+          <div className="hidden shrink-0 rounded-[22px] border border-[#dbeafe] bg-white/80 px-4 py-3 text-right shadow-sm lg:block">
+            <div className="text-xs font-bold text-slate-500">نتائج مخصصة</div>
+            <div className="mt-1 text-sm font-black text-[#0f172a]">
+              {hasSearched ? "بناءً على اختياراتك" : "أفضل الخيارات الحالية"}
             </div>
-          ))}
+          </div>
         </div>
+      </div>
+
+      <div className="px-4 pb-4 pt-0 sm:p-6">
+  <div className="relative -mt-px rounded-b-[24px] rounded-t-none border border-t-0 border-slate-200 bg-[#f8fbff] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] sm:mt-0 sm:rounded-[24px] sm:border sm:p-5">
+    <div className="hidden items-center justify-between gap-3 sm:mb-5 sm:flex">
+      <div>
+        <div className="text-sm font-black text-[#0f172a]">حدد تفضيلاتك</div>
+        <div className="mt-1 text-xs font-semibold text-slate-500 sm:text-sm">
+          اختر الدولة وقيمة الإيداع والخبرة والمنصة للحصول على ترشيحات أدق
+        </div>
+      </div>
+
+      <div>
+        <span className="rounded-full bg-white px-3 py-1 text-xs font-extrabold text-slate-600 shadow-sm ring-1 ring-slate-200">
+          فلتر سريع
+        </span>
       </div>
     </div>
+
+    <div className="mb-3 sm:hidden">
+      <button
+        type="button"
+        onClick={() => setShowMobileFilters((prev) => !prev)}
+        className="flex w-full items-center justify-between rounded-2xl border border-[#bfdbfe] bg-white px-4 py-3 text-right shadow-sm transition hover:bg-[#eff6ff]"
+      >
+        <div>
+          <div className="text-sm font-black text-[#0f172a]">
+            {showMobileFilters ? "إخفاء خيارات البحث" : "اختيار الدولة والتفضيلات"}
+          </div>
+          <div className="mt-0.5 text-[11px] font-semibold text-slate-500">
+            دولة، إيداع، خبرة، منصة
+          </div>
+        </div>
+
+        <span className="text-lg font-black text-[#2563eb]">
+          {showMobileFilters ? "−" : "+"}
+        </span>
+      </button>
+    </div>
+
+    <div className={`${showMobileFilters ? "block" : "hidden"} sm:block`}>
+      <div className="grid grid-cols-2 gap-3 xl:grid-cols-5">
+        <div>
+          <label className="mb-2 block text-sm font-bold text-slate-700">الدولة</label>
+          <select
+            value={country}
+            onChange={(e) => setCountry(e.target.value)}
+            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]"
+          >
+            <option value="">اختر الدولة</option>
+            <option value="sa">السعودية</option>
+            <option value="ae">الإمارات</option>
+            <option value="kw">الكويت</option>
+            <option value="qa">قطر</option>
+            <option value="bh">البحرين</option>
+            <option value="om">عُمان</option>
+            <option value="eg">مصر</option>
+            <option value="jo">الأردن</option>
+            <option value="other">دول أخرى</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="mb-2 block text-sm font-bold text-slate-700">قيمة الإيداع</label>
+          <select
+            value={deposit}
+            onChange={(e) => setDeposit(e.target.value as DepositRange | "")}
+            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]"
+          >
+            <option value="">مبلغ الإيداع</option>
+            <option value="under50">أقل من 50$</option>
+            <option value="50to200">من 50$ إلى 200$</option>
+            <option value="200to1000">من 200$ إلى 1000$</option>
+            <option value="over1000">أكثر من 1000$</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="mb-2 block text-sm font-bold text-slate-700">مستوى الخبرة</label>
+          <select
+            value={experience}
+            onChange={(e) => setExperience(e.target.value as Experience | "")}
+            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]"
+          >
+            <option value="">اختر مستوى الخبرة</option>
+            <option value="beginner">مبتدئ</option>
+            <option value="intermediate">متوسط</option>
+            <option value="pro">محترف</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="mb-2 block text-sm font-bold text-slate-700">المنصة</label>
+          <select
+            value={platform}
+            onChange={(e) => setPlatform(e.target.value as PlatformPref | "")}
+            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]"
+          >
+            <option value="">اختر المنصة</option>
+            <option value="any">أي منصة</option>
+            <option value="mt4">MT4</option>
+            <option value="mt5">MT5</option>
+          </select>
+        </div>
+
+        <div className="col-span-2 xl:col-span-1">
+          <label className="mb-2 block text-sm font-bold text-slate-700">حساب إسلامي</label>
+          <select
+            value={islamic}
+            onChange={(e) => setIslamic(e.target.value)}
+            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]"
+          >
+            <option value="yes">نعم</option>
+            <option value="no">لا يهم</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="mt-4 flex flex-col gap-3 sm:mt-5 sm:flex-row sm:items-center sm:justify-between">
+        <p className="hidden text-xs font-semibold text-slate-500 sm:block sm:text-sm">
+          يتم الترتيب حسب التقييم العام للشركة أولًا، ثم أولوية الدولة، ثم بقية المعايير.
+        </p>
+
+        <button
+          type="button"
+          onClick={handleSearch}
+          disabled={!canSearch}
+          className={`inline-flex w-full items-center justify-center rounded-2xl px-5 py-3 text-sm font-extrabold transition sm:w-auto sm:min-w-[240px] ${
+            canSearch
+              ? "bg-[#2563eb] text-white shadow-[0_14px_30px_rgba(37,99,235,0.24)] hover:bg-[#1d4ed8]"
+              : "cursor-not-allowed bg-slate-200 text-slate-400"
+          }`}
+        >
+          اعرض أفضل 3 شركات الآن
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+
+        <div className="mt-5 sm:mt-6">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <div>
+              <div className="text-base font-black text-[#0f172a] sm:text-lg">
+                أفضل 3 نتائج لك
+              </div>
+              <div className="mt-1 text-xs font-semibold text-slate-500 sm:text-sm">
+                {hasSearched ? "تم ترتيب النتائج بحسب اختياراتك" : "هذه أفضل الخيارات الحالية"}
+              </div>
+            </div>
+
+            <div className="hidden rounded-full bg-[#eff6ff] px-3 py-1 text-xs font-extrabold text-[#1d4ed8] sm:inline-flex">
+              ترتيب ذكي
+            </div>
+          </div>
+
+          {/* MOBILE */}
+<div className="space-y-3 sm:hidden">
+  {results.map((broker, index) => {
+    const isOpen = expandedMobileId === broker.id;
+    const recommendation = getRecommendationLabel(
+      broker,
+      index,
+      experience,
+      deposit,
+      hasSearched
+    );
+    const openAccountHref = broker.open_account_url || `/brokers/${broker.slug}`;
+
+    return (
+      <div
+        key={broker.id}
+        className={`overflow-hidden rounded-[22px] border bg-white transition ${
+          index === 0
+            ? "border-[#93c5fd] shadow-[0_16px_40px_rgba(37,99,235,0.14)]"
+            : "border-slate-200 shadow-sm"
+        }`}
+      >
+        <button
+          type="button"
+          onClick={() => toggleMobileRow(broker.id)}
+          className="w-full px-3 py-3 text-right"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex min-w-0 flex-1 items-start gap-3">
+              <div className="relative shrink-0">
+                <div className="rounded-[18px] border border-slate-200 bg-white p-1.5 shadow-sm">
+                  {getLogoNode(broker)}
+                </div>
+
+                <span className="absolute -right-1 -top-1 inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-[#2563eb] px-1.5 text-[10px] font-black text-white shadow-md">
+                  {index + 1}
+                </span>
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <div className="truncate text-[18px] font-black leading-6 text-[#0f172a]">
+                      {broker.name}
+                    </div>
+
+                    <div className="mt-1 inline-flex rounded-full bg-[#eff6ff] px-2.5 py-1 text-[10px] font-extrabold text-[#1d4ed8]">
+                      {recommendation}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-2 text-[12px] font-bold text-slate-500">
+                  {shortText(broker.best_for || "مناسب لفئات متعددة", 34)}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex shrink-0 flex-col items-end gap-2">
+              <div className="rounded-2xl border border-[#dbeafe] bg-[#f8fbff] px-3 py-2 text-center">
+                <div className="text-base font-black leading-none text-[#1d4ed8]">
+                  {broker.rating?.toFixed(1) ?? "—"}
+                </div>
+                <div className="mt-1 text-[9px] font-bold text-slate-500">من 5</div>
+              </div>
+
+              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 bg-white text-sm font-black text-slate-500">
+                {isOpen ? "⌃" : "⌄"}
+              </span>
+            </div>
+          </div>
+        </button>
+
+        {isOpen && (
+          <div className="border-t border-slate-100 px-3 pb-3 pt-3">
+            <div className="grid grid-cols-2 gap-2">
+              <div className="rounded-2xl bg-slate-50 px-3 py-3">
+                <div className="text-[11px] font-bold text-slate-500">
+                  الحد الأدنى للإيداع
+                </div>
+                <div className="mt-1 text-sm font-black text-[#0f172a]">
+                  {broker.min_deposit !== null ? `$${broker.min_deposit}` : "غير محدد"}
+                </div>
+              </div>
+
+              <div className="rounded-2xl bg-slate-50 px-3 py-3">
+                <div className="text-[11px] font-bold text-slate-500">المنصات</div>
+                <div className="mt-1 text-sm font-black text-[#0f172a]">
+                  {shortText(broker.platforms || "غير محدد", 24)}
+                </div>
+              </div>
+
+              <div className="col-span-2 rounded-2xl bg-slate-50 px-3 py-3">
+                <div className="text-[11px] font-bold text-slate-500">التراخيص</div>
+                <div className="mt-1 text-sm font-black text-[#0f172a]">
+                  {shortText(broker.regulation || "غير محدد", 46)}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <Link
+                href={`/brokers/${broker.slug}`}
+                className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-3 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
+              >
+                اقرأ التقييم
+              </Link>
+
+              <Link
+                href={openAccountHref}
+                target={broker.open_account_url ? "_blank" : undefined}
+                rel={broker.open_account_url ? "noopener noreferrer sponsored" : undefined}
+                className="inline-flex items-center justify-center rounded-2xl bg-[#2563eb] px-3 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
+              >
+                فتح حساب حقيقي
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  })}
+</div>
+
+
+          {/* DESKTOP */}
+          <div className="hidden gap-4 lg:grid lg:grid-cols-3">
+            {results.map((broker, index) => {
+              const recommendation = getRecommendationLabel(
+                broker,
+                index,
+                experience,
+                deposit,
+                hasSearched
+              );
+              const openAccountHref = broker.open_account_url || `/brokers/${broker.slug}`;
+
+              return (
+                <article
+                  key={broker.id}
+                  className={`group relative overflow-hidden rounded-[28px] border bg-white p-5 transition duration-300 ${
+                    index === 0
+                      ? "border-[#93c5fd] shadow-[0_22px_55px_rgba(37,99,235,0.16)]"
+                      : "border-slate-200 shadow-[0_10px_30px_rgba(15,23,42,0.06)] hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(15,23,42,0.09)]"
+                  }`}
+                >
+                  {index === 0 && (
+                    <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#60a5fa] via-[#2563eb] to-[#1d4ed8]" />
+                  )}
+
+                  <div className="mb-4 flex items-start justify-between gap-3">
+                    <div className="flex min-w-0 items-start gap-4">
+                      <div className="relative shrink-0">
+                        <div className="rounded-[22px] border border-slate-200 bg-white p-2 shadow-sm">
+                          {getLogoNode(broker)}
+                        </div>
+
+                        <span className="absolute -right-2 -top-2 inline-flex h-8 min-w-8 items-center justify-center rounded-full bg-[#2563eb] px-2 text-xs font-black text-white shadow-lg">
+                          {index + 1}
+                        </span>
+                      </div>
+
+                      <div className="min-w-0 pt-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <h3 className="truncate text-xl font-black text-[#0f172a]">
+                            {broker.name}
+                          </h3>
+
+                          <span
+                            className={`rounded-full px-3 py-1 text-[11px] font-extrabold ${
+                              index === 0
+                                ? "bg-[#dbeafe] text-[#1d4ed8]"
+                                : "bg-slate-100 text-slate-700"
+                            }`}
+                          >
+                            {recommendation}
+                          </span>
+                        </div>
+
+                        <p className="mt-2 text-sm font-semibold leading-6 text-slate-500">
+                          {shortText(broker.best_for || "مناسب لفئات متعددة", 48)}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div
+                      className={`shrink-0 rounded-[22px] border px-4 py-3 text-center ${
+                        index === 0
+                          ? "border-[#bfdbfe] bg-[#eff6ff]"
+                          : "border-slate-200 bg-slate-50"
+                      }`}
+                    >
+                      <div className="text-xl font-black text-[#1d4ed8]">
+                        {broker.rating?.toFixed(1) ?? "—"}
+                      </div>
+                      <div className="text-[10px] font-bold text-slate-500">من 5</div>
+                    </div>
+                  </div>
+
+                  <div className="grid gap-3">
+                    <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                      <div className="text-xs font-bold text-slate-500">الحد الأدنى للإيداع</div>
+                      <div className="mt-1 text-base font-black text-[#0f172a]">
+                        {broker.min_deposit !== null ? `$${broker.min_deposit}` : "غير محدد"}
+                      </div>
+                    </div>
+
+                    <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                      <div className="text-xs font-bold text-slate-500">المنصات المتاحة</div>
+                      <div className="mt-1 text-base font-black text-[#0f172a]">
+                        {shortText(broker.platforms || "غير محدد", 34)}
+                      </div>
+                    </div>
+
+                    <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                      <div className="text-xs font-bold text-slate-500">أبرز التراخيص</div>
+                      <div className="mt-1 text-base font-black text-[#0f172a]">
+                        {shortText(broker.regulation || "غير محدد", 34)}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-5 grid grid-cols-2 gap-3">
+                    <Link
+                      href={`/brokers/${broker.slug}`}
+                      className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
+                    >
+                      اقرأ التقييم
+                    </Link>
+
+                    <Link
+                      href={openAccountHref}
+                      target={broker.open_account_url ? "_blank" : undefined}
+                      rel={broker.open_account_url ? "noopener noreferrer sponsored" : undefined}
+                      className="inline-flex items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-sm font-extrabold text-white shadow-[0_12px_24px_rgba(37,99,235,0.20)] transition hover:bg-[#1d4ed8]"
+                    >
+                      فتح حساب حقيقي
+                    </Link>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
