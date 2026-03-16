@@ -445,109 +445,160 @@ export default async function HomePage() {
   <BrokerFinder brokers={brokers} />
 </section>
 
-     {/* HOW WE RATE */}
-<section className="mx-auto max-w-7xl px-4 pt-3 pb-1 sm:px-6 sm:pt-4 sm:pb-2 lg:px-8">
-  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm sm:rounded-[32px]">
-    <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-6 sm:px-8 sm:py-8">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
+     {/* HOW WE RATE - PREMIUM STEPS */}
+<section className="mx-auto max-w-7xl px-4 pt-3 pb-2 sm:px-6 sm:pt-4 sm:pb-3 lg:px-8">
+  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] shadow-sm sm:rounded-[32px]">
+    {(() => {
+      const ratingItems = [
+        {
+          num: "01",
+          title: "التراخيص والتنظيم",
+          desc: "نفحص الجهة الرقابية، قوة الترخيص، ومستوى حماية أموال العملاء.",
+        },
+        {
+          num: "02",
+          title: "الحسابات والرسوم",
+          desc: "نراجع السبريد، العمولات، وأنواع الحسابات الفعلية لا الوعود التسويقية.",
+        },
+        {
+          num: "03",
+          title: "المنصات والأدوات",
+          desc: "نقيم MT4 وMT5 وسهولة الاستخدام والأدوات المناسبة للتداول اليومي.",
+        },
+        {
+          num: "04",
+          title: "الإيداع والسحب",
+          desc: "نقارن طرق الدفع، سرعة السحب، ووضوح الشروط للمستخدم العربي.",
+        },
+        {
+          num: "05",
+          title: "الحساب الإسلامي",
+          desc: "نتأكد من توفره فعليًا وطريقة تقديمه وملاءمته العملية.",
+        },
+        {
+          num: "06",
+          title: "الدعم وتجربة المستخدم",
+          desc: "نراجع جودة الدعم، اللغة العربية، وسهولة الوصول للمعلومات الأساسية.",
+        },
+      ];
 
-          <h2 className="text-[24px] font-black leading-[1.15] text-[#0f172a] sm:text-[38px]">
-            كيف نقيّم شركات التداول؟
-          </h2>
+      return (
+        <>
+          {/* DESKTOP */}
+          <div className="hidden lg:grid lg:grid-cols-[340px_minmax(0,1fr)] lg:gap-0">
+            {/* RIGHT INTRO */}
+            <div className="border-l border-slate-200 p-7 xl:p-8">
+              <div className="flex h-full flex-col items-center justify-center text-center">
+                
+                <h2 className="mt-4 text-[34px] font-black leading-[1.1] text-[#0f172a]">
+                  كيف نقيّم
+                  <span className="mt-1 block text-[#2563eb]">شركات التداول؟</span>
+                </h2>
 
-          <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
-            لا نعتمد على الوعود التسويقية، بل نراجع كل وسيط بناءً على عوامل
-            عملية تؤثر فعلاً على تجربة المتداول العربي.
-          </p>
-        </div>
+                <p className="mt-4 text-[14px] leading-7 text-slate-600">
+                  لا نعتمد على الشعارات التسويقية، بل نقيّم كل وسيط بناءً على
+                  عوامل عملية تؤثر فعلًا على تجربة المتداول العربي من البداية
+                  حتى السحب والدعم.
+                </p>
 
-        <Link
-          href="/brokers"
-          className="inline-flex w-fit items-center justify-center rounded-2xl border border-slate-300 bg-white px-5 py-3 text-sm font-extrabold text-slate-800 shadow-sm transition hover:bg-slate-50"
-        >
-          تصفح جميع التقييمات
-        </Link>
-      </div>
-    </div>
-
-    {/* MOBILE */}
-    <div className="p-4 sm:hidden">
-      <div className="grid grid-cols-2 gap-3">
-        {[
-          "التراخيص والتنظيم",
-          "الحسابات والرسوم",
-          "المنصات والأدوات",
-          "الإيداع والسحب",
-          "الحساب الإسلامي",
-          "الدعم وتجربة المستخدم",
-        ].map((item, index) => (
-          <div
-            key={item}
-            className="rounded-[18px] border border-slate-200 bg-[#f8fbff] px-3 py-4 text-center shadow-sm"
-          >
-            <div className="mx-auto mb-3 flex h-8 w-8 items-center justify-center rounded-full border border-[#bfdbfe] bg-[#eff6ff] text-xs font-black text-[#1d4ed8]">
-              {index + 1}
+                <div className="mt-6 flex justify-center">
+  <Link
+    href="/brokers"
+    className="inline-flex h-11 items-center justify-center rounded-2xl bg-[#2563eb] px-5 text-[13px] font-extrabold text-white shadow-[0_12px_28px_rgba(37,99,235,0.22)] transition hover:bg-[#1d4ed8]"
+  >
+    تصفح جميع التقييمات
+  </Link>
+</div>
+              </div>
             </div>
 
-            <h3 className="text-[14px] font-black leading-6 text-[#0f172a]">
-              {item}
-            </h3>
-          </div>
-        ))}
-      </div>
-    </div>
+            {/* LEFT STEPS */}
+            <div className="p-6 xl:p-8">
+              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                {ratingItems.map((item) => (
+                  <div
+                    key={item.num}
+                    className="group relative overflow-hidden rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[#bfdbfe] hover:shadow-[0_16px_35px_rgba(15,23,42,0.06)]"
+                  >
+                    <div className="absolute left-0 top-0 h-1 w-full bg-[linear-gradient(90deg,#60a5fa_0%,#2563eb_100%)] opacity-80" />
 
-    {/* DESKTOP */}
-    <div className="hidden p-6 sm:block sm:p-8">
-      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-        {[
-          {
-            title: "التراخيص والتنظيم",
-            desc: "نراجع الجهات الرقابية التي يعمل تحتها الوسيط، ومدى وضوح الإطار التنظيمي ومستوى الحماية المرتبط بأموال العملاء.",
-          },
-          {
-            title: "الحسابات والرسوم",
-            desc: "نقارن أنواع الحسابات، السبريد، العمولات، وشروط التداول الفعلية بدل الاكتفاء بالرسائل التسويقية العامة.",
-          },
-          {
-            title: "المنصات والأدوات",
-            desc: "نقيم جودة المنصات مثل MT4 وMT5، وسهولة الاستخدام، والأدوات التي يحتاجها المتداول اليومي أو المبتدئ.",
-          },
-          {
-            title: "الإيداع والسحب",
-            desc: "ننظر إلى طرق الدفع، سرعة السحب، وضوح الشروط، وما إذا كانت التجربة عملية ومناسبة للمستخدم العربي.",
-          },
-          {
-            title: "الحساب الإسلامي",
-            desc: "نتأكد من توفر الحساب الإسلامي، وطريقة تقديمه، ومدى ملاءمته للباحثين عن خيارات تداول متوافقة مع احتياجاتهم.",
-          },
-          {
-            title: "الدعم وتجربة المستخدم",
-            desc: "نراجع مستوى الدعم، توفر اللغة العربية، وضوح الواجهة، ومدى سهولة الوصول إلى المعلومات الأساسية بسرعة.",
-          },
-        ].map((item, index) => (
-          <div
-            key={item.title}
-            className="group rounded-[24px] border border-slate-200 bg-[linear-gradient(180deg,#f8fbff_0%,#ffffff_100%)] p-6 shadow-sm transition hover:-translate-y-1 hover:border-[#bfdbfe] hover:shadow-[0_16px_40px_rgba(15,23,42,0.06)]"
-          >
-            <div className="mb-4 flex items-center justify-between">
-              <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-[#bfdbfe] bg-[#eff6ff] text-sm font-black text-[#1d4ed8]">
-                {index + 1}
-              </span>
+                    <div className="flex items-center gap-3">
+  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#2563eb] text-[12px] font-black text-white">
+    {item.num}
+  </span>
+
+  <h3 className="text-[18px] font-black text-[#0f172a]">
+    {item.title}
+  </h3>
+</div>
+
+                    <p className="mt-3 text-[13px] leading-6 text-slate-600">
+                      {item.desc}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* MOBILE / TABLET */}
+          <div className="lg:hidden">
+            <div className="border-b border-slate-200 px-4 py-5 sm:px-6">
+              
+
+              <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <h2 className="text-[24px] font-black leading-[1.15] text-[#0f172a] sm:text-[30px]">
+                    كيف نقيّم شركات التداول؟
+                  </h2>
+
+                  <p className="mt-2 max-w-2xl text-[13px] leading-6 text-slate-600 sm:text-[14px]">
+                    نراجع كل وسيط بناءً على عوامل عملية تؤثر فعلًا على تجربة
+                    المتداول العربي.
+                  </p>
+                </div>
+
+               <div className="mt-4 flex justify-center sm:mt-0">
+  <Link
+    href="/brokers"
+    className="inline-flex h-10 items-center justify-center rounded-2xl bg-[#2563eb] px-4 text-[12px] font-extrabold text-white shadow-[0_12px_28px_rgba(37,99,235,0.22)] transition hover:bg-[#1d4ed8]"
+  >
+    جميع التقييمات
+  </Link>
+</div>
+              </div>
             </div>
 
-            <h3 className="text-[22px] font-black leading-[1.25] text-[#0f172a]">
-              {item.title}
-            </h3>
+            <div className="p-4 sm:p-5">
+              <div className="grid grid-cols-2 gap-3">
+                {ratingItems.map((item) => (
+                  <div
+                    key={item.num}
+                    className="relative overflow-hidden rounded-[18px] border border-slate-200 bg-white px-3 py-3.5 shadow-sm"
+                  >
+                    <div className="absolute right-0 top-0 h-1 w-full bg-[linear-gradient(90deg,#60a5fa_0%,#2563eb_100%)] opacity-75" />
 
-            <p className="mt-3 text-sm leading-7 text-slate-600">
-              {item.desc}
-            </p>
+                    <div className="flex items-center gap-2">
+  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#2563eb] text-[10px] font-black text-white">
+    {item.num}
+  </span>
+
+  <h3 className="text-[13px] font-black leading-5 text-[#0f172a]">
+    {item.title}
+  </h3>
+</div>
+
+                    <p className="mt-1.5 text-[11px] leading-5 text-slate-600">
+                      {item.desc}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-        ))}
-      </div>
-    </div>
+        </>
+      );
+    })()}
   </div>
 </section>
 
