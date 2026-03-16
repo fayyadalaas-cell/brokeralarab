@@ -214,7 +214,7 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
 
-{/* HERO - DESKTOP REDESIGN / MOBILE KEEP */}
+{/* HERO - DESKTOP IMPROVED / MOBILE KEEP */}
 <section className="relative overflow-hidden border-b border-slate-800 bg-[#07111f]">
   <div className="absolute inset-0">
     <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.18),transparent_24%)]" />
@@ -257,71 +257,140 @@ export default async function HomePage() {
 
     return (
       <>
-        {/* DESKTOP */}
-<div className="hidden lg:block">
-  <div className="relative mx-auto max-w-7xl px-6 pt-4 pb-10">
+        {/* DESKTOP ONLY */}
+        <div className="hidden lg:block">
+          <div className="relative mx-auto max-w-7xl px-6 pt-6 pb-10">
+            <div dir="ltr" className="grid items-center gap-8 xl:grid-cols-[340px_minmax(0,1fr)]">
+              {/* LEFT PANEL */}
+              <div dir="rtl" className="relative">
+                <div className="overflow-hidden rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(15,23,42,0.96),rgba(10,18,32,0.94))] p-5 shadow-[0_25px_60px_rgba(2,8,23,0.45)] backdrop-blur-xl">
+                  <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/60 to-transparent" />
+                  <div className="absolute right-[-40px] top-[-40px] h-28 w-28 rounded-full bg-blue-500/10 blur-3xl" />
+                  <div className="absolute left-[-30px] bottom-[-50px] h-24 w-24 rounded-full bg-cyan-400/10 blur-3xl" />
 
-    <div className="mx-auto max-w-[980px] text-center">
-        
-      
+                  <div className="relative z-10 flex items-start justify-between gap-3">
+                    <div>
+                      <div className="text-[12px] font-extrabold text-blue-300">
+                        مقارنة سريعة
+                      </div>
+                      <h2 className="mt-1 text-[18px] leading-[1.1] font-black tracking-[-0.03em] text-white whitespace-nowrap">
+                        مقارنة بين أبرز الوسطاء
+                      </h2>
+                    </div>
 
-      <h1 className="mt-7 mx-auto max-w-[880px] text-[54px] xl:text-[64px] font-black leading-[1.15] tracking-[-0.02em] text-white">
+                    <span className="inline-flex items-center whitespace-nowrap rounded-full border border-blue-400/20 bg-blue-500/10 px-2 py-0.5 text-[10px] font-bold text-blue-200">
+                      محدثة باستمرار
+                    </span>
+                  </div>
 
+                  <div className="relative z-10 mt-4 space-y-2.5">
+                    {heroBrokers.map((broker) => (
+                      <div
+                        key={broker.id}
+                        className="group rounded-[20px] border border-white/10 bg-white/[0.04] px-3 py-3 transition duration-200 hover:border-blue-400/30 hover:bg-white/[0.06]"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white px-2 shadow-sm">
+                            {broker.logo ? (
+                              <img
+                                src={broker.logo}
+                                alt={broker.name}
+                                className="max-h-8 w-full object-contain"
+                              />
+                            ) : (
+                              <span className="text-[10px] font-bold text-slate-400">
+                                Logo
+                              </span>
+                            )}
+                          </div>
 
-        قارن الوسطاء بثقة
-        <span className="mt-3 block bg-[linear-gradient(90deg,#93c5fd_0%,#60a5fa_25%,#3b82f6_58%,#93c5fd_100%)] bg-clip-text text-transparent">
-          واختر الأنسب لتداولك
-        </span>
-      </h1>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center justify-between gap-3">
+                              <div className="min-w-0">
+                                <div className="flex items-center gap-2">
+                                  
+                                  <h3 className="truncate text-[18px] font-black text-white">
+                                    {broker.name}
+                                  </h3>
+                                </div>
 
-      <p className="mx-auto mt-7 max-w-[850px] text-[20px] leading-10 text-slate-300">
-        راجع التراخيص والرسوم والمنصات وأنواع الحسابات في مكان واحد بشكل واضح
-        وعملي، ثم اختر شركة التداول الأقرب لاحتياجاتك الفعلية بدلًا من الاعتماد
-        على الإعلانات أو الاختيار العشوائي.
-      </p>
+                                <p className="mt-1 truncate text-[13px] font-medium text-slate-400">
+                                  {broker.subtitle}
+                                </p>
+                              </div>
 
-      <div className="mt-10 flex items-center justify-center gap-4">
-        <a
-          href="#finder"
-          className="inline-flex min-h-[62px] min-w-[250px] items-center justify-center rounded-2xl bg-[#2563eb] px-7 py-3 text-[15px] font-extrabold text-white shadow-[0_22px_50px_rgba(37,99,235,0.34)] transition duration-200 hover:-translate-y-0.5 hover:bg-[#1d4ed8]"
-        >
-          ابدأ مقارنة الوسطاء
-        </a>
+                              <div className="shrink-0 text-left">
+                                <div className="text-[11px] font-bold text-slate-400">
+                                  التقييم
+                                </div>
+                                <div className="mt-1 text-[22px] font-black leading-none text-white">
+                                  {broker.rating}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
 
-        <Link
-          href="/best-brokers"
-          className="inline-flex min-h-[62px] min-w-[230px] items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-7 py-3 text-[15px] font-extrabold text-white backdrop-blur transition duration-200 hover:bg-white/10"
-        >
-          تصفح أفضل الوسطاء
-        </Link>
-      </div>
+                        
+                      </div>
+                    ))}
+                  </div>
 
-      <div className="mt-12 grid grid-cols-3 gap-4">
-        <div className="rounded-[24px] border border-white/10 bg-white/[0.04] px-6 py-5 backdrop-blur">
-          <div className="text-[13px] font-bold text-slate-400">مقارنة واضحة</div>
-          <div className="mt-2 text-[20px] font-black text-white">
-            التراخيص والرسوم والمنصات
-          </div>
-        </div>
+                  <div className="relative z-10 mt-5 grid grid-cols-2 gap-3">
+                    <Link
+                      href="/compare"
+                      className="inline-flex h-12 items-center justify-center rounded-2xl border border-white/12 bg-white/5 px-4 text-[14px] font-extrabold text-white transition hover:bg-white/10"
+                    >
+                      تصفح المقارنات
+                    </Link>
 
-        <div className="rounded-[24px] border border-white/10 bg-white/[0.04] px-6 py-5 backdrop-blur">
-          <div className="text-[13px] font-bold text-slate-400">ترشيحات عملية</div>
-          <div className="mt-2 text-[20px] font-black text-white">
-            حسب احتياجك الفعلي
-          </div>
-        </div>
+                    <Link
+  href="/best-brokers"
+  className="inline-flex h-12 items-center justify-center rounded-2xl bg-[#2563eb] px-4 text-[14px] font-extrabold text-white shadow-[0_16px_35px_rgba(37,99,235,0.26)] transition hover:bg-[#1d4ed8] whitespace-nowrap"
+>
+                      اعرض أفضل الخيارات
+                    </Link>
+                  </div>
+                </div>
+              </div>
 
-        <div className="rounded-[24px] border border-white/10 bg-white/[0.04] px-6 py-5 backdrop-blur">
-          <div className="text-[13px] font-bold text-slate-400">واجهة عربية</div>
-          <div className="mt-2 text-[20px] font-black text-white">
-            مناسبة للمتداول العربي
-          </div>
-        </div>
-      </div>
+              {/* RIGHT CONTENT */}
+              <div dir="rtl" className="text-center xl:text-right">
+                <div className="mx-auto max-w-[760px] xl:mr-0 xl:ml-auto">
+                  
+                  <h1 className="mt-0 text-[58px] font-black leading-[1.08] tracking-[-0.03em] text-white xl:text-[72px]">
+                    قارن الوسطاء بثقة
+                    <span className="mt-3 block bg-[linear-gradient(90deg,#93c5fd_0%,#60a5fa_25%,#3b82f6_58%,#93c5fd_100%)] bg-clip-text text-transparent">
+                      واختر الأنسب لتجربتك
+                    </span>
+                  </h1>
 
+                  <p className="mx-auto mt-6 max-w-[760px] text-[19px] leading-9 text-slate-300 xl:mr-0 xl:ml-auto">
+                    راجع التراخيص والرسوم والمنصات وأنواع الحسابات في مكان واحد
+                    بشكل واضح وعملي، ثم اختر شركة التداول الأقرب لاحتياجاتك
+                    الفعلية بدلًا من الاعتماد على الإعلانات أو التأثر بالاختيار
+                    العشوائي.
+                  </p>
 
+                  <div className="mt-8 flex items-center justify-start gap-4">
+                    <a
+                      href="#finder"
+                      className="inline-flex min-h-[60px] min-w-[240px] items-center justify-center rounded-2xl bg-[#2563eb] px-7 py-3 text-[15px] font-extrabold text-white shadow-[0_22px_50px_rgba(37,99,235,0.34)] transition duration-200 hover:-translate-y-0.5 hover:bg-[#1d4ed8]"
+                    >
+                      ابدأ المقارنة السريعة
+                    </a>
 
-            
+                    <Link
+                      href="/compare"
+                      className="inline-flex min-h-[60px] min-w-[210px] items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-7 py-3 text-[15px] font-extrabold text-white backdrop-blur transition duration-200 hover:bg-white/10"
+                    >
+                      تصفح المقارنات
+                    </Link>
+                  </div>
+
+                
+                </div>
+              </div>
             </div>
           </div>
         </div>
