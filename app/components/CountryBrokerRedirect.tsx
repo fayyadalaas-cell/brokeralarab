@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function CountryBrokerRedirect() {
   const [country, setCountry] = useState("all");
+  const router = useRouter();
 
   function handleGo() {
     const routes: Record<string, string> = {
@@ -19,7 +21,7 @@ export default function CountryBrokerRedirect() {
       om: "/best-brokers/oman",
     };
 
-    window.open(routes[country] || "/best-brokers#top-brokers", "_blank");
+    router.push(routes[country] || "/best-brokers#top-brokers");
   }
 
   return (
@@ -28,6 +30,7 @@ export default function CountryBrokerRedirect() {
         <label className="mb-2 block text-xs font-extrabold text-slate-700">
           الدولة
         </label>
+
         <select
           value={country}
           onChange={(e) => setCountry(e.target.value)}
@@ -41,6 +44,7 @@ export default function CountryBrokerRedirect() {
           <option value="bh">البحرين</option>
           <option value="jo">الأردن</option>
           <option value="eg">مصر</option>
+          <option value="ma">المغرب</option>
           <option value="om">عمان</option>
         </select>
       </div>

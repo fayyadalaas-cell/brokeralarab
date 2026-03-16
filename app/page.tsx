@@ -89,24 +89,68 @@ function shortPlatforms(value: string | null) {
 function getCountryPages() {
   return [
     {
+      title: "أفضل شركات التداول في الأردن",
+      href: "/best-brokers/jordan",
+      desc: "شركات مناسبة للمتداولين في الأردن من حيث الحسابات، التراخيص، والمنصات.",
+      shortDesc: "أفضل الوسطاء للمتداول الأردني",
+      flag: "/flags/jo.svg",
+      badge: "الأردن",
+    },
+    {
       title: "أفضل شركات التداول في السعودية",
       href: "/best-brokers/saudi-arabia",
       desc: "وسطاء مناسبون للمتداولين في السعودية من حيث الحساب الإسلامي والإيداع والتراخيص.",
+      shortDesc: "وسطاء مناسبون للمتداول السعودي",
+      flag: "/flags/sa.svg",
+      badge: "السعودية",
+    },
+    {
+      title: "أفضل شركات التداول في الكويت",
+      href: "/best-brokers/kuwait",
+      desc: "اختيار أفضل شركات التداول للمتداول الكويتي بناءً على الحسابات والإيداع والدعم.",
+      shortDesc: "أفضل الخيارات في الكويت",
+      flag: "/flags/kw.svg",
+      badge: "الكويت",
     },
     {
       title: "أفضل شركات التداول في الإمارات",
       href: "/best-brokers/uae",
       desc: "مقارنة أفضل الوسطاء المناسبين للمتداولين في الإمارات من حيث المنصات والرسوم.",
+      shortDesc: "أفضل الوسطاء في الإمارات",
+      flag: "/flags/ae.svg",
+      badge: "الإمارات",
     },
     {
-      title: "أفضل شركات التداول في الكويت",
-      href: "/best-brokers/kuwait",
-      desc: "اختيار أفضل شركات الفوركس للمتداول الكويتي بناءً على الحسابات والإيداع والدعم.",
+      title: "أفضل شركات التداول في قطر",
+      href: "/best-brokers/qatar",
+      desc: "مقارنة الوسطاء المناسبين للمتداولين في قطر من حيث التراخيص والحسابات.",
+      shortDesc: "خيارات مناسبة في قطر",
+      flag: "/flags/qa.svg",
+      badge: "قطر",
+    },
+    {
+      title: "أفضل شركات التداول في البحرين",
+      href: "/best-brokers/bahrain",
+      desc: "شركات تداول مناسبة للمتداول البحريني مع تركيز على الرسوم وطرق الإيداع.",
+      shortDesc: "أفضل الوسطاء في البحرين",
+      flag: "/flags/bh.svg",
+      badge: "البحرين",
+    },
+    {
+      title: "أفضل شركات التداول في عمان",
+      href: "/best-brokers/oman",
+      desc: "شركات مناسبة للمتداولين في عمان من حيث سهولة البدء والحسابات والمنصات.",
+      shortDesc: "وسطاء مناسبون في عمان",
+      flag: "/flags/om.svg",
+      badge: "عمان",
     },
     {
       title: "أفضل شركات التداول في مصر",
       href: "/best-brokers/egypt",
       desc: "أفضل الوسطاء للمتداول المصري مع تركيز على الإيداع المنخفض والمنصات المناسبة.",
+      shortDesc: "أفضل الخيارات في مصر",
+      flag: "/flags/eg.svg",
+      badge: "مصر",
     },
   ];
 }
@@ -314,19 +358,19 @@ export default async function HomePage() {
                         className="group rounded-[20px] border border-white/10 bg-white/[0.04] px-3 py-3 transition duration-200 hover:border-blue-400/30 hover:bg-white/[0.06]"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white px-2 shadow-sm">
-                            {broker.logo ? (
-                              <img
-                                src={broker.logo}
-                                alt={broker.name}
-                                className="max-h-8 w-full object-contain"
-                              />
-                            ) : (
-                              <span className="text-[10px] font-bold text-slate-400">
-                                Logo
-                              </span>
-                            )}
-                          </div>
+                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white p-1 shadow-sm">
+  {broker.logo ? (
+    <img
+      src={broker.logo}
+      alt={broker.name}
+      className="h-9 w-9 object-contain"
+    />
+  ) : (
+    <span className="text-[10px] font-bold text-slate-400">
+      Logo
+    </span>
+  )}
+</div>
 
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center justify-between gap-3">
@@ -848,209 +892,182 @@ export default async function HomePage() {
   </div>
 </section>
 
-{/* TOP BROKERS */}
-<section className="mx-auto max-w-7xl px-4 pt-4 pb-6 sm:px-6 sm:pt-5 sm:pb-8 lg:px-8">
-  <div className="mb-4 flex flex-col gap-3 sm:mb-5 sm:flex-row sm:items-end sm:justify-between">
-    <div>
+{/* COUNTRIES DIRECTORY - FINAL */}
+<section className="bg-[#f4f7fb] pt-4 pb-6 sm:pt-5 sm:pb-8">
+  <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm sm:rounded-[32px]">
+      {/* HEADER */}
+      <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-4 py-5 sm:px-7 sm:py-7">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div className="max-w-4xl text-center lg:text-right">
+            <h2 className="text-[30px] font-black leading-[1.1] tracking-[-0.02em] text-[#0f172a] sm:text-[42px]">
+              أفضل شركات التداول
+              <span className="text-[#2563eb]"> حسب الدولة</span>
+            </h2>
 
-      <h2 className="text-[24px] font-black leading-[1.15] text-[#0f172a] sm:text-[40px]">
-  أفضل شركات الفوركس
-</h2>
-
-      <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
-        اختر من بين أبرز شركات التداول التي تحقق توازنًا جيدًا بين
-        التراخيص، المنصات، الرسوم، وتجربة المستخدم.
-      </p>
-    </div>
-
-    <Link
-      href="/brokers"
-      className="inline-flex w-fit items-center justify-center rounded-2xl border border-slate-300 bg-white px-5 py-3 text-sm font-extrabold text-slate-800 shadow-sm transition hover:bg-slate-50"
-    >
-      عرض جميع التقييمات
-    </Link>
-  </div>
-
-  <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-    {topBrokers.map((broker, index) => (
-      <article
-        key={broker.id}
-        className="group relative overflow-hidden rounded-[26px] border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-[0_20px_55px_rgba(15,23,42,0.08)] sm:p-5"
-      >
-        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#2563eb] via-[#60a5fa] to-transparent" />
-
-        <div className="mb-5 flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <div className="mb-2 flex flex-wrap items-center gap-2">
-              <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-bold text-slate-500">
-                #{index + 1} من الأعلى تقييمًا
-              </span>
-            </div>
-
-            <h3 className="truncate text-[24px] font-black leading-none text-[#0f172a]">
-              {broker.name}
-            </h3>
-
-            <p className="mt-2 text-xs font-bold text-[#1d4ed8] sm:text-sm">
-              {broker.best_for || "وسيط مناسب لفئات متعددة"}
+            <p className="hidden md:block mx-auto mt-3 max-w-3xl text-[14px] leading-7 text-slate-600 sm:text-[15px] sm:leading-8 lg:mx-0">
+              تختلف التراخيص ووسائل الإيداع وتوفر الحساب الإسلامي وسهولة فتح
+              الحساب من دولة إلى أخرى، لذلك أنشأنا صفحات مخصصة تساعدك على
+              الوصول بسرعة إلى أفضل الوسطاء المناسبين لبلدك.
             </p>
           </div>
 
-          <div className="flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-[22px] border border-[#bfdbfe] bg-[#eff6ff] text-[#1d4ed8] shadow-sm">
-            <span className="text-xl font-black">
-              {broker.rating?.toFixed(1) ?? "—"}
-            </span>
-            <span className="text-[10px] font-bold">من 5</span>
+          <div className="hidden md:flex shrink-0 justify-center lg:justify-start">
+            <Link
+              href="/best-brokers"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-12 items-center justify-center rounded-2xl border border-slate-300 bg-white px-5 text-sm font-extrabold text-[#0f172a] shadow-sm transition hover:border-[#93c5fd] hover:bg-[#eff6ff]"
+            >
+              كل الدول الأخرى
+            </Link>
           </div>
         </div>
+      </div>
 
-        <div className="grid gap-2.5">
-          <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
-            <div className="mb-1 text-[11px] font-bold text-slate-400">
-              الحد الأدنى للإيداع
-            </div>
-            <div className="text-sm font-black text-[#0f172a]">
-              {money(broker.min_deposit)}
-            </div>
-          </div>
+      {/* MOBILE */}
+      <div className="p-3 md:hidden">
+        <div className="space-y-2">
+          {countryPages.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={`أفضل شركات التداول في ${item.badge}`}
+              className="block rounded-[16px] border border-slate-200 bg-white px-3 py-2 shadow-sm transition hover:border-[#bfdbfe] hover:bg-[#f8fbff]"
+            >
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm overflow-hidden">
+                  <img
+                    src={item.flag}
+                    alt={item.badge}
+                    className="h-7 w-7 rounded-full object-cover"
+                  />
+                </div>
 
-          <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
-            <div className="mb-1 text-[11px] font-bold text-slate-400">
-              المنصات
-            </div>
-            <div className="text-sm font-black text-[#0f172a]">
-              {shortPlatforms(broker.platforms)}
-            </div>
-          </div>
+                <div className="min-w-0 flex-1">
+                  <h3 className="truncate text-[18px] font-black leading-6 text-[#0f172a]">
+                    {item.badge}
+                  </h3>
+                </div>
 
-          <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
-            <div className="mb-1 text-[11px] font-bold text-slate-400">
-              التراخيص
-            </div>
-            <div className="text-sm font-black text-[#0f172a]">
-              {shortReg(broker.regulation)}
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
-            <div className="mb-1 text-[11px] font-bold text-slate-400">
-              مناسب لـ
-            </div>
-            <div className="text-sm font-black text-[#0f172a]">
-              {broker.best_for || "فئات متعددة"}
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-5 grid grid-cols-2 gap-3">
-          <Link
-            href={`/brokers/${broker.slug}`}
-            className="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
-          >
-            اقرأ التقييم
-          </Link>
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#bfdbfe] bg-[#eff6ff] text-[18px] font-black text-[#2563eb] shadow-sm">
+                  ←
+                </div>
+              </div>
+            </Link>
+          ))}
 
           <Link
-            href="/compare"
-            className="inline-flex min-h-[48px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
+            href="/best-brokers"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block rounded-[16px] border border-dashed border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-3 py-2 shadow-sm transition hover:bg-[#eff6ff]"
           >
-            قارن الآن
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#bfdbfe] bg-white shadow-sm">
+                🌍
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <h3 className="text-[18px] font-black text-[#0f172a]">
+                  كل الدول الأخرى
+                </h3>
+              </div>
+
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#bfdbfe] bg-white text-[18px] font-black text-[#2563eb] shadow-sm">
+                ←
+              </div>
+            </div>
           </Link>
         </div>
-      </article>
-    ))}
-  </div>
-</section>
+      </div>
 
-{/* PROGRAMMATIC SEO - COUNTRIES */}
-<section className="bg-[#f4f7fb] pt-3 pb-5 sm:pt-4 sm:pb-7">
-  <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      {/* DESKTOP / TABLET */}
+      <div className="hidden p-4 md:block lg:p-5">
+        <div className="grid gap-4 md:grid-cols-2">
+          {countryPages.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={`أفضل شركات التداول في ${item.badge}`}
+              className="group rounded-[22px] border border-slate-200 bg-white px-5 py-4 shadow-sm transition hover:-translate-y-0.5 hover:border-[#bfdbfe] hover:bg-[#f8fbff] hover:shadow-[0_14px_32px_rgba(15,23,42,0.05)]"
+            >
+              <div className="flex items-center gap-4">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-[#f8fafc] shadow-sm overflow-hidden">
+                  <img
+                    src={item.flag}
+                    alt={item.badge}
+                    className="h-7 w-7 rounded-full object-cover"
+                  />
+                </div>
 
-    <div className="mb-5 sm:mb-6">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className="truncate text-[18px] font-black text-[#0f172a]">
+                      {item.title}
+                    </h3>
 
-      {/* TITLE */}
-      <h2 className="text-[26px] font-black leading-[1.15] tracking-[-0.01em] text-[#0f172a] sm:text-[40px]">
-        أفضل شركات الفوركس
-        <span className="text-[#2563eb] sm:inline"> حسب الدولة</span>
-      </h2>
+                    <span className="shrink-0 rounded-full bg-[#eff6ff] px-2 py-0.5 text-[10px] font-extrabold text-[#1d4ed8]">
+                      {item.badge}
+                    </span>
+                  </div>
 
-      {/* DESCRIPTION */}
-      <p className="mt-3 max-w-4xl text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
-        تختلف احتياجات المتداولين من دولة إلى أخرى، لذلك أنشأنا صفحات مخصصة
-        تساعدك على الوصول إلى أفضل شركات التداول المناسبة لبلدك، مع التركيز
-        على عوامل مثل الحساب الإسلامي، الحد الأدنى للإيداع، المنصات،
-        وسهولة اختيار الوسيط المناسب.
-      </p>
+                  <p className="mt-1 truncate text-[13px] text-slate-500">
+                    {item.shortDesc ?? item.desc}
+                  </p>
+                </div>
 
-    </div>
+                <div className="shrink-0 text-left">
+                  <div className="text-[11px] font-bold text-slate-400">
+                    افتح الصفحة
+                  </div>
+                  <div className="mt-1 text-[20px] font-black text-[#2563eb] transition group-hover:translate-x-[-3px]">
+                    ←
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))}
 
-    {/* MOBILE LIST */}
-    <div className="space-y-3 md:hidden">
-      {countryPages.map((item) => (
-        <Link
-          key={item.href}
-          href={item.href}
-          className="block rounded-[18px] border border-slate-200 bg-[#f8fbff] px-4 py-4 shadow-sm transition active:scale-[0.99]"
-        >
-          <div className="flex items-center justify-between gap-3">
+          <Link
+            href="/best-brokers"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group md:col-span-2 md:mx-auto md:max-w-[520px] rounded-[22px] border border-dashed border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-5 py-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-[0_14px_32px_rgba(37,99,235,0.08)]"
+          >
+            <div className="flex items-center gap-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-[#bfdbfe] bg-white shadow-sm">
+                🌍
+              </div>
 
-            <div className="min-w-0">
-              <h3 className="text-base font-black leading-6 text-[#0f172a]">
-                {item.title}
-              </h3>
+              <div className="min-w-0 flex-1">
+                <h3 className="text-[18px] font-black text-[#0f172a]">
+                  كل الدول الأخرى
+                </h3>
+                <p className="mt-1 text-[13px] text-slate-500">
+                  اختر من الصفحة العامة إذا لم تجد بلدك ضمن القائمة
+                </p>
+              </div>
 
-              <p className="mt-1 line-clamp-2 text-xs leading-5 text-slate-600">
-                {item.desc}
-              </p>
+              <div className="shrink-0 text-left">
+                <div className="text-[11px] font-bold text-[#2563eb]">
+                  تصفح الكل
+                </div>
+                <div className="mt-1 text-[20px] font-black text-[#2563eb] transition group-hover:translate-x-[-3px]">
+                  ←
+                </div>
+              </div>
             </div>
-
-            <span className="shrink-0 text-xl font-black text-[#1d4ed8]">
-              ‹
-            </span>
-
-          </div>
-        </Link>
-      ))}
+          </Link>
+        </div>
+      </div>
     </div>
-
-    {/* DESKTOP GRID */}
-    <div className="hidden gap-5 md:grid md:grid-cols-2 xl:grid-cols-4">
-      {countryPages.map((item, index) => (
-        <Link
-          key={item.href}
-          href={item.href}
-          className="group rounded-[26px] border border-slate-200 bg-[linear-gradient(180deg,#f8fbff_0%,#ffffff_100%)] p-6 shadow-sm transition hover:-translate-y-1 hover:border-[#bfdbfe] hover:shadow-[0_16px_40px_rgba(15,23,42,0.06)]"
-        >
-
-          <div className="mb-4 flex items-center justify-between">
-
-            <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-[#bfdbfe] bg-[#eff6ff] text-sm font-black text-[#1d4ed8]">
-              {index + 1}
-            </span>
-
-            <span className="text-sm font-extrabold text-[#1d4ed8]">
-              افتح الصفحة
-            </span>
-
-          </div>
-
-          <h3 className="text-[22px] font-black leading-[1.25] text-[#0f172a]">
-            {item.title}
-          </h3>
-
-          <p className="mt-3 text-sm leading-7 text-slate-600">
-            {item.desc}
-          </p>
-
-        </Link>
-      ))}
-    </div>
-
   </div>
 </section>
-
-     
-
       {/* LONG SEO CONTENT */}
 <section className="mx-auto max-w-7xl px-4 pt-3 pb-5 sm:px-6 sm:pt-4 sm:pb-7 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm sm:rounded-[32px]">
