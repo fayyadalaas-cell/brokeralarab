@@ -240,7 +240,7 @@ export default async function HomePage() {
 
 {/* HERO - DESKTOP IMPROVED / MOBILE KEEP */}
 <section className="relative overflow-hidden border-b border-slate-800 bg-[#07111f]">
-  <div className="absolute inset-0">
+  <div className="pointer-events-none absolute inset-0">
     <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.18),transparent_24%)]" />
     <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(14,165,233,0.10),transparent_30%)]" />
     <div className="absolute right-[-120px] top-[-120px] h-[320px] w-[320px] rounded-full bg-[#2563eb]/15 blur-3xl" />
@@ -362,14 +362,18 @@ export default async function HomePage() {
 
                   <div className="relative z-10 mt-5 grid grid-cols-2 gap-3">
                     <Link
-                      href="/compare"
-                      className="inline-flex h-12 items-center justify-center rounded-2xl border border-white/12 bg-white/5 px-4 text-[14px] font-extrabold text-white transition hover:bg-white/10"
-                    >
+  href="/compare"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-flex h-12 items-center justify-center rounded-2xl border border-white/12 bg-white/5 px-4 text-[14px] font-extrabold text-white transition hover:bg-white/10"
+>
                       تصفح المقارنات
                     </Link>
 
                     <Link
   href="/best-brokers"
+  target="_blank"
+  rel="noopener noreferrer"
   className="inline-flex h-12 items-center justify-center rounded-2xl bg-[#2563eb] px-4 text-[14px] font-extrabold text-white shadow-[0_16px_35px_rgba(37,99,235,0.26)] transition hover:bg-[#1d4ed8] whitespace-nowrap"
 >
                       اعرض أفضل الخيارات
@@ -405,11 +409,13 @@ export default async function HomePage() {
                     </a>
 
                     <Link
-                      href="/compare"
-                      className="inline-flex min-h-[60px] min-w-[210px] items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-7 py-3 text-[15px] font-extrabold text-white backdrop-blur transition duration-200 hover:bg-white/10"
-                    >
-                      تصفح المقارنات
-                    </Link>
+  href="/compare"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-flex min-h-[60px] min-w-[210px] items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-7 py-3 text-[15px] font-extrabold text-white backdrop-blur transition duration-200 hover:bg-white/10"
+>
+  تصفح المقارنات
+</Link>
                   </div>
 
                 
@@ -781,7 +787,7 @@ export default async function HomePage() {
 
   <Link
     href={`/brokers/${cmp.broker_1?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_1?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_1?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_1?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
-    className="mt-3 text-[20px] font-black leading-none text-[#0f172a] transition hover:text-[#2563eb] lg:text-[24px]"
+    className="mt-3 text-[17px] font-black leading-none text-[#0f172a] transition hover:text-[#2563eb] lg:text-[20px]"
   >
     {cmp.broker_1?.name || "Broker 1"}
   </Link>
@@ -814,7 +820,7 @@ export default async function HomePage() {
 
   <Link
     href={`/brokers/${cmp.broker_2?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_2?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_2?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_2?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
-    className="mt-3 text-[20px] font-black leading-none text-[#0f172a] transition hover:text-[#2563eb] lg:text-[24px]"
+    className="mt-3 text-[17px] font-black leading-none text-[#0f172a] transition hover:text-[#2563eb] lg:text-[20px]"
   >
     {cmp.broker_2?.name || "Broker 2"}
   </Link>
@@ -828,9 +834,11 @@ export default async function HomePage() {
 
           <div className="mt-5">
   <Link
-    href={`/compare/${cmp.slug}`}
-    className="inline-flex w-full min-h-[48px] items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-[15px] font-extrabold text-white transition hover:bg-[#1d4ed8] lg:min-h-[52px] lg:text-base"
-  >
+  href={`/compare/${cmp.slug}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-flex w-full min-h-[48px] items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-[15px] font-extrabold text-white transition hover:bg-[#1d4ed8] lg:min-h-[52px] lg:text-base"
+>
     {cmp.title || `مقارنة ${cmp.broker_1?.name} مع ${cmp.broker_2?.name}`}
   </Link>
 </div>

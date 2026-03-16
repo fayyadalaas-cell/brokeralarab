@@ -15,7 +15,7 @@ type Broker = {
   islamic_account: string | null;
   arabic_support: string | null;
   logo?: string | null;
-  open_account_url?: string | null;
+  real_account_url?: string | null;
 
   priority_jordan?: number | null;
   priority_saudi?: number | null;
@@ -174,13 +174,9 @@ export default function BrokerFinder({ brokers }: Props) {
 
       const countryPriority = getCountryPriority(broker, country);
 
-      // 1) التقييم أولًا
       score += (broker.rating || 0) * 5;
-
-      // 2) أولوية الدولة ثانيًا
       score += priorityScore(countryPriority);
 
-      // 3) تحسين النتائج حسب الفلاتر
       if (hasActiveFilters) {
         const maxDeposit = depositValue(deposit as DepositRange);
 
@@ -281,8 +277,6 @@ export default function BrokerFinder({ brokers }: Props) {
       <div className="border-b border-slate-200 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-5 sm:px-6 sm:py-7">
         <div className="flex items-start justify-between gap-4">
           <div className="max-w-3xl">
-            
-
             <h2 className="mt-3 text-2xl font-black leading-tight text-[#0f172a] sm:text-[2rem]">
               اعثر على أفضل 3 شركات تداول تناسبك
             </h2>
@@ -303,143 +297,141 @@ export default function BrokerFinder({ brokers }: Props) {
       </div>
 
       <div className="px-4 pb-4 pt-0 sm:p-6">
-  <div className="relative -mt-px rounded-b-[24px] rounded-t-none border border-t-0 border-slate-200 bg-[#f8fbff] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] sm:mt-0 sm:rounded-[24px] sm:border sm:p-5">
-    <div className="hidden items-center justify-between gap-3 sm:mb-5 sm:flex">
-      <div>
-        <div className="text-sm font-black text-[#0f172a]">حدد تفضيلاتك</div>
-        <div className="mt-1 text-xs font-semibold text-slate-500 sm:text-sm">
-          اختر الدولة وقيمة الإيداع والخبرة والمنصة للحصول على ترشيحات أدق
-        </div>
-      </div>
+        <div className="relative -mt-px rounded-b-[24px] rounded-t-none border border-t-0 border-slate-200 bg-[#f8fbff] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] sm:mt-0 sm:rounded-[24px] sm:border sm:p-5">
+          <div className="hidden items-center justify-between gap-3 sm:mb-5 sm:flex">
+            <div>
+              <div className="text-sm font-black text-[#0f172a]">حدد تفضيلاتك</div>
+              <div className="mt-1 text-xs font-semibold text-slate-500 sm:text-sm">
+                اختر الدولة وقيمة الإيداع والخبرة والمنصة للحصول على ترشيحات أدق
+              </div>
+            </div>
 
-      <div>
-        <span className="rounded-full bg-white px-3 py-1 text-xs font-extrabold text-slate-600 shadow-sm ring-1 ring-slate-200">
-          فلتر سريع
-        </span>
-      </div>
-    </div>
-
-    <div className="mb-3 sm:hidden">
-      <button
-        type="button"
-        onClick={() => setShowMobileFilters((prev) => !prev)}
-        className="flex w-full items-center justify-between rounded-2xl border border-[#bfdbfe] bg-white px-4 py-3 text-right shadow-sm transition hover:bg-[#eff6ff]"
-      >
-        <div>
-          <div className="text-sm font-black text-[#0f172a]">
-            {showMobileFilters ? "إخفاء خيارات البحث" : "اختيار الدولة والتفضيلات"}
+            <div>
+              <span className="rounded-full bg-white px-3 py-1 text-xs font-extrabold text-slate-600 shadow-sm ring-1 ring-slate-200">
+                فلتر سريع
+              </span>
+            </div>
           </div>
-          <div className="mt-0.5 text-[11px] font-semibold text-slate-500">
-            دولة، إيداع، خبرة، منصة
+
+          <div className="mb-3 sm:hidden">
+            <button
+              type="button"
+              onClick={() => setShowMobileFilters((prev) => !prev)}
+              className="flex w-full items-center justify-between rounded-2xl border border-[#bfdbfe] bg-white px-4 py-3 text-right shadow-sm transition hover:bg-[#eff6ff]"
+            >
+              <div>
+                <div className="text-sm font-black text-[#0f172a]">
+                  {showMobileFilters ? "إخفاء خيارات البحث" : "اختيار الدولة والتفضيلات"}
+                </div>
+                <div className="mt-0.5 text-[11px] font-semibold text-slate-500">
+                  دولة، إيداع، خبرة، منصة
+                </div>
+              </div>
+
+              <span className="text-lg font-black text-[#2563eb]">
+                {showMobileFilters ? "−" : "+"}
+              </span>
+            </button>
+          </div>
+
+          <div className={`${showMobileFilters ? "block" : "hidden"} sm:block`}>
+            <div className="grid grid-cols-2 gap-3 xl:grid-cols-5">
+              <div>
+                <label className="mb-2 block text-sm font-bold text-slate-700">الدولة</label>
+                <select
+                  value={country}
+                  onChange={(e) => setCountry(e.target.value)}
+                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]"
+                >
+                  <option value="">اختر الدولة</option>
+                  <option value="sa">السعودية</option>
+                  <option value="ae">الإمارات</option>
+                  <option value="kw">الكويت</option>
+                  <option value="qa">قطر</option>
+                  <option value="bh">البحرين</option>
+                  <option value="om">عُمان</option>
+                  <option value="eg">مصر</option>
+                  <option value="jo">الأردن</option>
+                  <option value="other">دول أخرى</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-bold text-slate-700">قيمة الإيداع</label>
+                <select
+                  value={deposit}
+                  onChange={(e) => setDeposit(e.target.value as DepositRange | "")}
+                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]"
+                >
+                  <option value="">مبلغ الإيداع</option>
+                  <option value="under50">أقل من 50$</option>
+                  <option value="50to200">من 50$ إلى 200$</option>
+                  <option value="200to1000">من 200$ إلى 1000$</option>
+                  <option value="over1000">أكثر من 1000$</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-bold text-slate-700">مستوى الخبرة</label>
+                <select
+                  value={experience}
+                  onChange={(e) => setExperience(e.target.value as Experience | "")}
+                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]"
+                >
+                  <option value="">اختر مستوى الخبرة</option>
+                  <option value="beginner">مبتدئ</option>
+                  <option value="intermediate">متوسط</option>
+                  <option value="pro">محترف</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-bold text-slate-700">المنصة</label>
+                <select
+                  value={platform}
+                  onChange={(e) => setPlatform(e.target.value as PlatformPref | "")}
+                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]"
+                >
+                  <option value="">اختر المنصة</option>
+                  <option value="any">أي منصة</option>
+                  <option value="mt4">MT4</option>
+                  <option value="mt5">MT5</option>
+                </select>
+              </div>
+
+              <div className="col-span-2 xl:col-span-1">
+                <label className="mb-2 block text-sm font-bold text-slate-700">حساب إسلامي</label>
+                <select
+                  value={islamic}
+                  onChange={(e) => setIslamic(e.target.value)}
+                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]"
+                >
+                  <option value="yes">نعم</option>
+                  <option value="no">لا يهم</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="mt-4 flex flex-col gap-3 sm:mt-5 sm:flex-row sm:items-center sm:justify-between">
+              <p className="hidden text-xs font-semibold text-slate-500 sm:block sm:text-sm">
+                يتم الترتيب حسب التقييم العام للشركة أولًا، ثم أولوية الدولة، ثم بقية المعايير.
+              </p>
+
+              <button
+                type="button"
+                onClick={handleSearch}
+                disabled={!canSearch}
+                className={`inline-flex w-full items-center justify-center rounded-2xl px-5 py-3 text-sm font-extrabold transition sm:w-auto sm:min-w-[240px] ${
+                  canSearch
+                    ? "bg-[#2563eb] text-white shadow-[0_14px_30px_rgba(37,99,235,0.24)] hover:bg-[#1d4ed8]"
+                    : "cursor-not-allowed bg-slate-200 text-slate-400"
+                }`}
+              >
+                اعرض أفضل 3 شركات الآن
+              </button>
+            </div>
           </div>
         </div>
-
-        <span className="text-lg font-black text-[#2563eb]">
-          {showMobileFilters ? "−" : "+"}
-        </span>
-      </button>
-    </div>
-
-    <div className={`${showMobileFilters ? "block" : "hidden"} sm:block`}>
-      <div className="grid grid-cols-2 gap-3 xl:grid-cols-5">
-        <div>
-          <label className="mb-2 block text-sm font-bold text-slate-700">الدولة</label>
-          <select
-            value={country}
-            onChange={(e) => setCountry(e.target.value)}
-            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]"
-          >
-            <option value="">اختر الدولة</option>
-            <option value="sa">السعودية</option>
-            <option value="ae">الإمارات</option>
-            <option value="kw">الكويت</option>
-            <option value="qa">قطر</option>
-            <option value="bh">البحرين</option>
-            <option value="om">عُمان</option>
-            <option value="eg">مصر</option>
-            <option value="jo">الأردن</option>
-            <option value="other">دول أخرى</option>
-          </select>
-        </div>
-
-        <div>
-          <label className="mb-2 block text-sm font-bold text-slate-700">قيمة الإيداع</label>
-          <select
-            value={deposit}
-            onChange={(e) => setDeposit(e.target.value as DepositRange | "")}
-            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]"
-          >
-            <option value="">مبلغ الإيداع</option>
-            <option value="under50">أقل من 50$</option>
-            <option value="50to200">من 50$ إلى 200$</option>
-            <option value="200to1000">من 200$ إلى 1000$</option>
-            <option value="over1000">أكثر من 1000$</option>
-          </select>
-        </div>
-
-        <div>
-          <label className="mb-2 block text-sm font-bold text-slate-700">مستوى الخبرة</label>
-          <select
-            value={experience}
-            onChange={(e) => setExperience(e.target.value as Experience | "")}
-            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]"
-          >
-            <option value="">اختر مستوى الخبرة</option>
-            <option value="beginner">مبتدئ</option>
-            <option value="intermediate">متوسط</option>
-            <option value="pro">محترف</option>
-          </select>
-        </div>
-
-        <div>
-          <label className="mb-2 block text-sm font-bold text-slate-700">المنصة</label>
-          <select
-            value={platform}
-            onChange={(e) => setPlatform(e.target.value as PlatformPref | "")}
-            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]"
-          >
-            <option value="">اختر المنصة</option>
-            <option value="any">أي منصة</option>
-            <option value="mt4">MT4</option>
-            <option value="mt5">MT5</option>
-          </select>
-        </div>
-
-        <div className="col-span-2 xl:col-span-1">
-          <label className="mb-2 block text-sm font-bold text-slate-700">حساب إسلامي</label>
-          <select
-            value={islamic}
-            onChange={(e) => setIslamic(e.target.value)}
-            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]"
-          >
-            <option value="yes">نعم</option>
-            <option value="no">لا يهم</option>
-          </select>
-        </div>
-      </div>
-
-      <div className="mt-4 flex flex-col gap-3 sm:mt-5 sm:flex-row sm:items-center sm:justify-between">
-        <p className="hidden text-xs font-semibold text-slate-500 sm:block sm:text-sm">
-          يتم الترتيب حسب التقييم العام للشركة أولًا، ثم أولوية الدولة، ثم بقية المعايير.
-        </p>
-
-        <button
-          type="button"
-          onClick={handleSearch}
-          disabled={!canSearch}
-          className={`inline-flex w-full items-center justify-center rounded-2xl px-5 py-3 text-sm font-extrabold transition sm:w-auto sm:min-w-[240px] ${
-            canSearch
-              ? "bg-[#2563eb] text-white shadow-[0_14px_30px_rgba(37,99,235,0.24)] hover:bg-[#1d4ed8]"
-              : "cursor-not-allowed bg-slate-200 text-slate-400"
-          }`}
-        >
-          اعرض أفضل 3 شركات الآن
-        </button>
-      </div>
-    </div>
-  </div>
-
-
 
         <div className="mt-5 sm:mt-6">
           <div className="mb-4 flex items-center justify-between gap-3">
@@ -457,132 +449,131 @@ export default function BrokerFinder({ brokers }: Props) {
             </div>
           </div>
 
-          {/* MOBILE */}
-<div className="space-y-3 sm:hidden">
-  {results.map((broker, index) => {
-    const isOpen = expandedMobileId === broker.id;
-    const recommendation = getRecommendationLabel(
-      broker,
-      index,
-      experience,
-      deposit,
-      hasSearched
-    );
-    const openAccountHref = broker.open_account_url || `/brokers/${broker.slug}`;
+          <div className="space-y-3 sm:hidden">
+            {results.map((broker, index) => {
+              const isOpen = expandedMobileId === broker.id;
+              const recommendation = getRecommendationLabel(
+                broker,
+                index,
+                experience,
+                deposit,
+                hasSearched
+              );
+              const openAccountHref = broker.real_account_url || `/brokers/${broker.slug}`;
 
-    return (
-      <div
-        key={broker.id}
-        className={`overflow-hidden rounded-[22px] border bg-white transition ${
-          index === 0
-            ? "border-[#93c5fd] shadow-[0_16px_40px_rgba(37,99,235,0.14)]"
-            : "border-slate-200 shadow-sm"
-        }`}
-      >
-        <button
-          type="button"
-          onClick={() => toggleMobileRow(broker.id)}
-          className="w-full px-3 py-3 text-right"
-        >
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex min-w-0 flex-1 items-start gap-3">
-              <div className="relative shrink-0">
-                <div className="rounded-[18px] border border-slate-200 bg-white p-1.5 shadow-sm">
-                  {getLogoNode(broker)}
-                </div>
+              return (
+                <div
+                  key={broker.id}
+                  className={`overflow-hidden rounded-[22px] border bg-white transition ${
+                    index === 0
+                      ? "border-[#93c5fd] shadow-[0_16px_40px_rgba(37,99,235,0.14)]"
+                      : "border-slate-200 shadow-sm"
+                  }`}
+                >
+                  <button
+                    type="button"
+                    onClick={() => toggleMobileRow(broker.id)}
+                    className="w-full px-3 py-3 text-right"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex min-w-0 flex-1 items-start gap-3">
+                        <div className="relative shrink-0">
+                          <div className="rounded-[18px] border border-slate-200 bg-white p-1.5 shadow-sm">
+                            {getLogoNode(broker)}
+                          </div>
 
-                <span className="absolute -right-1 -top-1 inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-[#2563eb] px-1.5 text-[10px] font-black text-white shadow-md">
-                  {index + 1}
-                </span>
-              </div>
+                          <span className="absolute -right-1 -top-1 inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-[#2563eb] px-1.5 text-[10px] font-black text-white shadow-md">
+                            {index + 1}
+                          </span>
+                        </div>
 
-              <div className="min-w-0 flex-1">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0">
-                    <div className="truncate text-[18px] font-black leading-6 text-[#0f172a]">
-                      {broker.name}
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="min-w-0">
+                              <div className="truncate text-[18px] font-black leading-6 text-[#0f172a]">
+                                {broker.name}
+                              </div>
+
+                              <div className="mt-1 inline-flex rounded-full bg-[#eff6ff] px-2.5 py-1 text-[10px] font-extrabold text-[#1d4ed8]">
+                                {recommendation}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="mt-2 text-[12px] font-bold text-slate-500">
+                            {shortText(broker.best_for || "مناسب لفئات متعددة", 34)}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex shrink-0 flex-col items-end gap-2">
+                        <div className="rounded-2xl border border-[#dbeafe] bg-[#f8fbff] px-3 py-2 text-center">
+                          <div className="text-base font-black leading-none text-[#1d4ed8]">
+                            {broker.rating?.toFixed(1) ?? "—"}
+                          </div>
+                          <div className="mt-1 text-[9px] font-bold text-slate-500">من 5</div>
+                        </div>
+
+                        <span className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 bg-white text-sm font-black text-slate-500">
+                          {isOpen ? "⌃" : "⌄"}
+                        </span>
+                      </div>
                     </div>
+                  </button>
 
-                    <div className="mt-1 inline-flex rounded-full bg-[#eff6ff] px-2.5 py-1 text-[10px] font-extrabold text-[#1d4ed8]">
-                      {recommendation}
+                  {isOpen && (
+                    <div className="border-t border-slate-100 px-3 pb-3 pt-3">
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="rounded-2xl bg-slate-50 px-3 py-3">
+                          <div className="text-[11px] font-bold text-slate-500">
+                            الحد الأدنى للإيداع
+                          </div>
+                          <div className="mt-1 text-sm font-black text-[#0f172a]">
+                            {broker.min_deposit !== null ? `$${broker.min_deposit}` : "غير محدد"}
+                          </div>
+                        </div>
+
+                        <div className="rounded-2xl bg-slate-50 px-3 py-3">
+                          <div className="text-[11px] font-bold text-slate-500">المنصات</div>
+                          <div className="mt-1 text-sm font-black text-[#0f172a]">
+                            {shortText(broker.platforms || "غير محدد", 24)}
+                          </div>
+                        </div>
+
+                        <div className="col-span-2 rounded-2xl bg-slate-50 px-3 py-3">
+                          <div className="text-[11px] font-bold text-slate-500">التراخيص</div>
+                          <div className="mt-1 text-sm font-black text-[#0f172a]">
+                            {shortText(broker.regulation || "غير محدد", 46)}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mt-3 grid grid-cols-2 gap-2">
+                        <Link
+                          href={`/brokers/${broker.slug}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-3 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
+                        >
+                          اقرأ التقييم
+                        </Link>
+
+                        <Link
+                          href={openAccountHref}
+                          target="_blank"
+                          rel="noopener noreferrer sponsored"
+                          className="inline-flex items-center justify-center rounded-2xl bg-[#2563eb] px-3 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
+                        >
+                          فتح حساب حقيقي
+                        </Link>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
-
-                <div className="mt-2 text-[12px] font-bold text-slate-500">
-                  {shortText(broker.best_for || "مناسب لفئات متعددة", 34)}
-                </div>
-              </div>
-            </div>
-
-            <div className="flex shrink-0 flex-col items-end gap-2">
-              <div className="rounded-2xl border border-[#dbeafe] bg-[#f8fbff] px-3 py-2 text-center">
-                <div className="text-base font-black leading-none text-[#1d4ed8]">
-                  {broker.rating?.toFixed(1) ?? "—"}
-                </div>
-                <div className="mt-1 text-[9px] font-bold text-slate-500">من 5</div>
-              </div>
-
-              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 bg-white text-sm font-black text-slate-500">
-                {isOpen ? "⌃" : "⌄"}
-              </span>
-            </div>
+              );
+            })}
           </div>
-        </button>
 
-        {isOpen && (
-          <div className="border-t border-slate-100 px-3 pb-3 pt-3">
-            <div className="grid grid-cols-2 gap-2">
-              <div className="rounded-2xl bg-slate-50 px-3 py-3">
-                <div className="text-[11px] font-bold text-slate-500">
-                  الحد الأدنى للإيداع
-                </div>
-                <div className="mt-1 text-sm font-black text-[#0f172a]">
-                  {broker.min_deposit !== null ? `$${broker.min_deposit}` : "غير محدد"}
-                </div>
-              </div>
-
-              <div className="rounded-2xl bg-slate-50 px-3 py-3">
-                <div className="text-[11px] font-bold text-slate-500">المنصات</div>
-                <div className="mt-1 text-sm font-black text-[#0f172a]">
-                  {shortText(broker.platforms || "غير محدد", 24)}
-                </div>
-              </div>
-
-              <div className="col-span-2 rounded-2xl bg-slate-50 px-3 py-3">
-                <div className="text-[11px] font-bold text-slate-500">التراخيص</div>
-                <div className="mt-1 text-sm font-black text-[#0f172a]">
-                  {shortText(broker.regulation || "غير محدد", 46)}
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-3 grid grid-cols-2 gap-2">
-              <Link
-                href={`/brokers/${broker.slug}`}
-                className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-3 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
-              >
-                اقرأ التقييم
-              </Link>
-
-              <Link
-                href={openAccountHref}
-                target={broker.open_account_url ? "_blank" : undefined}
-                rel={broker.open_account_url ? "noopener noreferrer sponsored" : undefined}
-                className="inline-flex items-center justify-center rounded-2xl bg-[#2563eb] px-3 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
-              >
-                فتح حساب حقيقي
-              </Link>
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  })}
-</div>
-
-
-          {/* DESKTOP */}
           <div className="hidden gap-4 lg:grid lg:grid-cols-3">
             {results.map((broker, index) => {
               const recommendation = getRecommendationLabel(
@@ -592,7 +583,7 @@ export default function BrokerFinder({ brokers }: Props) {
                 deposit,
                 hasSearched
               );
-              const openAccountHref = broker.open_account_url || `/brokers/${broker.slug}`;
+              const openAccountHref = broker.real_account_url || `/brokers/${broker.slug}`;
 
               return (
                 <article
@@ -682,6 +673,8 @@ export default function BrokerFinder({ brokers }: Props) {
                   <div className="mt-5 grid grid-cols-2 gap-3">
                     <Link
                       href={`/brokers/${broker.slug}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
                     >
                       اقرأ التقييم
@@ -689,8 +682,8 @@ export default function BrokerFinder({ brokers }: Props) {
 
                     <Link
                       href={openAccountHref}
-                      target={broker.open_account_url ? "_blank" : undefined}
-                      rel={broker.open_account_url ? "noopener noreferrer sponsored" : undefined}
+                      target="_blank"
+                      rel="noopener noreferrer sponsored"
                       className="inline-flex items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-sm font-extrabold text-white shadow-[0_12px_24px_rgba(37,99,235,0.20)] transition hover:bg-[#1d4ed8]"
                     >
                       فتح حساب حقيقي
