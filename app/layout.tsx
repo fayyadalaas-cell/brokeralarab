@@ -72,9 +72,9 @@ export default function RootLayout({
               url: "https://brokeralarab.com",
               logo: "https://brokeralarab.com/brokers/BrokerLogo.png",
               sameAs: [
-              "https://www.facebook.com/BrokerAlArab",
-              "https://x.com/brokeralarab"
-                      ],
+                "https://www.facebook.com/BrokerAlArab",
+                "https://x.com/brokeralarab",
+              ],
             }),
           }}
         />
@@ -136,128 +136,123 @@ export default function RootLayout({
         <main>{children}</main>
 
         {/* FOOTER */}
-        <footer className="mt-6 border-t border-slate-800 bg-[#0f172a] text-slate-300 md:mt-12">
-          <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-            {/* MOBILE */}
-            <div className="space-y-6 md:hidden">
-              <div>
-                <Image
-                  src="/brokers/BrokerLogo.png"
-                  alt="بروكر العرب"
-                  width={240}
-                  height={80}
-                  className="h-auto w-[150px] brightness-0 invert"
-                />
-                <p className="mt-3 text-sm leading-7 text-slate-300">
-                  منصة عربية متخصصة في مراجعات ومقارنات شركات التداول
-                  لمساعدة المتداول العربي على اختيار الوسيط المناسب.
-                </p>
-              </div>
+<footer className="mt-8 border-t border-slate-800 bg-[#081224] text-slate-300 md:mt-12">
+  <div className="mx-auto max-w-7xl px-4 pt-8 pb-4 sm:px-6 lg:px-8">
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <div className="text-sm font-black text-white">روابط الموقع</div>
-                  <div className="mt-3 grid gap-2 text-sm">
-                    {footerMainLinks.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        className="text-slate-300 transition hover:text-white"
-                      >
-                        {item.label}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
+    {/* TOP */}
+    <div className="grid gap-8 md:grid-cols-[1.2fr_0.9fr_0.9fr] md:gap-10">
 
-                <div>
-                  <div className="text-sm font-black text-white">صفحات مهمة</div>
-                  <div className="mt-3 grid gap-2 text-sm">
-                    {footerLegalLinks.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        className="text-slate-300 transition hover:text-white"
-                      >
-                        {item.label}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              </div>
+      {/* BRAND */}
+      <div>
+        <Image
+          src="/brokers/BrokerLogo.png"
+          alt="بروكر العرب"
+          width={280}
+          height={90}
+          className="h-auto w-[160px] brightness-0 invert md:w-[210px]"
+        />
 
-              <div className="text-sm">
-                <span className="font-black text-white">البريد:</span>{" "}
-                info@brokeralarab.com
-              </div>
-            </div>
+        <p className="mt-3 max-w-xl text-sm leading-7 text-slate-300">
+          منصة عربية متخصصة في مراجعات ومقارنات شركات التداول، تساعد المتداول
+          العربي على اختيار الوسيط المناسب وفهم الفروقات بين الشركات قبل فتح الحساب.
+        </p>
 
-            {/* DESKTOP */}
-            <div className="hidden md:grid md:grid-cols-4 md:gap-10">
-              <div>
-                <Image
-                  src="/brokers/BrokerLogo.png"
-                  alt="بروكر العرب"
-                  width={280}
-                  height={90}
-                  className="h-auto w-[180px] brightness-0 invert"
-                />
-                <p className="mt-4 text-sm leading-8 text-slate-300">
-                  منصة عربية متخصصة في مراجعات ومقارنات شركات التداول
-                  لمساعدة المتداول العربي على اتخاذ قرار أفضل قبل فتح الحساب.
-                </p>
-              </div>
+        <div className="mt-4 text-sm">
+          <span className="font-bold text-white">البريد:</span>{" "}
+          <a
+            href="mailto:info@brokeralarab.com"
+            className="text-slate-300 transition hover:text-white"
+          >
+            info@brokeralarab.com
+          </a>
+        </div>
+      </div>
 
-              <div>
-                <div className="text-sm font-black text-white">روابط الموقع</div>
-                <div className="mt-4 grid gap-3 text-sm">
-                  {footerMainLinks.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className="text-slate-300 transition hover:text-white"
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <div className="text-sm font-black text-white">صفحات مهمة</div>
-                <div className="mt-4 grid gap-3 text-sm">
-                  {footerLegalLinks.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className="text-slate-300 transition hover:text-white"
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                </div>
-                <div className="mt-6">
-                  <div className="text-sm font-black text-white">البريد</div>
-                  <div className="mt-2 text-sm text-slate-300">
-                    info@brokeralarab.com
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <div className="text-sm font-black text-white">إخلاء مسؤولية</div>
-                <p className="mt-4 text-sm leading-8 text-slate-300">
-                  المعلومات المعروضة في هذا الموقع لأغراض تعليمية فقط
-                  ولا تعتبر نصيحة استثمارية أو توصية بفتح حساب تداول.
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-10 border-t border-slate-800 pt-6 text-center text-xs text-slate-400">
-              © {new Date().getFullYear()} بروكر العرب - جميع الحقوق محفوظة
-            </div>
+      {/* MOBILE: LINKS GRID */}
+      <div className="grid grid-cols-2 gap-6 md:hidden">
+        {/* SITE LINKS */}
+        <div>
+          <div className="text-sm font-bold text-white">روابط الموقع</div>
+          <div className="mt-3 grid gap-2 text-sm">
+            {footerMainLinks.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-slate-300 transition hover:text-white"
+              >
+                {item.label}
+              </Link>
+            ))}
           </div>
-        </footer>
+        </div>
+
+        {/* LEGAL LINKS */}
+        <div>
+          <div className="text-sm font-bold text-white">صفحات مهمة</div>
+          <div className="mt-3 grid gap-2 text-sm">
+            {footerLegalLinks.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-slate-300 transition hover:text-white"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* DESKTOP LINKS */}
+      <div className="hidden md:block">
+        <div className="text-sm font-bold text-white">روابط الموقع</div>
+        <div className="mt-4 grid gap-3 text-sm">
+          {footerMainLinks.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="text-slate-300 transition hover:text-white"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      <div className="hidden md:block">
+        <div className="text-sm font-bold text-white">صفحات مهمة</div>
+        <div className="mt-4 grid gap-3 text-sm">
+          {footerLegalLinks.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="text-slate-300 transition hover:text-white"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    {/* LEGAL STRIP */}
+    <div className="mt-6 border-t border-slate-800 pt-3 text-right text-[12px] leading-7 text-slate-400 md:text-sm">
+      <p>
+        <span className="font-semibold text-slate-300">تحذير المخاطر:</span>{" "}
+        المعلومات المعروضة في هذا الموقع لأغراض تعليمية فقط ولا تشكل نصيحة مالية أو استثمارية،
+        ولا يقدم بروكر العرب خدمات تداول مباشرة ولا يحتفظ بأموال العملاء. ينطوي تداول الفوركس
+        وعقود الفروقات والعملات الرقمية على مستوى مرتفع من المخاطر وقد لا يكون مناسبًا لجميع المستثمرين،
+        وقد تتجاوز خسائرك قيمة الإيداع الأولي.
+      </p>
+    </div>
+
+    {/* COPYRIGHT */}
+    <div className="mt-4 border-t border-slate-800 pt-4 text-center text-xs text-slate-500">
+      © {new Date().getFullYear()} بروكر العرب - جميع الحقوق محفوظة
+    </div>
+
+  </div>
+</footer>
       </body>
     </html>
   );
