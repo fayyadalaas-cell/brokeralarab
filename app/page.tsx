@@ -514,13 +514,13 @@ export default async function HomePage() {
       {/* FINDER */}
 <section
   id="finder"
-  className="scroll-mt-24 mx-auto max-w-7xl px-4 py-5 sm:px-6 sm:py-7 lg:px-8"
+  className="scroll-mt-24 mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-5 lg:px-8 lg:py-6"
 >
   <BrokerFinder brokers={brokers} />
 </section>
 
      {/* HOW WE RATE - PREMIUM STEPS */}
-<section className="mx-auto max-w-7xl px-4 pt-3 pb-2 sm:px-6 sm:pt-4 sm:pb-3 lg:px-8">
+<section className="mx-auto max-w-7xl px-4 pt-3 pb-2 sm:px-6 sm:pt-1 sm:pb-3 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] shadow-sm sm:rounded-[32px]">
     {(() => {
       const ratingItems = [
@@ -677,7 +677,7 @@ export default async function HomePage() {
 </section>
 
 {/* TOP COMPARISONS */}
-<section className="mx-auto max-w-7xl px-4 pt-4 pb-6 sm:px-6 sm:pt-5 sm:pb-8 lg:px-8">
+<section className="mx-auto max-w-7xl px-4 pt-3 pb-2 sm:px-6 sm:pt-1 sm:pb-3 lg:px-8">
   <div className="mb-4 flex flex-col gap-3 sm:mb-5 md:flex-row md:items-end md:justify-between">
     <div className="text-center md:text-right">
       <h2 className="text-[28px] font-black leading-[1.15] text-[#0f172a] sm:text-[34px] lg:text-[42px]">
@@ -1068,189 +1068,211 @@ export default async function HomePage() {
     </div>
   </div>
 </section>
-      {/* LONG SEO CONTENT */}
-<section className="mx-auto max-w-7xl px-4 pt-3 pb-5 sm:px-6 sm:pt-4 sm:pb-7 lg:px-8">
+      {/* HOW TO CHOOSE A BROKER - PREMIUM SEO SECTION */}
+<section className="mx-auto max-w-7xl px-4 pt-3 pb-2 sm:px-6 sm:pt-1 sm:pb-3 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm sm:rounded-[32px]">
-    <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-6 sm:px-8 sm:py-8">
-      
-
+    {/* HEADER */}
+    <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-5 sm:px-8 sm:py-7">
       <h2 className="text-[24px] font-black leading-[1.15] text-[#0f172a] sm:text-[40px]">
         كيف تختار أفضل شركة تداول مناسبة لك؟
       </h2>
+
+      <p className="mt-3 max-w-4xl text-sm leading-7 text-slate-600 sm:text-[15px] sm:leading-8">
+        اختيار أفضل شركة تداول لا يتعلق فقط بالشهرة أو الحملات الإعلانية، بل
+        يعتمد على الترخيص وتكلفة التداول والمنصة وتجربة الاستخدام الفعلية،
+        لذلك نوضح هنا أهم المعايير التي تساعدك على اختيار الوسيط المناسب بثقة.
+      </p>
     </div>
 
-    {/* MOBILE VERSION */}
-    <div className="px-5 py-5 sm:hidden">
-      <div className="text-sm leading-7 text-slate-600">
-        <p>
-          اختيار أفضل شركة تداول لا يعتمد فقط على شهرة الاسم أو كثرة الإعلانات،
-          بل على التراخيص، أنواع الحسابات، المنصات، وسهولة الإيداع والسحب.
+    {/* MOBILE */}
+    <div className="px-4 py-4 sm:hidden">
+      <div className="rounded-[20px] border border-slate-200 bg-[#f8fbff] p-4">
+        <p className="text-sm leading-8 text-slate-600">
+          أفضل شركة تداول ليست دائمًا الأكثر شهرة، بل الشركة التي تجمع بين
+          الترخيص القوي والرسوم الواضحة والمنصة المناسبة وسهولة الإيداع
+          والسحب. لهذا السبب يجب تقييم الوسيط من زاوية عملية قبل فتح الحساب.
         </p>
 
-        <details className="mt-4 overflow-hidden rounded-[18px] border border-slate-200 bg-[#f8fbff]">
-          <summary className="cursor-pointer list-none px-4 py-4 font-extrabold text-[#1d4ed8]">
-            اقرأ الدليل الكامل
+        <details className="mt-4 overflow-hidden rounded-[18px] border border-slate-200 bg-white">
+          <summary className="cursor-pointer list-none px-4 py-3.5 text-center text-sm font-extrabold text-[#1d4ed8]">
+            اقرأ المزيد
           </summary>
 
-          <div className="space-y-5 border-t border-slate-200 bg-white px-4 py-4">
+          <div className="space-y-4 border-t border-slate-200 px-4 py-4 text-sm leading-7 text-slate-600">
             <p>
-              اختيار أفضل شركة تداول لا يعتمد فقط على شهرة الاسم أو كثرة
-              الإعلانات، بل على مجموعة من العوامل العملية التي تؤثر مباشرة على
-              تجربة المتداول وإمكانية استمراره وتحقيقه لأداء أفضل. أول هذه
-              العوامل هو الترخيص، لأن التنظيم يعطي انطباعًا أوليًا عن الإطار
-              الرقابي الذي تعمل تحته الشركة، وطريقة تعاملها مع أموال العملاء،
-              ومدى التزامها بالمعايير المطلوبة.
+              أول خطوة عند اختيار شركة التداول هي فحص <strong>الترخيص والتنظيم</strong>.
+              وجود جهة رقابية معروفة يعطي مؤشرًا أفضل على التزام الشركة بالمعايير
+              والشفافية في التعامل مع أموال العملاء.
             </p>
 
             <p>
-              بعد ذلك يأتي عامل أنواع الحسابات، فليس كل متداول يحتاج نفس نوع
-              الحساب. بعض المستخدمين يريدون حسابًا بإيداع منخفض جدًا من أجل
-              البداية، بينما يفضل آخرون حسابات احترافية بسبريد منخفض وعمولات
-              واضحة. كذلك تختلف أهمية المنصات من مستخدم إلى آخر؛ فهناك من يفضل
-              MT4 بسبب شيوعها وسهولتها، وهناك من يفضل MT5 لما توفره من أدوات
-              إضافية وتحسينات على مستوى الأداء والتحليل.
+              بعد ذلك تأتي <strong>تكلفة التداول</strong>، والتي لا تعني فقط
+              السبريد، بل تشمل العمولات ورسوم التبييت وأي رسوم خفية قد تؤثر
+              على النتائج الفعلية.
             </p>
 
             <p>
-              ومن العوامل التي لا يجب إهمالها أيضًا: سهولة الإيداع والسحب،
-              وتوفر الحساب الإسلامي، والدعم باللغة العربية، ومدى ملاءمة الشركة
-              للمتداول العربي من حيث التعامل مع الاحتياجات الواقعية للسوق في
-              المنطقة.
+              كما يجب الانتباه إلى <strong>المنصة</strong>، سواء كنت تفضل MT4 أو
+              MT5 أو تطبيق الهاتف، لأن تجربة الاستخدام وسرعة التنفيذ تؤثر على
+              تداولك اليومي بشكل مباشر.
             </p>
 
             <p>
-              لهذا السبب بنينا في بروكر العرب قاعدة تقييمات ومقارنات تساعد
-              الزائر على الوصول إلى صورة أوضح، ثم دعمنا الصفحة الرئيسية بأداة
-              اختيار ذكية تقترح أفضل 3 شركات بناءً على مدخلات بسيطة مثل البلد،
-              مبلغ الإيداع، المنصة المفضلة، ومستوى الخبرة.
+              بالنسبة للمتداول العربي، فإن <strong>الحساب الإسلامي</strong>،
+              ووجود <strong>دعم عربي</strong>، ومرونة وسائل الإيداع والسحب هي
+              عوامل مهمة جدًا ولا يجب تجاهلها.
             </p>
           </div>
         </details>
       </div>
     </div>
 
-    {/* DESKTOP VERSION */}
+    {/* DESKTOP */}
     <div className="hidden px-8 py-8 sm:block">
-      <div className="grid gap-6 lg:grid-cols-12 lg:gap-8">
+      <div className="grid gap-8 lg:grid-cols-12 lg:items-start">
+        {/* ARTICLE */}
         <div className="lg:col-span-8">
-          <div className="space-y-6 text-base leading-9 text-slate-600">
-            <p>
-              اختيار أفضل شركة تداول لا يعتمد فقط على شهرة الاسم أو كثرة
-              الإعلانات، بل على مجموعة من العوامل العملية التي تؤثر مباشرة على
-              تجربة المتداول وإمكانية استمراره وتحقيقه لأداء أفضل. أول هذه
-              العوامل هو الترخيص، لأن التنظيم يعطي انطباعًا أوليًا عن الإطار
-              الرقابي الذي تعمل تحته الشركة، وطريقة تعاملها مع أموال العملاء،
-              ومدى التزامها بالمعايير المطلوبة.
-            </p>
+          <article className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm lg:p-8">
+            <div className="space-y-5 text-[16px] leading-9 text-slate-600">
+              <p>
+                إذا كنت تبحث عن <strong>أفضل شركة تداول</strong>، فمن المهم أن
+                تعرف أن القرار لا يجب أن يبنى على شهرة العلامة التجارية فقط،
+                بل على عوامل عملية تؤثر مباشرة على أمان أموالك وجودة تنفيذ
+                الصفقات وتكلفة التداول مع الوقت. أول هذه العوامل هو
+                <strong> الترخيص</strong>، لأن الوسيط الخاضع لجهة رقابية معروفة
+                يكون عادة أكثر التزامًا بالشفافية والمعايير التنظيمية.
+              </p>
 
-            <p>
-              بعد ذلك يأتي عامل أنواع الحسابات، فليس كل متداول يحتاج نفس نوع
-              الحساب. بعض المستخدمين يريدون حسابًا بإيداع منخفض جدًا من أجل
-              البداية، بينما يفضل آخرون حسابات احترافية بسبريد منخفض وعمولات
-              واضحة. كذلك تختلف أهمية المنصات من مستخدم إلى آخر؛ فهناك من يفضل
-              MT4 بسبب شيوعها وسهولتها، وهناك من يفضل MT5 لما توفره من أدوات
-              إضافية وتحسينات على مستوى الأداء والتحليل.
-            </p>
+              <p>
+                بعد ذلك تأتي <strong>تكلفة التداول الفعلية</strong>. كثير من
+                المتداولين يركزون فقط على السبريد، لكن الصورة الكاملة تشمل
+                العمولات ورسوم التبييت وأي رسوم إضافية قد لا تظهر بوضوح في
+                الإعلانات، لذلك من المهم مقارنة التكلفة الحقيقية لا الأرقام
+                التسويقية فقط.
+              </p>
 
-            <p>
-              ومن العوامل التي لا يجب إهمالها أيضًا: سهولة الإيداع والسحب،
-              وتوفر الحساب الإسلامي، والدعم باللغة العربية، ومدى ملاءمة الشركة
-              للمتداول العربي من حيث التعامل مع الاحتياجات الواقعية للسوق في
-              المنطقة. لهذا السبب بنينا في بروكر العرب قاعدة تقييمات ومقارنات
-              تساعد الزائر على الوصول إلى صورة أوضح.
-            </p>
+              <p>
+                كذلك فإن <strong>المنصة</strong> عنصر أساسي عند اختيار الوسيط.
+                بعض المتداولين يفضلون MT4 بسبب بساطتها وانتشارها، بينما يفضل
+                آخرون MT5 لما توفره من أدوات إضافية. وهناك من يعتمد على تطبيق
+                الهاتف بشكل يومي، لذلك تصبح سهولة الاستخدام وسرعة التنفيذ عوامل
+                مهمة جدًا.
+              </p>
 
-            <p>
-              ومع توسع الموقع يومًا بعد يوم بإضافة شركات جديدة وصفحات مقارنة
-              وصفحات Programmatic SEO حسب الدول والفئات، يصبح بإمكان الزائر أن
-              ينتقل بسهولة من صفحة عامة مثل "أفضل شركات التداول" إلى صفحات أكثر
-              تحديدًا مثل "أفضل شركات التداول في السعودية" أو "أفضل شركات
-              التداول الإسلامية" أو "Exness vs XM".
-            </p>
-          </div>
+              <p>
+                ولا يمكن تجاهل <strong>أنواع الحسابات</strong>. فالمبتدئ قد
+                يحتاج إلى حساب بإيداع منخفض وشروط واضحة، بينما يحتاج المتداول
+                الأكثر خبرة إلى حساب بسبريد أقل وتنفيذ أسرع. لهذا من الأفضل
+                اختيار وسيط يقدّم أكثر من خيار يناسب أسلوبك ورأس مالك.
+              </p>
+
+              <p>
+                بالنسبة للمتداول العربي، فإن <strong>الحساب الإسلامي</strong>
+                ووجود <strong>دعم عربي</strong> ومرونة وسائل الإيداع والسحب
+                تبقى من العوامل المهمة جدًا. وفي بروكر العرب نعتمد على هذه
+                المعايير عند مراجعة الوسطاء ومقارنتهم، لذلك ستجد صفحات تقييم
+                تساعدك على الوصول إلى الوسيط الأنسب بدل الاعتماد على الإعلانات فقط.
+              </p>
+            </div>
+          </article>
         </div>
 
-        <div className="lg:col-span-4">
-          <div className="rounded-[24px] border border-slate-200 bg-[#f8fbff] p-5">
-            <div className="text-xs font-extrabold text-[#1d4ed8]">
-              أهم عوامل الاختيار
-            </div>
+        {/* SIDEBAR */}
+        <aside className="lg:col-span-4">
+          <div className="lg:sticky lg:top-24">
+            <div className="overflow-hidden rounded-[24px] border border-[#dbeafe] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] shadow-sm">
+              <div className="border-b border-[#dbeafe] px-5 py-5">
+                <h3 className="text-[24px] font-black leading-[1.25] text-[#0f172a]">
+                  ما الذي يجب فحصه قبل فتح الحساب؟
+                </h3>
+              </div>
 
-            <div className="mt-4 space-y-3">
-              {[
-                "قوة الترخيص والتنظيم",
-                "أنواع الحسابات والرسوم",
-                "المنصة المناسبة لك",
-                "سهولة الإيداع والسحب",
-                "توفر الحساب الإسلامي",
-                "الدعم العربي وتجربة المستخدم",
-              ].map((item, index) => (
-                <div
-                  key={item}
-                  className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3"
-                >
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#eff6ff] text-xs font-black text-[#1d4ed8]">
-                    {index + 1}
-                  </span>
-                  <span className="text-sm font-bold text-[#0f172a]">
-                    {item}
-                  </span>
+              <div className="p-5">
+                <div className="space-y-3">
+                  {[
+                    "قوة الترخيص والتنظيم",
+                    "السبريد والعمولات",
+                    "نوع المنصة وسهولة الاستخدام",
+                    "الإيداع والسحب",
+                    "توفر الحساب الإسلامي",
+                    "الدعم العربي وخدمة العملاء",
+                  ].map((item, index) => (
+                    <div
+                      key={item}
+                      className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm"
+                    >
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#eff6ff] text-xs font-black text-[#1d4ed8]">
+                        {index + 1}
+                      </span>
+                      <span className="text-sm font-bold leading-6 text-[#0f172a]">
+                        {item}
+                      </span>
+                    </div>
+                  ))}
                 </div>
-              ))}
+
+                <div className="mt-5 rounded-[18px] border border-slate-200 bg-[#f8fbff] px-4 py-4">
+                  <p className="text-sm leading-7 text-slate-600">
+                    لا تختَر شركة التداول بناءً على الإعلان فقط. افحص الترخيص،
+                    الرسوم الفعلية، ونوع الحساب الذي يناسب رأس مالك وأسلوبك في
+                    التداول.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        </aside>
       </div>
     </div>
   </div>
 </section>
 
-{/* WHY US */}
-<section className="mx-auto max-w-7xl px-4 pt-1 pb-4 sm:px-6 sm:pt-2 sm:pb-6 lg:px-8">
+{/* WHY TRUST BROKER AL ARAB */}
+<section className="mx-auto max-w-7xl px-4 pt-3 pb-2 sm:px-6 sm:pt-1 sm:pb-3 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm sm:rounded-[32px]">
-    <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-6 sm:px-8 sm:py-8">
-      <div className="inline-flex rounded-full border border-[#bfdbfe] bg-[#eff6ff] px-3 py-1 text-xs font-extrabold text-[#1d4ed8] sm:text-sm">
-        لماذا بروكر العرب؟
-      </div>
 
-      <h2 className="mt-3 text-[24px] font-black leading-[1.50] text-[#0f172a] sm:text-[36px] lg:text-[42px]">
-        منصة تساعد المتداول العربي
-        <span className="text-[#2563eb]"> على اختيار شركة التداول بثقة</span>
+    {/* HEADER */}
+    <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-5 sm:px-8 sm:py-6">
+
+      <h2 className="text-[24px] font-black leading-[1.2] text-[#0f172a] sm:text-[36px] lg:text-[42px]">
+        لماذا يثق المتداولون في
+        <span className="text-[#2563eb]"> بروكر العرب؟</span>
       </h2>
 
-      <p className="mt-4 max-w-4xl text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
-        هدفنا في بروكر العرب هو تقديم مراجعات ومقارنات واضحة تساعد المتداول
-        العربي على فهم الفروقات الحقيقية بين شركات التداول قبل فتح الحساب،
-        عبر صفحات تقييم مفصلة ومقارنات مباشرة توضح التراخيص والحسابات والرسوم والمنصات.
+      <p className="mt-3 max-w-4xl text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
+        بروكر العرب منصة عربية تساعد المتداول على فهم الفروقات الحقيقية بين
+        الوسطاء من حيث التراخيص والرسوم والمنصات وأنواع الحسابات حتى يتخذ
+        قراره على أساس واضح.
       </p>
+
     </div>
 
     {/* MOBILE */}
     <div className="grid gap-3 p-4 sm:hidden">
       {[
         {
-          title: "مراجعات منظمة",
-          desc: "صفحات مستقلة توضح الحسابات والتراخيص والرسوم.",
+          title: "مراجعات منظمة وواضحة",
+          desc: "كل شركة لها صفحة مستقلة تعرض الحسابات والتراخيص والرسوم بشكل مرتب.",
         },
         {
-          title: "مقارنات عملية",
-          desc: "مقارنات مباشرة توضح الفروق الحقيقية بسرعة.",
+          title: "مقارنات عملية بين الوسطاء",
+          desc: "مقارنات مباشرة توضح الفروق الحقيقية بسرعة وسهولة.",
         },
         {
           title: "تركيز على المتداول العربي",
-          desc: "اهتمام بالحساب الإسلامي والدعم العربي والإيداع المناسب.",
+          desc: "اهتمام بالحساب الإسلامي والدعم العربي ووسائل الإيداع.",
         },
         {
-          title: "بنية قابلة للتوسع",
-          desc: "ربط كل شركة بصفحات مقارنة ودول وفئات بشكل منظم.",
+          title: "بنية قوية للسيو",
+          desc: "ربط صفحات التقييم والمقارنات والدول بطريقة منظمة.",
         },
       ].map((item, index) => (
         <div
           key={item.title}
-          className="rounded-[18px] border border-slate-200 bg-[#f8fbff] px-4 py-4 shadow-sm"
+          className="rounded-[16px] border border-slate-200 bg-[#f8fbff] px-4 py-4 shadow-sm"
         >
-          <div className="mb-3 flex items-center gap-3">
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#bfdbfe] bg-[#eff6ff] text-xs font-black text-[#1d4ed8]">
+          <div className="flex items-center gap-3">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#bfdbfe] bg-white text-[11px] font-black text-[#1d4ed8]">
               {index + 1}
             </span>
 
@@ -1259,7 +1281,7 @@ export default async function HomePage() {
             </h3>
           </div>
 
-          <p className="text-sm leading-6 text-slate-600">
+          <p className="mt-2 text-[13px] leading-6 text-slate-600">
             {item.desc}
           </p>
         </div>
@@ -1271,144 +1293,161 @@ export default async function HomePage() {
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
         {[
           {
-            title: "مراجعات منظمة",
-            desc: "كل شركة لها صفحة مستقلة تحتوي على الحسابات، المنصات، التراخيص، الرسوم، والخلاصة النهائية.",
+            title: "مراجعات منظمة وواضحة",
+desc: "كل شركة لها صفحة مستقلة تعرض الحسابات والمنصات والتراخيص والرسوم بشكل واضح.",
           },
           {
-            title: "مقارنات عملية",
-            desc: "صفحات مقارنة توضح الفروق الفعلية بين الوسطاء بدل تنقل الزائر بين عدة صفحات منفصلة.",
+            title: "مقارنات عملية بين الوسطاء",
+            desc: "صفحات مقارنة توضح الفروق الفعلية بين الشركات بدل أن يتنقل الزائر بين عدة صفحات.",
           },
           {
             title: "تركيز على المتداول العربي",
-            desc: "نهتم بالحساب الإسلامي، والدعم العربي، والحد الأدنى للإيداع، ومدى ملاءمة الشركة للمنطقة.",
+            desc: "نهتم بالحساب الإسلامي والدعم العربي ومرونة الإيداع والسحب واحتياجات المنطقة.",
           },
           {
-            title: "بنية قابلة للتوسع",
-            desc: "كل شركة جديدة يمكن ربطها مباشرة بصفحات مقارنة وصفحات دولة وصفحات فئة، وهذا ممتاز للسيو.",
+            title: "بنية قوية للسيو والتوسع",
+            desc: "ربط صفحات التقييم والمقارنات وصفحات الدول بطريقة منظمة تعزز تجربة المستخدم والسيو.",
           },
         ].map((item, index) => (
           <div
             key={item.title}
-            className="group rounded-[24px] border border-slate-200 bg-[linear-gradient(180deg,#f8fbff_0%,#ffffff_100%)] p-5 shadow-sm transition hover:-translate-y-1 hover:border-[#bfdbfe] hover:shadow-[0_16px_40px_rgba(15,23,42,0.06)]"
+            className="group rounded-[22px] border border-slate-200 bg-[linear-gradient(180deg,#f8fbff_0%,#ffffff_100%)] px-5 py-5 shadow-sm transition hover:-translate-y-1 hover:border-[#bfdbfe] hover:shadow-[0_14px_36px_rgba(15,23,42,0.06)]"
           >
-            <div className="mb-4 flex items-center justify-between">
-              <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-[#bfdbfe] bg-[#eff6ff] text-sm font-black text-[#1d4ed8]">
+            <div className="flex items-start gap-3">
+              <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#bfdbfe] bg-white text-[12px] font-black text-[#1d4ed8]">
                 {index + 1}
               </span>
+
+              <div className="min-w-0">
+                <h3 className="text-[18px] font-black leading-[1.35] text-[#0f172a]">
+                  {item.title}
+                </h3>
+
+                <p className="mt-3 text-sm leading-7 text-slate-600">
+                  {item.desc}
+                </p>
+              </div>
             </div>
-
-            <h3 className="text-[20px] font-black leading-[1.3] text-[#0f172a]">
-              {item.title}
-            </h3>
-
-            <p className="mt-3 text-sm leading-7 text-slate-600">
-              {item.desc}
-            </p>
           </div>
+        ))}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{/* FAQ */}
+<section className="mx-auto max-w-7xl px-4 pt-3 pb-2 sm:px-6 sm:pt-1 sm:pb-3 lg:px-8">
+  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm sm:rounded-[32px]">
+    {/* HEADER */}
+    <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-6 sm:px-8 sm:py-8">
+      <div className="inline-flex rounded-full border border-[#bfdbfe] bg-[#eff6ff] px-3 py-1 text-xs font-extrabold text-[#1d4ed8] sm:text-sm">
+        الأسئلة الشائعة
+      </div>
+
+      <h2 className="mt-3 text-[24px] font-black leading-[1.15] text-[#0f172a] sm:text-[36px]">
+        أهم الأسئلة قبل اختيار شركة التداول
+      </h2>
+
+      <p className="mt-4 max-w-4xl text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
+        هذه أكثر الأسئلة التي تدور غالبًا في ذهن المتداول قبل فتح الحساب، ولذلك
+        جمعنا أهم الإجابات بشكل مختصر وواضح لمساعدتك على اتخاذ قرار أفضل.
+      </p>
+    </div>
+
+    {/* MOBILE */}
+    <div className="space-y-3 px-4 py-4 sm:hidden">
+      {[
+        {
+          q: "ما هي أفضل شركة تداول للمبتدئين؟",
+          a: "أفضل شركة تداول للمبتدئين هي التي تجمع بين ترخيص واضح، منصة سهلة، حد أدنى منخفض للإيداع، ودعم جيد للعملاء. الأفضل ألا تختار بناءً على الشهرة فقط، بل على سهولة الاستخدام ووضوح الرسوم والحساب المناسب لبدايتك.",
+        },
+        {
+          q: "هل شركات التداول آمنة وموثوقة؟",
+          a: "ليست كل شركات التداول بنفس مستوى الأمان. الشركة الأكثر موثوقية عادة تكون خاضعة لجهة رقابية معروفة، وتوضح شروطها ورسومها بشكل شفاف، وتوفر آليات واضحة للإيداع والسحب وخدمة العملاء.",
+        },
+        {
+          q: "ما أقل مبلغ لفتح حساب تداول؟",
+          a: "الحد الأدنى يختلف من شركة إلى أخرى. بعض الوسطاء يتيحون البدء بمبالغ منخفضة نسبيًا، لكن الأهم من رقم الإيداع هو اختيار حساب يناسب حجم رأس مالك ولا يضعك تحت ضغط تداول أكبر من قدرتك.",
+        },
+        {
+          q: "كيف أعرف أن شركة التداول مرخصة؟",
+          a: "يمكن معرفة ذلك من خلال صفحة التراخيص في موقع الشركة، ومراجعة اسم الجهة الرقابية ورقم الترخيص، ثم التحقق منه عند الإمكان. كما أن الشركات الجادة تعرض هذه المعلومات بوضوح ولا تخفيها داخل الشروط.",
+        },
+        {
+          q: "ما الفرق بين MT4 وMT5 وأيهما أفضل؟",
+          a: "MT4 منصة مشهورة وبسيطة ويعتمد عليها كثير من المتداولين، بينما MT5 تقدم أدوات إضافية وتحديثات أكثر. الأفضل بينهما يعتمد على أسلوبك واحتياجاتك، لكن وجود منصة مستقرة وسهلة الاستخدام أهم من اسم المنصة وحده.",
+        },
+      ].map((item, index) => (
+        <details
+          key={item.q}
+          className="group overflow-hidden rounded-[18px] border border-slate-200 bg-[#f8fbff] shadow-sm"
+        >
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4 text-right">
+            <span className="text-[15px] font-black leading-7 text-[#0f172a]">
+              {item.q}
+            </span>
+
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#bfdbfe] bg-white text-[15px] font-black text-[#1d4ed8] transition group-open:rotate-180">
+              ▾
+            </span>
+          </summary>
+
+          <div className="border-t border-slate-200 bg-white px-4 py-4">
+            <p className="text-[13px] leading-7 text-slate-600">{item.a}</p>
+          </div>
+        </details>
+      ))}
+    </div>
+
+    {/* DESKTOP */}
+    <div className="hidden px-8 py-8 sm:block">
+      <div className="grid gap-4">
+        {[
+          {
+            q: "ما هي أفضل شركة تداول للمبتدئين؟",
+            a: "أفضل شركة تداول للمبتدئين هي الشركة التي توفر ترخيصًا واضحًا، منصة سهلة الاستخدام، حدًا أدنى مناسبًا للإيداع، ورسومًا مفهومة بدون تعقيد. المبتدئ لا يحتاج فقط إلى وسيط مشهور، بل إلى وسيط يساعده على التعلم والبدء بأمان.",
+          },
+          {
+            q: "هل شركات التداول آمنة وموثوقة؟",
+            a: "الأمان يختلف من شركة إلى أخرى. الشركات الأكثر موثوقية تكون عادة خاضعة لهيئات رقابية معروفة، وتعرض شروطها ورسومها بشكل واضح، وتوفر إجراءات منظمة للإيداع والسحب وخدمة العملاء. لذلك يجب فحص الترخيص والسمعة وتجربة الاستخدام الفعلية.",
+          },
+          {
+            q: "ما أقل مبلغ لفتح حساب تداول؟",
+            a: "الحد الأدنى لفتح الحساب يختلف حسب الوسيط ونوع الحساب. بعض الشركات تسمح بالبدء بمبالغ منخفضة، لكن الأهم هو ألا تختار الحساب فقط بناءً على الإيداع الأدنى، بل على مدى ملاءمته لرأس مالك وطريقة تداولك.",
+          },
+          {
+            q: "كيف أعرف أن شركة التداول مرخصة؟",
+            a: "يمكنك معرفة ذلك من خلال صفحة التراخيص في موقع الشركة، حيث يجب أن يظهر اسم الجهة الرقابية ورقم الترخيص بوضوح. عند الحاجة يمكن التحقق من البيانات عبر الموقع الرسمي للجهة الرقابية، وهذا يمنحك صورة أدق عن مستوى التنظيم والشفافية.",
+          },
+          {
+            q: "ما الفرق بين MT4 وMT5 وأيهما أفضل؟",
+            a: "MT4 منصة معروفة ببساطتها وانتشارها الكبير، بينما MT5 تقدم أدوات وتحسينات إضافية ويعتمد عليها كثير من الوسطاء أيضًا. الأفضلية لا تكون دائمًا باسم المنصة فقط، بل بمدى استقرارها وسهولة استخدامها وتوافقها مع احتياجاتك الفعلية.",
+          },
+        ].map((item) => (
+          <details
+            key={item.q}
+            className="group overflow-hidden rounded-[22px] border border-slate-200 bg-[#f8fbff] shadow-sm open:bg-white"
+          >
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-5">
+              <span className="text-lg font-black leading-8 text-[#0f172a]">
+                {item.q}
+              </span>
+
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#bfdbfe] bg-white text-lg font-black text-[#1d4ed8] transition group-open:rotate-180">
+                ▾
+              </span>
+            </summary>
+
+            <div className="border-t border-slate-200 px-5 py-5">
+              <p className="text-sm leading-8 text-slate-600">{item.a}</p>
+            </div>
+          </details>
         ))}
       </div>
     </div>
   </div>
 </section>
-
-      {/* FAQ */}
-      <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
-        <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm sm:rounded-[32px]">
-          <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-6 sm:px-8 sm:py-8">
-            <div className="inline-flex rounded-full border border-[#bfdbfe] bg-[#eff6ff] px-3 py-1 text-xs font-extrabold text-[#1d4ed8] sm:text-sm">
-              الأسئلة الشائعة
-            </div>
-
-            <h2 className="mt-3 text-[24px] font-black leading-[1.15] text-[#0f172a] sm:text-[36px]">
-              أسئلة مهمة قبل اختيار شركة التداول
-            </h2>
-          </div>
-
-          {/* MOBILE VERSION */}
-          <div className="space-y-3 px-5 py-5 sm:hidden">
-            {[
-              {
-                q: "كيف أختار شركة التداول المناسبة؟",
-                a: "ابدأ بالتراخيص، ثم قارن بين الحد الأدنى للإيداع، المنصات، الرسوم، الحسابات، وتوفر الحساب الإسلامي إذا كان ذلك مهمًا بالنسبة لك.",
-              },
-              {
-                q: "هل الأفضل اختيار شركة بإيداع منخفض؟",
-                a: "الإيداع المنخفض مناسب للمبتدئين، لكن لا يكفي وحده. الأفضل هو الجمع بين ترخيص جيد وحساب مناسب ورسوم واضحة ومنصة قوية.",
-              },
-              {
-                q: "ما أهمية التراخيص في شركات الفوركس؟",
-                a: "التراخيص مؤشر مهم على البيئة التنظيمية التي تعمل ضمنها الشركة، ومدى التزامها بالمعايير والضوابط المتعلقة بأموال العملاء.",
-              },
-              {
-                q: "هل المقارنات بين الشركات مفيدة؟",
-                a: "نعم، لأنها تضع شركتين أو أكثر في نفس السياق وتوضح الفروق في الحسابات والرسوم والمنصات والتراخيص بشكل مباشر.",
-              },
-            ].map((item) => (
-              <details
-                key={item.q}
-                className="group overflow-hidden rounded-[18px] border border-slate-200 bg-[#f8fbff]"
-              >
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4 text-right">
-                  <span className="text-base font-black leading-7 text-[#0f172a]">
-                    {item.q}
-                  </span>
-
-                  <span className="shrink-0 text-lg font-black text-[#1d4ed8] transition group-open:rotate-180">
-                    ▾
-                  </span>
-                </summary>
-
-                <div className="border-t border-slate-200 bg-white px-4 py-4">
-                  <p className="text-sm leading-7 text-slate-600">{item.a}</p>
-                </div>
-              </details>
-            ))}
-          </div>
-
-          {/* DESKTOP VERSION */}
-          <div className="hidden px-8 py-8 sm:block">
-            <div className="space-y-4">
-              {[
-                {
-                  q: "كيف أختار شركة التداول المناسبة؟",
-                  a: "ابدأ بالتراخيص، ثم قارن بين الحد الأدنى للإيداع، المنصات، الرسوم، الحسابات، وتوفر الحساب الإسلامي إذا كان ذلك مهمًا بالنسبة لك.",
-                },
-                {
-                  q: "هل الأفضل اختيار شركة بإيداع منخفض؟",
-                  a: "الإيداع المنخفض مناسب للمبتدئين، لكن لا يكفي وحده. الأفضل هو الجمع بين ترخيص جيد وحساب مناسب ورسوم واضحة ومنصة قوية.",
-                },
-                {
-                  q: "ما أهمية التراخيص في شركات الفوركس؟",
-                  a: "التراخيص مؤشر مهم على البيئة التنظيمية التي تعمل ضمنها الشركة، ومدى التزامها بالمعايير والضوابط المتعلقة بأموال العملاء.",
-                },
-                {
-                  q: "هل المقارنات بين الشركات مفيدة؟",
-                  a: "نعم، لأنها تضع شركتين أو أكثر في نفس السياق وتوضح الفروق في الحسابات والرسوم والمنصات والتراخيص بشكل مباشر.",
-                },
-              ].map((item) => (
-                <details
-                  key={item.q}
-                  className="group overflow-hidden rounded-[22px] border border-slate-200 bg-[#f8fbff] open:bg-white"
-                >
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-5">
-                    <span className="text-lg font-black text-[#0f172a]">
-                      {item.q}
-                    </span>
-
-                    <span className="shrink-0 text-lg font-black text-[#1d4ed8] transition group-open:rotate-180">
-                      ▾
-                    </span>
-                  </summary>
-
-                  <div className="border-t border-slate-200 px-5 py-5">
-                    <p className="text-sm leading-8 text-slate-600">{item.a}</p>
-                  </div>
-                </details>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
     </main>
   );
 }
