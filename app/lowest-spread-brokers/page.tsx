@@ -11,11 +11,14 @@ export const metadata: Metadata = {
   keywords: [
     "أفضل شركات التداول بأقل سبريد",
     "أقل سبريد فوركس",
+    "أفضل وسيط سبريد منخفض",
     "أفضل حساب Raw Spread",
     "أفضل حساب Standard",
     "أفضل حسابات ECN",
     "أفضل حسابات إسلامية",
     "Lowest spread brokers",
+    "lowest spread forex brokers",
+    "best low spread brokers",
   ],
   alternates: {
     canonical: "/lowest-spread-brokers",
@@ -26,6 +29,25 @@ export const metadata: Metadata = {
       "ترتيب ومقارنة أفضل حسابات التداول حسب متوسط السبريد والعمولة والتكلفة الفعلية.",
     url: "/lowest-spread-brokers",
     type: "website",
+    siteName: "بروكر العرب",
+    locale: "ar_AR",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "أفضل شركات التداول بأقل سبريد 2026 | بروكر العرب",
+    description:
+      "مقارنة أفضل حسابات التداول بأقل سبريد حسب نوع الحساب والتكلفة الفعلية.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
 };
 
@@ -471,12 +493,83 @@ export default async function LowestSpreadBrokersPage() {
     ],
   };
 
+    const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "الرئيسية",
+        item: "https://brokeralarab.com/",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "أفضل الوسطاء",
+        item: "https://brokeralarab.com/best-brokers",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "أفضل شركات التداول بأقل سبريد",
+        item: "https://brokeralarab.com/lowest-spread-brokers",
+      },
+    ],
+  };
+
+  const webPageJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "أفضل شركات التداول بأقل سبريد 2026",
+    url: "https://brokeralarab.com/lowest-spread-brokers",
+    description:
+      "مقارنة قوية لأفضل شركات التداول بأقل سبريد في 2026، مع ترتيب أفضل حسابات Standard وRaw وECN وCent.",
+    inLanguage: "ar",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "بروكر العرب",
+      url: "https://brokeralarab.com",
+    },
+  };
+
+  const itemListJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "أفضل شركات التداول بأقل سبريد",
+    itemListOrder: "https://schema.org/ItemListOrderAscending",
+    numberOfItems: Math.min(bestOverall.length, 8),
+    itemListElement: bestOverall.slice(0, 8).map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: `${item.broker_name} - ${item.account_name || "حساب تداول"}`,
+      url: item.broker_slug
+        ? `https://brokeralarab.com/brokers/${item.broker_slug}`
+        : "https://brokeralarab.com/lowest-spread-brokers",
+    })),
+  };
+
   return (
     <main className="bg-[#f6f8fb] text-slate-900">
-      <Script
+            <Script
         id="lowest-spread-brokers-faq-jsonld"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      <Script
+        id="lowest-spread-brokers-breadcrumb-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <Script
+        id="lowest-spread-brokers-webpage-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageJsonLd) }}
+      />
+      <Script
+        id="lowest-spread-brokers-itemlist-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
       />
 
   <section className="border-b border-slate-200 bg-white">
