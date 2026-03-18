@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import HeadToHeadCompare from "@/app/components/HeadToHeadCompare";
 
 export const metadata: Metadata = {
-  title: "أفضل شركات التداول بأقل سبريد 2026 | بروكر العرب",
+  title: "أفضل شركات التداول بأقل سبريد 2026",
   description:
     "مقارنة قوية لأفضل شركات التداول بأقل سبريد في 2026، مع ترتيب أفضل حسابات Standard وRaw وECN وCent، وإبراز الحسابات الإسلامية وأقل تكلفة فعلية.",
   keywords: [
