@@ -317,22 +317,28 @@ export default function HeadToHeadCompare({
             <div className="mt-6 hidden overflow-hidden rounded-[26px] border border-slate-200 md:block">
               <div className="grid grid-cols-[1fr_200px_1fr] border-b border-slate-200 bg-[linear-gradient(180deg,#f8fbff_0%,#f8fafc_100%)]">
                 <div className="p-5">
-                  <div className="flex items-center justify-between gap-3">
-                    <BrokerButtons
-                      reviewHref={left.broker_slug ? `/brokers/${left.broker_slug}` : null}
-                      accountHref={left.broker_account_url}
-                    />
-                    <div className="flex items-center gap-3">
-                      <div className="text-right">
-                        <div className="text-xl font-black text-slate-950">{left.broker_name}</div>
-                        <div className="mt-1 text-sm text-slate-500">
-                          التقييم: {left.broker_rating ?? "غير متوفر"}
-                        </div>
-                      </div>
-                      <CompactLogo src={left.broker_logo} alt={left.broker_name} />
-                    </div>
-                  </div>
-                </div>
+  <div className="flex items-center justify-between gap-3">
+    <BrokerButtons
+      reviewHref={
+        left.broker_slug ? `/brokers/${left.broker_slug}` : null
+      }
+      accountHref={left.broker_account_url}
+    />
+
+    <div className="flex items-center gap-3">
+      <div className="text-right">
+        <div className="text-xl font-black text-slate-950">
+          {left.broker_name}
+        </div>
+        <div className="mt-1 text-sm text-slate-500">
+          التقييم: {left.broker_rating ?? "غير متوفر"}
+        </div>
+      </div>
+
+      <CompactLogo src={left.broker_logo} alt={left.broker_name} />
+    </div>
+  </div>
+</div>
 
                 <div className="flex items-center justify-center border-x border-slate-200">
                   <div className="rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-extrabold text-blue-700">
