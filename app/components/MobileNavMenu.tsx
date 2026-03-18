@@ -26,20 +26,37 @@ export default function MobileNavMenu({
         aria-label="فتح القائمة"
         aria-expanded={open}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M4 7h16M4 12h16M4 17h16"
-          />
-        </svg>
+        {open ? (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M6 6l12 12M18 6L6 18"
+            />
+          </svg>
+        ) : (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M4 7h16M4 12h16M4 17h16"
+            />
+          </svg>
+        )}
       </button>
 
       {open && (
@@ -71,7 +88,7 @@ export default function MobileNavMenu({
             </Link>
 
             <Link
-              href="/brokers"
+              href="/best-brokers"
               onClick={closeMenu}
               className="inline-flex items-center justify-center rounded-xl bg-[#2563eb] px-4 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
             >

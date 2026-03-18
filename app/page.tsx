@@ -1068,6 +1068,149 @@ export default async function HomePage() {
     </div>
   </div>
 </section>
+
+{/* LOWEST SPREAD HOME SECTION */}
+<section className="mx-auto max-w-7xl px-4 pt-3 pb-2 sm:px-6 sm:pt-1 sm:pb-3 lg:px-8">
+  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_14px_34px_rgba(15,23,42,0.05)]">
+    <div className="relative px-4 py-6 sm:px-6 sm:py-7 lg:px-8 lg:py-8">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.05),transparent_28%)]" />
+
+      <div className="relative">
+        {/* HEADER */}
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          {/* RIGHT TITLE */}
+          <div className="text-right lg:max-w-4xl">
+            <h2 className="text-[28px] font-black leading-[1.15] tracking-[-0.02em] text-slate-950 sm:text-[34px] lg:text-[42px]">
+              أقل سبريد فعلي
+              <span className="text-[#2563eb]"> حسب نوع الحساب</span>
+            </h2>
+
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 sm:text-[15px]">
+              مقارنة سريعة بين أفضل الحسابات حسب التكلفة الفعلية مع فصل واضح بين
+              Standard و Raw و ECN و Cent، حتى تصل بسرعة إلى الحساب الأنسب
+              لأسلوب تداولك.
+            </p>
+          </div>
+
+          {/* LEFT BUTTON */}
+          <div className="flex justify-center lg:justify-start">
+  <Link
+    href="/lowest-spread-brokers"
+    className="inline-flex items-center justify-center rounded-xl bg-[#2563eb] px-5 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
+  >
+    شركات التداول الأقل سبريد
+  </Link>
+</div>
+        </div>
+
+        {/* DESKTOP / TABLET ROWS */}
+        <div className="mt-6 hidden w-full sm:block">
+          <div className="overflow-hidden rounded-[20px] border border-slate-200 bg-white">
+            {[
+              {
+                title: "أفضل حسابات Standard",
+                suitable: "المبتدئين",
+                desc: "حسابات أبسط وبتكلفة واضحة دون تعقيد كبير.",
+              },
+              {
+                title: "أفضل حسابات Raw",
+                suitable: "السكالبينج",
+                desc: "سبريد أقل مع عمولة منفصلة للباحثين عن تكلفة أدق.",
+              },
+              {
+                title: "أفضل حسابات ECN",
+                suitable: "التنفيذ السريع",
+                desc: "خيار مناسب للمتداول الذي يهتم بالهيكل الاحترافي.",
+              },
+              {
+                title: "أفضل حسابات Cent / Micro",
+                suitable: "رأس المال الصغير",
+                desc: "مناسبة للتجربة أو البداية بمبالغ منخفضة.",
+              },
+            ].map((item, index) => (
+              <a
+                key={item.title}
+                href="/lowest-spread-brokers#account-types"
+                className={`block transition hover:bg-blue-50/30 ${
+                  index !== 0 ? "border-t border-slate-200" : ""
+                }`}
+              >
+                <div className="grid grid-cols-[1fr_1.2fr_88px] items-center gap-6 px-5 py-4">
+                  {/* TITLE - RIGHT */}
+                  <div className="min-w-0 text-right">
+                    <div className="text-[16px] font-black text-slate-950">
+                      {item.title}
+                    </div>
+                  </div>
+
+                  {/* DESC */}
+                  <div className="min-w-0 text-right text-sm leading-7 text-slate-600">
+                    
+                    {item.desc}
+                  </div>
+
+                  {/* ACTION - LEFT */}
+                  <div className="flex justify-center">
+                    <span className="inline-flex min-w-[68px] items-center justify-center rounded-xl bg-[#2563eb] px-3 py-2 text-[11px] font-extrabold text-white transition hover:bg-[#1d4ed8]">
+                      عرض
+                    </span>
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+
+        {/* MOBILE ROWS */}
+        <div className="mt-6 w-full sm:hidden">
+          <div className="overflow-hidden rounded-[20px] border border-slate-200 bg-white">
+            {[
+              {
+                title: "أفضل حسابات Standard",
+                suitable: "المبتدئين",
+              },
+              {
+                title: "أفضل حسابات Raw",
+                suitable: "السكالبينج",
+              },
+              {
+                title: "أفضل حسابات ECN",
+                suitable: "التنفيذ السريع",
+              },
+              {
+                title: "أفضل حسابات Cent / Micro",
+                suitable: "رأس المال الصغير",
+              },
+            ].map((item, index) => (
+              <a
+                key={item.title}
+                href="/lowest-spread-brokers#account-types"
+                className={`block px-4 py-3.5 transition hover:bg-blue-50/30 ${
+                  index !== 0 ? "border-t border-slate-200" : ""
+                }`}
+              >
+                <div className="flex items-center justify-between gap-3">
+  {/* TITLE */}
+  <div className="min-w-0 text-right">
+    <div className="text-[14px] font-black text-slate-950">
+      {item.title}
+    </div>
+  </div>
+
+  {/* BUTTON */}
+  <span className="inline-flex shrink-0 items-center justify-center rounded-xl bg-[#2563eb] px-4 py-2 text-[11px] font-extrabold text-white">
+    عرض
+  </span>
+</div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
       {/* HOW TO CHOOSE A BROKER - PREMIUM SEO SECTION */}
 <section className="mx-auto max-w-7xl px-4 pt-3 pb-2 sm:px-6 sm:pt-1 sm:pb-3 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm sm:rounded-[32px]">
