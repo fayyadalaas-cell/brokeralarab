@@ -1,8 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import Script from "next/script";
 import Link from "next/link";
-import ShareButtons from "@/app/components/ShareButtons";
-import ExpandableText from "@/app/components/ExpandableText";
 
 type Broker = {
   id: number;
@@ -32,8 +30,8 @@ type Broker = {
   meta_descr: string | null;
   real_account_url: string | null;
   demo_account_url: string | null;
-  mt4_download_url: string | null;
-  mt5_download_url: string | null;
+  mt4_download: string | null;
+  mt5_download: string | null;
   founded_year: string | null;
   headquarters: string | null;
   max_leverage: string | null;
@@ -139,7 +137,6 @@ export async function generateMetadata({
 }) {
   const { slug } = await params;
   const broker = await getBroker(slug);
-  const siteUrl = "https://brokeralarab.com";
 
   if (!broker) {
     return {
@@ -148,39 +145,18 @@ export async function generateMetadata({
     };
   }
 
-  const title = broker.meta_title || `تقييم ${broker.name} | Broker Arab`;
-  const description =
-    broker.meta_descr ||
-    `مراجعة كاملة لشركة ${broker.name} تشمل الرسوم والمنصات والتراخيص.`;
-
   return {
-    metadataBase: new URL(siteUrl),
-    title,
-    description,
+    title: broker.meta_title || `تقييم ${broker.name} | Broker Arab`,
+    description:
+      broker.meta_descr ||
+      `مراجعة كاملة لشركة ${broker.name} تشمل الرسوم والمنصات والتراخيص.`,
     openGraph: {
-  title,
-  description,
-  url: `${siteUrl}/brokers/${broker.slug}`,
-  siteName: "Broker Al Arab",
-  locale: "ar_AR",
-  type: "article",
-  images: [
-    {
-      url: `${siteUrl}/brokers/${broker.slug}/opengraph-image?v=2`,
-      width: 1200,
-      height: 630,
-      alt: `Review ${broker.name}`,
+      title: broker.meta_title || `تقييم ${broker.name} | Broker Arab`,
+      description:
+        broker.meta_descr ||
+        `مراجعة كاملة لشركة ${broker.name} تشمل الرسوم والمنصات والتراخيص.`,
+      images: broker.logo ? [broker.logo] : [],
     },
-  ],
-},
-
-twitter: {
-  card: "summary_large_image",
-  title,
-  description,
-  images: [`${siteUrl}/brokers/${broker.slug}/opengraph-image?v=2`],
-  creator: "@brokeralarab",
-},
   };
 }
 
@@ -212,45 +188,14 @@ function StatCard({
   value: string | number | null;
 }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 md:p-5">
-      <div className="mb-1 text-xs font-medium text-slate-500 md:text-sm">
-        {label}
-      </div>
-      <div className="text-lg font-extrabold text-slate-900 md:text-[26px] leading-tight break-words">
+    <div className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:shadow-sm">
+      <div className="mb-2 text-sm text-slate-500">{label}</div>
+      <div className="text-2xl font-extrabold text-slate-950 break-words">
         {value ?? "-"}
       </div>
     </div>
   );
 }
-
-function HeroStatCard({
-  label,
-  value,
-  suffix,
-}: {
-  label: string;
-  value: string | number | null;
-  suffix?: string;
-}) {
-  return (
-    <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 md:p-5">
-      <div className="mb-1 text-xs font-medium text-slate-500 md:text-sm">
-        {label}
-      </div>
-      <div className="flex items-end gap-1">
-        <span className="text-xl font-extrabold leading-none text-slate-900 md:text-[28px]">
-          {value ?? "-"}
-        </span>
-        {suffix ? (
-          <span className="text-sm font-semibold text-slate-500 md:text-base">
-            {suffix}
-          </span>
-        ) : null}
-      </div>
-    </div>
-  );
-}
-
 
 function ActionButton({
   href,
@@ -264,9 +209,7 @@ function ActionButton({
   return (
     <a
       href={href || "#"}
-      target="_blank"
-      rel="nofollow sponsored noopener noreferrer"
-      className={`inline-flex min-h-[50px] items-center justify-center rounded-2xl border px-5 py-3 text-sm font-extrabold transition md:text-base ${
+      className={`inline-flex items-center justify-center rounded-2xl border px-5 py-3 text-sm font-extrabold transition ${
         primary
           ? "border-emerald-600 bg-emerald-600 text-white hover:bg-emerald-700"
           : "border-slate-300 bg-white text-slate-900 hover:bg-slate-50"
@@ -277,27 +220,36 @@ function ActionButton({
   );
 }
 
-function normalizeValue(value: string | number | null) {
-  if (value === null || value === "") return "-";
-  if (value === "Yes") return "نعم";
-  if (value === "No") return "لا";
-  return value;
-}
-
-function SummaryRow({
+function SummaryCard({
   label,
   value,
 }: {
   label: string;
   value: string | number | null;
 }) {
+  const icons: Record<string, string> = {
+    "اسم الشركة": "🏢",
+    "سنة التأسيس": "📅",
+    "المقر الرئيسي": "🌍",
+    "التقييم العام": "⭐",
+    "الحد الأدنى للإيداع": "💰",
+    "الرافعة المالية": "⚖️",
+    المنصات: "💻",
+    "التنظيم والتراخيص": "🛡️",
+    "حساب إسلامي": "🕌",
+    "دعم عربي": "🌐",
+    "أنسب فئة": "👥",
+    "الأصول المتاحة": "📊",
+  };
+
   return (
-    <div className="flex items-center justify-between gap-4 border-b border-slate-200 py-3 last:border-b-0">
-      <div className="text-sm font-medium text-slate-400">
-        {label}
+    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition hover:bg-white hover:shadow-sm">
+      <div className="mb-2 flex items-center gap-2 text-sm text-slate-500">
+        <span>{icons[label] || "ℹ️"}</span>
+        <span>{label}</span>
       </div>
-      <div className="text-left text-[17px] md:text-[18px] font-extrabold text-slate-900 break-words">
-        {normalizeValue(value)}
+      <div className="text-lg font-extrabold text-slate-900 break-words">
+        {value ?? "-"}
       </div>
     </div>
   );
@@ -306,35 +258,10 @@ function SummaryRow({
 function ScoreCard({
   label,
   value,
-  row = false,
 }: {
   label: string;
   value: number | null;
-  row?: boolean;
 }) {
-  if (row) {
-    return (
-      <div className="border-b border-slate-100 py-3 last:border-b-0">
-        <div className="mb-2 flex items-center justify-between gap-3">
-          <div className="text-sm font-medium text-slate-400">{label}</div>
-          <div className="flex items-end gap-1">
-            <span className="text-xl font-extrabold text-slate-900">
-              {value ?? "-"}
-            </span>
-            <span className="text-xs font-bold text-emerald-600">/ 5</span>
-          </div>
-        </div>
-
-        <div className="h-2 rounded-full bg-slate-200">
-          <div
-            className="h-2 rounded-full bg-emerald-500"
-            style={{ width: `${((value ?? 0) / 5) * 100}%` }}
-          />
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
       <div className="mb-3 text-sm text-slate-500">{label}</div>
@@ -342,12 +269,12 @@ function ScoreCard({
         <div className="text-3xl font-extrabold text-slate-950">
           {value ?? "-"}
         </div>
-        <div className="text-sm font-bold text-emerald-600">/ 5</div>
+        <div className="text-sm font-bold text-emerald-600">/ 10</div>
       </div>
       <div className="mt-4 h-2 rounded-full bg-slate-200">
         <div
           className="h-2 rounded-full bg-emerald-500"
-          style={{ width: `${((value ?? 0) / 5) * 100}%` }}
+          style={{ width: `${((value ?? 0) / 10) * 100}%` }}
         />
       </div>
     </div>
@@ -426,15 +353,14 @@ function ImageCard({
   if (!src) return null;
 
   return (
-    <div className="rounded-[24px] border border-slate-200 bg-gradient-to-b from-slate-50 to-white p-4 shadow-sm">
-      <div className="rounded-[20px] border border-slate-200 bg-white p-4 shadow-inner">
-        <div className="flex h-[340px] items-center justify-center overflow-hidden rounded-[16px] bg-slate-50">
-  <img
-    src={src}
-    alt={`${brokerName} trading platform`}
-    className="h-full w-full object-cover"
-  />
-</div>
+    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+      <div className="mb-3 text-sm font-bold text-slate-700">{title}</div>
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+        <img
+          src={src}
+          alt={`${title} في ${brokerName}`}
+          className="h-auto w-full object-cover"
+        />
       </div>
     </div>
   );
@@ -537,53 +463,6 @@ function SectionNav() {
   );
 }
 
-function renderStars(rating: number | null) {
-  if (!rating) return null
-
-  const rounded = Math.round(rating * 2) / 2
-  const full = Math.floor(rounded)
-  const half = rounded % 1 !== 0
-  const empty = 5 - full - (half ? 1 : 0)
-
-return (
-  <div
-    className="flex items-center gap-2 px-3 py-1 rounded-md"
-    style={{
-      background: "#0f172a",
-      fontFamily: "Arial, Helvetica, sans-serif",
-      fontSize: "18px"
-    }}
-  >
-    {/* النجمة قبل التقييم */}
-    <span style={{ color: "#f59e0b", fontSize: "20px" }}>★</span>
-
-    {/* النجوم */}
-    <div style={{ display: "flex", gap: "2px" }}>
-      {Array.from({ length: full }).map((_, i) => (
-        <span key={"f" + i} style={{ color: "#f59e0b" }}>
-          ★
-        </span>
-      ))}
-
-      {half && <span style={{ color: "#f59e0b" }}>☆</span>}
-
-      {Array.from({ length: empty }).map((_, i) => (
-        <span key={"e" + i} style={{ color: "#475569" }}>
-          ★
-        </span>
-      ))}
-    </div>
-
-    {/* الرقم */}
-    <span style={{ color: "#e2e8f0", fontWeight: 600 }}>
-      {rating}
-    </span>
-  </div>
-);
-}
-
-
-
 export default async function BrokerPage({
   params,
 }: {
@@ -649,40 +528,24 @@ export default async function BrokerPage({
     },
   }));
 
-  const siteUrl = "https://brokeralarab.com";
-  const pageUrl = `${siteUrl}/brokers/${broker.slug}`;
-const shareTitle = `تقييم ${broker.name} | بروكر العرب`;
-
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
-    {
-      "@type": "ListItem",
-      position: 1,
-      name: "التقييمات",
-      item: `${siteUrl}/brokers`,
-    },
-    {
-      "@type": "ListItem",
-      position: 2,
-      name: `تقييم ${broker.name}`,
-      item: `${siteUrl}/brokers/${broker.slug}`,
-    },
-  ],
-};
-
-  const organizationSchema = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: broker.name,
-  url: `https://brokeralarab.com/brokers/${broker.slug}`,
-  logo: broker.logo || undefined,
-  description:
-    broker.meta_descr ||
-    broker.intro ||
-    `مراجعة كاملة لشركة ${broker.name} تشمل الرسوم والمنصات والتراخيص.`,
-};
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "التقييمات",
+        item: "/brokers",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: `تقييم ${broker.name}`,
+        item: `/brokers/${broker.slug}`,
+      },
+    ],
+  };
 
   return (
     <>
@@ -704,13 +567,7 @@ const breadcrumbSchema = {
           __html: JSON.stringify(breadcrumbSchema),
         }}
       />
-<Script
-  id="organization-schema"
-  type="application/ld+json"
-  dangerouslySetInnerHTML={{
-    __html: JSON.stringify(organizationSchema),
-  }}
-/>
+
       <main className="mx-auto max-w-7xl px-4 py-10 text-right">
         <div className="mb-4 text-sm text-slate-500">
           <Link href="/brokers" className="hover:text-slate-700">
@@ -720,193 +577,116 @@ const breadcrumbSchema = {
           <span>تقييم {broker.name}</span>
         </div>
 
-        <section className="mb-8 rounded-[32px] border border-slate-200 bg-white p-5 shadow-sm md:p-8">
-  {/* Desktop */}
-  <div className="hidden lg:block">
-    <div className="flex items-stretch gap-8">
-      {/* Right sidebar */}
-      <aside className="flex w-[260px] shrink-0 flex-col justify-between">
-        <div className="flex min-h-[170px] items-center justify-center overflow-hidden rounded-[28px] border border-slate-200 bg-slate-50 px-6 py-5">
-          {broker.logo ? (
-            <img
-              src={broker.logo}
-              alt={broker.name || "Broker logo"}
-              className="w-full max-w-[220px] h-auto object-contain"
-            />
-          ) : (
-            <span className="text-sm text-slate-400">No logo</span>
-          )}
-        </div>
+        <section className="mb-8 rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm md:p-8">
+          <div className="grid gap-8 lg:grid-cols-[1fr_280px] lg:items-start">
+            <div>
+              <div className="mb-4 inline-flex rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-600">
+                مراجعة شركة تداول
+              </div>
 
-          <ShareButtons url={pageUrl} title={shareTitle} />
-      </aside>
+              <h1 className="mb-4 text-4xl font-extrabold leading-tight text-slate-950 md:text-6xl">
+                تقييم {broker.name}
+              </h1>
 
-      {/* Main content */}
-      <div className="min-w-0 flex-1">
-        <div className="mb-4 flex flex-wrap items-center gap-3">
-          <div className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600">
-            مراجعة شركة تداول
-          </div>
+              <p className="max-w-4xl text-lg leading-9 text-slate-600">
+                {broker.intro || "مراجعة شاملة لشركة التداول."}
+              </p>
 
-          {broker.rating ? (
-            <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-sm font-bold text-slate-800">
-              <span className="text-amber-600">★</span>
-              <span>{broker.rating}</span>
-              <span className="text-slate-500">من 5</span>
+              <div className="mt-8 hidden gap-4 sm:grid sm:grid-cols-2 xl:grid-cols-4">
+                <StatCard label="التقييم" value={broker.rating ?? "-"} />
+                <StatCard
+                  label="الحد الأدنى للإيداع"
+                  value={broker.min_deposit ?? "-"}
+                />
+                <StatCard label="المنصات" value={broker.platforms || "-"} />
+                <StatCard
+                  label="التراخيص"
+                  value={broker.regulation_short || "-"}
+                />
+              </div>
             </div>
-          ) : null}
-        </div>
 
-        <h1 className="mb-4 text-5xl font-black leading-tight text-slate-950">
-          تقييم {broker.name}
-        </h1>
-
-        <p className="max-w-4xl text-lg leading-9 text-slate-600 line-clamp-6">
-          {broker.intro || "مراجعة شاملة لشركة التداول."}
-        </p>
-
-        <div className="mt-8 flex flex-wrap gap-3">
-          <ActionButton
-            href={`/go/${broker.slug}?type=real`}
-            label="فتح حساب حقيقي"
-            primary
-          />
-
-          <ActionButton
-            href={`/go/${broker.slug}?type=demo`}
-            label="فتح حساب ديمو"
-          />
-
-          <ActionButton
-            href={`/go/${broker.slug}?type=mt5`}
-            label="تحميل منصة MT5"
-          />
-
-          <ActionButton
-            href={`/go/${broker.slug}?type=mt4`}
-            label="تحميل منصة MT4"
-          />
-        </div>
-      </div>
-    </div>
-  </div>
-
-  {/* Mobile / Tablet */}
-  <div className="lg:hidden">
-    <div className="space-y-4">
-      <div className="flex min-h-[220px] items-center justify-center overflow-hidden rounded-[28px] border border-slate-200 bg-slate-50 px-6 py-5">
+            <div className="space-y-4">
+              <div className="flex h-[180px] items-center justify-center overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 px-6 py-4">
   {broker.logo ? (
     <img
       src={broker.logo}
       alt={broker.name || "Broker logo"}
-      className="max-h-[230px] w-auto max-w-full object-contain"
+      className="max-h-[120px] w-full object-contain scale-[2]"
     />
   ) : (
-          <span className="text-sm text-slate-400">No logo</span>
-        )}
-      </div>
+    <span className="text-sm text-slate-400">No logo</span>
+  )}
+</div>
 
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 md:text-sm">
-          مراجعة شركة تداول
-        </div>
-
-        {broker.rating ? (
-          <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-sm font-bold text-slate-800">
-            <span className="text-amber-500">★</span>
-            <span>{broker.rating}</span>
-            <span className="text-slate-500">من 5</span>
+              <div className="grid grid-cols-1 gap-3">
+                <ActionButton
+                  href={broker.real_account_url || "#"}
+                  label="فتح حساب حقيقي"
+                  primary
+                />
+                <ActionButton
+                  href={broker.demo_account_url || "#"}
+                  label="فتح حساب ديمو"
+                />
+                <ActionButton
+                  href={broker.mt5_download || "#"}
+                  label="تحميل منصة MetaTrader 5"
+                />
+                <ActionButton
+                  href={broker.mt4_download || "#"}
+                  label="تحميل منصة MetaTrader 4"
+                />
+              </div>
+            </div>
           </div>
-        ) : null}
-      </div>
+        </section>
 
-      <h1 className="text-3xl font-black leading-tight text-slate-950 md:text-4xl">
-        تقييم {broker.name}
-      </h1>
-
-      <ExpandableText
-        text={broker.intro || "مراجعة شاملة لشركة التداول."}
-      />
-
-      <div className="grid grid-cols-1 gap-3">
-        <ActionButton
-          href={`/go/${broker.slug}?type=real`}
-          label="فتح حساب حقيقي"
-          primary
-        />
-
-        <ActionButton
-          href={`/go/${broker.slug}?type=demo`}
-          label="فتح حساب ديمو"
-        />
-
-        <ActionButton
-          href={`/go/${broker.slug}?type=mt5`}
-          label="تحميل منصة MetaTrader 5"
-        />
-
-        <ActionButton
-          href={`/go/${broker.slug}?type=mt4`}
-          label="تحميل منصة MetaTrader 4"
-        />
-      </div>
-
-      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-        <ShareButtons url={pageUrl} title={shareTitle} />
-      </div>
-    </div>
-  </div>
-</section>
         <SectionNav />
 
         <SectionCard title="ملخص سريع عن الشركة" id="summary">
-  <div className="grid gap-4 lg:grid-cols-2">
-
-    <div className="rounded-3xl border border-slate-200 bg-white px-5 py-4">
-      <SummaryRow label="اسم الشركة" value={broker.name} />
-      <SummaryRow label="سنة التأسيس" value={broker.founded_year} />
-      <SummaryRow label="المقر الرئيسي" value={broker.headquarters} />
-      <SummaryRow label="التقييم العام" value={broker.rating ?? "-"} />
-      <SummaryRow label="الحد الأدنى للإيداع" value={broker.min_deposit ?? "-"} />
-      <SummaryRow label="الرافعة المالية" value={broker.max_leverage} />
-    </div>
-
-    <div className="rounded-3xl border border-slate-200 bg-white px-5 py-4">
-      <SummaryRow label="المنصات" value={broker.platforms} />
-      <SummaryRow label="التنظيم والتراخيص" value={broker.regulation_short} />
-      <SummaryRow label="حساب إسلامي" value={broker.islamic_account} />
-      <SummaryRow label="دعم عربي" value={broker.arabic_support} />
-      <SummaryRow label="أنسب فئة" value={broker.best_for} />
-      <SummaryRow
-        label="الأصول المتاحة"
-        value={tradingAssets.length ? tradingAssets.join(" | ") : "-"}
-      />
-    </div>
-
-  </div>
-</SectionCard>
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            <SummaryCard label="اسم الشركة" value={broker.name} />
+            <SummaryCard label="سنة التأسيس" value={broker.founded_year} />
+            <SummaryCard label="المقر الرئيسي" value={broker.headquarters} />
+            <SummaryCard label="التقييم العام" value={broker.rating ?? "-"} />
+            <SummaryCard
+              label="الحد الأدنى للإيداع"
+              value={broker.min_deposit ?? "-"}
+            />
+            <SummaryCard label="الرافعة المالية" value={broker.max_leverage} />
+            <SummaryCard label="المنصات" value={broker.platforms} />
+            <SummaryCard
+              label="التنظيم والتراخيص"
+              value={broker.regulation_short}
+            />
+            <SummaryCard label="حساب إسلامي" value={broker.islamic_account} />
+            <SummaryCard label="دعم عربي" value={broker.arabic_support} />
+            <SummaryCard label="أنسب فئة" value={broker.best_for} />
+            <SummaryCard
+              label="الأصول المتاحة"
+              value={tradingAssets.length ? tradingAssets.join("، ") : "-"}
+            />
+          </div>
+        </SectionCard>
 
         <div className="mt-8">
-  <SectionCard title="التقييم التفصيلي" id="scores">
-    {/* Mobile */}
-    <div className="md:hidden rounded-3xl border border-slate-200 bg-white px-5 py-4">
-      <ScoreCard label="الأمان والتنظيم" value={broker.score_safety} row />
-      <ScoreCard label="الرسوم والسبريد" value={broker.score_fees} row />
-      <ScoreCard label="منصات التداول" value={broker.score_platforms} row />
-      <ScoreCard label="الإيداع والسحب" value={broker.score_deposit} row />
-      <ScoreCard label="دعم العملاء" value={broker.score_support} row />
-    </div>
-
-    {/* Desktop */}
-    <div className="hidden md:grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-      <ScoreCard label="الأمان والتنظيم" value={broker.score_safety} />
-      <ScoreCard label="الرسوم والسبريد" value={broker.score_fees} />
-      <ScoreCard label="منصات التداول" value={broker.score_platforms} />
-      <ScoreCard label="الإيداع والسحب" value={broker.score_deposit} />
-      <ScoreCard label="دعم العملاء" value={broker.score_support} />
-    </div>
-  </SectionCard>
-</div>
+          <SectionCard title="التقييم التفصيلي" id="scores">
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+              <ScoreCard label="الأمان والتنظيم" value={broker.score_safety} />
+              <ScoreCard label="الرسوم والسبريد" value={broker.score_fees} />
+              <ScoreCard
+                label="منصات التداول"
+                value={broker.score_platforms}
+              />
+              <ScoreCard
+                label="الإيداع والسحب"
+                value={broker.score_deposit}
+              />
+              <ScoreCard label="دعم العملاء" value={broker.score_support} />
+            </div>
+          </SectionCard>
+        </div>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
           <ListSection title="المميزات" items={pros} type="pros" />
@@ -914,6 +694,7 @@ const breadcrumbSchema = {
         </div>
 
         <div className="mt-8 space-y-8">
+          <TextSection title="نظرة عامة على الشركة" text={broker.intro} />
 
           <SectionCard title="أنواع حسابات التداول" id="accounts">
   <div className="space-y-5">
@@ -1113,13 +894,11 @@ const breadcrumbSchema = {
               </p>
 
               <a
-  href={`/go/${broker.slug}?type=real`}
-  target="_blank"
-  rel="nofollow sponsored noopener noreferrer"
-  className="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-8 py-4 text-base font-bold text-white transition hover:bg-emerald-700"
->
-  فتح حساب في {broker.name} الآن
-</a>
+                href={broker.real_account_url || "#"}
+                className="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-8 py-4 text-base font-bold text-white transition hover:bg-emerald-700"
+              >
+                فتح حساب في {broker.name} الآن
+              </a>
             </div>
           </SectionCard>
 
@@ -1185,98 +964,40 @@ const breadcrumbSchema = {
             </div>
           </SectionCard>
 
-          <SectionCard title={`مقارنات ${broker.name} مع شركات أخرى`}>
-  {relatedBrokers.length ? (
-    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-      {relatedBrokers.map((item) => (
-        <Link
-          key={item.id}
-          href={`/compare/${broker.slug}-vs-${item.slug}`}
-          className="group rounded-2xl border border-slate-200 bg-slate-50 p-6 transition hover:-translate-y-1 hover:bg-white hover:shadow-md"
-        >
-          {/* Top logos */}
-          <div className="mb-5 flex items-center justify-between gap-4">
+          <SectionCard title="شركات مشابهة">
+            {relatedBrokers.length ? (
+              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                {relatedBrokers.map((item) => (
+                  <Link
+                    key={item.id}
+                    href={`/brokers/${item.slug}`}
+                    className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition hover:bg-white hover:shadow-sm"
+                  >
+                    <div className="mb-4 flex h-16 items-center justify-center rounded-xl bg-white p-3">
+                      {item.logo ? (
+                        <img
+                          src={item.logo}
+                          alt={item.name || "Broker logo"}
+                          className="max-h-full w-auto object-contain"
+                        />
+                      ) : (
+                        <span className="text-sm text-slate-400">No logo</span>
+                      )}
+                    </div>
 
-            {/* Current broker (right side) */}
-            <div className="flex flex-col items-center text-center">
-              <div className="flex h-24 w-24 items-center justify-center rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                {broker.logo ? (
-                  <img
-                    src={broker.logo}
-                    alt={broker.name || "Broker logo"}
-                    className="max-h-14 w-auto object-contain"
-                  />
-                ) : (
-                  <span className="text-xs text-slate-400">No logo</span>
-                )}
+                    <div className="text-lg font-extrabold text-slate-900">
+                      {item.name || "-"}
+                    </div>
+                    <div className="mt-2 text-sm text-slate-600">
+                      التقييم: {item.rating ?? "-"}
+                    </div>
+                  </Link>
+                ))}
               </div>
-
-              <div className="mt-2 text-sm font-bold text-slate-900">
-                {broker.name}
-              </div>
-            </div>
-
-            {/* VS */}
-            <div className="text-base font-black text-slate-400">
-              VS
-            </div>
-
-            {/* Other broker */}
-            <div className="flex flex-col items-center text-center">
-              <div className="flex h-24 w-24 items-center justify-center rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                {item.logo ? (
-                  <img
-                    src={item.logo}
-                    alt={item.name || "Broker logo"}
-                    className="max-h-14 w-auto object-contain"
-                  />
-                ) : (
-                  <span className="text-xs text-slate-400">No logo</span>
-                )}
-              </div>
-
-              <div className="mt-2 text-sm font-bold text-slate-900">
-                {item.name}
-              </div>
-            </div>
-
-          </div>
-
-          {/* Title */}
-          <div className="text-lg font-extrabold text-slate-900 text-center">
-            مقارنة {broker.name} مع {item.name}
-          </div>
-
-          {/* Description */}
-          <p className="mt-3 text-sm text-slate-600 text-center leading-7">
-            تعرّف على الفروقات بين {broker.name} و{item.name} من حيث التراخيص،
-            الرسوم، الحد الأدنى للإيداع، المنصات، ومدى ملاءمة كل شركة
-            للمتداول العربي.
-          </p>
-
-          {/* Rating */}
-          <div className="mt-5 flex items-center justify-between rounded-xl bg-slate-100 px-4 py-3">
-            <span className="text-sm text-slate-500">
-              تقييم {item.name}
-            </span>
-
-            <span className="text-sm font-extrabold text-slate-900">
-              {item.rating ?? "-"} / 5
-            </span>
-          </div>
-
-          {/* CTA */}
-          <div className="mt-4 text-sm font-extrabold text-emerald-700 text-center transition group-hover:text-emerald-800">
-            اقرأ المقارنة ←
-          </div>
-
-        </Link>
-      ))}
-    </div>
-  ) : (
-    <p className="text-slate-500">لا توجد مقارنات متاحة حاليًا.</p>
-  )}
-</SectionCard>
+            ) : (
+              <p className="text-slate-500">لا توجد شركات مشابهة حاليًا.</p>
+            )}
+          </SectionCard>
         </div>
       </main>
     </>
