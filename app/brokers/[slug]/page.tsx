@@ -708,37 +708,21 @@ function SectionNav() {
   ];
 
   return (
-    <>
-      {/* Mobile */}
-<div className="mb-6 hidden md:flex">
-  <div className="flex gap-2 overflow-x-auto pb-1">
-    {links.map((item) => (
-      <a
-        key={item.href}
-        href={item.href}
-        className="whitespace-nowrap rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
-      >
-        {item.label}
-      </a>
-    ))}
-  </div>
-</div>
-
-      {/* Desktop */}
-      <div className="mb-8 hidden flex-wrap gap-3 md:flex">
-        {links.map((item) => (
-          <a
-            key={item.href}
-            href={item.href}
-            className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
-          >
-            {item.label}
-          </a>
-        ))}
-      </div>
-    </>
+    <div className="mb-8 hidden flex-wrap gap-3 md:flex">
+      {links.map((item) => (
+        <a
+          key={item.href}
+          href={item.href}
+          className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
+        >
+          {item.label}
+        </a>
+      ))}
+    </div>
   );
 }
+
+      
 
 function renderStars(rating: number | null) {
   if (!rating) return null
