@@ -67,6 +67,7 @@ const brokerLogoMap: Record<string, string> = {
   activtrades: "/brokers/activtrade.png",
   alpari: "/brokers/alpari.png",
   avatrade: "/brokers/avatrade.png",
+  activtrade: "/brokers/activtrade.png",
   equiti: "/brokers/equiti.png",
   exness: "/brokers/exness.png",
   "exness-platform": "/brokers/exness-platform.png",
