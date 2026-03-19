@@ -186,10 +186,12 @@ twitter: {
 
 function SectionCard({
   title,
+  subtitle,
   children,
   id,
 }: {
   title: string;
+  subtitle?: string;
   children: React.ReactNode;
   id?: string;
 }) {
@@ -198,7 +200,14 @@ function SectionCard({
       id={id}
       className="scroll-mt-24 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8"
     >
-      <h2 className="mb-5 text-2xl font-extrabold text-slate-950">{title}</h2>
+      <h2 className="mb-2 text-2xl font-extrabold text-slate-950">{title}</h2>
+
+      {subtitle ? (
+        <p className="mb-5 text-sm leading-7 text-slate-600 md:text-base">
+          {subtitle}
+        </p>
+      ) : null}
+
       {children}
     </section>
   );
@@ -251,6 +260,183 @@ function HeroStatCard({
   );
 }
 
+function splitPipes(value: string | null) {
+  if (!value) return [];
+  return value
+    .split("|")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function formatMoney(value: string | number | null | undefined) {
+  if (value === null || value === undefined || value === "") return "-";
+  return `$${value}`;
+}
+
+function calculateOverallScore(broker: Broker) {
+  const scores = [
+    broker.score_safety,
+    broker.score_fees,
+    broker.score_platforms,
+    broker.score_deposit,
+    broker.score_support,
+  ].filter((v): v is number => typeof v === "number");
+
+  if (!scores.length) return broker.rating ?? null;
+
+  const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
+  return Number(avg.toFixed(1));
+}
+
+function getVerdictTone(score: number | null) {
+  if ((score ?? 0) >= 4.5) {
+    return {
+      label: "ممتاز",
+      badge: "خيار قوي",
+      color: "border-emerald-200 bg-emerald-50 text-emerald-700",
+      accent: "from-emerald-500 via-emerald-400 to-teal-400",
+    };
+  }
+
+  if ((score ?? 0) >= 4) {
+    return {
+      label: "جيد جدًا",
+      badge: "تقييم جيد جدًا",
+      color: "border-blue-200 bg-blue-50 text-blue-700",
+      accent: "from-blue-500 via-sky-400 to-cyan-400",
+    };
+  }
+
+  if ((score ?? 0) >= 3) {
+    return {
+      label: "جيد",
+      badge: "مقبول",
+      color: "border-amber-200 bg-amber-50 text-amber-700",
+      accent: "from-amber-500 via-yellow-400 to-orange-400",
+    };
+  }
+
+  return {
+    label: "متوسط",
+    badge: "بحاجة لمراجعة",
+    color: "border-slate-200 bg-slate-50 text-slate-700",
+    accent: "from-slate-500 via-slate-400 to-slate-300",
+  };
+}
+
+function Chip({
+  children,
+  tone = "slate",
+}: {
+  children: React.ReactNode;
+  tone?: "blue" | "emerald" | "amber" | "slate";
+}) {
+  const styles = {
+    blue: "border-blue-200 bg-blue-50 text-blue-700",
+    emerald: "border-emerald-200 bg-emerald-50 text-emerald-700",
+    amber: "border-amber-200 bg-amber-50 text-amber-700",
+    slate: "border-slate-200 bg-slate-50 text-slate-700",
+  };
+
+  return (
+    <span className={`inline-flex rounded-full border px-3 py-1 text-xs font-black ${styles[tone]}`}>
+      {children}
+    </span>
+  );
+}
+
+function QuickStat({
+  label,
+  value,
+  accent = "slate",
+}: {
+  label: string;
+  value: string | number | null;
+  accent?: "blue" | "emerald" | "amber" | "slate";
+}) {
+  const bar = {
+    blue: "bg-blue-500",
+    emerald: "bg-emerald-500",
+    amber: "bg-amber-500",
+    slate: "bg-slate-500",
+  };
+
+  return (
+    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div className={`h-1.5 ${bar[accent]}`} />
+      <div className="p-4 text-center">
+        <div className="text-xs font-bold text-slate-500 md:text-sm">{label}</div>
+        <div className="mt-2 text-2xl font-black text-slate-950 break-words">
+          {normalizeValue(value)}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ScoreBar({
+  label,
+  value,
+}: {
+  label: string;
+  value: number | null;
+}) {
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-4">
+      <div className="mb-2 flex items-center justify-between gap-3">
+        <span className="text-sm font-bold text-slate-600">{label}</span>
+        <span className="text-sm font-extrabold text-slate-900">
+          {value ?? "-"} / 5
+        </span>
+      </div>
+
+      <div className="h-2 rounded-full bg-slate-200">
+        <div
+          className="h-2 rounded-full bg-emerald-500"
+          style={{ width: `${((value ?? 0) / 5) * 100}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function ChecklistSection({
+  title,
+  items,
+  type,
+}: {
+  title: string;
+  items: string[];
+  type: "pros" | "cons";
+}) {
+  return (
+    <SectionCard title={title}>
+      {items.length ? (
+        <div className="space-y-3">
+          {items.map((item, i) => (
+            <div
+              key={i}
+              className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4"
+            >
+              <span
+                className={`mt-1 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-sm font-bold ${
+                  type === "pros"
+                    ? "bg-emerald-100 text-emerald-700"
+                    : "bg-rose-100 text-rose-700"
+                }`}
+              >
+                {type === "pros" ? "✓" : "–"}
+              </span>
+              <span className="leading-7 text-slate-700">{item}</span>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="text-slate-500">لا توجد بيانات متاحة حاليًا.</p>
+      )}
+    </SectionCard>
+  );
+}
 
 function ActionButton({
   href,
@@ -292,11 +478,9 @@ function SummaryRow({
   value: string | number | null;
 }) {
   return (
-    <div className="flex items-center justify-between gap-4 border-b border-slate-200 py-3 last:border-b-0">
-      <div className="text-sm font-medium text-slate-400">
-        {label}
-      </div>
-      <div className="text-left text-[17px] md:text-[18px] font-extrabold text-slate-900 break-words">
+    <div className="flex flex-col gap-1 border-b border-slate-200 py-3 last:border-b-0 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+      <div className="text-sm font-medium text-slate-400">{label}</div>
+      <div className="text-right text-[15px] font-extrabold text-slate-900 break-words sm:text-left md:text-[18px]">
         {normalizeValue(value)}
       </div>
     </div>
@@ -386,27 +570,27 @@ function ListSection({
   return (
     <SectionCard title={title} id={id}>
       {items.length ? (
-        <ul className="space-y-3">
+        <div className="space-y-3">
           {items.map((item, i) => (
-            <li
+            <div
               key={i}
-              className="flex items-start gap-3 text-base leading-8 text-slate-700"
+              className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
             >
               <span
-                className={`mt-1 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-sm font-bold ${
+                className={`mt-1 inline-flex h-2.5 w-2.5 shrink-0 rounded-full ${
                   type === "pros"
-                    ? "bg-emerald-100 text-emerald-700"
+                    ? "bg-emerald-500"
                     : type === "cons"
-                    ? "bg-rose-100 text-rose-600"
-                    : "bg-slate-100 text-slate-600"
+                    ? "bg-rose-500"
+                    : "bg-slate-400"
                 }`}
-              >
-                {type === "pros" ? "✓" : type === "cons" ? "–" : "•"}
+              />
+              <span className="text-sm leading-7 text-slate-700 md:text-base md:leading-8">
+                {item}
               </span>
-              <span>{item}</span>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       ) : (
         <p className="text-slate-500">لا توجد بيانات متاحة حاليًا.</p>
       )}
@@ -419,23 +603,24 @@ function ImageCard({
   src,
   brokerName,
 }: {
-  title: string;
+  title?: string;
   src: string | null;
   brokerName: string;
 }) {
   if (!src) return null;
 
   return (
-    <div className="rounded-[24px] border border-slate-200 bg-gradient-to-b from-slate-50 to-white p-4 shadow-sm">
-      <div className="rounded-[20px] border border-slate-200 bg-white p-4 shadow-inner">
-        <div className="flex h-[340px] items-center justify-center overflow-hidden rounded-[16px] bg-slate-50">
-  <img
-    src={src}
-    alt={`${brokerName} trading platform`}
-    className="h-full w-full object-cover"
-  />
-</div>
+    <div className="rounded-[24px] border border-slate-200 bg-gradient-to-b from-slate-50 to-white p-3 shadow-sm md:p-4">
+      
+      {/* حذفنا border الداخلي وخففنا التصميم */}
+      <div className="flex h-[220px] items-center justify-center overflow-hidden rounded-[16px] bg-white md:h-[340px]">
+        <img
+          src={src}
+          alt={`${brokerName} trading platform`}
+          className="h-full w-full object-cover"
+        />
       </div>
+
     </div>
   );
 }
@@ -523,17 +708,35 @@ function SectionNav() {
   ];
 
   return (
-    <div className="mb-8 hidden flex-wrap gap-3 md:flex">
-      {links.map((item) => (
-        <a
-          key={item.href}
-          href={item.href}
-          className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
-        >
-          {item.label}
-        </a>
-      ))}
-    </div>
+    <>
+      {/* Mobile */}
+<div className="mb-6 hidden md:flex">
+  <div className="flex gap-2 overflow-x-auto pb-1">
+    {links.map((item) => (
+      <a
+        key={item.href}
+        href={item.href}
+        className="whitespace-nowrap rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
+      >
+        {item.label}
+      </a>
+    ))}
+  </div>
+</div>
+
+      {/* Desktop */}
+      <div className="mb-8 hidden flex-wrap gap-3 md:flex">
+        {links.map((item) => (
+          <a
+            key={item.href}
+            href={item.href}
+            className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
+          >
+            {item.label}
+          </a>
+        ))}
+      </div>
+    </>
   );
 }
 
@@ -582,7 +785,113 @@ return (
 );
 }
 
+function MiniInfoCard({
+  label,
+  value,
+  tone = "slate",
+}: {
+  label: string;
+  value: string | number | null;
+  tone?: "slate" | "blue" | "emerald" | "amber" | "violet";
+}) {
+  const tones = {
+    slate: "border-slate-200 bg-white",
+    blue: "border-blue-200 bg-blue-50",
+    emerald: "border-emerald-200 bg-emerald-50",
+    amber: "border-amber-200 bg-amber-50",
+    violet: "border-violet-200 bg-violet-50",
+  };
 
+  return (
+    <div className={`min-w-0 rounded-xl border px-3 py-2 shadow-sm ${tones[tone]}`}>
+      <div className="text-[11px] font-bold text-slate-500">
+        {label}
+      </div>
+      <div className="mt-1 overflow-hidden text-[15px] font-black leading-5 text-slate-900 break-words">
+        {normalizeValue(value)}
+      </div>
+    </div>
+  );
+}
+
+function MobileAccountAccordion({
+  accounts,
+}: {
+  accounts: BrokerAccount[];
+}) {
+  if (!accounts.length) {
+    return (
+      <div className="rounded-2xl border border-slate-200 bg-white p-5 text-center text-slate-500 md:hidden">
+        لا توجد بيانات حسابات متاحة حاليًا.
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3 md:hidden">
+      {accounts.map((acc) => (
+        <details
+          key={acc.id}
+          className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+        >
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
+            <div className="min-w-0">
+              <div className="text-base font-black text-slate-900">
+                {acc.account_name || "-"}
+              </div>
+              <div className="mt-1 text-xs font-medium text-slate-500">
+                {acc.best_for || "تفاصيل الحساب"}
+              </div>
+            </div>
+
+            <div className="shrink-0 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-bold text-slate-600 transition group-open:rotate-180">
+              ⌄
+            </div>
+          </summary>
+
+          <div className="border-t border-slate-100 bg-slate-50 px-4 py-4">
+            <div className="space-y-3">
+              <div className="flex items-start justify-between gap-4 border-b border-slate-200 pb-3">
+                <span className="text-sm font-medium text-slate-500">السبريد</span>
+                <span className="text-right font-extrabold text-slate-900">
+                  {acc.spread || "-"}
+                </span>
+              </div>
+
+              <div className="flex items-start justify-between gap-4 border-b border-slate-200 pb-3">
+                <span className="text-sm font-medium text-slate-500">العمولة</span>
+                <span className="text-right font-extrabold text-slate-900">
+                  {acc.commission || "-"}
+                </span>
+              </div>
+
+              <div className="flex items-start justify-between gap-4 border-b border-slate-200 pb-3">
+                <span className="text-sm font-medium text-slate-500">الحد الأدنى للإيداع</span>
+                <span className="text-right font-extrabold text-slate-900">
+                  {acc.min_deposit || "-"}
+                </span>
+              </div>
+
+              <div className="flex items-start justify-between gap-4 border-b border-slate-200 pb-3">
+                <span className="text-sm font-medium text-slate-500">نوع التنفيذ</span>
+                <span className="text-right font-extrabold text-slate-900">
+                  {acc.execution_type || "-"}
+                </span>
+              </div>
+
+              <div className="flex items-start justify-between gap-4">
+                <span className="text-sm font-medium text-slate-500">الأنسب له</span>
+                <span className="text-right font-extrabold text-slate-900">
+                  {acc.best_for || "-"}
+                </span>
+              </div>
+            </div>
+          </div>
+        </details>
+      ))}
+    </div>
+  );
+}
 
 export default async function BrokerPage({
   params,
@@ -612,6 +921,55 @@ export default async function BrokerPage({
   const accounts = splitText(broker.account_types);
   const payments = splitText(broker.deposit_withdrawal);
   const tradingAssets = splitText(broker.trading_assets);
+  const overallScore = calculateOverallScore(broker);
+const verdictTone = getVerdictTone(overallScore);
+
+const accountCount = accountsData.length;
+
+const lowestDeposit = accountsData.length
+  ? accountsData
+      .map((acc) => {
+        const raw = acc.min_deposit || "";
+        const numeric = Number(String(raw).replace(/[^0-9.]/g, ""));
+        return {
+          ...acc,
+          numeric: Number.isFinite(numeric) ? numeric : Infinity,
+          raw,
+          name: acc.account_name || "-",
+        };
+      })
+      .sort((a, b) => a.numeric - b.numeric)[0]
+  : null;
+
+const lowestSpread = accountsData.length
+  ? accountsData
+      .map((acc) => {
+        const spreadText = acc.spread || "";
+        const numeric = Number(String(spreadText).replace(/[^0-9.]/g, ""));
+        return {
+          ...acc,
+          numeric: Number.isFinite(numeric) ? numeric : Infinity,
+        };
+      })
+      .sort((a, b) => a.numeric - b.numeric)[0]
+  : null;
+
+const commissionAccounts = accountsData.filter(
+  (acc) =>
+    acc.commission &&
+    acc.commission.trim() !== "" &&
+    acc.commission.trim() !== "-" &&
+    !acc.commission.includes("بدون") &&
+    !acc.commission.includes("0")
+);
+
+const noCommissionAccounts = accountsData.filter(
+  (acc) =>
+    !acc.commission ||
+    acc.commission.trim() === "" ||
+    acc.commission.trim() === "-" ||
+    acc.commission.includes("بدون")
+);
 
   const faqItems = [
     {
@@ -711,7 +1069,7 @@ const breadcrumbSchema = {
     __html: JSON.stringify(organizationSchema),
   }}
 />
-      <main className="mx-auto max-w-7xl px-4 py-10 text-right">
+      <main className="mx-auto w-full max-w-7xl px-3 py-8 text-right sm:px-4 md:py-10">
         <div className="mb-4 text-sm text-slate-500">
           <Link href="/brokers" className="hover:text-slate-700">
             التقييمات
@@ -720,285 +1078,476 @@ const breadcrumbSchema = {
           <span>تقييم {broker.name}</span>
         </div>
 
-        <section className="mb-8 rounded-[32px] border border-slate-200 bg-white p-5 shadow-sm md:p-8">
-  {/* Desktop */}
-  <div className="hidden lg:block">
-    <div className="flex items-stretch gap-8">
-      {/* Right sidebar */}
-      <aside className="flex w-[260px] shrink-0 flex-col justify-between">
-        <div className="flex min-h-[170px] items-center justify-center overflow-hidden rounded-[28px] border border-slate-200 bg-slate-50 px-6 py-5">
+        <section className="relative overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm md:rounded-[32px]">
+  <div
+    className={`absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r ${verdictTone.accent}`}
+  />
+
+  <div className="p-4 md:p-7">
+    <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start lg:gap-6">
+      
+      <aside className="order-1 hidden space-y-4 text-right lg:order-2 lg:block">
+        <div className="flex min-h-[120px] items-center justify-center overflow-hidden rounded-[20px] border border-slate-200 bg-slate-50 px-4 py-4 md:min-h-[150px] md:rounded-[24px] md:px-5 md:py-5">
           {broker.logo ? (
             <img
               src={broker.logo}
               alt={broker.name || "Broker logo"}
-              className="max-h-[110px] w-full object-contain"
+              className="max-h-[80px] w-auto max-w-full object-contain md:max-h-[95px]"
             />
           ) : (
             <span className="text-sm text-slate-400">No logo</span>
           )}
         </div>
 
-          <ShareButtons url={pageUrl} title={shareTitle} />
-      </aside>
-
-      {/* Main content */}
-      <div className="min-w-0 flex-1">
-        <div className="mb-4 flex flex-wrap items-center gap-3">
-          <div className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600">
-            مراجعة شركة تداول
+        <div className="rounded-[20px] border border-slate-200 bg-slate-50 p-4 md:rounded-[24px]">
+          <div className="mb-3 text-sm font-black text-slate-900">
+            حقائق سريعة
           </div>
 
-          {broker.rating ? (
-            <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-sm font-bold text-slate-800">
-              <span className="text-amber-600">★</span>
-              <span>{broker.rating}</span>
-              <span className="text-slate-500">من 5</span>
-            </div>
+          <div className="space-y-1">
+            <SummaryRow label="سنة التأسيس" value={broker.founded_year} />
+            <SummaryRow label="المقر" value={broker.headquarters} />
+            <SummaryRow label="الترخيص المختصر" value={broker.regulation_short} />
+            <SummaryRow label="الدعم العربي" value={broker.arabic_support} />
+          </div>
+        </div>
+
+        <div className="rounded-[20px] border border-slate-200 bg-white p-4 md:rounded-[24px]">
+          <ShareButtons url={pageUrl} title={shareTitle} />
+        </div>
+      </aside>
+
+      <div className="order-2 min-w-0 text-right lg:order-1">
+        <div className="mb-3 hidden flex-wrap items-center gap-2 md:flex">
+  <Chip tone="blue">تقييم شركة تداول</Chip>
+  <Chip tone="emerald">{verdictTone.badge}</Chip>
+  {broker.best_for ? (
+    <Chip tone="amber">الأنسب: {broker.best_for}</Chip>
+  ) : null}
+</div>
+
+        <h1 className="text-2xl font-black leading-tight text-slate-950 sm:text-3xl md:text-5xl">
+          تقييم {broker.name} 2026
+        </h1>
+
+        <div className="mt-4 flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+          {renderStars(overallScore || broker.rating)}
+          <div
+            className={`inline-flex rounded-full border px-3 py-2 text-sm font-black ${verdictTone.color}`}
+          >
+            التقدير: {verdictTone.label}
+          </div>
+        </div>
+
+        <div className="mt-5 max-w-3xl text-[15px] leading-8 text-slate-600 md:text-base">
+          <ExpandableText
+            text={
+              broker.intro ||
+              `في هذه الصفحة نراجع شركة ${broker.name} من حيث التراخيص، الرسوم، أنواع الحسابات، المنصات، وخدمة العملاء، مع خلاصة واضحة تساعدك على معرفة ما إذا كانت مناسبة لك أم لا.`
+            }
+          />
+        </div>
+
+        <div className="mt-4 flex flex-wrap gap-2">
+          <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 md:text-sm">
+            مناسب للمبتدئين
+          </span>
+
+          {broker.islamic_account ? (
+            <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 md:text-sm">
+              حساب إسلامي
+            </span>
+          ) : null}
+
+          {broker.spreads ? (
+            <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 md:text-sm">
+              سبريد تنافسي
+            </span>
           ) : null}
         </div>
 
-        <h1 className="mb-4 text-5xl font-black leading-tight text-slate-950">
-          تقييم {broker.name}
-        </h1>
+        <div className="mt-6 grid grid-cols-2 gap-3 xl:grid-cols-4">
+          <QuickStat
+            label="التقييم العام"
+            value={overallScore || broker.rating || "-"}
+            accent="blue"
+          />
+          <QuickStat
+            label="الحد الأدنى للإيداع"
+            value={formatMoney(broker.min_deposit)}
+            accent="emerald"
+          />
+          <QuickStat
+            label="أقصى رافعة"
+            value={broker.max_leverage || "-"}
+            accent="amber"
+          />
+          <QuickStat
+            label="الحساب الإسلامي"
+            value={broker.islamic_account}
+            accent="slate"
+          />
+        </div>
 
-        <p className="max-w-4xl text-lg leading-9 text-slate-600 line-clamp-6">
-          {broker.intro || "مراجعة شاملة لشركة التداول."}
-        </p>
-
-        <div className="mt-8 flex flex-wrap gap-3">
-          <ActionButton
+        <div className="mt-6 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap sm:items-center sm:justify-start">
+          <a
             href={`/go/${broker.slug}?type=real`}
-            label="فتح حساب حقيقي"
-            primary
-          />
+            target="_blank"
+            rel="nofollow sponsored noopener noreferrer"
+            className="inline-flex min-h-[52px] w-full items-center justify-center rounded-2xl bg-emerald-600 px-6 py-3 text-sm font-extrabold text-white transition hover:bg-emerald-700 sm:w-auto sm:min-w-[170px] md:text-base"
+          >
+            فتح حساب في {broker.name}
+          </a>
 
-          <ActionButton
+          <a
             href={`/go/${broker.slug}?type=demo`}
-            label="فتح حساب ديمو"
-          />
+            target="_blank"
+            rel="nofollow sponsored noopener noreferrer"
+            className="inline-flex min-h-[52px] w-full items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-extrabold text-slate-900 transition hover:bg-slate-50 sm:w-auto sm:min-w-[170px] md:text-base"
+          >
+            فتح حساب ديمو
+          </a>
 
-          <ActionButton
+          <a
             href={`/go/${broker.slug}?type=mt5`}
-            label="تحميل منصة MT5"
-          />
+            target="_blank"
+            rel="nofollow sponsored noopener noreferrer"
+            className="inline-flex min-h-[52px] w-full items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-extrabold text-slate-900 transition hover:bg-slate-50 sm:w-auto sm:min-w-[170px] md:text-base"
+          >
+            تحميل منصة MT5
+          </a>
 
-          <ActionButton
+          <a
             href={`/go/${broker.slug}?type=mt4`}
-            label="تحميل منصة MT4"
-          />
+            target="_blank"
+            rel="nofollow sponsored noopener noreferrer"
+            className="inline-flex min-h-[52px] w-full items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-extrabold text-slate-900 transition hover:bg-slate-50 sm:w-auto sm:min-w-[170px] md:text-base"
+          >
+            تحميل منصة MT4
+          </a>
         </div>
-      </div>
-    </div>
-  </div>
-
-  {/* Mobile / Tablet */}
-  <div className="lg:hidden">
-    <div className="space-y-4">
-      <div className="flex min-h-[170px] items-center justify-center overflow-hidden rounded-[28px] border border-slate-200 bg-slate-50 px-6 py-5">
-        {broker.logo ? (
-          <img
-            src={broker.logo}
-            alt={broker.name || "Broker logo"}
-            className="max-h-[110px] w-full object-contain"
-          />
-        ) : (
-          <span className="text-sm text-slate-400">No logo</span>
-        )}
-      </div>
-
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 md:text-sm">
-          مراجعة شركة تداول
-        </div>
-
-        {broker.rating ? (
-          <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-sm font-bold text-slate-800">
-            <span className="text-amber-500">★</span>
-            <span>{broker.rating}</span>
-            <span className="text-slate-500">من 5</span>
-          </div>
-        ) : null}
-      </div>
-
-      <h1 className="text-3xl font-black leading-tight text-slate-950 md:text-4xl">
-        تقييم {broker.name}
-      </h1>
-
-      <ExpandableText
-        text={broker.intro || "مراجعة شاملة لشركة التداول."}
-      />
-
-      <div className="grid grid-cols-1 gap-3">
-        <ActionButton
-          href={`/go/${broker.slug}?type=real`}
-          label="فتح حساب حقيقي"
-          primary
-        />
-
-        <ActionButton
-          href={`/go/${broker.slug}?type=demo`}
-          label="فتح حساب ديمو"
-        />
-
-        <ActionButton
-          href={`/go/${broker.slug}?type=mt5`}
-          label="تحميل منصة MetaTrader 5"
-        />
-
-        <ActionButton
-          href={`/go/${broker.slug}?type=mt4`}
-          label="تحميل منصة MetaTrader 4"
-        />
-      </div>
-
-      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-        <ShareButtons url={pageUrl} title={shareTitle} />
       </div>
     </div>
   </div>
 </section>
-        <SectionNav />
 
-        <SectionCard title="ملخص سريع عن الشركة" id="summary">
-  <div className="grid gap-4 lg:grid-cols-2">
-
-    <div className="rounded-3xl border border-slate-200 bg-white px-5 py-4">
-      <SummaryRow label="اسم الشركة" value={broker.name} />
-      <SummaryRow label="سنة التأسيس" value={broker.founded_year} />
-      <SummaryRow label="المقر الرئيسي" value={broker.headquarters} />
-      <SummaryRow label="التقييم العام" value={broker.rating ?? "-"} />
-      <SummaryRow label="الحد الأدنى للإيداع" value={broker.min_deposit ?? "-"} />
-      <SummaryRow label="الرافعة المالية" value={broker.max_leverage} />
-    </div>
-
-    <div className="rounded-3xl border border-slate-200 bg-white px-5 py-4">
-      <SummaryRow label="المنصات" value={broker.platforms} />
-      <SummaryRow label="التنظيم والتراخيص" value={broker.regulation_short} />
-      <SummaryRow label="حساب إسلامي" value={broker.islamic_account} />
-      <SummaryRow label="دعم عربي" value={broker.arabic_support} />
-      <SummaryRow label="أنسب فئة" value={broker.best_for} />
-      <SummaryRow
-        label="الأصول المتاحة"
-        value={tradingAssets.length ? tradingAssets.join(" | ") : "-"}
-      />
-    </div>
-
-  </div>
-</SectionCard>
-
-        <div className="mt-8">
-  <SectionCard title="التقييم التفصيلي" id="scores">
-    {/* Mobile */}
-    <div className="md:hidden rounded-3xl border border-slate-200 bg-white px-5 py-4">
-      <ScoreCard label="الأمان والتنظيم" value={broker.score_safety} row />
-      <ScoreCard label="الرسوم والسبريد" value={broker.score_fees} row />
-      <ScoreCard label="منصات التداول" value={broker.score_platforms} row />
-      <ScoreCard label="الإيداع والسحب" value={broker.score_deposit} row />
-      <ScoreCard label="دعم العملاء" value={broker.score_support} row />
-    </div>
-
-    {/* Desktop */}
-    <div className="hidden md:grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-      <ScoreCard label="الأمان والتنظيم" value={broker.score_safety} />
-      <ScoreCard label="الرسوم والسبريد" value={broker.score_fees} />
-      <ScoreCard label="منصات التداول" value={broker.score_platforms} />
-      <ScoreCard label="الإيداع والسحب" value={broker.score_deposit} />
-      <ScoreCard label="دعم العملاء" value={broker.score_support} />
-    </div>
-  </SectionCard>
+        <div className="mt-8 min-w-0">
+  <SectionNav />
 </div>
 
-        <div className="mt-8 grid gap-6 lg:grid-cols-2">
-          <ListSection title="المميزات" items={pros} type="pros" />
-          <ListSection title="العيوب" items={cons} type="cons" />
+<div className="grid min-w-0 gap-8">
+  <div className="min-w-0 space-y-8">
+            <SectionCard
+              title="ملخص سريع عن الشركة"
+              subtitle="نظرة مباشرة على أهم المعلومات التي يبحث عنها أغلب الزوار قبل فتح الحساب."
+              id="summary"
+            >
+              <div className="grid min-w-0 gap-4 lg:grid-cols-2">
+                <div className="rounded-[20px] border border-slate-200 bg-white p-2.5 md:p-6">
+  {/* Mobile */}
+  <div className="grid min-w-0 grid-cols-2 gap-2 md:hidden">
+    <MiniInfoCard label="التأسيس" value={broker.founded_year} tone="blue" />
+    <MiniInfoCard label="المقر" value={broker.headquarters} tone="emerald" />
+    <MiniInfoCard label="التقييم" value={overallScore || broker.rating} tone="amber" />
+    <MiniInfoCard
+      label="الإيداع"
+      value={formatMoney(broker.min_deposit)}
+      tone="violet"
+    />
+  </div>
+
+  {/* Desktop */}
+  <div className="hidden md:block">
+    <SummaryRow label="اسم الشركة" value={broker.name} />
+    <SummaryRow label="سنة التأسيس" value={broker.founded_year} />
+    <SummaryRow label="المقر" value={broker.headquarters} />
+    <SummaryRow label="التقييم العام" value={overallScore || broker.rating} />
+    <SummaryRow label="الحد الأدنى للإيداع" value={formatMoney(broker.min_deposit)} />
+    <SummaryRow label="أقصى رافعة" value={broker.max_leverage} />
+  </div>
+</div>
+
+                <div className="min-w-0 rounded-[24px] border border-slate-200 bg-slate-50 p-5">
+                  <SummaryRow label="المنصات" value={broker.platforms} />
+                  <SummaryRow label="التنظيم" value={broker.regulation_short} />
+                  <SummaryRow label="حساب إسلامي" value={broker.islamic_account} />
+                  <SummaryRow label="دعم عربي" value={broker.arabic_support} />
+                  <SummaryRow label="أنسب فئة" value={broker.best_for} />
+                  
+                </div>
+              </div>
+
+              <div className="hidden rounded-[24px] border border-slate-200 bg-slate-50 p-5 md:block">
+  <div className="mb-4 flex items-center justify-between">
+    <h3 className="text-xl font-black text-slate-900">حقائق سريعة</h3>
+    <span className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700">
+      أهم المعلومات
+    </span>
+  </div>
+
+  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div className="h-1.5 bg-blue-500" />
+      <div className="flex min-h-[120px] flex-col items-center justify-center px-4 py-5 text-center">
+        <div className="mb-2 text-xs font-bold text-slate-500 md:text-sm">المقر</div>
+        <div className="text-lg font-black text-slate-900 md:text-2xl break-words">
+          {broker.headquarters || "-"}
         </div>
-
-        <div className="mt-8 space-y-8">
-          <TextSection title="نظرة عامة على الشركة" text={broker.intro} />
-
-          <SectionCard title="أنواع حسابات التداول" id="accounts">
-  <div className="space-y-5">
-    <p className="leading-8 text-slate-700">
-      توفر شركة {broker.name} عدة أنواع من حسابات التداول لتناسب مختلف فئات
-      المتداولين، بداية من المبتدئين الذين يبحثون عن حساب بسيط، وحتى
-      المتداولين المحترفين الذين يفضّلون فروقات سعرية أقل أو شروط تنفيذ أكثر
-      تخصصًا.
-      {accountsData.length ? (
-        <>
-          {" "}
-          وتشمل الحسابات الرئيسية لدى الشركة:{" "}
-          <span className="font-bold text-slate-900">
-            {accountsData
-              .map((acc) => acc.account_name)
-              .filter(Boolean)
-              .join("، ")}
-          </span>
-          .
-        </>
-      ) : null}
-    </p>
-
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-[760px] overflow-hidden rounded-2xl border border-slate-200 text-sm">
-        <thead className="bg-slate-100">
-          <tr>
-            <th className="p-4 text-right font-extrabold text-slate-900">
-              نوع الحساب
-            </th>
-            <th className="p-4 text-center font-extrabold text-slate-900">
-              السبريد
-            </th>
-            <th className="p-4 text-center font-extrabold text-slate-900">
-              العمولة
-            </th>
-            <th className="p-4 text-center font-extrabold text-slate-900">
-              الحد الأدنى للإيداع
-            </th>
-            <th className="p-4 text-center font-extrabold text-slate-900">
-              نوع التنفيذ
-            </th>
-            <th className="p-4 text-center font-extrabold text-slate-900">
-              مناسب لمن؟
-            </th>
-          </tr>
-        </thead>
-
-        <tbody className="bg-white">
-          {accountsData.length ? (
-            accountsData.map((acc) => (
-              <tr key={acc.id} className="border-t border-slate-200">
-                <td className="p-4 font-bold text-slate-900">
-                  {acc.account_name || "-"}
-                </td>
-                <td className="p-4 text-center">{acc.spread || "-"}</td>
-                <td className="p-4 text-center">{acc.commission || "-"}</td>
-                <td className="p-4 text-center">{acc.min_deposit || "-"}</td>
-                <td className="p-4 text-center">
-                  {acc.execution_type || "-"}
-                </td>
-                <td className="p-4 text-center">{acc.best_for || "-"}</td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={6} className="p-4 text-center text-slate-500">
-                لا توجد بيانات حسابات متاحة حاليًا.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+      </div>
     </div>
 
-    <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm leading-8 text-slate-700">
-      <b className="text-slate-900">ملاحظة مهمة:</b> تختلف تفاصيل الحسابات مثل
-      السبريد والعمولات والحد الأدنى للإيداع وأسلوب التنفيذ من شركة إلى أخرى،
-      وقد تختلف أيضًا بحسب نوع الأداة المالية أو المنطقة الجغرافية أو الجهة
-      التنظيمية التي يتبع لها الحساب. لذلك يفضّل دائمًا مراجعة الموقع الرسمي
-      للشركة قبل فتح الحساب.
+    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div className="h-1.5 bg-emerald-500" />
+      <div className="flex min-h-[120px] flex-col items-center justify-center px-4 py-5 text-center">
+        <div className="mb-2 text-xs font-bold text-slate-500 md:text-sm">سنة التأسيس</div>
+        <div className="text-lg font-black text-slate-900 md:text-2xl break-words">
+          {broker.founded_year || "-"}
+        </div>
+      </div>
+    </div>
+
+    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div className="h-1.5 bg-amber-500" />
+      <div className="flex min-h-[120px] flex-col items-center justify-center px-4 py-5 text-center">
+        <div className="mb-2 text-xs font-bold text-slate-500 md:text-sm">الحد الأدنى للإيداع</div>
+        <div className="text-lg font-black text-slate-900 md:text-2xl break-words">
+          {broker.min_deposit ?? "-"}
+        </div>
+      </div>
+    </div>
+
+    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div className="h-1.5 bg-slate-500" />
+      <div className="flex min-h-[120px] flex-col items-center justify-center px-4 py-5 text-center">
+        <div className="mb-2 text-xs font-bold text-slate-500 md:text-sm">أقصى رافعة</div>
+        <div className="text-lg font-black text-slate-900 md:text-2xl break-words">
+          {broker.max_leverage || "-"}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+            </SectionCard>
+
+            <SectionCard
+              title="التقييم التفصيلي"
+              subtitle="هذا التقييم يجمع بين الأمان والرسوم والمنصات وتجربة الإيداع والسحب وخدمة العملاء."
+              id="scores"
+            >
+              <div className="mb-6 rounded-[24px] border border-emerald-200 bg-emerald-50 p-5">
+                <div className="flex flex-wrap items-end justify-between gap-4">
+                  <div>
+                    <div className="text-sm font-bold text-emerald-700">
+                      النتيجة النهائية
+                    </div>
+                    <div className="mt-2 flex items-end gap-2">
+                      <span className="text-5xl font-black text-slate-950">
+                        {overallScore || broker.rating || "-"}
+                      </span>
+                      <span className="mb-2 text-sm font-bold text-emerald-700">
+                        / 5
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="mx-auto max-w-3xl text-center text-sm leading-8 text-slate-700 md:text-base">
+                    {broker.name} حصلت على تقييم{" "}
+                    <span className="font-black text-slate-950">
+                      {verdictTone.label}
+                    </span>{" "}
+                    بناءً على جودة التنظيم، هيكل الرسوم، كفاءة المنصات، سهولة
+                    الإيداع والسحب، ومستوى الدعم.
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+                <ScoreBar label="الأمان والتنظيم" value={broker.score_safety} />
+                <ScoreBar label="الرسوم والسبريد" value={broker.score_fees} />
+                <ScoreBar label="منصات التداول" value={broker.score_platforms} />
+                <ScoreBar label="الإيداع والسحب" value={broker.score_deposit} />
+                <ScoreBar label="خدمة العملاء" value={broker.score_support} />
+              </div>
+            </SectionCard>
+
+            <div className="grid gap-6 lg:grid-cols-2">
+              <ChecklistSection title="أبرز المميزات" items={pros} type="pros" />
+              <ChecklistSection title="أبرز العيوب" items={cons} type="cons" />
+            </div>
+
+            <SectionCard
+  title="أنواع حسابات التداول"
+  subtitle={`نظرة عملية على الحسابات المتاحة لدى ${broker.name}، مع أهم تفاصيل كل حساب.`}
+  id="accounts"
+>
+  <div className="space-y-6">
+    <div className="grid grid-cols-2 gap-3 md:hidden">
+  <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <div className="h-1.5 bg-blue-500" />
+    <div className="p-4 text-center">
+      <div className="text-xs font-bold text-slate-500">عدد الحسابات</div>
+      <div className="mt-2 text-2xl font-black text-slate-950">
+        {accountCount || "-"}
+      </div>
+    </div>
+  </div>
+
+  <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <div className="h-1.5 bg-emerald-500" />
+    <div className="p-4 text-center">
+      <div className="text-xs font-bold text-slate-500">أقل إيداع</div>
+      <div className="mt-2 text-2xl font-black text-slate-950">
+        {lowestDeposit?.raw || broker.min_deposit || "-"}
+      </div>
+    </div>
+  </div>
+</div>
+    <div className="hidden gap-4 md:grid-cols-2 xl:grid-cols-4 md:grid">
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="h-1.5 bg-blue-500" />
+        <div className="p-5 text-center">
+          <div className="text-xs font-bold text-slate-500 md:text-sm">
+            عدد الحسابات المتاحة
+          </div>
+          <div className="mt-3 text-3xl font-black text-slate-950">
+            {accountCount || "-"}
+          </div>
+          <div className="mt-2 text-sm text-slate-500">
+            حسابات مختلفة للمبتدئين والمحترفين
+          </div>
+        </div>
+      </div>
+
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="h-1.5 bg-emerald-500" />
+        <div className="p-5 text-center">
+          <div className="text-xs font-bold text-slate-500 md:text-sm">
+            أقل إيداع متاح
+          </div>
+          <div className="mt-3 text-3xl font-black text-slate-950">
+            {lowestDeposit?.raw || broker.min_deposit || "-"}
+          </div>
+          <div className="mt-2 text-sm text-slate-500">
+            {lowestDeposit?.name || "حسب نوع الحساب"}
+          </div>
+        </div>
+      </div>
+
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="h-1.5 bg-amber-500" />
+        <div className="p-5 text-center">
+          <div className="text-xs font-bold text-slate-500 md:text-sm">
+            أقل سبريد ظاهر
+          </div>
+          <div className="mt-3 text-3xl font-black text-slate-950">
+            {lowestSpread?.spread || broker.spreads || "-"}
+          </div>
+          <div className="mt-2 text-sm text-slate-500">
+            {lowestSpread?.account_name || "حسب نوع الحساب"}
+          </div>
+        </div>
+      </div>
+
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="h-1.5 bg-slate-500" />
+        <div className="p-5 text-center">
+          <div className="text-xs font-bold text-slate-500 md:text-sm">
+            هيكل العمولة
+          </div>
+          <div className="mt-3 text-xl font-black text-slate-950 md:text-2xl">
+            {commissionAccounts.length
+              ? `${commissionAccounts.length} حساب بعمولة`
+              : "بدون عمولة واضحة"}
+          </div>
+          <div className="mt-2 text-sm text-slate-500">
+            {noCommissionAccounts.length
+              ? `${noCommissionAccounts.length} حساب بدون عمولة`
+              : "راجع تفاصيل الجدول"}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p className="leading-8 text-slate-700">
+      توفر شركة {broker.name} مجموعة من الحسابات التي تناسب أكثر من
+      فئة من المتداولين، من الحسابات البسيطة للمبتدئين إلى الحسابات
+      ذات السبريد المنخفض أو العمولة المنفصلة للمتداولين الأكثر نشاطًا.
+    </p>
+
+    {/* Mobile */}
+<MobileAccountAccordion accounts={accountsData} />
+
+{/* Desktop */}
+<div className="hidden md:block">
+  <div className="max-w-full overflow-x-auto rounded-[24px] border border-slate-200">
+    <table className="w-full min-w-[820px] text-sm">
+      <thead className="bg-slate-100">
+        <tr>
+          <th className="p-4 text-right font-black text-slate-900">
+            نوع الحساب
+          </th>
+          <th className="p-4 text-center font-black text-slate-900">
+            السبريد
+          </th>
+          <th className="p-4 text-center font-black text-slate-900">
+            العمولة
+          </th>
+          <th className="p-4 text-center font-black text-slate-900">
+            الحد الأدنى للإيداع
+          </th>
+          <th className="p-4 text-center font-black text-slate-900">
+            نوع التنفيذ
+          </th>
+          <th className="p-4 text-center font-black text-slate-900">
+            الأنسب له
+          </th>
+        </tr>
+      </thead>
+      <tbody className="bg-white">
+        {accountsData.length ? (
+          accountsData.map((acc) => (
+            <tr key={acc.id} className="border-t border-slate-200">
+              <td className="p-4 font-black text-slate-900">
+                {acc.account_name || "-"}
+              </td>
+              <td className="p-4 text-center text-slate-700">
+                {acc.spread || "-"}
+              </td>
+              <td className="p-4 text-center text-slate-700">
+                {acc.commission || "-"}
+              </td>
+              <td className="p-4 text-center text-slate-700">
+                {acc.min_deposit || "-"}
+              </td>
+              <td className="p-4 text-center text-slate-700">
+                {acc.execution_type || "-"}
+              </td>
+              <td className="p-4 text-center text-slate-700">
+                {acc.best_for || "-"}
+              </td>
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td colSpan={6} className="p-5 text-center text-slate-500">
+              لا توجد بيانات حسابات متاحة حاليًا.
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+    <div className="hidden rounded-[24px] border border-amber-200 bg-amber-50 p-5 text-sm leading-8 text-slate-700 md:block">
+      <span className="font-black text-slate-900">ملاحظة:</span>{" "}
+      تفاصيل الحسابات مثل السبريد والعمولة والحد الأدنى للإيداع قد
+      تختلف حسب نوع الحساب والجهة التنظيمية والمنطقة الجغرافية، لذلك
+      يفضل مراجعة الشروط الرسمية قبل فتح الحساب.
     </div>
   </div>
 </SectionCard>
+
 
 <SectionCard title="الرسوم والسبريد" id="fees">
   <div className="space-y-5">
@@ -1009,36 +1558,72 @@ const breadcrumbSchema = {
       اليومي.
     </p>
 
-    <div className="overflow-x-auto">
-      <table className="w-full overflow-hidden rounded-2xl border border-slate-200 text-sm">
-        <tbody className="bg-white">
-          <tr className="border-t border-slate-200">
-            <td className="w-1/3 bg-slate-50 p-4 font-extrabold text-slate-900">
-              السبريد
-            </td>
-            <td className="p-4 text-slate-700">
-              {broker.spreads || "-"}
-            </td>
-          </tr>
-          <tr className="border-t border-slate-200">
-            <td className="bg-slate-50 p-4 font-extrabold text-slate-900">
-              العمولات
-            </td>
-            <td className="p-4 text-slate-700">
-              {broker.fees ? "متوفرة حسب نوع الحساب" : "-"}
-            </td>
-          </tr>
-          <tr className="border-t border-slate-200">
-            <td className="bg-slate-50 p-4 font-extrabold text-slate-900">
-              الحد الأدنى للإيداع
-            </td>
-            <td className="p-4 text-slate-700">
-              {broker.min_deposit ?? "-"}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    {/* Mobile */}
+<div className="space-y-3 md:hidden">
+  <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <div className="h-1.5 bg-blue-500" />
+    <div className="p-4">
+      <div className="mb-2 text-sm font-black text-slate-900">السبريد</div>
+      <div className="text-sm leading-7 text-slate-700">
+        {broker.spreads || "-"}
+      </div>
     </div>
+  </div>
+
+  <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <div className="h-1.5 bg-emerald-500" />
+    <div className="p-4">
+      <div className="mb-2 text-sm font-black text-slate-900">العمولات</div>
+      <div className="text-sm leading-7 text-slate-700">
+        {broker.fees ? "متوفرة حسب نوع الحساب" : "-"}
+      </div>
+    </div>
+  </div>
+
+  <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <div className="h-1.5 bg-amber-500" />
+    <div className="p-4">
+      <div className="mb-2 text-sm font-black text-slate-900">الحد الأدنى للإيداع</div>
+      <div className="text-2xl font-black text-slate-950">
+        {broker.min_deposit ?? "-"}
+      </div>
+    </div>
+  </div>
+</div>
+
+{/* Desktop */}
+<div className="hidden md:block">
+  <div className="max-w-full overflow-x-auto">
+    <table className="w-full overflow-hidden rounded-2xl border border-slate-200 text-sm">
+      <tbody className="bg-white">
+        <tr className="border-t border-slate-200">
+          <td className="w-1/3 bg-slate-50 p-4 font-extrabold text-slate-900">
+            السبريد
+          </td>
+          <td className="p-4 text-slate-700">
+            {broker.spreads || "-"}
+          </td>
+        </tr>
+        <tr className="border-t border-slate-200">
+          <td className="bg-slate-50 p-4 font-extrabold text-slate-900">
+            العمولات
+          </td>
+          <td className="p-4 text-slate-700">
+            {broker.fees ? "متوفرة حسب نوع الحساب" : "-"}
+          </td>
+        </tr>
+        <tr className="border-t border-slate-200">
+          <td className="bg-slate-50 p-4 font-extrabold text-slate-900">
+            الحد الأدنى للإيداع
+          </td>
+          <td className="p-4 text-slate-700">
+            {broker.min_deposit ?? "-"}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 
     <div className="leading-8 text-slate-700">
       {broker.fees || "لا توجد بيانات متاحة حاليًا."}
@@ -1048,11 +1633,19 @@ const breadcrumbSchema = {
 
           <ListSection title="الإيداع والسحب" items={payments} />
 
-          <RichContentSection
-            title="تفاصيل المنصات"
-            content={broker.platform_details}
-            id="platforms"
-          />
+          <SectionCard title="تفاصيل المنصات" id="platforms">
+  {broker.platform_details ? (
+    <div className="space-y-4">
+      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 md:p-6">
+        <div className="text-sm leading-8 text-slate-700 md:text-base">
+          {broker.platform_details}
+        </div>
+      </div>
+    </div>
+  ) : (
+    <p className="text-slate-500">لا توجد بيانات متاحة حاليًا.</p>
+  )}
+</SectionCard>
 
           <SplitListSection
             title="التراخيص والتنظيم"
@@ -1278,6 +1871,7 @@ const breadcrumbSchema = {
     <p className="text-slate-500">لا توجد مقارنات متاحة حاليًا.</p>
   )}
 </SectionCard>
+          </div>
         </div>
       </main>
     </>
