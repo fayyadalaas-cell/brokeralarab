@@ -353,7 +353,7 @@ export default async function RootLayout({
                     </span>
                   </Link>
 
-                  <div className="invisible absolute right-0 top-full z-50 mt-1 w-[min(92vw,840px)] translate-y-2 rounded-[30px] border border-slate-200 bg-white p-5 opacity-0 shadow-[0_28px_80px_rgba(15,23,42,0.15)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+                  <div className="invisible absolute right-0 top-full z-50 mt-1 w-[640px] max-w-[calc(100vw-40px)] translate-y-2 rounded-[30px] border border-slate-200 bg-white p-5 opacity-0 shadow-[0_28px_80px_rgba(15,23,42,0.15)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
                     <div className="grid grid-cols-[1.15fr_0.95fr] gap-6 divide-x divide-slate-200 divide-x-reverse">
                       {/* COUNTRIES */}
                       <div className="pr-1">
