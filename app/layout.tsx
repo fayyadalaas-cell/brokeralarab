@@ -145,7 +145,7 @@ const featuredComparisons: MenuLink[] = [
   { href: "/compare/fxpro-vs-avatrade", label: "Fxpro vs AvaTrade" },
   { href: "/compare/xm-vs-pepperstone", label: "XM vs Pepperstone" },
   { href: "/compare/alpari-vs-xs", label: "Alpari vs XS" },
-  { href: "/compare/equiti-vs-activtrade", label: "Equiti vs Vantage" },
+  { href: "/compare/equiti-vs-vantage", label: "Equiti vs Vantage" },
 ];
 
 function getBrokerLogo(slug: string): string {
