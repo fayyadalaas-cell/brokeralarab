@@ -90,7 +90,7 @@ const countryMenuItems: CountryMenuItem[] = [
     flag: "/flags/sa.svg",
   },
   {
-    href: "/best-brokers/united-arab-emirates",
+    href: "/best-brokers/uae",
     label: "أفضل الوسطاء في الإمارات",
     shortLabel: "الإمارات",
     flag: "/flags/ae.svg",
