@@ -478,9 +478,14 @@ export default function BrokerFinder({ brokers }: Props) {
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex min-w-0 flex-1 items-start gap-3">
                         <div className="relative shrink-0">
-                          <div className="rounded-[18px] border border-slate-200 bg-white p-1.5 shadow-sm">
-                            {getLogoNode(broker)}
-                          </div>
+                          <Link
+  href={`/brokers/${broker.slug}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="rounded-[18px] border border-slate-200 bg-white p-1.5 shadow-sm"
+>
+  {getLogoNode(broker)}
+</Link>
 
                           <span className="absolute -right-1 -top-1 inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-[#2563eb] px-1.5 text-[10px] font-black text-white shadow-md">
                             {index + 1}
@@ -490,9 +495,14 @@ export default function BrokerFinder({ brokers }: Props) {
                         <div className="min-w-0 flex-1">
                           <div className="flex items-start justify-between gap-2">
                             <div className="min-w-0">
-                              <div className="truncate text-[18px] font-black leading-6 text-[#0f172a]">
-                                {broker.name}
-                              </div>
+                              <Link
+  href={`/brokers/${broker.slug}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="truncate text-[18px] font-black leading-6 text-[#0f172a] hover:text-[#2563eb]"
+>
+  {broker.name}
+</Link>
 
                               <div className="mt-1 inline-flex rounded-full bg-[#eff6ff] px-2.5 py-1 text-[10px] font-extrabold text-[#1d4ed8]">
                                 {recommendation}
@@ -601,9 +611,14 @@ export default function BrokerFinder({ brokers }: Props) {
                   <div className="mb-4 flex items-start justify-between gap-3">
                     <div className="flex min-w-0 items-start gap-4">
                       <div className="relative shrink-0">
-                        <div className="rounded-[22px] border border-slate-200 bg-white p-2 shadow-sm">
-                          {getLogoNode(broker)}
-                        </div>
+                        <Link
+  href={`/brokers/${broker.slug}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="rounded-[22px] border border-slate-200 bg-white p-2 shadow-sm transition hover:scale-[1.03]"
+>
+  {getLogoNode(broker)}
+</Link>
 
                         <span className="absolute -right-2 -top-2 inline-flex h-8 min-w-8 items-center justify-center rounded-full bg-[#2563eb] px-2 text-xs font-black text-white shadow-lg">
                           {index + 1}
@@ -612,9 +627,14 @@ export default function BrokerFinder({ brokers }: Props) {
 
                       <div className="min-w-0 pt-1">
                         <div className="flex flex-wrap items-center gap-2">
-                          <h3 className="truncate text-xl font-black text-[#0f172a]">
-                            {broker.name}
-                          </h3>
+                          <Link
+  href={`/brokers/${broker.slug}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="truncate text-xl font-black text-[#0f172a] transition hover:text-[#2563eb]"
+>
+  {broker.name}
+</Link>
 
                           <span
                             className={`rounded-full px-3 py-1 text-[11px] font-extrabold ${

@@ -1151,7 +1151,7 @@ const breadcrumbSchema = {
             <img
               src={broker.logo}
               alt={broker.name || "Broker logo"}
-              className="max-h-[80px] w-auto max-w-full object-contain md:max-h-[95px]"
+              className="max-h-[110px] w-auto max-w-[88%] object-contain"
             />
           ) : (
             <span className="text-sm text-slate-400">No logo</span>

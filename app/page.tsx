@@ -328,10 +328,10 @@ export default async function HomePage() {
         {/* DESKTOP ONLY */}
         <div className="hidden lg:block">
           <div className="relative mx-auto max-w-7xl px-6 pt-6 pb-10">
-            <div dir="ltr" className="grid items-center gap-8 xl:grid-cols-[340px_minmax(0,1fr)]">
+            <div dir="ltr" className="grid items-stretch gap-8 xl:grid-cols-[340px_minmax(0,1fr)]">
               {/* LEFT PANEL */}
               <div dir="rtl" className="relative">
-                <div className="overflow-hidden rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(15,23,42,0.96),rgba(10,18,32,0.94))] p-5 shadow-[0_25px_60px_rgba(2,8,23,0.45)] backdrop-blur-xl">
+                <div className="overflow-hidden rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(15,23,42,0.96),rgba(10,18,32,0.94))] p-5 shadow-[0_25px_60px_rgba(2,8,23,0.45)] backdrop-blur-xl h-full flex flex-col">
                   <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/60 to-transparent" />
                   <div className="absolute right-[-40px] top-[-40px] h-28 w-28 rounded-full bg-blue-500/10 blur-3xl" />
                   <div className="absolute left-[-30px] bottom-[-50px] h-24 w-24 rounded-full bg-cyan-400/10 blur-3xl" />
@@ -351,53 +351,62 @@ export default async function HomePage() {
                     </span>
                   </div>
 
-                  <div className="relative z-10 mt-4 space-y-2.5">
+                  <div className="relative z-10 mt-6 space-y-4 flex-1">
                     {heroBrokers.map((broker) => (
                       <div
                         key={broker.id}
-                        className="group rounded-[20px] border border-white/10 bg-white/[0.04] px-3 py-3 transition duration-200 hover:border-blue-400/30 hover:bg-white/[0.06]"
+                        className="group rounded-[20px] border border-white/10 bg-white/[0.04] px-4 py-5 transition duration-200 hover:border-blue-400/30 hover:bg-white/[0.06]"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white p-1 shadow-sm">
-  {broker.logo ? (
-    <img
-      src={broker.logo}
-      alt={broker.name}
-      className="h-9 w-9 object-contain"
-    />
-  ) : (
-    <span className="text-[10px] font-bold text-slate-400">
-      Logo
-    </span>
-  )}
+  <Link
+    href={`/brokers/${broker.slug}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white p-1 shadow-sm transition hover:scale-[1.03]"
+  >
+    {broker.logo ? (
+      <img
+        src={broker.logo}
+        alt={broker.name}
+        className="h-9 w-9 object-contain"
+      />
+    ) : (
+      <span className="text-[10px] font-bold text-slate-400">
+        Logo
+      </span>
+    )}
+  </Link>
+
+  <div className="min-w-0 flex-1">
+    <div className="flex items-center justify-between gap-3">
+      <div className="min-w-0">
+        <div className="flex items-center gap-2">
+          <Link
+            href={`/brokers/${broker.slug}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="truncate text-[18px] font-black text-white transition hover:text-blue-300"
+          >
+            {broker.name}
+          </Link>
+        </div>
+
+        <p className="mt-1 truncate text-[13px] font-medium text-slate-400">
+          {broker.subtitle}
+        </p>
+      </div>
+
+      <div className="shrink-0 text-left">
+        <div className="text-[11px] font-bold text-slate-400">
+          التقييم
+        </div>
+        <div className="mt-1 text-[22px] font-black leading-none text-white">
+          {broker.rating}
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-
-                          <div className="min-w-0 flex-1">
-                            <div className="flex items-center justify-between gap-3">
-                              <div className="min-w-0">
-                                <div className="flex items-center gap-2">
-                                  
-                                  <h3 className="truncate text-[18px] font-black text-white">
-                                    {broker.name}
-                                  </h3>
-                                </div>
-
-                                <p className="mt-1 truncate text-[13px] font-medium text-slate-400">
-                                  {broker.subtitle}
-                                </p>
-                              </div>
-
-                              <div className="shrink-0 text-left">
-                                <div className="text-[11px] font-bold text-slate-400">
-                                  التقييم
-                                </div>
-                                <div className="mt-1 text-[22px] font-black leading-none text-white">
-                                  {broker.rating}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
 
                         
                       </div>
@@ -430,7 +439,7 @@ export default async function HomePage() {
               <div dir="rtl" className="text-center xl:text-right">
                 <div className="mx-auto max-w-[760px] xl:mr-0 xl:ml-auto">
                   
-                  <h1 className="mt-0 text-[58px] font-black leading-[1.08] tracking-[-0.03em] text-white xl:text-[72px]">
+                  <h1 className="mt-0 text-[58px] font-black leading-[1.30] tracking-[-0.03em] text-white xl:text-[72px]">
   بروكر العرب
   <span className="mt-3 block bg-[linear-gradient(90deg,#93c5fd_0%,#60a5fa_25%,#3b82f6_58%,#93c5fd_100%)] bg-clip-text text-transparent">
     أفضل موقع لتقييم ومقارنة شركات التداول
