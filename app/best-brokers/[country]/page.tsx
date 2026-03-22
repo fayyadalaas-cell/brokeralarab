@@ -674,100 +674,297 @@ export default async function BestBrokersCountryPage({ params }: PageProps) {
                     </div>
                   </div>
 
-                  <div className="px-0 py-0 sm:px-6">
+                  <div className="px-0 py-0 sm:px-6 lg:px-6 lg:py-6">
   {/* نسخة الديسكتوب: تبقى كما هي */}
   <div className="hidden lg:block">
-    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
-      <ScorePill label="الأولوية" score={row.priority_score} />
-      <ScorePill label="العربية" score={row.arabic_support_score} />
-      <ScorePill label="الإسلامي" score={row.islamic_account_score} />
-      <ScorePill label="المدفوعات" score={row.payment_methods_score} />
-      <ScorePill label="المبتدئين" score={row.beginner_score} />
-      <ScorePill label="الثقة" score={row.trust_score} />
-    </div>
+  <div className="grid grid-cols-12 gap-5 items-stretch">
+    {/* المحتوى الرئيسي - يسار */}
+    <div className="col-span-8 h-full rounded-[28px] border border-slate-200 bg-white p-6">
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <div className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-[11px] font-black text-blue-700">
+            الوضع التنظيمي
+          </div>
 
-    <div className="mt-5 grid gap-4 xl:grid-cols-2">
-      <div className="rounded-[20px] border border-slate-200 bg-slate-50 p-3">
-        <div className="text-sm font-black text-slate-900">
-          التنظيم / الحضور الإقليمي
+          <h3 className="mt-4 text-[36px] leading-[1.12] font-black text-slate-950">
+            هل {broker.name} مناسب في {page.country_name_ar}؟
+          </h3>
+
+          <p className="mt-4 text-[16px] leading-8 text-slate-600">
+            {truncateText(
+              broker.intro ||
+                `${broker.name} يعد من الوسطاء المعروفين لدى شريحة من المتداولين، لكن القرار النهائي يعتمد على مستوى التنظيم، الحساب الإسلامي، طرق الإيداع والسحب، وسهولة الاستخدام داخل ${page.country_name_ar}.`,
+              260
+            )}
+          </p>
         </div>
-        <p className="mt-2 text-sm leading-6 text-slate-600 sm:leading-7">
-          {truncateText(
-            row.regional_license_note || broker.regulation || "لا توجد ملاحظة إضافية حاليًا.",
-            85
-          )}
-        </p>
+
+        <div className="shrink-0 rounded-[22px] border border-slate-200 bg-slate-50 px-4 py-4 text-center min-w-[110px]">
+          <div className="text-[12px] font-black text-slate-500">التقييم العام</div>
+          <div className="mt-2 text-3xl font-black text-slate-950">
+            {broker.rating ?? "—"}
+          </div>
+          <div className="mt-1 text-xs font-bold text-slate-500">من 5</div>
+        </div>
+      </div>    
+
+      {/* 4 بوكسات معلومات */}
+      <div className="mt-6 grid grid-cols-2 gap-4">
+        <div className="rounded-[20px] border border-blue-200 bg-white px-5 py-4">
+          <div className="text-[14px] font-black text-slate-900">
+            التنظيم / التراخيص
+          </div>
+          <p className="mt-2 text-sm leading-7 text-slate-600">
+            {truncateText(
+              row.regional_license_note || broker.regulation || "لا توجد تفاصيل إضافية حاليًا.",
+              105
+            )}
+          </p>
+        </div>
+
+        <div className="rounded-[20px] border border-blue-200 bg-white px-5 py-4">
+          <div className="text-[14px] font-black text-slate-900">
+            الحسابات المتاحة
+          </div>
+          <p className="mt-2 text-sm leading-7 text-slate-600">
+            {truncateText(
+              broker.account_types || row.islamic_account_note || "تختلف الحسابات المتاحة حسب نوع العميل والبلد.",
+              105
+            )}
+          </p>
+        </div>
+
+        <div className="rounded-[20px] border border-blue-200 bg-white px-5 py-4">
+          <div className="text-[14px] font-black text-slate-900">
+            طرق الإيداع والسحب
+          </div>
+          <p className="mt-2 text-sm leading-7 text-slate-600">
+            {truncateText(
+              row.payment_methods_note || "راجع صفحة الوسيط لمعرفة طرق التمويل والسحب المتاحة.",
+              105
+            )}
+          </p>
+        </div>
+
+        <div className="rounded-[20px] border border-blue-200 bg-white px-5 py-4">
+          <div className="text-[14px] font-black text-slate-900">
+            مناسب لأي نوع متداول؟
+          </div>
+          <p className="mt-2 text-sm leading-7 text-slate-600">
+            {truncateText(
+              broker.best_for || "مناسب للمتداولين الذين يبحثون عن توازن بين المنصة والثقة والخدمات.",
+              105
+            )}
+          </p>
+        </div>
       </div>
 
-      <div className="rounded-[20px] border border-slate-200 bg-slate-50 p-3">
-        <div className="text-sm font-black text-slate-900">
-          طرق الإيداع والسحب
+      {/* سطر تنبيهات مختصر بدل فراغ */}
+      <div className="mt-6">
+        <h4 className="text-[18px] font-black text-slate-950">
+          كما يجب الانتباه إلى:
+        </h4>
+
+        <div className="mt-4 grid grid-cols-2 gap-3">
+          <div className="rounded-[16px] border border-blue-200 bg-[#f8fbff] px-4 py-3 text-sm font-black text-slate-800">
+            مستوى السبريد والعمولات
+          </div>
+          <div className="rounded-[16px] border border-blue-200 bg-[#f8fbff] px-4 py-3 text-sm font-black text-slate-800">
+            سرعة الإيداع والسحب
+          </div>
+          <div className="rounded-[16px] border border-blue-200 bg-[#f8fbff] px-4 py-3 text-sm font-black text-slate-800">
+            نوع الحسابات المتاحة
+          </div>
+          <div className="rounded-[16px] border border-blue-200 bg-[#f8fbff] px-4 py-3 text-sm font-black text-slate-800">
+            قوة الدعم العربي
+          </div>
         </div>
-        <p className="mt-2 text-sm leading-6 text-slate-600 sm:leading-7">
-          {truncateText(
-            row.payment_methods_note || "راجع وسائل التمويل المتاحة داخل صفحة الوسيط.",
-            85
-          )}
-        </p>
       </div>
 
-      <div className="rounded-[20px] border border-slate-200 bg-slate-50 p-3">
-        <div className="text-sm font-black text-slate-900">
-          الحساب الإسلامي
-        </div>
-        <p className="mt-2 text-sm leading-6 text-slate-600 sm:leading-7">
-          {truncateText(
-            row.islamic_account_note || "الحساب الإسلامي متاح وفق الشروط الحالية للوسيط.",
-            85
-          )}
-        </p>
-      </div>
+      {/* مميزات وعيوب بشكل أقصر */}
+      <div className="mt-6 grid grid-cols-2 gap-4">
+        <div className="rounded-[22px] border border-slate-200 bg-slate-50 p-5">
+          <div className="text-sm font-black text-slate-900">
+            نقاط القوة
+          </div>
 
-      <div className="rounded-[20px] border border-slate-200 bg-slate-50 p-3">
-        <div className="text-sm font-black text-slate-900">
-          معلومات إضافية
-        </div>
-        <p className="mt-2 text-sm leading-6 text-slate-600 sm:leading-7">
-          {truncateText(
-            `${row.local_office_city ? `المكتب/الحضور المحلي: ${row.local_office_city}. ` : ""}${
-              row.local_license_name ? `الترخيص المحلي: ${row.local_license_name}. ` : ""
-            }${broker.best_for ? `مناسب لـ: ${broker.best_for}.` : ""}`,
-            90
-          )}
-        </p>
-      </div>
-    </div>
-
-    {(pros.length > 0 || cons.length > 0) ? (
-      <div className="mt-5 grid gap-4 lg:grid-cols-2">
-        {pros.length > 0 ? (
-          <div className="rounded-[24px] border border-emerald-200 bg-emerald-50/60 p-4">
-            <div className="text-sm font-black text-emerald-800">
-              نقاط قوة سريعة
-            </div>
-            <ul className="mt-3 space-y-1.5 text-sm leading-6 text-emerald-900 sm:leading-7">
-              {pros.map((item, i) => (
-                <li key={i}>• {item}</li>
+          {pros.length > 0 ? (
+            <ul className="mt-3 space-y-2 text-sm leading-7 text-slate-600">
+              {pros.slice(0, 4).map((item, i) => (
+                <li key={i} className="flex gap-2">
+                  <span className="mt-[8px] h-2 w-2 shrink-0 rounded-full bg-blue-600" />
+                  <span>{item}</span>
+                </li>
               ))}
             </ul>
-          </div>
-        ) : null}
+          ) : (
+            <p className="mt-3 text-sm leading-7 text-slate-600">
+              لا توجد مميزات إضافية مذكورة حاليًا.
+            </p>
+          )}
+        </div>
 
-        {cons.length > 0 ? (
-          <div className="rounded-[24px] border border-amber-200 bg-amber-50/70 p-4">
-            <div className="text-sm font-black text-amber-800">
-              نقاط يجب الانتباه لها
-            </div>
-            <ul className="mt-3 space-y-1.5 text-sm leading-6 text-amber-900 sm:leading-7">
-              {cons.map((item, i) => (
-                <li key={i}>• {item}</li>
+        <div className="rounded-[22px] border border-slate-200 bg-slate-50 p-5">
+          <div className="text-sm font-black text-slate-900">
+            نقاط يجب الانتباه لها
+          </div>
+
+          {cons.length > 0 ? (
+            <ul className="mt-3 space-y-2 text-sm leading-7 text-slate-600">
+              {cons.slice(0, 4).map((item, i) => (
+                <li key={i} className="flex gap-2">
+                  <span className="mt-[8px] h-2 w-2 shrink-0 rounded-full bg-blue-600" />
+                  <span>{item}</span>
+                </li>
               ))}
             </ul>
-          </div>
-        ) : null}
+          ) : (
+            <p className="mt-3 text-sm leading-7 text-slate-600">
+              لا توجد ملاحظات بارزة مذكورة حاليًا.
+            </p>
+          )}
+        </div>
       </div>
-    ) : null}
+    </div>
+
+    {/* العمود الجانبي - يمين */}
+    <aside className="col-span-4 h-full flex flex-col rounded-[28px] border border-slate-200 bg-[#f8fafc] p-5">
+      
+
+      <h4 className="mt-2 text-[26px] leading-[1.15] font-black text-slate-950">
+        {broker.name} في {page.country_name_ar}
+      </h4>
+
+      <p className="mt-4 text-[15px] leading-8 text-slate-600">
+        {truncateText(
+          row.regional_license_note ||
+            broker.regulation ||
+            `نراجع في هذه الصفحة وضع ${broker.name} ومدى ملاءمته للمتداولين في ${page.country_name_ar}.`,
+          170
+        )}
+      </p>
+
+      <div className="mt-5 space-y-3">
+        <div className="rounded-[18px] border border-blue-200 bg-white px-4 py-4">
+          <div className="text-[13px] font-black text-slate-900">
+            الجهة التنظيمية / الحضور الإقليمي
+          </div>
+          <div className="mt-1 text-sm leading-7 text-slate-600">
+            {truncateText(
+              row.regional_license_note || broker.regulation || "غير مذكور حاليًا.",
+              65
+            )}
+          </div>
+        </div>
+
+        <div className="rounded-[18px] border border-blue-200 bg-white px-4 py-4">
+          <div className="text-[13px] font-black text-slate-900">
+            الحساب الإسلامي
+          </div>
+          <div className="mt-1 text-sm leading-7 text-slate-600">
+            {truncateText(
+              row.islamic_account_note || "راجع شروط الحساب الإسلامي لدى الوسيط.",
+              65
+            )}
+          </div>
+        </div>
+
+        <div className="rounded-[18px] border border-blue-200 bg-white px-4 py-4">
+          <div className="text-[13px] font-black text-slate-900">
+            طرق الإيداع والسحب
+          </div>
+          <div className="mt-1 text-sm leading-7 text-slate-600">
+            {truncateText(
+              row.payment_methods_note || "تتوفر وسائل تمويل مختلفة بحسب الدولة ونوع الحساب.",
+              65
+            )}
+          </div>
+        </div>
+
+        <div className="rounded-[18px] border border-blue-200 bg-white px-4 py-4">
+          <div className="text-[13px] font-black text-slate-900">
+            مناسب لمن
+          </div>
+          <div className="mt-1 text-sm leading-7 text-slate-600">
+            {truncateText(
+              broker.best_for || `المتداولين الباحثين عن وسيط مناسب في ${page.country_name_ar}.`,
+              65
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* تعبئة الجزء السفلي بدل الفراغ */}
+      <div className="mt-5 grid grid-cols-2 gap-3">
+        <div className="rounded-[18px] border border-slate-200 bg-white px-4 py-3 text-center">
+          <div className="text-[11px] font-black text-slate-500">الإيداع</div>
+          <div className="mt-1 text-sm font-black text-slate-900">
+            {broker.min_deposit || "—"}
+          </div>
+        </div>
+
+        <div className="rounded-[18px] border border-slate-200 bg-white px-4 py-3 text-center">
+          <div className="text-[11px] font-black text-slate-500">الأولوية</div>
+          <div className="mt-1 text-sm font-black text-slate-900">
+            {row.priority_score ?? "—"}/5
+          </div>
+        </div>
+      </div>
+
+<div className="mt-3 grid grid-cols-2 gap-3">
+  <div className="rounded-[18px] border border-blue-200 bg-[#f8fbff] px-4 py-3 text-center">
+    <div className="text-[11px] font-black text-slate-500">العربية</div>
+    <div className="mt-1 text-base font-black text-slate-900">
+      {row.arabic_support_score ?? "—"}/5
+    </div>
   </div>
+
+  <div className="rounded-[18px] border border-blue-200 bg-[#f8fbff] px-4 py-3 text-center">
+    <div className="text-[11px] font-black text-slate-500">الإسلامي</div>
+    <div className="mt-1 text-base font-black text-slate-900">
+      {row.islamic_account_score ?? "—"}/5
+    </div>
+  </div>
+
+  <div className="rounded-[18px] border border-blue-200 bg-[#f8fbff] px-4 py-3 text-center">
+    <div className="text-[11px] font-black text-slate-500">المدفوعات</div>
+    <div className="mt-1 text-base font-black text-slate-900">
+      {row.payment_methods_score ?? "—"}/5
+    </div>
+  </div>
+
+  <div className="rounded-[18px] border border-blue-200 bg-[#f8fbff] px-4 py-3 text-center">
+    <div className="text-[11px] font-black text-slate-500">الثقة</div>
+    <div className="mt-1 text-base font-black text-slate-900">
+      {row.trust_score ?? "—"}/5
+    </div>
+  </div>
+</div>
+
+      <div className="mt-5 border-t border-slate-200 pt-5">
+        <div className="flex flex-col gap-3">
+          <Link
+            href={openUrl}
+            target={openUrl.startsWith("http") ? "_blank" : undefined}
+            rel={openUrl.startsWith("http") ? "nofollow sponsored noopener noreferrer" : undefined}
+            className="inline-flex items-center justify-center rounded-[18px] bg-blue-600 px-5 py-3.5 text-sm font-black text-white transition hover:bg-blue-700"
+          >
+            شاهد أفضل الشركات
+          </Link>
+
+          {broker.slug ? (
+            <Link
+              href={`/brokers/${broker.slug}`}
+              className="inline-flex items-center justify-center rounded-[18px] bg-blue-600 px-5 py-3.5 text-sm font-black text-white transition hover:bg-blue-700"
+            >
+              استعرض جميع التقييمات
+            </Link>
+          ) : null}
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
 
   {/* نسخة الموبايل: صف مختصر + تفاصيل قابلة للفتح */}
  <details className="group lg:hidden overflow-hidden rounded-none border-0 bg-white">
