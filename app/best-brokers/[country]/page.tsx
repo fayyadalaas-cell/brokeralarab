@@ -4,6 +4,7 @@ import Link from "next/link";
 import Script from "next/script";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import RegulationSection from "./RegulationSection";
 
 type PageProps = {
   params: Promise<{ country: string }>;
@@ -55,6 +56,9 @@ type CountryPageContent = {
   seo_intro: string | null;
   seo_conclusion: string | null;
   custom_disclaimer: string | null;
+  sidebar_title: string | null;
+  sidebar_text: string | null;
+  sidebar_points: string | null;
 };
 
 type BrokerCountryFitRow = {
@@ -329,6 +333,14 @@ function StarRating({ value }: { value: number }) {
   );
 }
 
+function splitDoublePipe(text: string | null | undefined): string[] {
+  if (!text) return [];
+  return text
+    .split("||")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 export default async function BestBrokersCountryPage({ params }: PageProps) {
   const { country } = await params;
 
@@ -339,8 +351,20 @@ export default async function BestBrokersCountryPage({ params }: PageProps) {
   const featuredBroker = brokers[0];
   const flagSrc = `/flags/${page.country_code.toLowerCase()}.svg`;
 
+  const regulationParts = splitDoublePipe(
+    page.regulation_text
+      ?.split("\n")
+      .find((line) => line.includes("||")) ?? ""
+  );
+
+  const sidebarParts = splitDoublePipe(page.sidebar_points ?? "");
+
+  const hasSidebar =
+    Boolean(page.sidebar_title) ||
+    Boolean(page.sidebar_text) ||
+    sidebarParts.length > 0;
+
   const jsonLd = {
-    
     "@context": "https://schema.org",
     "@type": "CollectionPage",
     name: page.page_title || `أفضل شركات التداول في ${page.country_name_ar}`,
@@ -1173,6 +1197,14 @@ export default async function BestBrokersCountryPage({ params }: PageProps) {
     ))}
   </div>
 </section>
+
+<RegulationSection
+  regulationTitle={page.regulation_title}
+  regulationText={page.regulation_text}
+  sidebarTitle={page.sidebar_title}
+  sidebarText={page.sidebar_text}
+  sidebarPoints={page.sidebar_points}
+/>
 
 {/* =========================
    Local Fit Section
