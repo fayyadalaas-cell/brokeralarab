@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import CountryBrokerRedirect from "@/app/components/CountryBrokerRedirect";
 
 export const metadata: Metadata = {
-  title: "أفضل شركات التداول في 2026 | بروكر العرب",
+  title: "أفضل شركات التداول في 2026 | قائمة الوسطاء",
   description:
     "اكتشف أفضل شركات التداول في 2026 عبر مراجعات عربية احترافية، مقارنة التراخيص والرسوم والمنصات والحساب الإسلامي، مع أداة ذكية تساعدك على اختيار الوسيط المناسب.",
 };
