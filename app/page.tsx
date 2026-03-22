@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     canonical: "https://brokeralarab.com",
   },
   openGraph: {
-    title: "أفضل شركات التداول في 2026 | بروكر العرب",
+  title: "بروكر العرب | تقييم ومقارنة شركات التداول",
     description:
       "منصة عربية لمراجعة وتقييم ومقارنة شركات التداول مع أداة اختيار ذكية للمتداول العربي.",
     url: "https://brokeralarab.com",
@@ -431,11 +431,11 @@ export default async function HomePage() {
                 <div className="mx-auto max-w-[760px] xl:mr-0 xl:ml-auto">
                   
                   <h1 className="mt-0 text-[58px] font-black leading-[1.08] tracking-[-0.03em] text-white xl:text-[72px]">
-                    قارن الوسطاء بثقة
-                    <span className="mt-3 block bg-[linear-gradient(90deg,#93c5fd_0%,#60a5fa_25%,#3b82f6_58%,#93c5fd_100%)] bg-clip-text text-transparent">
-                      واختر الأنسب لتجربتك
-                    </span>
-                  </h1>
+  بروكر العرب
+  <span className="mt-3 block bg-[linear-gradient(90deg,#93c5fd_0%,#60a5fa_25%,#3b82f6_58%,#93c5fd_100%)] bg-clip-text text-transparent">
+    أفضل موقع لتقييم ومقارنة شركات التداول
+  </span>
+</h1>
 
                   <p className="mx-auto mt-6 max-w-[760px] text-[19px] leading-9 text-slate-300 xl:mr-0 xl:ml-auto">
                     راجع التراخيص والرسوم والمنصات وأنواع الحسابات في مكان واحد
