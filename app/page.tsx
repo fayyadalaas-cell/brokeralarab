@@ -474,12 +474,12 @@ export default async function HomePage() {
           <div className="relative mx-auto max-w-7xl px-4 pt-2 pb-6 sm:px-6">
             <div className="grid items-center gap-10">
               <div className="order-1">
-                <h1 className="mt-3 max-w-4xl text-[30px] font-black leading-[1.2] tracking-[-0.03em] text-white sm:text-[46px]">
-                  قارن الوسطاء بثقة
-                  <span className="mt-2 block bg-[linear-gradient(90deg,#60a5fa_0%,#3b82f6_45%,#93c5fd_100%)] bg-clip-text text-transparent">
-                    واختر الأنسب لتجربتك
-                  </span>
-                </h1>
+                <h1 className="mt-3 max-w-4xl text-[30px] font-black leading-[1.3] tracking-[-0.02em] text-white sm:text-[46px]">
+  بروكر العرب
+  <span className="mt-2 block bg-[linear-gradient(90deg,#60a5fa_0%,#3b82f6_45%,#93c5fd_100%)] bg-clip-text text-transparent">
+    أفضل موقع لتقييم ومقارنة شركات التداول
+  </span>
+</h1>
 
                 <p className="mt-5 max-w-2xl text-[15px] leading-8 text-slate-300 sm:text-[17px] sm:leading-8">
                   راجع التراخيص والرسوم والمنصات وأنواع الحسابات في مكان واحد، ثم
