@@ -234,9 +234,9 @@ function BrokerCard({
           {index + 1}
         </span>
 
-        <span className="inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-extrabold text-emerald-700">
-          موصى بها
-        </span>
+       <span className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-[11px] font-extrabold text-blue-700">
+  موصى بها
+</span>
       </div>
 
       <div dir="ltr" className="flex items-center justify-between gap-4">
