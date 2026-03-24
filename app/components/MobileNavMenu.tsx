@@ -23,11 +23,20 @@ type CountryMenuItem = {
   flag: string;
 };
 
+type LearnTradingMenuItem = {
+  href: string;
+  title: string;
+  description: string;
+  image: string;
+  isFeatured?: boolean;
+};
+
 type MobileNavMenuProps = {
   topBrokers: BrokerMenuItem[];
   countryMenuItems: CountryMenuItem[];
   featuredCategories: MenuLink[];
   featuredComparisons: MenuLink[];
+  learnTradingMenuItems: LearnTradingMenuItem[];
 };
 
 const brokerLogoMap: Record<string, string> = {
@@ -124,7 +133,9 @@ export default function MobileNavMenu({
   countryMenuItems,
   featuredCategories,
   featuredComparisons,
+  learnTradingMenuItems,
 }: MobileNavMenuProps) {
+
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [openSection, setOpenSection] = useState<string | null>(null);
@@ -341,6 +352,39 @@ export default function MobileNavMenu({
                       </div>
                     </div>
                   </Section>
+
+               <Section
+  title="تعلم التداول"
+  open={openSection === "learn"}
+  onToggle={() => toggleSection("learn")}
+>
+  <div className="space-y-3">
+    {learnTradingMenuItems.slice(0, 1).map((item) => (
+      <Link
+        key={item.href}
+        href={item.href}
+        onClick={closeMenu}
+        className="flex items-center gap-3 rounded-[20px] border border-slate-200 bg-slate-50 p-3 transition hover:bg-white"
+      >
+        <div className="relative h-[58px] w-[58px] shrink-0 overflow-hidden rounded-[14px] border border-slate-200 bg-white">
+          <Image
+            src={item.image || "/articles/how-to-start-trading-from-zero.png"}
+            alt={item.title}
+            fill
+            className="object-cover"
+          />
+        </div>
+
+        <div className="min-w-0 flex-1">
+          <h3 className="line-clamp-2 text-[15px] font-black leading-7 text-slate-950">
+            {item.title}
+          </h3>
+        </div>
+      </Link>
+    ))}
+  </div>
+</Section>
+
                   <Link
   href="/about"
   onClick={closeMenu}

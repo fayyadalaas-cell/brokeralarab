@@ -49,6 +49,14 @@ type CountryMenuItem = {
   flag: string;
 };
 
+type LearnTradingMenuItem = {
+  href: string;
+  title: string;
+  description: string;
+  image: string;
+  isFeatured?: boolean;
+};
+
 const footerMainLinks = [
   { href: "/", label: "الرئيسية" },
   { href: "/brokers", label: "تقييمات الوسطاء" },
@@ -146,6 +154,16 @@ const featuredComparisons: MenuLink[] = [
   { href: "/compare/xm-vs-pepperstone", label: "XM vs Pepperstone" },
   { href: "/compare/alpari-vs-xs", label: "Alpari vs XS" },
   { href: "/compare/equiti-vs-vantage", label: "Equiti vs Vantage" },
+];
+
+const learnTradingMenuItems: LearnTradingMenuItem[] = [
+  {
+    href: "/learn-trading/how-to-start-trading-from-zero",
+    title: "كيف تبدأ التداول من الصفر خطوة بخطوة",
+    description: "دليل عملي للمبتدئ لفهم الأساسيات واختيار الوسيط المناسب.",
+    image: "/articles/how-to-start-trading-from-zero.png",
+    isFeatured: true,
+  },
 ];
 
 function getBrokerLogo(slug: string): string {
@@ -420,6 +438,54 @@ export default async function RootLayout({
                   </div>
                 </div>
 
+{/* LEARN TRADING */}
+<div className="group relative">
+  <Link
+    href="/learn-trading/how-to-start-trading-from-zero"
+    className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[15px] font-extrabold text-slate-700 transition hover:bg-slate-100"
+  >
+    تعلم التداول
+    <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
+      ▼
+    </span>
+  </Link>
+
+  <div className="invisible absolute right-0 top-full z-50 mt-3 w-[320px] translate-y-2 rounded-[24px] border border-slate-200 bg-white p-4 opacity-0 shadow-[0_24px_60px_rgba(15,23,42,0.12)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+    <div className="mb-3 flex items-center justify-between">
+      
+
+     
+    </div>
+
+   {learnTradingMenuItems.slice(0, 1).map((item) => {
+  return (
+    <Link
+      key={item.href}
+      href={item.href}
+      className="flex items-center gap-3 rounded-[18px] border border-slate-200 bg-slate-50 p-3 transition hover:border-blue-200 hover:bg-blue-50"
+    >
+      {/* صورة */}
+      <div className="relative h-[58px] w-[58px] shrink-0 overflow-hidden rounded-[14px] border border-slate-200 bg-white">
+        <Image
+          src={item.image || "/articles/how-to-start-trading-from-zero.png"}
+          alt={item.title}
+          fill
+          className="object-contain p-1.5"
+        />
+      </div>
+
+      {/* عنوان */}
+      <div className="min-w-0 flex-1">
+        <h3 className="line-clamp-2 text-[16px] font-black leading-7 text-slate-950">
+          {item.title}
+        </h3>
+      </div>
+    </Link>
+  );
+})}
+  </div>
+</div>
+
                 <Link
                   href="/about"
                   className="rounded-full px-4 py-2.5 text-[15px] font-extrabold text-slate-700 transition hover:bg-slate-100"
@@ -428,12 +494,13 @@ export default async function RootLayout({
                 </Link>
               </nav>
 
-                            <MobileNavMenu
-                topBrokers={topBrokers}
-                countryMenuItems={countryMenuItems}
-                featuredCategories={featuredCategories}
-                featuredComparisons={featuredComparisons}
-              />
+                          <MobileNavMenu
+  topBrokers={topBrokers}
+  countryMenuItems={countryMenuItems}
+  featuredCategories={featuredCategories}
+  featuredComparisons={featuredComparisons}
+  learnTradingMenuItems={learnTradingMenuItems}
+/>
             </div>
           </div>
         </header>
