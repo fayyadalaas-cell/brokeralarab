@@ -259,21 +259,21 @@ function RankingRow({
       <div className="flex-1" />
 
       {/* info */}
-      <div className="relative z-10 flex items-center gap-6 text-[13px] font-semibold text-slate-600">
-        <div>
-          <span className="text-slate-500">أقل إيداع:</span>{" "}
-          <span className="font-black text-slate-950">
-            {formatDeposit(broker.min_deposit)}
-          </span>
-        </div>
+      <div className="relative z-10 mr-3 flex items-center gap-6 text-[13px] font-semibold text-slate-600">
+  <div className="whitespace-nowrap text-right">
+    <span className="text-slate-500">أقل إيداع:</span>{" "}
+    <span className="font-black text-slate-950">
+      {formatDeposit(broker.min_deposit)}
+    </span>
+  </div>
 
-        <div>
-          <span className="text-slate-500">الرافعة:</span>{" "}
-          <span className="font-black text-slate-950">
-            {formatLeverage(broker.max_leverage)}
-          </span>
-        </div>
-      </div>
+  <div className="whitespace-nowrap text-right">
+    <span className="text-slate-500">الرافعة:</span>{" "}
+    <span className="font-black text-slate-950">
+      {formatLeverage(broker.max_leverage)}
+    </span>
+  </div>
+</div>
 
       {/* arrow */}
       <div className="relative z-10 text-blue-600 group-hover:text-blue-800">
