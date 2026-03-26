@@ -276,8 +276,19 @@ function RankingRow({
 </div>
 
       {/* arrow */}
-    <div className="relative z-10 shrink-0 pr-1 text-lg font-bold text-blue-600 group-hover:text-blue-800">
-  ←
+     <div className="relative z-10 shrink-0 pr-1 text-blue-600 group-hover:text-blue-800" aria-hidden="true">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 20 20"
+    fill="currentColor"
+    className="h-4 w-4"
+  >
+    <path
+      fillRule="evenodd"
+      d="M12.79 15.79a.75.75 0 0 1-1.06 0L6.47 10.53a.75.75 0 0 1 0-1.06l5.26-5.26a.75.75 0 1 1 1.06 1.06L8.06 10l4.73 4.73a.75.75 0 0 1 0 1.06Z"
+      clipRule="evenodd"
+    />
+  </svg>
 </div>
     </Link>
   );
@@ -321,21 +332,22 @@ function MobileRankingRow({
 </div>
 
         {/* Left side: blue arrow */}
-       <div className="relative z-10 shrink-0 pr-1 text-blue-600 group-hover:text-blue-800">
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 20 20"
-    fill="currentColor"
-    className="h-4 w-4"
-    aria-hidden="true"
-  >
-    <path
-      fillRule="evenodd"
-      d="M12.79 15.79a.75.75 0 0 1-1.06 0L6.47 10.53a.75.75 0 0 1 0-1.06l5.26-5.26a.75.75 0 1 1 1.06 1.06L8.06 10l4.73 4.73a.75.75 0 0 1 0 1.06Z"
-      clipRule="evenodd"
-    />
-  </svg>
-</div>
+        <div className="flex shrink-0 items-center">
+          <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-blue-50 text-blue-600 transition group-hover:bg-blue-100 group-hover:text-blue-700">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M12.78 4.97a.75.75 0 010 1.06L8.81 10l3.97 3.97a.75.75 0 11-1.06 1.06l-4.5-4.5a.75.75 0 010-1.06l4.5-4.5a.75.75 0 011.06 0z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </span>
+        </div>
       </div>
     </Link>
   );
