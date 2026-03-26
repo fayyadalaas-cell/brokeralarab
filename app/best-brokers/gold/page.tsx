@@ -745,10 +745,9 @@ export default async function BestGoldTradingPlatformsPage() {
 </div>
 
 {/* Desktop */}
-<div className="hidden md:grid md:grid-cols-2 md:gap-x-10 md:px-2">
-
+<div className="hidden md:flex md:flex-row-reverse md:gap-10 md:px-2">
   {/* اليمين: 1 - 5 */}
-  <div className="md:col-start-2 space-y-4 border-r border-slate-200 pr-5">
+  <div className="w-1/2 space-y-4 border-l border-slate-200 pl-5">
     {brokers.slice(0, 5).map((broker, i) => (
       <RankingRow
         key={broker.id}
@@ -759,7 +758,7 @@ export default async function BestGoldTradingPlatformsPage() {
   </div>
 
   {/* اليسار: 6 - 10 */}
-  <div className="md:col-start-1 space-y-4 pl-5">
+  <div className="w-1/2 space-y-4 pr-5">
     {brokers.slice(5, 10).map((broker, i) => (
       <RankingRow
         key={broker.id}
@@ -768,7 +767,6 @@ export default async function BestGoldTradingPlatformsPage() {
       />
     ))}
   </div>
-
 </div>
         </>
       )}
