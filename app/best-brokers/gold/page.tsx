@@ -497,11 +497,11 @@ export default async function BestGoldTradingPlatformsPage() {
     <div className="px-5 py-6 md:px-12 md:py-8">
       <div className="mx-auto max-w-4xl text-center">
   <h1
-    className="text-4xl font-black leading-tight tracking-tight text-slate-950 md:text-7xl lg:text-8xl"
-    style={{ lineHeight: 1.05 }}
-  >
-    أفضل منصات تداول الذهب في 2026
-  </h1>
+  className="text-4xl font-black tracking-tight text-slate-950 md:text-5xl lg:text-6xl"
+  style={{ lineHeight: 1.15 }}
+>
+  أفضل منصات تداول الذهب في 2026
+</h1>
 
  <p className="mx-auto mt-4 max-w-2xl text-[16px] leading-9 text-slate-700 md:text-[18px]">
   اكتشف أفضل منصات تداول الذهب المناسبة للمتداول العربي، مع مقارنة واضحة بين
