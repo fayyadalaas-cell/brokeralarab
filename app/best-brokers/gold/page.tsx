@@ -232,7 +232,7 @@ function RankingRow({
       href={`/brokers/${broker.slug}`}
       target="_blank"
       rel="noopener noreferrer"
-      className="group relative flex flex-row-reverse items-center gap-5 overflow-hidden rounded-[22px] border border-blue-200 bg-white px-5 py-5 shadow-[0_4px_14px_rgba(15,23,42,0.04)] transition hover:-translate-y-[1px] hover:border-blue-300 hover:shadow-[0_8px_20px_rgba(59,130,246,0.10)] focus:outline-none focus:ring-0 active:outline-none"
+      className="group relative flex items-center gap-5 overflow-hidden rounded-[22px] border border-blue-200 bg-white px-5 py-5 shadow-[0_4px_14px_rgba(15,23,42,0.04)] transition hover:-translate-y-[1px] hover:border-blue-300 hover:shadow-[0_8px_20px_rgba(59,130,246,0.10)] focus:outline-none focus:ring-0 active:outline-none"
     >
       {/* right accent */}
       <div className="absolute inset-y-0 right-0 w-[4px] rounded-r-[22px] bg-blue-200" />
@@ -745,10 +745,10 @@ export default async function BestGoldTradingPlatformsPage() {
 </div>
 
 {/* Desktop */}
-<div className="hidden md:grid md:grid-cols-2 md:gap-x-10 md:px-2" dir="rtl">
+<div className="hidden md:grid md:grid-cols-2 md:gap-x-10 md:px-2">
 
-  {/* العمود الأول (يظهر يمين): 1 - 5 */}
-  <div className="space-y-4 border-l border-slate-200 pl-5">
+  {/* اليمين: 1 - 5 */}
+  <div className="md:col-start-2 space-y-4 border-r border-slate-200 pr-5">
     {brokers.slice(0, 5).map((broker, i) => (
       <RankingRow
         key={broker.id}
@@ -758,8 +758,8 @@ export default async function BestGoldTradingPlatformsPage() {
     ))}
   </div>
 
-  {/* العمود الثاني (يظهر يسار): 6 - 10 */}
-  <div className="space-y-4 pr-5">
+  {/* اليسار: 6 - 10 */}
+  <div className="md:col-start-1 space-y-4 pl-5">
     {brokers.slice(5, 10).map((broker, i) => (
       <RankingRow
         key={broker.id}
@@ -840,23 +840,22 @@ export default async function BestGoldTradingPlatformsPage() {
             { y: 2011, h: 1921, l: 1319, e: "قمة تاريخية" },
             { y: 2010, h: 1421, l: 1058, e: "أزمة ديون" },
           ].map((r, i, arr) => {
-            const avg = Math.round((r.h + r.l) / 2);
-            const sar = Math.round(avg * 3.75);
-            const prev = i > 0 ? Math.round((arr[i - 1].h + arr[i - 1].l) / 2) : null;
+           const avg = Math.round((r.h + r.l) / 2);
+const sar = Math.round(avg * 3.75);
+const prevHigh = i < arr.length - 1 ? arr[i + 1].h : null;
 
-            let trend = "—";
-            let color = "bg-slate-100 text-slate-600";
+let trend = "—";
+let color = "bg-slate-100 text-slate-600";
 
-            if (prev !== null) {
-              if (avg > prev) {
-                trend = "⬆";
-                color = "bg-emerald-50 text-emerald-700";
-              } else if (avg < prev) {
-                trend = "⬇";
-                color = "bg-rose-50 text-rose-700";
-              }
-            }
-
+if (prevHigh !== null) {
+  if (r.h > prevHigh) {
+    trend = "⬆";
+    color = "bg-emerald-50 text-emerald-700";
+  } else if (r.h < prevHigh) {
+    trend = "⬇";
+    color = "bg-rose-50 text-rose-700";
+  }
+}
             return (
               <tr
                 key={String(r.y)}
@@ -882,14 +881,27 @@ export default async function BestGoldTradingPlatformsPage() {
       </table>
 
       <details className="border-t border-slate-200 bg-white">
-        <summary className="cursor-pointer list-none select-none px-6 py-5 text-center">
-          <span className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-slate-50 px-5 py-2.5 text-sm font-black text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700">
-            عرض باقي السنوات
-          </span>
-        </summary>
+  <summary className="cursor-pointer list-none select-none px-6 py-5 text-center">
+    <span className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-slate-50 px-5 py-2.5 text-sm font-black text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700">
+      عرض باقي السنوات
+    </span>
+  </summary>
 
-        <table className="min-w-full text-center" dir="rtl">
-          <tbody>
+  <div className="overflow-x-auto border-t border-slate-200">
+    <table className="min-w-full text-center" dir="rtl">
+    <thead className="bg-slate-50">
+      <tr>
+        <th className="px-4 py-4 font-black text-slate-700">السنة / الشهر</th>
+        <th className="px-4 py-4 font-black text-slate-700">أعلى</th>
+        <th className="px-4 py-4 font-black text-slate-700">أدنى</th>
+        <th className="px-4 py-4 font-black text-slate-700">المتوسط</th>
+        <th className="px-4 py-4 font-black text-slate-700">SAR</th>
+        <th className="px-4 py-4 font-black text-slate-700">الاتجاه</th>
+        <th className="px-4 py-4 font-black text-slate-700">الحدث</th>
+      </tr>
+    </thead>
+
+    <tbody>
             {[
               { y: 2009, h: 1226, l: 810, e: "ملاذ آمن" },
               { y: 2008, h: 1011, l: 681, e: "أزمة مالية" },
@@ -925,22 +937,24 @@ export default async function BestGoldTradingPlatformsPage() {
               { y: 1980, h: 850, l: 481, e: "التضخم" },
             ].map((r, i, arr) => {
               const avg = Math.round((r.h + r.l) / 2);
-              const sar = Math.round(avg * 3.75);
-              const prev =
-                i === 0
-                  ? Math.round((1421 + 1058) / 2)
-                  : Math.round((arr[i - 1].h + arr[i - 1].l) / 2);
+const sar = Math.round(avg * 3.75);
 
-              let trend = "—";
-              let color = "bg-slate-100 text-slate-600";
+// نقارن الهاي مع السنة الأحدث مباشرة
+// 2009 تقارن مع 2010، وبعدها كل سنة مع اللي فوقها في الجدول
+const prevHigh = i < arr.length - 1 ? arr[i + 1].h : null;
 
-              if (avg > prev) {
-                trend = "⬆";
-                color = "bg-emerald-50 text-emerald-700";
-              } else if (avg < prev) {
-                trend = "⬇";
-                color = "bg-rose-50 text-rose-700";
-              }
+let trend = "—";
+let color = "bg-slate-100 text-slate-600";
+
+if (prevHigh !== null) {
+  if (r.h > prevHigh) {
+    trend = "⬆";
+    color = "bg-emerald-50 text-emerald-700";
+  } else if (r.h < prevHigh) {
+    trend = "⬇";
+    color = "bg-rose-50 text-rose-700";
+  }
+}
 
               return (
                 <tr
@@ -962,8 +976,9 @@ export default async function BestGoldTradingPlatformsPage() {
               );
             })}
           </tbody>
-        </table>
-      </details>
+                </table>
+      </div>
+    </details>
     </div>
 
     {/* Mobile */}
