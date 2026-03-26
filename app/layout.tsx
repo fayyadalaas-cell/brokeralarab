@@ -144,7 +144,7 @@ const countryMenuItems: CountryMenuItem[] = [
 const featuredCategories: MenuLink[] = [
   { href: "/best-brokers", label: "أفضل الوسطاء في 2026" },
   { href: "/lowest-spread-brokers", label: "شركات التداول الأقل سبريد" },
-  { href: "/best-brokers", label: "أفضل الوسطاء بحساب إسلامي" },
+  { href: "/best-brokers/gold", label: "أفضل منصات تداول الذهب" },
   { href: "/compare", label: "أفضل المقارنات بين الوسطاء" },
 ];
 
