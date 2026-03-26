@@ -232,6 +232,7 @@ function RankingRow({
       href={`/brokers/${broker.slug}`}
       target="_blank"
       rel="noopener noreferrer"
+      dir="rtl"
       className="group relative flex items-center gap-5 overflow-hidden rounded-[22px] border border-blue-200 bg-white px-5 py-5 shadow-[0_4px_14px_rgba(15,23,42,0.04)] transition hover:-translate-y-[1px] hover:border-blue-300 hover:shadow-[0_8px_20px_rgba(59,130,246,0.10)] focus:outline-none focus:ring-0 active:outline-none"
     >
       {/* right accent */}
@@ -745,25 +746,25 @@ export default async function BestGoldTradingPlatformsPage() {
 </div>
 
 {/* Desktop */}
-<div className="hidden md:flex md:flex-row-reverse md:gap-10 md:px-2">
-  {/* اليمين: 1 - 5 */}
-  <div className="w-1/2 space-y-4 border-l border-slate-200 pl-5">
-    {brokers.slice(0, 5).map((broker, i) => (
-      <RankingRow
-        key={broker.id}
-        broker={broker}
-        rank={i + 1}
-      />
-    ))}
-  </div>
-
+<div className="hidden md:grid md:grid-cols-2 md:items-start md:gap-10 md:px-2" dir="ltr">
   {/* اليسار: 6 - 10 */}
-  <div className="w-1/2 space-y-4 pr-5">
+  <div className="space-y-4 border-r border-slate-200 pr-5">
     {brokers.slice(5, 10).map((broker, i) => (
       <RankingRow
         key={broker.id}
         broker={broker}
         rank={i + 6}
+      />
+    ))}
+  </div>
+
+  {/* اليمين: 1 - 5 */}
+  <div className="space-y-4 pl-5">
+    {brokers.slice(0, 5).map((broker, i) => (
+      <RankingRow
+        key={broker.id}
+        broker={broker}
+        rank={i + 1}
       />
     ))}
   </div>
