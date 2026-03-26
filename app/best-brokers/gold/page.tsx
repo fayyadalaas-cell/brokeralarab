@@ -276,8 +276,8 @@ function RankingRow({
 </div>
 
       {/* arrow */}
-     <div className="relative z-10 shrink-0 pr-1 text-lg font-bold text-blue-600 group-hover:text-blue-800">
-  ‹
+    <div className="relative z-10 shrink-0 pr-1 text-lg font-bold text-blue-600 group-hover:text-blue-800">
+  ←
 </div>
     </Link>
   );
