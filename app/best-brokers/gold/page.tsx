@@ -256,7 +256,7 @@ function RankingRow({
       </div>
 
       {/* spacer */}
-      <div className="flex-1" />
+      <div className="flex-1 min-w-[20px]" />
 
       {/* info */}
      <div className="relative z-10 shrink-0 mr-2 flex items-center gap-4 text-[12px] font-semibold text-slate-600">
@@ -276,7 +276,7 @@ function RankingRow({
 </div>
 
       {/* arrow */}
-      <div className="relative z-10 shrink-0 text-blue-600 group-hover:text-blue-800">
+     <div className="relative z-10 shrink-0 pr-1 text-lg font-bold text-blue-600 group-hover:text-blue-800">
   ‹
 </div>
     </Link>
@@ -746,7 +746,7 @@ export default async function BestGoldTradingPlatformsPage() {
 </div>
 
 {/* Desktop */}
-<div className="hidden md:grid md:grid-cols-2 md:items-start md:gap-10 md:px-2" dir="ltr">
+<div className="hidden md:grid md:grid-cols-2 md:items-start md:gap-5 md:px-2" dir="ltr">
   {/* اليسار: 6 - 10 */}
   <div className="space-y-4 border-r border-slate-200 pr-5">
     {brokers.slice(5, 10).map((broker, i) => (
