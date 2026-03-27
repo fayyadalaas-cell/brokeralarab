@@ -939,7 +939,7 @@ export default async function HomePage() {
   التراخيص، الحسابات، ووسائل الإيداع والسحب.
 </p>
 
-            <p className="hidden md:block mt-3 max-w-[820px] text-[15px] leading-8 text-slate-600">
+            <p className="hidden md:block mt-3 max-w-[950px] text-[15px] leading-8 text-slate-600">
   استعرض أفضل شركات التداول حسب الدولة، وقارن بين الوسطاء من حيث التراخيص،
   الحساب الإسلامي، وسائل الإيداع والسحب، وسهولة فتح الحساب. يساعدك هذا
   القسم على الوصول بسرعة إلى شركات تداول مناسبة لبلدك واحتياجاتك الفعلية.
