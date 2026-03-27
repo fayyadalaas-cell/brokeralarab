@@ -523,13 +523,13 @@ export default async function HomePage() {
       {/* FINDER */}
 <section
   id="finder"
-  className="scroll-mt-24 mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-5 lg:px-8 lg:py-6"
+  className="scroll-mt-24 mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8 lg:py-4"
 >
   <BrokerFinder brokers={brokers} />
 </section>
 
      {/* HOW WE RATE - PREMIUM STEPS */}
-<section className="mx-auto max-w-7xl px-4 pt-3 pb-2 sm:px-6 sm:pt-1 sm:pb-3 lg:px-8">
+<section className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] shadow-sm sm:rounded-[32px]">
     {(() => {
       const ratingItems = [
@@ -682,239 +682,268 @@ export default async function HomePage() {
 </section>
 
 {/* TOP COMPARISONS */}
-<section className="mx-auto max-w-7xl px-4 pt-3 pb-2 sm:px-6 sm:pt-1 sm:pb-3 lg:px-8">
-  <div className="mb-4 flex flex-col gap-3 sm:mb-5 md:flex-row md:items-end md:justify-between">
-    <div className="text-center md:text-right">
-      <h2 className="text-[28px] font-black leading-[1.15] text-[#0f172a] sm:text-[34px] lg:text-[42px]">
-        أشهر مقارنات شركات التداول
-      </h2>
+<section className="bg-[#f4f7fb] py-3 sm:py-4">
+  <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm sm:rounded-[32px]">
+      {/* HEADER */}
+      <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-4 py-5 sm:px-7 sm:py-7">
+        <div className="flex flex-col gap-4 text-center lg:flex-row lg:items-start lg:justify-between lg:text-right">
+          <div className="max-w-none text-center lg:text-right">
+            <h2 className="text-[28px] font-black leading-[1.15] text-[#0f172a] sm:text-[34px] lg:text-[42px]">
+              أشهر مقارنات شركات التداول
+            </h2>
 
-      <p className="mt-3 max-w-3xl text-[14px] leading-7 text-slate-600 sm:text-[15px] sm:leading-8">
-        استعرض أكثر المقارنات قراءة بين الوسطاء، واكتشف الفروقات في
-        التراخيص والمنصات والرسوم قبل اختيار شركة التداول المناسبة.
-      </p>
-    </div>
+          {/* Mobile */}
+<p className="mt-3 max-w-[900px] text-[14px] leading-7 text-slate-600 md:hidden">
+  استعرض أكثر المقارنات قراءة بين الوسطاء، واكتشف الفروقات في
+  التراخيص والمنصات والرسوم قبل اختيار شركة التداول المناسبة.
+</p>
 
-    <div className="flex justify-center md:justify-start">
-      <Link
-        href="/compare"
-        className="inline-flex h-12 items-center justify-center rounded-2xl border border-slate-300 bg-white px-5 text-sm font-extrabold text-slate-800 shadow-sm transition hover:bg-slate-50"
-      >
-        تصفح جميع المقارنات
-      </Link>
-    </div>
-  </div>
-
-  {/* MOBILE */}
-  <div className="grid gap-3 md:hidden">
-    {topComparisons.map((cmp, index) => (
-      <article
-        key={cmp.id}
-        className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm"
-      >
-        <div className="h-1 bg-gradient-to-r from-[#2563eb] via-[#60a5fa] to-transparent" />
-
-        <div className="p-3.5">
-          <div className="mb-3 flex items-center justify-between gap-2">
-            <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-bold text-slate-500">
-              #{index + 1} الأكثر مشاهدة
-            </span>
-
-            <span className="text-[11px] font-bold text-slate-400">
-              {cmp.views_count ?? 0} مشاهدة
-            </span>
+{/* Desktop */}
+<p className="hidden md:block mt-3 max-w-[950px] text-[15px] leading-8 text-slate-600">
+  استعرض أشهر مقارنات شركات التداول بين الوسطاء، وتعرّف على الفروقات في
+  التراخيص، أنواع الحسابات، الرسوم، والمنصات المتاحة مثل MT4 وMT5. يساعدك
+  هذا القسم على فهم الاختلافات العملية بين شركات التداول واختيار الوسيط
+  الأنسب لك وفق أسلوبك في التداول واحتياجاتك الفعلية.
+</p>
           </div>
 
-          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
-            <div className="flex flex-col items-center text-center">
+          <div className="flex justify-center md:hidden">
   <Link
-    href={`/brokers/${cmp.broker_1?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_1?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_1?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_1?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
-    className="flex h-14 w-14 items-center justify-center rounded-[16px] border border-slate-200 bg-slate-50 p-2 transition hover:border-blue-200 hover:bg-blue-50"
+    href="/compare"
+    className="inline-flex h-11 items-center justify-center rounded-2xl border border-slate-300 bg-white px-5 text-[13px] font-extrabold text-[#0f172a] shadow-sm transition hover:border-[#93c5fd] hover:bg-[#eff6ff]"
   >
-    {cmp.broker_1?.logo ? (
-      <img
-        src={cmp.broker_1.logo}
-        alt={cmp.broker_1.name || "Broker 1"}
-        className="h-full w-full object-contain"
-      />
-    ) : (
-      <span className="text-[9px] text-slate-400">Logo</span>
-    )}
+    تصفح جميع المقارنات
   </Link>
-
-  <Link
-    href={`/brokers/${cmp.broker_1?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_1?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_1?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_1?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
-    className="mt-2 text-[15px] font-black leading-none text-[#0f172a] transition hover:text-[#2563eb]"
-  >
-    {cmp.broker_1?.name || "Broker 1"}
-  </Link>
-
-  <span className="mt-1 text-[11px] font-bold text-[#f59e0b]">
-    ★ {cmp.broker_1?.rating?.toFixed(1) ?? "—"}
-  </span>
 </div>
 
-            <div className="flex items-center justify-center">
-  <div className="flex h-9 w-9 items-center justify-center rounded-full border border-blue-200 bg-blue-50 text-[11px] font-extrabold text-blue-600 shadow-sm">
-    VS
-  </div>
-</div>
-            <div className="flex flex-col items-center text-center">
-  <div className="flex h-14 w-14 items-center justify-center rounded-[16px] border border-slate-200 bg-slate-50 p-2">
-    {cmp.broker_2?.logo ? (
-      <img
-        src={cmp.broker_2.logo}
-        alt={cmp.broker_2.name || "Broker 2"}
-        className="h-full w-full object-contain"
-      />
-    ) : (
-      <span className="text-[9px] text-slate-400">Logo</span>
-    )}
-  </div>
-
-  <span className="mt-2 text-[15px] font-black leading-none text-[#0f172a]">
-    {cmp.broker_2?.name || "Broker 2"}
-  </span>
-
-  <span className="mt-1 text-[11px] font-bold text-[#f59e0b]">
-    ★ {cmp.broker_2?.rating?.toFixed(1) ?? "—"}
-  </span>
-</div>
-          </div>
-
-         
-
-          <div className="mt-4">
-            <Link
-  href={`/compare/${cmp.slug}`}
-  className="mt-3 flex w-full items-center justify-center rounded-xl bg-[#2563eb] py-2.5 text-[14px] font-bold text-white hover:bg-[#1d4ed8]"
->
-  {cmp.title || `مقارنة ${cmp.broker_1?.name} مع ${cmp.broker_2?.name}`}
-</Link>
-          </div>
-        </div>
-      </article>
-    ))}
-  </div>
-
-  {/* DESKTOP / TABLET */}
-  <div className="hidden gap-5 md:grid md:grid-cols-2 xl:grid-cols-3">
-    {topComparisons.map((cmp, index) => (
-      <article
-        key={cmp.id}
-        className="group overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(15,23,42,0.07)]"
-      >
-        <div className="h-1 bg-gradient-to-r from-[#2563eb] via-[#60a5fa] to-transparent" />
-
-        <div className="p-5 lg:p-6">
-          <div className="mb-4 flex items-center justify-between gap-3">
-            <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-bold text-slate-500">
-              #{index + 1} الأكثر مشاهدة
-            </span>
-
-            <span className="text-[12px] font-bold text-slate-400">
-              {cmp.views_count ?? 0} مشاهدة
-            </span>
-          </div>
-
-          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 lg:gap-4">
-            <div className="flex flex-col items-center text-center">
+<div className="hidden md:flex shrink-0 justify-center lg:justify-start">
   <Link
-    href={`/brokers/${cmp.broker_1?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_1?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_1?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_1?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
-    className="flex h-20 w-20 items-center justify-center rounded-[22px] border border-slate-200 bg-slate-50 p-3 transition hover:border-blue-200 hover:bg-blue-50 lg:h-24 lg:w-24"
+    href="/compare"
+    className="inline-flex h-12 items-center justify-center rounded-2xl border border-slate-300 bg-white px-5 text-sm font-extrabold text-[#0f172a] shadow-sm transition hover:border-[#93c5fd] hover:bg-[#eff6ff]"
   >
-    {cmp.broker_1?.logo ? (
-      <img
-        src={cmp.broker_1.logo}
-        alt={cmp.broker_1.name || "Broker 1"}
-        className="h-full w-full object-contain"
-      />
-    ) : (
-      <span className="text-[10px] text-slate-400">Logo</span>
-    )}
-  </Link>
-
-  <Link
-    href={`/brokers/${cmp.broker_1?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_1?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_1?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_1?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
-    className="mt-3 text-[17px] font-black leading-none text-[#0f172a] transition hover:text-[#2563eb] lg:text-[20px]"
-  >
-    {cmp.broker_1?.name || "Broker 1"}
-  </Link>
-
-  <span className="mt-2 text-[12px] font-bold text-[#f59e0b] lg:text-[13px]">
-    ★ {cmp.broker_1?.rating?.toFixed(1) ?? "—"}
-  </span>
-</div>
-
-           <div className="flex items-center justify-center">
-  <div className="flex h-11 w-11 items-center justify-center rounded-full border border-blue-200 bg-blue-50 text-[13px] font-extrabold text-blue-600 shadow-sm">
-    VS
-  </div>
-</div>
-            <div className="flex flex-col items-center text-center">
-  <Link
-    href={`/brokers/${cmp.broker_2?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_2?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_2?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_2?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
-    className="flex h-20 w-20 items-center justify-center rounded-[22px] border border-slate-200 bg-slate-50 p-3 transition hover:border-blue-200 hover:bg-blue-50 lg:h-24 lg:w-24"
-  >
-    {cmp.broker_2?.logo ? (
-      <img
-        src={cmp.broker_2.logo}
-        alt={cmp.broker_2.name || "Broker 2"}
-        className="h-full w-full object-contain"
-      />
-    ) : (
-      <span className="text-[10px] text-slate-400">Logo</span>
-    )}
-  </Link>
-
-  <Link
-    href={`/brokers/${cmp.broker_2?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_2?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_2?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_2?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
-    className="mt-3 text-[17px] font-black leading-none text-[#0f172a] transition hover:text-[#2563eb] lg:text-[20px]"
-  >
-    {cmp.broker_2?.name || "Broker 2"}
-  </Link>
-
-  <span className="mt-2 text-[12px] font-bold text-[#f59e0b] lg:text-[13px]">
-    ★ {cmp.broker_2?.rating?.toFixed(1) ?? "—"}
-  </span>
-</div>
-          </div>
-
-
-          <div className="mt-5">
-  <Link
-  href={`/compare/${cmp.slug}`}
-  target="_blank"
-  rel="noopener noreferrer"
-  className="inline-flex w-full min-h-[48px] items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-[15px] font-extrabold text-white transition hover:bg-[#1d4ed8] lg:min-h-[52px] lg:text-base"
->
-    {cmp.title || `مقارنة ${cmp.broker_1?.name} مع ${cmp.broker_2?.name}`}
+    تصفح جميع المقارنات
   </Link>
 </div>
         </div>
-      </article>
-    ))}
+      </div>
+
+      {/* MOBILE */}
+      <div className="grid gap-3 p-4 md:hidden">
+        {topComparisons.map((cmp, index) => (
+          <article
+            key={cmp.id}
+            className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm"
+          >
+            <div className="h-1 bg-gradient-to-r from-[#2563eb] via-[#60a5fa] to-transparent" />
+
+            <div className="p-3.5">
+              <div className="mb-3 flex items-center justify-between gap-2">
+                <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-bold text-slate-500">
+                  #{index + 1} الأكثر مشاهدة
+                </span>
+
+                <span className="text-[11px] font-bold text-slate-400">
+                  {cmp.views_count ?? 0} مشاهدة
+                </span>
+              </div>
+
+              <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+                <div className="flex flex-col items-center text-center">
+                  <Link
+                    href={`/brokers/${cmp.broker_1?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_1?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_1?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_1?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
+                    className="flex h-14 w-14 items-center justify-center rounded-[16px] border border-slate-200 bg-slate-50 p-2 transition hover:border-blue-200 hover:bg-blue-50"
+                  >
+                    {cmp.broker_1?.logo ? (
+                      <img
+                        src={cmp.broker_1.logo}
+                        alt={cmp.broker_1.name || "Broker 1"}
+                        className="h-full w-full object-contain"
+                      />
+                    ) : (
+                      <span className="text-[9px] text-slate-400">Logo</span>
+                    )}
+                  </Link>
+
+                  <Link
+                    href={`/brokers/${cmp.broker_1?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_1?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_1?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_1?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
+                    className="mt-2 text-[15px] font-black leading-none text-[#0f172a] transition hover:text-[#2563eb]"
+                  >
+                    {cmp.broker_1?.name || "Broker 1"}
+                  </Link>
+
+                  <span className="mt-1 text-[11px] font-bold text-[#f59e0b]">
+                    ★ {cmp.broker_1?.rating?.toFixed(1) ?? "—"}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-center">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full border border-blue-200 bg-blue-50 text-[11px] font-extrabold text-blue-600 shadow-sm">
+                    VS
+                  </div>
+                </div>
+
+                <div className="flex flex-col items-center text-center">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-[16px] border border-slate-200 bg-slate-50 p-2">
+                    {cmp.broker_2?.logo ? (
+                      <img
+                        src={cmp.broker_2.logo}
+                        alt={cmp.broker_2.name || "Broker 2"}
+                        className="h-full w-full object-contain"
+                      />
+                    ) : (
+                      <span className="text-[9px] text-slate-400">Logo</span>
+                    )}
+                  </div>
+
+                  <span className="mt-2 text-[15px] font-black leading-none text-[#0f172a]">
+                    {cmp.broker_2?.name || "Broker 2"}
+                  </span>
+
+                  <span className="mt-1 text-[11px] font-bold text-[#f59e0b]">
+                    ★ {cmp.broker_2?.rating?.toFixed(1) ?? "—"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <Link
+                  href={`/compare/${cmp.slug}`}
+                  className="mt-3 flex w-full items-center justify-center rounded-xl bg-[#2563eb] py-2.5 text-[14px] font-bold text-white hover:bg-[#1d4ed8]"
+                >
+                  {`مقارنة ${cmp.broker_1?.name} مع ${cmp.broker_2?.name}`}
+                </Link>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      {/* DESKTOP / TABLET */}
+      <div className="hidden gap-5 p-4 md:grid md:grid-cols-2 md:p-5 xl:grid-cols-3">
+        {topComparisons.map((cmp, index) => (
+          <article
+            key={cmp.id}
+            className="group overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(15,23,42,0.07)]"
+          >
+            <div className="h-1 bg-gradient-to-r from-[#2563eb] via-[#60a5fa] to-transparent" />
+
+            <div className="p-5 lg:p-6">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-bold text-slate-500">
+                  #{index + 1} الأكثر مشاهدة
+                </span>
+
+                <span className="text-[12px] font-bold text-slate-400">
+                  {cmp.views_count ?? 0} مشاهدة
+                </span>
+              </div>
+
+              <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 lg:gap-4">
+                <div className="flex flex-col items-center text-center">
+                  <Link
+                    href={`/brokers/${cmp.broker_1?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_1?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_1?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_1?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
+                    className="flex h-20 w-20 items-center justify-center rounded-[22px] border border-slate-200 bg-slate-50 p-3 transition hover:border-blue-200 hover:bg-blue-50 lg:h-24 lg:w-24"
+                  >
+                    {cmp.broker_1?.logo ? (
+                      <img
+                        src={cmp.broker_1.logo}
+                        alt={cmp.broker_1.name || "Broker 1"}
+                        className="h-full w-full object-contain"
+                      />
+                    ) : (
+                      <span className="text-[10px] text-slate-400">Logo</span>
+                    )}
+                  </Link>
+
+                  <Link
+                    href={`/brokers/${cmp.broker_1?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_1?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_1?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_1?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
+                    className="mt-3 text-[17px] font-black leading-none text-[#0f172a] transition hover:text-[#2563eb] lg:text-[20px]"
+                  >
+                    {cmp.broker_1?.name || "Broker 1"}
+                  </Link>
+
+                  <span className="mt-2 text-[12px] font-bold text-[#f59e0b] lg:text-[13px]">
+                    ★ {cmp.broker_1?.rating?.toFixed(1) ?? "—"}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-center">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-full border border-blue-200 bg-blue-50 text-[13px] font-extrabold text-blue-600 shadow-sm">
+                    VS
+                  </div>
+                </div>
+
+                <div className="flex flex-col items-center text-center">
+                  <Link
+                    href={`/brokers/${cmp.broker_2?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_2?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_2?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_2?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
+                    className="flex h-20 w-20 items-center justify-center rounded-[22px] border border-slate-200 bg-slate-50 p-3 transition hover:border-blue-200 hover:bg-blue-50 lg:h-24 lg:w-24"
+                  >
+                    {cmp.broker_2?.logo ? (
+                      <img
+                        src={cmp.broker_2.logo}
+                        alt={cmp.broker_2.name || "Broker 2"}
+                        className="h-full w-full object-contain"
+                      />
+                    ) : (
+                      <span className="text-[10px] text-slate-400">Logo</span>
+                    )}
+                  </Link>
+
+                  <Link
+                    href={`/brokers/${cmp.broker_2?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_2?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_2?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_2?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
+                    className="mt-3 text-[17px] font-black leading-none text-[#0f172a] transition hover:text-[#2563eb] lg:text-[20px]"
+                  >
+                    {cmp.broker_2?.name || "Broker 2"}
+                  </Link>
+
+                  <span className="mt-2 text-[12px] font-bold text-[#f59e0b] lg:text-[13px]">
+                    ★ {cmp.broker_2?.rating?.toFixed(1) ?? "—"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="mt-5">
+                <Link
+                  href={`/compare/${cmp.slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex w-full min-h-[48px] items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-[15px] font-extrabold text-white transition hover:bg-[#1d4ed8] lg:min-h-[52px] lg:text-base"
+                >
+                  {`مقارنة ${cmp.broker_1?.name} مع ${cmp.broker_2?.name}`}
+                </Link>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
   </div>
 </section>
 
 {/* COUNTRIES DIRECTORY - FINAL */}
-<section className="bg-[#f4f7fb] pt-4 pb-6 sm:pt-5 sm:pb-8">
+<section className="bg-[#f4f7fb] py-3 sm:py-4">
   <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm sm:rounded-[32px]">
       {/* HEADER */}
       <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-4 py-5 sm:px-7 sm:py-7">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div className="max-w-4xl text-center lg:text-right">
+          <div className="max-w-none text-center lg:max-w-[920px] lg:text-right">
             <h2 className="text-[28px] font-black leading-[1.1] tracking-[-0.02em] text-[#0f172a] sm:text-[42px]">
               أفضل شركات التداول
               <span className="text-[#2563eb]"> حسب الدولة</span>
             </h2>
+             
+             <p className="mt-2 text-[14px] leading-7 text-slate-600 md:hidden">
+  اختر أفضل شركات التداول حسب بلدك، وتعرّف على الوسطاء المناسبين من حيث
+  التراخيص، الحسابات، ووسائل الإيداع والسحب.
+</p>
 
-            <p className="hidden md:block mx-auto mt-3 max-w-3xl text-[14px] leading-7 text-slate-600 sm:text-[15px] sm:leading-8 lg:mx-0">
-              تختلف التراخيص ووسائل الإيداع وتوفر الحساب الإسلامي وسهولة فتح
-              الحساب من دولة إلى أخرى، لذلك أنشأنا صفحات مخصصة تساعدك على
-              الوصول بسرعة إلى أفضل الوسطاء المناسبين لبلدك.
-            </p>
+            <p className="hidden md:block mt-3 max-w-[820px] text-[15px] leading-8 text-slate-600">
+  استعرض أفضل شركات التداول حسب الدولة، وقارن بين الوسطاء من حيث التراخيص،
+  الحساب الإسلامي، وسائل الإيداع والسحب، وسهولة فتح الحساب. يساعدك هذا
+  القسم على الوصول بسرعة إلى شركات تداول مناسبة لبلدك واحتياجاتك الفعلية.
+</p>
           </div>
 
           <div className="hidden md:flex shrink-0 justify-center lg:justify-start">
@@ -1075,7 +1104,7 @@ export default async function HomePage() {
 </section>
 
 {/* LOWEST SPREAD HOME SECTION */}
-<section className="mx-auto max-w-7xl px-4 pt-3 pb-2 sm:px-6 sm:pt-1 sm:pb-3 lg:px-8">
+<section className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_14px_34px_rgba(15,23,42,0.05)]">
     <div className="relative px-4 py-6 sm:px-6 sm:py-7 lg:px-8 lg:py-8">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.05),transparent_28%)]" />
@@ -1217,7 +1246,7 @@ export default async function HomePage() {
 </section>
 
       {/* HOW TO CHOOSE A BROKER - PREMIUM SEO SECTION */}
-<section className="mx-auto max-w-7xl px-4 pt-3 pb-2 sm:px-6 sm:pt-1 sm:pb-3 lg:px-8">
+<section className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm sm:rounded-[32px]">
     {/* HEADER */}
     <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-5 sm:px-8 sm:py-7">
