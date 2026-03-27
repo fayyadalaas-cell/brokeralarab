@@ -131,7 +131,7 @@ function getLogoNode(broker: Broker) {
       <img
         src={broker.logo}
         alt={broker.name || "Broker logo"}
-        className="h-14 w-14 rounded-2xl object-contain sm:h-16 sm:w-16"
+        className="block h-14 w-14 rounded-2xl object-contain sm:h-16 sm:w-16"
       />
     );
   }
@@ -482,7 +482,7 @@ export default function BrokerFinder({ brokers }: Props) {
   href={`/brokers/${broker.slug}`}
   target="_blank"
   rel="noopener noreferrer"
-  className="rounded-[18px] border border-slate-200 bg-white p-1.5 shadow-sm"
+  className="flex items-center justify-center overflow-hidden rounded-[18px] border border-slate-200 bg-white p-1.5 shadow-sm"
 >
   {getLogoNode(broker)}
 </Link>
@@ -516,18 +516,14 @@ export default function BrokerFinder({ brokers }: Props) {
                         </div>
                       </div>
 
-                      <div className="flex shrink-0 flex-col items-end gap-2">
-                        <div className="rounded-2xl border border-[#dbeafe] bg-[#f8fbff] px-3 py-2 text-center">
-                          <div className="text-base font-black leading-none text-[#1d4ed8]">
-                            {broker.rating?.toFixed(1) ?? "—"}
-                          </div>
-                          <div className="mt-1 text-[9px] font-bold text-slate-500">من 5</div>
-                        </div>
-
-                        <span className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 bg-white text-sm font-black text-slate-500">
-                          {isOpen ? "⌃" : "⌄"}
-                        </span>
-                      </div>
+                     <div className="flex shrink-0 items-start">
+  <div className="rounded-2xl border border-[#dbeafe] bg-[#f8fbff] px-3 py-2 text-center">
+    <div className="text-base font-black leading-none text-[#1d4ed8]">
+      {broker.rating?.toFixed(1) ?? "—"}
+    </div>
+    <div className="mt-1 text-[9px] font-bold text-slate-500">من 5</div>
+  </div>
+</div>
                     </div>
                   </button>
 
@@ -563,7 +559,7 @@ export default function BrokerFinder({ brokers }: Props) {
                           href={`/brokers/${broker.slug}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-3 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
+                          className="inline-flex w-full items-center justify-center rounded-[14px] bg-[#2563eb] px-4 py-3 text-[14px] font-extrabold text-white shadow-sm transition hover:bg-[#1d4ed8]"
                         >
                           اقرأ التقييم
                         </Link>
@@ -572,9 +568,9 @@ export default function BrokerFinder({ brokers }: Props) {
                           href={openAccountHref}
                           target="_blank"
                           rel="noopener noreferrer sponsored"
-                          className="inline-flex items-center justify-center rounded-2xl bg-[#2563eb] px-3 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
+                          className="inline-flex w-full items-center justify-center rounded-[14px] bg-[#2563eb] px-4 py-3 text-[14px] font-extrabold text-white shadow-sm transition hover:bg-[#1d4ed8]"
                         >
-                          فتح حساب حقيقي
+                          فتح حساب
                         </Link>
                       </div>
                     </div>
@@ -615,7 +611,7 @@ export default function BrokerFinder({ brokers }: Props) {
   href={`/brokers/${broker.slug}`}
   target="_blank"
   rel="noopener noreferrer"
-  className="rounded-[22px] border border-slate-200 bg-white p-2 shadow-sm transition hover:scale-[1.03]"
+  className="flex items-center justify-center overflow-hidden rounded-[22px] border border-slate-200 bg-white p-2 shadow-sm transition hover:scale-[1.03]"
 >
   {getLogoNode(broker)}
 </Link>
@@ -695,7 +691,7 @@ export default function BrokerFinder({ brokers }: Props) {
                       href={`/brokers/${broker.slug}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
+                      className="inline-flex w-full items-center justify-center rounded-[14px] bg-[#2563eb] px-4 py-3 text-[14px] font-extrabold text-white shadow-sm transition hover:bg-[#1d4ed8]"
                     >
                       اقرأ التقييم
                     </Link>
