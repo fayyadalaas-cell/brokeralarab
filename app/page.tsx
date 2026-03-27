@@ -4,9 +4,9 @@ import { createClient } from "@/lib/supabase/server";
 import BrokerFinder from "@/app/components/BrokerFinder";
 
 export const metadata: Metadata = {
-  title: "بروكر العرب | تقييم ومقارنة شركات التداول",
+  title: "أفضل شركات التداول وتقييم الوسطاء | بروكر العرب",
   description:
-    "منصة عربية لمراجعة وتقييم ومقارنة شركات التداول، مع أدلة تفصيلية ومقارنات وأداة تساعدك على اختيار الوسيط المناسب.",
+    "اكتشف أفضل شركات التداول من خلال تقييم شامل ومقارنة بين الوسطاء، مع تحليل التراخيص، الرسوم، والمنصات لمساعدتك في اختيار الوسيط المناسب بثقة.",
   keywords: [
     "بروكر العرب",
     "تقييم شركات التداول",
@@ -22,15 +22,15 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://brokeralarab.com",
   },
-  openGraph: {
-  title: "بروكر العرب | تقييم ومقارنة شركات التداول",
-    description:
-      "منصة عربية لمراجعة وتقييم ومقارنة شركات التداول مع أداة اختيار ذكية للمتداول العربي.",
-    url: "https://brokeralarab.com",
-    siteName: "بروكر العرب",
-    type: "website",
-    locale: "ar_AR",
-  },
+openGraph: {
+  title: "أفضل شركات التداول وتقييم الوسطاء | بروكر العرب",
+  description:
+    "اكتشف أفضل شركات التداول من خلال تقييم شامل ومقارنة بين الوسطاء، مع تحليل التراخيص، الرسوم، والمنصات لمساعدتك في اختيار الوسيط المناسب بثقة.",
+  url: "https://brokeralarab.com",
+  siteName: "بروكر العرب",
+  type: "website",
+  locale: "ar_AR",
+},
 };
 
 type Broker = {
@@ -439,10 +439,10 @@ export default async function HomePage() {
               <div dir="rtl" className="text-center xl:text-right">
                 <div className="mx-auto max-w-[760px] xl:mr-0 xl:ml-auto">
                   
-                  <h1 className="mt-0 text-[58px] font-black leading-[1.30] tracking-[-0.03em] text-white xl:text-[72px]">
-  بروكر العرب
+                 <h1 className="mt-0 text-[58px] font-black leading-[1.30] tracking-[-0.03em] text-white xl:text-[72px]">
+  أفضل شركات التداول
   <span className="mt-3 block bg-[linear-gradient(90deg,#93c5fd_0%,#60a5fa_25%,#3b82f6_58%,#93c5fd_100%)] bg-clip-text text-transparent">
-    أفضل موقع لتقييم ومقارنة شركات التداول
+    تقييم ومقارنة وسطاء التداول
   </span>
 </h1>
 
@@ -484,9 +484,9 @@ export default async function HomePage() {
             <div className="grid items-center gap-10">
               <div className="order-1">
                 <h1 className="mt-3 max-w-4xl text-[30px] font-black leading-[1.3] tracking-[-0.02em] text-white sm:text-[46px]">
-  بروكر العرب
+  أفضل شركات التداول
   <span className="mt-2 block bg-[linear-gradient(90deg,#60a5fa_0%,#3b82f6_45%,#93c5fd_100%)] bg-clip-text text-transparent">
-    أفضل موقع لتقييم ومقارنة شركات التداول
+    تقييم ومقارنة وسطاء التداول
   </span>
 </h1>
 
@@ -939,7 +939,7 @@ export default async function HomePage() {
   التراخيص، الحسابات، ووسائل الإيداع والسحب.
 </p>
 
-            <p className="hidden md:block mt-3 max-w-[950px] text-[15px] leading-8 text-slate-600">
+            <p className="hidden md:block mt-3 max-w-[820px] text-[15px] leading-8 text-slate-600">
   استعرض أفضل شركات التداول حسب الدولة، وقارن بين الوسطاء من حيث التراخيص،
   الحساب الإسلامي، وسائل الإيداع والسحب، وسهولة فتح الحساب. يساعدك هذا
   القسم على الوصول بسرعة إلى شركات تداول مناسبة لبلدك واحتياجاتك الفعلية.
@@ -1246,7 +1246,7 @@ export default async function HomePage() {
 </section>
 
       {/* HOW TO CHOOSE A BROKER - PREMIUM SEO SECTION */}
-<section className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
+<section className="mx-auto max-w-7xl px-4 pt-3 pb-2 sm:px-6 sm:pt-1 sm:pb-3 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm sm:rounded-[32px]">
     {/* HEADER */}
     <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-5 sm:px-8 sm:py-7">

@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     template: "%s | بروكر العرب",
   },
   description:
-    "بروكر العرب منصة عربية متخصصة في مراجعات ومقارنات شركات التداول لمساعدة المتداول العربي على اختيار الوسيط المناسب.",
+  "بروكر العرب يقدم تقييمات ومقارنات شاملة لأفضل شركات التداول، مع تحليل التراخيص، الرسوم، والمنصات لمساعدة المتداول العربي على اختيار الوسيط المناسب بثقة.",
   metadataBase: new URL("https://brokeralarab.com"),
   verification: {
     google: "eivw8RsaxU2SPjyhov7RFqS8gdAM0VTN8YsmxQncXm4",
