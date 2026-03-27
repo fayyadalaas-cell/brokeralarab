@@ -625,60 +625,56 @@ export default async function HomePage() {
           </div>
 
           {/* MOBILE / TABLET */}
-          <div className="lg:hidden">
-            <div className="border-b border-slate-200 px-4 py-5 sm:px-6">
-              
+<div className="lg:hidden">
+  <div className="border-b border-slate-200 px-4 py-4 sm:px-6 sm:py-5">
+    <div className="flex flex-col items-center text-center sm:items-start sm:text-right">
+      <h2 className="text-[28px] font-black leading-[1.15] text-[#0f172a] sm:text-[28px]">
+        كيف نقيّم شركات التداول؟
+      </h2>
 
-              <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                  <h2 className="text-[24px] font-black leading-[1.15] text-[#0f172a] sm:text-[30px]">
-                    كيف نقيّم شركات التداول؟
-                  </h2>
+      <p className="mt-2 max-w-2xl text-[13px] font-medium leading-6 text-slate-700 sm:text-[14px] sm:leading-7">
+        نراجع كل وسيط بناءً على عوامل عملية تؤثر فعلًا على تجربة
+        المتداول العربي.
+      </p>
 
-                  <p className="mt-2 max-w-2xl text-[13px] leading-6 text-slate-600 sm:text-[14px]">
-                    نراجع كل وسيط بناءً على عوامل عملية تؤثر فعلًا على تجربة
-                    المتداول العربي.
-                  </p>
-                </div>
+      <div className="mt-3">
+        <Link
+          href="/brokers"
+          className="inline-flex h-10 items-center justify-center rounded-2xl bg-[#2563eb] px-4 text-[12px] font-extrabold text-white shadow-[0_10px_24px_rgba(37,99,235,0.20)] transition hover:bg-[#1d4ed8]"
+        >
+          جميع التقييمات
+        </Link>
+      </div>
+    </div>
+  </div>
 
-               <div className="mt-4 flex justify-center sm:mt-0">
-  <Link
-    href="/brokers"
-    className="inline-flex h-10 items-center justify-center rounded-2xl bg-[#2563eb] px-4 text-[12px] font-extrabold text-white shadow-[0_12px_28px_rgba(37,99,235,0.22)] transition hover:bg-[#1d4ed8]"
-  >
-    جميع التقييمات
-  </Link>
-</div>
-              </div>
-            </div>
+  <div className="p-4 sm:p-5">
+    <div className="grid grid-cols-2 gap-3">
+      {ratingItems.map((item) => (
+        <div
+          key={item.num}
+          className="relative overflow-hidden rounded-[18px] border border-slate-200 bg-white px-3 py-3 shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
+        >
+          <div className="absolute right-0 top-0 h-1 w-full bg-[linear-gradient(90deg,#60a5fa_0%,#2563eb_100%)] opacity-80" />
 
-            <div className="p-4 sm:p-5">
-              <div className="grid grid-cols-2 gap-3">
-                {ratingItems.map((item) => (
-                  <div
-                    key={item.num}
-                    className="relative overflow-hidden rounded-[18px] border border-slate-200 bg-white px-3 py-3.5 shadow-sm"
-                  >
-                    <div className="absolute right-0 top-0 h-1 w-full bg-[linear-gradient(90deg,#60a5fa_0%,#2563eb_100%)] opacity-75" />
+          <div className="flex items-start gap-2">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#2563eb] text-[10px] font-black text-white">
+              {item.num}
+            </span>
 
-                    <div className="flex items-center gap-2">
-  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#2563eb] text-[10px] font-black text-white">
-    {item.num}
-  </span>
-
-  <h3 className="text-[13px] font-black leading-5 text-[#0f172a]">
-    {item.title}
-  </h3>
-</div>
-
-                    <p className="mt-1.5 text-[11px] leading-5 text-slate-600">
-                      {item.desc}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <h3 className="text-[13px] font-black leading-5 text-[#0f172a]">
+              {item.title}
+            </h3>
           </div>
+
+          <p className="mt-2 text-[11px] leading-5 text-slate-700">
+            {item.desc}
+          </p>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
         </>
       );
     })()}
@@ -909,7 +905,7 @@ export default async function HomePage() {
       <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-4 py-5 sm:px-7 sm:py-7">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-4xl text-center lg:text-right">
-            <h2 className="text-[30px] font-black leading-[1.1] tracking-[-0.02em] text-[#0f172a] sm:text-[42px]">
+            <h2 className="text-[28px] font-black leading-[1.1] tracking-[-0.02em] text-[#0f172a] sm:text-[42px]">
               أفضل شركات التداول
               <span className="text-[#2563eb]"> حسب الدولة</span>
             </h2>
@@ -934,64 +930,64 @@ export default async function HomePage() {
         </div>
       </div>
 
-      {/* MOBILE */}
-      <div className="p-3 md:hidden">
-        <div className="space-y-2">
-          {countryPages.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={`أفضل شركات التداول في ${item.badge}`}
-              className="block rounded-[16px] border border-slate-200 bg-white px-3 py-2 shadow-sm transition hover:border-[#bfdbfe] hover:bg-[#f8fbff]"
-            >
-              <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm overflow-hidden">
-                  <img
-                    src={item.flag}
-                    alt={item.badge}
-                    className="h-7 w-7 rounded-full object-cover"
-                  />
-                </div>
-
-                <div className="min-w-0 flex-1">
-                  <h3 className="truncate text-[18px] font-black leading-6 text-[#0f172a]">
-                    {item.badge}
-                  </h3>
-                </div>
-
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#bfdbfe] bg-[#eff6ff] text-[18px] font-black text-[#2563eb] shadow-sm">
-                  ←
-                </div>
-              </div>
-            </Link>
-          ))}
-
-          <Link
-            href="/best-brokers"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block rounded-[16px] border border-dashed border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-3 py-2 shadow-sm transition hover:bg-[#eff6ff]"
-          >
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#bfdbfe] bg-white shadow-sm">
-                🌍
-              </div>
-
-              <div className="min-w-0 flex-1">
-                <h3 className="text-[18px] font-black text-[#0f172a]">
-                  كل الدول الأخرى
-                </h3>
-              </div>
-
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#bfdbfe] bg-white text-[18px] font-black text-[#2563eb] shadow-sm">
-                ←
-              </div>
+     {/* MOBILE */}
+<div className="p-3 md:hidden">
+  <div className="grid grid-cols-2 gap-2.5">
+    {countryPages.map((item) => (
+      <Link
+        key={item.href}
+        href={item.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        title={`أفضل شركات التداول في ${item.badge}`}
+        className="group rounded-[14px] border border-slate-200 bg-white px-2 py-2 shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition hover:border-[#bfdbfe] hover:bg-[#f8fbff]"
+      >
+        <div className="flex flex-col items-center justify-center gap-0.5 text-center">
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-white shadow-sm">
+              <img
+                src={item.flag}
+                alt={item.badge}
+                className="h-5 w-5 rounded-full object-cover"
+              />
             </div>
-          </Link>
+
+            <h3 className="text-[14px] font-extrabold leading-5 text-[#0f172a]">
+              {item.badge}
+            </h3>
+          </div>
+
+          <span className="text-[13px] text-slate-500 opacity-70 transition group-hover:-translate-x-[2px] group-hover:opacity-100 group-hover:text-[#2563eb]">
+            ←
+          </span>
         </div>
+      </Link>
+    ))}
+
+    <Link
+      href="/best-brokers"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="col-span-2 group rounded-[14px] border border-dashed border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-2.5 py-2 shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition hover:bg-[#eff6ff]"
+    >
+      <div className="flex flex-col items-center justify-center gap-0.5 text-center">
+        <div className="flex items-center gap-2">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#bfdbfe] bg-white shadow-sm">
+            🌍
+          </div>
+
+          <h3 className="text-[14px] font-extrabold text-[#0f172a]">
+            كل الدول الأخرى
+          </h3>
+        </div>
+
+        <span className="text-[13px] text-slate-500 transition group-hover:-translate-x-[2px] group-hover:text-[#2563eb]">
+          ←
+        </span>
       </div>
+    </Link>
+  </div>
+</div>
 
       {/* DESKTOP / TABLET */}
       <div className="hidden p-4 md:block lg:p-5">
