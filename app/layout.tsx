@@ -193,7 +193,7 @@ export default async function RootLayout({
 
   return (
     <html lang="ar" dir="rtl">
-     <head>
+    <head>
   <Script
     id="organization-schema"
     type="application/ld+json"
@@ -212,26 +212,25 @@ export default async function RootLayout({
       }),
     }}
   />
-
-  {/* Google Analytics */}
-  <Script
-    src="https://www.googletagmanager.com/gtag/js?id=G-4V7NM48JS7"
-    strategy="afterInteractive"
-  />
-
-  <Script id="google-analytics" strategy="afterInteractive">
-    {`
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-4V7NM48JS7');
-    `}
-  </Script>
 </head>
 
       <body
         className={`${cairo.variable} bg-[#f4f7fb] font-sans text-[#0f172a] antialiased`}
       >
+        {/* Google Analytics */}
+<Script
+  src="https://www.googletagmanager.com/gtag/js?id=G-4V7NM48JS7"
+  strategy="afterInteractive"
+/>
+
+<Script id="google-analytics" strategy="afterInteractive">
+  {`
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-4V7NM48JS7');
+  `}
+</Script>
         <header className="sticky top-0 z-50 border-b border-slate-200/90 bg-white/95 backdrop-blur-md">
           <div className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-8">
             <div className="relative flex h-16 items-center justify-between lg:h-20">
