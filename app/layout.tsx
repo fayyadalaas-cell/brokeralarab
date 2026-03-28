@@ -218,7 +218,7 @@ export default async function RootLayout({
   {/* Google Analytics */}
   <script
     async
-    src="https://www.googletagmanager.com/gtag/js?id=G-4V7NM48JS7"
+    src="https://www.googletagmanager.com/gtag/js?id=G-4V7MN48JS7"
   ></script>
 
   <script
