@@ -6,6 +6,7 @@ import "./globals.css";
 import Script from "next/script";
 import { createClient } from "@/lib/supabase/server";
 import MobileNavMenu from "@/app/components/MobileNavMenu";
+import GoogleAnalytics from "@/app/components/GoogleAnalytics";
 
 const cairo = Cairo({
   subsets: ["arabic", "latin"],
@@ -215,43 +216,49 @@ export default async function RootLayout({
 </head>
 
       <body
-        className={`${cairo.variable} bg-[#f4f7fb] font-sans text-[#0f172a] antialiased`}
-      >
-        {/* Google Analytics */}
-<Script
-  src="https://www.googletagmanager.com/gtag/js?id=G-4V7NM48JS7"
-  strategy="afterInteractive"
-/>
+  className={`${cairo.variable} bg-[#f4f7fb] font-sans text-[#0f172a] antialiased`}
+>
+  {/* Google Analytics */}
+  <Script
+    src="https://www.googletagmanager.com/gtag/js?id=G-4V7NM48JS7"
+    strategy="afterInteractive"
+  />
 
-<Script id="google-analytics" strategy="afterInteractive">
-  {`
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-4V7NM48JS7');
-  `}
-</Script>
-        <header className="sticky top-0 z-50 border-b border-slate-200/90 bg-white/95 backdrop-blur-md">
-          <div className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-8">
-            <div className="relative flex h-16 items-center justify-between lg:h-20">
-  <Link href="/" className="min-w-0 shrink-0 lg:justify-self-end">
-                <Image
-                  src="/brokers/BrokerLogo.png"
-                  alt="بروكر العرب"
-                  width={300}
-                  height={90}
-                  priority
-                  className="h-auto w-[120px] sm:w-[135px] lg:w-[200px]"
-                />
-              </Link>
+  <Script
+    id="google-analytics"
+    strategy="afterInteractive"
+    dangerouslySetInnerHTML={{
+      __html: `
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', 'G-4V7NM48JS7');
+      `,
+    }}
+  />
 
-              <nav className="hidden flex-1 items-center justify-center gap-1 lg:flex xl:gap-2">
-                <Link
-                  href="/"
-                  className="rounded-full px-4 py-2.5 text-[15px] font-extrabold text-slate-700 transition hover:bg-slate-100"
-                >
-                  الرئيسية
-                </Link>
+  <header className="sticky top-0 z-50 border-b border-slate-200/90 bg-white/95 backdrop-blur-md">
+    <div className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-8">
+      <div className="relative flex h-16 items-center justify-between lg:h-20">
+        <Link href="/" className="min-w-0 shrink-0 lg:justify-self-end">
+          <Image
+            src="/brokers/BrokerLogo.png"
+            alt="بروكر العرب"
+            width={300}
+            height={90}
+            priority
+            className="h-auto w-[120px] sm:w-[135px] lg:w-[200px]"
+          />
+        </Link>
+
+        <nav className="hidden flex-1 items-center justify-center gap-1 lg:flex xl:gap-2">
+          <Link
+            href="/"
+            className="rounded-full px-4 py-2.5 text-[15px] font-extrabold text-slate-700 transition hover:bg-slate-100"
+          >
+            الرئيسية
+          </Link>
 
                 {/* REVIEWS */}
                 <div className="group relative">
