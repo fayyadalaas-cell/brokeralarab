@@ -6,6 +6,7 @@ import "./globals.css";
 import Script from "next/script";
 import { createClient } from "@/lib/supabase/server";
 import MobileNavMenu from "@/app/components/MobileNavMenu";
+import GoogleAnalytics from "@/app/components/GoogleAnalytics";
 
 const cairo = Cairo({
   subsets: ["arabic", "latin"],
@@ -236,7 +237,10 @@ export default async function RootLayout({
       <body
   className={`${cairo.variable} bg-[#f4f7fb] font-sans text-[#0f172a] antialiased`}
 >
-    <header className="sticky top-0 z-50 border-b border-slate-200/90 bg-white/95 backdrop-blur-md">
+  {/* Google Analytics */}
+  <GoogleAnalytics />
+
+  <header className="sticky top-0 z-50 border-b border-slate-200/90 bg-white/95 backdrop-blur-md">
     <div className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-8">
       <div className="relative flex h-16 items-center justify-between lg:h-20">
         <Link href="/" className="min-w-0 shrink-0 lg:justify-self-end">
@@ -249,7 +253,6 @@ export default async function RootLayout({
             className="h-auto w-[120px] sm:w-[135px] lg:w-[200px]"
           />
         </Link>
-
         <nav className="hidden flex-1 items-center justify-center gap-1 lg:flex xl:gap-2">
           <Link
             href="/"

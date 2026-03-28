@@ -1,28 +1,24 @@
 "use client";
 
-import Script from "next/script";
+import { useEffect } from "react";
 
 export default function GoogleAnalytics() {
-  return (
-    <>
-      <Script
-        id="ga-loader"
-        src="https://www.googletagmanager.com/gtag/js?id=G-4V7NM48JS7"
-        strategy="afterInteractive"
-      />
-      <Script
-        id="ga-inline"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            window.gtag = gtag;
-            gtag('js', new Date());
-            gtag('config', 'G-4V7NM48JS7');
-          `,
-        }}
-      />
-    </>
-  );
+  useEffect(() => {
+    const script1 = document.createElement("script");
+    script1.src = "https://www.googletagmanager.com/gtag/js?id=G-4V7NM48JS7";
+    script1.async = true;
+    document.head.appendChild(script1);
+
+    const script2 = document.createElement("script");
+    script2.innerHTML = `
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      window.gtag = gtag;
+      gtag('js', new Date());
+      gtag('config', 'G-4V7NM48JS7');
+    `;
+    document.head.appendChild(script2);
+  }, []);
+
+  return null;
 }
