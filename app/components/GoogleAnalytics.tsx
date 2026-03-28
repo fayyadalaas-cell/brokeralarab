@@ -6,11 +6,12 @@ export default function GoogleAnalytics() {
   return (
     <>
       <Script
+        id="ga-loader"
         src="https://www.googletagmanager.com/gtag/js?id=G-4V7NM48JS7"
         strategy="afterInteractive"
       />
       <Script
-        id="google-analytics"
+        id="ga-inline"
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{
           __html: `
