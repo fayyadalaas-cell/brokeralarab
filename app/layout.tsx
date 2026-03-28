@@ -193,26 +193,41 @@ export default async function RootLayout({
 
   return (
     <html lang="ar" dir="rtl">
-      <head>
-        <Script
-          id="organization-schema"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              name: "بروكر العرب",
-              alternateName: "Broker Al Arab",
-              url: "https://brokeralarab.com",
-              logo: "https://brokeralarab.com/brokers/BrokerLogo.png",
-              sameAs: [
-                "https://www.facebook.com/BrokerAlArab",
-                "https://x.com/brokeralarab",
-              ],
-            }),
-          }}
-        />
-      </head>
+     <head>
+  <Script
+    id="organization-schema"
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{
+      __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        name: "بروكر العرب",
+        alternateName: "Broker Al Arab",
+        url: "https://brokeralarab.com",
+        logo: "https://brokeralarab.com/brokers/BrokerLogo.png",
+        sameAs: [
+          "https://www.facebook.com/BrokerAlArab",
+          "https://x.com/brokeralarab",
+        ],
+      }),
+    }}
+  />
+
+  {/* Google Analytics */}
+  <Script
+    src="https://www.googletagmanager.com/gtag/js?id=G-4V7NM48JS7"
+    strategy="afterInteractive"
+  />
+
+  <Script id="google-analytics" strategy="afterInteractive">
+    {`
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-4V7NM48JS7');
+    `}
+  </Script>
+</head>
 
       <body
         className={`${cairo.variable} bg-[#f4f7fb] font-sans text-[#0f172a] antialiased`}
