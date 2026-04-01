@@ -293,8 +293,8 @@ function getVerdictTone(score: number | null) {
     return {
       label: "ممتاز",
       badge: "خيار قوي",
-      color: "border-emerald-200 bg-emerald-50 text-emerald-700",
-      accent: "from-emerald-500 via-emerald-400 to-teal-400",
+      color: "border-blue-200 bg-blue-50 text-blue-700",
+      accent: "from-blue-600 via-blue-500 to-cyan-400",
     };
   }
 
@@ -1146,17 +1146,18 @@ const breadcrumbSchema = {
     <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start lg:gap-6">
       
       <aside className="order-1 hidden space-y-4 text-right lg:order-2 lg:block">
-        <div className="flex min-h-[120px] items-center justify-center overflow-hidden rounded-[20px] border border-slate-200 bg-slate-50 px-4 py-4 md:min-h-[150px] md:rounded-[24px] md:px-5 md:py-5">
-          {broker.logo ? (
-            <img
-              src={broker.logo}
-              alt={broker.name || "Broker logo"}
-              className="max-h-[110px] w-auto max-w-[88%] object-contain"
-            />
-          ) : (
-            <span className="text-sm text-slate-400">No logo</span>
-          )}
-        </div>
+<div className="flex h-[120px] items-center justify-center overflow-hidden rounded-[20px] border border-slate-200 bg-slate-50 px-4 py-4 md:h-[150px]">
+  {broker.logo ? (
+    <img
+      src={broker.logo}
+      alt={broker.name || "Broker logo"}
+      className="w-auto object-contain"
+      style={{ height: "130%", maxWidth: "none" }}
+    />
+  ) : (
+    <span className="text-sm text-slate-400">No logo</span>
+  )}
+</div>
 
         <div className="rounded-[20px] border border-slate-200 bg-slate-50 p-4 md:rounded-[24px]">
           <div className="mb-3 text-sm font-black text-slate-900">
@@ -1250,22 +1251,22 @@ const breadcrumbSchema = {
 
         <div className="mt-6 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap sm:items-center sm:justify-start">
           <a
-            href={`/go/${broker.slug}?type=real`}
-            target="_blank"
-            rel="nofollow sponsored noopener noreferrer"
-            className="inline-flex min-h-[52px] w-full items-center justify-center rounded-2xl bg-emerald-600 px-6 py-3 text-sm font-extrabold text-white transition hover:bg-emerald-700 sm:w-auto sm:min-w-[170px] md:text-base"
-          >
-            فتح حساب في {broker.name}
-          </a>
+  href={`/go/${broker.slug}?type=real`}
+  target="_blank"
+  rel="nofollow sponsored noopener noreferrer"
+  className="inline-flex min-h-[52px] w-full items-center justify-center rounded-2xl bg-blue-600 px-6 py-3 text-sm font-extrabold text-white transition hover:bg-blue-700 sm:w-auto sm:min-w-[170px] md:text-base"
+>
+  فتح حساب في {broker.name}
+</a>
 
           <a
-            href={`/go/${broker.slug}?type=demo`}
-            target="_blank"
-            rel="nofollow sponsored noopener noreferrer"
-            className="inline-flex min-h-[52px] w-full items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-extrabold text-slate-900 transition hover:bg-slate-50 sm:w-auto sm:min-w-[170px] md:text-base"
-          >
-            فتح حساب ديمو
-          </a>
+  href={`/go/${broker.slug}?type=demo`}
+  target="_blank"
+  rel="nofollow sponsored noopener noreferrer"
+  className="inline-flex min-h-[52px] w-full items-center justify-center rounded-2xl bg-blue-600 px-6 py-3 text-sm font-extrabold text-white transition hover:bg-blue-700 sm:w-auto sm:min-w-[170px] md:text-base"
+>
+  فتح حساب ديمو
+</a>
 
           <a
             href={`/go/${broker.slug}?type=mt5`}
@@ -1977,7 +1978,7 @@ const breadcrumbSchema = {
     {/* Mobile */}
     <div className="space-y-4 md:hidden">
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="h-1.5 bg-emerald-500" />
+        <div className="h-1.5 bg-blue-500" />
         <div className="p-5 text-center">
           <div className="mb-3 text-sm font-black text-slate-900">
             خلاصة سريعة
@@ -2012,7 +2013,7 @@ const breadcrumbSchema = {
     {/* Desktop */}
     <div className="hidden md:block">
       <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm">
-        <div className="h-1.5 bg-emerald-500" />
+        <div className="h-1.5 bg-blue-500" />
         <div className="p-6 lg:p-8">
           <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_220px]">
             <div>
@@ -2053,7 +2054,7 @@ const breadcrumbSchema = {
         href={`/go/${broker.slug}?type=real`}
         target="_blank"
         rel="nofollow sponsored noopener noreferrer"
-        className="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-emerald-600 px-7 py-3 text-sm font-extrabold text-white transition hover:bg-emerald-700 md:px-8 md:py-4 md:text-base"
+        className="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-blue-600 px-7 py-3 text-sm font-extrabold text-white transition hover:bg-blue-700 md:px-8 md:py-4 md:text-base"
       >
         فتح حساب في {broker.name} الآن
       </a>
@@ -2242,7 +2243,7 @@ const breadcrumbSchema = {
       href={`/go/${broker.slug}?type=real`}
       target="_blank"
       rel="nofollow sponsored noopener noreferrer"
-      className="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-emerald-600 px-7 py-3 text-sm font-extrabold text-white transition hover:bg-emerald-700 md:px-8 md:py-4 md:text-base"
+      className="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-blue-600 px-7 py-3 text-sm font-extrabold text-white transition hover:bg-blue-700 md:px-8 md:py-4 md:text-base"
     >
      ابدأ التداول الآن مع {broker.name}
     </a>
