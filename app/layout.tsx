@@ -215,40 +215,30 @@ export default async function RootLayout({
     }}
   />
 
-  {/* Google Analytics */}
-  <script
-    async
-    src="https://www.googletagmanager.com/gtag/js?id=G-4V7MN48JS7"
-  ></script>
+{/* Google Analytics */}
+<Script
+  src="https://www.googletagmanager.com/gtag/js?id=G-4V7MN48JS7"
+  strategy="afterInteractive"
+/>
 
-  <script
-    dangerouslySetInnerHTML={{
-      __html: `
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        window.gtag = gtag;
-        gtag('js', new Date());
-        gtag('config', 'G-4V7NM48JS7');
-      `,
-    }}
-  />
+<Script
+  id="google-analytics"
+  strategy="afterInteractive"
+  dangerouslySetInnerHTML={{
+    __html: `
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      window.gtag = gtag;
+      gtag('js', new Date());
+      gtag('config', 'G-4V7MN48JS7');
+    `,
+  }}
+/>
 </head>
 
      <body
   className={`${cairo.variable} bg-[#f4f7fb] font-sans text-[#0f172a] antialiased`}
 >
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4V7NM48JS7"></script>
-  <script
-    dangerouslySetInnerHTML={{
-      __html: `
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        window.gtag = gtag;
-        gtag('js', new Date());
-        gtag('config', 'G-4V7NM48JS7');
-      `,
-    }}
-  />
 
   <header className="sticky top-0 z-50 border-b border-slate-200/90 bg-white/95 backdrop-blur-md">
     <div className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-8">
