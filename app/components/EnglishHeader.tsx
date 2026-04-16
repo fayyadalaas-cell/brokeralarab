@@ -43,7 +43,7 @@ export default function EnglishHeader({
         <div className="relative flex h-16 items-center justify-between lg:h-20" dir="ltr">
           <Link href="/en" className="min-w-0 shrink-0">
             <Image
-              src="/brokers/BrokerLogo.png"
+              src="/logo-en.png"
               alt="Broker Al Arab"
               width={300}
               height={90}
