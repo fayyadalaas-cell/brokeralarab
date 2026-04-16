@@ -2315,7 +2315,7 @@ const breadcrumbSchema = {
       {relatedBrokers.map((item) => (
         <Link
           key={item.id}
-          href={`/compare/${broker.slug}-vs-${item.slug}`}
+          href={`/en/compare/${broker.slug}-vs-${item.slug}`}
           className="group rounded-2xl border border-slate-200 bg-slate-50 p-6 transition hover:-translate-y-1 hover:bg-white hover:shadow-md"
         >
           {/* Top logos */}
