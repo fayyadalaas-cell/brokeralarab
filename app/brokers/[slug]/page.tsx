@@ -148,7 +148,7 @@ export async function generateMetadata({
     };
   }
 
-  const title = broker.meta_title || `تقييم ${broker.name} | Broker Arab`;
+  const title = broker.meta_title || `تقييم ${broker.name} | Broker AlArab`;
   const description =
     broker.meta_descr ||
     `مراجعة كاملة لشركة ${broker.name} تشمل الرسوم والمنصات والتراخيص.`;

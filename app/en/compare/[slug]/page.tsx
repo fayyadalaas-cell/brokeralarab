@@ -315,7 +315,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
  if (!leftSlug || !rightSlug) {
   return {
     metadataBase: new URL(siteUrl),
-    title: "Broker Comparisons | Broker Arab",
+    title: "Broker Comparisons | Broker AlArab",
     description:
       "Detailed broker comparisons covering accounts, fees, regulation, and trading platforms to help traders choose the right broker.",
     alternates: {
@@ -326,7 +326,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   },
 },
     openGraph: {
-      title: "Broker Comparisons | Broker Arab",
+      title: "Broker Comparisons | Broker AlArab",
       description:
         "Detailed broker comparisons covering accounts, fees, regulation, and trading platforms.",
       url: `${siteUrl}/en/compare`,

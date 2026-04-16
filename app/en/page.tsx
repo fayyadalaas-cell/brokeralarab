@@ -4,11 +4,11 @@ import { createClient } from "@/lib/supabase/server";
 import BrokerFinderEN from "@/app/components/BrokerFinderEN";
 
 export const metadata: Metadata = {
-  title: "Best Brokers & Trading Reviews | Broker Arab",
+  title: "Best Brokers & Trading Reviews | Broker AlArab",
   description:
     "Discover the best brokers through detailed reviews and broker comparisons, including regulation, fees, and trading platforms to help you choose the right broker with confidence.",
   keywords: [
-    "Broker Arab",
+    "Broker AlArab",
     "broker reviews",
     "broker comparison",
     "forex brokers",
@@ -27,11 +27,11 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Best Brokers & Trading Reviews | Broker Arab",
+    title: "Best Brokers & Trading Reviews | Broker AlArab",
     description:
       "Discover the best brokers through detailed reviews and broker comparisons, including regulation, fees, and trading platforms to help you choose the right broker with confidence.",
     url: "https://brokeralarab.com/en",
-    siteName: "Broker Arab",
+    siteName: "Broker AlArab",
     type: "website",
     locale: "en_US",
   },
@@ -1214,7 +1214,7 @@ broker_2:broker_2_id (
               <p>
                 For many traders, having an <strong>Islamic account</strong>,
                 <strong>Arabic support</strong>, and flexible deposit and withdrawal
-                methods are essential. At Broker Arab, we rely on these factors when
+                methods are essential. At Broker AlArab, we rely on these factors when
                 reviewing and comparing brokers, helping you find the right broker
                 without relying only on advertising.
               </p>
@@ -1281,11 +1281,11 @@ broker_2:broker_2_id (
 
       <h2 className="text-[24px] font-black leading-[1.2] text-[#0f172a] sm:text-[36px] lg:text-[42px]">
         Why do traders trust
-        <span className="text-[#2563eb]"> Broker Arab?</span>
+        <span className="text-[#2563eb]"> Broker AlArab?</span>
       </h2>
 
       <p className="mt-3 max-w-4xl text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
-        Broker Arab is a platform that helps traders understand the real differences
+        Broker AlArab is a platform that helps traders understand the real differences
         between brokers in terms of regulation, fees, platforms, and account types,
         so they can make decisions based on clear and reliable information.
       </p>
