@@ -35,7 +35,7 @@ function Section({
 export default function AboutPage() {
   return (
     <main className="bg-slate-50">
-      <div className="mx-auto max-w-5xl px-4 py-10 md:py-14">
+      <div className="mx-auto max-w-7xl px-4 py-10 md:py-14">
         <header className="mb-8 rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm md:p-8">
           <div className="mb-4 inline-flex rounded-full bg-slate-100 px-3 py-1 text-sm font-bold text-slate-600">
             من نحن
@@ -45,7 +45,7 @@ export default function AboutPage() {
             عن بروكر العرب
           </h1>
 
-          <p className="max-w-4xl text-lg leading-9 text-slate-600">
+         <p className="max-w-6xl text-lg leading-9 text-slate-600">
             بروكر العرب هو موقع عربي متخصص في مراجعات وتقييم شركات التداول
             والمقارنات بين الوسطاء، ويهدف إلى مساعدة المتداول العربي على الوصول
             إلى معلومات واضحة ومنظمة قبل فتح حساب حقيقي أو تجريبي مع أي شركة
