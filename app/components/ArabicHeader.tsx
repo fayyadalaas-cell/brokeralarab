@@ -304,17 +304,25 @@ export default function ArabicHeader({
             </Link>
           </nav>
 
-          <div className="hidden lg:flex items-center justify-start min-w-[120px]">
-            <div className="flex items-center gap-2 text-[12px] font-extrabold text-slate-500">
-              <Link href="/" className="transition hover:text-slate-900">
-                AR
-              </Link>
+     <div className="hidden lg:flex items-center justify-start min-w-[100px]">
+  <div className="inline-flex items-center gap-1 rounded-full border border-slate-200/70 bg-white p-1 shadow-[0_2px_10px_rgba(15,23,42,0.06)]">
 
-              <Link href="/en" className="text-slate-900 transition hover:text-blue-600">
-                EN
-              </Link>
-            </div>
-          </div>
+    <Link
+      href="/"
+      className="rounded-full bg-[#2563eb] px-3 py-1 text-[11px] font-extrabold text-white shadow-sm transition hover:bg-blue-700"
+    >
+      AR
+    </Link>
+
+    <Link
+      href="/en"
+      className="rounded-full px-3 py-1 text-[11px] font-extrabold text-slate-500 transition hover:bg-slate-50 hover:text-slate-900"
+    >
+      EN
+    </Link>
+
+  </div>
+</div>
 
           <MobileNavMenu
             topBrokers={topBrokers}
