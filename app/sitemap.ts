@@ -13,13 +13,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const brokerSlugs = brokers?.map((b) => b.slug) || [];
 
-  // 🟢 صفحات البروكر
+  // 🟢 صفحات البروكر (AR)
   const brokerPages = brokerSlugs.map((slug) => ({
     url: `${BASE_URL}/brokers/${slug}`,
     lastModified: new Date(),
   }));
 
-  // 🔥 🧠 توليد كل المقارنات (Combination)
+  // 🟢 صفحات البروكر (EN)
+  const brokerPagesEN = brokerSlugs.map((slug) => ({
+    url: `${BASE_URL}/en/brokers/${slug}`,
+    lastModified: new Date(),
+  }));
+
+  // 🔥 🧠 توليد كل المقارنات (AR)
   const comparePages = [];
 
   for (let i = 0; i < brokerSlugs.length; i++) {
@@ -33,7 +39,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  // 🟢 صفحات ثابتة
+  // 🔥 🧠 توليد كل المقارنات (EN)
+  const comparePagesEN = [];
+
+  for (let i = 0; i < brokerSlugs.length; i++) {
+    for (let j = 0; j < brokerSlugs.length; j++) {
+      if (i !== j) {
+        comparePagesEN.push({
+          url: `${BASE_URL}/en/compare/${brokerSlugs[i]}-vs-${brokerSlugs[j]}`,
+          lastModified: new Date(),
+        });
+      }
+    }
+  }
+
+  // 🟢 صفحات ثابتة (AR)
   const staticPages = [
     { url: `${BASE_URL}`, lastModified: new Date() },
     { url: `${BASE_URL}/brokers`, lastModified: new Date() },
@@ -44,9 +64,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/learn-trading/how-to-start-trading-from-zero`, lastModified: new Date() },
   ];
 
+  // 🟢 صفحات ثابتة (EN)
+  const staticPagesEN = [
+    { url: `${BASE_URL}/en`, lastModified: new Date() },
+    { url: `${BASE_URL}/en/brokers`, lastModified: new Date() },
+    { url: `${BASE_URL}/en/compare`, lastModified: new Date() },
+    { url: `${BASE_URL}/en/best-brokers`, lastModified: new Date() },
+
+    { url: `${BASE_URL}/en/best-brokers/gold`, lastModified: new Date() },
+    { url: `${BASE_URL}/en/learn-trading/how-to-start-trading-from-zero`, lastModified: new Date() },
+  ];
+
   return [
     ...staticPages,
+    ...staticPagesEN,
     ...brokerPages,
+    ...brokerPagesEN,
     ...comparePages,
+    ...comparePagesEN,
   ];
 }
