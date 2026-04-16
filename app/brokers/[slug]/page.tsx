@@ -153,10 +153,18 @@ export async function generateMetadata({
     broker.meta_descr ||
     `مراجعة كاملة لشركة ${broker.name} تشمل الرسوم والمنصات والتراخيص.`;
 
-  return {
-    metadataBase: new URL(siteUrl),
-    title,
-    description,
+ return {
+  metadataBase: new URL(siteUrl),
+
+  alternates: {
+    languages: {
+      ar: `${siteUrl}/brokers/${broker.slug}`,
+      en: `${siteUrl}/en/brokers/${broker.slug}`,
+    },
+  },
+
+  title,
+  description,
     openGraph: {
   title,
   description,

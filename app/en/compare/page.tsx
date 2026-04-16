@@ -32,9 +32,13 @@ export const metadata: Metadata = {
     "XS vs Vantage",
     "Broker Al Arab",
   ],
-  alternates: {
-    canonical: "https://brokeralarab.com/en/compare",
+ alternates: {
+  canonical: "https://brokeralarab.com/en/compare",
+  languages: {
+    en: "https://brokeralarab.com/en/compare",
+    ar: "https://brokeralarab.com/compare",
   },
+},
   openGraph: {
     title: "Compare Trading Brokers | Broker Al Arab",
     description:

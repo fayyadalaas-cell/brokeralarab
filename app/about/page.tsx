@@ -5,8 +5,12 @@ export const metadata: Metadata = {
   description:
     "تعرف على موقع بروكر العرب، منهجية تقييم شركات التداول، أهداف الموقع، وإخلاء المسؤولية قبل استخدام أي مراجعة أو مقارنة منشورة.",
   alternates: {
-    canonical: "/about",
+  canonical: "https://brokeralarab.com/about",
+  languages: {
+    ar: "https://brokeralarab.com/about",
+    en: "https://brokeralarab.com/en/about",
   },
+},
   openGraph: {
     title: "عن بروكر العرب | من نحن وكيف نقيّم شركات التداول",
     description:

@@ -5,8 +5,12 @@ export const metadata: Metadata = {
   description:
     "Learn about Broker Al Arab, our broker review methodology, our mission, and important disclaimers before using any review or comparison.",
   alternates: {
-    canonical: "/en/about",
+  canonical: "https://brokeralarab.com/en/about",
+  languages: {
+    en: "https://brokeralarab.com/en/about",
+    ar: "https://brokeralarab.com/about",
   },
+},
   openGraph: {
     title: "About Broker Al Arab | How We Review Brokers",
     description:

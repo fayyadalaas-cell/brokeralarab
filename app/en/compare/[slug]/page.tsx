@@ -319,8 +319,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     description:
       "Detailed broker comparisons covering accounts, fees, regulation, and trading platforms to help traders choose the right broker.",
     alternates: {
-      canonical: `${siteUrl}/en/compare`,
-    },
+  canonical: `${siteUrl}/en/compare`,
+  languages: {
+    en: `${siteUrl}/en/compare`,
+    ar: `${siteUrl}/compare`,
+  },
+},
     openGraph: {
       title: "Broker Comparisons | Broker Arab",
       description:

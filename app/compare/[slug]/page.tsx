@@ -270,8 +270,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description:
         "مقارنات تفصيلية بين شركات التداول من حيث الحسابات والرسوم والتراخيص والمنصات لمساعدة المتداول العربي على اختيار الوسيط المناسب.",
       alternates: {
-        canonical: `${siteUrl}/compare`,
-      },
+  canonical: `${siteUrl}/compare/${slug}`,
+  languages: {
+    ar: `${siteUrl}/compare/${slug}`,
+    en: `${siteUrl}/en/compare/${slug}`,
+  },
+},
       openGraph: {
         title: "مقارنة شركات التداول | بروكر العرب",
         description:

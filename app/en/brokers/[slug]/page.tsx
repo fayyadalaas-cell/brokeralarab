@@ -177,6 +177,12 @@ export async function generateMetadata({
     metadataBase: new URL(siteUrl),
     title,
     description,
+    alternates: {
+  languages: {
+    ar: `${siteUrl}/brokers/${broker.slug}`,
+    en: `${siteUrl}/en/brokers/${broker.slug}`,
+  },
+},
     openGraph: {
   title,
   description,

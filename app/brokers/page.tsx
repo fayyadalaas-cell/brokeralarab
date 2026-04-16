@@ -35,9 +35,13 @@ export const metadata: Metadata = {
     "الحساب الإسلامي",
     "بروكر العرب",
   ],
-  alternates: {
-    canonical: "https://brokeralarab.com/brokers",
+ alternates: {
+  canonical: "https://brokeralarab.com/brokers",
+  languages: {
+    ar: "https://brokeralarab.com/brokers",
+    en: "https://brokeralarab.com/en/brokers",
   },
+},
   openGraph: {
     title: "تقييم شركات التداول الموثوقة | بروكر العرب",
     description:

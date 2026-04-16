@@ -6,81 +6,82 @@ const BASE_URL = "https://brokeralarab.com";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = await createClient();
 
-  // 🟢 1) جلب كل البروكر
+  // 🟢 جلب البروكر
   const { data: brokers } = await supabase
     .from("brokers")
     .select("slug");
 
   const brokerSlugs = brokers?.map((b) => b.slug) || [];
 
-  // 🟢 صفحات البروكر (AR)
-  const brokerPages = brokerSlugs.map((slug) => ({
-    url: `${BASE_URL}/brokers/${slug}`,
-    lastModified: new Date(),
-  }));
+  const now = new Date();
 
-  // 🟢 صفحات البروكر (EN)
-  const brokerPagesEN = brokerSlugs.map((slug) => ({
-    url: `${BASE_URL}/en/brokers/${slug}`,
-    lastModified: new Date(),
-  }));
+  // 🔥 helper يولد hreflang
+  const withLang = (arUrl: string, enUrl: string) => ({
+    url: arUrl,
+    lastModified: now,
+    alternates: {
+      languages: {
+        ar: arUrl,
+        en: enUrl,
+      },
+    },
+  });
 
-  // 🔥 🧠 توليد كل المقارنات (AR)
+  // =============================
+  // 🟢 STATIC PAGES
+  // =============================
+
+  const staticPages = [
+    withLang(`${BASE_URL}`, `${BASE_URL}/en`),
+
+    withLang(`${BASE_URL}/brokers`, `${BASE_URL}/en/brokers`),
+    withLang(`${BASE_URL}/compare`, `${BASE_URL}/en/compare`),
+    withLang(`${BASE_URL}/best-brokers`, `${BASE_URL}/en/best-brokers`),
+
+    withLang(
+      `${BASE_URL}/best-brokers/gold`,
+      `${BASE_URL}/en/best-brokers/gold`
+    ),
+
+    withLang(
+      `${BASE_URL}/learn-trading/how-to-start-trading-from-zero`,
+      `${BASE_URL}/en/learn-trading/how-to-start-trading-from-zero`
+    ),
+  ];
+
+  // =============================
+  // 🟢 BROKER PAGES
+  // =============================
+
+  const brokerPages = brokerSlugs.map((slug) =>
+    withLang(
+      `${BASE_URL}/brokers/${slug}`,
+      `${BASE_URL}/en/brokers/${slug}`
+    )
+  );
+
+  // =============================
+  // 🔥 COMPARE PAGES (AUTO)
+  // =============================
+
   const comparePages = [];
 
   for (let i = 0; i < brokerSlugs.length; i++) {
     for (let j = 0; j < brokerSlugs.length; j++) {
       if (i !== j) {
-        comparePages.push({
-          url: `${BASE_URL}/compare/${brokerSlugs[i]}-vs-${brokerSlugs[j]}`,
-          lastModified: new Date(),
-        });
+        comparePages.push(
+          withLang(
+            `${BASE_URL}/compare/${brokerSlugs[i]}-vs-${brokerSlugs[j]}`,
+            `${BASE_URL}/en/compare/${brokerSlugs[i]}-vs-${brokerSlugs[j]}`
+          )
+        );
       }
     }
   }
-
-  // 🔥 🧠 توليد كل المقارنات (EN)
-  const comparePagesEN = [];
-
-  for (let i = 0; i < brokerSlugs.length; i++) {
-    for (let j = 0; j < brokerSlugs.length; j++) {
-      if (i !== j) {
-        comparePagesEN.push({
-          url: `${BASE_URL}/en/compare/${brokerSlugs[i]}-vs-${brokerSlugs[j]}`,
-          lastModified: new Date(),
-        });
-      }
-    }
-  }
-
-  // 🟢 صفحات ثابتة (AR)
-  const staticPages = [
-    { url: `${BASE_URL}`, lastModified: new Date() },
-    { url: `${BASE_URL}/brokers`, lastModified: new Date() },
-    { url: `${BASE_URL}/compare`, lastModified: new Date() },
-    { url: `${BASE_URL}/best-brokers`, lastModified: new Date() },
-
-    { url: `${BASE_URL}/best-brokers/gold`, lastModified: new Date() },
-    { url: `${BASE_URL}/learn-trading/how-to-start-trading-from-zero`, lastModified: new Date() },
-  ];
-
-  // 🟢 صفحات ثابتة (EN)
-  const staticPagesEN = [
-    { url: `${BASE_URL}/en`, lastModified: new Date() },
-    { url: `${BASE_URL}/en/brokers`, lastModified: new Date() },
-    { url: `${BASE_URL}/en/compare`, lastModified: new Date() },
-    { url: `${BASE_URL}/en/best-brokers`, lastModified: new Date() },
-
-    { url: `${BASE_URL}/en/best-brokers/gold`, lastModified: new Date() },
-    { url: `${BASE_URL}/en/learn-trading/how-to-start-trading-from-zero`, lastModified: new Date() },
-  ];
 
   return [
     ...staticPages,
-    ...staticPagesEN,
     ...brokerPages,
-    ...brokerPagesEN,
     ...comparePages,
-    ...comparePagesEN,
   ];
 }
