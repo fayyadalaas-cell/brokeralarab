@@ -353,99 +353,12 @@ broker_2:broker_2_id (
         {/* DESKTOP ONLY */}
         <div className="hidden lg:block">
           <div className="relative mx-auto max-w-7xl px-6 pt-6 pb-10">
-            <div dir="ltr" className="grid items-stretch gap-8 xl:grid-cols-[340px_minmax(0,1fr)]">
+            <div dir="ltr" className="mx-auto max-w-5xl text-center">
               
-              {/* LEFT PANEL */}
-              <div dir="ltr" className="relative">
-                <div className="overflow-hidden rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(15,23,42,0.96),rgba(10,18,32,0.94))] p-5 shadow-[0_25px_60px_rgba(2,8,23,0.45)] backdrop-blur-xl h-full flex flex-col">
-
-                  <div className="relative z-10 flex items-start justify-between gap-3">
-                    <div>
-                      <div className="text-[12px] font-extrabold text-blue-300">
-                        Quick Comparison
-                      </div>
-                      <h2 className="mt-1 text-[18px] font-black text-white">
-                        Top Broker Picks
-                      </h2>
-                    </div>
-
-                    <span className="inline-flex items-center rounded-full border border-blue-400/20 bg-blue-500/10 px-2 py-0.5 text-[10px] font-bold text-blue-200">
-                      Updated Regularly
-                    </span>
-                  </div>
-
-                  <div className="relative z-10 mt-6 space-y-4 flex-1">
-                    {heroBrokers.map((broker) => (
-                      <div
-                        key={broker.id}
-                        className="group rounded-[20px] border border-white/10 bg-white/[0.04] px-4 py-5"
-                      >
-                        <div className="flex items-center gap-3">
-
-                          <Link
-                            href={`/en/brokers/${broker.slug}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white p-1"
-                          >
-                            {broker.logo ? (
-                              <img
-                                src={broker.logo}
-                                alt={broker.name}
-                                className="h-9 w-9 object-contain"
-                              />
-                            ) : (
-                              <span className="text-[10px] text-slate-400">
-                                Logo
-                              </span>
-                            )}
-                          </Link>
-
-                          <div className="flex-1">
-                            <Link
-                              href={`/en/brokers/${broker.slug}`}
-                              className="text-[18px] font-black text-white hover:text-blue-300"
-                            >
-                              {broker.name}
-                            </Link>
-
-                            <p className="mt-1 text-[13px] text-slate-400">
-                              {broker.subtitle}
-                            </p>
-                          </div>
-
-                          <div className="text-right">
-                            <div className="text-[11px] text-slate-400">Rating</div>
-                            <div className="text-[22px] font-black text-white">
-                              {broker.rating}
-                            </div>
-                          </div>
-
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="mt-5 grid grid-cols-2 gap-3">
-                    <Link
-                      href="/en/compare"
-                      className="h-12 flex items-center justify-center rounded-2xl border border-white/12 bg-white/5 text-white"
-                    >
-                      View Comparisons
-                    </Link>
-
-                    <Link
-                      href="/en/best-brokers"
-                      className="h-12 flex items-center justify-center rounded-2xl bg-[#2563eb] text-white"
-                    >
-                      Top Brokers
-                    </Link>
-                  </div>
-                </div>
-              </div>
+             
 
               {/* RIGHT CONTENT */}
-              <div dir="ltr" className="text-left">
+              <div dir="ltr" className="text-center">
                 <h1 className="text-[58px] font-black text-white xl:text-[72px]">
                   Best Trading Brokers
                   <span className="block text-blue-400">
@@ -453,12 +366,12 @@ broker_2:broker_2_id (
                   </span>
                 </h1>
 
-                <p className="mt-6 text-[19px] text-slate-300">
+                <p className="mt-6 mx-auto max-w-3xl text-[19px] text-slate-300">
                   Compare regulation, fees, platforms, and account types in one place.
                   Choose the broker that truly fits your needs instead of relying on ads.
                 </p>
 
-                <div className="mt-8 flex gap-4">
+                <div className="mt-8 flex justify-center gap-4">
                   <a
                     href="#finder"
                     className="bg-[#2563eb] text-white px-6 py-3 rounded-2xl font-bold"
