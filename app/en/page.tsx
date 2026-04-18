@@ -4,7 +4,9 @@ import { createClient } from "@/lib/supabase/server";
 import BrokerFinderEN from "@/app/components/BrokerFinderEN";
 
 export const metadata: Metadata = {
-  title: "Best Brokers & Trading Reviews | Broker AlArab",
+  title: {
+    absolute: "Best Brokers & Trading Reviews | Broker AlArab",
+  },
   description:
     "Discover the best brokers through detailed reviews and broker comparisons, including regulation, fees, and trading platforms to help you choose the right broker with confidence.",
   keywords: [
@@ -103,7 +105,7 @@ function shortReg(value: string | null) {
 }
 
 function shortPlatforms(value: string | null) {
-  if (!value) return "غير محدد";
+  if (!value) return "Not specified";
   return value.replace("JustMarkets Mobile App", "Mobile").trim();
 }
 
@@ -270,35 +272,35 @@ broker_2:broker_2_id (
   const typePages = getTypePages();
 
   const faqJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "كيف أختار شركة التداول المناسبة؟",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "اختر شركة التداول بناءً على التراخيص، الحد الأدنى للإيداع، المنصات، الحسابات، الرسوم، والحساب الإسلامي إذا كان مهمًا بالنسبة لك.",
-        },
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "How do I choose the right trading broker?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Choose a broker based on regulation, minimum deposit, trading platforms, account types, fees, and whether an Islamic account is available if that matters to you.",
       },
-      {
-        "@type": "Question",
-        name: "هل الأفضل اختيار شركة بإيداع منخفض؟",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "الإيداع المنخفض مفيد للمبتدئين، لكن يجب النظر أيضًا إلى قوة الترخيص وجودة التنفيذ وتنوع الحسابات والمنصات.",
-        },
+    },
+    {
+      "@type": "Question",
+      name: "Is a low minimum deposit always better?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "A low minimum deposit can help beginners, but you should also consider regulation strength, execution quality, platform options, and total trading costs.",
       },
-      {
-        "@type": "Question",
-        name: "هل المقارنات بين شركات الفوركس مهمة؟",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "نعم، المقارنات تختصر الوقت وتوضح الفروقات الحقيقية بين الشركات في الرسوم والتراخيص والحسابات والمنصات.",
-        },
+    },
+    {
+      "@type": "Question",
+      name: "Are broker comparisons important?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes. Broker comparisons save time and highlight the real differences between brokers in fees, regulation, account types, and platforms.",
       },
-    ],
-  };
+    },
+  ],
+};
 
   return (
     <main dir="ltr" className="min-h-screen bg-[#f4f7fb] text-[#0f172a]">

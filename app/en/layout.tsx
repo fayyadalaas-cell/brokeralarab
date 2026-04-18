@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: {
-    default: "Broker Al Arab",
-    template: "%s | Broker Al Arab",
+    absolute: "Broker AlArab",
+    template: "%s | Broker AlArab",
   },
-  description: "Best brokers and trading reviews on Broker Al Arab.",
+  description: "Best brokers and trading reviews on Broker AlArab.",
   metadataBase: new URL("https://brokeralarab.com"),
 };
 
