@@ -167,7 +167,7 @@ export async function generateMetadata({
     };
   }
 
-  const title = broker.meta_title_en || broker.meta_title || `${broker.name} Review 2026 | Broker Arab`;
+  const title = broker.meta_title_en || broker.meta_title || `${broker.name} Review 2026 | Broker AlArab`;
   const description =
   broker.meta_description_en ||
   broker.meta_descr ||
@@ -1095,7 +1095,7 @@ const commissionAccounts = accountsData.filter((acc) => {
 
   const siteUrl = "https://brokeralarab.com";
   const pageUrl = `${siteUrl}/en/brokers/${broker.slug}`;
-const shareTitle = `${broker.name_en || broker.name} Review | Broker Arab`;
+const shareTitle = `${broker.name_en || broker.name} Review | Broker AlArab`;
 
 const breadcrumbSchema = {
   "@context": "https://schema.org",
