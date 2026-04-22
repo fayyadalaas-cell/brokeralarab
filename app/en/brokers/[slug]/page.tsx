@@ -65,6 +65,8 @@ type Broker = {
   score_platforms: number | null;
   score_deposit: number | null;
   score_support: number | null;
+  faq_ar: { question: string; answer: string }[] | null;
+  faq_en: { question: string; answer: string }[] | null;
 };
 
 type RelatedBroker = {
@@ -1056,42 +1058,22 @@ const commissionAccounts = accountsData.filter((acc) => {
   );
 });
 
-    const faqItems = [
-    {
-      q: `Is ${broker.name_en || broker.name} a trustworthy broker?`,
-      a: `${broker.name_en || broker.name} is considered a recognized broker in the trading industry, and its evaluation depends on regulation, fees, and overall user experience as shown on this page.`,
-    },
-    {
-      q: `Does ${broker.name_en || broker.name} offer an Islamic account?`,
-      a: broker.islamic_account
-        ? `Based on the available information, ${broker.name_en || broker.name} offers an Islamic account option for traders who need this type of account.`
-        : `Please review the broker’s latest terms to confirm whether an Islamic account is available in your country.`,
-    },
-    {
-      q: `What is the minimum deposit at ${broker.name_en || broker.name}?`,
-      a: `The minimum deposit at ${broker.name_en || broker.name} starts from ${broker.min_deposit ?? "-"} according to the current data on this page.`,
-    },
-    {
-      q: `Does ${broker.name_en || broker.name} support MT4 and MT5?`,
-      a: `${broker.name_en || broker.name} supports trading platforms such as ${broker.platforms || "the platforms listed by the broker"}, and you can review the platform details section for more information.`,
-    },
-    {
-      q: `Is ${broker.name_en || broker.name} suitable for Arabic-speaking traders?`,
-      a:
-        broker.support_en ||
-        broker.arab_traders ||
-        `You can review the support and platform sections on this page to see whether this broker is suitable for Arabic-speaking traders.`,
-    },
-  ];
+    const faqItems =
+  (broker.faq_en ?? []).filter(
+    (item) => item?.question?.trim() && item?.answer?.trim()
+  );
 
-  const faqSchema = faqItems.map((item) => ({
-    "@type": "Question",
-    name: item.q,
-    acceptedAnswer: {
-      "@type": "Answer",
-      text: item.a,
-    },
-  }));
+const visibleFaqItems = faqItems.slice(0, 5);
+const extraFaqItems = faqItems.slice(5);
+
+const faqSchema = faqItems.map((item) => ({
+  "@type": "Question",
+  name: item.question,
+  acceptedAnswer: {
+    "@type": "Answer",
+    text: item.answer,
+  },
+}));
 
   const siteUrl = "https://brokeralarab.com";
   const pageUrl = `${siteUrl}/en/brokers/${broker.slug}`;
@@ -1132,17 +1114,19 @@ const breadcrumbSchema = {
 
   return (
     <>
-      <Script
-        id="faq-schema"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "FAQPage",
-            mainEntity: faqSchema,
-          }),
-        }}
-      />
+     {faqItems.length > 0 && (
+  <Script
+    id="faq-schema"
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{
+      __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: faqSchema,
+      }),
+    }}
+  />
+)}
       <Script
         id="breadcrumb-schema"
         type="application/ld+json"
@@ -2270,50 +2254,109 @@ const breadcrumbSchema = {
 </div>
 </SectionCard>
 
-        <SectionCard title="Frequently Asked Questions" id="faq">
+        {faqItems.length > 0 && (
+  <SectionCard title="Frequently Asked Questions" id="faq">
   {/* Mobile */}
-  <div className="space-y-3 md:hidden">
-    {faqItems.map((item, i) => (
-      <details
-        key={i}
-        className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
-      >
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
-          <div className="text-left text-base font-bold text-slate-900">
-            {item.q}
-          </div>
-
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-400 transition group-open:rotate-180">
-            ▾
-          </span>
-        </summary>
-
-        <div className="border-t border-slate-100 bg-slate-50 px-4 py-4">
-          <div className="leading-7 text-slate-600">
-            {item.a}
-          </div>
+<div className="space-y-3 md:hidden">
+  {visibleFaqItems.map((item, i) => (
+    <details
+      key={i}
+      className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+    >
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
+        <div className="text-left text-base font-bold text-slate-900">
+          {item.question}
         </div>
-      </details>
-    ))}
-  </div>
 
-  {/* Desktop */}
-  <div className="hidden space-y-4 md:block">
-    {faqItems.map((item, i) => (
-      <div
-        key={i}
-        className="rounded-2xl border border-slate-200 bg-slate-50 p-5"
-      >
-        <div className="text-base font-bold text-slate-900">
-          {item.q}
-        </div>
-        <div className="mt-2 leading-7 text-slate-600">
-          {item.a}
+        <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-400 transition group-open:rotate-180">
+          ▾
+        </span>
+      </summary>
+
+      <div className="border-t border-slate-100 bg-slate-50 px-4 py-4">
+        <div className="leading-7 text-slate-600">
+          {item.answer}
         </div>
       </div>
-    ))}
-  </div>
-</SectionCard>
+    </details>
+  ))}
+
+  {extraFaqItems.length > 0 && (
+    <details className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <summary className="cursor-pointer list-none px-4 py-4 text-center text-sm font-extrabold text-blue-600">
+        Show more questions
+      </summary>
+
+      <div className="space-y-3 border-t border-slate-100 bg-slate-50 p-3">
+        {extraFaqItems.map((item, i) => (
+          <details
+            key={`extra-mobile-${i}`}
+            className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+          >
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
+              <div className="text-left text-base font-bold text-slate-900">
+                {item.question}
+              </div>
+
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-400 transition group-open:rotate-180">
+                ▾
+              </span>
+            </summary>
+
+            <div className="border-t border-slate-100 bg-slate-50 px-4 py-4">
+              <div className="leading-7 text-slate-600">
+                {item.answer}
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </details>
+  )}
+</div>
+
+  {/* Desktop */}
+<div className="hidden space-y-4 md:block">
+  {visibleFaqItems.map((item, i) => (
+    <div
+      key={i}
+      className="rounded-2xl border border-slate-200 bg-slate-50 p-5"
+    >
+      <div className="text-base font-bold text-slate-900">
+        {item.question}
+      </div>
+      <div className="mt-2 leading-7 text-slate-600">
+        {item.answer}
+      </div>
+    </div>
+  ))}
+
+  {extraFaqItems.length > 0 && (
+    <details className="group rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <summary className="cursor-pointer list-none px-5 py-4 text-center text-sm font-extrabold text-blue-600">
+        Show more questions
+      </summary>
+
+      <div className="space-y-4 border-t border-slate-100 bg-slate-50 p-4">
+        {extraFaqItems.map((item, i) => (
+          <div
+            key={`extra-desktop-${i}`}
+            className="rounded-2xl border border-slate-200 bg-white p-5"
+          >
+            <div className="text-base font-bold text-slate-900">
+              {item.question}
+            </div>
+            <div className="mt-2 leading-7 text-slate-600">
+              {item.answer}
+            </div>
+          </div>
+        ))}
+      </div>
+    </details>
+  )}
+</div>
+  </SectionCard>
+)}
 
           <SectionCard title={`Compare ${broker.name_en || broker.name} with Other Brokers`}>
   {relatedBrokers.length ? (
