@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import Script from "next/script";
 import Link from "next/link";
 import ShareButtons from "@/app/components/ShareButtons";
-import ExpandableText from "@/app/components/ExpandableText";
+
 
 type Broker = {
   id: number;
@@ -67,6 +67,31 @@ type Broker = {
   score_support: number | null;
   faq_ar: { question: string; answer: string }[] | null;
   faq_en: { question: string; answer: string }[] | null;
+  broker_positioning_en: string | null;
+  who_should_use_en: string | null;
+  who_should_avoid_en: string | null;
+  key_strength_en: string | null;
+  key_weakness_en: string | null;
+
+  broker_positioning_ar: string | null;
+  who_should_use_ar: string | null;
+  who_should_avoid_ar: string | null;
+  key_strength_ar: string | null;
+  key_weakness_ar: string | null;
+  expert_insight_en: string | null;
+  expert_insight_ar: string | null;
+
+  deposit_withdrawal_summary_en: string | null;
+  payment_methods_en: string | null;
+  withdrawal_speed_en: string | null;
+
+  platform_summary_en: string | null;
+  available_platforms_en: string | null;
+  platform_tools_en: string | null;
+
+  regulation_summary_en: string | null;
+  fund_protection_en: string | null;
+  safety_factors_en: string | null;
 };
 
 type RelatedBroker = {
@@ -112,11 +137,16 @@ function splitRichText(value: string | null) {
 async function getBroker(slug: string): Promise<Broker | null> {
   const supabase = await createClient();
 
+  console.log("Incoming slug:", slug);
+
   const { data, error } = await supabase
     .from("brokers")
     .select("*")
     .eq("slug", slug)
     .maybeSingle();
+
+  console.log("Broker query data:", data);
+  console.log("Broker query error:", error);
 
   if (error) {
     console.error("Supabase error:", error);
@@ -159,6 +189,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  console.log("Page slug param:", slug);
   const broker = await getBroker(slug);
   const siteUrl = "https://brokeralarab.com";
 
@@ -410,17 +441,19 @@ function ScoreBar({
   value: number | null;
 }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4">
-      <div className="mb-2 flex items-center justify-between gap-3">
-        <span className="text-sm font-bold text-slate-600">{label}</span>
-        <span className="text-sm font-extrabold text-slate-900">
+    <div className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm transition hover:shadow-md">
+      <div className="mb-3 flex items-start justify-between gap-3">
+        <span className="text-[11px] font-black leading-5 text-slate-700">
+  {label}
+</span>
+        <span className="shrink-0 rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-black text-blue-700">
           {value ?? "-"} / 5
         </span>
       </div>
 
-      <div className="h-2 rounded-full bg-slate-200">
+      <div className="h-2.5 rounded-full bg-slate-200">
         <div
-          className="h-2 rounded-full bg-emerald-500"
+          className="h-2.5 rounded-full bg-gradient-to-r from-blue-600 to-blue-400"
           style={{ width: `${((value ?? 0) / 5) * 100}%` }}
         />
       </div>
@@ -721,36 +754,7 @@ function SplitListSection({
       )}
     </SectionCard>
   );
-}
-
-function SectionNav() {
-  const links = [
-    { href: "#summary", label: "Overview" },
-    { href: "#scores", label: "Rating" },
-    { href: "#accounts", label: "Accounts" },
-    { href: "#fees", label: "Fees" },
-    { href: "#platforms", label: "Platforms" },
-    { href: "#regulation", label: "Regulation" },
-    { href: "#verdict", label: "Final Verdict" },
-    { href: "#faq", label: "FAQ" },
-  ];
-
-  return (
-    <div className="mb-8 hidden flex-wrap gap-3 md:flex">
-      {links.map((item) => (
-        <a
-          key={item.href}
-          href={item.href}
-          className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
-        >
-          {item.label}
-        </a>
-      ))}
-    </div>
-  );
-}
-
-      
+}  
 
 function renderStars(rating: number | null) {
   if (!rating) return null
@@ -996,6 +1000,13 @@ export default async function BrokerPage({
   
   const pros = splitText(broker.pros_en || broker.pros);
   const cons = splitText(broker.cons_en || broker.cons);
+  const whoShouldUse = splitText(broker.who_should_use_en).slice(0, 4);
+  const whoShouldAvoid = splitText(broker.who_should_avoid_en).slice(0, 4);
+  const brokerPositioning =
+  broker.broker_positioning_en ||
+  broker.intro_en ||
+  broker.intro ||
+  `This page reviews ${broker.name_en || broker.name} in terms of regulation, fees, account types, platforms, and customer support.`;
   const accounts = splitText(broker.account_types);
   const payments = splitText(broker.deposit_withdrawal_en || broker.deposit_withdrawal);
   const tradingAssets = splitText(broker.trading_assets);
@@ -1075,6 +1086,49 @@ const faqSchema = faqItems.map((item) => ({
   },
 }));
 
+const paymentMethods = splitText(
+  broker.payment_methods_en ||
+    broker.deposit_withdrawal_en ||
+    broker.deposit_withdrawal
+);
+
+const depositSummary = broker.deposit_withdrawal_summary_en || null;
+
+const withdrawalSpeed = broker.withdrawal_speed_en || null;
+
+const availablePlatforms = broker.available_platforms_en
+  ? splitText(broker.available_platforms_en)
+  : splitPipes(broker.platforms);
+
+const platformTools = splitText(broker.platform_tools_en);
+
+const platformSummary =
+  broker.platform_summary_en ||
+  broker.platform_details_en ||
+  broker.platform_details ||
+  null;
+
+const regulationBodies = splitText(broker.regulation);
+
+const regulationSummary =
+  broker.regulation_summary_en ||
+  broker.safety_en ||
+  broker.safety ||
+  null;
+
+const fundProtection =
+  broker.fund_protection_en ||
+  broker.safety_en ||
+  broker.safety ||
+  null;
+
+const safetyFactors = splitText(broker.safety_factors_en);
+
+const regulationItems = (broker.regulation_short || broker.regulation || "")
+  .split(/[,|]/)
+  .map((item) => item.trim())
+  .filter(Boolean);
+
   const siteUrl = "https://brokeralarab.com";
   const pageUrl = `${siteUrl}/en/brokers/${broker.slug}`;
 const shareTitle = `${broker.name_en || broker.name} Review | Broker AlArab`;
@@ -1141,7 +1195,7 @@ const breadcrumbSchema = {
     __html: JSON.stringify(organizationSchema),
   }}
 />
-            <main dir="ltr" className="mx-auto w-full max-w-7xl px-3 py-8 text-left sm:px-4 md:py-10">
+            <main dir="ltr" className="mx-auto w-full max-w-7xl px-3 pt-8 pb-1 text-left sm:px-4 md:pt-10 md:pb-1">
         <div className="mb-4 text-sm text-slate-500">
           <Link href="/en/brokers" className="hover:text-slate-700">
             Reviews
@@ -1159,7 +1213,7 @@ const breadcrumbSchema = {
     <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start lg:gap-6">
       
       <aside className="order-1 hidden space-y-4 text-left lg:order-2 lg:block">
-<div className="flex h-[120px] items-center justify-center overflow-hidden rounded-[20px] border border-slate-200 bg-slate-50 px-4 py-4 md:h-[150px]">
+<div className="flex h-[120px] items-center justify-center overflow-hidden rounded-[24px] border border-slate-200 bg-gradient-to-br from-white to-slate-50 px-4 py-4 shadow-sm md:h-[150px]">
   {broker.logo ? (
     <img
       src={broker.logo}
@@ -1172,288 +1226,385 @@ const breadcrumbSchema = {
   )}
 </div>
 
-                <div className="rounded-[20px] border border-slate-200 bg-slate-50 p-4 md:rounded-[24px]">
-          <div className="mb-3 text-sm font-black text-slate-900">
-            Quick Facts
-          </div>
+                <div className="rounded-[24px] border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-5 shadow-sm">
+          <div className="mb-4 text-base font-extrabold text-slate-900">
+  Broker Snapshot
+</div>
 
           <div className="space-y-1">
-            <SummaryRow label="Founded" value={broker.founded_year} />
-            <SummaryRow label="Headquarters" value={broker.headquarters_en || broker.headquarters} />
-            <SummaryRow label="Regulation" value={broker.regulation_short} />
-            <SummaryRow label="Arabic Support" value={broker.arabic_support} />
-          </div>
+  <SummaryRow label="Founded" value={broker.founded_year} />
+  <SummaryRow label="Headquarters" value={broker.headquarters_en || broker.headquarters} />
+
+  <div className="border-b border-slate-200 py-3">
+  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+    <div className="text-sm font-medium text-slate-400">Regulation</div>
+
+    {regulationItems.length ? (
+      <div className="flex flex-wrap justify-start gap-2 sm:max-w-[70%] sm:justify-end">
+        {regulationItems.map((item, i) => (
+          <span
+            key={i}
+            className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2 py-1 text-[11px] font-bold text-slate-700"
+          >
+            {item}
+          </span>
+        ))}
+      </div>
+    ) : (
+      <div className="text-right text-[15px] font-extrabold text-slate-900 leading-tight md:text-[18px] max-w-[160px] ml-auto">
+        -
+      </div>
+    )}
+  </div>
+</div>
+
+  <SummaryRow label="Arabic Support" value={broker.arabic_support} />
+</div>
         </div>
 
-        <div className="rounded-[20px] border border-slate-200 bg-white p-4 md:rounded-[24px]">
+        <div className="rounded-[24px] border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-4 shadow-sm">
+         {broker.expert_insight_en ? (
+  <div className="min-h-[210px] rounded-[24px] border border-blue-200 bg-blue-50 p-4 shadow-sm">
+    <div className="text-xs font-bold uppercase tracking-wide text-blue-700">
+      Expert insight
+    </div>
+    <div className="mt-2 text-sm leading-7 text-slate-700">
+      {broker.expert_insight_en}
+    </div>
+  </div>
+) : null}
           <ShareButtons url={pageUrl} title={shareTitle} />
         </div>
       </aside>
 
             <div className="order-2 min-w-0 text-left lg:order-1">
-        <div className="mb-3 hidden flex-wrap items-center gap-2 md:flex">
-          <Chip tone="blue">Broker Review</Chip>
-          <Chip tone="emerald">{verdictTone.badge}</Chip>
-          {broker.best_for_en || broker.best_for ? (
-            <Chip tone="amber">Best for: {broker.best_for_en || broker.best_for}</Chip>
-          ) : null}
+  <div className="mb-3 hidden flex-wrap items-center gap-2 md:flex">
+    <Chip tone="blue">Broker Review</Chip>
+    <Chip tone="emerald">{verdictTone.badge}</Chip>
+
+    {broker.key_strength_en ? (
+      <Chip tone="amber">Key strength: {broker.key_strength_en}</Chip>
+    ) : null}
+
+    {broker.key_weakness_en ? (
+      <Chip tone="slate">Risk: {broker.key_weakness_en}</Chip>
+    ) : null}
+  </div>
+
+  <h1 className="text-2xl font-black leading-tight text-slate-950 sm:text-3xl md:text-5xl">
+    {broker.name_en || broker.name} Review 2026
+  </h1>
+  <div className="mt-2 text-xs font-semibold text-slate-500">
+  Updated for 2026 • Based on real trading conditions
+</div>
+
+  <div className="mt-4 flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+    {renderStars(overallScore || broker.rating)}
+    <div
+      className={`inline-flex rounded-full border px-3 py-2 text-sm font-black ${verdictTone.color}`}
+    >
+      Rating: {verdictTone.label}
+    </div>
+  </div>
+
+<div className="mt-5 max-w-3xl text-[15px] leading-8 text-slate-600 md:min-h-[150px] md:text-base">
+  {brokerPositioning}
+</div>
+
+{/* 🔥 Verdict Line */}
+<div className="mt-4 flex flex-wrap items-center gap-2">
+  <span className="inline-flex rounded-full bg-blue-600 px-4 py-2 text-sm font-bold text-white">
+    Best for active traders
+  </span>
+
+  <span className="text-sm font-semibold text-slate-600">
+    Not ideal for beginners
+  </span>
+</div>
+
+  {(whoShouldUse.length > 0 || whoShouldAvoid.length > 0) ? (
+    <div className="mt-6 grid gap-3 md:grid-cols-2">
+      <div className="h-full min-h-[170px] rounded-[24px] border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-5 shadow-sm">
+        <div className="mb-2 text-sm font-black text-emerald-800">
+          Best suited for
         </div>
 
-        <h1 className="text-2xl font-black leading-tight text-slate-950 sm:text-3xl md:text-5xl">
-          {broker.name_en || broker.name} Review 2026
-        </h1>
-
-        <div className="mt-4 flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-          {renderStars(overallScore || broker.rating)}
-          <div
-            className={`inline-flex rounded-full border px-3 py-2 text-sm font-black ${verdictTone.color}`}
-          >
-            Rating: {verdictTone.label}
+        {whoShouldUse.length ? (
+          <div className="flex flex-wrap gap-2">
+            {whoShouldUse.map((item, i) => (
+              <span
+                key={i}
+                className="inline-flex rounded-full border border-emerald-200 bg-white px-3 py-1.5 text-xs font-bold text-emerald-700 md:text-sm"
+              >
+                {item}
+              </span>
+            ))}
           </div>
-        </div>
-
-        <div className="mt-5 max-w-3xl text-[15px] leading-8 text-slate-600 md:text-base">
-          <ExpandableText
-            text={
-              broker.intro_en ||
-              broker.intro ||
-              `This page reviews ${broker.name_en || broker.name} in terms of regulation, fees, account types, platforms, and customer support.`
-            }
-          />
-        </div>
-
-                <div className="mt-4 flex flex-wrap gap-2">
-          <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 md:text-sm">
-            Beginner friendly
-          </span>
-
-          {broker.islamic_account ? (
-            <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 md:text-sm">
-              Islamic account
-            </span>
-          ) : null}
-
-          {broker.spreads_en || broker.spreads ? (
-            <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 md:text-sm">
-              Competitive spreads
-            </span>
-          ) : null}
-        </div>
-
-               <div className="mt-6 grid grid-cols-2 gap-3 xl:grid-cols-4">
-          <QuickStat
-            label="Overall Rating"
-            value={overallScore || broker.rating || "-"}
-            accent="blue"
-          />
-          <QuickStat
-            label="Min Deposit"
-            value={formatMoney(broker.min_deposit)}
-            accent="emerald"
-          />
-          <QuickStat
-            label="Max Leverage"
-            value={broker.max_leverage || "-"}
-            accent="amber"
-          />
-          <QuickStat
-            label="Islamic Account"
-            value={broker.islamic_account}
-            accent="slate"
-          />
-        </div>
-
-               <div className="mt-6 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap sm:items-center sm:justify-start">
-          <a
-            href={`/go/${broker.slug}?type=real`}
-            target="_blank"
-            rel="nofollow sponsored noopener noreferrer"
-            className="inline-flex min-h-[52px] w-full items-center justify-center rounded-2xl bg-blue-600 px-6 py-3 text-sm font-extrabold text-white transition hover:bg-blue-700 sm:w-auto sm:min-w-[170px] md:text-base"
-          >
-            Open Real Account
-          </a>
-
-          <a
-            href={`/go/${broker.slug}?type=demo`}
-            target="_blank"
-            rel="nofollow sponsored noopener noreferrer"
-            className="inline-flex min-h-[52px] w-full items-center justify-center rounded-2xl bg-blue-600 px-6 py-3 text-sm font-extrabold text-white transition hover:bg-blue-700 sm:w-auto sm:min-w-[170px] md:text-base"
-          >
-            Open Demo Account
-          </a>
-
-          <a
-            href={`/go/${broker.slug}?type=mt5`}
-            target="_blank"
-            rel="nofollow sponsored noopener noreferrer"
-            className="inline-flex min-h-[52px] w-full items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-extrabold text-slate-900 transition hover:bg-slate-50 sm:w-auto sm:min-w-[170px] md:text-base"
-          >
-            Download MT5
-          </a>
-
-          <a
-            href={`/go/${broker.slug}?type=mt4`}
-            target="_blank"
-            rel="nofollow sponsored noopener noreferrer"
-            className="inline-flex min-h-[52px] w-full items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-extrabold text-slate-900 transition hover:bg-slate-50 sm:w-auto sm:min-w-[170px] md:text-base"
-          >
-            Download MT4
-          </a>
-        </div>
+        ) : (
+          <p className="text-sm text-slate-500">No data available.</p>
+        )}
       </div>
+
+      <div className="h-full min-h-[170px] rounded-[24px] border border-amber-200 bg-gradient-to-br from-amber-50 to-white p-5 shadow-sm">
+        <div className="mb-2 text-sm font-black text-amber-800">
+          May not suit
+        </div>
+
+        {whoShouldAvoid.length ? (
+          <div className="flex flex-wrap gap-2">
+            {whoShouldAvoid.map((item, i) => (
+              <span
+                key={i}
+                className="inline-flex rounded-full border border-amber-200 bg-white px-3 py-1.5 text-xs font-bold text-amber-700 md:text-sm"
+              >
+                {item}
+              </span>
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-slate-500">No data available.</p>
+        )}
+      </div>
+    </div>
+  ) : null}
+
+  <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+    <QuickStat
+      label="Overall Rating"
+      value={overallScore || broker.rating || "-"}
+      accent="blue"
+    />
+    <QuickStat
+      label="Min Deposit"
+      value={formatMoney(broker.min_deposit)}
+      accent="emerald"
+    />
+    <QuickStat
+      label="Max Leverage"
+      value={broker.max_leverage || "-"}
+      accent="amber"
+    />
+
+  </div>
+
+  <div className="mt-5 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap sm:items-center sm:justify-center">
+  <a
+    href={`/go/${broker.slug}?type=real`}
+    target="_blank"
+    rel="nofollow sponsored noopener noreferrer"
+    className="inline-flex min-h-[52px] w-full items-center justify-center rounded-2xl bg-blue-600 shadow-xl shadow-blue-300 px-6 py-3 text-sm font-extrabold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700 sm:w-auto sm:min-w-[170px] md:text-base"
+  >
+    Open Real Account
+  </a>
+
+  <a
+    href={`/go/${broker.slug}?type=demo`}
+    target="_blank"
+    rel="nofollow sponsored noopener noreferrer"
+    className="inline-flex min-h-[52px] w-full items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-extrabold text-slate-900 transition hover:bg-slate-50 sm:w-auto sm:min-w-[170px] md:text-base"
+  >
+    Open Demo Account
+  </a>
+
+  <a
+    href={`/go/${broker.slug}?type=mt5`}
+    target="_blank"
+    rel="nofollow sponsored noopener noreferrer"
+    className="inline-flex min-h-[52px] w-full items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-extrabold text-slate-900 transition hover:bg-slate-50 sm:w-auto sm:min-w-[170px] md:text-base"
+  >
+    Download MT5
+  </a>
+
+  <a
+    href={`/go/${broker.slug}?type=mt4`}
+    target="_blank"
+    rel="nofollow sponsored noopener noreferrer"
+    className="inline-flex min-h-[52px] w-full items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-extrabold text-slate-900 transition hover:bg-slate-50 sm:w-auto sm:min-w-[170px] md:text-base"
+  >
+    Download MT4
+  </a>
+</div>
+
+</div>
     </div>
   </div>
 </section>
 
-        <div className="mt-8 min-w-0">
-  <SectionNav />
-</div>
 
-<div className="grid min-w-0 gap-8">
+<div className="mt-6 grid min-w-0 gap-8">
   <div className="min-w-0 space-y-8">
+                        
+
                         <SectionCard
-              title="Quick Overview"
-              subtitle="A direct look at the key details most traders check before opening an account."
-              id="summary"
-            >
-              <div className="grid min-w-0 gap-4 lg:grid-cols-2">
-                <div className="rounded-[20px] border border-slate-200 bg-white p-2.5 md:p-6">
-  {/* Mobile */}
-    <div className="grid min-w-0 grid-cols-2 gap-2 md:hidden">
-    <MiniInfoCard label="Founded" value={broker.founded_year} tone="blue" />
-    <MiniInfoCard label="HQ" value={broker.headquarters_en || broker.headquarters} tone="emerald" />
-    <MiniInfoCard label="Rating" value={overallScore || broker.rating} tone="amber" />
-    <MiniInfoCard
-      label="Deposit"
-      value={formatMoney(broker.min_deposit)}
-      tone="violet"
-    />
+  title="Rating Breakdown"
+  id="scores"
+>
+  <div className="mb-6 overflow-hidden rounded-[28px] border border-slate-200 bg-gradient-to-br from-slate-50 via-white to-blue-50 shadow-sm">
+    <div className="grid gap-0 md:grid-cols-[220px_minmax(0,1fr)]">
+      <div className="flex flex-col justify-center border-b border-slate-200 p-6 text-center md:border-b-0 md:border-r">
+        <div className="text-xs font-black uppercase tracking-wide text-blue-700">
+          Overall Score
+        </div>
+        <div className="mt-3 flex items-end justify-center gap-2">
+          <span className="text-5xl font-black leading-none text-slate-950">
+            {overallScore || broker.rating || "-"}
+          </span>
+          <span className="text-sm font-bold text-blue-700">/ 5</span>
+        </div>
+        <div className="mt-3 inline-flex items-center justify-center rounded-full border border-blue-200 bg-white px-3 py-1 text-xs font-black text-blue-700">
+          {verdictTone.label}
+        </div>
+      </div>
+
+      <div className="p-6 md:p-7">
+        <div className="text-lg font-black text-slate-950 md:text-xl">
+          Analyst Summary
+        </div>
+
+        <p className="mt-3 max-w-3xl text-sm leading-8 text-slate-700 md:text-base">
+          This score reflects the broker’s overall balance between regulation, trading costs, platform quality, deposit and withdrawal experience, and customer support.
+        </p>
+
+        <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+            <div className="text-xs font-bold text-slate-500">Regulation Quality</div>
+            <div className="mt-1 text-sm font-extrabold text-slate-900">
+              {broker.regulation_short || "Not specified"}
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+            <div className="text-xs font-bold text-slate-500">Min Deposit</div>
+            <div className="mt-1 text-sm font-extrabold text-slate-900">
+              {formatMoney(broker.min_deposit)}
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+            <div className="text-xs font-bold text-slate-500">Platform Access</div>
+            <div className="mt-1 text-sm font-extrabold text-slate-900">
+              {broker.platforms || "Not specified"}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  {/* Desktop */}
-    <div className="hidden md:block">
-    <SummaryRow label="Broker Name" value={broker.name_en || broker.name} />
-    <SummaryRow label="Founded" value={broker.founded_year} />
-    <SummaryRow label="Headquarters" value={broker.headquarters_en || broker.headquarters} />
-    <SummaryRow label="Overall Rating" value={overallScore || broker.rating} />
-    <SummaryRow label="Min Deposit" value={formatMoney(broker.min_deposit)} />
-    <SummaryRow label="Max Leverage" value={broker.max_leverage} />
+  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+    <ScoreBar label="Safety & Regulation" value={broker.score_safety} />
+    <ScoreBar label="Fees & Spreads" value={broker.score_fees} />
+    <ScoreBar label="Trading Platforms" value={broker.score_platforms} />
+    <ScoreBar label="Deposits & Withdrawals" value={broker.score_deposit} />
+    <ScoreBar label="Customer Support" value={broker.score_support} />
   </div>
+</SectionCard>
+
+{/* Mobile: keep current simple style */}
+<div className="grid gap-6 md:hidden">
+  <ChecklistSection title="Main Advantages" items={pros} type="pros" />
+  <ChecklistSection title="Main Disadvantages" items={cons} type="cons" />
 </div>
 
-                               <div className="min-w-0 rounded-[24px] border border-slate-200 bg-slate-50 p-5">
-                  <SummaryRow label="Platforms" value={broker.platforms} />
-                  <SummaryRow label="Regulation" value={broker.regulation_short} />
-                  <SummaryRow label="Islamic Account" value={broker.islamic_account} />
-                  <SummaryRow label="Arabic Support" value={broker.arabic_support} />
-                  <SummaryRow label="Best For" value={broker.best_for_en || broker.best_for} />
-                </div>
-              </div>
+{/* Desktop: professional comparison layout */}
+<div className="hidden gap-6 lg:grid lg:grid-cols-2 lg:gap-8">
+  <section className="rounded-[28px] border border-slate-200 bg-white shadow-sm">
+    <div className="border-b border-slate-200 px-6 py-5">
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h2 className="text-2xl font-extrabold text-slate-950">
+            Main Advantages
+          </h2>
+          <p className="mt-2 text-sm leading-7 text-slate-600">
+            Key strengths that make this broker appealing for active traders.
+          </p>
+        </div>
 
-                            <div className="hidden rounded-[24px] border border-slate-200 bg-slate-50 p-5 md:block">
-                <div className="mb-4 flex items-center justify-between">
-                  <h3 className="text-xl font-black text-slate-900">Quick Facts</h3>
-                  <span className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700">
-                    Key Information
-                  </span>
-                </div>
+        <div className="inline-flex h-10 min-w-[40px] items-center justify-center rounded-full bg-emerald-50 px-3 text-sm font-black text-emerald-700">
+          {pros.length}
+        </div>
+      </div>
+    </div>
 
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                  <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                    <div className="h-1.5 bg-blue-500" />
-                    <div className="flex min-h-[120px] flex-col items-center justify-center px-4 py-5 text-center">
-                      <div className="mb-2 text-xs font-bold text-slate-500 md:text-sm">Headquarters</div>
-                      <div className="text-lg font-black text-slate-900 md:text-2xl break-words">
-                        {broker.headquarters_en || broker.headquarters || "-"}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                    <div className="h-1.5 bg-emerald-500" />
-                    <div className="flex min-h-[120px] flex-col items-center justify-center px-4 py-5 text-center">
-                      <div className="mb-2 text-xs font-bold text-slate-500 md:text-sm">Founded</div>
-                      <div className="text-lg font-black text-slate-900 md:text-2xl break-words">
-                        {broker.founded_year || "-"}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                    <div className="h-1.5 bg-amber-500" />
-                    <div className="flex min-h-[120px] flex-col items-center justify-center px-4 py-5 text-center">
-                      <div className="mb-2 text-xs font-bold text-slate-500 md:text-sm">Min Deposit</div>
-                      <div className="text-lg font-black text-slate-900 md:text-2xl break-words">
-                        {formatMoney(broker.min_deposit)}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                    <div className="h-1.5 bg-slate-500" />
-                    <div className="flex min-h-[120px] flex-col items-center justify-center px-4 py-5 text-center">
-                      <div className="mb-2 text-xs font-bold text-slate-500 md:text-sm">Max Leverage</div>
-                      <div className="text-lg font-black text-slate-900 md:text-2xl break-words">
-                        {broker.max_leverage || "-"}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </SectionCard>
-
-                        <SectionCard
-              title="Detailed Rating"
-              subtitle="This score combines safety, fees, platforms, deposit and withdrawal experience, and customer support."
-              id="scores"
+    <div className="p-6 lg:min-h-[264px]">
+      {pros.length ? (
+        <div className="space-y-3">
+          {pros.map((item, i) => (
+            <div
+              key={i}
+              className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 transition duration-200 hover:border-emerald-200 hover:bg-white hover:shadow-sm"
             >
-              <div className="mb-6 rounded-[24px] border border-emerald-200 bg-emerald-50 p-5">
-                <div className="flex flex-wrap items-end justify-between gap-4">
-                  <div>
-                                        <div className="text-sm font-bold text-emerald-700">
-                      Final Score
-                    </div>
-                    <div className="mt-2 flex items-end gap-2">
-                      <span className="text-5xl font-black text-slate-950">
-                        {overallScore || broker.rating || "-"}
-                      </span>
-                      <span className="mb-2 text-sm font-bold text-emerald-700">
-                        / 5
-                      </span>
-                    </div>
-                  </div>
-
-                                    <div className="mx-auto max-w-3xl text-center text-sm leading-8 text-slate-700 md:text-base">
-                    {broker.name_en || broker.name} received a{" "}
-                    <span className="font-black text-slate-950">
-                      {verdictTone.label}
-                    </span>{" "}
-                    rating based on regulation quality, fee structure, platform experience, deposit and withdrawal ease, and customer support.
-                  </div>
-                </div>
+              <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-sm font-black text-emerald-700">
+                ✓
               </div>
 
-                            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-                <ScoreBar label="Safety & Regulation" value={broker.score_safety} />
-                <ScoreBar label="Fees & Spreads" value={broker.score_fees} />
-                <ScoreBar label="Trading Platforms" value={broker.score_platforms} />
-                <ScoreBar label="Deposits & Withdrawals" value={broker.score_deposit} />
-                <ScoreBar label="Customer Support" value={broker.score_support} />
+              <div className="min-w-0">
+                <p className="text-[15px] leading-7 text-slate-700">
+                  {item}
+                </p>
               </div>
-            </SectionCard>
-
-                        <div className="grid gap-6 lg:grid-cols-2">
-              <ChecklistSection title="Main Advantages" items={pros} type="pros" />
-              <ChecklistSection title="Main Disadvantages" items={cons} type="cons" />
             </div>
+          ))}
+        </div>
+      ) : (
+        <p className="text-slate-500">No data is currently available.</p>
+      )}
+    </div>
+  </section>
 
-                        <SectionCard
+  <section className="rounded-[28px] border border-slate-200 bg-white shadow-sm">
+    <div className="border-b border-slate-200 px-6 py-5">
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h2 className="text-2xl font-extrabold text-slate-950">
+            Main Disadvantages
+          </h2>
+          <p className="mt-2 text-sm leading-7 text-slate-500">
+            Important limitations and trade-offs to consider before opening an account.
+          </p>
+        </div>
+
+        <div className="inline-flex h-10 min-w-[40px] items-center justify-center rounded-full bg-rose-50 px-3 text-sm font-black text-rose-700">
+          {cons.length}
+        </div>
+      </div>
+    </div>
+
+    <div className="p-6">
+      {cons.length ? (
+        <div className="space-y-3">
+          {cons.map((item, i) => (
+            <div
+              key={i}
+              className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 transition duration-200 hover:border-rose-200 hover:bg-transparent hover:shadow-sm"
+            >
+              <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-rose-100 text-sm font-black text-rose-700">
+                –
+              </div>
+
+              <div className="min-w-0">
+                <p className="text-[15px] leading-7 text-slate-700">
+                  {item}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="text-slate-500">No data is currently available.</p>
+      )}
+    </div>
+  </section>
+</div>
+
+<SectionCard
   title="Account Types"
   subtitle={`A practical overview of the account types available at ${broker.name_en || broker.name}, including the key details of each account.`}
   id="accounts"
 >
   <div className="space-y-6">
-       <div className="grid grid-cols-2 gap-3 md:hidden">
+    {/* Mobile — unchanged */}
+    <div className="grid grid-cols-2 gap-3 md:hidden">
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="h-1.5 bg-blue-500" />
         <div className="p-4 text-center">
@@ -1465,7 +1616,7 @@ const breadcrumbSchema = {
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="h-1.5 bg-emerald-500" />
+        <div className="h-1.5 bg-blue-500" />
         <div className="p-4 text-center">
           <div className="text-xs font-bold text-slate-500">Lowest Deposit</div>
           <div className="mt-2 text-2xl font-black text-slate-950">
@@ -1475,400 +1626,417 @@ const breadcrumbSchema = {
       </div>
     </div>
 
-    <div className="hidden gap-4 md:grid-cols-2 xl:grid-cols-4 md:grid">
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="h-1.5 bg-blue-500" />
-        <div className="p-5 text-center">
-          <div className="text-xs font-bold text-slate-500 md:text-sm">
-            Available Accounts
-          </div>
-          <div className="mt-3 text-3xl font-black text-slate-950">
-            {accountCount || "-"}
-          </div>
-          <div className="mt-2 text-sm text-slate-500">
-            Different account types for various trading styles
-          </div>
-        </div>
-      </div>
+    {/* Desktop — stronger visual block */}
+    <div className="hidden md:block">
+      <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-sm">
+        <div className="grid gap-0 xl:grid-cols-[280px_minmax(0,1fr)]">
+          <div className="border-b border-slate-200 bg-slate-50 p-6 xl:border-b-0 xl:border-r">
+            <div className="text-xs font-black uppercase tracking-[0.12em] text-blue-700">
+              Account Overview
+            </div>
 
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="h-1.5 bg-emerald-500" />
-        <div className="p-5 text-center">
-          <div className="text-xs font-bold text-slate-500 md:text-sm">
-            Lowest Deposit
-          </div>
-          <div className="mt-3 text-3xl font-black text-slate-950">
-            {lowestDeposit?.raw || broker.min_deposit || "-"}
-          </div>
-          <div className="mt-2 text-sm text-slate-500">
-            {lowestDeposit?.name || "Depends on account type"}
-          </div>
-        </div>
-      </div>
+            <div className="mt-5">
+              <div className="text-5xl font-black leading-none text-slate-950">
+                {accountCount || "-"}
+              </div>
+              <div className="mt-2 text-sm font-medium text-slate-500">
+                Available account types
+              </div>
+            </div>
 
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="h-1.5 bg-amber-500" />
-        <div className="p-5 text-center">
-          <div className="text-xs font-bold text-slate-500 md:text-sm">
-            Lowest Spread
-          </div>
-          <div className="mt-3 text-3xl font-black text-slate-950">
-            {lowestSpread?.spread || broker.spreads_en || broker.spreads || "-"}
-          </div>
-          <div className="mt-2 text-sm text-slate-500">
-            {lowestSpread?.account_name || "Depends on account type"}
-          </div>
-        </div>
-      </div>
+            <div className="mt-6 space-y-3">
+              <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+                <div className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+                  Lowest Deposit
+                </div>
+                <div className="mt-1 text-lg font-black text-slate-950">
+                  {lowestDeposit?.raw || broker.min_deposit || "-"}
+                </div>
+              </div>
 
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="h-1.5 bg-slate-500" />
-        <div className="p-5 text-center">
-          <div className="text-xs font-bold text-slate-500 md:text-sm">
-            Commission Structure
+              <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+                <div className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+                  Lowest Spread
+                </div>
+                <div className="mt-1 text-lg font-black text-slate-950">
+                  {lowestSpread?.spread || broker.spreads_en || broker.spreads || "-"}
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="mt-3 text-xl font-black text-slate-950 md:text-2xl">
-            {commissionAccounts.length
-              ? `${commissionAccounts.length} commission accounts`
-              : "No clear commission"}
-          </div>
-          <div className="mt-2 text-sm text-slate-500">
-            {noCommissionAccounts.length
-              ? `${noCommissionAccounts.length} no-commission accounts`
-              : "Check account details"}
+
+          <div className="p-6 xl:p-7">
+            <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0">
+                <div className="text-xl font-black text-slate-950">
+                  Compare Account Options
+                </div>
+                <p className="mt-2 max-w-3xl text-sm leading-8 text-slate-600">
+                  Review the differences in spreads, commissions, minimum deposits, execution type, and target trader profile across the available account options.
+                </p>
+              </div>
+
+              <div className="hidden shrink-0 rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-black text-blue-700 xl:inline-flex">
+                {commissionAccounts.length} commission / {noCommissionAccounts.length} no commission
+              </div>
+            </div>
+
+            <div className="mt-6 grid gap-4 lg:grid-cols-3">
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
+                <div className="text-xs font-bold text-slate-500">
+                  Lowest Deposit Account
+                </div>
+                <div className="mt-2 text-base font-black text-slate-950">
+                  {lowestDeposit?.name || "-"}
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
+                <div className="text-xs font-bold text-slate-500">
+                  Lowest Spread Account
+                </div>
+                <div className="mt-2 text-base font-black text-slate-950">
+                  {lowestSpread?.account_name || "-"}
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
+                <div className="text-xs font-bold text-slate-500">
+                  Commission Structure
+                </div>
+                <div className="mt-2 text-base font-black text-slate-950">
+                  {commissionAccounts.length
+                    ? `${commissionAccounts.length} commission accounts`
+                    : "No clear commission"}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-        <p className="leading-8 text-slate-700">
+    <p className="leading-8 text-slate-700">
       {broker.name_en || broker.name} offers a range of account types designed for different trader profiles, from simple beginner-friendly accounts to lower-spread or commission-based accounts for more active traders.
     </p>
 
-    {/* Mobile */}
-<MobileAccountAccordion accounts={accountsData} />
+    {/* Mobile — unchanged */}
+    <MobileAccountAccordion accounts={accountsData} />
 
-{/* Desktop */}
-<div className="hidden md:block">
-  <div className="max-w-full overflow-x-auto rounded-[24px] border border-slate-200">
-    <table className="w-full min-w-[820px] text-sm">
-      <thead className="bg-slate-100">
-                <tr>
-          <th className="p-4 text-left font-black text-slate-900">
-            Account Type
-          </th>
-          <th className="p-4 text-center font-black text-slate-900">
-            Spread
-          </th>
-          <th className="p-4 text-center font-black text-slate-900">
-            Commission
-          </th>
-          <th className="p-4 text-center font-black text-slate-900">
-            Min Deposit
-          </th>
-          <th className="p-4 text-center font-black text-slate-900">
-            Execution Type
-          </th>
-          <th className="p-4 text-center font-black text-slate-900">
-            Best For
-          </th>
-        </tr>
-      </thead>
-      <tbody className="bg-white">
-        {accountsData.length ? (
-          accountsData.map((acc) => (
-            <tr key={acc.id} className="border-t border-slate-200">
-              <td className="p-4 font-black text-slate-900">
-                {acc.account_name || "-"}
-              </td>
-              <td className="p-4 text-center text-slate-700">
-                {acc.spread || "-"}
-              </td>
-              <td className="p-4 text-center text-slate-700">
-  {acc.commission_en || acc.commission || "-"}
-</td>
-<td className="p-4 text-center text-slate-700">
-  {acc.min_deposit_en || acc.min_deposit || "-"}
-</td>
-              <td className="p-4 text-center text-slate-700">
-                {acc.execution_type || "-"}
-              </td>
-              <td className="p-4 text-center text-slate-700">
-  {acc.best_for_en || acc.best_for || "-"}
-</td>
-            </tr>
-          ))
-        ) : (
-          <tr>
-                       <td colSpan={6} className="p-5 text-center text-slate-500">
-              No account data is currently available.
-            </td>
-          </tr>
-        )}
-      </tbody>
-    </table>
-  </div>
-</div>
-
-    <div className="hidden rounded-[24px] border border-amber-200 bg-amber-50 p-5 text-sm leading-8 text-slate-700 md:block">
-  <span className="font-black text-slate-900">Note:</span>{" "}
-  Account details such as spreads, commissions, and minimum deposits may vary depending on the account type, regulatory entity, and geographic region, so it is always best to review the official terms before opening an account.
-</div>
-  </div>
-</SectionCard>
-
-
-<SectionCard title="Fees & Spreads" id="fees">
-  <div className="space-y-6">
-    <p className="text-sm leading-8 text-slate-700 md:text-base">
-      This section highlights the spread and commission differences across {broker.name_en || broker.name} account types, helping you compare the actual trading cost of each account without repeating the execution and target-user details already covered above.
-    </p>
-
-    {/* Desktop summary cards only */}
-        <div className="hidden gap-4 md:grid md:grid-cols-2 xl:grid-cols-4">
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="h-1.5 bg-blue-500" />
-        <div className="p-5 text-center">
-          <div className="text-xs font-bold text-slate-500 md:text-sm">
-            Lowest Spread
-          </div>
-          <div className="mt-3 text-3xl font-black text-slate-950">
-            {lowestSpread?.spread || broker.spreads_en || broker.spreads || "-"}
-          </div>
-          <div className="mt-2 text-sm text-slate-500">
-            {lowestSpread?.account_name || "Depends on account type"}
-          </div>
-        </div>
-      </div>
-
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="h-1.5 bg-emerald-500" />
-        <div className="p-5 text-center">
-          <div className="text-xs font-bold text-slate-500 md:text-sm">
-            Lowest Deposit
-          </div>
-          <div className="mt-3 text-3xl font-black text-slate-950">
-            {lowestDeposit?.raw || broker.min_deposit || "-"}
-          </div>
-          <div className="mt-2 text-sm text-slate-500">
-            {lowestDeposit?.name || "Depends on account type"}
-          </div>
-        </div>
-      </div>
-
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="h-1.5 bg-amber-500" />
-        <div className="p-5 text-center">
-          <div className="text-xs font-bold text-slate-500 md:text-sm">
-            Commission Accounts
-          </div>
-          <div className="mt-3 text-3xl font-black text-slate-950">
-            {commissionAccounts.length}
-          </div>
-          <div className="mt-2 text-sm text-slate-500">
-            {commissionAccounts.length
-              ? "Usually Raw / Zero"
-              : "No clear commission"}
-          </div>
-        </div>
-      </div>
-
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="h-1.5 bg-slate-500" />
-        <div className="p-5 text-center">
-          <div className="text-xs font-bold text-slate-500 md:text-sm">
-            No-Commission Accounts
-          </div>
-          <div className="mt-3 text-3xl font-black text-slate-950">
-            {noCommissionAccounts.length}
-          </div>
-          <div className="mt-2 text-sm text-slate-500">
-            {noCommissionAccounts.length
-              ? "Cost included in spread"
-              : "Check account details"}
-          </div>
-        </div>
-      </div>
-    </div>
-
-    {/* Mobile summary only */}
-       <div className="grid grid-cols-2 gap-3 md:hidden">
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="h-1.5 bg-blue-500" />
-        <div className="p-4 text-center">
-          <div className="text-xs font-bold text-slate-500">Lowest Spread</div>
-          <div className="mt-2 text-2xl font-black text-slate-950">
-            {lowestSpread?.spread || broker.spreads_en || broker.spreads || "-"}
-          </div>
-          <div className="mt-1 text-xs text-slate-500">
-            {lowestSpread?.account_name || "Depends on account type"}
-          </div>
-        </div>
-      </div>
-
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="h-1.5 bg-emerald-500" />
-        <div className="p-4 text-center">
-          <div className="text-xs font-bold text-slate-500">Commission Accounts</div>
-          <div className="mt-2 text-2xl font-black text-slate-950">
-            {commissionAccounts.length}
-          </div>
-          <div className="mt-1 text-xs text-slate-500">
-            {commissionAccounts.length
-              ? "Usually Raw / Zero"
-              : "No clear commission"}
-          </div>
-        </div>
-      </div>
-    </div>
-
-    {/* Mobile accordion only */}
-    <div className="md:hidden">
-      {accountsData.length ? (
-        <MobileFeesAccordion accounts={accountsData} />
-      ) : (
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 text-center text-slate-500">
-         No fee data is currently available.
-        </div>
-      )}
-    </div>
-
-    {/* Desktop compact table only */}
+    {/* Desktop — stronger table, Best For removed */}
     <div className="hidden md:block">
-      <div className="overflow-hidden rounded-[24px] border border-slate-200">
-        <table className="w-full text-sm">
-          <thead className="bg-slate-100">
-                        <tr>
-              <th className="p-4 text-left font-black text-slate-900">
-                Account Type
-              </th>
-              <th className="p-4 text-center font-black text-slate-900">
-                Spread
-              </th>
-              <th className="p-4 text-center font-black text-slate-900">
-                Commission
-              </th>
-              <th className="p-4 text-center font-black text-slate-900">
-                Min Deposit
-              </th>
-            </tr>
-          </thead>
-
-          <tbody className="bg-white">
-            {accountsData.length ? (
-              accountsData.map((acc) => (
-                <tr key={acc.id} className="border-t border-slate-200">
-                  <td className="p-4 font-black text-slate-900">
-                    {acc.account_name || "-"}
-                  </td>
-                  <td className="p-4 text-center text-slate-700">
-                    {acc.spread || "-"}
-                  </td>
-                 <td className="p-4 text-center text-slate-700">
-  {acc.commission_en || acc.commission || "-"}
-</td>
-<td className="p-4 text-center text-slate-700">
-  {acc.min_deposit_en || acc.min_deposit || "-"}
-</td>
-                </tr>
-              ))
-            ) : (
+      <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-sm">
+    
+        <div className="max-w-full overflow-x-auto">
+          <table className="w-full min-w-[760px] text-sm">
+            <thead className="bg-slate-50">
               <tr>
-                                <td colSpan={4} className="p-5 text-center text-slate-500">
-                  No fee data is currently available.
-                </td>
+                <th className="p-4 text-left font-black text-slate-900">
+                  Account Type
+                </th>
+                <th className="p-4 text-center font-black text-slate-900">
+                  Spread
+                </th>
+                <th className="p-4 text-center font-black text-slate-900">
+                  Commission
+                </th>
+                <th className="p-4 text-center font-black text-slate-900">
+                  Min Deposit
+                </th>
+                <th className="p-4 text-center font-black text-slate-900">
+                  Execution Type
+                </th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody className="bg-white">
+              {accountsData.length ? (
+                accountsData.map((acc, index) => (
+                  <tr
+  key={acc.id}
+  className={`border-t border-slate-200 transition ${
+    index === 0
+  ? "bg-blue-50/40"
+      : index % 2 === 0
+      ? "bg-white"
+      : "bg-slate-50/40"
+  } hover:bg-slate-50`}
+>
+                    <td className="p-4">
+  <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5">
+  <span className="h-2 w-2 rounded-full bg-blue-600" />
+  <span className="font-bold text-blue-900">
+    {acc.account_name || "-"}
+  </span>
+</div>
+</td>
+                    <td className="p-4 text-center text-slate-700">
+                      {acc.spread || "-"}
+                    </td>
+                    <td className="p-4 text-center text-slate-700">
+                      {acc.commission_en || acc.commission || "-"}
+                    </td>
+                    <td className="p-4 text-center text-slate-700">
+                      {acc.min_deposit_en || acc.min_deposit || "-"}
+                    </td>
+                    <td className="p-4 text-center text-slate-700">
+                      {acc.execution_type || "-"}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} className="p-5 text-center text-slate-500">
+                    No account data is currently available.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
-    {/* Desktop note only */}
-        <div className="hidden rounded-[24px] border border-amber-200 bg-amber-50 p-5 text-sm leading-8 text-slate-700 md:block">
-      <span className="font-black text-slate-900">Summary:</span>{" "}
-      Accounts without a separate commission usually include their cost inside the spread, while lower-spread accounts such as Raw or Zero may apply a separate commission. That is why comparing
-      <span className="font-black text-slate-900">
-        {" "}
-        spread + commission + minimum deposit{" "}
-      </span>
-      together is more useful than looking at spreads alone.
-      {broker.fees_en || broker.fees ? (
-        <>
-          <br />
-          <span className="font-black text-slate-900">Additional note:</span>{" "}
-          {broker.fees_en || broker.fees}
-        </>
-      ) : null}
+    <div className="hidden rounded-[24px] border border-amber-200 bg-amber-50/80 p-5 text-sm leading-8 text-slate-700 md:block">
+      <span className="font-black text-slate-900">Note:</span>{" "}
+      Account details such as spreads, commissions, and minimum deposits may vary depending on the account type, regulatory entity, and geographic region, so it is always best to review the official terms before opening an account.
     </div>
   </div>
 </SectionCard>
 
-                    <SectionCard title="Deposits & Withdrawals">
-  {payments.length ? (
-    <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-      {payments.map((item, i) => (
-        <div
-          key={i}
-          className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
-        >
-          <span className="mt-1 inline-flex h-2.5 w-2.5 shrink-0 rounded-full bg-emerald-500" />
-          <span className="text-sm leading-7 text-slate-700 md:text-base md:leading-8">
-            {item}
-          </span>
+
+                  <SectionCard title="Deposits & Withdrawals">
+  <div className="space-y-6">
+    {/* Mobile — unchanged */}
+    {payments.length ? (
+      <div className="grid gap-3 md:hidden md:grid-cols-2 xl:grid-cols-3">
+        {payments.map((item, i) => (
+          <div
+            key={i}
+            className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+          >
+            <span className="mt-1 inline-flex h-2.5 w-2.5 shrink-0 rounded-full bg-emerald-500" />
+            <span className="text-[13px] leading-6 text-slate-700 md:text-base md:leading-8">
+              {item}
+            </span>
+          </div>
+        ))}
+      </div>
+    ) : (
+      <p className="text-slate-500 md:hidden">No data is currently available.</p>
+    )}
+
+    {/* Desktop — improved */}
+    <div className="hidden md:block">
+      <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-sm">
+        <div className="grid gap-0 xl:grid-cols-[260px_minmax(0,1fr)]">
+          <div className="border-b border-slate-200 bg-slate-50 p-5 xl:border-b-0 xl:border-r">
+            <div className="text-xs font-black uppercase tracking-[0.12em] text-blue-700">
+              Funding Overview
+            </div>
+
+            <div className="mt-5 space-y-3">
+              <div className="rounded-[22px] border border-slate-200 bg-white px-4 py-4 shadow-sm transition hover:shadow-md">
+                <div className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+                  Payment Methods
+                </div>
+                <div className="mt-2 text-4xl font-extrabold tracking-tight leading-none text-slate-950">
+                  {paymentMethods.length || "-"}
+                </div>
+              </div>
+
+              <div className="rounded-[22px] border border-slate-200 bg-white px-4 py-4 shadow-sm transition hover:shadow-md">
+                <div className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+                  Withdrawal Speed
+                </div>
+                <div className="mt-2 text-sm font-extrabold leading-7 text-slate-900">
+                  {withdrawalSpeed || "No data available."}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-6 xl:p-7">
+            <div className="text-[30px] font-extrabold tracking-tight text-slate-950">
+              Deposits & Withdrawals
+            </div>
+
+            <p className="mt-4 max-w-3xl text-sm leading-8 text-slate-700 md:text-base">
+              {depositSummary || "No data is currently available."}
+            </p>
+
+            <div className="mt-5">
+              <div className="text-sm font-semibold text-slate-800 text-slate-900">
+                Supported Payment Methods
+              </div>
+
+              {paymentMethods.length ? (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {paymentMethods.map((item, i) => (
+                    <span
+                      key={i}
+                      className="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 md:text-sm"
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <div className="mt-3 text-sm leading-7 text-slate-500">
+                  No data available.
+                </div>
+              )}
+            </div>
+          </div>
         </div>
-      ))}
+      </div>
     </div>
-  ) : (
-        <p className="text-slate-500">No data is currently available.</p>
-  )}
+  </div>
 </SectionCard>
 
 <SectionCard
   title="Platform Details"
-  subtitle={`A closer look at the platforms offered by ${broker.name_en || broker.name} and the overall trading experience for both beginners and advanced traders.`}
+  subtitle={`A closer look at the platforms offered by ${broker.name_en || broker.name} and the overall trading experience.`}
   id="platforms"
 >
+  <div className="space-y-5">
+    {/* Mobile — unchanged */}
     {broker.platform_details_en || broker.platform_details ? (
-    <div className="space-y-5">
-            <div className="grid gap-4 md:grid-cols-2">
-        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-          <div className="h-1.5 bg-blue-500" />
-          <div className="p-5">
-            <div className="text-sm font-black text-slate-900 md:text-base">
-              Available Platforms
+      <div className="space-y-5 md:hidden">
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <div className="h-1.5 bg-blue-500" />
+            <div className="p-5">
+              <div className="text-sm font-black text-slate-900 md:text-base">
+                Available Platforms
+              </div>
+              <div className="mt-3 text-sm leading-8 text-slate-700 md:text-base">
+                {broker.platforms || "MT4 / MT5"}
+              </div>
             </div>
-            <div className="mt-3 text-sm leading-8 text-slate-700 md:text-base">
-              {broker.platforms || "MT4 / MT5"}
+          </div>
+
+          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <div className="h-1.5 bg-emerald-500" />
+            <div className="p-5">
+              <div className="text-sm font-black text-slate-900 md:text-base">
+                Best For
+              </div>
+              <div className="mt-3 text-sm leading-8 text-slate-700 md:text-base">
+                {broker.best_for_en || broker.best_for || "Beginner and intermediate traders looking for familiar platforms"}
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-          <div className="h-1.5 bg-emerald-500" />
-          <div className="p-5">
-            <div className="text-sm font-black text-slate-900 md:text-base">
-              Best For
-            </div>
-            <div className="mt-3 text-sm leading-8 text-slate-700 md:text-base">
-              {broker.best_for_en || broker.best_for || "Beginner and intermediate traders looking for familiar platforms"}
-            </div>
+        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+          <div className="text-sm font-black text-slate-900 md:text-base">
+            Additional Details
+          </div>
+          <div className="mt-3 text-sm leading-8 text-slate-700 md:text-base">
+            {broker.platform_details_en || broker.platform_details}
           </div>
         </div>
       </div>
+    ) : (
+      <p className="text-slate-500 md:hidden">No data is currently available.</p>
+    )}
 
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-        <div className="text-sm font-black text-slate-900 md:text-base">
-          Additional Details
-        </div>
-        <div className="mt-3 text-sm leading-8 text-slate-700 md:text-base">
-          {broker.platform_details_en || broker.platform_details}
+    {/* Desktop — cleaner premium version */}
+    <div className="hidden md:block">
+      <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-sm">
+        <div className="grid gap-0 xl:grid-cols-[260px_minmax(0,1fr)]">
+          <div className="border-b border-slate-100 bg-slate-50 p-5 xl:border-b-0 xl:border-r">
+            <div className="text-xs font-black uppercase tracking-[0.12em] text-blue-700">
+              Platform Access
+            </div>
+
+            <div className="mt-5 space-y-3">
+              <div className="rounded-[22px] border border-slate-200 bg-white px-4 py-4 shadow-sm transition hover:shadow-md">
+                <div className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+                  Available Platforms
+                </div>
+                <div className="mt-2 text-sm font-extrabold leading-7 text-slate-900">
+                  {availablePlatforms.length
+                    ? availablePlatforms.join(" • ")
+                    : broker.platforms || "No data available."}
+                </div>
+              </div>
+
+              <div className="rounded-[22px] border border-slate-200 bg-white px-4 py-4 shadow-sm transition hover:shadow-md">
+                <div className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+                  Trading Tools
+                </div>
+                <div className="mt-2 text-sm font-extrabold leading-7 text-slate-900">
+                  {platformTools.length
+                    ? `${platformTools.length} tools highlighted`
+                    : "No data available."}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-6 xl:p-7">
+            <div className="text-2xl font-extrabold tracking-tight text-slate-950">
+              Trading Platform Experience
+            </div>
+
+            <p className="mt-4 max-w-3xl text-sm leading-8 text-slate-700 md:text-base">
+              {platformSummary || "No data is currently available."}
+            </p>
+
+            <div className="mt-4 grid gap-4 lg:grid-cols-2">
+              <div className="rounded-[22px] border border-slate-200 bg-gradient-to-br from-slate-50 to-white px-4 py-3 shadow-sm">
+                <div className="text-sm font-semibold text-slate-800">
+                  Available Platforms
+                </div>
+
+                {availablePlatforms.length ? (
+                  <div className="mt-2.5 flex flex-wrap gap-2">
+                    {availablePlatforms.map((item, i) => (
+                      <span
+                        key={i}
+                        className="inline-flex rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700"
+                      >
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="mt-3 text-sm leading-7 text-slate-500">
+                    No data available.
+                  </div>
+                )}
+              </div>
+
+              <div className="rounded-[22px] border border-slate-200 bg-slate-50 p-4 shadow-sm">
+                <div className="text-sm font-semibold text-slate-800">
+                  Platform Tools
+                </div>
+
+                {platformTools.length ? (
+                  <div className="mt-2.5 flex flex-wrap gap-2">
+                    {platformTools.map((item, i) => (
+                      <span
+                        key={i}
+                        className="inline-flex rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700"
+                      >
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="mt-3 text-sm leading-7 text-slate-500">
+                    No data available.
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  ) : (
-    <p className="text-slate-500">No data is currently available.</p>
-  )}
+  </div>
 </SectionCard>
 
 <SectionCard
@@ -1876,11 +2044,11 @@ const breadcrumbSchema = {
   subtitle={`An overview of the regulatory standing and safety considerations for ${broker.name_en || broker.name}.`}
   id="regulation"
 >
-  <div className="space-y-6">
-    <div className="grid gap-4 lg:grid-cols-3">
+  <div className="space-y-5">
+    {/* Mobile — unchanged */}
+    <div className="grid gap-4 lg:grid-cols-3 md:hidden">
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="h-1.5 bg-blue-500" />
-
         <div className="p-5 text-center">
           <div className="mb-4 text-sm font-black text-slate-900 md:text-base">
             Regulatory Bodies
@@ -1901,9 +2069,7 @@ const breadcrumbSchema = {
                 {broker.regulation_short}
               </span>
             ) : (
-              <span className="text-sm text-slate-500">
-                No data available
-              </span>
+              <span className="text-sm text-slate-500">No data available</span>
             )}
           </div>
         </div>
@@ -1935,57 +2101,106 @@ const breadcrumbSchema = {
         </div>
       </div>
     </div>
+
+    {/* Desktop — improved */}
+    <div className="hidden md:block">
+      <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-sm">
+        <div className="grid gap-0 xl:grid-cols-[260px_minmax(0,1fr)]">
+          <div className="border-b border-slate-100 bg-slate-50 p-5 xl:border-b-0 xl:border-r">
+            <div className="text-xs font-black uppercase tracking-[0.12em] text-blue-700">
+              Safety Snapshot
+            </div>
+
+            <div className="mt-5 space-y-3">
+              <div className="rounded-[22px] border border-slate-200 bg-white px-4 py-4 shadow-sm transition hover:shadow-md">
+                <div className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+                  Regulatory Bodies
+                </div>
+
+                <div className="mt-3 flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+                  {regulationBodies.length ? (
+                    regulationBodies.map((item, i) => (
+                      <span
+                        key={i}
+                        className="inline-flex shrink-0 items-center rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700"
+                      >
+                        {item}
+                      </span>
+                    ))
+                  ) : broker.regulation_short ? (
+                    <span className="inline-flex shrink-0 items-center rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700">
+                      {broker.regulation_short}
+                    </span>
+                  ) : (
+                    <span className="text-sm text-slate-500">No data available</span>
+                  )}
+                </div>
+              </div>
+
+              <div className="rounded-[22px] border border-slate-200 bg-white px-4 py-4 shadow-sm transition hover:shadow-md">
+                <div className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+                  Fund Protection
+                </div>
+                <div className="mt-2 text-sm font-extrabold leading-7 text-slate-900">
+                  {fundProtection || "No data available."}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-6 xl:p-7">
+            <div className="text-2xl font-extrabold tracking-tight text-slate-950">
+              Regulation & Client Protection
+            </div>
+
+            <p className="mt-4 max-w-3xl text-sm leading-8 text-slate-700 md:text-base">
+              {regulationSummary || "No data is currently available."}
+            </p>
+
+            <div className="mt-5">
+              <div className="rounded-[22px] border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">
+                <div className="text-sm font-semibold text-slate-800">
+                  Safety Factors
+                </div>
+
+                {safetyFactors.length ? (
+                  <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                    {safetyFactors.map((item, i) => (
+                      <div
+                        key={i}
+                        className="flex items-start gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5"
+                      >
+                        <span className="mt-1.5 h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(34,197,94,0.55)]" />
+                        <span className="text-sm leading-6 text-slate-700">
+                          {item}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="mt-3 text-sm leading-7 text-slate-500">
+                    No data available.
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </SectionCard>
 
 
-<div className="grid gap-6 lg:grid-cols-2">
-  <SectionCard
-    title="Customer Support"
-    subtitle={`A quick overview of the support channels and service quality at ${broker.name_en || broker.name}.`}
-  >
-    {broker.support_en || broker.support ? (
-      <div className="space-y-3">
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-          <div className="text-sm leading-8 text-slate-700 md:text-base">
-            {broker.support_en || broker.support}
-          </div>
-        </div>
-      </div>
-    ) : (
-      <p className="text-slate-500">No data is currently available.</p>
-    )}
-  </SectionCard>
-
-  <SectionCard
-    title="Suitability for Arabic-Speaking Traders"
-    subtitle={`A quick look at how suitable ${broker.name_en || broker.name} is for Arabic-speaking users.`}
-  >
-    {broker.support_en || broker.arab_traders ? (
-      <div className="space-y-3">
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-          <div className="text-sm leading-8 text-slate-700 md:text-base">
-            {broker.support_en || broker.arab_traders}
-          </div>
-        </div>
-      </div>
-    ) : (
-      <p className="text-slate-500">
-        This broker may be suitable depending on platform language and support availability.
-      </p>
-    )}
-  </SectionCard>
-</div>
-
 <SectionCard title="Final Verdict" id="verdict">
   <div className="space-y-5">
-    {/* Mobile */}
+    {/* Mobile — keep simple */}
     <div className="space-y-4 md:hidden">
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="h-1.5 bg-blue-500" />
-        <div className="p-5 text-center">
+        <div className="p-5">
           <div className="mb-3 text-sm font-black text-slate-900">
-            Quick Summary
+            Final Summary
           </div>
           <div className="text-sm leading-8 text-slate-700">
             {broker.final_verdict_en || broker.final_verdict || "No data is currently available."}
@@ -2012,247 +2227,131 @@ const breadcrumbSchema = {
           </div>
         </div>
       </div>
+
+      {(broker.key_strength_en || broker.key_weakness_en) ? (
+        <div className="grid gap-3">
+          {broker.key_strength_en ? (
+            <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
+              <div className="mb-1 text-xs font-bold uppercase tracking-wide text-emerald-700">
+                Key Strength
+              </div>
+              <div className="text-sm font-semibold leading-7 text-slate-800">
+                {broker.key_strength_en}
+              </div>
+            </div>
+          ) : null}
+
+          {broker.key_weakness_en ? (
+            <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
+              <div className="mb-1 text-xs font-bold uppercase tracking-wide text-amber-700">
+                Main Limitation
+              </div>
+              <div className="text-sm font-semibold leading-7 text-slate-800">
+                {broker.key_weakness_en}
+              </div>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
     </div>
 
-    {/* Desktop */}
-    <div className="hidden md:block">
-      <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm">
-        <div className="h-1.5 bg-blue-500" />
-        <div className="p-6 lg:p-8">
-          <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_220px]">
-            <div>
-              <div className="mb-3 text-base font-black text-slate-900">
-                Final Summary
-              </div>
-              <div className="text-base leading-9 text-slate-700">
-                {broker.final_verdict_en || broker.final_verdict || "No data is currently available."}
-              </div>
-            </div>
+   {/* Desktop */}
+<div className="hidden md:block">
+  <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-sm">
+    <div className="grid gap-0 xl:grid-cols-[260px_minmax(0,1fr)]">
+      <div className="border-b border-slate-100 bg-slate-50 p-5 xl:border-b-0 xl:border-r">
+        <div className="text-xs font-black uppercase tracking-[0.12em] text-blue-700">
+          Verdict Snapshot
+        </div>
 
-            <div className="grid gap-4">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center">
-                <div className="mb-2 text-sm font-bold text-slate-500">
-                  Overall Rating
-                </div>
-                <div className="text-4xl font-black text-slate-950">
-                  {overallScore || broker.rating || "-"}
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center">
-                <div className="mb-2 text-sm font-bold text-slate-500">
-                  Verdict
-                </div>
-                <div className="text-base font-extrabold text-slate-900">
-                  {verdictTone.label}
-                </div>
-              </div>
+        <div className="mt-5 space-y-3">
+          <div className="rounded-[22px] border border-slate-200 bg-white px-4 py-4 shadow-sm">
+            <div className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+              Overall Rating
             </div>
+            <div className="mt-2 text-4xl font-extrabold leading-none tracking-tight text-slate-950">
+              {overallScore || broker.rating || "-"}
+            </div>
+          </div>
+
+          <div className="rounded-[22px] border border-slate-200 bg-white px-4 py-4 shadow-sm">
+            <div className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+              Verdict
+            </div>
+            <div className="mt-2 text-base font-extrabold leading-7 text-slate-900">
+              {verdictTone.label}
+            </div>
+          </div>
+
+          <div className="pt-2">
+            <a
+  href={`/go/${broker.slug}?type=real`}
+  target="_blank"
+  rel="nofollow sponsored noopener noreferrer"
+  className="flex min-h-[48px] w-full items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-3 text-sm font-extrabold text-white shadow-md transition hover:from-blue-700 hover:to-blue-800 hover:shadow-lg"
+>
+  Open Trading Account
+</a>
           </div>
         </div>
       </div>
-    </div>
 
-    <div className="text-center">
-      <a
-        href={`/go/${broker.slug}?type=real`}
-        target="_blank"
-        rel="nofollow sponsored noopener noreferrer"
-        className="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-blue-600 px-7 py-3 text-sm font-extrabold text-white transition hover:bg-blue-700 md:px-8 md:py-4 md:text-base"
-      >
-        Open an Account with {broker.name_en || broker.name} Now
-      </a>
+      <div className="p-6 xl:p-7">
+        <div className="text-2xl font-extrabold tracking-tight text-slate-950">
+          Final Summary
+        </div>
+
+        <div className="mt-4 rounded-[22px] border border-slate-200 bg-slate-50 px-5 py-5 shadow-sm">
+          <div className="text-base leading-9 text-slate-700">
+            {broker.final_verdict_en || broker.final_verdict || "No data is currently available."}
+          </div>
+        </div>
+
+        {(broker.key_strength_en || broker.key_weakness_en || broker.expert_insight_en) ? (
+          <div className="mt-5 grid gap-4 lg:grid-cols-2">
+            <div className="space-y-4">
+              {broker.key_strength_en ? (
+                <div className="rounded-[22px] border border-emerald-200 bg-emerald-50 px-4 py-4 shadow-sm min-h-[140px]">
+                  <div className="text-xs font-bold uppercase tracking-wide text-emerald-700">
+                    Key Strength
+                  </div>
+                  <div className="mt-2 text-sm font-semibold leading-7 text-slate-800">
+                    {broker.key_strength_en}
+                  </div>
+                </div>
+              ) : null}
+
+              {broker.key_weakness_en ? (
+                <div className="rounded-[22px] border border-amber-200 bg-amber-50 px-4 py-4 shadow-sm">
+                  <div className="text-xs font-bold uppercase tracking-wide text-amber-700">
+                    Main Limitation
+                  </div>
+                  <div className="mt-2 text-sm font-semibold leading-7 text-slate-800">
+                    {broker.key_weakness_en}
+                  </div>
+                </div>
+              ) : null}
+            </div>
+
+            {broker.expert_insight_en ? (
+              <div className="rounded-[22px] border border-blue-200 bg-blue-50 px-5 py-5 shadow-sm">
+                <div className="text-xs font-bold uppercase tracking-wide text-blue-700">
+                  Expert Insight
+                </div>
+                <div className="mt-2 text-sm leading-8 text-slate-700">
+                  {broker.expert_insight_en}
+                </div>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
     </div>
   </div>
+</div>
+</div>
 </SectionCard>
 
-<SectionCard
-  title={`How to Open an Account with ${broker.name_en || broker.name}`}
-  subtitle="The basic steps to register, verify your account, and start trading."
->
-  <div className="space-y-4">
-    {/* Mobile - compact accordion */}
-    <div className="space-y-3 md:hidden">
-      <details className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
-          <div className="min-w-0 text-left">
-            <div className="text-base font-black text-slate-900">Visit the Website</div>
-            <div className="mt-1 text-xs font-medium text-slate-500">
-              Start from the official website
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-blue-50 text-sm font-black text-blue-700">
-              1
-            </span>
-            <span className="text-slate-400 transition group-open:rotate-180">⌄</span>
-          </div>
-        </summary>
-        <div className="border-t border-slate-100 bg-slate-50 px-4 py-4 text-sm leading-7 text-slate-700">
-          Go to the official website of {broker.name_en || broker.name} and choose to open a new account.
-        </div>
-      </details>
-
-      <details className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
-          <div className="min-w-0 text-left">
-            <div className="text-base font-black text-slate-900">Create an Account</div>
-            <div className="mt-1 text-xs font-medium text-slate-500">
-              Email & password
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-emerald-50 text-sm font-black text-emerald-700">
-              2
-            </span>
-            <span className="text-slate-400 transition group-open:rotate-180">⌄</span>
-          </div>
-        </summary>
-        <div className="border-t border-slate-100 bg-slate-50 px-4 py-4 text-sm leading-7 text-slate-700">
-          Enter your email address and password, then select the account type that suits you.
-        </div>
-      </details>
-
-      <details className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
-          <div className="min-w-0 text-left">
-            <div className="text-base font-black text-slate-900">Verify Your Account</div>
-            <div className="mt-1 text-xs font-medium text-slate-500">
-              ID & proof of address
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-amber-50 text-sm font-black text-amber-700">
-              3
-            </span>
-            <span className="text-slate-400 transition group-open:rotate-180">⌄</span>
-          </div>
-        </summary>
-        <div className="border-t border-slate-100 bg-slate-50 px-4 py-4 text-sm leading-7 text-slate-700">
-          Upload your ID and proof of address to fully verify and activate your account.
-        </div>
-      </details>
-
-      <details className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
-          <div className="min-w-0 text-left">
-            <div className="text-base font-black text-slate-900">Deposit Funds</div>
-            <div className="mt-1 text-xs font-medium text-slate-500">
-              Choose a payment method
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-violet-50 text-sm font-black text-violet-700">
-              4
-            </span>
-            <span className="text-slate-400 transition group-open:rotate-180">⌄</span>
-          </div>
-        </summary>
-        <div className="border-t border-slate-100 bg-slate-50 px-4 py-4 text-sm leading-7 text-slate-700">
-          Choose your preferred deposit method and fund your account to start trading.
-        </div>
-      </details>
-
-      <details className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
-          <div className="min-w-0 text-left">
-            <div className="text-base font-black text-slate-900">Start Trading</div>
-            <div className="mt-1 text-xs font-medium text-slate-500">
-              Download platform & begin
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-sm font-black text-slate-700">
-              5
-            </span>
-            <span className="text-slate-400 transition group-open:rotate-180">⌄</span>
-          </div>
-        </summary>
-        <div className="border-t border-slate-100 bg-slate-50 px-4 py-4 text-sm leading-7 text-slate-700">
-          Download MT4 or MT5, log in to your account, and start placing trades.
-        </div>
-      </details>
-    </div>
-
-    {/* Desktop */}
-<div className="hidden gap-4 md:grid md:grid-cols-2 xl:grid-cols-5">
-  <div className="relative rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-    <span className="absolute left-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-blue-50 text-sm font-black text-blue-700">
-      1
-    </span>
-    <div className="pr-0 pl-12">
-      <div className="text-base font-black text-slate-900">Visit the Website</div>
-      <p className="mt-3 text-sm leading-8 text-slate-600">
-        Go to the official website of {broker.name_en || broker.name} and choose to open a new account.
-      </p>
-    </div>
-  </div>
-
-  <div className="relative rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-    <span className="absolute left-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-emerald-50 text-sm font-black text-emerald-700">
-      2
-    </span>
-    <div className="pr-0 pl-12">
-      <div className="text-base font-black text-slate-900">Create an Account</div>
-      <p className="mt-3 text-sm leading-8 text-slate-600">
-        Enter your email and password, then select the account type that suits your needs.
-      </p>
-    </div>
-  </div>
-
-  <div className="relative rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-    <span className="absolute left-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-amber-50 text-sm font-black text-amber-700">
-      3
-    </span>
-    <div className="pr-0 pl-12">
-      <div className="text-base font-black text-slate-900">Verify Your Account</div>
-      <p className="mt-3 text-sm leading-8 text-slate-600">
-        Upload your ID and proof of address to fully activate your account.
-      </p>
-    </div>
-  </div>
-
-  <div className="relative rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-    <span className="absolute left-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-violet-50 text-sm font-black text-violet-700">
-      4
-    </span>
-    <div className="pr-0 pl-12">
-      <div className="text-base font-black text-slate-900">Deposit Funds</div>
-      <p className="mt-3 text-sm leading-8 text-slate-600">
-        Choose your preferred deposit method and fund your account to start trading.
-      </p>
-    </div>
-  </div>
-
-  <div className="relative rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-    <span className="absolute left-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-sm font-black text-slate-700">
-      5
-    </span>
-    <div className="pr-0 pl-12">
-      <div className="text-base font-black text-slate-900">Start Trading</div>
-      <p className="mt-3 text-sm leading-8 text-slate-600">
-        Download MT4 or MT5, log in to your account, and begin placing trades.
-      </p>
-    </div>
-  </div>
-</div>
-</div>
-
-<div className="mt-6 text-center">
-  <p className="mb-4 text-sm text-slate-500 md:mb-5">
-    You can open an account in less than two minutes and start trading immediately.
-  </p>
-
-  <a
-    href={`/go/${broker.slug}?type=real`}
-    target="_blank"
-    rel="nofollow sponsored noopener noreferrer"
-    className="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-blue-600 px-7 py-3 text-sm font-extrabold text-white transition hover:bg-blue-700 md:px-8 md:py-4 md:text-base"
-  >
-    Start Trading Now with {broker.name_en || broker.name}
-  </a>
-</div>
-</SectionCard>
 
         {faqItems.length > 0 && (
   <SectionCard title="Frequently Asked Questions" id="faq">
@@ -2358,15 +2457,18 @@ const breadcrumbSchema = {
   </SectionCard>
 )}
 
-          <SectionCard title={`Compare ${broker.name_en || broker.name} with Other Brokers`}>
-  {relatedBrokers.length ? (
-    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-      {relatedBrokers.map((item) => (
-        <Link
-          key={item.id}
-          href={`/en/compare/${broker.slug}-vs-${item.slug}`}
-          className="group rounded-2xl border border-slate-200 bg-slate-50 p-6 transition hover:-translate-y-1 hover:bg-white hover:shadow-md"
-        >
+         <div className="mb-2">
+  <SectionCard
+    title={`Compare ${broker.name_en || broker.name} with Other Brokers`}
+  >
+    {relatedBrokers.length ? (
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {relatedBrokers.map((item) => (
+          <Link
+            key={item.id}
+            href={`/en/compare/${broker.slug}-vs-${item.slug}`}
+            className="group rounded-2xl border border-slate-200 bg-slate-50 p-6 transition hover:-translate-y-1 hover:bg-white hover:shadow-md"
+          >
           {/* Top logos */}
           <div className="mb-5 flex items-center justify-between gap-4">
 
@@ -2449,6 +2551,7 @@ const breadcrumbSchema = {
 <p className="text-slate-500">No comparisons are currently available.</p>
 )}
 </SectionCard>
+          </div>
           </div>
         </div>
       </main>
