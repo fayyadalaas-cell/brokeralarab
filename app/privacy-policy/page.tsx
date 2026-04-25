@@ -4,9 +4,14 @@ export const metadata: Metadata = {
   title: "سياسة الخصوصية | بروكر العرب",
   description:
     "اطلع على سياسة الخصوصية في موقع بروكر العرب، وكيفية التعامل مع المعلومات، والكوكيز، والروابط الخارجية، وإخلاء المسؤولية المتعلق باستخدام الموقع.",
-  alternates: {
-    canonical: "/privacy-policy",
+ alternates: {
+  canonical: "https://brokeralarab.com/privacy-policy",
+  languages: {
+    ar: "https://brokeralarab.com/privacy-policy",
+    en: "https://brokeralarab.com/en/privacy-policy",
+    "x-default": "https://brokeralarab.com/en/privacy-policy",
   },
+},
   openGraph: {
     title: "سياسة الخصوصية | بروكر العرب",
     description:

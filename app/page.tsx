@@ -20,8 +20,13 @@ export const metadata: Metadata = {
     "بروكر العرب",
   ],
   alternates: {
-    canonical: "https://brokeralarab.com",
+  canonical: "https://brokeralarab.com",
+  languages: {
+    ar: "https://brokeralarab.com",
+    en: "https://brokeralarab.com/en",
+    "x-default": "https://brokeralarab.com/en",
   },
+},
 openGraph: {
   title: "أفضل شركات التداول وتقييم الوسطاء | بروكر العرب",
   description:

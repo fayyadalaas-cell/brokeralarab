@@ -6,8 +6,6 @@ import { createClient } from "@/lib/supabase/server";
 import HeaderSwitcher from "@/app/components/HeaderSwitcher";
 import FooterSwitcher from "@/app/components/FooterSwitcher";
 
-
-
 const cairo = Cairo({
   subsets: ["arabic", "latin"],
   weight: ["400", "500", "600", "700", "800"],
@@ -20,8 +18,18 @@ export const metadata: Metadata = {
     template: "%s | بروكر العرب",
   },
   description:
-  "بروكر العرب يقدم تقييمات ومقارنات شاملة لأفضل شركات التداول، مع تحليل التراخيص، الرسوم، والمنصات لمساعدة المتداول العربي على اختيار الوسيط المناسب بثقة.",
+    "بروكر العرب يقدم تقييمات ومقارنات شاملة لأفضل شركات التداول، مع تحليل التراخيص، الرسوم، والمنصات لمساعدة المتداول العربي على اختيار الوسيط المناسب بثقة.",
   metadataBase: new URL("https://brokeralarab.com"),
+
+  alternates: {
+    canonical: "/",
+    languages: {
+      ar: "/",
+      en: "/en",
+      "x-default": "/",
+    },
+  },
+
   verification: {
     google: "eivw8RsaxU2SPjyhov7RFqS8gdAM0VTN8YsmxQncXm4",
   },
@@ -61,7 +69,6 @@ type LearnTradingMenuItem = {
   image: string;
   isFeatured?: boolean;
 };
-
 
 const brokerLogoMap: Record<string, string> = {
   activtrades: "/brokers/activtrade.png",
@@ -177,70 +184,72 @@ export default async function RootLayout({
     .limit(5);
 
   const topBrokers: BrokerMenuItem[] =
-  brokersData?.map((broker) => ({
-    name: broker.name,
-    name_en: broker.name_en,
-    slug: broker.slug,
-    menuLogo: getBrokerLogo(broker.slug),
-  })) ?? [];
+    brokersData?.map((broker) => ({
+      name: broker.name,
+      name_en: broker.name_en,
+      slug: broker.slug,
+      menuLogo: getBrokerLogo(broker.slug),
+    })) ?? [];
 
   return (
     <html lang="ar" dir="rtl">
-    <head>
-  {/* Organization Schema */}
-  <Script
-    id="organization-schema"
-    type="application/ld+json"
-    dangerouslySetInnerHTML={{
-      __html: JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        name: "بروكر العرب",
-        alternateName: "Broker Al Arab",
-        url: "https://brokeralarab.com",
-        logo: "https://brokeralarab.com/brokers/BrokerLogo.png",
-        sameAs: [
-          "https://www.facebook.com/BrokerAlArab",
-          "https://x.com/brokeralarab",
-        ],
-      }),
-    }}
-  />
+      <head>
+        {/* Organization Schema */}
+        <Script
+          id="organization-schema"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "بروكر العرب",
+              alternateName: "Broker Al Arab",
+              url: "https://brokeralarab.com",
+              logo: "https://brokeralarab.com/brokers/BrokerLogo.png",
+              sameAs: [
+                "https://www.facebook.com/BrokerAlArab",
+                "https://x.com/brokeralarab",
+              ],
+            }),
+          }}
+        />
 
-{/* Google Analytics */}
-<Script
-  src="https://www.googletagmanager.com/gtag/js?id=G-4V7MN48JS7"
-  strategy="afterInteractive"
-/>
+        {/* Google Analytics */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-4V7MN48JS7"
+          strategy="afterInteractive"
+        />
 
-<Script
-  id="google-analytics"
-  strategy="afterInteractive"
-  dangerouslySetInnerHTML={{
-    __html: `
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      window.gtag = gtag;
-      gtag('js', new Date());
-      gtag('config', 'G-4V7MN48JS7');
-    `,
-  }}
-/>
-</head>
+        <Script
+          id="google-analytics"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              window.gtag = gtag;
+              gtag('js', new Date());
+              gtag('config', 'G-4V7MN48JS7');
+            `,
+          }}
+        />
+      </head>
 
-    <body className={`${cairo.variable} bg-[#f4f7fb] font-sans text-[#0f172a] antialiased`}>
-  <HeaderSwitcher
-    topBrokers={topBrokers}
-    countryMenuItems={countryMenuItems}
-    featuredCategories={featuredCategories}
-    featuredComparisons={featuredComparisons}
-    learnTradingMenuItems={learnTradingMenuItems}
-  />
+      <body
+        className={`${cairo.variable} bg-[#f4f7fb] font-sans text-[#0f172a] antialiased`}
+      >
+        <HeaderSwitcher
+          topBrokers={topBrokers}
+          countryMenuItems={countryMenuItems}
+          featuredCategories={featuredCategories}
+          featuredComparisons={featuredComparisons}
+          learnTradingMenuItems={learnTradingMenuItems}
+        />
 
-  <main>{children}</main>
+        <main>{children}</main>
 
- <FooterSwitcher />
-</body>
+        <FooterSwitcher />
+      </body>
     </html>
   );
 }

@@ -5,8 +5,13 @@ export const metadata: Metadata = {
   description:
     "Learn how Broker Alarab handles data, cookies, analytics, and external links. This privacy policy explains how information is collected and used when you browse our website.",
   alternates: {
-    canonical: "/en/privacy-policy",
+  canonical: "https://brokeralarab.com/en/privacy-policy",
+  languages: {
+    en: "https://brokeralarab.com/en/privacy-policy",
+    ar: "https://brokeralarab.com/privacy-policy",
+    "x-default": "https://brokeralarab.com/en/privacy-policy",
   },
+},
   openGraph: {
     title: "Privacy Policy | Broker Alarab",
     description:

@@ -6,8 +6,13 @@ export const metadata: Metadata = {
   description:
     "Read the terms and conditions for using Broker Alarab, including content limitations, liability disclaimer, affiliate links, and important notices before engaging with any broker.",
   alternates: {
-    canonical: "/en/terms",
+  canonical: "https://brokeralarab.com/en/terms",
+  languages: {
+    en: "https://brokeralarab.com/en/terms",
+    ar: "https://brokeralarab.com/terms",
+    "x-default": "https://brokeralarab.com/en/terms",
   },
+},
   openGraph: {
     title: "Terms & Conditions | Broker Alarab",
     description:

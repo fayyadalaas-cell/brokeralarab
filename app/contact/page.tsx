@@ -5,8 +5,13 @@ export const metadata: Metadata = {
   description:
     "تواصل مع فريق بروكر العرب للاستفسارات العامة، التعاون، الملاحظات على مراجعات شركات التداول، أو الإبلاغ عن أي معلومات تحتاج إلى تحديث.",
   alternates: {
-    canonical: "/contact",
+  canonical: "https://brokeralarab.com/contact",
+  languages: {
+    ar: "https://brokeralarab.com/contact",
+    en: "https://brokeralarab.com/en/contact",
+    "x-default": "https://brokeralarab.com/en/contact",
   },
+},
   openGraph: {
     title: "اتصل بنا | بروكر العرب",
     description:

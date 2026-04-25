@@ -323,6 +323,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   languages: {
     en: `${siteUrl}/en/compare`,
     ar: `${siteUrl}/compare`,
+    "x-default": `${siteUrl}/en/compare`,
   },
 },
     openGraph: {
@@ -336,7 +337,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     twitter: {
       card: "summary_large_image",
-      title: "Broker Comparisons | Broker Arab",
+      title: "Broker Comparisons | Broker AlArab",
       description:
         "Detailed broker comparisons covering accounts, fees, regulation, and trading platforms.",
     },
@@ -378,15 +379,16 @@ const imageUrl = `${siteUrl}/compare/${slug}/opengraph-image?v=3`;
     "broker comparison",
     "forex broker comparison",
     "trading broker comparison",
-    "Broker Arab",
+    "Broker AlArab",
   ],
-  alternates: {
-    canonical: `${siteUrl}/en/compare/${slug}`,
-    languages: {
-      en: `${siteUrl}/en/compare/${slug}`,
-      ar: `${siteUrl}/compare/${slug}`,
-    },
+ alternates: {
+  canonical: `${siteUrl}/en/compare/${slug}`,
+  languages: {
+    en: `${siteUrl}/en/compare/${slug}`,
+    ar: `${siteUrl}/compare/${slug}`,
+    "x-default": `${siteUrl}/en/compare/${slug}`,
   },
+},
   openGraph: {
     title,
     description,
@@ -582,7 +584,7 @@ export default async function ComparePage({ params }: PageProps) {
   const safetyWinner = getSafetyWinner(left, right);
   const siteUrl = "https://brokeralarab.com";
   const pageUrl = `${siteUrl}/en/compare/${slug}`;
-  const shareTitle = `${left.name_en || left.name} vs ${right.name_en || right.name} | Broker Arab`;
+  const shareTitle = `${left.name_en || left.name} vs ${right.name_en || right.name} | Broker AlArab`;
 
   const faqJsonLd = buildFaqJsonLd(left, right);
 

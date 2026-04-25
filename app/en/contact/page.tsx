@@ -5,8 +5,13 @@ export const metadata: Metadata = {
   description:
     "Contact Broker Alarab for general inquiries, content updates, partnership opportunities, or feedback related to broker reviews and comparison pages.",
   alternates: {
-    canonical: "/en/contact",
+  canonical: "https://brokeralarab.com/en/contact",
+  languages: {
+    en: "https://brokeralarab.com/en/contact",
+    ar: "https://brokeralarab.com/contact",
+    "x-default": "https://brokeralarab.com/en/contact",
   },
+},
   openGraph: {
     title: "Contact Us | Broker Alarab",
     description:

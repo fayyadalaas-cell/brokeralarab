@@ -211,9 +211,11 @@ export async function generateMetadata({
     title,
     description,
     alternates: {
+  canonical: `${siteUrl}/en/brokers/${broker.slug}`,
   languages: {
     ar: `${siteUrl}/brokers/${broker.slug}`,
     en: `${siteUrl}/en/brokers/${broker.slug}`,
+    "x-default": `${siteUrl}/en/brokers/${broker.slug}`,
   },
 },
     openGraph: {

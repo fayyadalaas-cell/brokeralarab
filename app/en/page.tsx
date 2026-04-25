@@ -22,12 +22,13 @@ export const metadata: Metadata = {
     "best brokers",
   ],
   alternates: {
-    canonical: "https://brokeralarab.com/en",
-    languages: {
-      en: "https://brokeralarab.com/en",
-      ar: "https://brokeralarab.com",
-    },
+  canonical: "https://brokeralarab.com/en",
+  languages: {
+    en: "https://brokeralarab.com/en",
+    ar: "https://brokeralarab.com",
+    "x-default": "https://brokeralarab.com/en",
   },
+},
   openGraph: {
     title: "Best Brokers & Trading Reviews | Broker AlArab",
     description:
