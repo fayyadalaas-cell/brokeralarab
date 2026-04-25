@@ -1702,7 +1702,7 @@ export default async function BrokerPage({
       cons.map((item, i) => (
         <div
           key={i}
-          className="flex items-start justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-3 text-right"
+          className="flex flex-row-reverse items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-3 text-right"
         >
           <p className="flex-1 text-sm leading-7 text-slate-700 text-right">
             {item}
@@ -2560,65 +2560,78 @@ export default async function BrokerPage({
 
 <SectionCard title="الخلاصة النهائية" id="verdict">
   <div className="space-y-5">
+
     {/* Mobile */}
-    <div className="space-y-4 md:hidden">
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="h-1.5 bg-blue-500" />
-        <div className="p-5 text-right">
-          <div className="mb-3 text-sm font-black text-slate-900">
-            ملخص التقييم
+    <div className="md:hidden">
+      <div className="overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-sm">
+
+        <div className="border-b border-slate-100 bg-slate-50 p-4">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-center shadow-sm">
+              <div className="text-[11px] font-bold text-slate-500">
+                التقييم العام
+              </div>
+              <div className="mt-1 text-3xl font-black text-slate-950">
+                {overallScore || broker.rating || "-"}
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-center shadow-sm">
+              <div className="text-[11px] font-bold text-slate-500">
+                الحكم النهائي
+              </div>
+              <div className="mt-2 text-base font-black text-slate-950">
+                {verdictTone.label}
+              </div>
+            </div>
           </div>
-          <div className="text-sm leading-8 text-slate-700">
+        </div>
+
+        <div className="p-4 text-right">
+          <div className="text-lg font-black text-slate-950">
+            هل تستحق {broker.name} التجربة؟
+          </div>
+
+          <p className="mt-3 text-[14px] leading-7 text-slate-600">
             {broker.final_verdict || "لا توجد بيانات متاحة حاليًا."}
-          </div>
-        </div>
-      </div>
+          </p>
 
-      <div className="grid grid-cols-2 gap-3">
-        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-center">
-          <div className="mb-1 text-xs font-bold text-slate-500">
-            التقييم العام
-          </div>
-          <div className="text-2xl font-black text-slate-950">
-            {overallScore || broker.rating || "-"}
-          </div>
-        </div>
+          {(broker.key_strength_ar || broker.key_weakness_ar) ? (
+            <div className="mt-5 grid gap-3">
+              {broker.key_strength_ar ? (
+                <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-right">
+                  <div className="text-xs font-black text-emerald-700">
+                    نقطة القوة
+                  </div>
+                  <div className="mt-1 text-sm font-semibold leading-7 text-slate-800">
+                    {broker.key_strength_ar}
+                  </div>
+                </div>
+              ) : null}
 
-        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-center">
-          <div className="mb-1 text-xs font-bold text-slate-500">
-            الحكم النهائي
-          </div>
-          <div className="text-sm font-extrabold text-slate-900">
-            {verdictTone.label}
-          </div>
-        </div>
-      </div>
-
-      {(broker.key_strength_ar || broker.key_weakness_ar) ? (
-        <div className="grid gap-3">
-          {broker.key_strength_ar ? (
-            <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-right">
-              <div className="mb-1 text-xs font-bold tracking-wide text-emerald-700">
-                نقطة القوة
-              </div>
-              <div className="text-sm font-semibold leading-7 text-slate-800">
-                {broker.key_strength_ar}
-              </div>
+              {broker.key_weakness_ar ? (
+                <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-right">
+                  <div className="text-xs font-black text-amber-700">
+                    أهم ملاحظة
+                  </div>
+                  <div className="mt-1 text-sm font-semibold leading-7 text-slate-800">
+                    {broker.key_weakness_ar}
+                  </div>
+                </div>
+              ) : null}
             </div>
           ) : null}
 
-          {broker.key_weakness_ar ? (
-            <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-right">
-              <div className="mb-1 text-xs font-bold tracking-wide text-amber-700">
-                أهم ملاحظة
-              </div>
-              <div className="text-sm font-semibold leading-7 text-slate-800">
-                {broker.key_weakness_ar}
-              </div>
-            </div>
-          ) : null}
+          <a
+            href={`/go/${broker.slug}?type=real`}
+            target="_blank"
+            rel="nofollow sponsored noopener noreferrer"
+            className="mt-5 flex min-h-[52px] items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 px-5 text-[15px] font-black text-white shadow-md active:scale-[0.98]"
+          >
+            فتح حساب تداول
+          </a>
         </div>
-      ) : null}
+      </div>
     </div>
 
     {/* Desktop */}
@@ -2719,110 +2732,111 @@ export default async function BrokerPage({
         </div>
       </div>
     </div>
+
   </div>
 </SectionCard>
 
         {faqItems.length > 0 && (
-  <SectionCard title="Frequently Asked Questions" id="faq">
-  {/* Mobile */}
-<div className="space-y-3 md:hidden">
-  {visibleFaqItems.map((item, i) => (
-    <details
-      key={i}
-      className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
-    >
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
-        <div className="text-left text-base font-bold text-slate-900">
-          {item.question}
-        </div>
-
-        <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-400 transition group-open:rotate-180">
-          ▾
-        </span>
-      </summary>
-
-      <div className="border-t border-slate-100 bg-slate-50 px-4 py-4">
-        <div className="leading-7 text-slate-600">
-          {item.answer}
-        </div>
-      </div>
-    </details>
-  ))}
-
-  {extraFaqItems.length > 0 && (
-    <details className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <summary className="cursor-pointer list-none px-4 py-4 text-center text-sm font-extrabold text-blue-600">
-        Show more questions
-      </summary>
-
-      <div className="space-y-3 border-t border-slate-100 bg-slate-50 p-3">
-        {extraFaqItems.map((item, i) => (
-          <details
-            key={`extra-mobile-${i}`}
-            className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
-          >
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
-              <div className="text-left text-base font-bold text-slate-900">
-                {item.question}
-              </div>
-
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-400 transition group-open:rotate-180">
-                ▾
-              </span>
-            </summary>
-
-            <div className="border-t border-slate-100 bg-slate-50 px-4 py-4">
-              <div className="leading-7 text-slate-600">
-                {item.answer}
-              </div>
-            </div>
-          </details>
-        ))}
-      </div>
-    </details>
-  )}
-</div>
-
-  {/* Desktop */}
-<div className="hidden space-y-4 md:block">
-  {visibleFaqItems.map((item, i) => (
-    <div
-      key={i}
-      className="rounded-2xl border border-slate-200 bg-slate-50 p-5"
-    >
-      <div className="text-base font-bold text-slate-900">
-        {item.question}
-      </div>
-      <div className="mt-2 leading-7 text-slate-600">
-        {item.answer}
-      </div>
-    </div>
-  ))}
-
-  {extraFaqItems.length > 0 && (
-    <details className="group rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <summary className="cursor-pointer list-none px-5 py-4 text-center text-sm font-extrabold text-blue-600">
-        Show more questions
-      </summary>
-
-      <div className="space-y-4 border-t border-slate-100 bg-slate-50 p-4">
-        {extraFaqItems.map((item, i) => (
-          <div
-            key={`extra-desktop-${i}`}
-            className="rounded-2xl border border-slate-200 bg-white p-5"
-          >
-            <div className="text-base font-bold text-slate-900">
+  <SectionCard title="الأسئلة الشائعة" id="faq">
+    {/* Mobile */}
+    <div className="space-y-3 md:hidden">
+      {visibleFaqItems.map((item, i) => (
+        <details
+          key={i}
+          className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+        >
+          <summary className="flex cursor-pointer list-none items-start justify-between gap-3 px-4 py-4">
+            <span className="flex-1 text-right text-[15px] font-black leading-7 text-slate-950">
               {item.question}
-            </div>
-            <div className="mt-2 leading-7 text-slate-600">
+            </span>
+
+            <span className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-400 transition group-open:rotate-180">
+              ▾
+            </span>
+          </summary>
+
+          <div className="border-t border-slate-100 bg-slate-50 px-4 py-4">
+            <div className="text-right text-sm leading-7 text-slate-600">
               {item.answer}
             </div>
           </div>
-        ))}
-      </div>
-    </details>
-  )}
-</div>
+        </details>
+      ))}
+
+      {extraFaqItems.length > 0 && (
+        <details className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <summary className="cursor-pointer list-none px-4 py-4 text-center text-sm font-extrabold text-blue-600">
+            عرض المزيد من الأسئلة
+          </summary>
+
+          <div className="space-y-3 border-t border-slate-100 bg-slate-50 p-3">
+            {extraFaqItems.map((item, i) => (
+              <details
+                key={`extra-mobile-${i}`}
+                className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+              >
+                <summary className="flex cursor-pointer list-none items-start justify-between gap-3 px-4 py-4">
+                  <span className="flex-1 text-right text-[15px] font-black leading-7 text-slate-950">
+                    {item.question}
+                  </span>
+
+                  <span className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-400 transition group-open:rotate-180">
+                    ▾
+                  </span>
+                </summary>
+
+                <div className="border-t border-slate-100 bg-slate-50 px-4 py-4">
+                  <div className="text-right text-sm leading-7 text-slate-600">
+                    {item.answer}
+                  </div>
+                </div>
+              </details>
+            ))}
+          </div>
+        </details>
+      )}
+    </div>
+
+    {/* Desktop */}
+    <div className="hidden space-y-4 md:block">
+      {visibleFaqItems.map((item, i) => (
+        <div
+          key={i}
+          className="rounded-2xl border border-slate-200 bg-slate-50 p-5 text-right"
+        >
+          <div className="text-base font-bold text-slate-900">
+            {item.question}
+          </div>
+          <div className="mt-2 leading-7 text-slate-600">
+            {item.answer}
+          </div>
+        </div>
+      ))}
+
+      {extraFaqItems.length > 0 && (
+        <details className="group rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <summary className="cursor-pointer list-none px-5 py-4 text-center text-sm font-extrabold text-blue-600">
+            عرض المزيد من الأسئلة
+          </summary>
+
+          <div className="space-y-4 border-t border-slate-100 bg-slate-50 p-4">
+            {extraFaqItems.map((item, i) => (
+              <div
+                key={`extra-desktop-${i}`}
+                className="rounded-2xl border border-slate-200 bg-white p-5 text-right"
+              >
+                <div className="text-base font-bold text-slate-900">
+                  {item.question}
+                </div>
+                <div className="mt-2 leading-7 text-slate-600">
+                  {item.answer}
+                </div>
+              </div>
+            ))}
+          </div>
+        </details>
+      )}
+    </div>
   </SectionCard>
 )}
 
