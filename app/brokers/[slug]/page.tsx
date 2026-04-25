@@ -1206,14 +1206,7 @@ export default async function BrokerPage({
         }}
       />
 
-                  <main dir="rtl" className="mx-auto w-full max-w-7xl px-3 pt-8 pb-1 text-right sm:px-4 md:pt-10 md:pb-1">
-        <div className="mb-4 text-sm text-slate-500">
-          <Link href="/brokers" className="hover:text-slate-700">
-            تقييم شركات التداول
-          </Link>
-          <span className="mx-2">/</span>
-          <span>تقييم {broker.name}</span>
-        </div>
+                <main dir="rtl" className="mx-auto w-full max-w-7xl px-3 pt-5 pb-1 text-right sm:px-4 md:pt-6 md:pb-1">
 
         <section className="relative overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm md:rounded-[32px]">
           <div
