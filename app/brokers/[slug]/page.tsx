@@ -1792,10 +1792,35 @@ export default async function BrokerPage({
       </div>
     </div>
 
-    <div className="hidden rounded-[24px] border border-amber-200 bg-amber-50/80 p-5 text-sm leading-8 text-slate-700 md:block">
-      <span className="font-black text-slate-900">ملاحظة:</span>{" "}
-      قد تختلف تفاصيل الحسابات مثل السبريد والعمولة والحد الأدنى للإيداع حسب نوع الحساب والجهة التنظيمية والمنطقة الجغرافية.
+    <div className="hidden md:block">
+  <div className="mt-4 overflow-hidden rounded-[28px] border border-blue-100 bg-gradient-to-r from-blue-100 via-blue-50 to-blue-100 p-6 shadow-sm">
+
+    <div className="flex items-center justify-between gap-6">
+
+      {/* Text */}
+      <div>
+        <div className="text-lg font-black text-slate-900">
+          ابدأ التداول مع {broker.name} الآن
+        </div>
+        <p className="mt-1 text-sm leading-7 text-slate-600">
+          اختر الحساب المناسب لك وابدأ فتح حساب حقيقي خلال دقائق.
+        </p>
+      </div>
+
+      {/* Button */}
+      <a
+        href={`/go/${broker.slug}?type=real`}
+        target="_blank"
+        rel="nofollow sponsored noopener noreferrer"
+        className="flex min-h-[52px] items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 px-8 text-sm font-extrabold text-white shadow-md transition hover:-translate-y-0.5 hover:from-blue-700 hover:to-blue-800 hover:shadow-lg"
+      >
+        فتح حساب حقيقي
+      </a>
+
     </div>
+
+  </div>
+</div>
 
   </div>
 </SectionCard>
