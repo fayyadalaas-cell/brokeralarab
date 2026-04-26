@@ -31,7 +31,16 @@ type Broker = {
   islamic_account: string | null;
   arabic_support: string | null;
   trading_assets: string | null;
-};
+  key_strength_ar: string | null;
+  key_weakness_ar: string | null;
+  expert_insight_ar: string | null;
+  who_should_use_ar: string | null;
+  score_safety: number | null;
+  score_fees: number | null;
+  score_platforms: number | null;
+  score_deposit: number | null;
+  score_support: number | null;
+  };
 
 type BrokerAccount = {
   id: number;
@@ -749,236 +758,265 @@ export default async function ComparePage({ params }: PageProps) {
   </div>
 
   <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8">
-    {/* Top intro */}
-    <div className="relative mb-5 rounded-[28px] border border-[#dbeafe] bg-white/85 p-5 shadow-sm sm:p-6">
-      <div className="text-xs font-bold text-[#1d4ed8] sm:text-sm">
-        المقارنات / {left.name} vs {right.name}
+   {/* Top intro - Desktop only */}
+<div className="mb-5 hidden md:block">
+  <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white px-8 py-8 shadow-[0_18px_55px_rgba(37,99,235,0.08)]">
+    <div className="absolute inset-x-0 top-0 h-1.5 bg-[#2563eb]" />
+    <div className="pointer-events-none absolute left-0 top-0 h-full w-[38%] bg-[radial-gradient(circle_at_top_left,rgba(37,99,235,0.10),transparent_55%)]" />
+
+    <div className="relative">
+      <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#dbeafe] bg-[#f8fbff] px-4 py-2 text-xs font-extrabold text-[#2563eb]">
+        <span>المقارنات</span>
+        <span className="text-slate-300">/</span>
+        <span>{left.name} vs {right.name}</span>
       </div>
+
+      <h1 className="max-w-6xl text-[42px] font-black leading-[1.2] tracking-[-0.5px] text-[#0f172a] xl:text-[48px]">
+  مقارنة بين {left.name} و{right.name}: أيهما أفضل؟
+</h1>
+
+      <p className="mt-4 max-w-6xl text-base leading-8 text-slate-600 xl:text-lg xl:leading-9">
+        مقارنة شاملة بين <strong>{left.name}</strong> و{" "}
+        <strong>{right.name}</strong> لمعرفة الفرق في السبريد، الرسوم،
+        التراخيص، الحساب الإسلامي، منصات التداول، طرق الإيداع والسحب،
+        وأنواع الحسابات، مع توضيح أيهما أفضل للمبتدئين والمتداولين العرب.
+      </p>
+
+      <div className="mt-7 grid max-w-6xl grid-cols-3 gap-4">
+        <div className="rounded-[22px] border border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-5 py-4 shadow-sm">
+          <div className="text-xs font-black text-[#2563eb]">الفائز السريع</div>
+          <div className="mt-1 truncate text-xl font-black text-[#0f172a]">
+            {overallWinner}
+          </div>
+          <div className="mt-1 text-xs font-bold text-slate-500">
+            أفضل تقييم عام في المقارنة
+          </div>
+        </div>
+
+        <div className="rounded-[22px] border border-slate-200 bg-white px-5 py-4 shadow-sm">
+          <div className="text-xs font-black text-slate-500">الأفضل للمبتدئين</div>
+          <div className="mt-1 truncate text-xl font-black text-[#0f172a]">
+            {beginnerWinner}
+          </div>
+          <div className="mt-1 text-xs font-bold text-slate-500">
+            حسب سهولة البداية والحسابات
+          </div>
+        </div>
+
+        <div className="rounded-[22px] border border-slate-200 bg-white px-5 py-4 shadow-sm">
+          <div className="text-xs font-black text-slate-500">الأفضل للسبريد</div>
+          <div className="mt-1 truncate text-xl font-black text-[#0f172a]">
+            {scalpingWinner}
+          </div>
+          <div className="mt-1 text-xs font-bold text-slate-500">
+            مناسب أكثر للتكلفة والتنفيذ
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  {/* Desktop / Tablet */}
+<div className="hidden md:block">
+  <div className="rounded-[34px] border border-[#dbeafe] bg-white p-6 shadow-[0_24px_70px_rgba(37,99,235,0.10)] lg:p-8">
+    <div className="grid items-center gap-6 lg:grid-cols-[1fr_110px_1fr]">
       
+      {/* RIGHT */}
+      <div
+        className={`relative overflow-hidden rounded-[30px] border p-6 transition ${
+          overallWinner === right.name
+            ? "scale-[1.015] border-[#3b82f6] bg-gradient-to-b from-[#e0edff] to-white shadow-[0_20px_50px_rgba(37,99,235,0.18)]"
+            : "border-slate-200 bg-white shadow-sm"
+        }`}
+      >
+        {overallWinner === right.name && (
+          <>
+            <div className="pointer-events-none absolute inset-0 rounded-[30px] ring-2 ring-[#3b82f6]/30" />
+            <div className="absolute left-4 top-4 rounded-full bg-[#2563eb] px-3 py-1 text-[11px] font-black text-white shadow-sm">
+              الأفضل إجمالًا
+            </div>
+          </>
+        )}
 
-      <div className="mt-3 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-        <div className="min-w-0">
-            
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <h2 className="truncate text-3xl font-black text-[#0f172a]">
+              {right.name}
+            </h2>
+            <p className="mt-2 text-sm font-bold text-[#2563eb]">
+              {cleanText(right.best_for) || "مناسب لفئات متعددة"}
+            </p>
+          </div>
 
-          <h1 className="mt-3 text-3xl font-black leading-tight text-[#0f172a] sm:text-4xl lg:whitespace-nowrap lg:text-[52px] lg:leading-none">
-            {left.name} vs {right.name}: أيهما أفضل للتداول؟
-          </h1>
-
-          <p className="mt-3 max-w-4xl text-base leading-8 text-slate-600 sm:text-lg">
-            مقارنة سريعة وواضحة بين <strong>{left.name}</strong> و{" "}
-            <strong>{right.name}</strong> من حيث التقييم، الإيداع، الحساب
-            الإسلامي، التراخيص، وأنواع الحسابات حتى تصل إلى قرار أوضح.
-          </p>
-          
+          <div className="flex h-[76px] w-[76px] shrink-0 flex-col items-center justify-center rounded-2xl border border-[#bfdbfe] bg-white text-[#2563eb] shadow-sm">
+            <span className="text-2xl font-black">
+              {right.rating?.toFixed(1) ?? "—"}
+            </span>
+            <span className="text-[10px] font-bold">من 5</span>
+          </div>
         </div>
 
-        <div className="shrink-0 rounded-2xl border border-[#dbeafe] bg-white px-4 py-3 text-center shadow-sm">
-          <div className="text-[11px] font-bold text-slate-500">الفائز السريع</div>
-          <div className="mt-1 text-base font-black text-[#0f172a]">{overallWinner}</div>
+        <div className="mt-6 flex h-[138px] items-center justify-center rounded-[26px] border border-slate-200 bg-[#fbfdff] p-6">
+          {right.logo ? (
+            <img
+              src={right.logo}
+              alt={right.name || "Broker logo"}
+              className="h-[96px] w-full object-contain"
+            />
+          ) : (
+            <div className="text-xl font-black text-slate-300">{right.name}</div>
+          )}
+        </div>
+
+        <div className="mt-5 space-y-3">
+          {right.key_strength_ar && (
+            <div className="rounded-2xl bg-[#ecfdf5] px-4 py-3">
+              <div className="text-xs font-black text-[#059669]">نقطة القوة</div>
+              <div className="mt-1 text-sm font-black text-[#064e3b]">
+                {right.key_strength_ar}
+              </div>
+            </div>
+          )}
+
+          {right.key_weakness_ar && (
+            <div className="rounded-2xl bg-[#fff7ed] px-4 py-3">
+              <div className="text-xs font-black text-[#ea580c]">ملاحظة مهمة</div>
+              <div className="mt-1 text-sm font-black text-[#7c2d12]">
+                {right.key_weakness_ar}
+              </div>
+            </div>
+          )}
+
+          {right.expert_insight_ar && (
+            <div className="rounded-2xl bg-[#f8fafc] px-4 py-3">
+              <div className="text-xs font-black text-slate-500">رأي بروكر العرب</div>
+              <div className="mt-1 text-sm font-medium leading-6 text-[#0f172a]">
+                {right.expert_insight_ar}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="mt-6 grid grid-cols-2 gap-3">
+          <a
+            href={`/go/${right.slug ?? ""}?type=real`}
+            className="inline-flex min-h-[52px] items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-sm font-black text-white transition hover:bg-[#1d4ed8]"
+          >
+            ابدأ الآن
+          </a>
+
+          <Link
+            href={`/brokers/${right.slug ?? ""}`}
+            className="inline-flex min-h-[52px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-black text-slate-800 transition hover:bg-slate-50"
+          >
+            التقييم
+          </Link>
+        </div>
+      </div>
+
+      {/* CENTER */}
+      <div className="flex flex-col items-center justify-center">
+        <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-[#2563eb] to-[#1e40af] text-2xl font-black text-white shadow-[0_10px_30px_rgba(37,99,235,0.4)]">
+          VS
+        </div>
+      </div>
+
+      {/* LEFT */}
+      <div
+        className={`relative overflow-hidden rounded-[30px] border p-6 transition ${
+          overallWinner === left.name
+            ? "scale-[1.015] border-[#3b82f6] bg-gradient-to-b from-[#e0edff] to-white shadow-[0_20px_50px_rgba(37,99,235,0.18)]"
+            : "border-slate-200 bg-white shadow-sm"
+        }`}
+      >
+        {overallWinner === left.name && (
+          <>
+            <div className="pointer-events-none absolute inset-0 rounded-[30px] ring-2 ring-[#3b82f6]/30" />
+            <div className="absolute left-4 top-4 rounded-full bg-[#2563eb] px-3 py-1 text-[11px] font-black text-white shadow-sm">
+              الأفضل إجمالًا
+            </div>
+          </>
+        )}
+
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <h2 className="truncate text-3xl font-black text-[#0f172a]">
+              {left.name}
+            </h2>
+            <p className="mt-2 text-sm font-bold text-[#2563eb]">
+              {cleanText(left.best_for) || "مناسب لفئات متعددة"}
+            </p>
+          </div>
+
+          <div className="flex h-[76px] w-[76px] shrink-0 flex-col items-center justify-center rounded-2xl border border-[#bfdbfe] bg-white text-[#2563eb] shadow-sm">
+            <span className="text-2xl font-black">
+              {left.rating?.toFixed(1) ?? "—"}
+            </span>
+            <span className="text-[10px] font-bold">من 5</span>
+          </div>
+        </div>
+
+        <div className="mt-6 flex h-[138px] items-center justify-center rounded-[26px] border border-slate-200 bg-[#fbfdff] p-6">
+          {left.logo ? (
+            <img
+              src={left.logo}
+              alt={left.name || "Broker logo"}
+              className="h-[96px] w-full object-contain"
+            />
+          ) : (
+            <div className="text-xl font-black text-slate-300">{left.name}</div>
+          )}
+        </div>
+
+        <div className="mt-5 space-y-3">
+          {left.key_strength_ar && (
+            <div className="rounded-2xl bg-[#ecfdf5] px-4 py-3">
+              <div className="text-xs font-black text-[#059669]">نقطة القوة</div>
+              <div className="mt-1 text-sm font-black text-[#064e3b]">
+                {left.key_strength_ar}
+              </div>
+            </div>
+          )}
+
+          {left.key_weakness_ar && (
+            <div className="rounded-2xl bg-[#fff7ed] px-4 py-3">
+              <div className="text-xs font-black text-[#ea580c]">ملاحظة مهمة</div>
+              <div className="mt-1 text-sm font-black text-[#7c2d12]">
+                {left.key_weakness_ar}
+              </div>
+            </div>
+          )}
+
+          {left.expert_insight_ar && (
+            <div className="rounded-2xl bg-[#f8fafc] px-4 py-3">
+              <div className="text-xs font-black text-slate-500">رأي بروكر العرب</div>
+              <div className="mt-1 text-sm font-medium leading-6 text-[#0f172a]">
+                {left.expert_insight_ar}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="mt-6 grid grid-cols-2 gap-3">
+          <a
+            href={`/go/${left.slug ?? ""}?type=real`}
+            className="inline-flex min-h-[52px] items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-sm font-black text-white transition hover:bg-[#1d4ed8]"
+          >
+            ابدأ الآن
+          </a>
+
+          <Link
+            href={`/brokers/${left.slug ?? ""}`}
+            className="inline-flex min-h-[52px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-black text-slate-800 transition hover:bg-slate-50"
+          >
+            التقييم
+          </Link>
         </div>
       </div>
     </div>
-
-    {/* Desktop / Tablet */}
-    <div className="hidden md:block">
-      <div className="rounded-[32px] border border-[#dbeafe] bg-white/95 p-4 shadow-[0_20px_60px_rgba(37,99,235,0.08)] sm:p-6 lg:p-8">
-        <div className="grid gap-5 lg:grid-cols-[1fr_auto_1fr] lg:items-center">
-          {/* Left broker */}
-          <div
-            className={`rounded-[28px] border p-4 sm:p-5 lg:p-6 ${
-              overallWinner === left.name
-                ? "border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)]"
-                : "border-slate-200 bg-white"
-            }`}
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="text-2xl font-black text-[#0f172a] sm:text-3xl">
-                    {left.name}
-                  </h2>
-                  {overallWinner === left.name ? (
-                    <span className="rounded-full bg-[#2563eb] px-3 py-1 text-[10px] font-extrabold text-white">
-                      الأفضل إجمالًا
-                    </span>
-                  ) : null}
-                </div>
-
-                <p className="mt-2 text-sm font-bold leading-6 text-[#1d4ed8]">
-                  {cleanText(left.best_for) || "مناسب لفئات متعددة من المتداولين"}
-                </p>
-              </div>
-
-              <div className="flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-2xl border border-[#bfdbfe] bg-white text-[#1d4ed8] sm:h-20 sm:w-20">
-                <span className="text-xl font-black sm:text-2xl">
-                  {left.rating?.toFixed(1) ?? "—"}
-                </span>
-                <span className="text-[10px] font-bold">من 5</span>
-              </div>
-            </div>
-
-            <div className="mt-5 flex min-h-[130px] items-center justify-center rounded-[24px] border border-slate-200 bg-[#fbfdff] p-5">
-              {left.logo ? (
-                <img
-                  src={left.logo}
-                  alt={left.name || "Broker logo"}
-                  className="h-[120px] w-full scale-125 object-contain"
-                />
-              ) : (
-                <div className="text-xl font-black text-slate-300">{left.name}</div>
-              )}
-            </div>
-
-            <div className="mt-5 grid grid-cols-2 gap-3">
-              <div className="rounded-2xl border border-slate-200 bg-white px-4 py-4">
-                <div className="text-[11px] font-bold text-slate-500">الإيداع</div>
-                <div className="mt-1 text-base font-black text-[#0f172a]">
-                  {money(left.min_deposit)}
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-slate-200 bg-white px-4 py-4">
-                <div className="text-[11px] font-bold text-slate-500">الحساب الإسلامي</div>
-                <div className="mt-1 text-base font-black text-[#0f172a]">
-                  {yesNoArabic(left.islamic_account)}
-                </div>
-              </div>
-
-              <div className="col-span-2 rounded-2xl border border-slate-200 bg-white px-4 py-4">
-                <div className="text-[11px] font-bold text-slate-500">التراخيص</div>
-                <div className="mt-1 text-sm font-black leading-7 text-[#0f172a]">
-                  {shortReg(left.regulation)}
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-5 grid grid-cols-2 gap-3">
-              <a
-                href={`/go/${left.slug ?? ""}?type=real`}
-                className="inline-flex min-h-[50px] items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
-              >
-                ابدأ مع {left.name}
-              </a>
-
-              <Link
-                href={`/brokers/${left.slug ?? ""}`}
-                className="inline-flex min-h-[50px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
-              >
-                التقييم
-              </Link>
-            </div>
-          </div>
-
-          {/* Center */}
-          <div className="flex flex-col items-center justify-center gap-4">
-            <div className="flex h-20 w-20 items-center justify-center rounded-full border border-[#bfdbfe] bg-[radial-gradient(circle,#2563eb_0%,#1d4ed8_100%)] text-2xl font-black text-white shadow-lg sm:h-24 sm:w-24">
-              VS
-            </div>
-
-            <div className="grid w-full gap-3 lg:grid-cols-1">
-              <div className="rounded-2xl border border-[#dbeafe] bg-white px-4 py-3 text-center shadow-sm">
-                <div className="text-[11px] font-bold text-slate-500">الأفضل إجمالًا</div>
-                <div className="mt-1 text-sm font-black text-[#0f172a]">{overallWinner}</div>
-              </div>
-              <div className="rounded-2xl border border-[#dbeafe] bg-white px-4 py-3 text-center shadow-sm">
-                <div className="text-[11px] font-bold text-slate-500">الأفضل للمبتدئين</div>
-                <div className="mt-1 text-sm font-black text-[#0f172a]">{beginnerWinner}</div>
-              </div>
-              <div className="rounded-2xl border border-[#dbeafe] bg-white px-4 py-3 text-center shadow-sm">
-                <div className="text-[11px] font-bold text-slate-500">الأفضل للسبريد</div>
-                <div className="mt-1 text-sm font-black text-[#0f172a]">{scalpingWinner}</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Right broker */}
-          <div
-            className={`rounded-[28px] border p-4 sm:p-5 lg:p-6 ${
-              overallWinner === right.name
-                ? "border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)]"
-                : "border-slate-200 bg-white"
-            }`}
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="text-2xl font-black text-[#0f172a] sm:text-3xl">
-                    {right.name}
-                  </h2>
-                  {overallWinner === right.name ? (
-                    <span className="rounded-full bg-[#2563eb] px-3 py-1 text-[10px] font-extrabold text-white">
-                      الأفضل إجمالًا
-                    </span>
-                  ) : null}
-                </div>
-
-                <p className="mt-2 text-sm font-bold leading-6 text-[#1d4ed8]">
-                  {cleanText(right.best_for) || "مناسب لفئات متعددة من المتداولين"}
-                </p>
-              </div>
-
-              <div className="flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-2xl border border-[#bfdbfe] bg-white text-[#1d4ed8] sm:h-20 sm:w-20">
-                <span className="text-xl font-black sm:text-2xl">
-                  {right.rating?.toFixed(1) ?? "—"}
-                </span>
-                <span className="text-[10px] font-bold">من 5</span>
-              </div>
-            </div>
-
-            <div className="mt-5 flex min-h-[130px] items-center justify-center rounded-[24px] border border-slate-200 bg-[#fbfdff] p-5">
-              {right.logo ? (
-                <img
-                  src={right.logo}
-                  alt={right.name || "Broker logo"}
-                  className="h-[120px] w-full scale-125 object-contain"
-                />
-              ) : (
-                <div className="text-xl font-black text-slate-300">{right.name}</div>
-              )}
-            </div>
-
-            <div className="mt-5 grid grid-cols-2 gap-3">
-              <div className="rounded-2xl border border-slate-200 bg-white px-4 py-4">
-                <div className="text-[11px] font-bold text-slate-500">الإيداع</div>
-                <div className="mt-1 text-base font-black text-[#0f172a]">
-                  {money(right.min_deposit)}
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-slate-200 bg-white px-4 py-4">
-                <div className="text-[11px] font-bold text-slate-500">الحساب الإسلامي</div>
-                <div className="mt-1 text-base font-black text-[#0f172a]">
-                  {yesNoArabic(right.islamic_account)}
-                </div>
-              </div>
-
-              <div className="col-span-2 rounded-2xl border border-slate-200 bg-white px-4 py-4">
-                <div className="text-[11px] font-bold text-slate-500">التراخيص</div>
-                <div className="mt-1 text-sm font-black leading-7 text-[#0f172a]">
-                  {shortReg(right.regulation)}
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-5 grid grid-cols-2 gap-3">
-              <a
-                href={`/go/${right.slug ?? ""}?type=real`}
-                className="inline-flex min-h-[50px] items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
-              >
-                ابدأ مع {right.name}
-              </a>
-
-              <Link
-                href={`/brokers/${right.slug ?? ""}`}
-                className="inline-flex min-h-[50px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
-              >
-                التقييم
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+  </div>
+</div>
 
     {/* Mobile version */}
     <div className="md:hidden">
@@ -1164,106 +1202,127 @@ export default async function ComparePage({ params }: PageProps) {
   </div>
 </section>
 
-<section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
-  <div className="rounded-[30px] border border-slate-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
+<section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-10 lg:px-8">
+  <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white p-6 shadow-[0_22px_65px_rgba(37,99,235,0.08)] lg:p-8">
+
+    <div className="pointer-events-none absolute inset-x-0 top-0 h-1.5 bg-[#2563eb]" />
 
     {/* Title */}
-    <div className="max-w-4xl">
-      <span className="text-sm font-bold text-[#2563eb]">الحكم النهائي</span>
+    <div className="max-w-5xl">
+      <span className="text-sm font-black text-[#2563eb]">الحكم النهائي</span>
 
-      <h2 className="mt-2 text-2xl font-black leading-tight text-[#0f172a] sm:text-3xl lg:whitespace-nowrap lg:text-5xl">
+      <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-5xl">
         من الأفضل بين {left.name} و {right.name}؟
       </h2>
 
-      <p className="mt-3 text-sm leading-8 text-slate-600 sm:text-base">
-        بعد مراجعة التقييم العام، الحد الأدنى للإيداع، الحساب الإسلامي،
-        والتراخيص، يمكن تلخيص المقارنة بين <strong>{left.name}</strong> و{" "}
-        <strong>{right.name}</strong> في النقاط التالية.
+      <p className="mt-3 text-base leading-8 text-slate-600">
+        هذه خلاصة سريعة تساعدك على اختيار الوسيط الأنسب حسب أسلوبك في التداول،
+        سواء كنت مبتدئًا أو تبحث عن أقل تكلفة أو أفضل أداء عام.
       </p>
     </div>
 
-    {/* Comparison Cards */}
-    <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-2 xl:grid-cols-4">
+    {/* Cards */}
+    <div className="mt-7 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
 
-      <div className="rounded-[22px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-4 sm:p-5">
-        <div className="text-xs font-bold text-slate-500 sm:text-sm">
-          الأفضل إجمالًا
+      {/* Overall Winner */}
+      <div className="relative overflow-hidden rounded-[26px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5 shadow-[0_16px_40px_rgba(37,99,235,0.14)]">
+        <div className="absolute left-4 top-4 rounded-full bg-[#2563eb] px-3 py-1 text-[11px] font-black text-white">
+          الفائز
         </div>
-        <div className="mt-2 text-xl font-black text-[#0f172a] sm:text-2xl lg:text-3xl">
+
+        <div className="text-xs font-black text-[#2563eb]">الأفضل إجمالًا</div>
+        <div className="mt-3 truncate text-3xl font-black text-[#0f172a]">
           {overallWinner}
         </div>
-        <p className="mt-2 text-xs leading-6 text-slate-600 sm:text-sm">
-          ترشيح عام بناءً على صورة الوسيط الكاملة.
+        <p className="mt-2 text-sm leading-6 text-slate-600">
+          أفضل توازن بين التقييم، الرسوم، الثقة وسهولة الاستخدام.
         </p>
       </div>
 
-      <div className="rounded-[22px] border border-slate-200 bg-white p-4 sm:p-5">
-        <div className="text-xs font-bold text-slate-500 sm:text-sm">
-          الأفضل للمبتدئين
+      {/* Beginner */}
+      <div className="rounded-[26px] border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="text-xs font-black text-slate-500">الأفضل للمبتدئين</div>
+        <div className="mt-3 truncate text-3xl font-black text-[#0f172a]">
+          {beginnerWinner === "تعادل" ? "خياران متقاربان" : beginnerWinner}
         </div>
-        <div className="mt-2 text-xl font-black text-[#0f172a] sm:text-2xl lg:text-3xl">
-          {beginnerWinner}
-        </div>
-        <p className="mt-2 text-xs leading-6 text-slate-600 sm:text-sm">
-          يعتمد على سهولة البداية ووضوح الحسابات.
+        <p className="mt-2 text-sm leading-6 text-slate-600">
+          مناسب لمن يريد بداية سهلة وحسابات واضحة.
         </p>
       </div>
 
-      <div className="rounded-[22px] border border-slate-200 bg-white p-4 sm:p-5">
-        <div className="text-xs font-bold text-slate-500 sm:text-sm">
-          الأفضل للسبريد
+      {/* Spread */}
+      <div className="rounded-[26px] border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="text-xs font-black text-slate-500">الأفضل للسبريد</div>
+        <div className="mt-3 truncate text-3xl font-black text-[#0f172a]">
+          {scalpingWinner === "تعادل" ? "خياران متقاربان" : scalpingWinner}
         </div>
-        <div className="mt-2 text-xl font-black text-[#0f172a] sm:text-2xl lg:text-3xl">
-          {scalpingWinner}
-        </div>
-        <p className="mt-2 text-xs leading-6 text-slate-600 sm:text-sm">
-          مناسب أكثر لمن يهتم بالتنفيذ السريع.
+        <p className="mt-2 text-sm leading-6 text-slate-600">
+          خيار أفضل لمن يهتم بتقليل التكاليف والتنفيذ السريع.
         </p>
       </div>
 
-      <div className="rounded-[22px] border border-slate-200 bg-white p-4 sm:p-5">
-        <div className="text-xs font-bold text-slate-500 sm:text-sm">
-          الأفضل للإيداع
+      {/* Deposit */}
+      <div className="rounded-[26px] border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="text-xs font-black text-slate-500">الأفضل للإيداع</div>
+        <div className="mt-3 truncate text-3xl font-black text-[#0f172a]">
+          {depositWinner === "تعادل" ? "خياران متقاربان" : depositWinner}
         </div>
-        <div className="mt-2 text-xl font-black text-[#0f172a] sm:text-2xl lg:text-3xl">
-          {depositWinner}
-        </div>
-        <p className="mt-2 text-xs leading-6 text-slate-600 sm:text-sm">
-          خيار أفضل لمن يركز على بداية أقل تكلفة.
+        <p className="mt-2 text-sm leading-6 text-slate-600">
+          مناسب لمن يريد دخول السوق بأقل تكلفة ممكنة.
         </p>
       </div>
 
     </div>
 
-    {/* Analysis */}
-    <div className="mt-6 rounded-[24px] border border-slate-200 bg-[#f8fbff] p-4 sm:p-6">
-      <p className="text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
-        إذا كنت تبحث عن الخيار الأفضل إجمالًا فاختيار{" "}
-        <strong>{overallWinner}</strong> هو الأنسب. أما إذا كانت أولويتك هي
-        سهولة البداية فراجع ترشيح <strong>{beginnerWinner}</strong>. وإذا كان
-        تركيزك على السبريد والتنفيذ السريع فابدأ بـ{" "}
-        <strong>{scalpingWinner}</strong>.
-      </p>
+    {/* Bottom Section */}
+    <div className="mt-7 rounded-[28px] border border-[#dbeafe] bg-[#f8fbff] p-5 lg:p-6">
+      <div className="grid gap-5 lg:grid-cols-[1.4fr_1fr] lg:items-center">
 
-      <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:flex lg:justify-end">
+        {/* Text */}
+        <div>
+          <div className="text-sm font-black text-[#2563eb]">الخلاصة السريعة</div>
 
-        <Link
-          href={`/brokers/${left.slug ?? ""}`}
-          className="inline-flex min-h-[48px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50 lg:min-w-[260px]"
-        >
-          اقرأ تقييم {left.name}
-        </Link>
+        <p className="mt-2 text-sm leading-8 text-slate-700 lg:text-base">
+  إذا كنت تبحث عن أفضل وسيط بشكل عام من حيث التقييم والثقة وسهولة الاستخدام،
+  فإن <strong>{overallWinner}</strong> هو الخيار الأقوى.  
+  للمبتدئين، كلا الخيارين مناسب، لكن <strong>{beginnerWinner}</strong> يوفر بداية أسهل.  
+  أما إذا كان تركيزك على تقليل التكاليف وسرعة التنفيذ، فإن <strong>{scalpingWinner}</strong> هو الأنسب.
+</p>
+        </div>
 
-        <Link
-          href={`/brokers/${right.slug ?? ""}`}
-          className="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-[#2563eb] px-6 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8] lg:min-w-[260px]"
-        >
-          اقرأ تقييم {right.name}
-        </Link>
+        {/* Buttons */}
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
 
+          {/* Left Broker */}
+          <a
+            href={`/go/${left.slug ?? ""}?type=real`}
+            className={`inline-flex min-h-[50px] items-center justify-center rounded-2xl px-6 py-3 text-sm font-black transition
+              ${
+                overallWinner === left.name
+                  ? "bg-[#2563eb] text-white hover:bg-[#1d4ed8]"
+                  : "border border-slate-300 bg-white text-slate-800 hover:bg-slate-50"
+              }`}
+          >
+            افتح حساب مع {left.name}
+          </a>
+
+          {/* Right Broker */}
+          <a
+            href={`/go/${right.slug ?? ""}?type=real`}
+            className={`inline-flex min-h-[50px] items-center justify-center rounded-2xl px-6 py-3 text-sm font-black transition
+              ${
+                overallWinner === right.name
+                  ? "bg-[#2563eb] text-white hover:bg-[#1d4ed8]"
+                  : "border border-slate-300 bg-white text-slate-800 hover:bg-slate-50"
+              }`}
+          >
+            افتح حساب مع {right.name}
+          </a>
+
+        </div>
       </div>
 
-      <p className="mt-3 text-xs text-slate-500">
+      <p className="mt-4 text-xs text-slate-500">
         فتح الحساب يتم عبر الموقع الرسمي للوسيط.
       </p>
     </div>
@@ -1271,758 +1330,733 @@ export default async function ComparePage({ params }: PageProps) {
   </div>
 </section>
 
-<section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
-  <div className="rounded-[30px] border border-slate-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
-    {/* Header */}
-    <div className="max-w-4xl">
-      <span className="text-sm font-bold text-[#2563eb]">المميزات الأساسية</span>
-      <h2 className="mt-2 text-2xl font-black leading-tight text-[#0f172a] sm:text-3xl lg:whitespace-nowrap lg:text-5xl">
-        مقارنة المميزات الأساسية بين {left.name} و {right.name}
+<section className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
+  <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white p-6 shadow-[0_25px_70px_rgba(37,99,235,0.08)] lg:p-8">
+    <div className="absolute inset-x-0 top-0 h-1.5 bg-[#2563eb]" />
+
+    <div className="max-w-5xl">
+      <span className="text-sm font-black text-[#2563eb]">تحليل النقاط</span>
+
+      <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-5xl">
+        تحليل نقاط القوة بين {left.name} و {right.name}
       </h2>
-      <p className="mt-3 text-sm leading-8 text-slate-600 sm:text-base">
-        نظرة سريعة على أهم العناصر التي يهتم بها المتداول العربي، مثل الإيداع،
-        الحساب الإسلامي، الدعم العربي، التراخيص، والمنصات.
+
+      <p className="mt-3 text-base leading-8 text-slate-600">
+        مقارنة مرئية مختصرة توضح أين يتفوق كل وسيط في الأمان، الرسوم،
+        المنصات، الإيداع والسحب، والدعم.
       </p>
     </div>
 
-    {/* Desktop */}
-    <div className="mt-6 hidden md:block">
-      <div className="overflow-hidden rounded-[24px] border border-slate-200">
-        <div className="grid grid-cols-[220px_1fr_1fr] bg-[linear-gradient(180deg,#f8fbff_0%,#eef4ff_100%)]">
-          <div className="border-b border-slate-200 p-4 text-right font-black text-[#0f172a]">
-            الميزة
-          </div>
-          <div className="border-b border-r border-slate-200 p-4 text-center font-black text-[#0f172a]">
-            {left.name}
-          </div>
-          <div className="border-b border-r border-slate-200 p-4 text-center font-black text-[#0f172a]">
-            {right.name}
-          </div>
-        </div>
+    <div className="mt-5 flex flex-wrap gap-3">
+      <span className="rounded-full border border-[#bfdbfe] bg-[#eff6ff] px-4 py-2 text-sm font-black text-[#2563eb]">
+        الأفضل إجمالًا: {overallWinner}
+      </span>
+      <span className="rounded-full border border-slate-200 bg-gradient-to-b from-[#eff6ff] to-white px-4 py-2 text-sm font-black text-slate-600">
+        الأفضل للمبتدئين: {beginnerWinner === "تعادل" ? "متقارب" : beginnerWinner}
+      </span>
+    </div>
 
-        {comparisonRows.slice(0, 8).map((row, index) => (
+    <div className="mt-8 grid gap-4 lg:grid-cols-2">
+      {[
+        {
+          label: "الأمان والثقة",
+          leftScore: left.score_safety ?? 0,
+          rightScore: right.score_safety ?? 0,
+          note: "يعكس قوة التراخيص وحماية أموال العملاء.",
+        },
+        {
+          label: "الرسوم والتكاليف",
+          leftScore: left.score_fees ?? 0,
+          rightScore: right.score_fees ?? 0,
+          note: "يقيس تكلفة التداول والسبريد والرسوم العامة.",
+        },
+        {
+          label: "منصات التداول",
+          leftScore: left.score_platforms ?? 0,
+          rightScore: right.score_platforms ?? 0,
+          note: "يعتمد على جودة المنصات وتنوع أدوات التداول.",
+        },
+        {
+          label: "الإيداع والسحب",
+          leftScore: left.score_deposit ?? 0,
+          rightScore: right.score_deposit ?? 0,
+          note: "يركز على سهولة التمويل وسرعة السحب.",
+        },
+        {
+          label: "الدعم وخدمة العملاء",
+          leftScore: left.score_support ?? 0,
+          rightScore: right.score_support ?? 0,
+          note: "يقارن جودة الدعم ووضوح تجربة المستخدم.",
+        },
+      ].map((item) => {
+        const winner =
+          item.leftScore > item.rightScore
+            ? left.name
+            : item.rightScore > item.leftScore
+            ? right.name
+            : "تعادل";
+
+        const diff = Math.abs(item.leftScore - item.rightScore);
+        const isClose = diff < 0.3;
+
+        return (
           <div
-            key={row.label}
-            className={`grid grid-cols-[220px_1fr_1fr] ${
-              index % 2 === 0 ? "bg-white" : "bg-[#fbfdff]"
+            key={item.label}
+            className={`rounded-[28px] border border-slate-200 bg-[#f8fbff] p-5 shadow-sm ${
+              item.label === "الدعم وخدمة العملاء" ? "lg:col-span-2" : ""
             }`}
           >
-            <div className="flex items-center border-b border-slate-200 p-4">
-              <div className="font-black text-[#0f172a]">{row.label}</div>
-            </div>
-
-            <div
-              className={`flex items-center justify-center border-b border-r border-slate-200 p-4 text-center ${
-                row.winner === left.name ? "bg-[#f8fbff]" : ""
-              }`}
-            >
-              <div
-                className={`text-base font-black ${
-                  row.winner === left.name ? "text-[#0f172a]" : "text-slate-700"
-                }`}
-              >
-                {row.leftValue}
+            <div className="mb-5 flex items-start justify-between gap-4">
+              <div>
+                <h3 className="text-xl font-black text-[#0f172a]">
+                  {item.label}
+                </h3>
+                <p className="mt-1 text-sm leading-6 text-slate-500">
+                  {item.note}
+                </p>
               </div>
-            </div>
 
-            <div
-              className={`flex items-center justify-center border-b border-r border-slate-200 p-4 text-center ${
-                row.winner === right.name ? "bg-[#f8fbff]" : ""
-              }`}
-            >
-              <div
-                className={`text-base font-black ${
-                  row.winner === right.name ? "text-[#0f172a]" : "text-slate-700"
+              <span
+                className={`shrink-0 rounded-full px-4 py-1.5 text-[12px] font-black shadow-sm ${
+                  winner !== "تعادل" && !isClose
+                    ? "border border-[#bfdbfe] bg-white text-[#2563eb]"
+                    : "border border-slate-200 bg-slate-50 text-slate-500"
                 }`}
               >
-                {row.rightValue}
+                {winner === "تعادل"
+  ? "متقارب"
+  : diff < 0.2
+  ? "متقارب"
+  : diff < 0.5
+  ? "فارق بسيط"
+  : `يتفوق: ${winner}`}
+              </span>
+            </div>
+
+            <div className="grid gap-3">
+              <div
+                className={`rounded-2xl border px-4 py-3 ${
+                  winner === left.name && !isClose
+                    ? "border-[#2563eb] bg-white shadow-sm"
+                    : "border-slate-200 bg-white"
+                }`}
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <span className="font-black text-[#0f172a]">{left.name}</span>
+                  <span className="text-xl font-black text-[#2563eb]">
+                    {item.leftScore.toFixed(1)}
+                    <span className="text-xs text-slate-400"> / 5</span>
+                  </span>
+                </div>
+
+                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100">
+                  <div
+                    className="h-full rounded-full bg-[#2563eb]/70"
+                    style={{ width: `${Math.min(item.leftScore * 20, 100)}%` }}
+                  />
+                </div>
+              </div>
+
+              <div
+                className={`rounded-2xl border px-4 py-3 ${
+                  winner === right.name && !isClose
+                    ? "border-[#2563eb] bg-white shadow-sm"
+                    : "border-slate-200 bg-white"
+                }`}
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <span className="font-black text-[#0f172a]">{right.name}</span>
+                  <span className="text-xl font-black text-[#2563eb]">
+                    {item.rightScore.toFixed(1)}
+                    <span className="text-xs text-slate-400"> / 5</span>
+                  </span>
+                </div>
+
+                <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100">
+                  <div
+                    className="h-full rounded-full bg-[#2563eb]/70"
+                    style={{ width: `${Math.min(item.rightScore * 20, 100)}%` }}
+                  />
+                </div>
               </div>
             </div>
           </div>
-        ))}
+        );
+      })}
+    </div>
+
+    <div className="mt-8 rounded-[26px] border border-[#dbeafe] bg-[#f8fbff] p-5">
+      <p className="text-sm leading-7 text-slate-600 lg:text-base">
+        هذه النقاط لا تعني أن وسيطًا واحدًا هو الأفضل للجميع، لكنها تساعدك على
+        معرفة أين يتفوق كل وسيط حسب أولويتك: الأمان، التكلفة، المنصات، السحب
+        والإيداع، أو الدعم.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
+  <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white p-6 shadow-[0_25px_70px_rgba(37,99,235,0.08)] lg:p-8">
+    <div className="absolute inset-x-0 top-0 h-1.5 bg-[#2563eb]" />
+
+    <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
+      <div>
+        <span className="text-sm font-black text-[#2563eb]">
+          الحسابات وتكلفة التداول
+        </span>
+
+        <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-5xl">
+          مقارنة الحسابات والرسوم بين {left.name} و {right.name}
+        </h2>
+
+        <p className="mt-3 text-base leading-8 text-slate-600">
+          نلخص هنا أهم عناصر التكلفة عند اختيار الحساب: الحد الأدنى للإيداع،
+          متوسط السبريد، العمولات، وطريقة تنفيذ الأوامر.
+        </p>
       </div>
 
-      <div className="mt-6 rounded-[24px] border border-slate-200 bg-[#f8fbff] p-4 sm:p-5">
-        <p className="text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
-          هذه النظرة السريعة تساعدك على معرفة الفروقات الأساسية بين{" "}
-          <strong>{left.name}</strong> و <strong>{right.name}</strong> قبل الدخول
-          إلى تفاصيل الحسابات والرسوم. إذا كان هدفك هو قرار سريع، فابدأ من النقاط
-          التي يظهر فيها الفائز بوضوح.
+      <div className="rounded-[28px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5 shadow-[0_16px_40px_rgba(37,99,235,0.12)]">
+        <div className="text-xs font-black text-[#2563eb]">الخلاصة السريعة</div>
+        <div className="mt-2 text-3xl font-black text-[#0f172a]">
+          {scalpingWinner === "تعادل" ? "التكلفة متقاربة" : scalpingWinner}
+        </div>
+        <p className="mt-2 text-sm leading-7 text-slate-600">
+          {scalpingWinner === "تعادل"
+            ? "لا يظهر فرق حاسم في التكلفة من البيانات الحالية، لذلك نوع الحساب هو العامل الأهم."
+            : `${scalpingWinner} يبدو أقوى من ناحية التكلفة أو السبريد حسب البيانات المتاحة.`}
         </p>
       </div>
     </div>
 
-    {/* Mobile */}
-    <div className="mt-5 space-y-3 md:hidden">
-      {comparisonRows.slice(0, 4).map((row) => (
+    <div className="mt-7 grid gap-4 md:grid-cols-3">
+      <div className="rounded-[24px] border border-slate-200 bg-[#f8fbff] p-5">
+        <div className="text-xs font-black text-slate-500">عدد الحسابات المتاحة</div>
+        <div className="mt-3 flex items-center justify-between gap-6">
+          <div>
+            <div className="text-xs font-bold text-[#2563eb]">{left.name}</div>
+            <div className="text-3xl font-black text-[#0f172a]">
+              {leftAccounts.length}
+            </div>
+          </div>
+          <div>
+            <div className="text-xs font-bold text-[#2563eb]">{right.name}</div>
+            <div className="text-3xl font-black text-[#0f172a]">
+              {rightAccounts.length}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="rounded-[24px] border border-slate-200 bg-[#f8fbff] p-5">
+        <div className="text-xs font-black text-slate-500">الأفضل للمبتدئين</div>
+        <div className="mt-3 text-2xl font-black text-[#0f172a]">
+          {beginnerWinner === "تعادل" ? "متقارب" : beginnerWinner}
+        </div>
+        <p className="mt-2 text-sm leading-6 text-slate-600">
+          حسب سهولة البداية، الحد الأدنى للإيداع، ووضوح الحسابات.
+        </p>
+      </div>
+
+      <div className="rounded-[24px] border border-[#bfdbfe] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5">
+        <div className="text-xs font-black text-[#2563eb]">مهم قبل الاختيار</div>
+        <div className="mt-3 text-lg font-black leading-7 text-[#0f172a]">
+          الحساب المناسب أهم من عدد الحسابات.
+        </div>
+      </div>
+    </div>
+
+    <div className="mt-8 overflow-hidden rounded-[28px] border border-slate-200 bg-[#fbfdff]">
+      <div className="grid grid-cols-[1fr_1fr_1fr] border-b border-slate-200 bg-[#f8fbff] text-sm font-black text-[#0f172a]">
+        <div className="p-4 text-right">مقارنة العوامل الأساسية</div>
+        <div className="border-x border-slate-200 p-4 text-center">{left.name}</div>
+        <div className="p-4 text-center">{right.name}</div>
+      </div>
+
+      {[
+        {
+          label: "نوع الحساب الأساسي",
+          leftValue: leftAccounts[0]?.account_name || "غير محدد",
+          rightValue: rightAccounts[0]?.account_name || "غير محدد",
+        },
+        {
+          label: "الحد الأدنى للإيداع",
+          leftValue:
+            leftAccounts.find((a) => cleanText(a.min_deposit))?.min_deposit ||
+            money(left.min_deposit),
+          rightValue:
+            rightAccounts.find((a) => cleanText(a.min_deposit))?.min_deposit ||
+            money(right.min_deposit),
+        },
+        {
+          label: "متوسط السبريد",
+          leftValue:
+            leftAccounts.find((a) => cleanText(a.spread))?.spread ||
+            cleanText(left.spreads) ||
+            "غير محدد",
+          rightValue:
+            rightAccounts.find((a) => cleanText(a.spread))?.spread ||
+            cleanText(right.spreads) ||
+            "غير محدد",
+        },
+        {
+          label: "العمولات على التداول",
+          leftValue:
+            leftAccounts.find((a) => cleanText(a.commission))?.commission ||
+            cleanText(left.fees) ||
+            "غير محدد",
+          rightValue:
+            rightAccounts.find((a) => cleanText(a.commission))?.commission ||
+            cleanText(right.fees) ||
+            "غير محدد",
+        },
+        {
+          label: "طريقة تنفيذ الأوامر",
+          leftValue:
+            leftAccounts.find((a) => cleanText(a.execution_type))?.execution_type ||
+            "غير محدد",
+          rightValue:
+            rightAccounts.find((a) => cleanText(a.execution_type))?.execution_type ||
+            "غير محدد",
+        },
+      ].map((row) => (
         <div
           key={row.label}
-          className="rounded-[20px] border border-slate-200 bg-white p-3 shadow-sm"
+          className="grid grid-cols-[1fr_1fr_1fr] border-b border-slate-200 last:border-b-0"
         >
-          <div className="mb-3 flex items-center justify-between gap-3">
-            <div className="text-sm font-black text-[#0f172a]">{row.label}</div>
-
-            <span
-              className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-extrabold ${
-                row.winner === "تعادل"
-                  ? "border border-slate-200 bg-white text-slate-700"
-                  : "border border-[#bfdbfe] bg-[#eff6ff] text-[#1d4ed8]"
-              }`}
-            >
-              {row.winner === "تعادل" ? "تعادل" : row.winner}
-            </span>
+          <div className="p-4 text-sm font-black text-slate-600">
+            {row.label}
           </div>
-
-          <div className="space-y-2">
-            <div
-              className={`flex items-center justify-between rounded-xl border px-3 py-2.5 ${
-                row.winner === left.name
-                  ? "border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)]"
-                  : "border-slate-200 bg-[#fbfdff]"
-              }`}
-            >
-              <span className="text-[11px] font-bold text-[#1d4ed8]">{left.name}</span>
-              <span className="text-base font-black text-[#0f172a] break-words text-left">
-                {row.leftValue}
-              </span>
-            </div>
-
-            <div
-              className={`flex items-center justify-between rounded-xl border px-3 py-2.5 ${
-                row.winner === right.name
-                  ? "border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)]"
-                  : "border-slate-200 bg-[#fbfdff]"
-              }`}
-            >
-              <span className="text-[11px] font-bold text-[#1d4ed8]">{right.name}</span>
-              <span className="text-base font-black text-[#0f172a] break-words text-left">
-                {row.rightValue}
-              </span>
-            </div>
+          <div className="border-x border-slate-200 p-4 text-center text-sm font-black text-[#0f172a]">
+            {row.leftValue}
+          </div>
+          <div className="p-4 text-center text-sm font-black text-[#0f172a]">
+            {row.rightValue}
           </div>
         </div>
       ))}
     </div>
-  </div>
-</section>
 
-<section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
-  <div className="rounded-[30px] border border-slate-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
-    {/* Header */}
-    <div className="max-w-4xl">
-      <span className="text-sm font-bold text-[#2563eb]">الرسوم والسبريد</span>
-      <h2 className="mt-2 text-2xl font-black leading-tight text-[#0f172a] sm:text-3xl lg:text-5xl">
-        مقارنة الرسوم والسبريد بين {left.name} و {right.name}
-      </h2>
-      <p className="mt-3 text-sm leading-8 text-slate-600 sm:text-base">
-        هذا القسم يركز على الجوانب التي تؤثر مباشرة على تكلفة التداول، مثل
-        السبريد، الرسوم، وطريقة السحب والإيداع، مع عرض مستقل لكل وسيط حتى تبقى
-        المقارنة واضحة ومريحة في الموبايل والديسكتوب.
-      </p>
-    </div>
+    <div className="mt-7 grid gap-5 lg:grid-cols-2">
+      {[left, right].map((broker) => {
+        const brokerAccounts =
+          broker.id === left.id ? leftAccounts : rightAccounts;
 
-    {/* Quick summary */}
-    <div className="mt-6 hidden md:grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-      <div className="rounded-[22px] border border-slate-200 bg-[#f8fbff] p-4">
-        <div className="text-xs font-bold text-slate-500">ملخص السبريد</div>
-        <div className="mt-2 text-lg font-black text-[#0f172a]">
-          {cleanText(left.spreads) || cleanText(right.spreads) ? "متوفر" : "غير واضح"}
-        </div>
-      </div>
-
-      <div className="rounded-[22px] border border-slate-200 bg-[#f8fbff] p-4">
-        <div className="text-xs font-bold text-slate-500">ملخص الرسوم</div>
-        <div className="mt-2 text-lg font-black text-[#0f172a]">
-          {cleanText(left.fees) || cleanText(right.fees) ? "متوفر" : "غير واضح"}
-        </div>
-      </div>
-
-      <div className="rounded-[22px] border border-slate-200 bg-[#f8fbff] p-4">
-        <div className="text-xs font-bold text-slate-500">السحب والإيداع</div>
-        <div className="mt-2 text-lg font-black text-[#0f172a]">
-          {cleanText(left.deposit_withdrawal) || cleanText(right.deposit_withdrawal)
-            ? "مدعوم"
-            : "غير واضح"}
-        </div>
-      </div>
-
-      <div className="rounded-[22px] border border-[#bfdbfe] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-4">
-        <div className="text-xs font-bold text-[#1d4ed8]">ملاحظة مهمة</div>
-        <div className="mt-2 text-sm font-black leading-7 text-[#0f172a]">
-          التكلفة تختلف حسب نوع الحساب، وليس اسم الوسيط فقط.
-        </div>
-      </div>
-    </div>
-
-    {/* Broker cards */}
-    <div className="mt-6 grid gap-4 lg:grid-cols-2">
-      {/* Left broker */}
-      <div className="rounded-[26px] border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <div>
-            <h3 className="text-2xl font-black text-[#0f172a]">{left.name}</h3>
-            <p className="mt-1 text-xs font-bold text-[#1d4ed8]">الرسوم والتكاليف</p>
-          </div>
-
-          <span className="rounded-full border border-slate-200 bg-[#f8fbff] px-3 py-1 text-xs font-bold text-[#1d4ed8]">
-            ملخص {left.name}
-          </span>
-        </div>
-
-        <div className="space-y-3">
-          <div className="rounded-[22px] border border-slate-200 bg-[#fbfdff] p-4">
-            <div className="text-sm font-black text-[#0f172a]">ملخص السبريد</div>
-            <div className="mt-2 text-sm leading-7 text-slate-600">
-              {cleanText(left.spreads) || "غير محدد حاليًا."}
-            </div>
-          </div>
-
-          <div className="rounded-[22px] border border-slate-200 bg-[#fbfdff] p-4">
-            <div className="text-sm font-black text-[#0f172a]">ملخص الرسوم</div>
-            <div className="mt-2 text-sm leading-7 text-slate-600">
-              {cleanText(left.fees) || "غير محدد حاليًا."}
-            </div>
-          </div>
-
-          <div className="rounded-[22px] border border-slate-200 bg-[#fbfdff] p-4">
-            <div className="text-sm font-black text-[#0f172a]">الإيداع والسحب</div>
-            <div className="mt-2 text-sm leading-7 text-slate-600">
-              {cleanText(left.deposit_withdrawal) || "غير محدد حاليًا."}
-            </div>
-          </div>
-
-          <div className="rounded-[22px] border border-slate-200 bg-[#f8fbff] p-4">
-            <div className="text-sm font-black text-[#0f172a]">ملاحظات مهمة</div>
-            <div className="mt-2 text-sm leading-7 text-slate-600">
-              {cleanText(left.spreads) || cleanText(left.fees)
-                ? `يفضل مراجعة نوع الحساب لدى ${left.name} لأن السبريد أو الرسوم قد تختلف بين الحسابات القياسية والاحترافية.`
-                : `لا توجد تفاصيل كافية حاليًا عن رسوم ${left.name} داخل هذه المقارنة.`}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Right broker */}
-      <div className="rounded-[26px] border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <div>
-            <h3 className="text-2xl font-black text-[#0f172a]">{right.name}</h3>
-            <p className="mt-1 text-xs font-bold text-[#1d4ed8]">الرسوم والتكاليف</p>
-          </div>
-
-          <span className="rounded-full border border-slate-200 bg-[#f8fbff] px-3 py-1 text-xs font-bold text-[#1d4ed8]">
-            ملخص {right.name}
-          </span>
-        </div>
-
-        <div className="space-y-3">
-          <div className="rounded-[22px] border border-slate-200 bg-[#fbfdff] p-4">
-            <div className="text-sm font-black text-[#0f172a]">ملخص السبريد</div>
-            <div className="mt-2 text-sm leading-7 text-slate-600">
-              {cleanText(right.spreads) || "غير محدد حاليًا."}
-            </div>
-          </div>
-
-          <div className="rounded-[22px] border border-slate-200 bg-[#fbfdff] p-4">
-            <div className="text-sm font-black text-[#0f172a]">ملخص الرسوم</div>
-            <div className="mt-2 text-sm leading-7 text-slate-600">
-              {cleanText(right.fees) || "غير محدد حاليًا."}
-            </div>
-          </div>
-
-          <div className="rounded-[22px] border border-slate-200 bg-[#fbfdff] p-4">
-            <div className="text-sm font-black text-[#0f172a]">الإيداع والسحب</div>
-            <div className="mt-2 text-sm leading-7 text-slate-600">
-              {cleanText(right.deposit_withdrawal) || "غير محدد حاليًا."}
-            </div>
-          </div>
-
-          <div className="rounded-[22px] border border-slate-200 bg-[#f8fbff] p-4">
-            <div className="text-sm font-black text-[#0f172a]">ملاحظات مهمة</div>
-            <div className="mt-2 text-sm leading-7 text-slate-600">
-              {cleanText(right.spreads) || cleanText(right.fees)
-                ? `يفضل مراجعة نوع الحساب لدى ${right.name} لأن السبريد أو الرسوم قد تختلف بين الحسابات القياسية والاحترافية.`
-                : `لا توجد تفاصيل كافية حاليًا عن رسوم ${right.name} داخل هذه المقارنة.`}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    {/* Footer */}
-    <div className="hidden md:block mt-6 rounded-[24px] border border-slate-200 bg-[#f8fbff] p-4 sm:p-5">
-      <p className="text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
-        مقارنة الرسوم لا تعني فقط النظر إلى السبريد، بل أيضًا إلى نوع الحساب
-        وطريقة السحب والإيداع، وأي عمولات إضافية قد تظهر في بعض الحسابات. لذلك
-        من الأفضل قراءة صفحة التقييم الكاملة قبل فتح الحساب.
-      </p>
-    </div>
-  </div>
-</section>
-
-<section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
-  <div className="rounded-[30px] border border-slate-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
-    {/* Header */}
-    <div className="max-w-4xl">
-      <span className="text-sm font-bold text-[#2563eb]">أنواع الحسابات</span>
-      <h2 className="mt-2 text-2xl font-black leading-tight text-[#0f172a] sm:text-3xl lg:text-5xl">
-        مقارنة أنواع الحسابات بين {left.name} و {right.name}
-      </h2>
-      <p className="mt-3 text-sm leading-8 text-slate-600 sm:text-base">
-        بدل عرض صف مقابل صف بشكل يسبب فراغات عند اختلاف عدد الحسابات، نعرض هنا
-        حسابات كل وسيط بطريقة مستقلة ومنظمة حتى تبقى المقارنة واضحة ومريحة.
-      </p>
-    </div>
-
-    {/* Summary */}
-    <div className="mt-6 grid gap-3 md:grid-cols-3">
-      <div className="rounded-[22px] border border-slate-200 bg-[#f8fbff] p-4">
-        <div className="text-xs font-bold text-slate-500">عدد الحسابات</div>
-        <div className="mt-3 flex items-center justify-between gap-4">
-          <div>
-            <div className="text-[11px] font-bold text-[#1d4ed8]">{left.name}</div>
-            <div className="text-2xl font-black text-[#0f172a]">{leftAccounts.length}</div>
-          </div>
-          <div>
-            <div className="text-[11px] font-bold text-[#1d4ed8]">{right.name}</div>
-            <div className="text-2xl font-black text-[#0f172a]">{rightAccounts.length}</div>
-          </div>
-        </div>
-      </div>
-
-      <div className="rounded-[22px] border border-slate-200 bg-[#f8fbff] p-4">
-        <div className="text-xs font-bold text-slate-500">تنوع الحسابات</div>
-        <div className="mt-3 text-base font-black leading-7 text-[#0f172a]">
-          {leftAccounts.length > rightAccounts.length
-            ? `${left.name} يقدم تنوعًا أكبر`
-            : rightAccounts.length > leftAccounts.length
-            ? `${right.name} يقدم تنوعًا أكبر`
-            : "التنوع متقارب بين الشركتين"}
-        </div>
-      </div>
-
-      <div className="rounded-[22px] border border-[#bfdbfe] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-4">
-        <div className="text-xs font-bold text-[#1d4ed8]">ملاحظة مهمة</div>
-        <div className="mt-3 text-base font-black leading-7 text-[#0f172a]">
-          الأهم ليس العدد، بل اختيار الحساب المناسب لأسلوب تداولك.
-        </div>
-      </div>
-    </div>
-
-    {/* Desktop + Tablet */}
-    <div className="mt-6 hidden space-y-5 md:block">
-      {/* Left broker section */}
-      <div className="rounded-[26px] border border-slate-200 bg-[#fbfdff] p-5">
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <div>
-            <h3 className="text-2xl font-black text-[#0f172a]">{left.name}</h3>
-            <p className="mt-1 text-sm font-bold text-[#1d4ed8]">
-              {leftAccounts.length} حساب متاح
-            </p>
-          </div>
-
-          <Link
-            href={`/brokers/${left.slug ?? ""}`}
-            className="inline-flex min-h-[42px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
+        return (
+          <details
+            key={broker.slug}
+            className="group rounded-[28px] border border-slate-200 bg-[#f8fbff] p-5"
           >
-            اقرأ تقييم {left.name}
-          </Link>
-        </div>
-
-        <div className="grid gap-4 lg:grid-cols-2">
-          {leftAccounts.length > 0 ? (
-            leftAccounts.map((acc) => (
-              <div
-                key={acc.id}
-                className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <h4 className="text-lg font-black text-[#0f172a]">
-                      {acc.account_name || "حساب"}
-                    </h4>
-                    <p className="mt-1 text-xs font-bold text-[#1d4ed8]">
-                      {acc.best_for || "مناسب لفئات متعددة"}
-                    </p>
-                  </div>
-
-                  <span className="rounded-full border border-slate-200 bg-[#f8fbff] px-2.5 py-1 text-[10px] font-bold text-slate-600">
-                    حساب
-                  </span>
-                </div>
-
-                <div className="mt-4 grid grid-cols-2 gap-3">
-                  <div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3">
-                    <div className="text-[11px] font-bold text-slate-500">السبريد</div>
-                    <div className="mt-1 text-sm font-black text-[#0f172a]">
-                      {acc.spread || "غير محدد"}
-                    </div>
-                  </div>
-
-                  <div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3">
-                    <div className="text-[11px] font-bold text-slate-500">العمولة</div>
-                    <div className="mt-1 text-sm font-black text-[#0f172a]">
-                      {acc.commission || "غير محدد"}
-                    </div>
-                  </div>
-
-                  <div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3">
-                    <div className="text-[11px] font-bold text-slate-500">الإيداع</div>
-                    <div className="mt-1 text-sm font-black text-[#0f172a]">
-                      {acc.min_deposit || "غير محدد"}
-                    </div>
-                  </div>
-
-                  <div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3">
-                    <div className="text-[11px] font-bold text-slate-500">التنفيذ</div>
-                    <div className="mt-1 text-sm font-black text-[#0f172a]">
-                      {acc.execution_type || "غير محدد"}
-                    </div>
-                  </div>
-                </div>
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4">
+              <div>
+                <h3 className="text-2xl font-black text-[#0f172a]">
+                  حسابات {broker.name}
+                </h3>
+                <p className="mt-1 text-sm font-bold text-[#2563eb]">
+                  {brokerAccounts.length} حساب متاح
+                </p>
               </div>
-            ))
-          ) : (
-            <div className="rounded-[22px] border border-slate-200 bg-white p-4 text-sm text-slate-600">
-              لا توجد بيانات حسابات متاحة حاليًا.
-            </div>
-          )}
-        </div>
-      </div>
 
-      {/* Right broker section */}
-      <div className="rounded-[26px] border border-slate-200 bg-[#fbfdff] p-5">
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <div>
-            <h3 className="text-2xl font-black text-[#0f172a]">{right.name}</h3>
-            <p className="mt-1 text-sm font-bold text-[#1d4ed8]">
-              {rightAccounts.length} حساب متاح
-            </p>
-          </div>
+              <span className="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-black text-slate-500 transition group-open:rotate-180">
+                ▼
+              </span>
+            </summary>
 
-          <Link
-            href={`/brokers/${right.slug ?? ""}`}
-            className="inline-flex min-h-[42px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
-          >
-            اقرأ تقييم {right.name}
-          </Link>
-        </div>
-
-        <div className="grid gap-4 lg:grid-cols-2">
-          {rightAccounts.length > 0 ? (
-            rightAccounts.map((acc) => (
-              <div
-                key={acc.id}
-                className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <h4 className="text-lg font-black text-[#0f172a]">
-                      {acc.account_name || "حساب"}
-                    </h4>
-                    <p className="mt-1 text-xs font-bold text-[#1d4ed8]">
-                      {acc.best_for || "مناسب لفئات متعددة"}
-                    </p>
-                  </div>
-
-                  <span className="rounded-full border border-slate-200 bg-[#f8fbff] px-2.5 py-1 text-[10px] font-bold text-slate-600">
-                    حساب
-                  </span>
-                </div>
-
-                <div className="mt-4 grid grid-cols-2 gap-3">
-                  <div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3">
-                    <div className="text-[11px] font-bold text-slate-500">السبريد</div>
-                    <div className="mt-1 text-sm font-black text-[#0f172a]">
-                      {acc.spread || "غير محدد"}
+            <div className="mt-5 grid gap-4">
+              {brokerAccounts.length > 0 ? (
+                brokerAccounts.map((acc) => (
+                  <div
+                    key={acc.id}
+                    className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm"
+                  >
+                    <div className="mb-4">
+                      <h4 className="text-lg font-black text-[#0f172a]">
+                        {acc.account_name || "حساب"}
+                      </h4>
+                      <p className="mt-1 text-xs font-bold text-[#2563eb]">
+                        {acc.best_for || "مناسب لفئات متعددة"}
+                      </p>
                     </div>
-                  </div>
 
-                  <div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3">
-                    <div className="text-[11px] font-bold text-slate-500">العمولة</div>
-                    <div className="mt-1 text-sm font-black text-[#0f172a]">
-                      {acc.commission || "غير محدد"}
-                    </div>
-                  </div>
-
-                  <div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3">
-                    <div className="text-[11px] font-bold text-slate-500">الإيداع</div>
-                    <div className="mt-1 text-sm font-black text-[#0f172a]">
-                      {acc.min_deposit || "غير محدد"}
-                    </div>
-                  </div>
-
-                  <div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3">
-                    <div className="text-[11px] font-bold text-slate-500">التنفيذ</div>
-                    <div className="mt-1 text-sm font-black text-[#0f172a]">
-                      {acc.execution_type || "غير محدد"}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className="rounded-[22px] border border-slate-200 bg-white p-4 text-sm text-slate-600">
-              لا توجد بيانات حسابات متاحة حاليًا.
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-
-    {/* Mobile */}
-    <div className="mt-5 space-y-4 md:hidden">
-      
-
-      <div className="space-y-4">
-        <div className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
-          <div className="mb-3 flex items-center justify-between">
-            <div>
-              <h3 className="text-xl font-black text-[#0f172a]">{left.name}</h3>
-              <p className="mt-1 text-[11px] font-bold text-[#1d4ed8]">
-                {leftAccounts.length} حساب
-              </p>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            {leftAccounts.length > 0 ? (
-              leftAccounts.map((acc) => (
-                <details
-                  key={acc.id}
-                  className="group rounded-[18px] border border-slate-200 bg-[#fbfdff]"
-                >
-                  <summary className="cursor-pointer list-none p-3">
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <div className="text-sm font-black text-[#0f172a]">
-                          {acc.account_name || "حساب"}
-                        </div>
-                        <div className="mt-1 text-[11px] font-bold text-[#1d4ed8]">
-                          {acc.best_for || "مناسب لفئات متعددة"}
-                        </div>
-                      </div>
-
-                      <span className="text-xs font-bold text-slate-400 transition group-open:rotate-180">
-                        ▼
-                      </span>
-                    </div>
-                  </summary>
-
-                  <div className="border-t border-slate-200 px-3 pb-3 pt-3">
-                    <div className="grid grid-cols-2 gap-2">
-                      <div className="rounded-xl border border-slate-200 bg-white px-2.5 py-2">
-                        <div className="text-[10px] font-bold text-slate-500">السبريد</div>
-                        <div className="mt-1 text-xs font-black text-[#0f172a]">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3">
+                        <div className="text-[11px] font-bold text-slate-500">السبريد</div>
+                        <div className="mt-1 text-sm font-black text-[#0f172a]">
                           {acc.spread || "غير محدد"}
                         </div>
                       </div>
 
-                      <div className="rounded-xl border border-slate-200 bg-white px-2.5 py-2">
-                        <div className="text-[10px] font-bold text-slate-500">العمولة</div>
-                        <div className="mt-1 text-xs font-black text-[#0f172a]">
+                      <div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3">
+                        <div className="text-[11px] font-bold text-slate-500">العمولة</div>
+                        <div className="mt-1 text-sm font-black text-[#0f172a]">
                           {acc.commission || "غير محدد"}
                         </div>
                       </div>
 
-                      <div className="rounded-xl border border-slate-200 bg-white px-2.5 py-2">
-                        <div className="text-[10px] font-bold text-slate-500">الإيداع</div>
-                        <div className="mt-1 text-xs font-black text-[#0f172a]">
+                      <div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3">
+                        <div className="text-[11px] font-bold text-slate-500">الإيداع</div>
+                        <div className="mt-1 text-sm font-black text-[#0f172a]">
                           {acc.min_deposit || "غير محدد"}
                         </div>
                       </div>
 
-                      <div className="rounded-xl border border-slate-200 bg-white px-2.5 py-2">
-                        <div className="text-[10px] font-bold text-slate-500">التنفيذ</div>
-                        <div className="mt-1 text-xs font-black text-[#0f172a]">
+                      <div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3">
+                        <div className="text-[11px] font-bold text-slate-500">التنفيذ</div>
+                        <div className="mt-1 text-sm font-black text-[#0f172a]">
                           {acc.execution_type || "غير محدد"}
                         </div>
                       </div>
                     </div>
                   </div>
-                </details>
-              ))
-            ) : (
-              <div className="rounded-[18px] border border-slate-200 bg-[#f8fbff] p-3 text-sm text-slate-600">
-                لا توجد بيانات حسابات حاليًا.
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
-
-          <div className="mb-3 flex items-center justify-between">
-            <div>
-              <h3 className="text-xl font-black text-[#0f172a]">{right.name}</h3>
-              <p className="mt-1 text-[11px] font-bold text-[#1d4ed8]">
-                {rightAccounts.length} حساب
-              </p>
+                ))
+              ) : (
+                <div className="rounded-[18px] border border-slate-200 bg-white p-4 text-sm text-slate-600">
+                  لا توجد بيانات حسابات حاليًا.
+                </div>
+              )}
             </div>
-          </div>
-
-          <div className="space-y-2">
-            {rightAccounts.length > 0 ? (
-              rightAccounts.map((acc) => (
-                <details
-                  key={acc.id}
-                  className="group rounded-[18px] border border-slate-200 bg-[#fbfdff]"
-                >
-                  <summary className="cursor-pointer list-none p-3">
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <div className="text-sm font-black text-[#0f172a]">
-                          {acc.account_name || "حساب"}
-                        </div>
-                        <div className="mt-1 text-[11px] font-bold text-[#1d4ed8]">
-                          {acc.best_for || "مناسب لفئات متعددة"}
-                        </div>
-                      </div>
-
-                      <span className="text-xs font-bold text-slate-400 transition group-open:rotate-180">
-                        ▼
-                      </span>
-                    </div>
-                  </summary>
-
-                  <div className="border-t border-slate-200 px-3 pb-3 pt-3">
-                    <div className="grid grid-cols-2 gap-2">
-                      <div className="rounded-xl border border-slate-200 bg-white px-2.5 py-2">
-                        <div className="text-[10px] font-bold text-slate-500">السبريد</div>
-                        <div className="mt-1 text-xs font-black text-[#0f172a]">
-                          {acc.spread || "غير محدد"}
-                        </div>
-                      </div>
-
-                      <div className="rounded-xl border border-slate-200 bg-white px-2.5 py-2">
-                        <div className="text-[10px] font-bold text-slate-500">العمولة</div>
-                        <div className="mt-1 text-xs font-black text-[#0f172a]">
-                          {acc.commission || "غير محدد"}
-                        </div>
-                      </div>
-
-                      <div className="rounded-xl border border-slate-200 bg-white px-2.5 py-2">
-                        <div className="text-[10px] font-bold text-slate-500">الإيداع</div>
-                        <div className="mt-1 text-xs font-black text-[#0f172a]">
-                          {acc.min_deposit || "غير محدد"}
-                        </div>
-                      </div>
-
-                      <div className="rounded-xl border border-slate-200 bg-white px-2.5 py-2">
-                        <div className="text-[10px] font-bold text-slate-500">التنفيذ</div>
-                        <div className="mt-1 text-xs font-black text-[#0f172a]">
-                          {acc.execution_type || "غير محدد"}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </details>
-              ))
-            ) : (
-              <div className="rounded-[18px] border border-slate-200 bg-[#f8fbff] p-3 text-sm text-slate-600">
-                لا توجد بيانات حسابات حاليًا.
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+          </details>
+        );
+      })}
     </div>
 
-    {/* Footer */}
-    <div className="mt-6 rounded-[24px] border border-slate-200 bg-[#f8fbff] p-4 sm:p-5">
-      <p className="text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
-        العدد الأكبر من الحسابات لا يعني دائمًا أن الوسيط أفضل. الأهم هو أن تجد
-        حسابًا يناسب أسلوبك في التداول من حيث السبريد، العمولة، الحد الأدنى
-        للإيداع، وطريقة التنفيذ.
+    {/* CTA Section - Improved */}
+<div className="mt-6 rounded-[28px] border border-[#2563eb]/20 bg-[linear-gradient(135deg,#eff6ff_0%,#ffffff_100%)] p-6 sm:p-7 shadow-[0_20px_50px_rgba(37,99,235,0.08)]">
+
+  <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+
+    {/* Text */}
+    <div>
+      <h3 className="text-xl font-black text-[#0f172a] sm:text-2xl">
+        ابدأ التداول الآن مع الوسيط المناسب لك
+      </h3>
+      <p className="mt-2 text-sm leading-7 text-slate-600 sm:text-base">
+        بعد مراجعة الحسابات والتكاليف، يمكنك فتح حسابك مباشرة مع الوسيط الأنسب لك بسهولة خلال دقائق.
+      </p>
+    </div>
+
+    {/* Buttons */}
+    <div className="flex flex-col gap-3 sm:flex-row">
+
+      <Link
+        href={`/go/${left.slug}`}
+        className="inline-flex items-center justify-center rounded-2xl bg-[#2563eb] px-7 py-3 text-sm font-extrabold text-white shadow-md transition hover:scale-[1.02] hover:bg-[#1d4ed8]"
+      >
+        فتح حساب {left.name}
+      </Link>
+
+      <Link
+        href={`/go/${right.slug}`}
+        className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-7 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
+      >
+        فتح حساب {right.name}
+      </Link>
+
+    </div>
+
+  </div>
+
+</div>
+
+    <div className="mt-7 rounded-[26px] border border-[#dbeafe] bg-[#f8fbff] p-5">
+      <p className="text-sm leading-7 text-slate-600 lg:text-base">
+        هذا القسم يلخص تكلفة التداول بطريقة عملية. عدد الحسابات وحده لا يكفي
+        للحكم على الوسيط؛ الأهم هو اختيار الحساب الذي يناسبك من حيث السبريد،
+        العمولة، الحد الأدنى للإيداع، وطريقة التنفيذ.
       </p>
     </div>
   </div>
 </section>
 
 <section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
-  <div className="rounded-[30px] border border-slate-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
-    {/* Header */}
-    <div className="max-w-4xl">
-      <span className="text-sm font-bold text-[#2563eb]">اختيار سريع</span>
-      <h2 className="mt-2 text-2xl font-black leading-tight text-[#0f172a] sm:text-3xl lg:text-5xl">
-        متى تختار {left.name} ومتى تختار {right.name}؟
-      </h2>
-      <p className="mt-3 text-sm leading-8 text-slate-600 sm:text-base">
-        إذا كنت تريد قرارًا أسرع، فهذا القسم يلخص لك بشكل مباشر متى يكون كل وسيط
-        هو الخيار الأنسب، بدل الاكتفاء بقراءة الأرقام والجداول فقط.
-      </p>
+  <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white p-6 shadow-[0_25px_70px_rgba(37,99,235,0.08)] lg:p-8">
+    <div className="absolute inset-x-0 top-0 h-1.5 bg-[#2563eb]" />
+
+    <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
+      <div>
+        <span className="text-sm font-black text-[#2563eb]">
+          الأمان والتراخيص
+        </span>
+
+        <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-5xl">
+          مقارنة الأمان والتراخيص بين {left.name} و {right.name}
+        </h2>
+
+        <p className="mt-3 text-base leading-8 text-slate-600">
+          نقارن هنا قوة التراخيص، نقاط الأمان، الحساب الإسلامي، المقر الرئيسي،
+          وحماية أموال العملاء حتى تعرف أي وسيط يمنحك ثقة أعلى قبل فتح الحساب.
+        </p>
+      </div>
+
+      <div className="rounded-[28px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5 shadow-[0_16px_40px_rgba(37,99,235,0.12)]">
+        <div className="text-xs font-black text-[#2563eb]">
+          الأقوى من حيث الأمان
+        </div>
+
+        <div className="mt-2 text-3xl font-black text-[#0f172a]">
+          {(left.score_safety ?? 0) > (right.score_safety ?? 0)
+            ? left.name
+            : (right.score_safety ?? 0) > (left.score_safety ?? 0)
+            ? right.name
+            : "متقارب"}
+        </div>
+
+        <p className="mt-2 text-sm leading-7 text-slate-600">
+          بناءً على نقاط الأمان وقوة التراخيص والبيانات التنظيمية المتوفرة.
+        </p>
+      </div>
     </div>
 
-    {/* Desktop */}
-    <div className="mt-6 hidden gap-4 md:grid lg:grid-cols-2">
-      <div className="rounded-[26px] border border-slate-200 bg-[#fbfdff] p-5">
-        <div className="flex items-center justify-between gap-3">
+    <div className="mt-7 grid gap-4 md:grid-cols-3">
+      <div className="rounded-[24px] border border-slate-200 bg-[#f8fbff] p-5">
+        <div className="text-xs font-black text-slate-500">نقاط الأمان</div>
+
+        <div className="mt-3 flex items-center justify-between gap-6">
           <div>
-            <h3 className="text-2xl font-black text-[#0f172a]">{left.name}</h3>
-            <p className="mt-1 text-sm font-bold text-[#1d4ed8]">اختر {left.name} إذا كنت...</p>
+            <div className="text-xs font-bold text-[#2563eb]">{left.name}</div>
+            <div className="text-3xl font-black text-[#0f172a]">
+              {(left.score_safety ?? 0).toFixed(1)}
+              <span className="text-sm text-slate-400"> / 5</span>
+            </div>
           </div>
 
-          <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-bold text-[#1d4ed8]">
-            خيار مناسب
-          </span>
-        </div>
-
-        <div className="mt-5 space-y-3">
-          <div className="rounded-[20px] border border-slate-200 bg-white px-4 py-4 text-sm leading-7 text-slate-600">
-            تبحث عن تجربة تداول أوضح من ناحية الحسابات والشروط.
+          <div>
+            <div className="text-xs font-bold text-[#2563eb]">{right.name}</div>
+            <div className="text-3xl font-black text-[#0f172a]">
+              {(right.score_safety ?? 0).toFixed(1)}
+              <span className="text-sm text-slate-400"> / 5</span>
+            </div>
           </div>
-
-          <div className="rounded-[20px] border border-slate-200 bg-white px-4 py-4 text-sm leading-7 text-slate-600">
-            تريد وسيطًا يناسب أسلوبك إذا كانت أولويتك {cleanText(left.best_for) || "المرونة في التداول"}.
-          </div>
-
-          <div className="rounded-[20px] border border-slate-200 bg-white px-4 py-4 text-sm leading-7 text-slate-600">
-            تفضل مراجعة خيارات الحسابات المتاحة بتفصيل قبل فتح الحساب.
-          </div>
-        </div>
-
-        <div className="mt-5">
-          <Link
-            href={`/brokers/${left.slug ?? ""}`}
-            className="inline-flex min-h-[48px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-5 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
-          >
-            اقرأ تقييم {left.name}
-          </Link>
         </div>
       </div>
 
-      <div className="rounded-[26px] border border-[#bfdbfe] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <h3 className="text-2xl font-black text-[#0f172a]">{right.name}</h3>
-            <p className="mt-1 text-sm font-bold text-[#1d4ed8]">اختر {right.name} إذا كنت...</p>
-          </div>
-
-          <span className="rounded-full border border-[#bfdbfe] bg-white px-3 py-1 text-xs font-bold text-[#1d4ed8]">
-            مرشح قوي
-          </span>
+      <div className="rounded-[24px] border border-slate-200 bg-[#f8fbff] p-5">
+        <div className="text-xs font-black text-slate-500">الحساب الإسلامي</div>
+        <div className="mt-3 text-lg font-black leading-7 text-[#0f172a]">
+          {left.name}: {yesNoArabic(left.islamic_account)}
+          <br />
+          {right.name}: {yesNoArabic(right.islamic_account)}
         </div>
+      </div>
 
-        <div className="mt-5 space-y-3">
-          <div className="rounded-[20px] border border-slate-200 bg-white px-4 py-4 text-sm leading-7 text-slate-600">
-            تريد وسيطًا يقدم صورة قوية من حيث التقييم العام والانطباع العام.
-          </div>
-
-          <div className="rounded-[20px] border border-slate-200 bg-white px-4 py-4 text-sm leading-7 text-slate-600">
-            تبحث عن خيار مناسب إذا كانت أولويتك {cleanText(right.best_for) || "البدء السهل أو التداول النشط"}.
-          </div>
-
-          <div className="rounded-[20px] border border-slate-200 bg-white px-4 py-4 text-sm leading-7 text-slate-600">
-            تفضل الوصول بسرعة إلى خيار عملي دون الحاجة إلى مقارنة مطولة جدًا.
-          </div>
+      <div className="rounded-[24px] border border-[#bfdbfe] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5">
+        <div className="text-xs font-black text-[#2563eb]">مهم قبل التسجيل</div>
+        <div className="mt-3 text-lg font-black leading-7 text-[#0f172a]">
+          تأكد من الكيان التنظيمي الذي ستفتح الحساب تحته.
         </div>
+      </div>
+    </div>
 
-        <div className="mt-5">
-          <Link
-            href={`/brokers/${right.slug ?? ""}`}
-            className="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-[#2563eb] px-5 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
+    <div className="mt-8 grid gap-5 md:grid-cols-2">
+      {[left, right].map((broker) => {
+        const leftSafety = left.score_safety ?? 0;
+        const rightSafety = right.score_safety ?? 0;
+        const brokerSafety = broker.score_safety ?? 0;
+        const maxSafety = Math.max(leftSafety, rightSafety);
+        const isSafetyWinner = brokerSafety === maxSafety && maxSafety > 0;
+
+        return (
+          <div
+            key={broker.slug}
+            className={`rounded-[30px] border p-5 shadow-sm ${
+              isSafetyWinner
+                ? "border-[#2563eb] bg-gradient-to-b from-[#eff6ff] to-white"
+                : "border-slate-200 bg-[#fbfdff]"
+            }`}
           >
-            اقرأ تقييم {right.name}
+            <div className="mb-5 flex items-start justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-slate-200 bg-white p-2">
+                  {broker.logo ? (
+                    <img
+                      src={broker.logo}
+                      alt={broker.name || "Broker logo"}
+                      className="h-full w-full object-contain"
+                    />
+                  ) : (
+                    <span className="text-xs font-black text-slate-400">
+                      {broker.name}
+                    </span>
+                  )}
+                </div>
+
+                <div>
+                  <h3 className="text-2xl font-black text-[#0f172a]">
+                    {broker.name}
+                  </h3>
+                  <p className="mt-1 text-sm font-bold text-[#2563eb]">
+                    الأمان والثقة
+                  </p>
+                </div>
+              </div>
+
+              {isSafetyWinner && (
+                <span className="rounded-full bg-[#2563eb] px-3 py-1 text-[11px] font-black text-white shadow-sm">
+                  أقوى أمانًا
+                </span>
+              )}
+            </div>
+
+            <div className="grid gap-3">
+              <div className="rounded-[22px] border border-slate-200 bg-white p-4">
+                <div className="text-sm font-black text-[#0f172a]">
+                  التراخيص والجهات الرقابية
+                </div>
+                <p className="mt-2 text-sm font-black leading-7 text-slate-700">
+                  {shortReg(broker.regulation) || "غير محدد"}
+                </p>
+              </div>
+
+              <div className="rounded-[22px] border border-slate-200 bg-white p-4">
+                <div className="text-sm font-black text-[#0f172a]">
+                 ملخص قوة التراخيص
+                </div>
+                <p className="mt-2 text-sm leading-7 text-slate-600">
+                  {cleanText((broker as any).regulation_summary_ar) ||
+                    `وجود جهات رقابية مثل ${shortReg(broker.regulation) || "الجهات التنظيمية"} يعني أن مستوى الحماية يعتمد على الكيان الذي سيتم فتح الحساب تحته وشروطه التنظيمية.`}
+                </p>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="rounded-[22px] border border-slate-200 bg-white p-4">
+                  <div className="text-xs font-black text-slate-500">
+                    المقر الرئيسي
+                  </div>
+                  <div className="mt-2 text-sm font-black leading-7 text-[#0f172a]">
+                    {broker.headquarters || "غير محدد"}
+                  </div>
+                </div>
+
+                <div className="rounded-[22px] border border-slate-200 bg-white p-4">
+                  <div className="text-xs font-black text-slate-500">
+                    الحساب الإسلامي
+                  </div>
+                  <div className="mt-2 text-sm font-black leading-7 text-[#0f172a]">
+                    {yesNoArabic(broker.islamic_account)}
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-[22px] border border-[#dbeafe] bg-[#f8fbff] p-4">
+                <div className="text-sm font-black text-[#2563eb]">
+                  حماية أموال العملاء
+                </div>
+                <p className="mt-2 text-sm leading-7 text-slate-600">
+                  {cleanText((broker as any).fund_protection_ar) ||
+                    "راجع تفاصيل فصل أموال العملاء، حماية الرصيد السلبي، وسياسة التعويض لدى الكيان التنظيمي الذي ستفتح الحساب تحته."}
+                </p>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+
+    <div className="mt-7 rounded-[26px] border border-[#dbeafe] bg-[#f8fbff] p-5">
+      <p className="text-sm leading-7 text-slate-600 lg:text-base">
+        وجود التراخيص لا يعني أن جميع الحسابات تتمتع بنفس مستوى الحماية. قد تختلف
+        الحماية حسب الدولة، الكيان التنظيمي، ونوع الحساب. لذلك من الأفضل دائمًا
+        مراجعة الجهة التنظيمية الفعلية قبل فتح الحساب الحقيقي.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
+  <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white p-6 shadow-[0_25px_70px_rgba(37,99,235,0.08)] lg:p-8">
+    <div className="absolute inset-x-0 top-0 h-1.5 bg-[#2563eb]" />
+
+    <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
+      <div>
+        <span className="text-sm font-black text-[#2563eb]">اختيار سريع</span>
+
+        <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-5xl">
+          أي وسيط تختار الآن؟
+        </h2>
+
+        <p className="mt-3 text-base leading-8 text-slate-600">
+          بدل قراءة كل التفاصيل مرة أخرى، هذه خلاصة عملية تساعدك على اختيار
+          الوسيط الأنسب حسب هدفك.
+        </p>
+      </div>
+
+      <div className="rounded-[28px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5 shadow-[0_16px_40px_rgba(37,99,235,0.12)]">
+        <div className="text-xs font-black text-[#2563eb]">الترشيح العام</div>
+        <div className="mt-2 text-3xl font-black text-[#0f172a]">
+          {overallWinner}
+        </div>
+        <p className="mt-2 text-sm leading-7 text-slate-600">
+          الاختيار الأقوى إجمالًا بناءً على التقييم العام وملخص المقارنة.
+        </p>
+      </div>
+    </div>
+
+    <div className="mt-8 grid gap-4 lg:grid-cols-3">
+      <div className="rounded-[26px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5 shadow-sm">
+        <div className="text-xs font-black text-[#2563eb]">الأفضل إجمالًا</div>
+        <div className="mt-2 text-3xl font-black text-[#0f172a]">
+          {overallWinner}
+        </div>
+        <p className="mt-2 text-sm leading-7 text-slate-600">
+          مناسب إذا كنت تريد اختيارًا متوازنًا بدون الدخول في تفاصيل كثيرة.
+        </p>
+      </div>
+
+      <div className="rounded-[26px] border border-slate-200 bg-[#fbfdff] p-5 shadow-sm">
+        <div className="text-xs font-black text-slate-500">للمبتدئين</div>
+        <div className="mt-2 text-3xl font-black text-[#0f172a]">
+          {beginnerWinner === "تعادل" ? "كلاهما مناسب" : beginnerWinner}
+        </div>
+        <p className="mt-2 text-sm leading-7 text-slate-600">
+          مناسب إذا كانت أولويتك البداية السهلة ووضوح الحسابات.
+        </p>
+      </div>
+
+      <div className="rounded-[26px] border border-slate-200 bg-[#fbfdff] p-5 shadow-sm">
+        <div className="text-xs font-black text-slate-500">للتكلفة والسبريد</div>
+        <div className="mt-2 text-3xl font-black text-[#0f172a]">
+          {scalpingWinner === "تعادل" ? "متقارب" : scalpingWinner}
+        </div>
+        <p className="mt-2 text-sm leading-7 text-slate-600">
+          مناسب إذا كان تركيزك على السبريد، الرسوم، وسرعة التنفيذ.
+        </p>
+      </div>
+    </div>
+
+    <div className="mt-7 rounded-[28px] border border-[#dbeafe] bg-[#f8fbff] p-5 lg:p-6">
+      <div className="grid gap-5 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+        <div>
+          <div className="text-sm font-black text-[#2563eb]">القرار المختصر</div>
+          <p className="mt-2 text-sm leading-8 text-slate-700 lg:text-base">
+            اختر <strong>{overallWinner}</strong> إذا كنت تريد الخيار الأقوى
+            إجمالًا. وإذا كنت مبتدئًا، فراجع ترشيح{" "}
+            <strong>
+              {beginnerWinner === "تعادل" ? "كلا الوسيطين" : beginnerWinner}
+            </strong>
+            . أما إذا كانت التكلفة والسبريد هي الأولوية، فالأقرب لك هو{" "}
+            <strong>
+              {scalpingWinner === "تعادل" ? "الخيار الأقل تكلفة حسب نوع الحساب" : scalpingWinner}
+            </strong>
+            .
+          </p>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+          <a
+            href={`/go/${
+              overallWinner === left.name ? left.slug ?? "" : right.slug ?? ""
+            }?type=real`}
+            className="inline-flex min-h-[50px] items-center justify-center rounded-2xl bg-[#2563eb] px-6 py-3 text-sm font-black text-white transition hover:bg-[#1d4ed8]"
+          >
+            افتح حساب مع {overallWinner}
+          </a>
+
+          <Link
+            href={`/brokers/${
+              overallWinner === left.name ? left.slug ?? "" : right.slug ?? ""
+            }`}
+            className="inline-flex min-h-[50px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-black text-slate-800 transition hover:bg-slate-50"
+          >
+            اقرأ تقييم {overallWinner}
           </Link>
         </div>
       </div>
@@ -2088,308 +2122,103 @@ export default async function ComparePage({ params }: PageProps) {
 </section>
 
 <section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
-  <div className="rounded-[30px] border border-slate-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
-    {/* Header */}
-    <div className="mx-auto max-w-4xl text-center">
-      <span className="text-sm font-bold text-[#2563eb]">الأمان والتراخيص</span>
-      <h2 className="mt-2 text-2xl font-black leading-tight text-[#0f172a] sm:text-3xl lg:text-5xl">
-        مدى أمان التداول مع {left.name} و {right.name}
-      </h2>
-      <p className="mt-3 text-sm leading-8 text-slate-600 sm:text-base">
-        الأمان يعتمد على قوة التراخيص، وضوح الجهة التنظيمية، والمقر، إضافة إلى
-        توفر الحساب الإسلامي. هنا مقارنة مباشرة بين {left.name} و {right.name}
-        بناءً على البيانات المتوفرة.
-      </p>
-    </div>
+  <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white p-6 shadow-[0_25px_70px_rgba(37,99,235,0.08)] lg:p-8">
+    <div className="absolute inset-x-0 top-0 h-1.5 bg-[#2563eb]" />
 
-    {/* Top summary */}
-    <div className="mt-6 hidden gap-3 md:grid md:grid-cols-3">
-      <div className="rounded-[22px] border border-slate-200 bg-[#f8fbff] p-4">
-  <div className="text-xs font-bold text-slate-500">التراخيص</div>
-  <div className="mt-2 text-sm font-black leading-7 text-[#0f172a]">
-    تراخيص متعددة لدى الوسيطين
-  </div>
-</div>
-
-      <div className="rounded-[22px] border border-slate-200 bg-[#f8fbff] p-4">
-        <div className="text-xs font-bold text-slate-500">الحساب الإسلامي</div>
-        <div className="mt-2 text-sm font-black leading-7 text-[#0f172a]">
-          {yesNoArabic(left.islamic_account)} / {yesNoArabic(right.islamic_account)}
-        </div>
-      </div>
-
-      <div className="rounded-[22px] border border-[#bfdbfe] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-4">
-        <div className="text-xs font-bold text-[#1d4ed8]">ملاحظة مهمة</div>
-        <div className="mt-2 text-sm font-black leading-7 text-[#0f172a]">
-          راجع دائمًا الجهة التنظيمية الفعلية التي سيتم فتح الحساب تحتها قبل التسجيل.
-        </div>
-      </div>
-    </div>
-
-    {/* Cards */}
-    <div className="mt-6 grid gap-4 md:grid-cols-2">
-      {/* Left */}
-      <div className="rounded-[26px] border border-slate-200 bg-[#fbfdff] p-4 sm:p-5">
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-200 bg-white p-2">
-              {left.logo ? (
-                <img
-                  src={left.logo}
-                  alt={left.name || "Broker logo"}
-                  className="h-full w-full object-contain"
-                />
-              ) : (
-                <span className="text-xs font-black text-slate-400">{left.name}</span>
-              )}
-            </div>
-
-            <div>
-              <h3 className="text-xl font-black text-[#0f172a] sm:text-2xl">
-                {left.name}
-              </h3>
-              <p className="mt-1 text-xs font-bold text-[#1d4ed8]">
-                الأمان والثقة
-              </p>
-            </div>
-          </div>
-
-          <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-bold text-[#1d4ed8]">
-            أمان {left.name}
-          </span>
-        </div>
-
-        <div className="space-y-3">
-          <div className="rounded-[20px] border border-slate-200 bg-white px-4 py-4">
-            <div className="text-sm font-black text-[#0f172a]">التراخيص</div>
-            <div className="mt-2 text-sm leading-7 text-slate-600">
-              {shortReg(left.regulation)}
-            </div>
-          </div>
-
-          <div className="rounded-[20px] border border-slate-200 bg-white px-4 py-4">
-            <div className="text-sm font-black text-[#0f172a]">الحساب الإسلامي</div>
-            <div className="mt-2 text-sm leading-7 text-slate-600">
-              {yesNoArabic(left.islamic_account)}
-            </div>
-          </div>
-
-          <div className="rounded-[20px] border border-slate-200 bg-white px-4 py-4">
-            <div className="text-sm font-black text-[#0f172a]">المقر</div>
-            <div className="mt-2 text-sm leading-7 text-slate-600">
-              {left.headquarters || "غير محدد"}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Right */}
-      <div className="rounded-[26px] border border-slate-200 bg-[#fbfdff] p-4 sm:p-5">
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-200 bg-white p-2">
-              {right.logo ? (
-                <img
-                  src={right.logo}
-                  alt={right.name || "Broker logo"}
-                  className="h-full w-full object-contain"
-                />
-              ) : (
-                <span className="text-xs font-black text-slate-400">{right.name}</span>
-              )}
-            </div>
-
-            <div>
-              <h3 className="text-xl font-black text-[#0f172a] sm:text-2xl">
-                {right.name}
-              </h3>
-              <p className="mt-1 text-xs font-bold text-[#1d4ed8]">
-                الأمان والثقة
-              </p>
-            </div>
-          </div>
-
-          <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-bold text-[#1d4ed8]">
-            أمان {right.name}
-          </span>
-        </div>
-
-        <div className="space-y-3">
-          <div className="rounded-[20px] border border-slate-200 bg-white px-4 py-4">
-            <div className="text-sm font-black text-[#0f172a]">التراخيص</div>
-            <div className="mt-2 text-sm leading-7 text-slate-600">
-              {shortReg(right.regulation)}
-            </div>
-          </div>
-
-          <div className="rounded-[20px] border border-slate-200 bg-white px-4 py-4">
-            <div className="text-sm font-black text-[#0f172a]">الحساب الإسلامي</div>
-            <div className="mt-2 text-sm leading-7 text-slate-600">
-              {yesNoArabic(right.islamic_account)}
-            </div>
-          </div>
-
-          <div className="rounded-[20px] border border-slate-200 bg-white px-4 py-4">
-            <div className="text-sm font-black text-[#0f172a]">المقر</div>
-            <div className="mt-2 text-sm leading-7 text-slate-600">
-              {right.headquarters || "غير محدد"}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    {/* Mobile note */}
-    <div className="hidden md:block mt-5 rounded-[22px] border border-slate-200 bg-[#f8fbff] p-4">
-      <div className="text-sm font-black text-[#0f172a]">ملاحظة مهمة</div>
-      <p className="mt-2 text-sm leading-7 text-slate-600">
-        راجع دائمًا الجهة التنظيمية الفعلية التي سيتم فتح الحساب تحتها قبل التسجيل.
-      </p>
-    </div>
-
-    {/* Footer */}
-    <div className="mt-6 rounded-[24px] border border-slate-200 bg-[#f8fbff] p-4 sm:p-5">
-      <p className="text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
-        وجود التراخيص لا يعني وحده أن جميع الحسابات متطابقة في مستوى الحماية،
-        لذلك من الأفضل دائمًا مراجعة تفاصيل الكيان التنظيمي الذي ستفتح تحته
-        الحساب قبل اتخاذ القرار النهائي.
-      </p>
-    </div>
-  </div>
-</section>
-
-<section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
-  <div className="rounded-[30px] border border-[#bfdbfe] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-4 shadow-sm sm:p-6 lg:p-8">
-    {/* Header */}
     <div className="max-w-4xl">
-      <span className="text-sm font-bold text-[#2563eb]">الحكم النهائي</span>
-      <h2 className="mt-2 text-2xl font-black leading-tight text-[#0f172a] sm:text-3xl lg:text-5xl">
-        من الأفضل بين {left.name} و {right.name}؟
+      <span className="text-sm font-black text-[#2563eb]">الأسئلة الشائعة</span>
+
+      <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-5xl">
+        أسئلة شائعة عن {left.name} و {right.name}
       </h2>
-      <p className="mt-3 text-sm leading-8 text-slate-600 sm:text-base">
-        بعد مراجعة المميزات الأساسية، الرسوم، الحسابات، والأمان، هذه هي الخلاصة
-        النهائية التي تساعدك على اتخاذ قرار أسرع.
+
+      <p className="mt-3 text-base leading-8 text-slate-600">
+        هذه الأسئلة مأخوذة من بيانات تقييم كل وسيط، وتساعدك على فهم أهم النقاط
+        قبل فتح الحساب أو اختيار الشركة الأنسب.
       </p>
     </div>
 
-    {/* Verdict cards */}
-    <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-      <div className="rounded-[22px] border border-slate-200 bg-white p-4 text-center">
-        <div className="text-xs font-bold text-slate-500">أفضل للمبتدئين</div>
-        <div className="mt-2 text-2xl font-black text-[#0f172a]">
-          {beginnerWinner}
+    <div className="mt-8 grid gap-6 lg:grid-cols-2">
+      {/* العمود اليمين - الشركة الأولى */}
+      <div>
+        <div className="mb-4 rounded-[20px] border border-[#bfdbfe] bg-[#eff6ff] px-5 py-3">
+          <h3 className="text-lg font-black text-[#0f172a]">
+            أسئلة عن {left.name}
+          </h3>
+        </div>
+
+        <div className="space-y-4">
+          {(((left as any).faq_ar || []) as { question: string; answer: string }[])
+            .slice(0, 3)
+            .map((faq, index) => (
+              <details
+                key={`left-faq-${index}`}
+                className="group rounded-[24px] border border-slate-200 bg-[#fbfdff] p-5 shadow-sm open:border-[#bfdbfe] open:bg-white"
+              >
+                <summary className="flex min-h-[64px] cursor-pointer list-none items-center justify-between gap-4">
+                  <h4 className="text-base font-black leading-7 text-[#0f172a]">
+                    {faq.question}
+                  </h4>
+
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-sm font-black text-slate-500 transition group-open:rotate-180">
+                    ▼
+                  </span>
+                </summary>
+
+                <p className="mt-4 border-t border-slate-200 pt-4 text-sm leading-8 text-slate-600">
+                  {faq.answer}
+                </p>
+              </details>
+            ))}
         </div>
       </div>
 
-      <div className="rounded-[22px] border border-slate-200 bg-white p-4 text-center">
-        <div className="text-xs font-bold text-slate-500">أفضل للتداول النشط</div>
-        <div className="mt-2 text-2xl font-black text-[#0f172a]">
-          {scalpingWinner}
+      {/* العمود اليسار - الشركة الثانية */}
+      <div>
+        <div className="mb-4 rounded-[20px] border border-[#bfdbfe] bg-[#eff6ff] px-5 py-3">
+          <h3 className="text-lg font-black text-[#0f172a]">
+            أسئلة عن {right.name}
+          </h3>
         </div>
-      </div>
 
-      <div className="rounded-[22px] border border-slate-200 bg-white p-4 text-center sm:col-span-2 xl:col-span-1">
-        <div className="text-xs font-bold text-slate-500">أفضل إجمالًا</div>
-        <div className="mt-2 text-2xl font-black text-[#0f172a]">
-          {overallWinner}
+        <div className="space-y-4">
+          {(((right as any).faq_ar || []) as { question: string; answer: string }[])
+            .slice(0, 3)
+            .map((faq, index) => (
+              <details
+                key={`right-faq-${index}`}
+                className="group rounded-[24px] border border-slate-200 bg-[#fbfdff] p-5 shadow-sm open:border-[#bfdbfe] open:bg-white"
+              >
+                <summary className="flex min-h-[64px] cursor-pointer list-none items-center justify-between gap-4">
+                  <h4 className="text-base font-black leading-7 text-[#0f172a]">
+                    {faq.question}
+                  </h4>
+
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-sm font-black text-slate-500 transition group-open:rotate-180">
+                    ▼
+                  </span>
+                </summary>
+
+                <p className="mt-4 border-t border-slate-200 pt-4 text-sm leading-8 text-slate-600">
+                  {faq.answer}
+                </p>
+              </details>
+            ))}
         </div>
       </div>
     </div>
 
-    {/* Analysis */}
-    <div className="mt-6 rounded-[24px] border border-slate-200 bg-white p-4 sm:p-5">
-      <p className="text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
-        إذا كنت تبحث عن الخيار الأفضل إجمالًا، فقد يكون{" "}
-        <strong>{overallWinner}</strong> هو الأنسب لك. أما إذا كانت أولويتك
-        سهولة البداية ووضوح الحسابات، فراجع ترشيح{" "}
-        <strong>{beginnerWinner}</strong>. وإذا كان تركيزك الأكبر على التداول
-        النشط والسبريد، فابدأ بمراجعة <strong>{scalpingWinner}</strong>.
+    <div className="mt-7 grid gap-4 rounded-[26px] border border-[#dbeafe] bg-[#f8fbff] p-5 lg:grid-cols-[1fr_auto] lg:items-center">
+      <p className="text-sm leading-7 text-slate-600 lg:text-base">
+        إذا وجدت هذه المقارنة مفيدة، يمكنك مشاركتها مع متداول آخر يبحث عن وسيط
+        مناسب بين {left.name} و {right.name}.
       </p>
+
+      <div className="flex justify-start lg:justify-end">
+        <ShareButtons url={pageUrl} title={shareTitle} />
+      </div>
     </div>
-
-    {/* CTA */}
-    <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-      <a
-        href={`/go/${left.slug ?? ""}?type=real`}
-        className="inline-flex min-h-[50px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
-      >
-        افتح حساب لدى {left.name}
-      </a>
-
-      <a
-        href={`/go/${right.slug ?? ""}?type=real`}
-        className="inline-flex min-h-[50px] items-center justify-center rounded-2xl bg-[#2563eb] px-6 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
-      >
-        افتح حساب لدى {right.name}
-      </a>
-    </div>
-
-    {/* Small note - desktop only */}
-    <p className="mt-4 hidden text-xs text-slate-500 md:block">
-      القرار النهائي يعتمد دائمًا على نوع الحساب الذي ستفتحه فعليًا وطبيعة أسلوبك
-      في التداول.
-    </p>
   </div>
-</section>
-
-<section className="mx-auto max-w-7xl px-4 pb-6 sm:px-6 lg:px-8">
-  <div className="rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-sm">
-
-    <h3 className="text-lg font-bold text-[#0f172a]">
-      شارك هذه المقارنة مع أصدقائك
-    </h3>
-
-    <p className="mt-1 text-sm text-slate-500">
-      قد تساعد هذه المقارنة متداولين آخرين على اختيار الوسيط المناسب
-    </p>
-
-    <div className="mt-4 flex justify-center">
-      <ShareButtons url={pageUrl} title={shareTitle} />
-    </div>
-
-  </div>
-</section>
-
-<section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
-<div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
-
-<h2 className="text-2xl font-black text-[#0f172a] sm:text-3xl">
-الأسئلة الشائعة
-</h2>
-
-<div className="mt-6 space-y-3">
-
-<details className="rounded-xl border border-slate-200 p-4">
-<summary className="cursor-pointer font-bold text-[#0f172a]">
-هل {left.name} أفضل من {right.name}؟
-</summary>
-<p className="mt-2 text-sm text-slate-600">
-يعتمد ذلك على احتياجات المتداول، حيث تختلف الشركات في الرسوم
-والمنصات وأنواع الحسابات.
-</p>
-</details>
-
-<details className="rounded-xl border border-slate-200 p-4">
-<summary className="cursor-pointer font-bold text-[#0f172a]">
-ما أقل إيداع لفتح حساب تداول؟
-</summary>
-<p className="mt-2 text-sm text-slate-600">
-يختلف الحد الأدنى للإيداع بين الشركات ونوع الحساب المستخدم.
-</p>
-</details>
-
-<details className="rounded-xl border border-slate-200 p-4">
-<summary className="cursor-pointer font-bold text-[#0f172a]">
-هل يوجد حساب إسلامي؟
-</summary>
-<p className="mt-2 text-sm text-slate-600">
-توفر العديد من شركات التداول حسابات إسلامية خالية من الفوائد.
-</p>
-</details>
-
-</div>
-
-</div>
 </section>
 
     </main>
