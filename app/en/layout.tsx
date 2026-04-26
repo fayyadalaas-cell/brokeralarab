@@ -8,7 +8,6 @@ export const metadata: Metadata = {
   description: "Best brokers and trading reviews on Broker AlArab.",
   metadataBase: new URL("https://brokeralarab.com"),
 
-  // 🔥 hreflang
   alternates: {
     canonical: "/en",
     languages: {
@@ -25,10 +24,8 @@ export default function EnglishLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" dir="ltr">
-      <body>
-        {children}
-      </body>
-    </html>
+    <div lang="en" dir="ltr">
+      {children}
+    </div>
   );
 }
