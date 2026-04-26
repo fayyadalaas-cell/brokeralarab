@@ -759,48 +759,40 @@ function SplitListSection({
 }  
 
 function renderStars(rating: number | null) {
-  if (!rating) return null
+  if (!rating) return null;
 
-  const rounded = Math.round(rating * 2) / 2
-  const full = Math.floor(rounded)
-  const half = rounded % 1 !== 0
-  const empty = 5 - full - (half ? 1 : 0)
+  const rounded = Math.round(rating);
+  const full = Math.min(5, Math.max(0, rounded));
+  const empty = 5 - full;
 
-return (
-  <div
-    className="flex items-center gap-2 px-3 py-1 rounded-md"
-    style={{
-      background: "#0f172a",
-      fontFamily: "Arial, Helvetica, sans-serif",
-      fontSize: "18px"
-    }}
-  >
-    {/* النجمة قبل التقييم */}
-    <span style={{ color: "#f59e0b", fontSize: "20px" }}>★</span>
+  return (
+    <div
+      className="flex items-center gap-2 rounded-md px-3 py-1"
+      style={{
+        background: "#0f172a",
+        fontFamily: "Arial, Helvetica, sans-serif",
+        fontSize: "18px",
+      }}
+    >
+      <div style={{ display: "flex", gap: "2px" }}>
+        {Array.from({ length: full }).map((_, i) => (
+          <span key={"f" + i} style={{ color: "#f59e0b" }}>
+            ★
+          </span>
+        ))}
 
-    {/* النجوم */}
-    <div style={{ display: "flex", gap: "2px" }}>
-      {Array.from({ length: full }).map((_, i) => (
-        <span key={"f" + i} style={{ color: "#f59e0b" }}>
-          ★
-        </span>
-      ))}
+        {Array.from({ length: empty }).map((_, i) => (
+          <span key={"e" + i} style={{ color: "#475569" }}>
+            ★
+          </span>
+        ))}
+      </div>
 
-      {half && <span style={{ color: "#f59e0b" }}>☆</span>}
-
-      {Array.from({ length: empty }).map((_, i) => (
-        <span key={"e" + i} style={{ color: "#475569" }}>
-          ★
-        </span>
-      ))}
+      <span style={{ color: "#e2e8f0", fontWeight: 700 }}>
+        {rating}
+      </span>
     </div>
-
-    {/* الرقم */}
-    <span style={{ color: "#e2e8f0", fontWeight: 600 }}>
-      {rating}
-    </span>
-  </div>
-);
+  );
 }
 
 function MiniInfoCard({
@@ -852,7 +844,7 @@ function MobileAccountAccordion({
           key={acc.id}
           className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
         >
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4 text-left">
             <div className="min-w-0">
               <div className="text-base font-black text-slate-900">
                 {acc.account_name || "-"}
@@ -1273,7 +1265,20 @@ const breadcrumbSchema = {
         </div>
       </aside>
 
-            <div className="order-2 min-w-0 text-left lg:order-1">
+            <div className="order-2 min-w-0 text-center lg:order-1 lg:text-left">
+   
+{/* MOBILE LOGO */}
+<div className="mb-5 flex flex-col items-center gap-3 lg:hidden">
+  <div className="flex h-20 w-40 items-center justify-center rounded-[20px] border border-slate-200 bg-gradient-to-b from-white to-slate-50 shadow-md">
+    {broker.logo ? (
+      <img
+        src={broker.logo}
+        alt={`${broker.name_en || broker.name} logo`}
+        className="max-h-16 max-w-[135px] object-contain"
+      />
+    ) : null}
+  </div>
+</div>
   <div className="mb-3 hidden flex-wrap items-center gap-2 md:flex">
     <Chip tone="blue">Broker Review</Chip>
     <Chip tone="emerald">{verdictTone.badge}</Chip>
@@ -1294,7 +1299,7 @@ const breadcrumbSchema = {
   Updated for 2026 • Based on real trading conditions
 </div>
 
-  <div className="mt-4 flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+  <div className="mt-4 flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:items-center">
     {renderStars(overallScore || broker.rating)}
     <div
       className={`inline-flex rounded-full border px-3 py-2 text-sm font-black ${verdictTone.color}`}
@@ -1303,12 +1308,12 @@ const breadcrumbSchema = {
     </div>
   </div>
 
-<div className="mt-5 max-w-3xl text-[15px] leading-8 text-slate-600 md:min-h-[150px] md:text-base">
+<div className="mt-5 max-w-3xl text-[15px] leading-8 text-slate-600 md:min-h-[150px] md:text-base mx-auto lg:mx-0">
   {brokerPositioning}
 </div>
 
 {/* 🔥 Verdict Line */}
-<div className="mt-4 flex flex-wrap items-center gap-2">
+<div className="mt-4 hidden flex-wrap items-center gap-2 md:flex">
   <span className="inline-flex rounded-full bg-blue-600 px-4 py-2 text-sm font-bold text-white">
     Best for active traders
   </span>
@@ -1319,7 +1324,7 @@ const breadcrumbSchema = {
 </div>
 
   {(whoShouldUse.length > 0 || whoShouldAvoid.length > 0) ? (
-    <div className="mt-6 grid gap-3 md:grid-cols-2">
+    <div className="mt-6 hidden gap-3 md:grid md:grid-cols-2">
       <div className="h-full min-h-[170px] rounded-[24px] border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-5 shadow-sm">
         <div className="mb-2 text-sm font-black text-emerald-800">
           Best suited for
@@ -1364,31 +1369,35 @@ const breadcrumbSchema = {
     </div>
   ) : null}
 
-  <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
-    <QuickStat
-      label="Overall Rating"
-      value={overallScore || broker.rating || "-"}
-      accent="blue"
-    />
-    <QuickStat
-      label="Min Deposit"
-      value={formatMoney(broker.min_deposit)}
-      accent="emerald"
-    />
-    <QuickStat
-      label="Max Leverage"
-      value={broker.max_leverage || "-"}
-      accent="amber"
-    />
-
+  <div className="mt-6 grid grid-cols-3 gap-2">
+  <div className="rounded-2xl border border-slate-200 bg-white p-3 text-center shadow-sm">
+    <div className="text-[11px] font-bold text-slate-500">Rating</div>
+    <div className="mt-1 text-xl font-black text-slate-950">
+      {overallScore || broker.rating || "-"}
+    </div>
   </div>
 
-  <div className="mt-5 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap sm:items-center sm:justify-center">
+  <div className="rounded-2xl border border-slate-200 bg-white p-3 text-center shadow-sm">
+    <div className="text-[11px] font-bold text-slate-500">Min Deposit</div>
+    <div className="mt-1 text-xl font-black text-slate-950">
+      {formatMoney(broker.min_deposit)}
+    </div>
+  </div>
+
+  <div className="rounded-2xl border border-slate-200 bg-white p-3 text-center shadow-sm">
+    <div className="text-[11px] font-bold text-slate-500">Leverage</div>
+    <div className="mt-1 text-xl font-black text-slate-950">
+      {broker.max_leverage || "-"}
+    </div>
+  </div>
+</div>
+
+<div className="mt-4 grid gap-3 lg:flex lg:flex-wrap lg:items-center lg:justify-center">
   <a
     href={`/go/${broker.slug}?type=real`}
     target="_blank"
     rel="nofollow sponsored noopener noreferrer"
-    className="inline-flex min-h-[52px] w-full items-center justify-center rounded-2xl bg-blue-600 shadow-xl shadow-blue-300 px-6 py-3 text-sm font-extrabold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700 sm:w-auto sm:min-w-[170px] md:text-base"
+    className="inline-flex min-h-[56px] w-full items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-3 text-[15px] font-black text-white shadow-lg shadow-blue-300 transition hover:bg-blue-700 lg:w-auto lg:min-w-[170px] md:text-base"
   >
     Open Real Account
   </a>
@@ -1397,7 +1406,7 @@ const breadcrumbSchema = {
     href={`/go/${broker.slug}?type=demo`}
     target="_blank"
     rel="nofollow sponsored noopener noreferrer"
-    className="inline-flex min-h-[52px] w-full items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-extrabold text-slate-900 transition hover:bg-slate-50 sm:w-auto sm:min-w-[170px] md:text-base"
+    className="inline-flex min-h-[52px] w-full items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-extrabold text-slate-900 shadow-sm transition hover:bg-slate-50 lg:w-auto lg:min-w-[170px] md:text-base"
   >
     Open Demo Account
   </a>
@@ -1406,7 +1415,7 @@ const breadcrumbSchema = {
     href={`/go/${broker.slug}?type=mt5`}
     target="_blank"
     rel="nofollow sponsored noopener noreferrer"
-    className="inline-flex min-h-[52px] w-full items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-extrabold text-slate-900 transition hover:bg-slate-50 sm:w-auto sm:min-w-[170px] md:text-base"
+    className="hidden min-h-[50px] w-full items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-extrabold text-slate-900 shadow-sm transition hover:bg-slate-50 lg:inline-flex lg:w-auto lg:min-w-[170px] md:text-base"
   >
     Download MT5
   </a>
@@ -1415,7 +1424,7 @@ const breadcrumbSchema = {
     href={`/go/${broker.slug}?type=mt4`}
     target="_blank"
     rel="nofollow sponsored noopener noreferrer"
-    className="inline-flex min-h-[52px] w-full items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-extrabold text-slate-900 transition hover:bg-slate-50 sm:w-auto sm:min-w-[170px] md:text-base"
+    className="hidden min-h-[50px] w-full items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-extrabold text-slate-900 shadow-sm transition hover:bg-slate-50 lg:inline-flex lg:w-auto lg:min-w-[170px] md:text-base"
   >
     Download MT4
   </a>
@@ -1431,166 +1440,207 @@ const breadcrumbSchema = {
   <div className="min-w-0 space-y-8">
                         
 
-                        <SectionCard
+      <SectionCard
   title="Rating Breakdown"
   id="scores"
 >
-  <div className="mb-6 overflow-hidden rounded-[28px] border border-slate-200 bg-gradient-to-br from-slate-50 via-white to-blue-50 shadow-sm">
-    <div className="grid gap-0 md:grid-cols-[220px_minmax(0,1fr)]">
-      <div className="flex flex-col justify-center border-b border-slate-200 p-6 text-center md:border-b-0 md:border-r">
-        <div className="text-xs font-black uppercase tracking-wide text-blue-700">
-          Overall Score
-        </div>
-        <div className="mt-3 flex items-end justify-center gap-2">
-          <span className="text-5xl font-black leading-none text-slate-950">
-            {overallScore || broker.rating || "-"}
-          </span>
-          <span className="text-sm font-bold text-blue-700">/ 5</span>
-        </div>
-        <div className="mt-3 inline-flex items-center justify-center rounded-full border border-blue-200 bg-white px-3 py-1 text-xs font-black text-blue-700">
-          {verdictTone.label}
-        </div>
+  {/* Mobile */}
+  <div className="md:hidden space-y-4">
+    <div className="rounded-[26px] border border-slate-200 bg-white p-4 text-center shadow-sm">
+      <div className="text-xs font-black text-blue-700">
+        OVERALL SCORE
       </div>
 
-      <div className="p-6 md:p-7">
-        <div className="text-lg font-black text-slate-950 md:text-xl">
-          Analyst Summary
+      <div className="mt-3 flex items-end justify-center gap-2">
+        <span className="text-4xl font-black leading-none text-slate-950">
+          {overallScore || broker.rating || "-"}
+        </span>
+        <span className="text-sm font-bold text-blue-700">/ 5</span>
+      </div>
+
+      <div className="mt-3 inline-flex rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-black text-blue-700">
+        {verdictTone.label}
+      </div>
+
+      <p className="mt-4 text-[13px] leading-6 text-slate-600">
+        This score reflects regulation, trading costs, platform quality, deposits, withdrawals, and support.
+      </p>
+
+      <div className="mt-4 space-y-2">
+        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+          <div className="text-xs font-bold text-slate-500">Regulation</div>
+          <div className="mt-1 text-sm font-extrabold text-slate-900">
+            {broker.regulation_short || "Not specified"}
+          </div>
         </div>
 
-        <p className="mt-3 max-w-3xl text-sm leading-8 text-slate-700 md:text-base">
-          This score reflects the broker’s overall balance between regulation, trading costs, platform quality, deposit and withdrawal experience, and customer support.
-        </p>
+        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+          <div className="text-xs font-bold text-slate-500">Min Deposit</div>
+          <div className="mt-1 text-sm font-extrabold text-slate-900">
+            {formatMoney(broker.min_deposit)}
+          </div>
+        </div>
 
-        <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-          <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
-            <div className="text-xs font-bold text-slate-500">Regulation Quality</div>
-            <div className="mt-1 text-sm font-extrabold text-slate-900">
-              {broker.regulation_short || "Not specified"}
-            </div>
+        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+          <div className="text-xs font-bold text-slate-500">Platforms</div>
+          <div className="mt-1 text-sm font-extrabold text-slate-900">
+            {broker.platforms || "Not specified"}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div className="space-y-3">
+      <ScoreBar label="Safety & Regulation" value={broker.score_safety} />
+      <ScoreBar label="Fees & Spreads" value={broker.score_fees} />
+      <ScoreBar label="Trading Platforms" value={broker.score_platforms} />
+      <ScoreBar label="Deposits & Withdrawals" value={broker.score_deposit} />
+      <ScoreBar label="Customer Support" value={broker.score_support} />
+    </div>
+  </div>
+
+  {/* Desktop */}
+  <div className="hidden md:block">
+    <div className="mb-6 overflow-hidden rounded-[28px] border border-slate-200 bg-gradient-to-br from-slate-50 via-white to-blue-50 shadow-sm">
+      <div className="grid gap-0 md:grid-cols-[220px_minmax(0,1fr)]">
+        <div className="flex flex-col justify-center border-b border-slate-200 p-6 text-center md:border-b-0 md:border-r">
+          <div className="text-xs font-black uppercase tracking-wide text-blue-700">
+            Overall Score
+          </div>
+          <div className="mt-3 flex items-end justify-center gap-2">
+            <span className="text-5xl font-black leading-none text-slate-950">
+              {overallScore || broker.rating || "-"}
+            </span>
+            <span className="text-sm font-bold text-blue-700">/ 5</span>
+          </div>
+          <div className="mt-3 inline-flex items-center justify-center rounded-full border border-blue-200 bg-white px-3 py-1 text-xs font-black text-blue-700">
+            {verdictTone.label}
+          </div>
+        </div>
+
+        <div className="p-6 md:p-7">
+          <div className="text-lg font-black text-slate-950 md:text-xl">
+            Analyst Summary
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
-            <div className="text-xs font-bold text-slate-500">Min Deposit</div>
-            <div className="mt-1 text-sm font-extrabold text-slate-900">
-              {formatMoney(broker.min_deposit)}
-            </div>
-          </div>
+          <p className="mt-3 max-w-3xl text-sm leading-8 text-slate-700 md:text-base">
+            This score reflects the broker’s overall balance between regulation, trading costs, platform quality, deposit and withdrawal experience, and customer support.
+          </p>
 
-          <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
-            <div className="text-xs font-bold text-slate-500">Platform Access</div>
-            <div className="mt-1 text-sm font-extrabold text-slate-900">
-              {broker.platforms || "Not specified"}
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+              <div className="text-xs font-bold text-slate-500">Regulation Quality</div>
+              <div className="mt-1 text-sm font-extrabold text-slate-900">
+                {broker.regulation_short || "Not specified"}
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+              <div className="text-xs font-bold text-slate-500">Min Deposit</div>
+              <div className="mt-1 text-sm font-extrabold text-slate-900">
+                {formatMoney(broker.min_deposit)}
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+              <div className="text-xs font-bold text-slate-500">Platform Access</div>
+              <div className="mt-1 text-sm font-extrabold text-slate-900">
+                {broker.platforms || "Not specified"}
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-    <ScoreBar label="Safety & Regulation" value={broker.score_safety} />
-    <ScoreBar label="Fees & Spreads" value={broker.score_fees} />
-    <ScoreBar label="Trading Platforms" value={broker.score_platforms} />
-    <ScoreBar label="Deposits & Withdrawals" value={broker.score_deposit} />
-    <ScoreBar label="Customer Support" value={broker.score_support} />
+    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+      <ScoreBar label="Safety & Regulation" value={broker.score_safety} />
+      <ScoreBar label="Fees & Spreads" value={broker.score_fees} />
+      <ScoreBar label="Trading Platforms" value={broker.score_platforms} />
+      <ScoreBar label="Deposits & Withdrawals" value={broker.score_deposit} />
+      <ScoreBar label="Customer Support" value={broker.score_support} />
+    </div>
   </div>
 </SectionCard>
 
-{/* Mobile: keep current simple style */}
-<div className="grid gap-6 md:hidden">
-  <ChecklistSection title="Main Advantages" items={pros} type="pros" />
-  <ChecklistSection title="Main Disadvantages" items={cons} type="cons" />
+{/* ✅ MOBILE ENGLISH FIXED */}
+<div className="md:hidden space-y-4">
+
+  {/* Advantages */}
+  <section className="overflow-hidden rounded-[26px] border border-emerald-200 bg-white shadow-sm">
+    <div className="flex items-center justify-between border-b border-emerald-100 bg-emerald-50 px-4 py-3">
+      <h2 className="text-lg font-black text-emerald-900">
+        Main Advantages
+      </h2>
+      <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-emerald-700">
+        {pros.length}
+      </span>
+    </div>
+
+    <div className="space-y-2 p-4">
+      {pros.length ? (
+        pros.map((item, i) => (
+          <div
+            key={i}
+            className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-3"
+          >
+            {/* ICON LEFT */}
+            <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-xs font-black text-white">
+              ✓
+            </span>
+
+            {/* TEXT */}
+            <p className="flex-1 text-sm leading-7 text-slate-700">
+              {item}
+            </p>
+          </div>
+        ))
+      ) : (
+        <p className="text-sm text-slate-500">No data available.</p>
+      )}
+    </div>
+  </section>
+
+  {/* Disadvantages */}
+  <section className="overflow-hidden rounded-[26px] border border-rose-200 bg-white shadow-sm">
+    <div className="flex items-center justify-between border-b border-rose-100 bg-rose-50 px-4 py-3">
+      <h2 className="text-lg font-black text-rose-900">
+        Main Disadvantages
+      </h2>
+      <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-rose-700">
+        {cons.length}
+      </span>
+    </div>
+
+    <div className="space-y-2 p-4">
+      {cons.length ? (
+        cons.map((item, i) => (
+          <div
+            key={i}
+            className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-3"
+          >
+            {/* ICON LEFT */}
+            <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-500 text-xs font-black text-white">
+              –
+            </span>
+
+            {/* TEXT */}
+            <p className="flex-1 text-sm leading-7 text-slate-700">
+              {item}
+            </p>
+          </div>
+        ))
+      ) : (
+        <p className="text-sm text-slate-500">No data available.</p>
+      )}
+    </div>
+  </section>
+
 </div>
 
-{/* Desktop: professional comparison layout */}
+{/* ❌ Desktop — لا تلمسه */}
 <div className="hidden gap-6 lg:grid lg:grid-cols-2 lg:gap-8">
-  <section className="rounded-[28px] border border-slate-200 bg-white shadow-sm">
-    <div className="border-b border-slate-200 px-6 py-5">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-extrabold text-slate-950">
-            Main Advantages
-          </h2>
-          <p className="mt-2 text-sm leading-7 text-slate-600">
-            Key strengths that make this broker appealing for active traders.
-          </p>
-        </div>
-
-        <div className="inline-flex h-10 min-w-[40px] items-center justify-center rounded-full bg-emerald-50 px-3 text-sm font-black text-emerald-700">
-          {pros.length}
-        </div>
-      </div>
-    </div>
-
-    <div className="p-6 lg:min-h-[264px]">
-      {pros.length ? (
-        <div className="space-y-3">
-          {pros.map((item, i) => (
-            <div
-              key={i}
-              className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 transition duration-200 hover:border-emerald-200 hover:bg-white hover:shadow-sm"
-            >
-              <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-sm font-black text-emerald-700">
-                ✓
-              </div>
-
-              <div className="min-w-0">
-                <p className="text-[15px] leading-7 text-slate-700">
-                  {item}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p className="text-slate-500">No data is currently available.</p>
-      )}
-    </div>
-  </section>
-
-  <section className="rounded-[28px] border border-slate-200 bg-white shadow-sm">
-    <div className="border-b border-slate-200 px-6 py-5">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-extrabold text-slate-950">
-            Main Disadvantages
-          </h2>
-          <p className="mt-2 text-sm leading-7 text-slate-500">
-            Important limitations and trade-offs to consider before opening an account.
-          </p>
-        </div>
-
-        <div className="inline-flex h-10 min-w-[40px] items-center justify-center rounded-full bg-rose-50 px-3 text-sm font-black text-rose-700">
-          {cons.length}
-        </div>
-      </div>
-    </div>
-
-    <div className="p-6">
-      {cons.length ? (
-        <div className="space-y-3">
-          {cons.map((item, i) => (
-            <div
-              key={i}
-              className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 transition duration-200 hover:border-rose-200 hover:bg-transparent hover:shadow-sm"
-            >
-              <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-rose-100 text-sm font-black text-rose-700">
-                –
-              </div>
-
-              <div className="min-w-0">
-                <p className="text-[15px] leading-7 text-slate-700">
-                  {item}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p className="text-slate-500">No data is currently available.</p>
-      )}
-    </div>
-  </section>
+  ...
 </div>
 
 <SectionCard
@@ -1599,25 +1649,65 @@ const breadcrumbSchema = {
   id="accounts"
 >
   <div className="space-y-6">
-    {/* Mobile — unchanged */}
-    <div className="grid grid-cols-2 gap-3 md:hidden">
+
+    {/* Mobile */}
+<div className="md:hidden">
+  <div className="rounded-[26px] border border-slate-200 bg-white p-4 text-left shadow-sm">
+
+    <div className="grid grid-cols-2 gap-3">
+
+      {/* Accounts */}
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="h-1.5 bg-blue-500" />
         <div className="p-4 text-center">
-          <div className="text-xs font-bold text-slate-500">Accounts</div>
+          <div className="text-xs font-bold text-slate-500">
+            Accounts
+          </div>
           <div className="mt-2 text-2xl font-black text-slate-950">
             {accountCount || "-"}
           </div>
         </div>
       </div>
 
+      {/* Lowest Deposit */}
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="h-1.5 bg-blue-500" />
+        <div className="h-1.5 bg-emerald-500" />
         <div className="p-4 text-center">
-          <div className="text-xs font-bold text-slate-500">Lowest Deposit</div>
+          <div className="text-xs font-bold text-slate-500">
+            Lowest Deposit
+          </div>
           <div className="mt-2 text-2xl font-black text-slate-950">
             {lowestDeposit?.raw || broker.min_deposit || "-"}
           </div>
+        </div>
+      </div>
+
+    </div>
+
+    <p className="mt-5 text-left text-[14px] leading-7 text-slate-600">
+      {broker.name_en || broker.name} offers several account types for different trader profiles, from beginner-friendly accounts to lower-spread or commission-based options.
+    </p>
+
+ 
+
+        <MobileAccountAccordion accounts={accountsData} />
+
+        <div className="mt-5 rounded-[22px] border border-blue-100 bg-blue-50 p-4 shadow-sm">
+          <div className="text-[15px] font-black text-slate-950">
+            Start trading with {broker.name_en || broker.name}
+          </div>
+          <p className="mt-1 text-[12px] leading-5 text-slate-600">
+            Choose the account that fits your strategy and open a real account in minutes.
+          </p>
+
+          <a
+            href={`/go/${broker.slug}?type=real`}
+            target="_blank"
+            rel="nofollow sponsored noopener noreferrer"
+            className="mt-4 flex min-h-[52px] items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 px-5 text-sm font-black text-white shadow-md active:scale-[0.98]"
+          >
+            Open Real Account
+          </a>
         </div>
       </div>
     </div>
@@ -1712,36 +1802,23 @@ const breadcrumbSchema = {
       </div>
     </div>
 
-    <p className="leading-8 text-slate-700">
+    {/* Desktop — paragraph */}
+    <p className="hidden leading-8 text-slate-700 md:block">
       {broker.name_en || broker.name} offers a range of account types designed for different trader profiles, from simple beginner-friendly accounts to lower-spread or commission-based accounts for more active traders.
     </p>
-
-    {/* Mobile — unchanged */}
-    <MobileAccountAccordion accounts={accountsData} />
 
     {/* Desktop — stronger table, Best For removed */}
     <div className="hidden md:block">
       <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-sm">
-    
         <div className="max-w-full overflow-x-auto">
           <table className="w-full min-w-[760px] text-sm">
             <thead className="bg-slate-50">
               <tr>
-                <th className="p-4 text-left font-black text-slate-900">
-                  Account Type
-                </th>
-                <th className="p-4 text-center font-black text-slate-900">
-                  Spread
-                </th>
-                <th className="p-4 text-center font-black text-slate-900">
-                  Commission
-                </th>
-                <th className="p-4 text-center font-black text-slate-900">
-                  Min Deposit
-                </th>
-                <th className="p-4 text-center font-black text-slate-900">
-                  Execution Type
-                </th>
+                <th className="p-4 text-left font-black text-slate-900">Account Type</th>
+                <th className="p-4 text-center font-black text-slate-900">Spread</th>
+                <th className="p-4 text-center font-black text-slate-900">Commission</th>
+                <th className="p-4 text-center font-black text-slate-900">Min Deposit</th>
+                <th className="p-4 text-center font-black text-slate-900">Execution Type</th>
               </tr>
             </thead>
 
@@ -1749,35 +1826,27 @@ const breadcrumbSchema = {
               {accountsData.length ? (
                 accountsData.map((acc, index) => (
                   <tr
-  key={acc.id}
-  className={`border-t border-slate-200 transition ${
-    index === 0
-  ? "bg-blue-50/40"
-      : index % 2 === 0
-      ? "bg-white"
-      : "bg-slate-50/40"
-  } hover:bg-slate-50`}
->
+                    key={acc.id}
+                    className={`border-t border-slate-200 transition ${
+                      index === 0
+                        ? "bg-blue-50/40"
+                        : index % 2 === 0
+                        ? "bg-white"
+                        : "bg-slate-50/40"
+                    } hover:bg-slate-50`}
+                  >
                     <td className="p-4">
-  <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5">
-  <span className="h-2 w-2 rounded-full bg-blue-600" />
-  <span className="font-bold text-blue-900">
-    {acc.account_name || "-"}
-  </span>
-</div>
-</td>
-                    <td className="p-4 text-center text-slate-700">
-                      {acc.spread || "-"}
+                      <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5">
+                        <span className="h-2 w-2 rounded-full bg-blue-600" />
+                        <span className="font-bold text-blue-900">
+                          {acc.account_name || "-"}
+                        </span>
+                      </div>
                     </td>
-                    <td className="p-4 text-center text-slate-700">
-                      {acc.commission_en || acc.commission || "-"}
-                    </td>
-                    <td className="p-4 text-center text-slate-700">
-                      {acc.min_deposit_en || acc.min_deposit || "-"}
-                    </td>
-                    <td className="p-4 text-center text-slate-700">
-                      {acc.execution_type || "-"}
-                    </td>
+                    <td className="p-4 text-center text-slate-700">{acc.spread || "-"}</td>
+                    <td className="p-4 text-center text-slate-700">{acc.commission_en || acc.commission || "-"}</td>
+                    <td className="p-4 text-center text-slate-700">{acc.min_deposit_en || acc.min_deposit || "-"}</td>
+                    <td className="p-4 text-center text-slate-700">{acc.execution_type || "-"}</td>
                   </tr>
                 ))
               ) : (
@@ -1794,60 +1863,88 @@ const breadcrumbSchema = {
     </div>
 
     <div className="hidden md:block">
-  <div className="mt-4 overflow-hidden rounded-[28px] border border-blue-200 bg-gradient-to-r from-blue-100 via-blue-50 to-blue-100 p-6 shadow-sm">
+      <div className="mt-4 overflow-hidden rounded-[28px] border border-blue-200 bg-gradient-to-r from-blue-100 via-blue-50 to-blue-100 p-6 shadow-sm">
+        <div className="flex items-center justify-between gap-6">
+          <div>
+            <div className="text-lg font-black text-slate-900">
+              Start trading with {broker.name_en || broker.name} today
+            </div>
+            <p className="mt-1 text-sm leading-7 text-slate-600">
+              Choose the account that fits your strategy and open a real trading account in just minutes.
+            </p>
+          </div>
 
-    <div className="flex items-center justify-between gap-6">
-
-      {/* Text */}
-      <div>
-        <div className="text-lg font-black text-slate-900">
-          Start trading with {broker.name_en || broker.name} today
+          <a
+            href={`/go/${broker.slug}?type=real`}
+            target="_blank"
+            rel="nofollow sponsored noopener noreferrer"
+            className="flex min-h-[52px] items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 px-8 text-sm font-extrabold text-white shadow-md transition hover:-translate-y-0.5 hover:from-blue-700 hover:to-blue-800 hover:shadow-lg"
+          >
+            Open Real Account
+          </a>
         </div>
-        <p className="mt-1 text-sm leading-7 text-slate-600">
-          Choose the account that fits your strategy and open a real trading account in just minutes.
-        </p>
       </div>
-
-      {/* Button */}
-      <a
-        href={`/go/${broker.slug}?type=real`}
-        target="_blank"
-        rel="nofollow sponsored noopener noreferrer"
-        className="flex min-h-[52px] items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 px-8 text-sm font-extrabold text-white shadow-md transition hover:-translate-y-0.5 hover:from-blue-700 hover:to-blue-800 hover:shadow-lg"
-      >
-        Open Real Account
-      </a>
-
     </div>
-
-  </div>
-</div>
   </div>
 </SectionCard>
 
 
-                  <SectionCard title="Deposits & Withdrawals">
-  <div className="space-y-6">
-    {/* Mobile — unchanged */}
-    {payments.length ? (
-      <div className="grid gap-3 md:hidden md:grid-cols-2 xl:grid-cols-3">
-        {payments.map((item, i) => (
-          <div
-            key={i}
-            className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
-          >
-            <span className="mt-1 inline-flex h-2.5 w-2.5 shrink-0 rounded-full bg-emerald-500" />
-            <span className="text-[13px] leading-6 text-slate-700 md:text-base md:leading-8">
-              {item}
-            </span>
-          </div>
-        ))}
-      </div>
-    ) : (
-      <p className="text-slate-500 md:hidden">No data is currently available.</p>
-    )}
+      <SectionCard title="Deposits & Withdrawals">
+  <div className="space-y-5 md:space-y-6">
 
-    {/* Desktop — improved */}
+   {/* Mobile */}
+<div className="md:hidden">
+  <div className="overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-sm">
+    <div className="space-y-3 bg-white p-4">
+      <div className="flex items-center justify-between rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 shadow-sm">
+        <span className="text-sm font-bold text-slate-500">
+          Payment Methods
+        </span>
+        <span className="text-2xl font-black text-slate-950">
+          {paymentMethods.length || "-"}
+        </span>
+      </div>
+
+      <div className="rounded-2xl border border-slate-200 bg-white px-4 py-4 text-center shadow-sm">
+        <div className="text-sm font-bold text-slate-500">
+          Withdrawal Speed
+        </div>
+        <div className="mt-2 text-[14px] font-black leading-6 text-slate-950">
+          {withdrawalSpeed || "No data available"}
+        </div>
+      </div>
+    </div>
+
+    <div className="border-t border-slate-100 p-4 text-left">
+      <p className="mx-auto text-[14px] leading-7 text-slate-600">
+        {depositSummary || "No data is currently available."}
+      </p>
+
+      <div className="mt-5">
+        <div className="mb-3 text-sm font-black text-slate-950">
+          Supported Payment Methods
+        </div>
+
+        {paymentMethods.length ? (
+          <div className="flex flex-wrap justify-center gap-2">
+            {paymentMethods.map((item, i) => (
+              <span
+                key={i}
+                className="rounded-full border border-blue-100 bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700 shadow-sm"
+              >
+                {item}
+              </span>
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-slate-500">No data available.</p>
+        )}
+      </div>
+    </div>
+  </div>
+</div>
+
+    {/* Desktop — unchanged */}
     <div className="hidden md:block">
       <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-sm">
         <div className="grid gap-0 xl:grid-cols-[260px_minmax(0,1fr)]">
@@ -1887,7 +1984,7 @@ const breadcrumbSchema = {
             </p>
 
             <div className="mt-5">
-              <div className="text-sm font-semibold text-slate-800 text-slate-900">
+              <div className="text-sm font-semibold text-slate-900">
                 Supported Payment Methods
               </div>
 
@@ -1912,6 +2009,7 @@ const breadcrumbSchema = {
         </div>
       </div>
     </div>
+
   </div>
 </SectionCard>
 
@@ -1921,42 +2019,88 @@ const breadcrumbSchema = {
   id="platforms"
 >
   <div className="space-y-5">
-    {/* Mobile — unchanged */}
-    {broker.platform_details_en || broker.platform_details ? (
-      <div className="space-y-5 md:hidden">
-        <div className="grid gap-4 md:grid-cols-2">
-          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-            <div className="h-1.5 bg-blue-500" />
-            <div className="p-5">
-              <div className="text-sm font-black text-slate-900 md:text-base">
+
+    {/* Mobile */}
+    {platformSummary || broker.platform_details_en || broker.platform_details ? (
+      <div className="space-y-4 md:hidden">
+        <div className="overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-sm">
+
+          <div className="p-4 text-center">
+            <div className="rounded-2xl border border-blue-100 bg-blue-50 px-4 py-4">
+              <div className="text-sm font-black text-slate-600">
                 Available Platforms
               </div>
-              <div className="mt-3 text-sm leading-8 text-slate-700 md:text-base">
-                {broker.platforms || "MT4 / MT5"}
+
+              {availablePlatforms.length ? (
+                <div className="mt-3 flex flex-wrap justify-center gap-2">
+                  {availablePlatforms.map((item, i) => (
+                    <span
+                      key={i}
+                      className="rounded-full border border-blue-100 bg-white px-3 py-1.5 text-xs font-black text-blue-700 shadow-sm"
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <div className="mt-2 text-base font-black text-slate-950">
+                  {broker.platforms || "MT4 / MT5"}
+                </div>
+              )}
+            </div>
+
+            <div className="mt-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-sm font-bold text-slate-500">
+                  Best For
+                </span>
+                <span className="text-right text-sm font-black leading-6 text-slate-950">
+                  {broker.best_for_en || broker.best_for || "Fast withdrawals"}
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-5">
+              <div className="text-[17px] font-black text-slate-950">
+                Trading Platform Experience
+              </div>
+
+              <p className="mt-3 text-left text-[14px] leading-7 text-slate-600">
+                {platformSummary || broker.platform_details_en || broker.platform_details}
+              </p>
+            </div>
+
+            <div className="mt-5 rounded-[22px] border border-blue-100 bg-blue-50 p-4 shadow-sm">
+              <div className="text-[15px] font-black text-slate-950">
+                Download MetaTrader Platforms
+              </div>
+
+              <p className="mt-1 text-[12px] leading-5 text-slate-600">
+                Download MT4 or MT5 through the broker links.
+              </p>
+
+              <div className="mt-4 grid grid-cols-2 gap-2">
+                <a
+                  href={`/go/${broker.slug}?type=mt4`}
+                  target="_blank"
+                  rel="nofollow sponsored noopener noreferrer"
+                  className="flex min-h-[48px] items-center justify-center rounded-2xl border border-blue-200 bg-white text-sm font-black text-blue-700 shadow-sm active:scale-[0.98]"
+                >
+                  Download MT4
+                </a>
+
+                <a
+                  href={`/go/${broker.slug}?type=mt5`}
+                  target="_blank"
+                  rel="nofollow sponsored noopener noreferrer"
+                  className="flex min-h-[48px] items-center justify-center rounded-2xl bg-blue-600 text-sm font-black text-white shadow-md active:scale-[0.98]"
+                >
+                  Download MT5
+                </a>
               </div>
             </div>
           </div>
 
-          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-            <div className="h-1.5 bg-emerald-500" />
-            <div className="p-5">
-              <div className="text-sm font-black text-slate-900 md:text-base">
-                Best For
-              </div>
-              <div className="mt-3 text-sm leading-8 text-slate-700 md:text-base">
-                {broker.best_for_en || broker.best_for || "Beginner and intermediate traders looking for familiar platforms"}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-          <div className="text-sm font-black text-slate-900 md:text-base">
-            Additional Details
-          </div>
-          <div className="mt-3 text-sm leading-8 text-slate-700 md:text-base">
-            {broker.platform_details_en || broker.platform_details}
-          </div>
         </div>
       </div>
     ) : (
@@ -2066,62 +2210,58 @@ const breadcrumbSchema = {
   id="regulation"
 >
   <div className="space-y-5">
-    {/* Mobile — unchanged */}
-    <div className="grid gap-4 lg:grid-cols-3 md:hidden">
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="h-1.5 bg-blue-500" />
-        <div className="p-5 text-center">
-          <div className="mb-4 text-sm font-black text-slate-900 md:text-base">
-            Regulatory Bodies
-          </div>
+  {/* Mobile */}
+<div className="md:hidden">
+  <div className="rounded-[26px] border border-slate-200 bg-white p-4 text-left shadow-sm">
 
-          <div className="flex flex-wrap justify-center gap-2">
-            {splitText(broker.regulation).length ? (
-              splitText(broker.regulation).map((item, i) => (
-                <span
-                  key={i}
-                  className="inline-flex items-center rounded-xl bg-blue-50 px-4 py-2 text-sm font-bold text-blue-700"
-                >
-                  {item}
-                </span>
-              ))
-            ) : broker.regulation_short ? (
-              <span className="inline-flex items-center rounded-xl bg-blue-50 px-4 py-2 text-sm font-bold text-blue-700">
-                {broker.regulation_short}
-              </span>
-            ) : (
-              <span className="text-sm text-slate-500">No data available</span>
-            )}
-          </div>
-        </div>
-      </div>
-
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="h-1.5 bg-emerald-500" />
-        <div className="p-5">
-          <div className="text-sm font-black text-slate-900 md:text-base">
-            Safety Level
-          </div>
-          <div className="mt-3 text-sm leading-8 text-slate-700 md:text-base">
-            {broker.safety_en || broker.safety || "No data is currently available."}
-          </div>
-        </div>
-      </div>
-
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="h-1.5 bg-amber-500" />
-        <div className="p-5">
-          <div className="text-sm font-black text-slate-900 md:text-base">
-            Summary
-          </div>
-          <div className="mt-3 text-sm leading-8 text-slate-700 md:text-base">
-            {broker.regulation_short
-              ? `${broker.name_en || broker.name} operates under recognized regulatory oversight, which is generally a positive sign for traders who care about safety and transparency.`
-              : `It is always recommended to verify the exact regulatory entity and jurisdiction before opening an account.`}
-          </div>
-        </div>
-      </div>
+    <div className="mb-4 flex justify-center">
+      {regulationBodies.length ? (
+        <span className="rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-xs font-black text-blue-700">
+          {regulationBodies.join(" | ")}
+        </span>
+      ) : broker.regulation_short ? (
+        <span className="rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-xs font-black text-blue-700">
+          {broker.regulation_short}
+        </span>
+      ) : null}
     </div>
+
+    <p className="text-left text-[14px] leading-7 text-slate-600">
+      {regulationSummary || "No data is currently available."}
+    </p>
+
+    {safetyFactors.length ? (
+      <div className="mt-5">
+        <div className="mb-3 text-sm font-black text-slate-950">
+          Key Safety Factors
+        </div>
+
+        <div className="grid grid-cols-2 gap-2">
+          {safetyFactors.slice(0, 4).map((item, i) => (
+            <div
+              key={i}
+              className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-[12px] font-bold leading-5 text-slate-700"
+            >
+              {item}
+            </div>
+          ))}
+        </div>
+      </div>
+    ) : null}
+
+    {fundProtection ? (
+      <div className="mt-5 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+        <div className="text-sm font-black text-slate-900">
+          Client Fund Protection
+        </div>
+        <div className="mt-2 text-[13px] font-semibold leading-6 text-slate-600">
+          {fundProtection}
+        </div>
+      </div>
+    ) : null}
+
+  </div>
+</div>
 
     {/* Desktop — improved */}
     <div className="hidden md:block">
@@ -2215,65 +2355,78 @@ const breadcrumbSchema = {
 
 <SectionCard title="Final Verdict" id="verdict">
   <div className="space-y-5">
-    {/* Mobile — keep simple */}
-    <div className="space-y-4 md:hidden">
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="h-1.5 bg-blue-500" />
-        <div className="p-5">
-          <div className="mb-3 text-sm font-black text-slate-900">
-            Final Summary
+
+    {/* Mobile */}
+    <div className="md:hidden">
+      <div className="overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-sm">
+
+        <div className="border-b border-slate-100 bg-slate-50 p-4">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-center shadow-sm">
+              <div className="text-[11px] font-bold text-slate-500">
+                Overall Rating
+              </div>
+              <div className="mt-1 text-3xl font-black text-slate-950">
+                {overallScore || broker.rating || "-"}
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-center shadow-sm">
+              <div className="text-[11px] font-bold text-slate-500">
+                Final Verdict
+              </div>
+              <div className="mt-2 text-base font-black text-slate-950">
+                {verdictTone.label}
+              </div>
+            </div>
           </div>
-          <div className="text-sm leading-8 text-slate-700">
+        </div>
+
+        <div className="p-4 text-left">
+          <div className="text-lg font-black text-slate-950">
+            Is {broker.name_en || broker.name} worth trying?
+          </div>
+
+          <p className="mt-3 text-[14px] leading-7 text-slate-600">
             {broker.final_verdict_en || broker.final_verdict || "No data is currently available."}
-          </div>
-        </div>
-      </div>
+          </p>
 
-      <div className="grid grid-cols-2 gap-3">
-        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-center">
-          <div className="mb-1 text-xs font-bold text-slate-500">
-            Overall Rating
-          </div>
-          <div className="text-2xl font-black text-slate-950">
-            {overallScore || broker.rating || "-"}
-          </div>
-        </div>
+          {(broker.key_strength_en || broker.key_weakness_en) ? (
+            <div className="mt-5 grid gap-3">
+              {broker.key_strength_en ? (
+                <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3">
+                  <div className="text-xs font-black text-emerald-700">
+                    Key Strength
+                  </div>
+                  <div className="mt-1 text-sm font-semibold leading-7 text-slate-800">
+                    {broker.key_strength_en}
+                  </div>
+                </div>
+              ) : null}
 
-        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-center">
-          <div className="mb-1 text-xs font-bold text-slate-500">
-            Verdict
-          </div>
-          <div className="text-sm font-extrabold text-slate-900">
-            {verdictTone.label}
-          </div>
-        </div>
-      </div>
-
-      {(broker.key_strength_en || broker.key_weakness_en) ? (
-        <div className="grid gap-3">
-          {broker.key_strength_en ? (
-            <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
-              <div className="mb-1 text-xs font-bold uppercase tracking-wide text-emerald-700">
-                Key Strength
-              </div>
-              <div className="text-sm font-semibold leading-7 text-slate-800">
-                {broker.key_strength_en}
-              </div>
+              {broker.key_weakness_en ? (
+                <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3">
+                  <div className="text-xs font-black text-amber-700">
+                    Main Limitation
+                  </div>
+                  <div className="mt-1 text-sm font-semibold leading-7 text-slate-800">
+                    {broker.key_weakness_en}
+                  </div>
+                </div>
+              ) : null}
             </div>
           ) : null}
 
-          {broker.key_weakness_en ? (
-            <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
-              <div className="mb-1 text-xs font-bold uppercase tracking-wide text-amber-700">
-                Main Limitation
-              </div>
-              <div className="text-sm font-semibold leading-7 text-slate-800">
-                {broker.key_weakness_en}
-              </div>
-            </div>
-          ) : null}
+          <a
+            href={`/go/${broker.slug}?type=real`}
+            target="_blank"
+            rel="nofollow sponsored noopener noreferrer"
+            className="mt-5 flex min-h-[52px] items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 px-5 text-[15px] font-black text-white shadow-md active:scale-[0.98]"
+          >
+            Open Trading Account
+          </a>
         </div>
-      ) : null}
+      </div>
     </div>
 
    {/* Desktop */}
@@ -2306,13 +2459,13 @@ const breadcrumbSchema = {
 
           <div className="pt-2">
             <a
-  href={`/go/${broker.slug}?type=real`}
-  target="_blank"
-  rel="nofollow sponsored noopener noreferrer"
-  className="flex min-h-[48px] w-full items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-3 text-sm font-extrabold text-white shadow-md transition hover:from-blue-700 hover:to-blue-800 hover:shadow-lg"
->
-  Open Trading Account
-</a>
+              href={`/go/${broker.slug}?type=real`}
+              target="_blank"
+              rel="nofollow sponsored noopener noreferrer"
+              className="flex min-h-[48px] w-full items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-3 text-sm font-extrabold text-white shadow-md transition hover:from-blue-700 hover:to-blue-800 hover:shadow-lg"
+            >
+              Open Trading Account
+            </a>
           </div>
         </div>
       </div>
