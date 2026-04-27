@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import ShareButtons from "@/app/components/ShareButtons";
+import React from "react";
 
 type Broker = {
   id: number;
@@ -42,8 +43,19 @@ type Broker = {
   islamic_account: string | null;
   arabic_support: string | null;
   trading_assets: string | null;
-  meta_title_en: string | null;
+    meta_title_en: string | null;
   meta_description_en: string | null;
+
+  key_strength_en: string | null;
+  key_weakness_en: string | null;
+  expert_insight_en: string | null;
+  who_should_use_en: string | null;
+
+  score_safety: number | null;
+  score_fees: number | null;
+  score_platforms: number | null;
+  score_deposit: number | null;
+  score_support: number | null;
 };
 
 type BrokerAccount = {
@@ -510,7 +522,7 @@ function AccountCard({
     <div className="rounded-[22px] border border-slate-200 bg-[#f8fbff] p-4">
       <div className="flex items-start justify-between gap-3">
         <div className="text-lg font-black text-[#0f172a]">
-          {account.account_name || "Account"}
+          {account.account_name_en || account.account_name || "Account"}
         </div>
         <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-[#1d4ed8]">
           Account
@@ -520,7 +532,7 @@ function AccountCard({
       <div className="mt-3 grid gap-2 text-sm text-slate-600 sm:grid-cols-2">
         <div>
           Spread:{" "}
-          <span className="font-black text-[#0f172a]">{account.spread || "Not specified"}</span>
+          <span className="font-black text-[#0f172a]">{account.spread_en || account.spread || "Not specified"}</span>
         </div>
         <div>
           Commission:{" "}
@@ -533,7 +545,7 @@ function AccountCard({
         <div>
           Execution:{" "}
           <span className="font-black text-[#0f172a]">
-            {account.execution_type || "Not specified"}
+            {account.execution_type_en || account.execution_type || "Not specified"}
           </span>
         </div>
       </div>
@@ -794,1641 +806,1953 @@ export default async function ComparePage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <section className="relative overflow-hidden border-b border-slate-200 bg-[linear-gradient(180deg,#f8fbff_0%,#eef4ff_100%)]">
-  <div className="absolute inset-0 pointer-events-none">
-    <div className="absolute -top-20 right-0 h-72 w-72 rounded-full bg-[#2563eb]/10 blur-3xl" />
-    <div className="absolute left-0 top-24 h-72 w-72 rounded-full bg-[#60a5fa]/10 blur-3xl" />
-  </div>
-
-  <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8">
-    {/* Top intro */}
-    <div className="relative mb-5 rounded-[28px] border border-[#dbeafe] bg-white/85 p-5 shadow-sm sm:p-6">
-      <div className="text-xs font-bold text-[#1d4ed8] sm:text-sm">
-  Comparisons / {left.name_en || left.name} vs {right.name_en || right.name}
-</div>
-      
-
-      <div className="mt-3 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-        <div className="min-w-0">
-            
-
-          <h1 className="mt-3 text-3xl font-black leading-tight text-[#0f172a] sm:text-4xl lg:whitespace-nowrap lg:text-[52px] lg:leading-none">
-  {left.name_en || left.name} vs {right.name_en || right.name}: Which Broker Is Better?
-</h1>
-
-          <p className="mt-3 max-w-4xl text-base leading-8 text-slate-600 sm:text-lg">
-  A clear and practical comparison between <strong>{left.name_en || left.name}</strong> and{" "}
-  <strong>{right.name_en || right.name}</strong> across rating, minimum deposit, Islamic account availability,
-  regulation, and account types to help you reach a clearer decision.
-</p>
-          
+           <section className="relative overflow-hidden border-b border-slate-200 bg-[linear-gradient(180deg,#f8fbff_0%,#eef4ff_100%)]">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -top-20 left-0 h-72 w-72 rounded-full bg-[#2563eb]/10 blur-3xl" />
+          <div className="absolute right-0 top-24 h-72 w-72 rounded-full bg-[#60a5fa]/10 blur-3xl" />
         </div>
 
-        <div className="shrink-0 rounded-2xl border border-[#dbeafe] bg-white px-4 py-3 text-center shadow-sm">
-         <div className="text-[11px] font-bold text-slate-500">Quick Winner</div>
-          <div className="mt-1 text-base font-black text-[#0f172a]">{overallWinner}</div>
+        <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8">
+          {/* Top intro - Desktop only */}
+          <div className="mb-5 hidden md:block">
+            <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white px-8 py-8 shadow-[0_18px_55px_rgba(37,99,235,0.08)]">
+              <div className="absolute inset-x-0 top-0 h-1.5 bg-[#2563eb]" />
+              <div className="pointer-events-none absolute right-0 top-0 h-full w-[38%] bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.10),transparent_55%)]" />
+
+              <div className="relative">
+                <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#dbeafe] bg-[#f8fbff] px-4 py-2 text-xs font-extrabold text-[#2563eb]">
+                  <span>Comparisons</span>
+                  <span className="text-slate-300">/</span>
+                  <span>{left.name_en || left.name} vs {right.name_en || right.name}</span>
+                </div>
+
+                <h1 className="max-w-6xl text-[42px] font-black leading-[1.2] tracking-[-0.5px] text-[#0f172a] xl:text-[48px]">
+                  {left.name_en || left.name} vs {right.name_en || right.name}: Which Broker Is Better?
+                </h1>
+
+                <p className="mt-4 max-w-6xl text-base leading-8 text-slate-600 xl:text-lg xl:leading-9">
+                  A detailed comparison between <strong>{left.name_en || left.name}</strong>{" "}
+                  and <strong>{right.name_en || right.name}</strong> covering spreads,
+                  fees, regulation, Islamic accounts, trading platforms, deposits,
+                  withdrawals, and account types to help you choose the better broker.
+                </p>
+
+                <div className="mt-7 grid max-w-6xl grid-cols-3 gap-4">
+                  <div className="rounded-[22px] border border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-5 py-4 shadow-sm">
+                    <div className="text-xs font-black text-[#2563eb]">Quick Winner</div>
+                    <div className="mt-1 truncate text-xl font-black text-[#0f172a]">
+                      {overallWinner}
+                    </div>
+                    <div className="mt-1 text-xs font-bold text-slate-500">
+                      Best overall rating in this comparison
+                    </div>
+                  </div>
+
+                  <div className="rounded-[22px] border border-slate-200 bg-white px-5 py-4 shadow-sm">
+                    <div className="text-xs font-black text-slate-500">Best for Beginners</div>
+                    <div className="mt-1 truncate text-xl font-black text-[#0f172a]">
+                      {beginnerWinner}
+                    </div>
+                    <div className="mt-1 text-xs font-bold text-slate-500">
+                      Based on ease of start and account access
+                    </div>
+                  </div>
+
+                  <div className="rounded-[22px] border border-slate-200 bg-white px-5 py-4 shadow-sm">
+                    <div className="text-xs font-black text-slate-500">Best for Spreads</div>
+                    <div className="mt-1 truncate text-xl font-black text-[#0f172a]">
+                      {scalpingWinner}
+                    </div>
+                    <div className="mt-1 text-xs font-bold text-slate-500">
+                      More relevant for cost and execution
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Desktop / Tablet */}
+          <div className="hidden md:block">
+            <div className="rounded-[34px] border border-[#dbeafe] bg-white p-6 shadow-[0_24px_70px_rgba(37,99,235,0.10)] lg:p-8">
+              <div className="grid items-center gap-6 lg:grid-cols-[1fr_110px_1fr]">
+                {[left, right].map((broker) => {
+                  const brokerName = broker.name_en || broker.name;
+                  const isWinner = overallWinner === brokerName;
+
+                  return (
+                    <div
+                      key={broker.slug}
+                      className={`relative overflow-hidden rounded-[30px] border p-6 transition ${
+                        isWinner
+                          ? "scale-[1.015] border-[#3b82f6] bg-gradient-to-b from-[#e0edff] to-white shadow-[0_20px_50px_rgba(37,99,235,0.18)]"
+                          : "border-slate-200 bg-white shadow-sm"
+                      }`}
+                    >
+                      {isWinner && (
+                        <>
+                          <div className="pointer-events-none absolute inset-0 rounded-[30px] ring-2 ring-[#3b82f6]/30" />
+                          <div className="absolute right-4 top-4 rounded-full bg-[#2563eb] px-3 py-1 text-[11px] font-black text-white shadow-sm">
+                            Best Overall
+                          </div>
+                        </>
+                      )}
+
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="min-w-0">
+                          <h2 className="truncate text-3xl font-black text-[#0f172a]">
+                            {brokerName}
+                          </h2>
+
+                          <p className="mt-2 text-sm font-bold text-[#2563eb]">
+                            {cleanText(broker.best_for_en || broker.best_for) ||
+                              "Suitable for multiple trader profiles"}
+                          </p>
+                        </div>
+
+                        <div className="flex h-[76px] w-[76px] shrink-0 flex-col items-center justify-center rounded-2xl border border-[#bfdbfe] bg-white text-[#2563eb] shadow-sm">
+                          <span className="text-2xl font-black">
+                            {broker.rating?.toFixed(1) ?? "—"}
+                          </span>
+                          <span className="text-[10px] font-bold">out of 5</span>
+                        </div>
+                      </div>
+
+                      <div className="mt-6 flex h-[138px] items-center justify-center rounded-[26px] border border-slate-200 bg-[#fbfdff] p-6">
+                        {broker.logo ? (
+                          <img
+                            src={broker.logo}
+                            alt={brokerName || "Broker logo"}
+                            className="h-[96px] w-full object-contain"
+                          />
+                        ) : (
+                          <div className="text-xl font-black text-slate-300">
+                            {brokerName}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="mt-5 space-y-3">
+                        {broker.key_strength_en && (
+                          <div className="rounded-2xl bg-[#ecfdf5] px-4 py-3">
+                            <div className="text-xs font-black text-[#059669]">Key Strength</div>
+                            <div className="mt-1 text-sm font-black text-[#064e3b]">
+                              {broker.key_strength_en}
+                            </div>
+                          </div>
+                        )}
+
+                        {broker.key_weakness_en && (
+                          <div className="rounded-2xl bg-[#fff7ed] px-4 py-3">
+                            <div className="text-xs font-black text-[#ea580c]">Important Note</div>
+                            <div className="mt-1 text-sm font-black text-[#7c2d12]">
+                              {broker.key_weakness_en}
+                            </div>
+                          </div>
+                        )}
+
+                        {broker.expert_insight_en && (
+                          <div className="rounded-2xl bg-[#f8fafc] px-4 py-3">
+                            <div className="text-xs font-black text-slate-500">Broker AlArab View</div>
+                            <div className="mt-1 text-sm font-medium leading-6 text-[#0f172a]">
+                              {broker.expert_insight_en}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="mt-6 grid grid-cols-2 gap-3">
+                        <a
+                          href={`/go/${broker.slug ?? ""}?type=real`}
+                          className="inline-flex min-h-[52px] items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-sm font-black text-white transition hover:bg-[#1d4ed8]"
+                        >
+                          Start Now
+                        </a>
+
+                        <Link
+                          href={`/en/brokers/${broker.slug ?? ""}`}
+                          className="inline-flex min-h-[52px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-black text-slate-800 transition hover:bg-slate-50"
+                        >
+                          Review
+                        </Link>
+                      </div>
+                    </div>
+                  );
+                }).reduce((acc, card, index) => {
+                  if (index === 1) {
+                    acc.push(
+                      <div key="center-vs" className="flex flex-col items-center justify-center">
+                        <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-[#2563eb] to-[#1e40af] text-2xl font-black text-white shadow-[0_10px_30px_rgba(37,99,235,0.4)]">
+                          VS
+                        </div>
+                      </div>
+                    );
+                  }
+                  acc.push(card);
+                  return acc;
+                }, [] as React.ReactNode[])}
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile version */}
+          <div className="md:hidden">
+            <div className="overflow-hidden rounded-[30px] border border-[#dbeafe] bg-white shadow-[0_20px_60px_rgba(37,99,235,0.08)]">
+              <div className="relative overflow-hidden bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-4 pb-4 pt-5">
+                <div className="absolute inset-x-0 top-0 h-1 bg-[#2563eb]" />
+
+                <div className="inline-flex rounded-full border border-[#bfdbfe] bg-white px-3 py-1 text-[11px] font-black text-[#2563eb]">
+                  Broker Comparison
+                </div>
+
+                <h1 className="mt-3 text-[27px] font-black leading-[1.25] tracking-[-0.3px] text-[#0f172a]">
+                  {left.name_en || left.name} vs {right.name_en || right.name}: Which Is Better?
+                </h1>
+
+                <p className="mt-2 text-sm leading-7 text-slate-600">
+                  A quick comparison between {left.name_en || left.name} and{" "}
+                  {right.name_en || right.name} across rating, deposit, Islamic account,
+                  platforms, and spreads.
+                </p>
+
+                <div className="mt-4 rounded-[22px] border border-[#bfdbfe] bg-white p-4 shadow-sm">
+                  <div className="text-[11px] font-black text-[#2563eb]">
+                    Quick Recommendation
+                  </div>
+
+                  <div className="mt-1 text-2xl font-black text-[#0f172a]">
+                    {overallWinner}
+                  </div>
+
+                  <p className="mt-1 text-xs leading-6 text-slate-600">
+                    Best overall based on rating, usability, fees, and account access.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2 border-y border-[#dbeafe] bg-[#f8fbff] p-3">
+                <div className="rounded-2xl bg-white px-2 py-2.5 text-center shadow-sm">
+                  <div className="text-[10px] font-bold text-slate-500">Overall</div>
+                  <div className="mt-1 truncate text-xs font-black text-[#0f172a]">
+                    {overallWinner}
+                  </div>
+                </div>
+
+                <div className="rounded-2xl bg-white px-2 py-2.5 text-center shadow-sm">
+                  <div className="text-[10px] font-bold text-slate-500">Beginners</div>
+                  <div className="mt-1 truncate text-xs font-black text-[#0f172a]">
+                    {beginnerWinner}
+                  </div>
+                </div>
+
+                <div className="rounded-2xl bg-white px-2 py-2.5 text-center shadow-sm">
+                  <div className="text-[10px] font-bold text-slate-500">Spreads</div>
+                  <div className="mt-1 truncate text-xs font-black text-[#0f172a]">
+                    {scalpingWinner}
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-3 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] p-4">
+                {[left, right].map((broker) => {
+                  const brokerName = broker.name_en || broker.name;
+                  const isWinner = overallWinner === brokerName;
+
+                  return (
+                    <div
+                      key={broker.slug}
+                      className={`rounded-[28px] border p-3 ${
+                        isWinner
+                          ? "border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] shadow-[0_14px_35px_rgba(37,99,235,0.14)]"
+                          : "border-slate-200 bg-white shadow-[0_10px_26px_rgba(15,23,42,0.05)]"
+                      }`}
+                    >
+                      <div className="mb-3 flex items-center justify-between gap-3">
+                        <div className="min-w-0">
+                          {isWinner && (
+                            <div className="mb-1.5 inline-flex rounded-full bg-[#2563eb] px-3 py-1 text-[10px] font-black text-white shadow-sm">
+                              Best Overall
+                            </div>
+                          )}
+
+                          <h2 className="truncate text-2xl font-black leading-tight text-[#0f172a]">
+                            {brokerName}
+                          </h2>
+
+                          <p className="mt-1 line-clamp-1 text-xs font-bold text-[#2563eb]">
+                            {cleanText(broker.best_for_en || broker.best_for) ||
+                              "Suitable for multiple trader profiles"}
+                          </p>
+                        </div>
+
+                        <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl border border-[#bfdbfe] bg-white text-[#2563eb] shadow-sm">
+                          <span className="text-lg font-black">
+                            {broker.rating?.toFixed(1) ?? "—"}
+                          </span>
+                          <span className="text-[10px] font-bold">out of 5</span>
+                        </div>
+                      </div>
+
+                      <div className="flex h-[82px] items-center justify-center rounded-[22px] border border-slate-200 bg-white p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]">
+                        {broker.logo ? (
+                          <img
+                            src={broker.logo}
+                            alt={brokerName || "Broker logo"}
+                            className="h-[58px] w-full object-contain"
+                          />
+                        ) : (
+                          <div className="text-base font-black text-slate-300">
+                            {brokerName}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="mt-3 grid grid-cols-2 gap-2">
+                        <div className="rounded-2xl border border-slate-200 bg-white px-3 py-2.5">
+                          <div className="text-[10px] font-bold text-slate-500">
+                            Minimum Deposit
+                          </div>
+                          <div className="mt-1 text-sm font-black text-[#0f172a]">
+                            {money(broker.min_deposit)}
+                          </div>
+                        </div>
+
+                        <div className="rounded-2xl border border-slate-200 bg-white px-3 py-2.5">
+                          <div className="text-[10px] font-bold text-slate-500">
+                            Islamic Account
+                          </div>
+                          <div className="mt-1 text-sm font-black text-[#0f172a]">
+                            {yesNoEnglish(broker.islamic_account)}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mt-2 rounded-2xl border border-slate-200 bg-white px-3 py-2.5">
+                        <div className="text-[10px] font-bold text-slate-500">
+                          Trading Platforms
+                        </div>
+                        <div className="mt-1 truncate text-xs font-black text-[#0f172a]">
+                          {shortPlatforms(broker.platforms)}
+                        </div>
+                      </div>
+
+                      <div className="mt-3 grid grid-cols-2 gap-2">
+                        <a
+                          href={`/go/${broker.slug ?? ""}?type=real`}
+                          className="inline-flex min-h-[44px] items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-2.5 text-sm font-black text-white shadow-sm transition active:scale-[0.98]"
+                        >
+                          Start Now
+                        </a>
+
+                        <Link
+                          href={`/en/brokers/${broker.slug ?? ""}`}
+                          className="inline-flex min-h-[44px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-black text-slate-800 transition active:scale-[0.98]"
+                        >
+                          Review
+                        </Link>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+<section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
+  <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white shadow-[0_22px_65px_rgba(37,99,235,0.08)]">
+    <div className="pointer-events-none absolute inset-x-0 top-0 h-1.5 bg-[#2563eb]" />
+
+    {/* Desktop version */}
+    <div className="hidden p-6 lg:block lg:p-8">
+      <div className="max-w-5xl">
+        <span className="text-sm font-black text-[#2563eb]">Final Verdict</span>
+
+        <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-5xl">
+          Which broker is better: {left.name_en || left.name} or {right.name_en || right.name}?
+        </h2>
+
+        <p className="mt-3 text-base leading-8 text-slate-600">
+          This quick verdict helps you choose the broker that fits your trading style,
+          whether you are a beginner, focused on lower costs, or looking for the stronger
+          overall profile.
+        </p>
+      </div>
+
+      <div className="mt-7 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="relative overflow-hidden rounded-[26px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5 shadow-[0_16px_40px_rgba(37,99,235,0.14)]">
+          <div className="absolute right-4 top-4 rounded-full bg-[#2563eb] px-3 py-1 text-[11px] font-black text-white">
+            Winner
+          </div>
+          <div className="text-xs font-black text-[#2563eb]">Best Overall</div>
+          <div className="mt-3 truncate text-3xl font-black text-[#0f172a]">
+            {overallWinner}
+          </div>
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            Best balance between rating, trust, fees, and ease of use.
+          </p>
+        </div>
+
+        <div className="rounded-[26px] border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="text-xs font-black text-slate-500">Best for Beginners</div>
+          <div className="mt-3 truncate text-3xl font-black text-[#0f172a]">
+            {beginnerWinner === "Tie" ? "Very Close" : beginnerWinner}
+          </div>
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            Better for traders who want a simpler and easier start.
+          </p>
+        </div>
+
+        <div className="rounded-[26px] border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="text-xs font-black text-slate-500">Best for Spreads</div>
+          <div className="mt-3 truncate text-3xl font-black text-[#0f172a]">
+            {scalpingWinner === "Tie" ? "Very Close" : scalpingWinner}
+          </div>
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            More relevant for traders focused on cost and execution.
+          </p>
+        </div>
+
+        <div className="rounded-[26px] border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="text-xs font-black text-slate-500">Best Entry Cost</div>
+          <div className="mt-3 truncate text-3xl font-black text-[#0f172a]">
+            {depositWinner === "Tie" ? "Very Close" : depositWinner}
+          </div>
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            Better for traders who want to start with a lower deposit.
+          </p>
         </div>
       </div>
-    </div>
 
-    {/* Desktop / Tablet */}
-    <div className="hidden md:block">
-      <div className="rounded-[32px] border border-[#dbeafe] bg-white/95 p-4 shadow-[0_20px_60px_rgba(37,99,235,0.08)] sm:p-6 lg:p-8">
-        <div className="grid gap-5 lg:grid-cols-[1fr_auto_1fr] lg:items-center">
-          {/* Left broker */}
-          <div
-            className={`rounded-[28px] border p-4 sm:p-5 lg:p-6 ${
-              overallWinner === (left.name_en || left.name)
-                ? "border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)]"
-                : "border-slate-200 bg-white"
-            }`}
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="text-2xl font-black text-[#0f172a] sm:text-3xl">
-  {left.name_en || left.name}
-</h2>
-                  {overallWinner === (left.name_en || left.name) ? (
-                    <span className="rounded-full bg-[#2563eb] px-3 py-1 text-[10px] font-extrabold text-white">
-  Best Overall
-</span>
-                  ) : null}
-                </div>
-
-                <p className="mt-2 text-sm font-bold leading-6 text-[#1d4ed8]">
-  {cleanText(left.best_for_en || left.best_for) || "Suitable for multiple trader profiles"}
-</p>
-              </div>
-
-              <div className="flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-2xl border border-[#bfdbfe] bg-white text-[#1d4ed8] sm:h-20 sm:w-20">
-                <span className="text-xl font-black sm:text-2xl">
-                  {left.rating?.toFixed(1) ?? "—"}
-                </span>
-                <span className="text-[10px] font-bold">out of 5</span>
-              </div>
-            </div>
-
-            <div className="mt-5 flex min-h-[130px] items-center justify-center rounded-[24px] border border-slate-200 bg-[#fbfdff] p-5">
-              {left.logo ? (
-                <img
-                  src={left.logo}
-                  alt={left.name_en || left.name || "Broker logo"}
-                  className="h-[120px] w-full scale-125 object-contain"
-                />
-              ) : (
-                <div className="text-xl font-black text-slate-300">{left.name_en || left.name}</div>
-              )}
-            </div>
-
-            <div className="mt-5 grid grid-cols-2 gap-3">
-              <div className="rounded-2xl border border-slate-200 bg-white px-4 py-4">
-  <div className="text-[11px] font-bold text-slate-500">Minimum Deposit</div>
-  <div className="mt-1 text-base font-black text-[#0f172a]">
-    {money(left.min_deposit)}
-  </div>
-</div>
-
-<div className="rounded-2xl border border-slate-200 bg-white px-4 py-4">
-  <div className="text-[11px] font-bold text-slate-500">Islamic Account</div>
-  <div className="mt-1 text-base font-black text-[#0f172a]">
-    {yesNoEnglish(left.islamic_account)}
-  </div>
-</div>
-
-<div className="col-span-2 rounded-2xl border border-slate-200 bg-white px-4 py-4">
-  <div className="text-[11px] font-bold text-slate-500">Regulation</div>
-  <div className="mt-1 text-sm font-black leading-7 text-[#0f172a]">
-    {shortReg(left.regulation)}
-  </div>
-</div>
-            </div>
-
-            <div className="mt-5 grid grid-cols-2 gap-3">
-             <a
-  href={`/go/${left.slug ?? ""}?type=real`}
-  className="inline-flex min-h-[50px] items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
->
-  Start with {left.name_en || left.name}
-</a>
-
-              <Link
-  href={`/en/brokers/${left.slug ?? ""}`}
-  className="inline-flex min-h-[50px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
->
-  Read Review
-</Link>
-            </div>
+      <div className="mt-7 rounded-[28px] border border-[#dbeafe] bg-[#f8fbff] p-5 lg:p-6">
+        <div className="grid gap-5 lg:grid-cols-[1.4fr_1fr] lg:items-center">
+          <div>
+            <div className="text-sm font-black text-[#2563eb]">Quick Summary</div>
+            <p className="mt-2 text-sm leading-8 text-slate-700 lg:text-base">
+              If you want the stronger overall broker based on rating, trust, fees,
+              and usability, <strong>{overallWinner}</strong> looks like the stronger
+              option here. For beginners, <strong>{beginnerWinner}</strong> may offer
+              an easier start. If your focus is lower spreads and active trading
+              conditions, <strong>{scalpingWinner}</strong> looks more relevant.
+            </p>
           </div>
 
-          {/* Center */}
-          <div className="flex flex-col items-center justify-center gap-4">
-            <div className="flex h-20 w-20 items-center justify-center rounded-full border border-[#bfdbfe] bg-[radial-gradient(circle,#2563eb_0%,#1d4ed8_100%)] text-2xl font-black text-white shadow-lg sm:h-24 sm:w-24">
-              VS
-            </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+            <a
+              href={`/go/${left.slug ?? ""}?type=real`}
+              className={`inline-flex min-h-[50px] items-center justify-center rounded-2xl px-6 py-3 text-sm font-black transition ${
+                overallWinner === (left.name_en || left.name)
+                  ? "bg-[#2563eb] text-white hover:bg-[#1d4ed8]"
+                  : "border border-slate-300 bg-white text-slate-800 hover:bg-slate-50"
+              }`}
+            >
+              Open Account with {left.name_en || left.name}
+            </a>
 
-            <div className="grid w-full gap-3 lg:grid-cols-1">
-             <div className="rounded-2xl border border-[#dbeafe] bg-white px-4 py-3 text-center shadow-sm">
-  <div className="text-[11px] font-bold text-slate-500">Best Overall</div>
-  <div className="mt-1 text-sm font-black text-[#0f172a]">{overallWinner}</div>
-</div>
-<div className="rounded-2xl border border-[#dbeafe] bg-white px-4 py-3 text-center shadow-sm">
-  <div className="text-[11px] font-bold text-slate-500">Best for Beginners</div>
-  <div className="mt-1 text-sm font-black text-[#0f172a]">{beginnerWinner}</div>
-</div>
-<div className="rounded-2xl border border-[#dbeafe] bg-white px-4 py-3 text-center shadow-sm">
-  <div className="text-[11px] font-bold text-slate-500">Best for Spreads</div>
-  <div className="mt-1 text-sm font-black text-[#0f172a]">{scalpingWinner}</div>
-</div>
-            </div>
-          </div>
-
-          {/* Right broker */}
-          <div
-            className={`rounded-[28px] border p-4 sm:p-5 lg:p-6 ${
-              overallWinner === (right.name_en || right.name)
-                ? "border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)]"
-                : "border-slate-200 bg-white"
-            }`}
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="text-2xl font-black text-[#0f172a] sm:text-3xl">
-  {right.name_en || right.name}
-</h2>
-                  {overallWinner === (right.name_en || right.name) ? (
-                  <span className="rounded-full bg-[#2563eb] px-3 py-1 text-[10px] font-extrabold text-white">
-  Best Overall
-</span>
-                  ) : null}
-                </div>
-
-                <p className="mt-2 text-sm font-bold leading-6 text-[#1d4ed8]">
-  {cleanText(right.best_for_en || right.best_for) || "Suitable for multiple trader profiles"}
-</p>
-              </div>
-
-              <div className="flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-2xl border border-[#bfdbfe] bg-white text-[#1d4ed8] sm:h-20 sm:w-20">
-                <span className="text-xl font-black sm:text-2xl">
-                  {right.rating?.toFixed(1) ?? "—"}
-                </span>
-                <span className="text-[10px] font-bold">out of 5</span>
-              </div>
-            </div>
-
-            <div className="mt-5 flex min-h-[130px] items-center justify-center rounded-[24px] border border-slate-200 bg-[#fbfdff] p-5">
-              {right.logo ? (
-                <img
-                  src={right.logo}
-                  alt={right.name_en || right.name || "Broker logo"}
-                  className="h-[120px] w-full scale-125 object-contain"
-                />
-              ) : (
-                <div className="text-xl font-black text-slate-300">{right.name_en || right.name}</div>
-              )}
-            </div>
-
-            <div className="mt-5 grid grid-cols-2 gap-3">
-             <div className="rounded-2xl border border-slate-200 bg-white px-4 py-4">
-  <div className="text-[11px] font-bold text-slate-500">Minimum Deposit</div>
-  <div className="mt-1 text-base font-black text-[#0f172a]">
-    {money(right.min_deposit)}
-  </div>
-</div>
-
-<div className="rounded-2xl border border-slate-200 bg-white px-4 py-4">
-  <div className="text-[11px] font-bold text-slate-500">Islamic Account</div>
-  <div className="mt-1 text-base font-black text-[#0f172a]">
-    {yesNoEnglish(right.islamic_account)}
-  </div>
-</div>
-
-<div className="col-span-2 rounded-2xl border border-slate-200 bg-white px-4 py-4">
-  <div className="text-[11px] font-bold text-slate-500">Regulation</div>
-  <div className="mt-1 text-sm font-black leading-7 text-[#0f172a]">
-    {shortReg(right.regulation)}
-  </div>
-</div>
-            </div>
-
-            <div className="mt-5 grid grid-cols-2 gap-3">
-              <a
-  href={`/go/${right.slug ?? ""}?type=real`}
-  className="inline-flex min-h-[50px] items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
->
-  Start with {right.name_en || right.name}
-</a>
-
-              <Link
-  href={`/en/brokers/${right.slug ?? ""}`}
-  className="inline-flex min-h-[50px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
->
-  Read Review
-</Link>
-            </div>
+            <a
+              href={`/go/${right.slug ?? ""}?type=real`}
+              className={`inline-flex min-h-[50px] items-center justify-center rounded-2xl px-6 py-3 text-sm font-black transition ${
+                overallWinner === (right.name_en || right.name)
+                  ? "bg-[#2563eb] text-white hover:bg-[#1d4ed8]"
+                  : "border border-slate-300 bg-white text-slate-800 hover:bg-slate-50"
+              }`}
+            >
+              Open Account with {right.name_en || right.name}
+            </a>
           </div>
         </div>
+
+        <p className="mt-4 text-xs text-slate-500">
+          Account opening is completed through the broker’s official website.
+        </p>
       </div>
     </div>
 
     {/* Mobile version */}
-    <div className="md:hidden">
-      <div className="rounded-[28px] border border-[#dbeafe] bg-white/95 p-4 shadow-[0_20px_60px_rgba(37,99,235,0.08)]">
-        <div className="grid gap-3">
-          {/* top quick result */}
-          <div className="rounded-2xl border border-[#dbeafe] bg-[#f8fbff] px-4 py-3 text-center">
-            <div className="text-[11px] font-bold text-slate-500">Quick Winner</div>
-            <div className="mt-1 text-base font-black text-[#0f172a]">{overallWinner}</div>
+    <div className="block p-4 lg:hidden">
+      <div className="mb-4">
+        <span className="text-xs font-black text-[#2563eb]">Final Verdict</span>
+
+        <h2 className="mt-2 text-[26px] font-black leading-[1.25] text-[#0f172a]">
+          Which broker is better: {left.name_en || left.name} or {right.name_en || right.name}?
+        </h2>
+
+        <p className="mt-2 text-sm leading-7 text-slate-600">
+          A quick summary to help you choose the better broker based on your goal.
+        </p>
+      </div>
+
+      <div className="rounded-[26px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-4 shadow-[0_14px_35px_rgba(37,99,235,0.14)]">
+        <div className="inline-flex rounded-full bg-[#2563eb] px-3 py-1 text-[10px] font-black text-white">
+          Overall Winner
+        </div>
+
+        <div className="mt-3 text-3xl font-black text-[#0f172a]">
+          {overallWinner}
+        </div>
+
+        <p className="mt-2 text-sm leading-7 text-slate-600">
+          Best balance between rating, fees, trust, and usability.
+        </p>
+      </div>
+
+      <div className="mt-3 grid grid-cols-3 gap-2">
+        <div className="rounded-2xl border border-slate-200 bg-white px-2 py-3 text-center shadow-sm">
+          <div className="text-[10px] font-bold text-slate-500">Beginners</div>
+          <div className="mt-1 truncate text-xs font-black text-[#0f172a]">
+            {beginnerWinner === "Tie" ? "Close" : beginnerWinner}
           </div>
+        </div>
 
-          {/* broker 1 */}
-          <div
-            className={`rounded-[24px] border p-4 ${
-              overallWinner === (left.name_en || left.name)
-                ? "border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)]"
-                : "border-slate-200 bg-white"
-            }`}
-          >
-            <div className="flex items-center justify-between gap-3">
-              <div className="min-w-0">
-               <div className="flex flex-wrap items-center gap-2">
-  <h2 className="text-xl font-black text-[#0f172a]">{left.name_en || left.name}</h2>
-  {overallWinner === (left.name_en || left.name) ? (
-    <span className="rounded-full bg-[#2563eb] px-2.5 py-1 text-[10px] font-extrabold text-white">
-      Best
-    </span>
-  ) : null}
-</div>
-<p className="mt-1 text-xs font-bold text-[#1d4ed8]">
-  {cleanText(left.best_for_en || left.best_for) || "Suitable for multiple profiles"}
-</p>
-              </div>
-
-              <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl border border-[#bfdbfe] bg-white text-[#1d4ed8]">
-                <span className="text-lg font-black">{left.rating?.toFixed(1) ?? "—"}</span>
-                <span className="text-[10px] font-bold">out of 5</span>
-              </div>
-            </div>
-
-            <div className="mt-4 flex h-[86px] items-center justify-center rounded-[20px] border border-slate-200 bg-[#fbfdff] p-4">
-              {left.logo ? (
-                <img
-                  src={left.logo}
-                  alt={left.name_en || left.name || "Broker logo"}
-                  className="h-[85px] w-full scale-125 object-contain"
-                />
-              ) : (
-                <div className="text-base font-black text-slate-300">{left.name_en || left.name}</div>
-              )}
-            </div>
-
-            <div className="mt-4 grid grid-cols-2 gap-2">
-              <div className="rounded-xl border border-slate-200 bg-white px-3 py-3 text-center">
-  <div className="text-[10px] font-bold text-slate-500">Deposit</div>
-  <div className="mt-1 text-sm font-black text-[#0f172a]">{money(left.min_deposit)}</div>
-</div>
-<div className="rounded-xl border border-slate-200 bg-white px-3 py-3 text-center">
-  <div className="text-[10px] font-bold text-slate-500">Islamic</div>
-  <div className="mt-1 text-sm font-black text-[#0f172a]">
-    {yesNoEnglish(left.islamic_account)}
-  </div>
-</div>
-            </div>
-
-            <div className="mt-4 grid grid-cols-2 gap-2">
-             <a
-  href={`/go/${left.slug ?? ""}?type=real`}
-  className="inline-flex min-h-[46px] items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-sm font-extrabold text-white"
->
-  Start Now
-</a>
-<Link
-  href={`/en/brokers/${left.slug ?? ""}`}
-  className="inline-flex min-h-[46px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-extrabold text-slate-800"
->
-  Review
-</Link>
-            </div>
+        <div className="rounded-2xl border border-slate-200 bg-white px-2 py-3 text-center shadow-sm">
+          <div className="text-[10px] font-bold text-slate-500">Spreads</div>
+          <div className="mt-1 truncate text-xs font-black text-[#0f172a]">
+            {scalpingWinner === "Tie" ? "Close" : scalpingWinner}
           </div>
+        </div>
 
-          {/* vs */}
-          <div className="flex items-center justify-center">
-            <div className="flex items-center gap-3 rounded-full border border-[#bfdbfe] bg-white px-4 py-2 shadow-sm">
-  <span className="text-sm font-bold text-slate-500">{left.name_en || left.name}</span>
-  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[radial-gradient(circle,#2563eb_0%,#1d4ed8_100%)] text-sm font-black text-white">
-    VS
-  </span>
-  <span className="text-sm font-bold text-slate-500">{right.name_en || right.name}</span>
-</div>
+        <div className="rounded-2xl border border-slate-200 bg-white px-2 py-3 text-center shadow-sm">
+          <div className="text-[10px] font-bold text-slate-500">Deposit</div>
+          <div className="mt-1 truncate text-xs font-black text-[#0f172a]">
+            {depositWinner === "Tie" ? "Close" : depositWinner}
           </div>
-
-          {/* broker 2 */}
-          <div
-            className={`rounded-[24px] border p-4 ${
-              overallWinner === (right.name_en || right.name)
-                ? "border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)]"
-                : "border-slate-200 bg-white"
-            }`}
-          >
-            <div className="flex items-center justify-between gap-3">
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="text-xl font-black text-[#0f172a]">{right.name_en || right.name}</h2>
-                  {overallWinner === (right.name_en || right.name) ? (
-                    <span className="rounded-full bg-[#2563eb] px-2.5 py-1 text-[10px] font-extrabold text-white">
-  Best
-</span>
-                  ) : null}
-                </div>
-                <p className="mt-1 text-xs font-bold text-[#1d4ed8]">
-  {cleanText(right.best_for_en || right.best_for) || "Suitable for multiple profiles"}
-</p>
-              </div>
-
-              <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl border border-[#bfdbfe] bg-white text-[#1d4ed8]">
-                <span className="text-lg font-black">{right.rating?.toFixed(1) ?? "—"}</span>
-                <span className="text-[10px] font-bold">out of 5</span>
-              </div>
-            </div>
-
-            <div className="mt-4 flex h-[86px] items-center justify-center rounded-[20px] border border-slate-200 bg-[#fbfdff] p-4">
-              {right.logo ? (
-                <img
-                  src={right.logo}
-                 alt={right.name_en || right.name || "Broker logo"}
-                  className="h-[85px] w-full scale-125 object-contain"
-                />
-              ) : (
-                <div className="text-base font-black text-slate-300">{right.name_en || right.name}</div>
-              )}
-            </div>
-
-            <div className="mt-4 grid grid-cols-2 gap-2">
-              <div className="rounded-xl border border-slate-200 bg-white px-3 py-3 text-center">
-  <div className="text-[10px] font-bold text-slate-500">Deposit</div>
-  <div className="mt-1 text-sm font-black text-[#0f172a]">
-    {money(right.min_deposit)}
-  </div>
-</div>
-<div className="rounded-xl border border-slate-200 bg-white px-3 py-3 text-center">
-  <div className="text-[10px] font-bold text-slate-500">Islamic</div>
-  <div className="mt-1 text-sm font-black text-[#0f172a]">
-    {yesNoEnglish(right.islamic_account)}
-  </div>
-</div>
-            </div>
-
-            <div className="mt-4 grid grid-cols-2 gap-2">
-              <a
-                href={`/go/${right.slug ?? ""}?type=real`}
-                className="inline-flex min-h-[46px] items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-sm font-extrabold text-white"
-              >
-               Start Now
-              </a>
-              <Link
-  href={`/en/brokers/${right.slug ?? ""}`}
-  className="inline-flex min-h-[46px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-extrabold text-slate-800"
->
-  Review
-</Link>
-            </div>
-          </div>
-
-          {/* bottom quick comparison */}
-         <div className="grid grid-cols-3 gap-2">
-  <div className="rounded-2xl border border-[#dbeafe] bg-white px-3 py-3 text-center">
-    <div className="text-[10px] font-bold text-slate-500">Overall</div>
-    <div className="mt-1 text-xs font-black text-[#0f172a]">{overallWinner}</div>
-  </div>
-  <div className="rounded-2xl border border-[#dbeafe] bg-white px-3 py-3 text-center">
-    <div className="text-[10px] font-bold text-slate-500">Beginners</div>
-    <div className="mt-1 text-xs font-black text-[#0f172a]">{beginnerWinner}</div>
-  </div>
-  <div className="rounded-2xl border border-[#dbeafe] bg-white px-3 py-3 text-center">
-    <div className="text-[10px] font-bold text-slate-500">Spreads</div>
-    <div className="mt-1 text-xs font-black text-[#0f172a]">{scalpingWinner}</div>
-  </div>
-</div>
         </div>
       </div>
+
+      <div className="mt-4 rounded-[24px] border border-[#dbeafe] bg-[#f8fbff] p-4">
+        <div className="text-xs font-black text-[#2563eb]">Quick Summary</div>
+
+        <p className="mt-2 text-sm leading-7 text-slate-700">
+          If you want the stronger overall choice,{" "}
+          <strong>{overallWinner}</strong> looks more suitable here. For beginners,
+          the closer choice is{" "}
+          <strong>{beginnerWinner === "Tie" ? "both brokers" : beginnerWinner}</strong>.
+          For lower spreads and active trading,{" "}
+          <strong>{scalpingWinner === "Tie" ? "the lower-cost account type" : scalpingWinner}</strong>{" "}
+          looks more relevant.
+        </p>
+      </div>
+
+      <div className="mt-4 grid gap-2">
+        <a
+          href={`/go/${overallWinner === (left.name_en || left.name) ? left.slug ?? "" : right.slug ?? ""}?type=real`}
+          className="inline-flex min-h-[50px] items-center justify-center rounded-2xl bg-[#2563eb] px-5 py-3 text-sm font-black text-white shadow-sm"
+        >
+          Open Account with {overallWinner}
+        </a>
+
+        <Link
+          href={`/en/brokers/${overallWinner === (left.name_en || left.name) ? left.slug ?? "" : right.slug ?? ""}`}
+          className="inline-flex min-h-[48px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-5 py-3 text-sm font-black text-slate-800"
+        >
+          Read {overallWinner} Review
+        </Link>
+      </div>
+
+      <p className="mt-3 text-center text-[11px] leading-5 text-slate-500">
+        Account opening is completed through the broker’s official website.
+      </p>
     </div>
   </div>
 </section>
 
-<section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
-  <div className="rounded-[30px] border border-slate-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
+<section className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
+  <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white shadow-[0_25px_70px_rgba(37,99,235,0.08)]">
+    <div className="absolute inset-x-0 top-0 h-1.5 bg-[#2563eb]" />
 
-    <div className="max-w-4xl">
-      <span className="text-sm font-bold text-[#2563eb]">Final Verdict</span>
+    {/* Desktop version */}
+    <div className="hidden p-6 md:block lg:p-8">
+      <div className="max-w-5xl">
+        <span className="text-sm font-black text-[#2563eb]">Score Analysis</span>
 
-      <h2 className="mt-2 text-2xl font-black leading-tight text-[#0f172a] sm:text-3xl lg:whitespace-nowrap lg:text-5xl">
-        Which Broker Looks Better: {left.name_en || left.name} or {right.name_en || right.name}?
-      </h2>
+        <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-5xl">
+          Strength Analysis Between {left.name_en || left.name} and {right.name_en || right.name}
+        </h2>
 
-      <p className="mt-3 text-sm leading-8 text-slate-600 sm:text-base">
-        After reviewing the overall rating, minimum deposit, Islamic account availability,
-        and regulatory profile, the comparison between <strong>{left.name_en || left.name}</strong> and{" "}
-        <strong>{right.name_en || right.name}</strong> can be summarized through the following highlights.
-      </p>
+        <p className="mt-3 text-base leading-8 text-slate-600">
+          A clear visual comparison showing where each broker performs better in safety,
+          fees, platforms, deposits and withdrawals, and customer support.
+        </p>
+      </div>
+
+      <div className="mt-5 flex flex-wrap gap-3">
+        <span className="rounded-full border border-[#bfdbfe] bg-[#eff6ff] px-4 py-2 text-sm font-black text-[#2563eb]">
+          Best Overall: {overallWinner}
+        </span>
+
+        <span className="rounded-full border border-slate-200 bg-gradient-to-b from-[#eff6ff] to-white px-4 py-2 text-sm font-black text-slate-600">
+          Best for Beginners: {beginnerWinner === "Tie" ? "Very Close" : beginnerWinner}
+        </span>
+      </div>
+
+      <div className="mt-8 grid gap-4 lg:grid-cols-2">
+        {[
+          {
+            label: "Safety & Trust",
+            leftScore: left.score_safety ?? 0,
+            rightScore: right.score_safety ?? 0,
+            note: "Reflects regulation strength and client fund protection.",
+          },
+          {
+            label: "Fees & Costs",
+            leftScore: left.score_fees ?? 0,
+            rightScore: right.score_fees ?? 0,
+            note: "Measures spreads, trading costs, and general fees.",
+          },
+          {
+            label: "Trading Platforms",
+            leftScore: left.score_platforms ?? 0,
+            rightScore: right.score_platforms ?? 0,
+            note: "Based on platform quality and available trading tools.",
+          },
+          {
+            label: "Deposits & Withdrawals",
+            leftScore: left.score_deposit ?? 0,
+            rightScore: right.score_deposit ?? 0,
+            note: "Focuses on funding options and withdrawal convenience.",
+          },
+          {
+            label: "Support & Customer Service",
+            leftScore: left.score_support ?? 0,
+            rightScore: right.score_support ?? 0,
+            note: "Compares support quality and overall user experience.",
+          },
+        ].map((item) => {
+          const winner =
+            item.leftScore > item.rightScore
+              ? left.name_en || left.name
+              : item.rightScore > item.leftScore
+              ? right.name_en || right.name
+              : "Tie";
+
+          const diff = Math.abs(item.leftScore - item.rightScore);
+          const isClose = diff < 0.3;
+
+          return (
+            <div
+              key={item.label}
+              className={`rounded-[28px] border border-slate-200 bg-[#f8fbff] p-5 shadow-sm ${
+                item.label === "Support & Customer Service" ? "lg:col-span-2" : ""
+              }`}
+            >
+              <div className="mb-5 flex items-start justify-between gap-4">
+                <div>
+                  <h3 className="text-xl font-black text-[#0f172a]">
+                    {item.label}
+                  </h3>
+                  <p className="mt-1 text-sm leading-6 text-slate-500">
+                    {item.note}
+                  </p>
+                </div>
+
+                <span
+                  className={`shrink-0 rounded-full px-4 py-1.5 text-[12px] font-black shadow-sm ${
+                    winner !== "Tie" && !isClose
+                      ? "border border-[#bfdbfe] bg-white text-[#2563eb]"
+                      : "border border-slate-200 bg-slate-50 text-slate-500"
+                  }`}
+                >
+                  {winner === "Tie"
+                    ? "Very Close"
+                    : diff < 0.2
+                    ? "Very Close"
+                    : diff < 0.5
+                    ? "Small Edge"
+                    : `Better: ${winner}`}
+                </span>
+              </div>
+
+              <div className="grid gap-3">
+                <div
+                  className={`rounded-2xl border px-4 py-3 ${
+                    winner === (left.name_en || left.name) && !isClose
+                      ? "border-[#2563eb] bg-white shadow-sm"
+                      : "border-slate-200 bg-white"
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="font-black text-[#0f172a]">
+                      {left.name_en || left.name}
+                    </span>
+
+                    <span className="text-xl font-black text-[#2563eb]">
+                      {item.leftScore.toFixed(1)}
+                      <span className="text-xs text-slate-400"> / 5</span>
+                    </span>
+                  </div>
+
+                  <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100">
+                    <div
+                      className="h-full rounded-full bg-[#2563eb]/70"
+                      style={{ width: `${Math.min(item.leftScore * 20, 100)}%` }}
+                    />
+                  </div>
+                </div>
+
+                <div
+                  className={`rounded-2xl border px-4 py-3 ${
+                    winner === (right.name_en || right.name) && !isClose
+                      ? "border-[#2563eb] bg-white shadow-sm"
+                      : "border-slate-200 bg-white"
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="font-black text-[#0f172a]">
+                      {right.name_en || right.name}
+                    </span>
+
+                    <span className="text-xl font-black text-[#2563eb]">
+                      {item.rightScore.toFixed(1)}
+                      <span className="text-xs text-slate-400"> / 5</span>
+                    </span>
+                  </div>
+
+                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100">
+                    <div
+                      className="h-full rounded-full bg-[#2563eb]/70"
+                      style={{ width: `${Math.min(item.rightScore * 20, 100)}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="mt-8 rounded-[26px] border border-[#dbeafe] bg-[#f8fbff] p-5">
+        <p className="text-sm leading-7 text-slate-600 lg:text-base">
+          These scores do not mean one broker is the best for everyone. They help you
+          understand where each broker performs better depending on your priority:
+          safety, costs, platforms, deposits and withdrawals, or customer support.
+        </p>
+      </div>
     </div>
 
-    <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-2 xl:grid-cols-4">
+    {/* Mobile version */}
+<div className="block p-4 md:hidden">
+  <div>
+    <span className="text-xs font-black text-[#2563eb]">Score Analysis</span>
 
-      <div className="rounded-[22px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-4 sm:p-5">
-        <div className="text-xs font-bold text-slate-500 sm:text-sm">
-          Best Overall
-        </div>
-        <div className="mt-2 text-xl font-black text-[#0f172a] sm:text-2xl lg:text-3xl">
-          {overallWinner}
-        </div>
-        <p className="mt-2 text-xs leading-6 text-slate-600 sm:text-sm">
-          A broader recommendation based on the full broker profile.
-        </p>
-      </div>
+    <h2 className="mt-2 text-[26px] font-black leading-[1.25] text-[#0f172a]">
+      Strength Analysis Between {left.name_en || left.name} and {right.name_en || right.name}
+    </h2>
 
-      <div className="rounded-[22px] border border-slate-200 bg-white p-4 sm:p-5">
-        <div className="text-xs font-bold text-slate-500 sm:text-sm">
-          Best for Beginners
-        </div>
-        <div className="mt-2 text-xl font-black text-[#0f172a] sm:text-2xl lg:text-3xl">
-          {beginnerWinner}
-        </div>
-        <p className="mt-2 text-xs leading-6 text-slate-600 sm:text-sm">
-          Based on lower barriers to entry and simpler account access.
-        </p>
-      </div>
+    <p className="mt-2 text-sm leading-7 text-slate-600">
+      A visual summary showing where each broker performs better in safety, fees,
+      platforms, deposits and withdrawals, and support.
+    </p>
+  </div>
 
-      <div className="rounded-[22px] border border-slate-200 bg-white p-4 sm:p-5">
-        <div className="text-xs font-bold text-slate-500 sm:text-sm">
-          Best for Spreads
-        </div>
-        <div className="mt-2 text-xl font-black text-[#0f172a] sm:text-2xl lg:text-3xl">
-          {scalpingWinner}
-        </div>
-        <p className="mt-2 text-xs leading-6 text-slate-600 sm:text-sm">
-          More relevant for traders focused on lower spreads or active execution.
-        </p>
-      </div>
+  <div className="mt-4 flex flex-wrap gap-2">
+    <span className="rounded-full border border-[#bfdbfe] bg-[#eff6ff] px-3 py-1.5 text-[11px] font-black text-[#2563eb]">
+      Best Overall: {overallWinner}
+    </span>
 
-      <div className="rounded-[22px] border border-slate-200 bg-white p-4 sm:p-5">
-        <div className="text-xs font-bold text-slate-500 sm:text-sm">
-          Best Entry Cost
-        </div>
-        <div className="mt-2 text-xl font-black text-[#0f172a] sm:text-2xl lg:text-3xl">
-          {depositWinner}
-        </div>
-        <p className="mt-2 text-xs leading-6 text-slate-600 sm:text-sm">
-          A better choice for traders who want a lower starting deposit.
-        </p>
-      </div>
+    <span className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[11px] font-black text-slate-600">
+      Beginners: {beginnerWinner === "Tie" ? "Very Close" : beginnerWinner}
+    </span>
+  </div>
 
-    </div>
+  <div className="mt-5 space-y-3">
+    {[
+      {
+        label: "Safety & Trust",
+        leftScore: left.score_safety ?? 0,
+        rightScore: right.score_safety ?? 0,
+        note: "Reflects regulation strength and client fund protection.",
+      },
+      {
+        label: "Fees & Costs",
+        leftScore: left.score_fees ?? 0,
+        rightScore: right.score_fees ?? 0,
+        note: "Measures spreads, trading costs, and general fees.",
+      },
+      {
+        label: "Trading Platforms",
+        leftScore: left.score_platforms ?? 0,
+        rightScore: right.score_platforms ?? 0,
+        note: "Based on platform quality and available trading tools.",
+      },
+      {
+        label: "Deposits & Withdrawals",
+        leftScore: left.score_deposit ?? 0,
+        rightScore: right.score_deposit ?? 0,
+        note: "Focuses on funding options and withdrawal convenience.",
+      },
+      {
+        label: "Support & Customer Service",
+        leftScore: left.score_support ?? 0,
+        rightScore: right.score_support ?? 0,
+        note: "Compares support quality and overall user experience.",
+      },
+    ].map((item) => {
+      const winner =
+        item.leftScore > item.rightScore
+          ? left.name_en || left.name
+          : item.rightScore > item.leftScore
+          ? right.name_en || right.name
+          : "Tie";
 
-    <div className="mt-6 rounded-[24px] border border-slate-200 bg-[#f8fbff] p-4 sm:p-6">
-      <p className="text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
-        If your priority is choosing the stronger broker overall, <strong>{overallWinner}</strong> appears to be the better option here.
-        If you care more about ease of entry, then <strong>{beginnerWinner}</strong> stands out more clearly.
-        And if your focus is on spreads and active trading conditions, <strong>{scalpingWinner}</strong> looks more relevant.
-      </p>
+      const diff = Math.abs(item.leftScore - item.rightScore);
+      const isClose = diff < 0.3;
 
-      <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:flex lg:justify-end">
-        <Link
-          href={`/en/brokers/${left.slug ?? ""}`}
-          className="inline-flex min-h-[48px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50 lg:min-w-[260px]"
+      return (
+        <div
+          key={item.label}
+          className="rounded-[28px] border border-slate-200 bg-[#f8fbff] p-4 shadow-sm"
         >
-          Read {left.name_en || left.name} Review
-        </Link>
+          <div className="mb-4 flex items-start justify-between gap-3">
+            <div>
+              <h3 className="text-lg font-black text-[#0f172a]">
+                {item.label}
+              </h3>
 
-        <Link
-          href={`/en/brokers/${right.slug ?? ""}`}
-          className="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-[#2563eb] px-6 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8] lg:min-w-[260px]"
-        >
-          Read {right.name_en || right.name} Review
-        </Link>
-      </div>
+              <p className="mt-1 text-xs leading-5 text-slate-500">
+                {item.note}
+              </p>
+            </div>
 
-      <p className="mt-3 text-xs text-slate-500">
-        Account opening is always completed through the broker’s official website.
-      </p>
-    </div>
+            <span
+              className={`shrink-0 rounded-full px-3 py-1 text-[10px] font-black shadow-sm ${
+                winner !== "Tie" && !isClose
+                  ? "border border-[#bfdbfe] bg-white text-[#2563eb]"
+                  : "border border-slate-200 bg-slate-50 text-slate-500"
+              }`}
+            >
+              {winner === "Tie"
+                ? "Close"
+                : diff < 0.2
+                ? "Close"
+                : diff < 0.5
+                ? "Small Edge"
+                : `Better: ${winner}`}
+            </span>
+          </div>
 
+          <div className="grid gap-3">
+            <div
+              className={`rounded-2xl border px-4 py-3 ${
+                winner === (left.name_en || left.name) && !isClose
+                  ? "border-[#2563eb] bg-white shadow-sm"
+                  : "border-slate-200 bg-white"
+              }`}
+            >
+              <div className="flex items-center justify-between gap-4">
+                <span className="font-black text-[#0f172a]">
+                  {left.name_en || left.name}
+                </span>
+
+                <span className="text-lg font-black text-[#2563eb]">
+                  {item.leftScore.toFixed(1)}
+                  <span className="text-xs text-slate-400"> / 5</span>
+                </span>
+              </div>
+
+              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100">
+                <div
+                  className="h-full rounded-full bg-[#2563eb]/70"
+                  style={{ width: `${Math.min(item.leftScore * 20, 100)}%` }}
+                />
+              </div>
+            </div>
+
+            <div
+              className={`rounded-2xl border px-4 py-3 ${
+                winner === (right.name_en || right.name) && !isClose
+                  ? "border-[#2563eb] bg-white shadow-sm"
+                  : "border-slate-200 bg-white"
+              }`}
+            >
+              <div className="flex items-center justify-between gap-4">
+                <span className="font-black text-[#0f172a]">
+                  {right.name_en || right.name}
+                </span>
+
+                <span className="text-lg font-black text-[#2563eb]">
+                  {item.rightScore.toFixed(1)}
+                  <span className="text-xs text-slate-400"> / 5</span>
+                </span>
+              </div>
+
+              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100">
+                <div
+                  className="h-full rounded-full bg-[#2563eb]/70"
+                  style={{ width: `${Math.min(item.rightScore * 20, 100)}%` }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+
+  <div className="mt-5 rounded-[24px] border border-[#dbeafe] bg-[#f8fbff] p-4">
+    <p className="text-sm leading-7 text-slate-600">
+      These scores help you understand where each broker performs better depending
+      on your priority: safety, costs, platforms, deposits and withdrawals, or support.
+    </p>
+  </div>
+</div>
   </div>
 </section>
 
 <section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
-  <div className="rounded-[30px] border border-slate-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
-    {/* Header */}
-    <div className="max-w-4xl">
-  <span className="text-sm font-bold text-[#2563eb]">Basic Features</span>
-  <h2 className="mt-2 text-2xl font-black leading-tight text-[#0f172a] sm:text-3xl lg:whitespace-nowrap lg:text-5xl">
-    Core Feature Comparison: {left.name_en || left.name} vs {right.name_en || right.name}
-  </h2>
-  <p className="mt-3 text-sm leading-8 text-slate-600 sm:text-base">
-    A quick side-by-side view of the main details traders usually compare first,
-    such as deposit level, Islamic account status, Arabic support, regulation, and platforms.
-  </p>
-</div>
+  <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white shadow-[0_25px_70px_rgba(37,99,235,0.08)]">
+    <div className="absolute inset-x-0 top-0 h-1.5 bg-[#2563eb]" />
 
-    {/* Desktop */}
-    <div className="mt-6 hidden md:block">
-      <div className="overflow-hidden rounded-[24px] border border-slate-200">
-       <div className="grid grid-cols-[220px_1fr_1fr] bg-[linear-gradient(180deg,#f8fbff_0%,#eef4ff_100%)]">
-  <div className="border-b border-slate-200 p-4 text-left font-black text-[#0f172a]">
-    Feature
-  </div>
-  <div className="border-b border-r border-slate-200 p-4 text-center font-black text-[#0f172a]">
-    {left.name_en || left.name}
-  </div>
-  <div className="border-b border-r border-slate-200 p-4 text-center font-black text-[#0f172a]">
-    {right.name_en || right.name}
-  </div>
-</div>
+    {/* Desktop version */}
+    <div className="hidden p-6 md:block lg:p-8">
+      <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
+        <div>
+          <span className="text-sm font-black text-[#2563eb]">
+            Accounts & Trading Costs
+          </span>
 
-        {comparisonRows.slice(0, 8).map((row, index) => (
+          <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-5xl">
+            Account and Fee Comparison Between {left.name_en || left.name} and {right.name_en || right.name}
+          </h2>
+
+          <p className="mt-3 text-base leading-8 text-slate-600">
+            This section summarizes the main cost factors when choosing an account:
+            minimum deposit, average spread, trading commissions, and execution method.
+          </p>
+        </div>
+
+        <div className="rounded-[28px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5 shadow-[0_16px_40px_rgba(37,99,235,0.12)]">
+          <div className="text-xs font-black text-[#2563eb]">Quick Summary</div>
+          <div className="mt-2 text-3xl font-black text-[#0f172a]">
+            {scalpingWinner === "Tie" ? "Costs Are Close" : scalpingWinner}
+          </div>
+          <p className="mt-2 text-sm leading-7 text-slate-600">
+            {scalpingWinner === "Tie"
+              ? "There is no clear cost winner from the current data, so the account type becomes the most important factor."
+              : `${scalpingWinner} looks stronger in terms of cost or spreads based on the available data.`}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-7 grid gap-4 md:grid-cols-3">
+        <div className="rounded-[24px] border border-slate-200 bg-[#f8fbff] p-5">
+          <div className="text-xs font-black text-slate-500">Available Accounts</div>
+          <div className="mt-3 flex items-center justify-between gap-6">
+            <div>
+              <div className="text-xs font-bold text-[#2563eb]">{left.name_en || left.name}</div>
+              <div className="text-3xl font-black text-[#0f172a]">
+                {leftAccounts.length}
+              </div>
+            </div>
+            <div>
+              <div className="text-xs font-bold text-[#2563eb]">{right.name_en || right.name}</div>
+              <div className="text-3xl font-black text-[#0f172a]">
+                {rightAccounts.length}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-[24px] border border-slate-200 bg-[#f8fbff] p-5">
+          <div className="text-xs font-black text-slate-500">Best for Beginners</div>
+          <div className="mt-3 text-2xl font-black text-[#0f172a]">
+            {beginnerWinner === "Tie" ? "Very Close" : beginnerWinner}
+          </div>
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            Based on ease of entry, minimum deposit, and account clarity.
+          </p>
+        </div>
+
+        <div className="rounded-[24px] border border-[#bfdbfe] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5">
+          <div className="text-xs font-black text-[#2563eb]">Important Before Choosing</div>
+          <div className="mt-3 text-lg font-black leading-7 text-[#0f172a]">
+            The right account matters more than the number of accounts.
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-8 overflow-hidden rounded-[28px] border border-slate-200 bg-[#fbfdff]">
+        <div className="grid grid-cols-[1fr_1fr_1fr] border-b border-slate-200 bg-[#f8fbff] text-sm font-black text-[#0f172a]">
+          <div className="p-4 text-left">Key Cost Factors</div>
+          <div className="border-x border-slate-200 p-4 text-center">{left.name_en || left.name}</div>
+          <div className="p-4 text-center">{right.name_en || right.name}</div>
+        </div>
+
+        {[
+          {
+            label: "Main Account Type",
+            leftValue: leftAccounts[0]?.account_name_en || leftAccounts[0]?.account_name || "Not specified",
+            rightValue: rightAccounts[0]?.account_name_en || rightAccounts[0]?.account_name || "Not specified",
+          },
+          {
+            label: "Minimum Deposit",
+            leftValue:
+              leftAccounts.find((a) => cleanText(a.min_deposit_en || a.min_deposit))?.min_deposit_en ||
+              leftAccounts.find((a) => cleanText(a.min_deposit))?.min_deposit ||
+              money(left.min_deposit),
+            rightValue:
+              rightAccounts.find((a) => cleanText(a.min_deposit_en || a.min_deposit))?.min_deposit_en ||
+              rightAccounts.find((a) => cleanText(a.min_deposit))?.min_deposit ||
+              money(right.min_deposit),
+          },
+          {
+            label: "Average Spread",
+            leftValue:
+              leftAccounts.find((a) => cleanText(a.spread_en || a.spread))?.spread_en ||
+              leftAccounts.find((a) => cleanText(a.spread))?.spread ||
+              cleanText(left.spreads_en || left.spreads) ||
+              "Not specified",
+            rightValue:
+              rightAccounts.find((a) => cleanText(a.spread_en || a.spread))?.spread_en ||
+              rightAccounts.find((a) => cleanText(a.spread))?.spread ||
+              cleanText(right.spreads_en || right.spreads) ||
+              "Not specified",
+          },
+          {
+            label: "Trading Commission",
+            leftValue:
+              leftAccounts.find((a) => cleanText(a.commission_en || a.commission))?.commission_en ||
+              leftAccounts.find((a) => cleanText(a.commission))?.commission ||
+              cleanText(left.fees_en || left.fees) ||
+              "Not specified",
+            rightValue:
+              rightAccounts.find((a) => cleanText(a.commission_en || a.commission))?.commission_en ||
+              rightAccounts.find((a) => cleanText(a.commission))?.commission ||
+              cleanText(right.fees_en || right.fees) ||
+              "Not specified",
+          },
+          {
+            label: "Execution Method",
+            leftValue:
+              leftAccounts.find((a) => cleanText(a.execution_type_en || a.execution_type))?.execution_type_en ||
+              leftAccounts.find((a) => cleanText(a.execution_type))?.execution_type ||
+              "Not specified",
+            rightValue:
+              rightAccounts.find((a) => cleanText(a.execution_type_en || a.execution_type))?.execution_type_en ||
+              rightAccounts.find((a) => cleanText(a.execution_type))?.execution_type ||
+              "Not specified",
+          },
+        ].map((row) => (
           <div
             key={row.label}
-            className={`grid grid-cols-[220px_1fr_1fr] ${
-              index % 2 === 0 ? "bg-white" : "bg-[#fbfdff]"
-            }`}
+            className="grid grid-cols-[1fr_1fr_1fr] border-b border-slate-200 last:border-b-0"
           >
-            <div className="flex items-center border-b border-slate-200 p-4">
-              <div className="font-black text-[#0f172a]">{row.label}</div>
+            <div className="p-4 text-sm font-black text-slate-600">
+              {row.label}
             </div>
-
-            <div
-              className={`flex items-center justify-center border-b border-r border-slate-200 p-4 text-center ${
-  row.winner === (left.name_en || left.name) ? "bg-[#f8fbff]" : ""
-}`}
-            >
-              <div
-              className={`text-base font-black ${
-  row.winner === (left.name_en || left.name) ? "text-[#0f172a]" : "text-slate-700"
-}`}
-              >
-                {row.leftValue}
-              </div>
+            <div className="border-x border-slate-200 p-4 text-center text-sm font-black text-[#0f172a]">
+              {row.leftValue}
             </div>
-
-            <div
-              className={`flex items-center justify-center border-b border-r border-slate-200 p-4 text-center ${
-  row.winner === (right.name_en || right.name) ? "bg-[#f8fbff]" : ""
-}`}
-            >
-              <div
-                className={`text-base font-black ${
-  row.winner === (right.name_en || right.name) ? "text-[#0f172a]" : "text-slate-700"
-}`}
-              >
-                {row.rightValue}
-              </div>
+            <div className="p-4 text-center text-sm font-black text-[#0f172a]">
+              {row.rightValue}
             </div>
           </div>
         ))}
       </div>
 
-      <div className="mt-6 rounded-[24px] border border-slate-200 bg-[#f8fbff] p-4 sm:p-5">
-  <p className="text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
-    This quick overview helps you identify the main differences between{" "}
-    <strong>{left.name_en || left.name}</strong> and <strong>{right.name_en || right.name}</strong>
-    before moving deeper into fees, account types, and detailed conditions.
-    If you want a fast decision, start with the rows where one broker clearly stands out.
-  </p>
-</div>
-    </div>
+      <div className="mt-7 grid gap-5 lg:grid-cols-2">
+        {[left, right].map((broker) => {
+          const brokerAccounts = broker.id === left.id ? leftAccounts : rightAccounts;
+          const brokerName = broker.name_en || broker.name;
 
-    {/* Mobile */}
-    <div className="mt-5 space-y-3 md:hidden">
-      {comparisonRows.slice(0, 4).map((row) => (
-        <div
-          key={row.label}
-          className="rounded-[20px] border border-slate-200 bg-white p-3 shadow-sm"
-        >
-          <div className="mb-3 flex items-center justify-between gap-3">
-            <div className="text-sm font-black text-[#0f172a]">{row.label}</div>
+          return (
+            <details
+              key={broker.slug}
+              className="group rounded-[28px] border border-slate-200 bg-[#f8fbff] p-5"
+            >
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4">
+                <div>
+                  <h3 className="text-2xl font-black text-[#0f172a]">
+                    {brokerName} Accounts
+                  </h3>
+                  <p className="mt-1 text-sm font-bold text-[#2563eb]">
+                    {brokerAccounts.length} available account{brokerAccounts.length === 1 ? "" : "s"}
+                  </p>
+                </div>
 
-           <span
-  className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-extrabold ${
-    row.winner === "Tie"
-      ? "border border-slate-200 bg-white text-slate-700"
-      : "border border-[#bfdbfe] bg-[#eff6ff] text-[#1d4ed8]"
-  }`}
->
-  {row.winner === "Tie" ? "Tie" : row.winner}
-</span>
+                <span className="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-black text-slate-500 transition group-open:rotate-180">
+                  ▼
+                </span>
+              </summary>
+
+              <div className="mt-5 grid gap-4">
+                {brokerAccounts.length > 0 ? (
+                  brokerAccounts.map((acc) => (
+                    <div
+                      key={acc.id}
+                      className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm"
+                    >
+                      <div className="mb-4">
+                        <h4 className="text-lg font-black text-[#0f172a]">
+                          {acc.account_name_en || acc.account_name || "Account"}
+                        </h4>
+                        <p className="mt-1 text-xs font-bold text-[#2563eb]">
+                          {acc.best_for_en || acc.best_for || "Suitable for multiple trader profiles"}
+                        </p>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3">
+                          <div className="text-[11px] font-bold text-slate-500">Spread</div>
+                          <div className="mt-1 text-sm font-black text-[#0f172a]">
+                            {acc.spread_en || acc.spread || "Not specified"}
+                          </div>
+                        </div>
+
+                        <div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3">
+                          <div className="text-[11px] font-bold text-slate-500">Commission</div>
+                          <div className="mt-1 text-sm font-black text-[#0f172a]">
+                            {acc.commission_en || acc.commission || "Not specified"}
+                          </div>
+                        </div>
+
+                        <div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3">
+                          <div className="text-[11px] font-bold text-slate-500">Deposit</div>
+                          <div className="mt-1 text-sm font-black text-[#0f172a]">
+                            {acc.min_deposit_en || acc.min_deposit || "Not specified"}
+                          </div>
+                        </div>
+
+                        <div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3">
+                          <div className="text-[11px] font-bold text-slate-500">Execution</div>
+                          <div className="mt-1 text-sm font-black text-[#0f172a]">
+                            {acc.execution_type_en || acc.execution_type || "Not specified"}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="rounded-[18px] border border-slate-200 bg-white p-4 text-sm text-slate-600">
+                    No account data is currently available.
+                  </div>
+                )}
+              </div>
+            </details>
+          );
+        })}
+      </div>
+
+      <div className="mt-6 rounded-[28px] border border-[#2563eb]/20 bg-[linear-gradient(135deg,#eff6ff_0%,#ffffff_100%)] p-6 shadow-[0_20px_50px_rgba(37,99,235,0.08)] sm:p-7">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <h3 className="text-xl font-black text-[#0f172a] sm:text-2xl">
+              Start trading with the broker that fits you best
+            </h3>
+            <p className="mt-2 text-sm leading-7 text-slate-600 sm:text-base">
+              After reviewing account types and costs, you can open an account directly
+              with the broker that better fits your trading style.
+            </p>
           </div>
 
-          <div className="space-y-2">
-            <div
-              className={`flex items-center justify-between rounded-xl border px-3 py-2.5 ${
-  row.winner === (left.name_en || left.name)
-    ? "border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)]"
-    : "border-slate-200 bg-[#fbfdff]"
-}`}
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Link
+              href={`/go/${left.slug}`}
+              className="inline-flex items-center justify-center rounded-2xl bg-[#2563eb] px-7 py-3 text-sm font-extrabold text-white shadow-md transition hover:scale-[1.02] hover:bg-[#1d4ed8]"
             >
-              <span className="text-[11px] font-bold text-[#1d4ed8]">{left.name_en || left.name}</span>
-              <span className="text-base font-black text-[#0f172a] break-words text-left">
-                {row.leftValue}
-              </span>
-            </div>
+              Open {left.name_en || left.name} Account
+            </Link>
 
-            <div
-              className={`flex items-center justify-between rounded-xl border px-3 py-2.5 ${
-  row.winner === (right.name_en || right.name)
-    ? "border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)]"
-    : "border-slate-200 bg-[#fbfdff]"
-}`}
+            <Link
+              href={`/go/${right.slug}`}
+              className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-7 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
             >
-              <span className="text-[11px] font-bold text-[#1d4ed8]">{right.name_en || right.name}</span>
-              <span className="text-base font-black text-[#0f172a] break-words text-left">
-                {row.rightValue}
-              </span>
-            </div>
+              Open {right.name_en || right.name} Account
+            </Link>
           </div>
-        </div>
-      ))}
-    </div>
-  </div>
-</section>
-
-<section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
-  <div className="rounded-[30px] border border-slate-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
-    {/* Header */}
-   <div className="max-w-4xl">
-  <span className="text-sm font-bold text-[#2563eb]">Fees & Spreads</span>
-  <h2 className="mt-2 text-2xl font-black leading-tight text-[#0f172a] sm:text-3xl lg:text-5xl">
-    Fees & Spread Comparison: {left.name_en || left.name} vs {right.name_en || right.name}
-  </h2>
-  <p className="mt-3 text-sm leading-8 text-slate-600 sm:text-base">
-    This section focuses on the cost-related details that directly affect trading conditions,
-    such as spreads, fees, and deposit/withdrawal handling, while keeping the comparison easy to scan on both desktop and mobile.
-  </p>
-</div>
-
-    {/* Quick summary */}
-    <div className="mt-6 hidden md:grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-  <div className="rounded-[22px] border border-slate-200 bg-[#f8fbff] p-4">
-    <div className="text-xs font-bold text-slate-500">Spread Summary</div>
-    <div className="mt-2 text-lg font-black text-[#0f172a]">
-      {cleanText(left.spreads_en || left.spreads) || cleanText(right.spreads_en || right.spreads) ? "Available" : "Not clear"}
-    </div>
-  </div>
-
-  <div className="rounded-[22px] border border-slate-200 bg-[#f8fbff] p-4">
-    <div className="text-xs font-bold text-slate-500">Fee Summary</div>
-    <div className="mt-2 text-lg font-black text-[#0f172a]">
-      {cleanText(left.fees_en || left.fees) || cleanText(right.fees_en || right.fees) ? "Available" : "Not clear"}
-    </div>
-  </div>
-
-  <div className="rounded-[22px] border border-slate-200 bg-[#f8fbff] p-4">
-    <div className="text-xs font-bold text-slate-500">Deposits & Withdrawals</div>
-    <div className="mt-2 text-lg font-black text-[#0f172a]">
-      {cleanText(left.deposit_withdrawal_en || left.deposit_withdrawal) || cleanText(right.deposit_withdrawal_en || right.deposit_withdrawal)
-        ? "Supported"
-        : "Not clear"}
-    </div>
-  </div>
-
-  <div className="rounded-[22px] border border-[#bfdbfe] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-4">
-    <div className="text-xs font-bold text-[#1d4ed8]">Important Note</div>
-    <div className="mt-2 text-sm font-black leading-7 text-[#0f172a]">
-      Trading cost often depends on the account type, not only the broker name.
-    </div>
-  </div>
-</div>
-
-    {/* Broker cards */}
-    <div className="mt-6 grid gap-4 lg:grid-cols-2">
-      {/* Left broker */}
-      <div className="rounded-[26px] border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-        <div className="mb-4 flex items-center justify-between gap-3">
-  <div>
-    <h3 className="text-2xl font-black text-[#0f172a]">{left.name_en || left.name}</h3>
-    <p className="mt-1 text-xs font-bold text-[#1d4ed8]">Cost Overview</p>
-  </div>
-
-  <span className="rounded-full border border-slate-200 bg-[#f8fbff] px-3 py-1 text-xs font-bold text-[#1d4ed8]">
-    {left.name_en || left.name} Summary
-  </span>
-</div>
-
-        <div className="space-y-3">
-      
-
-         <div className="rounded-[22px] border border-slate-200 bg-[#fbfdff] p-4">
-  <div className="text-sm font-black text-[#0f172a]">Spread Summary</div>
-  <div className="mt-2 text-sm leading-7 text-slate-600">
-    {cleanText(left.spreads_en || left.spreads) || "Not currently specified."}
-  </div>
-</div>
-
-<div className="rounded-[22px] border border-slate-200 bg-[#fbfdff] p-4">
-  <div className="text-sm font-black text-[#0f172a]">Fee Summary</div>
-  <div className="mt-2 text-sm leading-7 text-slate-600">
-    {cleanText(left.fees_en || left.fees) || "Not currently specified."}
-  </div>
-</div>
-
-<div className="rounded-[22px] border border-slate-200 bg-[#fbfdff] p-4">
-  <div className="text-sm font-black text-[#0f172a]">Deposits & Withdrawals</div>
-  <div className="mt-2 text-sm leading-7 text-slate-600">
-    {cleanText(left.deposit_withdrawal_en || left.deposit_withdrawal) || "Not currently specified."}
-  </div>
-</div>
-
-          <div className="rounded-[22px] border border-slate-200 bg-[#f8fbff] p-4">
-  <div className="text-sm font-black text-[#0f172a]">Important Notes</div>
-  <div className="mt-2 text-sm leading-7 text-slate-600">
-    {cleanText(left.spreads_en || left.spreads) || cleanText(left.fees_en || left.fees)
-      ? `It is best to review the account type at ${left.name_en || left.name}, because spreads or fees may vary between standard and professional accounts.`
-      : `There is not enough fee detail currently available for ${left.name_en || left.name} in this comparison.`}
-  </div>
-</div>
         </div>
       </div>
 
-           {/* Right broker */}
-      <div className="rounded-[26px] border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <div>
-            <h3 className="text-2xl font-black text-[#0f172a]">{right.name_en || right.name}</h3>
-            <p className="mt-1 text-xs font-bold text-[#1d4ed8]">Cost Overview</p>
-          </div>
-
-          <span className="rounded-full border border-slate-200 bg-[#f8fbff] px-3 py-1 text-xs font-bold text-[#1d4ed8]">
-            {right.name_en || right.name} Summary
-          </span>
-        </div>
-
-        <div className="space-y-3">
-          <div className="rounded-[22px] border border-slate-200 bg-[#fbfdff] p-4">
-            <div className="text-sm font-black text-[#0f172a]">Spread Summary</div>
-            <div className="mt-2 text-sm leading-7 text-slate-600">
-              {cleanText(right.spreads_en || right.spreads) || "Not currently specified."}
-            </div>
-          </div>
-
-          <div className="rounded-[22px] border border-slate-200 bg-[#fbfdff] p-4">
-            <div className="text-sm font-black text-[#0f172a]">Fee Summary</div>
-            <div className="mt-2 text-sm leading-7 text-slate-600">
-              {cleanText(right.fees_en || right.fees) || "Not currently specified."}
-            </div>
-          </div>
-
-          <div className="rounded-[22px] border border-slate-200 bg-[#fbfdff] p-4">
-            <div className="text-sm font-black text-[#0f172a]">Deposits & Withdrawals</div>
-            <div className="mt-2 text-sm leading-7 text-slate-600">
-              {cleanText(right.deposit_withdrawal_en || right.deposit_withdrawal) || "Not currently specified."}
-            </div>
-          </div>
-
-          <div className="rounded-[22px] border border-slate-200 bg-[#f8fbff] p-4">
-            <div className="text-sm font-black text-[#0f172a]">Important Notes</div>
-            <div className="mt-2 text-sm leading-7 text-slate-600">
-              {cleanText(right.spreads_en || right.spreads) || cleanText(right.fees_en || right.fees)
-                ? `It is best to review the account type at ${right.name_en || right.name}, because spreads or fees may vary between standard and professional accounts.`
-                : `There is not enough fee detail currently available for ${right.name_en || right.name} in this comparison.`}
-            </div>
-          </div>
-        </div>
+      <div className="mt-7 rounded-[26px] border border-[#dbeafe] bg-[#f8fbff] p-5">
+        <p className="text-sm leading-7 text-slate-600 lg:text-base">
+          This section summarizes trading costs in a practical way. The number of accounts
+          alone is not enough to judge a broker; what matters most is choosing the account
+          that matches your needs in terms of spreads, commission, minimum deposit, and execution.
+        </p>
       </div>
     </div>
 
-    {/* Footer */}
-    <div className="hidden md:block mt-6 rounded-[24px] border border-slate-200 bg-[#f8fbff] p-4 sm:p-5">
-  <p className="text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
-    Comparing trading costs is not only about spreads. It also depends on the account type,
-    deposit and withdrawal methods, and any extra commissions that may apply in specific cases.
-    That is why reviewing the full broker review page remains the better final step before opening an account.
-  </p>
-</div>
-  </div>
-</section>
+    {/* Mobile version */}
+    <div className="block p-4 md:hidden">
+      <div>
+        <span className="text-xs font-black text-[#2563eb]">
+          Accounts & Trading Costs
+        </span>
 
-<section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
-  <div className="rounded-[30px] border border-slate-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
-    {/* Header */}
-    <div className="max-w-4xl">
-      <span className="text-sm font-bold text-[#2563eb]">Account Types</span>
-      <h2 className="mt-2 text-2xl font-black leading-tight text-[#0f172a] sm:text-3xl lg:text-5xl">
-        Account Types Comparison: {left.name_en || left.name} vs {right.name_en || right.name}
-      </h2>
-      <p className="mt-3 text-sm leading-8 text-slate-600 sm:text-base">
-        Instead of forcing a strict row-by-row comparison that may create empty gaps when brokers have a different number of accounts,
-        we present each broker’s account types in a clear and independent layout to keep the comparison easier to read and more practical.
-      </p>
-    </div>
+        <h2 className="mt-2 text-[26px] font-black leading-[1.25] text-[#0f172a]">
+          Account and Fee Comparison
+        </h2>
 
-    {/* Summary */}
-    <div className="mt-6 grid gap-3 md:grid-cols-3">
-     <div className="rounded-[22px] border border-slate-200 bg-[#f8fbff] p-4">
-  <div className="text-xs font-bold text-slate-500">Available Accounts</div>
-  <div className="mt-3 grid grid-cols-2 gap-3">
-    <div>
-      <div className="text-xs font-bold text-[#1d4ed8]">{left.name_en || left.name}</div>
-      <div className="mt-1 text-3xl font-black text-[#0f172a]">{leftAccounts.length}</div>
-    </div>
-    <div>
-      <div className="text-xs font-bold text-[#1d4ed8]">{right.name_en || right.name}</div>
-      <div className="mt-1 text-3xl font-black text-[#0f172a]">{rightAccounts.length}</div>
-    </div>
-  </div>
-</div>
+        <p className="mt-2 text-sm leading-7 text-slate-600">
+          A quick summary of the main cost factors between {left.name_en || left.name} and {right.name_en || right.name}.
+        </p>
+      </div>
 
-   <div className="rounded-[22px] border border-slate-200 bg-[#f8fbff] p-4">
-  <div className="text-xs font-bold text-slate-500">Account Variety</div>
-  <div className="mt-3 text-base font-black leading-7 text-[#0f172a]">
-    {leftAccounts.length > rightAccounts.length
-      ? `${left.name_en || left.name} offers a wider range of account types`
-      : rightAccounts.length > leftAccounts.length
-      ? `${right.name_en || right.name} offers a wider range of account types`
-      : "Both brokers offer a similar range of account types"}
-  </div>
-</div>
+      <div className="mt-4 rounded-[24px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-4 shadow-[0_12px_28px_rgba(37,99,235,0.12)]">
+        <div className="text-[11px] font-black text-[#2563eb]">
+          Quick Summary
+        </div>
 
-<div className="rounded-[22px] border border-[#bfdbfe] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-4">
-  <div className="text-xs font-bold text-[#1d4ed8]">Important Note</div>
-  <div className="mt-3 text-base font-black leading-7 text-[#0f172a]">
-    The number of account types is not the most important factor. What matters is choosing the account that best fits your trading style.
-  </div>
-</div>
-</div>
+        <div className="mt-1 text-2xl font-black text-[#0f172a]">
+          {scalpingWinner === "Tie" ? "Costs Are Close" : scalpingWinner}
+        </div>
 
-    {/* Desktop + Tablet */}
-    <div className="mt-6 hidden space-y-5 md:block">
-      {/* Left broker section */}
-      <div className="rounded-[26px] border border-slate-200 bg-[#fbfdff] p-5">
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <div>
-  <h3 className="text-2xl font-black text-[#0f172a]">{left.name_en || left.name}</h3>
-  <p className="mt-1 text-sm font-bold text-[#1d4ed8]">
-    {leftAccounts.length} accounts available
-  </p>
-</div>
+        <p className="mt-1 text-xs leading-6 text-slate-600">
+          {scalpingWinner === "Tie"
+            ? "There is no clear cost winner; the account type is the key factor."
+            : `${scalpingWinner} looks stronger in terms of cost or spreads.`}
+        </p>
+      </div>
+
+      <div className="mt-4 grid grid-cols-3 gap-2">
+        <div className="rounded-2xl border border-slate-200 bg-[#f8fbff] px-2 py-3 text-center">
+          <div className="text-[10px] font-bold text-slate-500">
+            {left.name_en || left.name} Accounts
+          </div>
+          <div className="mt-1 text-xl font-black text-[#0f172a]">
+            {leftAccounts.length}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-slate-200 bg-[#f8fbff] px-2 py-3 text-center">
+          <div className="text-[10px] font-bold text-slate-500">
+            {right.name_en || right.name} Accounts
+          </div>
+          <div className="mt-1 text-xl font-black text-[#0f172a]">
+            {rightAccounts.length}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-[#bfdbfe] bg-[#eff6ff] px-2 py-3 text-center">
+          <div className="text-[10px] font-bold text-[#2563eb]">Beginners</div>
+          <div className="mt-1 truncate text-xs font-black text-[#0f172a]">
+            {beginnerWinner === "Tie" ? "Very Close" : beginnerWinner}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-4 overflow-hidden rounded-[24px] border border-[#dbeafe]">
+        <div className="grid grid-cols-[1.15fr_1fr_1fr] bg-[#f8fbff] text-[11px] font-black text-[#0f172a]">
+          <div className="p-3 text-left">Factor</div>
+          <div className="border-x border-[#dbeafe] p-3 text-center">
+            {left.name_en || left.name}
+          </div>
+          <div className="p-3 text-center">{right.name_en || right.name}</div>
+        </div>
+
+        {[
+          {
+            label: "Main Account",
+            leftValue: leftAccounts[0]?.account_name_en || leftAccounts[0]?.account_name || "Not specified",
+            rightValue: rightAccounts[0]?.account_name_en || rightAccounts[0]?.account_name || "Not specified",
+          },
+          {
+            label: "Min Deposit",
+            leftValue:
+              leftAccounts.find((a) => cleanText(a.min_deposit_en || a.min_deposit))?.min_deposit_en ||
+              leftAccounts.find((a) => cleanText(a.min_deposit))?.min_deposit ||
+              money(left.min_deposit),
+            rightValue:
+              rightAccounts.find((a) => cleanText(a.min_deposit_en || a.min_deposit))?.min_deposit_en ||
+              rightAccounts.find((a) => cleanText(a.min_deposit))?.min_deposit ||
+              money(right.min_deposit),
+          },
+          {
+            label: "Spread",
+            leftValue:
+              leftAccounts.find((a) => cleanText(a.spread_en || a.spread))?.spread_en ||
+              leftAccounts.find((a) => cleanText(a.spread))?.spread ||
+              cleanText(left.spreads_en || left.spreads) ||
+              "Not specified",
+            rightValue:
+              rightAccounts.find((a) => cleanText(a.spread_en || a.spread))?.spread_en ||
+              rightAccounts.find((a) => cleanText(a.spread))?.spread ||
+              cleanText(right.spreads_en || right.spreads) ||
+              "Not specified",
+          },
+          {
+            label: "Commission",
+            leftValue:
+              leftAccounts.find((a) => cleanText(a.commission_en || a.commission))?.commission_en ||
+              leftAccounts.find((a) => cleanText(a.commission))?.commission ||
+              cleanText(left.fees_en || left.fees) ||
+              "Not specified",
+            rightValue:
+              rightAccounts.find((a) => cleanText(a.commission_en || a.commission))?.commission_en ||
+              rightAccounts.find((a) => cleanText(a.commission))?.commission ||
+              cleanText(right.fees_en || right.fees) ||
+              "Not specified",
+          },
+          {
+            label: "Execution",
+            leftValue:
+              leftAccounts.find((a) => cleanText(a.execution_type_en || a.execution_type))?.execution_type_en ||
+              leftAccounts.find((a) => cleanText(a.execution_type))?.execution_type ||
+              "Not specified",
+            rightValue:
+              rightAccounts.find((a) => cleanText(a.execution_type_en || a.execution_type))?.execution_type_en ||
+              rightAccounts.find((a) => cleanText(a.execution_type))?.execution_type ||
+              "Not specified",
+          },
+        ].map((row) => (
+          <div
+            key={row.label}
+            className="grid grid-cols-[1.15fr_1fr_1fr] border-t border-[#dbeafe] text-[11px]"
+          >
+            <div className="bg-[#fbfdff] p-3 font-black text-slate-600">
+              {row.label}
+            </div>
+
+            <div className="border-x border-[#dbeafe] p-3 text-center font-black text-[#0f172a]">
+              {row.leftValue}
+            </div>
+
+            <div className="p-3 text-center font-black text-[#0f172a]">
+              {row.rightValue}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-4 grid gap-3">
+        {[left, right].map((broker) => {
+          const brokerAccounts = broker.id === left.id ? leftAccounts : rightAccounts;
+          const brokerName = broker.name_en || broker.name;
+
+          return (
+            <details
+              key={broker.slug}
+              className="group rounded-[24px] border border-slate-200 bg-[#f8fbff] p-4"
+            >
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3">
+                <div>
+                  <h3 className="text-xl font-black text-[#0f172a]">
+                    {brokerName} Accounts
+                  </h3>
+
+                  <p className="mt-1 text-xs font-bold text-[#2563eb]">
+                    {brokerAccounts.length} available account{brokerAccounts.length === 1 ? "" : "s"}
+                  </p>
+                </div>
+
+                <span className="rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-500 transition group-open:rotate-180">
+                  ▼
+                </span>
+              </summary>
+
+              <div className="mt-4 grid gap-3">
+                {brokerAccounts.length > 0 ? (
+                  brokerAccounts.map((acc) => (
+                    <div
+                      key={acc.id}
+                      className="rounded-[20px] border border-slate-200 bg-white p-4"
+                    >
+                      <div className="text-sm font-black text-[#0f172a]">
+                        {acc.account_name_en || acc.account_name || "Account"}
+                      </div>
+
+                      <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
+                        <div className="rounded-xl bg-[#fbfdff] p-3">
+                          <div className="font-bold text-slate-500">Spread</div>
+                          <div className="mt-1 font-black text-[#0f172a]">
+                            {acc.spread_en || acc.spread || "Not specified"}
+                          </div>
+                        </div>
+
+                        <div className="rounded-xl bg-[#fbfdff] p-3">
+                          <div className="font-bold text-slate-500">Commission</div>
+                          <div className="mt-1 font-black text-[#0f172a]">
+                            {acc.commission_en || acc.commission || "Not specified"}
+                          </div>
+                        </div>
+
+                        <div className="rounded-xl bg-[#fbfdff] p-3">
+                          <div className="font-bold text-slate-500">Deposit</div>
+                          <div className="mt-1 font-black text-[#0f172a]">
+                            {acc.min_deposit_en || acc.min_deposit || "Not specified"}
+                          </div>
+                        </div>
+
+                        <div className="rounded-xl bg-[#fbfdff] p-3">
+                          <div className="font-bold text-slate-500">Execution</div>
+                          <div className="mt-1 font-black text-[#0f172a]">
+                            {acc.execution_type_en || acc.execution_type || "Not specified"}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="rounded-[18px] border border-slate-200 bg-white p-4 text-sm text-slate-600">
+                    No account data is currently available.
+                  </div>
+                )}
+              </div>
+            </details>
+          );
+        })}
+      </div>
+
+      <div className="mt-4 rounded-[24px] border border-[#2563eb]/20 bg-[linear-gradient(135deg,#eff6ff_0%,#ffffff_100%)] p-4">
+        <h3 className="text-lg font-black text-[#0f172a]">
+          Start with the broker that fits you best
+        </h3>
+
+        <p className="mt-1 text-xs leading-6 text-slate-600">
+          After reviewing accounts and costs, choose the broker that better matches your trading style.
+        </p>
+
+        <div className="mt-4 grid gap-2">
+          <Link
+            href={`/go/${left.slug}`}
+            className="inline-flex min-h-[44px] items-center justify-center rounded-2xl bg-[#2563eb] px-5 py-3 text-sm font-black text-white shadow-sm"
+          >
+            Open {left.name_en || left.name} Account
+          </Link>
 
           <Link
-            href={`/brokers/${left.slug ?? ""}`}
-            className="inline-flex min-h-[42px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
+            href={`/go/${right.slug}`}
+            className="inline-flex min-h-[44px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-5 py-3 text-sm font-black text-slate-800"
           >
-           Read {left.name_en || left.name} Review
+            Open {right.name_en || right.name} Account
           </Link>
         </div>
-
-       <div className="grid gap-4 lg:grid-cols-2">
-  {leftAccounts.length > 0 ? (
-    leftAccounts.map((acc) => (
-      <div
-        key={acc.id}
-        className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm"
-      >
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <h4 className="text-lg font-black text-[#0f172a]">
-  {acc.account_name_en || acc.account_name || "Account"}
-</h4>
-<p className="mt-1 text-xs font-bold text-[#1d4ed8]">
-  {acc.best_for_en || acc.best_for || "Suitable for multiple trader profiles"}
-</p>
-          </div>
-
-          <span className="rounded-full border border-slate-200 bg-[#f8fbff] px-2.5 py-1 text-[10px] font-bold text-slate-600">
-            Account
-          </span>
-        </div>
-
-        <div className="mt-4 grid grid-cols-2 gap-3">
-         <div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3">
-  <div className="text-[11px] font-bold text-slate-500">Spread</div>
-  <div className="mt-1 text-sm font-black text-[#0f172a]">
-    {acc.spread_en || acc.spread || "Not specified"}
-  </div>
-</div>
-
-<div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3">
-  <div className="text-[11px] font-bold text-slate-500">Commission</div>
-  <div className="mt-1 text-sm font-black text-[#0f172a]">
-    {acc.commission_en || acc.commission || "Not specified"}
-  </div>
-</div>
-
-<div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3">
-  <div className="text-[11px] font-bold text-slate-500">Minimum Deposit</div>
-  <div className="mt-1 text-sm font-black text-[#0f172a]">
-    {acc.min_deposit_en || acc.min_deposit || "Not specified"}
-  </div>
-</div>
-
-<div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3">
-  <div className="text-[11px] font-bold text-slate-500">Execution Type</div>
-  <div className="mt-1 text-sm font-black text-[#0f172a]">
-    {acc.execution_type_en || acc.execution_type || "Not specified"}
-  </div>
-</div>
-        </div>
-      </div>
-    ))
-  ) : (
-    <div className="rounded-[22px] border border-slate-200 bg-white p-4 text-sm text-slate-600">
-      No account data is currently available.
-    </div>
-  )}
-</div>
-</div>
-
-{/* Right broker section */}
-<div className="rounded-[26px] border border-slate-200 bg-[#fbfdff] p-5">
-  <div className="mb-4 flex items-center justify-between gap-3">
-    <div>
-      <h3 className="text-2xl font-black text-[#0f172a]">
-        {right.name_en || right.name}
-      </h3>
-      <p className="mt-1 text-sm font-bold text-[#1d4ed8]">
-        {rightAccounts.length} accounts available
-      </p>
-    </div>
-
-    <Link
-      href={`/en/brokers/${right.slug ?? ""}`}
-      className="inline-flex min-h-[42px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
-    >
-      Read {right.name_en || right.name} Review
-    </Link>
-  </div>
-
-  <div className="grid gap-4 lg:grid-cols-2">
-    {rightAccounts.length > 0 ? (
-      rightAccounts.map((acc) => (
-        <div
-          key={acc.id}
-          className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm"
-        >
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <h4 className="text-lg font-black text-[#0f172a]">
-                {acc.account_name_en || acc.account_name || "Account"}
-              </h4>
-              <p className="mt-1 text-xs font-bold text-[#1d4ed8]">
-                {acc.best_for_en || acc.best_for || "Suitable for multiple trader profiles"}
-              </p>
-            </div>
-
-            <span className="rounded-full border border-slate-200 bg-[#f8fbff] px-2.5 py-1 text-[10px] font-bold text-slate-600">
-              Account
-            </span>
-          </div>
-
-          <div className="mt-4 grid grid-cols-2 gap-3">
-           <div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3">
-  <div className="text-[11px] font-bold text-slate-500">Spread</div>
-  <div className="mt-1 text-sm font-black text-[#0f172a]">
-    {acc.spread_en || acc.spread || "Not specified"}
-  </div>
-</div>
-
-<div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3">
-  <div className="text-[11px] font-bold text-slate-500">Commission</div>
-  <div className="mt-1 text-sm font-black text-[#0f172a]">
-    {acc.commission_en || acc.commission || "Not specified"}
-  </div>
-</div>
-
-<div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3">
-  <div className="text-[11px] font-bold text-slate-500">Minimum Deposit</div>
-  <div className="mt-1 text-sm font-black text-[#0f172a]">
-    {acc.min_deposit_en || acc.min_deposit || "Not specified"}
-  </div>
-</div>
-
-<div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3">
-  <div className="text-[11px] font-bold text-slate-500">Execution Type</div>
-  <div className="mt-1 text-sm font-black text-[#0f172a]">
-    {acc.execution_type_en || acc.execution_type || "Not specified"}
-  </div>
-</div>
-          </div>
-        </div>
-      ))
-    ) : (
-      <div className="rounded-[22px] border border-slate-200 bg-white p-4 text-sm text-slate-600">
-        No account data is currently available.
-      </div>
-    )}
-  </div>
-</div>
-</div>
-    {/* Mobile */}
-<div className="mt-5 space-y-4 md:hidden">
-  <div className="space-y-4">
-    <div className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
-      <div className="mb-3 flex items-center justify-between">
-        <div>
-          <h3 className="text-xl font-black text-[#0f172a]">{left.name_en || left.name}</h3>
-          <p className="mt-1 text-[11px] font-bold text-[#1d4ed8]">
-            {leftAccounts.length} accounts
-          </p>
-        </div>
       </div>
 
-      <div className="space-y-2">
-        {leftAccounts.length > 0 ? (
-          leftAccounts.map((acc) => (
-            <details
-              key={acc.id}
-              className="group rounded-[18px] border border-slate-200 bg-[#fbfdff]"
-            >
-              <summary className="cursor-pointer list-none p-3">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <div className="text-sm font-black text-[#0f172a]">
-                      {acc.account_name_en || acc.account_name || "Account"}
-                    </div>
-                    <div className="mt-1 text-[11px] font-bold text-[#1d4ed8]">
-                      {acc.best_for_en || acc.best_for || "Suitable for multiple trader profiles"}
-                    </div>
-                  </div>
-
-                  <span className="text-xs font-bold text-slate-400 transition group-open:rotate-180">
-                    ▼
-                  </span>
-                </div>
-              </summary>
-
-              <div className="border-t border-slate-200 px-3 pb-3 pt-3">
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="rounded-xl border border-slate-200 bg-white px-2.5 py-2">
-                    <div className="text-[10px] font-bold text-slate-500">Spread</div>
-                    <div className="mt-1 text-xs font-black text-[#0f172a]">
-                      {acc.spread_en || acc.spread || "Not specified"}
-                    </div>
-                  </div>
-
-                  <div className="rounded-xl border border-slate-200 bg-white px-2.5 py-2">
-                    <div className="text-[10px] font-bold text-slate-500">Commission</div>
-                    <div className="mt-1 text-xs font-black text-[#0f172a]">
-                      {acc.commission_en || acc.commission || "Not specified"}
-                    </div>
-                  </div>
-
-                  <div className="rounded-xl border border-slate-200 bg-white px-2.5 py-2">
-                    <div className="text-[10px] font-bold text-slate-500">Minimum Deposit</div>
-                    <div className="mt-1 text-xs font-black text-[#0f172a]">
-                      {acc.min_deposit_en || acc.min_deposit || "Not specified"}
-                    </div>
-                  </div>
-
-                  <div className="rounded-xl border border-slate-200 bg-white px-2.5 py-2">
-                    <div className="text-[10px] font-bold text-slate-500">Execution Type</div>
-                    <div className="mt-1 text-xs font-black text-[#0f172a]">
-                      {acc.execution_type_en || acc.execution_type || "Not specified"}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </details>
-          ))
-        ) : (
-          <div className="rounded-[18px] border border-slate-200 bg-[#f8fbff] p-3 text-sm text-slate-600">
-            No account data is currently available.
-          </div>
-        )}
-      </div>
-    </div>
-
-    <div className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
-      <div className="mb-3 flex items-center justify-between">
-        <div>
-          <h3 className="text-xl font-black text-[#0f172a]">{right.name_en || right.name}</h3>
-          <p className="mt-1 text-[11px] font-bold text-[#1d4ed8]">
-            {rightAccounts.length} accounts
-          </p>
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        {rightAccounts.length > 0 ? (
-          rightAccounts.map((acc) => (
-            <details
-              key={acc.id}
-              className="group rounded-[18px] border border-slate-200 bg-[#fbfdff]"
-            >
-              <summary className="cursor-pointer list-none p-3">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <div className="text-sm font-black text-[#0f172a]">
-                      {acc.account_name_en || acc.account_name || "Account"}
-                    </div>
-                    <div className="mt-1 text-[11px] font-bold text-[#1d4ed8]">
-                      {acc.best_for_en || acc.best_for || "Suitable for multiple trader profiles"}
-                    </div>
-                  </div>
-
-                  <span className="text-xs font-bold text-slate-400 transition group-open:rotate-180">
-                    ▼
-                  </span>
-                </div>
-              </summary>
-
-              <div className="border-t border-slate-200 px-3 pb-3 pt-3">
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="rounded-xl border border-slate-200 bg-white px-2.5 py-2">
-                    <div className="text-[10px] font-bold text-slate-500">Spread</div>
-                    <div className="mt-1 text-xs font-black text-[#0f172a]">
-                      {acc.spread_en || acc.spread || "Not specified"}
-                    </div>
-                  </div>
-
-                  <div className="rounded-xl border border-slate-200 bg-white px-2.5 py-2">
-                    <div className="text-[10px] font-bold text-slate-500">Commission</div>
-                    <div className="mt-1 text-xs font-black text-[#0f172a]">
-                      {acc.commission_en || acc.commission || "Not specified"}
-                    </div>
-                  </div>
-
-                  <div className="rounded-xl border border-slate-200 bg-white px-2.5 py-2">
-                    <div className="text-[10px] font-bold text-slate-500">Minimum Deposit</div>
-                    <div className="mt-1 text-xs font-black text-[#0f172a]">
-                      {acc.min_deposit_en || acc.min_deposit || "Not specified"}
-                    </div>
-                  </div>
-
-                  <div className="rounded-xl border border-slate-200 bg-white px-2.5 py-2">
-                    <div className="text-[10px] font-bold text-slate-500">Execution Type</div>
-                    <div className="mt-1 text-xs font-black text-[#0f172a]">
-                      {acc.execution_type_en || acc.execution_type || "Not specified"}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </details>
-          ))
-        ) : (
-          <div className="rounded-[18px] border border-slate-200 bg-[#f8fbff] p-3 text-sm text-slate-600">
-            No account data is currently available.
-          </div>
-        )}
+      <div className="mt-4 rounded-[22px] border border-[#dbeafe] bg-[#f8fbff] p-4">
+        <p className="text-sm leading-7 text-slate-600">
+          The most important factor is not only the number of accounts, but choosing
+          the account that fits your needs in terms of spread, commission, minimum
+          deposit, and execution method.
+        </p>
       </div>
     </div>
   </div>
-</div>
-
-    {/* Footer */}
-<div className="mt-6 rounded-[24px] border border-slate-200 bg-[#f8fbff] p-4 sm:p-5">
-  <p className="text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
-    A higher number of account types does not always mean a broker is better. What matters most is finding an account that matches your trading style in terms of spreads, commissions, minimum deposit, and execution conditions.
-  </p>
-</div>
-</div>
 </section>
 
 <section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
-  <div className="rounded-[30px] border border-slate-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
-    {/* Header */}
-    <div className="max-w-4xl">
-      <span className="text-sm font-bold text-[#2563eb]">Quick Decision</span>
-      <h2 className="mt-2 text-2xl font-black leading-tight text-[#0f172a] sm:text-3xl lg:text-5xl">
-        When should you choose {left.name_en || left.name} and when should you choose {right.name_en || right.name}?
-      </h2>
-      <p className="mt-3 text-sm leading-8 text-slate-600 sm:text-base">
-        If you want a faster decision, this section clearly summarizes when each broker is the better choice, instead of relying only on tables and numbers.
-      </p>
-    </div>
+  <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white shadow-[0_25px_70px_rgba(37,99,235,0.08)]">
+    <div className="absolute inset-x-0 top-0 h-1.5 bg-[#2563eb]" />
 
     {/* Desktop */}
-    <div className="mt-6 hidden gap-4 md:grid lg:grid-cols-2">
-      <div className="rounded-[26px] border border-slate-200 bg-[#fbfdff] p-5">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <h3 className="text-2xl font-black text-[#0f172a]">{left.name_en || left.name}</h3>
-            <p className="mt-1 text-sm font-bold text-[#1d4ed8]">
-              Choose {left.name_en || left.name} if you...
-            </p>
-          </div>
-
-          <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-bold text-[#1d4ed8]">
-            Good Fit
+    <div className="hidden p-6 md:block lg:p-8">
+      <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
+        <div>
+          <span className="text-sm font-black text-[#2563eb]">
+            Safety & Regulation
           </span>
+
+          <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-5xl">
+            Safety Comparison: {left.name_en || left.name} vs {right.name_en || right.name}
+          </h2>
+
+          <p className="mt-3 text-base leading-8 text-slate-600">
+            This section evaluates broker safety based on regulation strength, investor protection,
+            company transparency, and whether an Islamic account is available.
+          </p>
         </div>
 
-        <div className="mt-5 space-y-3">
-          <div className="rounded-[20px] border border-slate-200 bg-white px-4 py-4 text-sm leading-7 text-slate-600">
-            Prefer a clearer account structure and better transparency in conditions.
+        <div className="rounded-[28px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5 shadow-[0_16px_40px_rgba(37,99,235,0.12)]">
+          <div className="text-xs font-black text-[#2563eb]">
+            Stronger in Safety
           </div>
 
-          <div className="rounded-[20px] border border-slate-200 bg-white px-4 py-4 text-sm leading-7 text-slate-600">
-            Your priority is {cleanText(left.best_for_en || left.best_for) || "trading flexibility"}.
+          <div className="mt-2 text-3xl font-black text-[#0f172a]">
+            {(left.score_safety ?? 0) > (right.score_safety ?? 0)
+              ? left.name_en || left.name
+              : (right.score_safety ?? 0) > (left.score_safety ?? 0)
+              ? right.name_en || right.name
+              : "Very Close"}
           </div>
 
-          <div className="rounded-[20px] border border-slate-200 bg-white px-4 py-4 text-sm leading-7 text-slate-600">
-            Like to review account options in detail before opening an account.
-          </div>
-        </div>
-
-        <div className="mt-5">
-          <Link
-            href={`/en/brokers/${left.slug ?? ""}`}
-            className="inline-flex min-h-[48px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-5 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
-          >
-            Read {left.name_en || left.name} Review
-          </Link>
+          <p className="mt-2 text-sm leading-7 text-slate-600">
+            Based on regulation strength, transparency, and available protection mechanisms.
+          </p>
         </div>
       </div>
 
-      <div className="rounded-[26px] border border-[#bfdbfe] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <h3 className="text-2xl font-black text-[#0f172a]">{right.name_en || right.name}</h3>
-            <p className="mt-1 text-sm font-bold text-[#1d4ed8]">
-              Choose {right.name_en || right.name} if you...
-            </p>
-          </div>
+      {/* Scores */}
+      <div className="mt-7 grid gap-4 md:grid-cols-3">
+        <div className="rounded-[24px] border border-slate-200 bg-[#f8fbff] p-5">
+          <div className="text-xs font-black text-slate-500">Safety Score</div>
 
-          <span className="rounded-full border border-[#bfdbfe] bg-white px-3 py-1 text-xs font-bold text-[#1d4ed8]">
-            Strong Option
-          </span>
-        </div>
+          <div className="mt-3 flex items-center justify-between gap-6">
+            <div>
+              <div className="text-xs font-bold text-[#2563eb]">{left.name_en || left.name}</div>
+              <div className="text-3xl font-black text-[#0f172a]">
+                {(left.score_safety ?? 0).toFixed(1)}
+                <span className="text-sm text-slate-400"> / 5</span>
+              </div>
+            </div>
 
-        <div className="mt-5 space-y-3">
-          <div className="rounded-[20px] border border-slate-200 bg-white px-4 py-4 text-sm leading-7 text-slate-600">
-            Want a broker with a strong overall rating and general reputation.
-          </div>
-
-          <div className="rounded-[20px] border border-slate-200 bg-white px-4 py-4 text-sm leading-7 text-slate-600">
-            Your priority is {cleanText(right.best_for_en || right.best_for) || "easy entry or active trading"}.
-          </div>
-
-          <div className="rounded-[20px] border border-slate-200 bg-white px-4 py-4 text-sm leading-7 text-slate-600">
-            Prefer reaching a practical decision quickly without deep comparisons.
+            <div>
+              <div className="text-xs font-bold text-[#2563eb]">{right.name_en || right.name}</div>
+              <div className="text-3xl font-black text-[#0f172a]">
+                {(right.score_safety ?? 0).toFixed(1)}
+                <span className="text-sm text-slate-400"> / 5</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="mt-5">
-          <Link
-            href={`/en/brokers/${right.slug ?? ""}`}
-            className="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-[#2563eb] px-5 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
+        <div className="rounded-[24px] border border-slate-200 bg-[#f8fbff] p-5">
+          <div className="text-xs font-black text-slate-500">Islamic Account</div>
+          <div className="mt-3 text-lg font-black leading-7 text-[#0f172a]">
+            {left.name_en || left.name}: {yesNoEnglish(left.islamic_account)}
+            <br />
+            {right.name_en || right.name}: {yesNoEnglish(right.islamic_account)}
+          </div>
+        </div>
+
+        <div className="rounded-[24px] border border-[#bfdbfe] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5">
+          <div className="text-xs font-black text-[#2563eb]">Important</div>
+          <div className="mt-3 text-lg font-black leading-7 text-[#0f172a]">
+            Always verify which regulatory entity your account will be opened under.
+          </div>
+        </div>
+      </div>
+
+      {/* Cards */}
+      <div className="mt-8 grid gap-5 md:grid-cols-2">
+        {[left, right].map((broker) => {
+          const brokerSafety = broker.score_safety ?? 0;
+          const maxSafety = Math.max(left.score_safety ?? 0, right.score_safety ?? 0);
+          const isWinner = brokerSafety === maxSafety && maxSafety > 0;
+
+          return (
+            <div
+              key={broker.slug}
+              className={`rounded-[30px] border p-5 shadow-sm ${
+                isWinner
+                  ? "border-[#2563eb] bg-gradient-to-b from-[#eff6ff] to-white"
+                  : "border-slate-200 bg-[#fbfdff]"
+              }`}
+            >
+              <div className="mb-5 flex items-start justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-slate-200 bg-white p-2">
+                    {broker.logo ? (
+                      <img src={broker.logo} className="h-full w-full object-contain" />
+                    ) : null}
+                  </div>
+
+                  <div>
+                    <h3 className="text-2xl font-black text-[#0f172a]">
+                      {broker.name_en || broker.name}
+                    </h3>
+                    <p className="mt-1 text-sm font-bold text-[#2563eb]">
+                      Safety & Trust
+                    </p>
+                  </div>
+                </div>
+
+                {isWinner && (
+                  <span className="rounded-full bg-[#2563eb] px-3 py-1 text-[11px] font-black text-white">
+                    Stronger
+                  </span>
+                )}
+              </div>
+
+              <div className="grid gap-3">
+                <div className="rounded-[22px] border border-slate-200 bg-white p-4">
+                  <div className="text-sm font-black text-[#0f172a]">
+                    Regulation
+                  </div>
+                  <p className="mt-2 text-sm font-black text-slate-700">
+                    {shortReg(broker.regulation) || "Not specified"}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="rounded-[22px] border border-slate-200 bg-white p-4">
+                    <div className="text-xs font-black text-slate-500">
+                      Headquarters
+                    </div>
+                    <div className="mt-2 text-sm font-black text-[#0f172a]">
+                      {broker.headquarters_en || broker.headquarters || "Not specified"}
+                    </div>
+                  </div>
+
+                  <div className="rounded-[22px] border border-slate-200 bg-white p-4">
+                    <div className="text-xs font-black text-slate-500">
+                      Islamic Account
+                    </div>
+                    <div className="mt-2 text-sm font-black text-[#0f172a]">
+                      {yesNoEnglish(broker.islamic_account)}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="rounded-[22px] border border-[#dbeafe] bg-[#f8fbff] p-4">
+                  <div className="text-sm font-black text-[#2563eb]">
+                    Fund Protection
+                  </div>
+                  <p className="mt-2 text-sm text-slate-600">
+                    Client fund protection depends on the regulatory entity and account type.
+                    Always verify segregation, compensation schemes, and negative balance protection.
+                  </p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="mt-7 rounded-[26px] border border-[#dbeafe] bg-[#f8fbff] p-5">
+        <p className="text-sm leading-7 text-slate-600 lg:text-base">
+          Regulation alone does not guarantee full protection. Always verify the legal entity,
+          jurisdiction, and account conditions before opening a real account.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
+  <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white p-6 shadow-[0_25px_70px_rgba(37,99,235,0.08)] lg:p-8">
+    <div className="absolute inset-x-0 top-0 h-1.5 bg-[#2563eb]" />
+
+    <div className="hidden gap-6 md:grid lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
+      <div>
+        <span className="text-sm font-black text-[#2563eb]">Quick Decision</span>
+
+        <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-5xl">
+          Which Broker Should You Choose Now?
+        </h2>
+
+        <p className="mt-3 text-base leading-8 text-slate-600">
+          Instead of reading the full comparison again, this practical summary helps you
+          choose the better broker based on your trading goal.
+        </p>
+      </div>
+
+      <div className="rounded-[28px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5 shadow-[0_16px_40px_rgba(37,99,235,0.12)]">
+        <div className="text-xs font-black text-[#2563eb]">Overall Recommendation</div>
+        <div className="mt-2 text-3xl font-black text-[#0f172a]">
+          {overallWinner}
+        </div>
+        <p className="mt-2 text-sm leading-7 text-slate-600">
+          The strongest overall choice based on the rating and comparison summary.
+        </p>
+      </div>
+    </div>
+
+    <div className="mt-8 hidden gap-4 md:grid lg:grid-cols-3">
+      <div className="rounded-[26px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5 shadow-sm">
+        <div className="text-xs font-black text-[#2563eb]">Best Overall</div>
+        <div className="mt-2 text-3xl font-black text-[#0f172a]">
+          {overallWinner}
+        </div>
+        <p className="mt-2 text-sm leading-7 text-slate-600">
+          Best if you want a balanced choice without going too deep into every detail.
+        </p>
+      </div>
+
+      <div className="rounded-[26px] border border-slate-200 bg-[#fbfdff] p-5 shadow-sm">
+        <div className="text-xs font-black text-slate-500">For Beginners</div>
+        <div className="mt-2 text-3xl font-black text-[#0f172a]">
+          {beginnerWinner === "Tie" ? "Both Are Suitable" : beginnerWinner}
+        </div>
+        <p className="mt-2 text-sm leading-7 text-slate-600">
+          Best if your priority is an easy start and clear account options.
+        </p>
+      </div>
+
+      <div className="rounded-[26px] border border-slate-200 bg-[#fbfdff] p-5 shadow-sm">
+        <div className="text-xs font-black text-slate-500">For Costs & Spreads</div>
+        <div className="mt-2 text-3xl font-black text-[#0f172a]">
+          {scalpingWinner === "Tie" ? "Very Close" : scalpingWinner}
+        </div>
+        <p className="mt-2 text-sm leading-7 text-slate-600">
+          Best if your focus is spreads, fees, and execution speed.
+        </p>
+      </div>
+    </div>
+
+    <div className="mt-7 hidden rounded-[28px] border border-[#dbeafe] bg-[#f8fbff] p-5 md:block lg:p-6">
+      <div className="grid gap-5 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+        <div>
+          <div className="text-sm font-black text-[#2563eb]">Short Decision</div>
+          <p className="mt-2 text-sm leading-8 text-slate-700 lg:text-base">
+            Choose <strong>{overallWinner}</strong> if you want the strongest overall option.
+            If you are a beginner, review{" "}
+            <strong>{beginnerWinner === "Tie" ? "both brokers" : beginnerWinner}</strong>.
+            If trading costs and spreads are your priority, the closer fit is{" "}
+            <strong>
+              {scalpingWinner === "Tie" ? "the lower-cost account type" : scalpingWinner}
+            </strong>.
+          </p>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+          <a
+            href={`/go/${
+              overallWinner === (left.name_en || left.name) ? left.slug ?? "" : right.slug ?? ""
+            }?type=real`}
+            className="inline-flex min-h-[50px] items-center justify-center rounded-2xl bg-[#2563eb] px-6 py-3 text-sm font-black text-white transition hover:bg-[#1d4ed8]"
           >
-            Read {right.name_en || right.name} Review
+            Open Account with {overallWinner}
+          </a>
+
+          <Link
+            href={`/en/brokers/${
+              overallWinner === (left.name_en || left.name) ? left.slug ?? "" : right.slug ?? ""
+            }`}
+            className="inline-flex min-h-[50px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-black text-slate-800 transition hover:bg-slate-50"
+          >
+            Read {overallWinner} Review
           </Link>
         </div>
       </div>
     </div>
 
     {/* Mobile */}
-    <div className="mt-5 space-y-3 md:hidden">
-      <div className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <h3 className="text-xl font-black text-[#0f172a]">{left.name_en || left.name}</h3>
-            <p className="mt-1 text-[11px] font-bold text-[#1d4ed8]">Choose it if you...</p>
+    <div className="mt-5 md:hidden">
+      <div className="rounded-[24px] border border-[#dbeafe] bg-[#f8fbff] p-4">
+        <span className="text-xs font-black text-[#2563eb]">Quick Decision</span>
+
+        <h2 className="mt-2 text-[24px] font-black leading-[1.25] text-[#0f172a]">
+          Which Broker Should You Choose Now?
+        </h2>
+
+        <p className="mt-2 text-sm leading-6 text-slate-600">
+          A practical summary to choose the better broker based on your goal.
+        </p>
+
+        <div className="mt-4 rounded-[20px] border border-[#2563eb] bg-white p-4 shadow-sm">
+          <div className="text-[11px] font-black text-[#2563eb]">
+            Overall Recommendation
+          </div>
+
+          <div className="mt-1 text-2xl font-black text-[#0f172a]">
+            {overallWinner}
+          </div>
+
+          <p className="mt-1 text-xs leading-6 text-slate-600">
+            The strongest overall choice based on this comparison.
+          </p>
+        </div>
+
+        <div className="mt-3 grid grid-cols-2 gap-2">
+          <div className="rounded-2xl border border-slate-200 bg-white px-3 py-3 text-center">
+            <div className="text-[10px] font-bold text-slate-500">Beginners</div>
+            <div className="mt-1 truncate text-xs font-black text-[#0f172a]">
+              {beginnerWinner === "Tie" ? "Both Suitable" : beginnerWinner}
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-slate-200 bg-white px-3 py-3 text-center">
+            <div className="text-[10px] font-bold text-slate-500">Costs</div>
+            <div className="mt-1 truncate text-xs font-black text-[#0f172a]">
+              {scalpingWinner === "Tie" ? "Very Close" : scalpingWinner}
+            </div>
           </div>
         </div>
 
-        <div className="mt-3 space-y-2">
-          <div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3 text-sm leading-7 text-slate-600">
-            Want clearer account structure and more detailed information.
-          </div>
-          <div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3 text-sm leading-7 text-slate-600">
-            Your priority is {cleanText(left.best_for_en || left.best_for) || "trading flexibility"}.
-          </div>
+        <div className="mt-4 rounded-[18px] border border-[#dbeafe] bg-white p-3">
+          <div className="text-xs font-black text-[#2563eb]">Short Decision</div>
+
+          <p className="mt-2 text-sm leading-7 text-slate-700">
+            Choose <strong>{overallWinner}</strong> if you want the strongest overall option.
+            For an easier start, the closer choice is{" "}
+            <strong>{beginnerWinner === "Tie" ? "both brokers" : beginnerWinner}</strong>.
+          </p>
         </div>
 
-        <div className="mt-4">
-          <Link
-            href={`/en/brokers/${left.slug ?? ""}`}
-            className="inline-flex min-h-[46px] w-full items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-extrabold text-slate-800"
+        <div className="mt-4 grid gap-2">
+          <a
+            href={`/go/${
+              overallWinner === (left.name_en || left.name) ? left.slug ?? "" : right.slug ?? ""
+            }?type=real`}
+            className="inline-flex min-h-[46px] items-center justify-center rounded-2xl bg-[#2563eb] px-5 py-3 text-sm font-black text-white shadow-sm"
           >
-            {left.name_en || left.name} Review
+            Open Account with {overallWinner}
+          </a>
+
+          <Link
+            href={`/en/brokers/${
+              overallWinner === (left.name_en || left.name) ? left.slug ?? "" : right.slug ?? ""
+            }`}
+            className="inline-flex min-h-[44px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-5 py-3 text-sm font-black text-slate-800"
+          >
+            Read {overallWinner} Review
           </Link>
         </div>
       </div>
+    </div>
+  </div>
+</section>
 
-      <div className="rounded-[22px] border border-[#bfdbfe] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-4 shadow-sm">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <h3 className="text-xl font-black text-[#0f172a]">{right.name_en || right.name}</h3>
-            <p className="mt-1 text-[11px] font-bold text-[#1d4ed8]">Choose it if you...</p>
+<section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
+  <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white shadow-[0_25px_70px_rgba(37,99,235,0.08)]">
+    <div className="absolute inset-x-0 top-0 h-1.5 bg-[#2563eb]" />
+
+    {/* Desktop */}
+    <div className="hidden p-6 md:block lg:p-8">
+      <div className="max-w-4xl">
+        <span className="text-sm font-black text-[#2563eb]">Frequently Asked Questions</span>
+
+        <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-5xl">
+          FAQs About {left.name_en || left.name} and {right.name_en || right.name}
+        </h2>
+
+        <p className="mt-3 text-base leading-8 text-slate-600">
+          These questions summarize key points traders usually check before opening an account
+          or choosing the better broker.
+        </p>
+      </div>
+
+      <div className="mt-8 grid gap-6 lg:grid-cols-2">
+        <div>
+          <div className="mb-4 rounded-[20px] border border-[#bfdbfe] bg-[#eff6ff] px-5 py-3">
+            <h3 className="text-lg font-black text-[#0f172a]">
+              Questions About {left.name_en || left.name}
+            </h3>
+          </div>
+
+          <div className="space-y-4">
+            {(((left as any).faq_en || []) as { question: string; answer: string }[])
+              .slice(0, 3)
+              .map((faq, index) => (
+                <details
+                  key={`left-faq-${index}`}
+                  className="group rounded-[24px] border border-slate-200 bg-[#fbfdff] p-5 shadow-sm open:border-[#bfdbfe] open:bg-white"
+                >
+                  <summary className="flex min-h-[64px] cursor-pointer list-none items-center justify-between gap-4">
+                    <h4 className="text-base font-black leading-7 text-[#0f172a]">
+                      {faq.question}
+                    </h4>
+
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-sm font-black text-slate-500 transition group-open:rotate-180">
+                      ▼
+                    </span>
+                  </summary>
+
+                  <p className="mt-4 border-t border-slate-200 pt-4 text-sm leading-8 text-slate-600">
+                    {faq.answer}
+                  </p>
+                </details>
+              ))}
           </div>
         </div>
 
-        <div className="mt-3 space-y-2">
-          <div className="rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm leading-7 text-slate-600">
-            Want a strong overall choice with solid performance.
+        <div>
+          <div className="mb-4 rounded-[20px] border border-[#bfdbfe] bg-[#eff6ff] px-5 py-3">
+            <h3 className="text-lg font-black text-[#0f172a]">
+              Questions About {right.name_en || right.name}
+            </h3>
           </div>
-          <div className="rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm leading-7 text-slate-600">
-            Your priority is {cleanText(right.best_for_en || right.best_for) || "easy entry or active trading"}.
+
+          <div className="space-y-4">
+            {(((right as any).faq_en || []) as { question: string; answer: string }[])
+              .slice(0, 3)
+              .map((faq, index) => (
+                <details
+                  key={`right-faq-${index}`}
+                  className="group rounded-[24px] border border-slate-200 bg-[#fbfdff] p-5 shadow-sm open:border-[#bfdbfe] open:bg-white"
+                >
+                  <summary className="flex min-h-[64px] cursor-pointer list-none items-center justify-between gap-4">
+                    <h4 className="text-base font-black leading-7 text-[#0f172a]">
+                      {faq.question}
+                    </h4>
+
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-sm font-black text-slate-500 transition group-open:rotate-180">
+                      ▼
+                    </span>
+                  </summary>
+
+                  <p className="mt-4 border-t border-slate-200 pt-4 text-sm leading-8 text-slate-600">
+                    {faq.answer}
+                  </p>
+                </details>
+              ))}
           </div>
         </div>
+      </div>
 
-        <div className="mt-4">
-          <Link
-            href={`/en/brokers/${right.slug ?? ""}`}
-            className="inline-flex min-h-[46px] w-full items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-sm font-extrabold text-white"
+      <div className="mt-7 grid gap-4 rounded-[26px] border border-[#dbeafe] bg-[#f8fbff] p-5 lg:grid-cols-[1fr_auto] lg:items-center">
+        <p className="text-sm leading-7 text-slate-600 lg:text-base">
+          If this comparison helped you, you can share it with another trader comparing
+          {` ${left.name_en || left.name}`} and {right.name_en || right.name}.
+        </p>
+
+        <div className="flex justify-start lg:justify-end">
+          <ShareButtons url={pageUrl} title={shareTitle} />
+        </div>
+      </div>
+    </div>
+
+    {/* Mobile */}
+    <div className="block p-4 md:hidden">
+      <div>
+        <span className="text-xs font-black text-[#2563eb]">FAQs</span>
+
+        <h2 className="mt-2 text-[22px] font-black leading-[1.3] text-[#0f172a]">
+          Questions About {left.name_en || left.name} and {right.name_en || right.name}
+        </h2>
+
+        <p className="mt-1 text-xs leading-6 text-slate-600">
+          Key questions before opening an account.
+        </p>
+      </div>
+
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        <div className="rounded-xl border border-[#bfdbfe] bg-[#eff6ff] py-2 text-center text-xs font-black text-[#0f172a]">
+          {left.name_en || left.name}
+        </div>
+
+        <div className="rounded-xl border border-[#bfdbfe] bg-[#eff6ff] py-2 text-center text-xs font-black text-[#0f172a]">
+          {right.name_en || right.name}
+        </div>
+      </div>
+
+      <div className="mt-3 space-y-2">
+        {[
+          ...(((left as any).faq_en || []) as { question: string; answer: string }[])
+            .slice(0, 3)
+            .map((faq) => ({
+              ...faq,
+              brokerName: left.name_en || left.name,
+            })),
+          ...(((right as any).faq_en || []) as { question: string; answer: string }[])
+            .slice(0, 3)
+            .map((faq) => ({
+              ...faq,
+              brokerName: right.name_en || right.name,
+            })),
+        ].map((faq, index) => (
+          <details
+            key={`${faq.brokerName}-${index}`}
+            className="group rounded-[18px] border border-slate-200 bg-white p-3 shadow-sm open:border-[#bfdbfe]"
           >
-            {right.name_en || right.name} Review
-          </Link>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
-  <div className="rounded-[30px] border border-slate-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
-    {/* Header */}
-    <div className="mx-auto max-w-4xl text-center">
-      <span className="text-sm font-bold text-[#2563eb]">Safety & Regulation</span>
-      <h2 className="mt-2 text-2xl font-black leading-tight text-[#0f172a] sm:text-3xl lg:text-5xl">
-        How safe is trading with {left.name_en || left.name} vs {right.name_en || right.name}?
-      </h2>
-      <p className="mt-3 text-sm leading-8 text-slate-600 sm:text-base">
-        Safety depends on regulatory strength, transparency of the licensing authority, company headquarters, and the availability of an Islamic account. Here is a direct comparison between {left.name_en || left.name} and {right.name_en || right.name} based on available data.
-      </p>
-    </div>
-
-    {/* Top summary */}
-    <div className="mt-6 hidden gap-3 md:grid md:grid-cols-3">
-      <div className="rounded-[22px] border border-slate-200 bg-[#f8fbff] p-4">
-        <div className="text-xs font-bold text-slate-500">Regulation</div>
-        <div className="mt-2 text-sm font-black leading-7 text-[#0f172a]">
-          Both brokers hold multiple licenses
-        </div>
-      </div>
-
-      <div className="rounded-[22px] border border-slate-200 bg-[#f8fbff] p-4">
-        <div className="text-xs font-bold text-slate-500">Islamic Account</div>
-        <div className="mt-2 text-sm font-black leading-7 text-[#0f172a]">
-          {yesNoEnglish(left.islamic_account)} / {yesNoEnglish(right.islamic_account)}
-        </div>
-      </div>
-
-      <div className="rounded-[22px] border border-[#bfdbfe] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-4">
-        <div className="text-xs font-bold text-[#1d4ed8]">Important Note</div>
-        <div className="mt-2 text-sm font-black leading-7 text-[#0f172a]">
-          Always verify the exact regulatory entity under which your account will be opened before registering.
-        </div>
-      </div>
-    </div>
-
-    {/* Cards */}
-    <div className="mt-6 grid gap-4 md:grid-cols-2">
-      {/* Left */}
-      <div className="rounded-[26px] border border-slate-200 bg-[#fbfdff] p-4 sm:p-5">
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-200 bg-white p-2">
-              {left.logo ? (
-                <img
-                  src={left.logo}
-                  alt={left.name_en || left.name || "Broker logo"}
-                  className="h-full w-full object-contain"
-                />
-              ) : (
-                <span className="text-xs font-black text-slate-400">
-                  {left.name_en || left.name}
-                </span>
-              )}
-            </div>
-
-            <div>
-              <h3 className="text-xl font-black text-[#0f172a] sm:text-2xl">
-                {left.name_en || left.name}
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3">
+              <h3 className="text-sm font-black leading-6 text-[#0f172a]">
+                {faq.question}
               </h3>
-              <p className="mt-1 text-xs font-bold text-[#1d4ed8]">
-                Safety & Trust
-              </p>
-            </div>
-          </div>
 
-          <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-bold text-[#1d4ed8]">
-            {left.name_en || left.name} Safety
-          </span>
-        </div>
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-[10px] text-slate-500 transition group-open:rotate-180">
+                ▼
+              </span>
+            </summary>
 
-        <div className="space-y-3">
-          <div className="rounded-[20px] border border-slate-200 bg-white px-4 py-4">
-            <div className="text-sm font-black text-[#0f172a]">Regulation</div>
-            <div className="mt-2 text-sm leading-7 text-slate-600">
-              {shortReg(left.regulation)}
-            </div>
-          </div>
-
-          <div className="rounded-[20px] border border-slate-200 bg-white px-4 py-4">
-            <div className="text-sm font-black text-[#0f172a]">Islamic Account</div>
-            <div className="mt-2 text-sm leading-7 text-slate-600">
-              {yesNoEnglish(left.islamic_account)}
-            </div>
-          </div>
-
-          <div className="rounded-[20px] border border-slate-200 bg-white px-4 py-4">
-            <div className="text-sm font-black text-[#0f172a]">Headquarters</div>
-            <div className="mt-2 text-sm leading-7 text-slate-600">
-              {left.headquarters || "Not specified"}
-            </div>
-          </div>
-        </div>
+            <p className="mt-3 border-t border-slate-200 pt-3 text-xs leading-6 text-slate-600">
+              {faq.answer}
+            </p>
+          </details>
+        ))}
       </div>
 
-      {/* Right */}
-      <div className="rounded-[26px] border border-slate-200 bg-[#fbfdff] p-4 sm:p-5">
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-200 bg-white p-2">
-              {right.logo ? (
-                <img
-                  src={right.logo}
-                  alt={right.name_en || right.name || "Broker logo"}
-                  className="h-full w-full object-contain"
-                />
-              ) : (
-                <span className="text-xs font-black text-slate-400">
-                  {right.name_en || right.name}
-                </span>
-              )}
-            </div>
-
-            <div>
-              <h3 className="text-xl font-black text-[#0f172a] sm:text-2xl">
-                {right.name_en || right.name}
-              </h3>
-              <p className="mt-1 text-xs font-bold text-[#1d4ed8]">
-                Safety & Trust
-              </p>
-            </div>
-          </div>
-
-          <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-bold text-[#1d4ed8]">
-            {right.name_en || right.name} Safety
-          </span>
-        </div>
-
-        <div className="space-y-3">
-          <div className="rounded-[20px] border border-slate-200 bg-white px-4 py-4">
-            <div className="text-sm font-black text-[#0f172a]">Regulation</div>
-            <div className="mt-2 text-sm leading-7 text-slate-600">
-              {shortReg(right.regulation)}
-            </div>
-          </div>
-
-          <div className="rounded-[20px] border border-slate-200 bg-white px-4 py-4">
-            <div className="text-sm font-black text-[#0f172a]">Islamic Account</div>
-            <div className="mt-2 text-sm leading-7 text-slate-600">
-              {yesNoEnglish(right.islamic_account)}
-            </div>
-          </div>
-
-          <div className="rounded-[20px] border border-slate-200 bg-white px-4 py-4">
-            <div className="text-sm font-black text-[#0f172a]">Headquarters</div>
-            <div className="mt-2 text-sm leading-7 text-slate-600">
-              {right.headquarters || "Not specified"}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    {/* Mobile note */}
-    <div className="hidden md:block mt-5 rounded-[22px] border border-slate-200 bg-[#f8fbff] p-4">
-      <div className="text-sm font-black text-[#0f172a]">Important Note</div>
-      <p className="mt-2 text-sm leading-7 text-slate-600">
-        Always verify the exact regulatory entity under which your account will be opened before registering.
-      </p>
-    </div>
-
-    {/* Footer */}
-    <div className="mt-6 rounded-[24px] border border-slate-200 bg-[#f8fbff] p-4 sm:p-5">
-      <p className="text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
-        Having licenses does not necessarily mean all accounts offer the same level of protection. It is always best to review the exact regulatory entity under which your account will be opened before making a final decision.
-      </p>
-    </div>
-  </div>
-</section>
-
-<section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
-  <div className="rounded-[30px] border border-[#bfdbfe] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-4 shadow-sm sm:p-6 lg:p-8">
-    {/* Header */}
-    <div className="max-w-4xl">
-      <span className="text-sm font-bold text-[#2563eb]">Final Verdict</span>
-      <h2 className="mt-2 text-2xl font-black leading-tight text-[#0f172a] sm:text-3xl lg:text-5xl">
-        Which is better: {left.name_en || left.name} or {right.name_en || right.name}?
-      </h2>
-      <p className="mt-3 text-sm leading-8 text-slate-600 sm:text-base">
-        After reviewing core features, fees, account types, and safety, here is the final conclusion to help you make a faster decision.
-      </p>
-    </div>
-
-    {/* Verdict cards */}
-    <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-      <div className="rounded-[22px] border border-slate-200 bg-white p-4 text-center">
-        <div className="text-xs font-bold text-slate-500">Best for Beginners</div>
-        <div className="mt-2 text-2xl font-black text-[#0f172a]">
-          {beginnerWinner}
-        </div>
-      </div>
-
-      <div className="rounded-[22px] border border-slate-200 bg-white p-4 text-center">
-        <div className="text-xs font-bold text-slate-500">Best for Active Trading</div>
-        <div className="mt-2 text-2xl font-black text-[#0f172a]">
-          {scalpingWinner}
-        </div>
-      </div>
-
-      <div className="rounded-[22px] border border-slate-200 bg-white p-4 text-center sm:col-span-2 xl:col-span-1">
-        <div className="text-xs font-bold text-slate-500">Best Overall</div>
-        <div className="mt-2 text-2xl font-black text-[#0f172a]">
-          {overallWinner}
-        </div>
-      </div>
-    </div>
-
-    {/* Analysis */}
-    <div className="mt-6 rounded-[24px] border border-slate-200 bg-white p-4 sm:p-5">
-      <p className="text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
-        If you are looking for the best overall option, <strong>{overallWinner}</strong> may be the right choice for you.
-        If your priority is ease of getting started and clear account structures, consider <strong>{beginnerWinner}</strong>.
-        If your main focus is active trading and tighter spreads, start by reviewing <strong>{scalpingWinner}</strong>.
-      </p>
-    </div>
-
-    {/* CTA */}
-    <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-      <a
-        href={`/go/${left.slug ?? ""}?type=real`}
-        className="inline-flex min-h-[50px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
-      >
-        Open an account with {left.name_en || left.name}
-      </a>
-
-      <a
-        href={`/go/${right.slug ?? ""}?type=real`}
-        className="inline-flex min-h-[50px] items-center justify-center rounded-2xl bg-[#2563eb] px-6 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
-      >
-        Open an account with {right.name_en || right.name}
-      </a>
-    </div>
-
-    {/* Small note - desktop only */}
-    <p className="mt-4 hidden text-xs text-slate-500 md:block">
-      The final decision always depends on the actual account type you choose and your personal trading style.
-    </p>
-  </div>
-</section>
-
-<section className="mx-auto max-w-7xl px-4 pb-6 sm:px-6 lg:px-8">
-  <div className="rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-sm">
-
-    <h3 className="text-lg font-bold text-[#0f172a]">
-      Share this comparison with others
-    </h3>
-
-    <p className="mt-1 text-sm text-slate-500">
-      This comparison may help other traders choose the right broker
-    </p>
-
-    <div className="mt-4 flex justify-center">
-      <ShareButtons url={pageUrl} title={shareTitle} />
-    </div>
-
-  </div>
-</section>
-
-<section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
-  <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
-
-    <h2 className="text-2xl font-black text-[#0f172a] sm:text-3xl">
-      Frequently Asked Questions
-    </h2>
-
-    <div className="mt-6 space-y-3">
-
-      <details className="rounded-xl border border-slate-200 p-4">
-        <summary className="cursor-pointer font-bold text-[#0f172a]">
-          Is {left.name_en || left.name} better than {right.name_en || right.name}?
-        </summary>
-        <p className="mt-2 text-sm text-slate-600">
-          It depends on the trader’s needs, as brokers differ in fees, platforms, and account types.
+      <div className="mt-4 rounded-[18px] border border-[#dbeafe] bg-[#f8fbff] p-3">
+        <p className="text-center text-xs leading-6 text-slate-600">
+          Share this comparison with another trader.
         </p>
-      </details>
 
-      <details className="rounded-xl border border-slate-200 p-4">
-        <summary className="cursor-pointer font-bold text-[#0f172a]">
-          What is the minimum deposit to open a trading account?
-        </summary>
-        <p className="mt-2 text-sm text-slate-600">
-          The minimum deposit varies depending on the broker and the type of account chosen.
-        </p>
-      </details>
-
-      <details className="rounded-xl border border-slate-200 p-4">
-        <summary className="cursor-pointer font-bold text-[#0f172a]">
-          Is there an Islamic account available?
-        </summary>
-        <p className="mt-2 text-sm text-slate-600">
-          Many brokers offer Islamic (swap-free) accounts that comply with Sharia principles.
-        </p>
-      </details>
-
+        <div className="mt-3 flex justify-center">
+          <ShareButtons url={pageUrl} title={shareTitle} />
+        </div>
+      </div>
     </div>
-
   </div>
 </section>
 
