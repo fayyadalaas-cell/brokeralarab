@@ -93,7 +93,7 @@ export default function EnglishHeader({
                       <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm">
                         <Image
                           src={broker.menuLogo}
-                          alt={broker.name}
+                          alt={broker.name_en || broker.name}
                           width={40}
                           height={40}
                           className="h-full w-full object-contain p-1"
@@ -154,7 +154,7 @@ export default function EnglishHeader({
                         />
                       </div>
 
-                      <div className="flex-1 text-center text-[14px] font-bold text-slate-700">
+                      <div className="flex-1 text-center text-[15px] font-extrabold text-slate-800">
                         {item.label}
                       </div>
 
@@ -192,70 +192,20 @@ export default function EnglishHeader({
                 </span>
               </Link>
 
-              <div className="invisible absolute left-0 top-full z-50 mt-1 w-[640px] max-w-[calc(100vw-40px)] translate-y-2 rounded-[30px] border border-slate-200 bg-white p-5 opacity-0 shadow-[0_28px_80px_rgba(15,23,42,0.15)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
-                <div className="grid grid-cols-[0.95fr_1.15fr] gap-6 divide-x divide-slate-200">
-                  {/* CATEGORIES */}
-                  <div className="pr-5">
-                    <div className="mb-4 text-sm font-black text-slate-900">
-                      Best Brokers by Category
-                    </div>
-
-                    <div className="grid gap-2">
-                      {featuredCategories.map((item: any) => (
-                        <Link
-                          key={item.href + item.label}
-                          href={`/en${item.href}`}
-                          className="rounded-2xl px-3 py-3 text-[15px] font-bold text-slate-700 transition hover:bg-blue-50 hover:text-blue-700"
-                        >
-                          {item.label_en || item.label}
-                        </Link>
-                      ))}
-                    </div>
-
-                    <Link
-                      href="/en/best-brokers"
-                      className="mt-3 block rounded-2xl px-3 py-3 text-sm font-extrabold text-blue-700 transition hover:bg-blue-50"
-                    >
-                      View All Categories →
-                    </Link>
-                  </div>
-
-                  {/* COUNTRIES */}
-                  <div className="pl-1">
-                    <div className="mb-4 text-sm font-black text-slate-900">
-                      Best Brokers by Country
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-2">
-                      {countryMenuItems.map((item: any) => (
-                        <Link
-                          key={item.href}
-                          href={`/en${item.href}`}
-                          className="flex items-center gap-3 rounded-2xl px-3 py-3 transition hover:bg-blue-50"
-                          title={item.label_en || item.label}
-                        >
-                          <Image
-                            src={item.flag}
-                            alt={item.shortLabel}
-                            width={22}
-                            height={22}
-                            className="h-[22px] w-[22px] shrink-0 rounded-full object-cover"
-                          />
-                          <span className="whitespace-nowrap text-[14px] font-bold text-slate-700 transition hover:text-blue-700">
-                            {item.shortLabel_en || item.shortLabel}
-                          </span>
-                        </Link>
-                      ))}
-                    </div>
-
-                    <Link
-                      href="/en/best-brokers"
-                      className="mt-3 block rounded-2xl px-3 py-3 text-sm font-extrabold text-blue-700 transition hover:bg-blue-50"
-                    >
-                      View All Countries →
-                    </Link>
-                  </div>
+              <div className="invisible absolute left-0 top-full z-50 mt-1 w-[360px] translate-y-2 rounded-[28px] border border-slate-200 bg-white p-4 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.14)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+                <div className="px-2 pb-3 pt-1 text-xs font-black tracking-wide text-slate-500">
+                  Best Broker Guides
                 </div>
+
+                <Link
+  href="/en/best-brokers"
+  className="block rounded-2xl px-3 py-3 transition hover:bg-blue-50"
+>
+                  <div className="text-[16px] font-black text-slate-900">
+                    Best Forex Brokers in 2026
+                  </div>
+                 
+                </Link>
               </div>
             </div>
 
@@ -272,32 +222,28 @@ export default function EnglishHeader({
               </Link>
 
               <div className="invisible absolute left-0 top-full z-50 mt-3 w-[320px] translate-y-2 rounded-[24px] border border-slate-200 bg-white p-4 opacity-0 shadow-[0_24px_60px_rgba(15,23,42,0.12)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
-                <div className="mb-3 flex items-center justify-between"></div>
+                {learnTradingMenuItems.slice(0, 1).map((item: any) => (
+                  <Link
+                    key={item.href}
+                    href={`/en${item.href}`}
+                    className="flex items-center gap-3 rounded-[18px] border border-slate-200 bg-slate-50 p-3 transition hover:border-blue-200 hover:bg-blue-50"
+                  >
+                    <div className="relative h-[58px] w-[58px] shrink-0 overflow-hidden rounded-[14px] border border-slate-200 bg-white">
+                      <Image
+                        src={item.image || "/articles/how-to-start-trading-from-zero.png"}
+                        alt={item.title_en || item.title}
+                        fill
+                        className="object-contain p-1.5"
+                      />
+                    </div>
 
-                {learnTradingMenuItems.slice(0, 1).map((item: any) => {
-                  return (
-                    <Link
-                      key={item.href}
-                      href={`/en${item.href}`}
-                      className="flex items-center gap-3 rounded-[18px] border border-slate-200 bg-slate-50 p-3 transition hover:border-blue-200 hover:bg-blue-50"
-                    >
-                      <div className="relative h-[58px] w-[58px] shrink-0 overflow-hidden rounded-[14px] border border-slate-200 bg-white">
-                        <Image
-                          src={item.image || "/articles/how-to-start-trading-from-zero.png"}
-                          alt={item.title_en || item.title}
-                          fill
-                          className="object-contain p-1.5"
-                        />
-                      </div>
-
-                      <div className="min-w-0 flex-1">
-                        <h3 className="line-clamp-2 text-[16px] font-black leading-7 text-slate-950">
-                          {item.title_en || item.title}
-                        </h3>
-                      </div>
-                    </Link>
-                  );
-                })}
+                    <div className="min-w-0 flex-1">
+                      <h3 className="line-clamp-2 text-[16px] font-black leading-7 text-slate-950">
+                        {item.title_en || item.title}
+                      </h3>
+                    </div>
+                  </Link>
+                ))}
               </div>
             </div>
 
@@ -309,22 +255,13 @@ export default function EnglishHeader({
             </Link>
           </nav>
 
-         <div className="hidden lg:flex items-center justify-end min-w-[100px]">
-  <div className="inline-flex items-center gap-1 rounded-full border border-slate-200/70 bg-white p-1 shadow-[0_2px_10px_rgba(15,23,42,0.06)]">
-    <Link
-      href="/"
-      className="rounded-full px-3 py-1 text-[11px] font-extrabold text-slate-500 transition hover:bg-slate-50 hover:text-slate-900"
-    >
-      AR
-    </Link>
-
-    <Link
-      href="/en"
-      className="rounded-full bg-[#2563eb] px-3 py-1 text-[11px] font-extrabold text-white shadow-sm transition hover:bg-blue-700"
-    >
-      EN
-    </Link>
-  </div>
+          <div className="hidden min-w-[120px] items-center justify-end lg:flex">
+  <Link
+    href="/"
+    className="inline-flex items-center rounded-full border border-blue-300 bg-white px-4 py-2 text-[13px] font-bold text-blue-700 shadow-sm transition hover:border-blue-400 hover:bg-blue-50"
+  >
+    العربية
+  </Link>
 </div>
 
           <MobileNavMenu

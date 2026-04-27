@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 
 type BrokerMenuItem = {
   name: string;
+  name_en?: string;
   slug: string;
   menuLogo: string;
 };
@@ -14,19 +15,24 @@ type BrokerMenuItem = {
 type MenuLink = {
   href: string;
   label: string;
+  label_en?: string;
 };
 
 type CountryMenuItem = {
   href: string;
   label: string;
+  label_en?: string;
   shortLabel: string;
+  shortLabel_en?: string;
   flag: string;
 };
 
 type LearnTradingMenuItem = {
   href: string;
   title: string;
+  title_en?: string;
   description: string;
+  description_en?: string;
   image: string;
   isFeatured?: boolean;
 };
@@ -59,6 +65,13 @@ const brokerLogoMap: Record<string, string> = {
 
 function getBrokerLogo(slug: string): string {
   return brokerLogoMap[slug] || "/brokers/BrokerLogo.png";
+}
+
+function withLangHref(href: string, isEnglish: boolean) {
+  if (!isEnglish) return href;
+  if (href === "/") return "/en";
+  if (href.startsWith("/en")) return href;
+  return `/en${href}`;
 }
 
 function HamburgerIcon() {
@@ -115,7 +128,7 @@ function Section({
       <button
         type="button"
         onClick={onToggle}
-        className="flex w-full items-center justify-between px-4 py-3 text-right"
+        className="flex w-full items-center justify-between px-4 py-3 text-left"
       >
         <span className="text-[15px] font-extrabold text-slate-900">{title}</span>
         <span className="text-slate-500">
@@ -135,8 +148,9 @@ export default function MobileNavMenu({
   featuredComparisons,
   learnTradingMenuItems,
 }: MobileNavMenuProps) {
-
   const pathname = usePathname();
+  const isEnglish = pathname.startsWith("/en");
+
   const [isOpen, setIsOpen] = useState(false);
   const [openSection, setOpenSection] = useState<string | null>(null);
 
@@ -154,12 +168,14 @@ export default function MobileNavMenu({
 
   const comparisonItems = useMemo(() => {
     return featuredComparisons.map((item) => {
-      const parts = item.label.split(" vs ");
+      const label = item.label_en || item.label;
+      const parts = label.split(" vs ");
       const leftSlug = parts[0]?.toLowerCase().replace(/\s+/g, "-") || "";
       const rightSlug = parts[1]?.toLowerCase().replace(/\s+/g, "-") || "";
 
       return {
         ...item,
+        displayLabel: label,
         leftLogo: getBrokerLogo(leftSlug),
         rightLogo: getBrokerLogo(rightSlug),
       };
@@ -175,11 +191,26 @@ export default function MobileNavMenu({
     setOpenSection(null);
   };
 
+  const text = {
+    open: isEnglish ? "Open menu" : "فتح القائمة",
+    close: isEnglish ? "Close menu" : "إغلاق القائمة",
+    home: isEnglish ? "Home" : "الرئيسية",
+    reviews: isEnglish ? "Broker Reviews" : "تقييمات الوسطاء",
+    reviewPrefix: isEnglish ? "" : "تقييم ",
+    reviewSuffix: isEnglish ? " Review" : "",
+    allReviews: isEnglish ? "View All Reviews" : "جميع التقييمات",
+    comparisons: isEnglish ? "Comparisons" : "المقارنات",
+    allComparisons: isEnglish ? "View All Comparisons" : "جميع المقارنات",
+    best: isEnglish ? "Best Brokers" : "أفضل الوسطاء",
+    learn: isEnglish ? "Learn Trading" : "تعلم التداول",
+    about: isEnglish ? "About" : "عن الموقع",
+  };
+
   return (
     <div className="lg:hidden">
       <button
         type="button"
-        aria-label={isOpen ? "إغلاق القائمة" : "فتح القائمة"}
+        aria-label={isOpen ? text.close : text.open}
         aria-expanded={isOpen}
         onClick={() => setIsOpen((prev) => !prev)}
         className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-800 shadow-sm"
@@ -192,65 +223,105 @@ export default function MobileNavMenu({
           <div className="fixed inset-0 z-[90] bg-slate-950/10" onClick={closeMenu} />
 
           <div
-  className={`fixed left-0 top-16 z-[100] w-[280px] origin-top-left transition-all duration-200 ease-out ${
-    isOpen
-      ? "translate-y-0 opacity-100"
-      : "-translate-y-2 opacity-0 pointer-events-none"
-  }`}
->
-  <div className="overflow-hidden border-r border-b border-slate-200 bg-white shadow-[0_10px_24px_rgba(15,23,42,0.10)]">
+            dir={isEnglish ? "ltr" : "rtl"}
+            className={`fixed top-16 z-[100] w-[280px] transition-all duration-200 ease-out ${
+              isEnglish ? "left-0 origin-top-left" : "right-0 origin-top-right"
+            } ${
+              isOpen
+                ? "translate-y-0 opacity-100"
+                : "-translate-y-2 opacity-0 pointer-events-none"
+            }`}
+          >
+            <div
+              className={`overflow-hidden border-b border-slate-200 bg-white shadow-[0_10px_24px_rgba(15,23,42,0.10)] ${
+                isEnglish ? "border-r" : "border-l"
+              }`}
+            >
               <div className="max-h-[calc(100vh-80px)] overflow-y-auto p-2">
-               <div className="mb-2">
-  <Link
-    href="/"
-    onClick={closeMenu}
-    className="block rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-right text-[14px] font-extrabold text-slate-900 transition hover:bg-white"
-  >
-    الرئيسية
-  </Link>
-</div>
+                <div className="mb-3 grid grid-cols-2 gap-2">
+                  <Link
+                    href="/"
+                    onClick={closeMenu}
+                    className={`rounded-2xl border px-4 py-3 text-center text-[13px] font-black transition ${
+                      !isEnglish
+                        ? "border-blue-600 bg-blue-600 text-white shadow-sm"
+                        : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                    }`}
+                  >
+                    العربية
+                  </Link>
+
+                  <Link
+                    href="/en"
+                    onClick={closeMenu}
+                    className={`rounded-2xl border px-4 py-3 text-center text-[13px] font-black transition ${
+                      isEnglish
+                        ? "border-blue-600 bg-blue-600 text-white shadow-sm"
+                        : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                    }`}
+                  >
+                    English
+                  </Link>
+                </div>
+
+                <div className="mb-2">
+                  <Link
+                    href={isEnglish ? "/en" : "/"}
+                    onClick={closeMenu}
+                    className="block rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-[14px] font-extrabold text-slate-900 transition hover:bg-white"
+                  >
+                    {text.home}
+                  </Link>
+                </div>
+
                 <div className="space-y-3">
                   <Section
-                    title="تقييمات الوسطاء"
+                    title={text.reviews}
                     open={openSection === "reviews"}
                     onToggle={() => toggleSection("reviews")}
                   >
                     <div className="space-y-2">
-                      {topBrokers.map((broker) => (
-                        <Link
-                          key={broker.slug}
-                          href={`/brokers/${broker.slug}`}
-                          onClick={closeMenu}
-                          className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3"
-                        >
-                          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white">
-                            <Image
-                              src={broker.menuLogo}
-                              alt={broker.name}
-                              width={36}
-                              height={36}
-                              className="h-full w-full object-contain p-1"
-                            />
-                          </div>
+                      {topBrokers.map((broker) => {
+                        const brokerName = isEnglish ? broker.name_en || broker.name : broker.name;
 
-                          <div className="min-w-0 flex-1 text-right text-[14px] font-bold text-slate-800">
-                            تقييم {broker.name}
-                          </div>
-                        </Link>
-                      ))}
+                        return (
+                          <Link
+                            key={broker.slug}
+                            href={withLangHref(`/brokers/${broker.slug}`, isEnglish)}
+                            onClick={closeMenu}
+                            className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3"
+                          >
+                            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white">
+                              <Image
+                                src={broker.menuLogo}
+                                alt={brokerName}
+                                width={36}
+                                height={36}
+                                className="h-full w-full object-contain p-1"
+                              />
+                            </div>
+
+                            <div className="min-w-0 flex-1 text-[14px] font-bold text-slate-800">
+                              {text.reviewPrefix}
+                              {brokerName}
+                              {text.reviewSuffix}
+                            </div>
+                          </Link>
+                        );
+                      })}
 
                       <Link
-                        href="/brokers"
+                        href={withLangHref("/brokers", isEnglish)}
                         onClick={closeMenu}
                         className="block rounded-2xl border border-slate-200 bg-white px-3 py-3 text-center text-sm font-extrabold text-blue-700"
                       >
-                        جميع التقييمات
+                        {text.allReviews}
                       </Link>
                     </div>
                   </Section>
 
                   <Section
-                    title="المقارنات"
+                    title={text.comparisons}
                     open={openSection === "compare"}
                     onToggle={() => toggleSection("compare")}
                   >
@@ -258,24 +329,10 @@ export default function MobileNavMenu({
                       {comparisonItems.map((item) => (
                         <Link
                           key={item.href}
-                          href={item.href}
+                          href={withLangHref(item.href, isEnglish)}
                           onClick={closeMenu}
                           className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3"
                         >
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white">
-                            <Image
-                              src={item.rightLogo}
-                              alt=""
-                              width={34}
-                              height={34}
-                              className="h-full w-full object-contain p-1"
-                            />
-                          </div>
-
-                          <div className="min-w-0 flex-1 text-center text-[13px] font-extrabold text-slate-800">
-                            {item.label}
-                          </div>
-
                           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white">
                             <Image
                               src={item.leftLogo}
@@ -285,113 +342,139 @@ export default function MobileNavMenu({
                               className="h-full w-full object-contain p-1"
                             />
                           </div>
+
+                          <div className="min-w-0 flex-1 text-center text-[13px] font-extrabold text-slate-800">
+                            {item.displayLabel}
+                          </div>
+
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white">
+                            <Image
+                              src={item.rightLogo}
+                              alt=""
+                              width={34}
+                              height={34}
+                              className="h-full w-full object-contain p-1"
+                            />
+                          </div>
                         </Link>
                       ))}
 
                       <Link
-                        href="/compare"
+                        href={withLangHref("/compare", isEnglish)}
                         onClick={closeMenu}
                         className="block rounded-2xl border border-slate-200 bg-white px-3 py-3 text-center text-sm font-extrabold text-blue-700"
                       >
-                        جميع المقارنات
+                        {text.allComparisons}
                       </Link>
                     </div>
                   </Section>
 
                   <Section
-                    title="أفضل الوسطاء"
+                    title={text.best}
                     open={openSection === "best"}
                     onToggle={() => toggleSection("best")}
                   >
-                    <div className="space-y-4">
-                      <div>
-                        <div className="mb-2 text-[13px] font-extrabold text-slate-900">
-                          حسب الدولة
+                    {isEnglish ? (
+                      <div className="space-y-2">
+                        <Link
+                          href="/en/best-brokers"
+                          onClick={closeMenu}
+                          className="block rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-[14px] font-extrabold text-slate-900 transition hover:bg-white"
+                        >
+                          Best Forex Brokers in 2026
+                        </Link>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        <div>
+                          <div className="mb-2 text-[13px] font-extrabold text-slate-900">
+                            حسب الدولة
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-2">
+                            {countryMenuItems.map((item) => (
+                              <Link
+                                key={item.href}
+                                href={item.href}
+                                onClick={closeMenu}
+                                className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3"
+                              >
+                                <Image
+                                  src={item.flag}
+                                  alt={item.shortLabel}
+                                  width={18}
+                                  height={18}
+                                  className="h-[18px] w-[18px] rounded-full object-cover"
+                                />
+                                <span className="truncate text-[13px] font-bold text-slate-800">
+                                  {item.shortLabel}
+                                </span>
+                              </Link>
+                            ))}
+                          </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-2">
-                          {countryMenuItems.map((item) => (
-                            <Link
-                              key={item.href}
-                              href={item.href}
-                              onClick={closeMenu}
-                              className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3"
-                            >
-                              <Image
-                                src={item.flag}
-                                alt={item.shortLabel}
-                                width={18}
-                                height={18}
-                                className="h-[18px] w-[18px] rounded-full object-cover"
-                              />
-                              <span className="truncate text-[13px] font-bold text-slate-800">
-                                {item.shortLabel}
-                              </span>
-                            </Link>
-                          ))}
+                        <div>
+                          <div className="mb-2 text-[13px] font-extrabold text-slate-900">
+                            حسب الفئة
+                          </div>
+
+                          <div className="grid gap-2">
+                            {featuredCategories.map((item) => (
+                              <Link
+                                key={`${item.href}-${item.label}`}
+                                href={item.href}
+                                onClick={closeMenu}
+                                className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-[14px] font-bold text-slate-800"
+                              >
+                                {item.label}
+                              </Link>
+                            ))}
+                          </div>
                         </div>
                       </div>
+                    )}
+                  </Section>
 
-                      <div>
-                        <div className="mb-2 text-[13px] font-extrabold text-slate-900">
-                          حسب الفئة
-                        </div>
+                  <Section
+                    title={text.learn}
+                    open={openSection === "learn"}
+                    onToggle={() => toggleSection("learn")}
+                  >
+                    <div className="space-y-3">
+                      {learnTradingMenuItems.slice(0, 1).map((item) => (
+                        <Link
+                          key={item.href}
+                          href={withLangHref(item.href, isEnglish)}
+                          onClick={closeMenu}
+                          className="flex items-center gap-3 rounded-[20px] border border-slate-200 bg-slate-50 p-3 transition hover:bg-white"
+                        >
+                          <div className="relative h-[58px] w-[58px] shrink-0 overflow-hidden rounded-[14px] border border-slate-200 bg-white">
+                            <Image
+                              src={item.image || "/articles/how-to-start-trading-from-zero.png"}
+                              alt={isEnglish ? item.title_en || item.title : item.title}
+                              fill
+                              className="object-cover"
+                            />
+                          </div>
 
-                        <div className="grid gap-2">
-                          {featuredCategories.map((item) => (
-                            <Link
-                              key={`${item.href}-${item.label}`}
-                              href={item.href}
-                              onClick={closeMenu}
-                              className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-[14px] font-bold text-slate-800"
-                            >
-                              {item.label}
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
+                          <div className="min-w-0 flex-1">
+                            <h3 className="line-clamp-2 text-[15px] font-black leading-7 text-slate-950">
+                              {isEnglish ? item.title_en || item.title : item.title}
+                            </h3>
+                          </div>
+                        </Link>
+                      ))}
                     </div>
                   </Section>
 
-               <Section
-  title="تعلم التداول"
-  open={openSection === "learn"}
-  onToggle={() => toggleSection("learn")}
->
-  <div className="space-y-3">
-    {learnTradingMenuItems.slice(0, 1).map((item) => (
-      <Link
-        key={item.href}
-        href={item.href}
-        onClick={closeMenu}
-        className="flex items-center gap-3 rounded-[20px] border border-slate-200 bg-slate-50 p-3 transition hover:bg-white"
-      >
-        <div className="relative h-[58px] w-[58px] shrink-0 overflow-hidden rounded-[14px] border border-slate-200 bg-white">
-          <Image
-            src={item.image || "/articles/how-to-start-trading-from-zero.png"}
-            alt={item.title}
-            fill
-            className="object-cover"
-          />
-        </div>
-
-        <div className="min-w-0 flex-1">
-          <h3 className="line-clamp-2 text-[15px] font-black leading-7 text-slate-950">
-            {item.title}
-          </h3>
-        </div>
-      </Link>
-    ))}
-  </div>
-</Section>
-
                   <Link
-  href="/about"
-  onClick={closeMenu}
-  className="mt-3 block rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-right text-[14px] font-extrabold text-slate-900 transition hover:bg-white"
->
-  عن الموقع
-</Link>
+                    href={withLangHref("/about", isEnglish)}
+                    onClick={closeMenu}
+                    className="mt-3 block rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-[14px] font-extrabold text-slate-900 transition hover:bg-white"
+                  >
+                    {text.about}
+                  </Link>
                 </div>
               </div>
             </div>

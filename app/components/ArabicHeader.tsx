@@ -25,6 +25,18 @@ function getBrokerLogo(slug: string): string {
   return brokerLogoMap[slug] || "/brokers/BrokerLogo.png";
 }
 
+const brokerNamesAr: Record<string, string> = {
+  exness: "إكسنس",
+  xm: "إكس إم",
+  pepperstone: "بيبرستون",
+  fxpro: "اف اكس برو",
+  avatrade: "افاتريد",
+  alpari: "الباري",
+  xs: "اكس اس",
+  equiti: "اكويتي",
+  vantage: "فانتج",
+};
+
 export default function ArabicHeader({
   topBrokers,
   countryMenuItems,
@@ -123,55 +135,66 @@ export default function ArabicHeader({
                 </span>
               </Link>
 
-              <div className="invisible absolute right-0 top-full z-50 mt-1 w-[340px] translate-y-2 rounded-[28px] border border-slate-200 bg-white p-3 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.14)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+              <div className="invisible absolute right-0 top-full z-50 mt-1 w-[420px] translate-y-2 rounded-[28px] border border-slate-200 bg-white p-3 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.14)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
                 <div className="px-3 pb-2 pt-1 text-xs font-black tracking-wide text-slate-500">
                   أشهر المقارنات
                 </div>
 
-                {featuredComparisons.map((item: any) => {
-                  const parts = item.label.split(" vs ");
-                  const leftSlug = parts[0]?.toLowerCase().replace(/\s+/g, "-");
-                  const rightSlug = parts[1]?.toLowerCase().replace(/\s+/g, "-");
+               {featuredComparisons.map((item: any) => {
+  const parts = item.label.split(" vs ");
+  const leftSlug = parts[0]?.toLowerCase().replace(/\s+/g, "-");
+  const rightSlug = parts[1]?.toLowerCase().replace(/\s+/g, "-");
 
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className="flex items-center justify-between gap-3 rounded-2xl px-3 py-3 transition hover:bg-blue-50"
-                    >
-                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm">
-                        <Image
-                          src={getBrokerLogo(rightSlug)}
-                          alt={rightSlug || ""}
-                          width={40}
-                          height={40}
-                          className="h-full w-full object-contain p-1"
-                        />
-                      </div>
+  const leftName = brokerNamesAr[leftSlug] || parts[0];
+  const rightName = brokerNamesAr[rightSlug] || parts[1];
 
-                      <div className="flex-1 text-center text-[14px] font-bold text-slate-700">
-                        {item.label}
-                      </div>
+  return (
+    <Link
+      key={item.href}
+      href={item.href}
+      className="grid grid-cols-[52px_1fr_44px_1fr_52px] items-center gap-2 rounded-2xl px-3 py-3 transition hover:bg-blue-50"
+    >
+      <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm">
+        <Image
+          src={getBrokerLogo(rightSlug)}
+          alt={rightName}
+          width={40}
+          height={40}
+          className="h-full w-full object-contain p-1"
+        />
+      </div>
 
-                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm">
-                        <Image
-                          src={getBrokerLogo(leftSlug)}
-                          alt={leftSlug || ""}
-                          width={40}
-                          height={40}
-                          className="h-full w-full object-contain p-1"
-                        />
-                      </div>
-                    </Link>
-                  );
-                })}
+      <span className="min-w-0 truncate text-right text-[14px] font-extrabold text-slate-800">
+        {rightName}
+      </span>
 
-                <Link
-                  href="/compare"
-                  className="mt-1 block rounded-2xl px-3 py-3 text-sm font-extrabold text-blue-700 transition hover:bg-blue-50"
-                >
-                  جميع المقارنات ←
-                </Link>
+      <span className="mx-auto inline-flex shrink-0 items-center justify-center rounded-full bg-slate-100 px-2.5 py-[2px] text-[11px] font-extrabold text-slate-600">
+        VS
+      </span>
+
+      <span className="min-w-0 truncate text-left text-[14px] font-extrabold text-slate-800">
+        {leftName}
+      </span>
+
+      <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm">
+        <Image
+          src={getBrokerLogo(leftSlug)}
+          alt={leftName}
+          width={40}
+          height={40}
+          className="h-full w-full object-contain p-1"
+        />
+      </div>
+    </Link>
+  );
+})}
+
+<Link
+  href="/compare"
+  className="mt-1 block rounded-2xl px-3 py-3 text-sm font-extrabold text-blue-700 transition hover:bg-blue-50"
+>
+  جميع المقارنات ←
+</Link>
               </div>
             </div>
 
@@ -304,24 +327,13 @@ export default function ArabicHeader({
             </Link>
           </nav>
 
-     <div className="hidden lg:flex items-center justify-start min-w-[100px]">
-  <div className="inline-flex items-center gap-1 rounded-full border border-slate-200/70 bg-white p-1 shadow-[0_2px_10px_rgba(15,23,42,0.06)]">
-
-    <Link
-      href="/"
-      className="rounded-full bg-[#2563eb] px-3 py-1 text-[11px] font-extrabold text-white shadow-sm transition hover:bg-blue-700"
-    >
-      AR
-    </Link>
-
-    <Link
-      href="/en"
-      className="rounded-full px-3 py-1 text-[11px] font-extrabold text-slate-500 transition hover:bg-slate-50 hover:text-slate-900"
-    >
-      EN
-    </Link>
-
-  </div>
+     <div className="hidden lg:flex items-center justify-start min-w-[120px]">
+  <Link
+    href="/en"
+    className="inline-flex items-center rounded-full border border-blue-300 bg-white px-4 py-2 text-[13px] font-bold text-blue-700 shadow-sm transition hover:bg-blue-50 hover:border-blue-400"
+  >
+    English
+  </Link>
 </div>
 
           <MobileNavMenu
