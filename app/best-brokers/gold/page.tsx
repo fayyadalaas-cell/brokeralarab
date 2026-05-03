@@ -723,6 +723,7 @@ export default async function BestGoldTradingPlatformsPage() {
   </section>
 )}
 
+
       {/* TOP 10 */}
 <section className="mx-auto max-w-7xl px-4 pb-6 md:px-6 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">

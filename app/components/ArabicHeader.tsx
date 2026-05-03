@@ -4,21 +4,42 @@ import MobileNavMenu from "@/app/components/MobileNavMenu";
 
 const brokerLogoMap: Record<string, string> = {
   activtrades: "/brokers/activtrade.png",
+  activtrade: "/brokers/activtrade.png",
+
   alpari: "/brokers/alpari.png",
   avatrade: "/brokers/avatrade.png",
-  activtrade: "/brokers/activtrade.png",
+
   equiti: "/brokers/equiti.png",
+
   exness: "/brokers/exness.png",
   "exness-platform": "/brokers/exness-platform.png",
+  exness2: "/brokers/exness2.png",
+
   fxpro: "/brokers/FxPro.png",
+
   "ic-markets": "/brokers/ic-markets.png",
+  icmarkets: "/brokers/ic-markets.png",
+
   justmarkets: "/brokers/justmarkets.png",
   justmarket: "/brokers/justmarket.png",
   "just-markets": "/brokers/justmarkets.png",
+
   pepperstone: "/brokers/pepperstone.png",
+
   vantage: "/brokers/vantage.png",
+
   xm: "/brokers/xm.png",
   xs: "/brokers/xs.png",
+
+  // 🔴 الشركات اللي كانت عندك المشكلة فيها
+  multibank: "/brokers/MultibankGroup.png",
+  "multi-bank": "/brokers/MultibankGroup.png",
+  "multi-bank-group": "/brokers/MultibankGroup.png",
+
+  "markets-com": "/brokers/markets-com.png",
+  marketscom: "/brokers/markets-com.png",
+
+  plus500: "/brokers/plus500.png",
 };
 
 function getBrokerLogo(slug: string): string {
@@ -99,7 +120,7 @@ export default function ArabicHeader({
 
                       <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm">
                         <Image
-                          src={broker.menuLogo}
+                          src={broker.logo || getBrokerLogo(broker.slug)}
                           alt={broker.name}
                           width={40}
                           height={40}
