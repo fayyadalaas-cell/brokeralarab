@@ -289,16 +289,8 @@ export default async function HomePage() {
 
 {/* HERO - DESKTOP IMPROVED / MOBILE KEEP */}
 <section className="relative overflow-hidden border-b border-slate-800 bg-[#07111f]">
-  <div className="pointer-events-none absolute inset-0">
-    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.18),transparent_24%)]" />
-    <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(14,165,233,0.10),transparent_30%)]" />
-    <div className="absolute right-[-120px] top-[-120px] h-[320px] w-[320px] rounded-full bg-[#2563eb]/15 blur-3xl" />
-    <div className="absolute left-[-80px] bottom-[-100px] h-[260px] w-[260px] rounded-full bg-[#0ea5e9]/10 blur-3xl" />
-    <div className="absolute inset-0 opacity-[0.04] [background-image:linear-gradient(rgba(255,255,255,0.7)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.7)_1px,transparent_1px)] [background-size:48px_48px]" />
-  </div>
-
   {(() => {
-    const heroBrokers = Array.from(
+    const allHeroBrokers = Array.from(
       ((brokers || []) as Broker[]).reduce((acc, broker) => {
         if (!broker || !broker.name) return acc;
 
@@ -313,66 +305,110 @@ export default async function HomePage() {
       }, new Map<string, Broker>()).values()
     )
       .sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0))
-      .slice(0, 3)
-      .map((b, index) => ({
+      .map((b) => ({
         id: b.id,
-        name: b.name || "Broker",
+        name: b.name || "شركة تداول",
         slug: b.slug || "",
         rating: b.rating ? Number(b.rating).toFixed(1) : "—",
-        deposit:
-          b.min_deposit !== null && b.min_deposit !== undefined
-            ? money(b.min_deposit)
-            : "غير محدد",
-        subtitle: b.best_for || "شركة تداول موصى بها",
         logo: b.logo || null,
-        rank: index + 1,
       }));
+
+    const marquee = [...allHeroBrokers, ...allHeroBrokers, ...allHeroBrokers];
 
     return (
       <>
         {/* DESKTOP ONLY */}
         <div className="hidden lg:block">
-          <div className="relative mx-auto max-w-7xl px-6 pt-6 pb-10">
-            <div className="flex items-center justify-center">
-             
+          <style>{`
+            @keyframes brokerMarquee {
+              from { transform: translateX(0); }
+              to { transform: translateX(-50%); }
+            }
+          `}</style>
 
-              {/* RIGHT CONTENT */}
-              <div dir="rtl" className="text-center">
-  <div className="mx-auto max-w-[980px]">
-                  
-                 <h1 className="mt-0 text-[58px] font-black leading-[1.30] tracking-[-0.03em] text-white xl:text-[72px]">
-  أفضل شركات التداول
-  <span className="mt-3 block bg-[linear-gradient(90deg,#93c5fd_0%,#60a5fa_25%,#3b82f6_58%,#93c5fd_100%)] bg-clip-text text-transparent">
-    تقييم ومقارنة وسطاء التداول
-  </span>
-</h1>
+          <div className="relative overflow-hidden bg-[#07111f]">
+            {/* BACKGROUND */}
+            <div className="pointer-events-none absolute inset-0">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.15),transparent_60%)]" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(37,99,235,0.34),transparent_42%)]" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_55%,rgba(14,165,233,0.12),transparent_34%)]" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_82%_45%,rgba(59,130,246,0.11),transparent_30%)]" />
+              <div className="absolute inset-0 opacity-[0.035] [background-image:linear-gradient(rgba(255,255,255,0.7)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.7)_1px,transparent_1px)] [background-size:58px_58px]" />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#07111f]/10 to-[#07111f]/75" />
+            </div>
 
-                  <p className="mx-auto mt-8 max-w-[920px] text-[22px] leading-[2] text-slate-300">
-  راجع التراخيص والرسوم والمنصات وأنواع الحسابات في مكان واحد
-  بشكل واضح وعملي، ثم اختر شركة التداول الأقرب لاحتياجاتك
-  الفعلية بدلًا من الاعتماد على الإعلانات أو التأثر بالاختيار
-  العشوائي.
-</p>
+            {/* HERO CONTENT */}
+            <div className="relative mx-auto max-w-7xl px-6 py-12 xl:py-14">
+              <div dir="rtl" className="mx-auto max-w-6xl text-center">
+                <h1 className="mx-auto max-w-6xl text-[50px] font-black leading-[1.22] tracking-[-0.025em] text-white drop-shadow-[0_10px_35px_rgba(0,0,0,0.35)] xl:text-[62px]">
+                  أفضل شركات التداول
+                  <span className="block bg-gradient-to-r from-white via-blue-200 to-[#60a5fa] bg-clip-text pb-2 text-transparent">
+                    تقييم الوسطاء والرسوم والتراخيص
+                  </span>
+                </h1>
 
-<div className="mt-10 flex items-center justify-center gap-4">
-  <a
-    href="#finder"
-    className="inline-flex h-[64px] min-w-[250px] items-center justify-center rounded-2xl bg-[#2563eb] px-8 text-[17px] font-extrabold text-white shadow-[0_18px_45px_rgba(37,99,235,0.35)] transition duration-200 hover:-translate-y-0.5 hover:bg-[#1d4ed8]"
-  >
-    ابدأ المقارنة السريعة
-  </a>
+                <p className="mx-auto mt-3 max-w-3xl text-[17px] leading-8 text-slate-300">
+                  قارن بين أفضل شركات التداول من حيث التراخيص، الرسوم، السبريد،
+                  المنصات، وأنواع الحسابات لاختيار وسيط تداول موثوق يناسب احتياجاتك بثقة.
+                </p>
 
-  <Link
-    href="/compare"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="inline-flex h-[64px] min-w-[250px] items-center justify-center rounded-2xl bg-[#2563eb] px-8 text-[17px] font-extrabold text-white shadow-[0_18px_45px_rgba(37,99,235,0.25)] transition duration-200 hover:-translate-y-0.5 hover:bg-[#1e40af]"
-  >
-    تصفح المقارنات
-  </Link>
-</div>
+                <div className="mt-6 flex items-center justify-center gap-4">
+                  <a
+                    href="#finder"
+                    className="rounded-full bg-white px-8 py-3.5 text-[15px] font-black text-[#07111f] shadow-[0_12px_50px_rgba(59,130,246,0.25)] transition hover:-translate-y-0.5 hover:bg-slate-100"
+                  >
+                    ابحث عن أفضل وسيط
+                  </a>
 
-                
+                  <Link
+                    href="/compare"
+                    className="rounded-full border border-white/20 bg-white/[0.045] px-8 py-3.5 text-[15px] font-bold text-white transition hover:-translate-y-0.5 hover:bg-white/10"
+                  >
+                    تصفح المقارنات
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* LOGO STRIP */}
+            <div className="relative z-10 border-y border-slate-200 bg-white" dir="ltr">
+              <div className="pointer-events-none absolute left-0 top-0 z-20 h-full w-24 bg-gradient-to-r from-white to-transparent" />
+              <div className="pointer-events-none absolute right-0 top-0 z-20 h-full w-24 bg-gradient-to-l from-white to-transparent" />
+
+              <div className="overflow-hidden">
+                <div className="flex w-max [animation:brokerMarquee_150s_linear_infinite]">
+                  {marquee.map((broker, index) => (
+                    <Link
+                      key={`broker-${broker.id}-${index}`}
+                      href={`/brokers/${broker.slug}`}
+                      className="flex h-[104px] w-[300px] shrink-0 items-center justify-center border-r border-slate-200 bg-white px-8 transition hover:bg-slate-50"
+                    >
+                      <div className="flex items-center gap-4" dir="ltr">
+                        <div className="flex h-[58px] w-[58px] items-center justify-center rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
+                          {broker.logo ? (
+                            <img
+                              src={broker.logo}
+                              alt={broker.name}
+                              className="max-h-full max-w-full object-contain"
+                            />
+                          ) : (
+                            <span className="text-sm font-bold text-slate-900">
+                              {broker.name.slice(0, 2)}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="min-w-0 text-right" dir="rtl">
+                          <div className="max-w-[160px] truncate text-[15px] font-bold text-slate-900">
+                            {broker.name}
+                          </div>
+                          <div className="text-[12px] text-slate-500">
+                            التقييم {broker.rating}
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
                 </div>
               </div>
             </div>
@@ -385,11 +421,11 @@ export default async function HomePage() {
             <div className="grid items-center gap-10">
               <div className="order-1">
                 <h1 className="mt-3 max-w-4xl text-[30px] font-black leading-[1.3] tracking-[-0.02em] text-white sm:text-[46px]">
-  أفضل شركات التداول
-  <span className="mt-2 block bg-[linear-gradient(90deg,#60a5fa_0%,#3b82f6_45%,#93c5fd_100%)] bg-clip-text text-transparent">
-    تقييم ومقارنة وسطاء التداول
-  </span>
-</h1>
+                  أفضل شركات التداول
+                  <span className="mt-2 block bg-[linear-gradient(90deg,#60a5fa_0%,#3b82f6_45%,#93c5fd_100%)] bg-clip-text text-transparent">
+                    تقييم ومقارنة وسطاء التداول
+                  </span>
+                </h1>
 
                 <p className="mt-5 max-w-2xl text-[15px] leading-8 text-slate-300 sm:text-[17px] sm:leading-8">
                   راجع التراخيص والرسوم والمنصات وأنواع الحسابات في مكان واحد، ثم
