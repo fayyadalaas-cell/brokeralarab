@@ -372,8 +372,8 @@ export default async function HomePage() {
 
             {/* LOGO STRIP */}
             <div className="relative z-10 border-y border-slate-200 bg-white" dir="ltr">
-              <div className="pointer-events-none absolute left-0 top-0 z-20 h-full w-24 bg-gradient-to-r from-white to-transparent" />
-              <div className="pointer-events-none absolute right-0 top-0 z-20 h-full w-24 bg-gradient-to-l from-white to-transparent" />
+              <div className="pointer-events-none absolute left-0 top-0 z-20 h-full w-28 bg-gradient-to-r from-white to-transparent" />
+              <div className="pointer-events-none absolute right-0 top-0 z-20 h-full w-28 bg-gradient-to-l from-white to-transparent" />
 
               <div className="overflow-hidden">
                 <div className="flex w-max [animation:brokerMarquee_150s_linear_infinite]">
@@ -381,10 +381,11 @@ export default async function HomePage() {
                     <Link
                       key={`broker-${broker.id}-${index}`}
                       href={`/brokers/${broker.slug}`}
-                      className="flex h-[104px] w-[300px] shrink-0 items-center justify-center border-r border-slate-200 bg-white px-8 transition hover:bg-slate-50"
+                      className="flex h-[112px] w-[320px] shrink-0 items-center justify-center border-r border-slate-200 bg-white px-8 transition hover:bg-slate-50"
                     >
-                      <div className="flex items-center gap-4" dir="ltr">
-                        <div className="flex h-[58px] w-[58px] items-center justify-center rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
+                      <div className="flex w-full items-center justify-center gap-5" dir="rtl">
+                        {/* LOGO - RIGHT */}
+                        <div className="flex h-[66px] w-[66px] shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white p-3 shadow-[0_10px_28px_rgba(15,23,42,0.10)]">
                           {broker.logo ? (
                             <img
                               src={broker.logo}
@@ -398,11 +399,12 @@ export default async function HomePage() {
                           )}
                         </div>
 
-                        <div className="min-w-0 text-right" dir="rtl">
-                          <div className="max-w-[160px] truncate text-[15px] font-bold text-slate-900">
+                        {/* TEXT - LEFT */}
+                        <div className="min-w-0 text-right">
+                          <div className="max-w-[170px] truncate text-[16px] font-black text-slate-950">
                             {broker.name}
                           </div>
-                          <div className="text-[12px] text-slate-500">
+                          <div className="mt-1 text-[12px] font-semibold text-slate-500">
                             التقييم {broker.rating}
                           </div>
                         </div>
