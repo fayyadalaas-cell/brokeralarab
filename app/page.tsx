@@ -519,153 +519,149 @@ export default async function HomePage() {
   <BrokerFinder brokers={brokers} />
 </section>
 
-     {/* HOW WE RATE - PREMIUM STEPS */}
+    {/* HOW WE RATE - CLEAN TRUST SECTION */}
 <section className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
-  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] shadow-sm sm:rounded-[32px]">
+  <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
     {(() => {
       const ratingItems = [
         {
           num: "01",
-          title: "التراخيص والتنظيم",
-          desc: "نفحص الجهة الرقابية، قوة الترخيص، ومستوى حماية أموال العملاء.",
+          title: "الترخيص وحماية الأموال",
+          desc: "نفحص الجهة الرقابية وقوة الترخيص ووضوح حماية أموال العملاء.",
         },
         {
           num: "02",
-          title: "الحسابات والرسوم",
-          desc: "نراجع السبريد، العمولات، وأنواع الحسابات الفعلية لا الوعود التسويقية.",
+          title: "الرسوم والسبريد",
+          desc: "نقارن السبريد، العمولات، وتكلفة التداول الفعلية.",
         },
         {
           num: "03",
-          title: "المنصات والأدوات",
-          desc: "نقيم MT4 وMT5 وسهولة الاستخدام والأدوات المناسبة للتداول اليومي.",
+          title: "المنصات والتنفيذ",
+          desc: "نراجع MT4 وMT5 وسهولة الاستخدام وسرعة التنفيذ.",
         },
         {
           num: "04",
           title: "الإيداع والسحب",
-          desc: "نقارن طرق الدفع، سرعة السحب، ووضوح الشروط للمستخدم العربي.",
+          desc: "نقارن طرق الدفع، سرعة السحب، ووضوح الشروط.",
         },
         {
           num: "05",
           title: "الحساب الإسلامي",
-          desc: "نتأكد من توفره فعليًا وطريقة تقديمه وملاءمته العملية.",
+          desc: "نتحقق من توفر الحساب الإسلامي وطريقة تطبيقه.",
         },
         {
           num: "06",
           title: "الدعم وتجربة المستخدم",
-          desc: "نراجع جودة الدعم، اللغة العربية، وسهولة الوصول للمعلومات الأساسية.",
+          desc: "نراجع جودة الدعم وسهولة الوصول للمعلومات.",
         },
       ];
 
       return (
         <>
           {/* DESKTOP */}
-          <div className="hidden lg:grid lg:grid-cols-[340px_minmax(0,1fr)] lg:gap-0">
-            {/* RIGHT INTRO */}
-            <div className="border-l border-slate-200 p-7 xl:p-8">
-              <div className="flex h-full flex-col items-center justify-center text-center">
-                
-                <h2 className="mt-4 text-[34px] font-black leading-[1.1] text-[#0f172a]">
-                  كيف نقيّم
-                  <span className="mt-1 block text-[#2563eb]">شركات التداول؟</span>
+          <div className="hidden lg:block">
+            <div className="grid grid-cols-[1fr_270px] gap-5 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-6 py-5">
+              <div>
+                <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-[#2563eb] shadow-sm">
+                  منهجية التقييم
+                </span>
+
+                <h2 className="mt-4 text-[36px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f]">
+                  كيف نختار أفضل شركات التداول؟
                 </h2>
 
-                <p className="mt-4 text-[14px] leading-7 text-slate-600">
-                  لا نعتمد على الشعارات التسويقية، بل نقيّم كل وسيط بناءً على
-                  عوامل عملية تؤثر فعلًا على تجربة المتداول العربي من البداية
-                  حتى السحب والدعم.
+                <p className="mt-3 max-w-4xl text-[15px] font-semibold leading-9 text-slate-600">
+                نراجع تقييم شركات التداول بناءً على قوة التراخيص، الرسوم والسبريد، سرعة السحب والإيداع، جودة المنصات، الحساب الإسلامي، وتجربة المتداول الفعلية قبل ترشيح أي وسيط تداول موثوق.
                 </p>
+              </div>
 
-                <div className="mt-6 flex justify-center">
-  <Link
-    href="/brokers"
-    className="inline-flex h-11 items-center justify-center rounded-2xl bg-[#2563eb] px-5 text-[13px] font-extrabold text-white shadow-[0_12px_28px_rgba(37,99,235,0.22)] transition hover:bg-[#1d4ed8]"
-  >
-    تصفح جميع التقييمات
-  </Link>
-</div>
+              <div className="flex flex-col justify-center rounded-[24px] border border-slate-200 bg-white p-4 shadow-[0_10px_30px_rgba(15,23,42,0.05)]">
+                
+                <div className="mt-1.5 text-[18px] font-black leading-6 text-[#07111f]">
+                  تقييم عملي لاختيار وسيط تداول موثوق
+                </div>
+
+                <Link
+                  href="/brokers"
+                  className="mt-5 inline-flex h-11 items-center justify-center rounded-2xl bg-[#2563eb] px-5 text-[13px] font-black text-white shadow-[0_12px_26px_rgba(37,99,235,0.22)] transition hover:bg-[#1d4ed8]"
+                >
+                  تصفح جميع التقييمات
+                </Link>
               </div>
             </div>
 
-            {/* LEFT STEPS */}
-            <div className="p-6 xl:p-8">
-              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                {ratingItems.map((item) => (
-                  <div
-                    key={item.num}
-                    className="group relative overflow-hidden rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[#bfdbfe] hover:shadow-[0_16px_35px_rgba(15,23,42,0.06)]"
-                  >
-                    <div className="absolute left-0 top-0 h-1 w-full bg-[linear-gradient(90deg,#60a5fa_0%,#2563eb_100%)] opacity-80" />
+            <div className="grid grid-cols-3 gap-4 p-5">
+              {ratingItems.map((item) => (
+                <div
+                  key={item.num}
+                  className="rounded-[22px] border border-slate-200 bg-white p-5 shadow-[0_6px_20px_rgba(15,23,42,0.04)] transition hover:-translate-y-0.5 hover:border-[#bfdbfe] hover:shadow-[0_16px_34px_rgba(15,23,42,0.06)]"
+                >
+                  <div className="flex items-start gap-4">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#eff6ff] text-[12px] font-black text-[#1d4ed8] ring-1 ring-[#bfdbfe]">
+                      {item.num}
+                    </span>
 
-                    <div className="flex items-center gap-3">
-  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#2563eb] text-[12px] font-black text-white">
-    {item.num}
-  </span>
+                    <div>
+                      <h3 className="text-[18px] font-black leading-6 text-[#07111f]">
+                        {item.title}
+                      </h3>
 
-  <h3 className="text-[18px] font-black text-[#0f172a]">
-    {item.title}
-  </h3>
-</div>
-
-                    <p className="mt-3 text-[13px] leading-6 text-slate-600">
-                      {item.desc}
-                    </p>
+                      <p className="mt-2 text-[13px] font-semibold leading-6 text-slate-600">
+                        {item.desc}
+                      </p>
+                    </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* MOBILE / TABLET */}
-<div className="lg:hidden">
-  <div className="border-b border-slate-200 px-4 py-4 sm:px-6 sm:py-5">
-    <div className="flex flex-col items-center text-center sm:items-start sm:text-right">
-      <h2 className="text-[28px] font-black leading-[1.15] text-[#0f172a] sm:text-[28px]">
-        كيف نقيّم شركات التداول؟
-      </h2>
+          {/* MOBILE */}
+          <div className="lg:hidden">
+            <div className="border-b border-slate-200 bg-gradient-to-b from-[#f8fbff] to-[#eef5ff] px-4 py-4 text-center">
+           
 
-      <p className="mt-2 max-w-2xl text-[13px] font-medium leading-6 text-slate-700 sm:text-[14px] sm:leading-7">
-        نراجع كل وسيط بناءً على عوامل عملية تؤثر فعلًا على تجربة
-        المتداول العربي.
-      </p>
+              <h2 className="mx-auto mt-3 max-w-[300px] text-[24px] font-black leading-[1.2] tracking-[-0.02em] text-[#07111f]">
+                كيف نختار أفضل شركات التداول؟
+              </h2>
 
-      <div className="mt-3">
-        <Link
-          href="/brokers"
-          className="inline-flex h-10 items-center justify-center rounded-2xl bg-[#2563eb] px-4 text-[12px] font-extrabold text-white shadow-[0_10px_24px_rgba(37,99,235,0.20)] transition hover:bg-[#1d4ed8]"
-        >
-          جميع التقييمات
-        </Link>
-      </div>
-    </div>
-  </div>
+              <p className="mx-auto mt-2 max-w-[300px] text-[12px] font-semibold leading-6 text-slate-600">
+                نراجع التراخيص، الرسوم، المنصات، السحب والحساب الإسلامي قبل ترشيح أي وسيط.
+              </p>
 
-  <div className="p-4 sm:p-5">
-    <div className="grid grid-cols-2 gap-3">
-      {ratingItems.map((item) => (
-        <div
-          key={item.num}
-          className="relative overflow-hidden rounded-[18px] border border-slate-200 bg-white px-3 py-3 shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
-        >
-          <div className="absolute right-0 top-0 h-1 w-full bg-[linear-gradient(90deg,#60a5fa_0%,#2563eb_100%)] opacity-80" />
+              <Link
+                href="/brokers"
+                className="mt-3 inline-flex h-9 items-center justify-center rounded-2xl bg-[#2563eb] px-4 text-[11px] font-black text-white shadow-[0_10px_22px_rgba(37,99,235,0.20)]"
+              >
+                جميع التقييمات
+              </Link>
+            </div>
 
-          <div className="flex items-start gap-2">
-            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#2563eb] text-[10px] font-black text-white">
-              {item.num}
-            </span>
+            <div className="grid grid-cols-1 gap-2 bg-white p-3.5">
+              {ratingItems.map((item) => (
+                <div
+                  key={item.num}
+                  className="rounded-[18px] border border-slate-200 bg-[#fbfdff] px-3.5 py-3 shadow-[0_5px_16px_rgba(15,23,42,0.04)]"
+                >
+                  <div className="flex items-start gap-3">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#eff6ff] text-[10px] font-black text-[#1d4ed8] ring-1 ring-[#bfdbfe]">
+                      {item.num}
+                    </span>
 
-            <h3 className="text-[13px] font-black leading-5 text-[#0f172a]">
-              {item.title}
-            </h3>
+                    <div>
+                      <h3 className="text-[14px] font-black leading-5 text-[#07111f]">
+                        {item.title}
+                      </h3>
+
+                      <p className="mt-1 text-[11px] font-semibold leading-5 text-slate-600">
+                        {item.desc}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-
-          <p className="mt-2 text-[11px] leading-5 text-slate-700">
-            {item.desc}
-          </p>
-        </div>
-      ))}
-    </div>
-  </div>
-</div>
         </>
       );
     })()}
