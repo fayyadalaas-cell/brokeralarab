@@ -417,43 +417,95 @@ export default async function HomePage() {
           </div>
         </div>
 
-        {/* MOBILE - KEEP AS IS */}
-        <div className="lg:hidden">
-          <div className="relative mx-auto max-w-7xl px-4 pt-2 pb-6 sm:px-6">
-            <div className="grid items-center gap-10">
-              <div className="order-1">
-                <h1 className="mt-3 max-w-4xl text-[30px] font-black leading-[1.3] tracking-[-0.02em] text-white sm:text-[46px]">
-                  أفضل شركات التداول
-                  <span className="mt-2 block bg-[linear-gradient(90deg,#60a5fa_0%,#3b82f6_45%,#93c5fd_100%)] bg-clip-text text-transparent">
-                    تقييم ومقارنة وسطاء التداول
-                  </span>
-                </h1>
+        {/* MOBILE - PREMIUM */}
+<div className="lg:hidden">
+  <style>{`
+    @keyframes brokerMarqueeMobile {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+  `}</style>
 
-                <p className="mt-5 max-w-2xl text-[15px] leading-8 text-slate-300 sm:text-[17px] sm:leading-8">
-                  راجع التراخيص والرسوم والمنصات وأنواع الحسابات في مكان واحد، ثم
-                  اعثر على شركة التداول الأقرب لاحتياجاتك الفعلية بدلًا من الاختيار
-                  العشوائي أو التأثر بالإعلانات.
-                </p>
+  <div className="relative overflow-hidden bg-[#07111f]">
+    <div className="pointer-events-none absolute inset-0">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(37,99,235,0.34),transparent_46%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_55%,rgba(14,165,233,0.12),transparent_38%)]" />
+      <div className="absolute inset-0 opacity-[0.04] [background-image:linear-gradient(rgba(255,255,255,0.7)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.7)_1px,transparent_1px)] [background-size:42px_42px]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#07111f]/10 to-[#07111f]/80" />
+    </div>
 
-                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                  <a
-                    href="#finder"
-                    className="inline-flex min-h-[56px] items-center justify-center rounded-2xl bg-[#2563eb] px-6 py-3 text-sm font-extrabold text-white shadow-[0_18px_40px_rgba(37,99,235,0.26)] transition hover:-translate-y-0.5 hover:bg-[#1d4ed8] sm:min-w-[220px]"
-                  >
-                    ابدأ مقارنة الوسطاء
-                  </a>
+    <div dir="rtl" className="relative px-5 pb-7 pt-7 text-center">
+      <h1 className="mx-auto max-w-[330px] text-[31px] font-black leading-[1.16] tracking-[-0.025em] text-white drop-shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
+  أفضل شركات التداول
+  <span className="mt-1 block bg-gradient-to-r from-white via-blue-200 to-[#60a5fa] bg-clip-text pb-1 text-transparent">
+    تقييم الوسطاء والرسوم
+  </span>
+</h1>
 
-                  <Link
-                    href="/best-brokers"
-                    className="inline-flex min-h-[56px] items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-6 py-3 text-sm font-extrabold text-white backdrop-blur transition hover:bg-white/15 sm:min-w-[200px]"
-                  >
-                    تصفح أفضل الوسطاء
-                  </Link>
+      <p className="mx-auto mt-4 max-w-[310px] text-[13px] font-semibold leading-7 text-slate-300">
+  قارن التراخيص، الرسوم، السبريد والمنصات لاختيار وسيط تداول موثوق يناسبك.
+</p>
+
+      <div className="mt-6 grid grid-cols-2 gap-3">
+        <a
+          href="#finder"
+          className="inline-flex min-h-[52px] items-center justify-center rounded-2xl bg-white px-4 py-3 text-[13px] font-black text-[#07111f] shadow-[0_14px_34px_rgba(59,130,246,0.25)]"
+        >
+          ابحث عن وسيط
+        </a>
+
+        <Link
+          href="/compare"
+          className="inline-flex min-h-[52px] items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-[13px] font-black text-white backdrop-blur"
+        >
+          تصفح المقارنات
+        </Link>
+      </div>
+    </div>
+
+    <div className="relative z-10 border-y border-slate-200 bg-white" dir="ltr">
+      <div className="pointer-events-none absolute left-0 top-0 z-20 h-full w-14 bg-gradient-to-r from-white to-transparent" />
+      <div className="pointer-events-none absolute right-0 top-0 z-20 h-full w-14 bg-gradient-to-l from-white to-transparent" />
+
+      <div className="overflow-hidden">
+        <div className="flex w-max [animation:brokerMarqueeMobile_120s_linear_infinite]">
+          {marquee.map((broker, index) => (
+            <Link
+              key={`mobile-broker-${broker.id}-${index}`}
+              href={`/brokers/${broker.slug}`}
+              className="flex h-[78px] w-[210px] shrink-0 items-center justify-center border-r border-slate-200 bg-white px-4"
+            >
+              <div className="flex w-full items-center justify-center gap-3" dir="rtl">
+                <div className="flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
+                  {broker.logo ? (
+                    <img
+                      src={broker.logo}
+                      alt={broker.name}
+                      className="max-h-full max-w-full object-contain"
+                    />
+                  ) : (
+                    <span className="text-xs font-bold text-slate-900">
+                      {broker.name.slice(0, 2)}
+                    </span>
+                  )}
+                </div>
+
+                <div className="min-w-0 text-right">
+                  <div className="max-w-[120px] truncate text-[13px] font-black text-slate-950">
+                    {broker.name}
+                  </div>
+                  <div className="mt-0.5 text-[11px] font-semibold text-slate-500">
+                    التقييم {broker.rating}
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </Link>
+          ))}
         </div>
+      </div>
+    </div>
+  </div>
+</div>
       </>
     );
   })()}

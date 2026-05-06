@@ -287,61 +287,22 @@ export default function BrokerFinder({ brokers }: Props) {
         dir="rtl"
         className="hidden overflow-hidden rounded-[34px] border border-slate-200 bg-white shadow-[0_25px_80px_rgba(15,23,42,0.08)] lg:block"
       >
-        <div className="relative overflow-hidden border-b border-slate-200 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-7 py-6">
-  <div className="pointer-events-none absolute inset-0">
-    <div className="absolute right-10 top-0 h-28 w-28 rounded-full bg-blue-100/70 blur-3xl" />
-    <div className="absolute left-12 bottom-0 h-24 w-24 rounded-full bg-sky-100/70 blur-3xl" />
-  </div>
+        
 
-  <div className="relative flex items-center justify-between gap-10">
-    <div>
-      <div className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-[#2563eb] shadow-sm">
-        أداة اختيار ذكية
-      </div>
-
-      <h2 className="mt-3 text-[2.2rem] font-black leading-tight tracking-[-0.02em] text-[#07111f]">
-        اعثر على أفضل 3 شركات تداول تناسبك
-      </h2>
-
-      <p className="mt-2 max-w-3xl text-[14px] leading-7 text-slate-600">
-        نتائج مختصرة وواضحة حسب التقييم، الأمان، الرسوم، الإيداع، وسرعة السحب.
-      </p>
-      <div className="mt-5 flex items-center gap-3 text-[13px] font-bold text-slate-600">
-  <div className="flex items-center gap-2 rounded-full bg-white px-3 py-2 shadow-sm ring-1 ring-slate-200">
-    <span className="h-2 w-2 rounded-full bg-emerald-500" />
-    شركات مرخصة
-  </div>
-
-  <div className="flex items-center gap-2 rounded-full bg-white px-3 py-2 shadow-sm ring-1 ring-slate-200">
-    <span className="h-2 w-2 rounded-full bg-blue-500" />
-    تقييمات حقيقية
-  </div>
-
-  <div className="flex items-center gap-2 rounded-full bg-white px-3 py-2 shadow-sm ring-1 ring-slate-200">
-    <span className="h-2 w-2 rounded-full bg-amber-500" />
-    مقارنة الرسوم
-  </div>
-</div>
-    </div>
-
-    <div className="rounded-[22px] border border-blue-100 bg-white/90 px-5 py-3 text-right shadow-[0_14px_35px_rgba(37,99,235,0.08)] backdrop-blur">
-      <div className="text-xs font-bold text-slate-500">نتائج مخصصة</div>
-      <div className="mt-1 text-[14px] font-black text-[#07111f]">
-        {hasSearched ? "بناءً على اختياراتك" : "أفضل الخيارات الحالية"}
-      </div>
-    </div>
-  </div>
-</div>
+   
 
         <div className="p-6">
           <div className="rounded-[26px] border border-slate-200 bg-[#f8fbff] p-4">
             <div className="mb-5 flex items-center justify-between">
-              <div>
-                <div className="text-sm font-black text-[#07111f]">حدد تفضيلاتك</div>
-                <div className="mt-1 text-sm font-semibold text-slate-500">
-                  اختر الدولة، الإيداع، الخبرة والمنصة لتحصل على ترشيحات أدق.
-                </div>
-              </div>
+             <div>
+  <h2 className="text-[24px] font-black tracking-[-0.02em] text-[#07111f]">
+    حدد تفضيلاتك
+  </h2>
+
+  <p className="mt-1 text-[15px] font-semibold text-slate-500">
+    اختر الدولة، الإيداع، الخبرة والمنصة لتحصل على ترشيحات أدق.
+  </p>
+</div>
 
               <span className="rounded-full bg-white px-3 py-1 text-xs font-extrabold text-slate-600 shadow-sm ring-1 ring-slate-200">
                 فلتر سريع
@@ -584,25 +545,13 @@ export default function BrokerFinder({ brokers }: Props) {
   dir="rtl"
   className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_22px_70px_rgba(15,23,42,0.08)] lg:hidden"
 >
-  <div className="border-b border-slate-200/80 bg-gradient-to-b from-[#f8fbff] to-[#eef5ff] px-4 py-6 text-center">
-    
+  
 
-    <h2 className="mx-auto mt-2 max-w-[315px] text-[28px] font-black leading-[1.18] tracking-[-0.02em] text-[#07111f]">
-  قارن أفضل منصات التداول
-  <span className="block">حسب دولتك وإيداعك</span>
-</h2>
-
-<p className="mx-auto mt-3 max-w-[300px] text-[13px] font-semibold leading-6 text-slate-600">
-  اختر الدولة، مبلغ الإيداع، مستوى الخبرة والمنصة
-  للحصول على أفضل ترشيحات التداول.
-</p>
-  </div>
-
-  <div className="px-4 pb-5 pt-4">
+  <div className="px-4 pb-4 pt-2">
     <button
       type="button"
       onClick={() => setShowMobileFilters((prev) => !prev)}
-      className="flex w-full items-center justify-between rounded-[22px] border border-[#bfdbfe] bg-white px-4 py-4 text-right shadow-[0_12px_30px_rgba(37,99,235,0.10)]"
+      className="flex w-full items-center justify-between rounded-[20px] border border-[#bfdbfe] bg-white px-4 py-3.5 text-right shadow-[0_12px_30px_rgba(37,99,235,0.10)]"
     >
       <div>
         <div className="text-[15px] font-black text-[#07111f]">
