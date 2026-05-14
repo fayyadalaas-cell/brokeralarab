@@ -381,18 +381,18 @@ export default async function HomePage() {
                     <Link
                       key={`broker-${broker.id}-${index}`}
                       href={`/brokers/${broker.slug}`}
-                      className="flex h-[112px] w-[320px] shrink-0 items-center justify-center border-r border-slate-200 bg-white px-8 transition hover:bg-slate-50"
+                      className="group flex h-[112px] w-[320px] shrink-0 items-center justify-center border-r border-slate-200 bg-white px-8 transition hover:bg-slate-50"
                     >
                       <div className="flex w-full items-center justify-center gap-5" dir="rtl">
                         {/* LOGO - RIGHT */}
-                        <div className="flex h-[66px] w-[66px] shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white p-3 shadow-[0_10px_28px_rgba(15,23,42,0.10)]">
-                          {broker.logo ? (
-                            <img
-                              src={broker.logo}
-                              alt={broker.name}
-                              className="max-h-full max-w-full object-contain"
-                            />
-                          ) : (
+                        <div className="flex h-[64px] w-[86px] overflow-hidden shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white px-2 py-2 shadow-[0_10px_28px_rgba(15,23,42,0.10)]">
+  {broker.logo ? (
+    <img
+      src={broker.logo}
+      alt={broker.name}
+      className="h-[56px] w-[82px] scale-[1.45] object-contain transition duration-300 group-hover:scale-[1.55]"
+    />
+  ) : (
                             <span className="text-sm font-bold text-slate-900">
                               {broker.name.slice(0, 2)}
                             </span>

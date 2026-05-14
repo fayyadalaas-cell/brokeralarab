@@ -445,17 +445,17 @@ broker_2:broker_2_id (
                   <Link
                     key={`broker-${broker.id}-${index}`}
                     href={`/en/brokers/${broker.slug}`}
-                    className="flex h-[104px] w-[300px] shrink-0 items-center justify-center border-r border-slate-200 bg-white px-8 transition hover:bg-slate-50"
+                    className="flex h-[104px] w-[320px] shrink-0 items-center justify-center border-r border-slate-200 bg-white px-7 transition hover:bg-slate-50"
                   >
-                    <div className="flex items-center gap-4">
-                      <div className="flex h-[58px] w-[58px] items-center justify-center rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
-                        {broker.logo ? (
-                          <img
-                            src={broker.logo}
-                            alt={broker.name}
-                            className="max-h-full max-w-full object-contain"
-                          />
-                        ) : (
+                    <div className="flex w-full items-center justify-center gap-5">
+                     <div className="flex h-[64px] w-[86px] items-center justify-center rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-sm">
+  {broker.logo ? (
+    <img
+      src={broker.logo}
+      alt={broker.name}
+      className="h-[54px] w-[78px] scale-[1.45] object-contain"
+    />
+  ) : (
                           <span className="text-sm font-bold text-slate-900">
                             {broker.name.slice(0, 2)}
                           </span>
