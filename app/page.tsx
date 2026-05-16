@@ -1255,20 +1255,35 @@ export default async function HomePage() {
 </section>
 
       {/* HOW TO CHOOSE A BROKER - PREMIUM SEO SECTION */}
-<section className="mx-auto max-w-7xl px-4 pt-3 pb-2 sm:px-6 sm:pt-1 sm:pb-3 lg:px-8">
-  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm sm:rounded-[32px]">
+<section className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
+  <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
     {/* HEADER */}
-    <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-5 sm:px-8 sm:py-7">
-      <h2 className="text-[24px] font-black leading-[1.15] text-[#0f172a] sm:text-[40px]">
+<div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4">
+  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+    <div className="text-center lg:text-right">
+      <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-[#2563eb] shadow-sm">
+        دليل اختيار الوسيط
+      </span>
+
+      <h2 className="mt-4 text-[30px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] sm:text-[34px] lg:text-[36px]">
         كيف تختار أفضل شركة تداول مناسبة لك؟
       </h2>
 
-      <p className="mt-3 max-w-4xl text-sm leading-7 text-slate-600 sm:text-[15px] sm:leading-8">
-        اختيار أفضل شركة تداول لا يتعلق فقط بالشهرة أو الحملات الإعلانية، بل
-        يعتمد على الترخيص وتكلفة التداول والمنصة وتجربة الاستخدام الفعلية،
-        لذلك نوضح هنا أهم المعايير التي تساعدك على اختيار الوسيط المناسب بثقة.
+      <p className="mx-auto mt-3 max-w-[900px] text-[14px] font-semibold leading-8 text-slate-600 lg:mx-0 lg:text-[15px] lg:leading-9">
+        اختيار أفضل شركة تداول لا يتعلق فقط بالشهرة أو الحملات الإعلانية، بل يعتمد على الترخيص، تكلفة التداول، المنصة، وسهولة الإيداع والسحب. هذا الدليل يساعدك على تقييم الوسيط بطريقة عملية قبل فتح الحساب.
       </p>
     </div>
+
+    <div className="hidden md:flex shrink-0 justify-center lg:self-center lg:pl-4">
+      <Link
+        href="/best-brokers"
+        className="inline-flex h-12 min-w-[190px] items-center justify-center rounded-2xl bg-[#2563eb] px-6 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(37,99,235,0.24)] transition hover:bg-[#1d4ed8]"
+      >
+        أفضل الوسطاء
+      </Link>
+    </div>
+  </div>
+</div>
 
     {/* MOBILE */}
     <div className="px-4 py-4 sm:hidden">
@@ -1314,12 +1329,13 @@ export default async function HomePage() {
     </div>
 
     {/* DESKTOP */}
-    <div className="hidden px-8 py-8 sm:block">
-      <div className="grid gap-8 lg:grid-cols-12 lg:items-start">
+    <div className="hidden p-5 sm:block">
+      <div className="grid gap-5 lg:grid-cols-12 lg:items-start">
         {/* ARTICLE */}
         <div className="lg:col-span-8">
-          <article className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm lg:p-8">
-            <div className="space-y-5 text-[16px] leading-9 text-slate-600">
+          <article className="relative overflow-hidden rounded-[24px] border border-slate-200 bg-white p-7 shadow-[0_6px_20px_rgba(15,23,42,0.04)]">
+  <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#2563eb] via-[#60a5fa] to-transparent opacity-55" />
+            <div className="space-y-4 text-[15px] font-medium leading-[2.05] text-slate-600">
               <p>
                 إذا كنت تبحث عن <strong>أفضل شركة تداول</strong>، فمن المهم أن
                 تعرف أن القرار لا يجب أن يبنى على شهرة العلامة التجارية فقط،
@@ -1345,12 +1361,12 @@ export default async function HomePage() {
                 مهمة جدًا.
               </p>
 
-              <p>
-                ولا يمكن تجاهل <strong>أنواع الحسابات</strong>. فالمبتدئ قد
-                يحتاج إلى حساب بإيداع منخفض وشروط واضحة، بينما يحتاج المتداول
-                الأكثر خبرة إلى حساب بسبريد أقل وتنفيذ أسرع. لهذا من الأفضل
-                اختيار وسيط يقدّم أكثر من خيار يناسب أسلوبك ورأس مالك.
-              </p>
+             <p>
+  ولا يمكن تجاهل <strong>أنواع الحسابات</strong>. فالمبتدئ قد
+  يحتاج إلى حساب بإيداع منخفض وشروط واضحة، بينما يحتاج المتداول
+  الأكثر خبرة إلى حساب بسبريد أقل وتنفيذ أسرع. لهذا من الأفضل
+  اختيار وسيط يقدّم خيارات تناسب أسلوبك وميزانيتك.
+</p>
 
               <p>
                 بالنسبة للمتداول العربي، فإن <strong>الحساب الإسلامي</strong>
@@ -1366,14 +1382,14 @@ export default async function HomePage() {
         {/* SIDEBAR */}
         <aside className="lg:col-span-4">
           <div className="lg:sticky lg:top-24">
-            <div className="overflow-hidden rounded-[24px] border border-[#dbeafe] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] shadow-sm">
-              <div className="border-b border-[#dbeafe] px-5 py-5">
-                <h3 className="text-[24px] font-black leading-[1.25] text-[#0f172a]">
-                  ما الذي يجب فحصه قبل فتح الحساب؟
+            <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_6px_20px_rgba(15,23,42,0.04)]">
+              <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] to-white px-5 py-5">
+  <h3 className="text-[22px] font-black leading-[1.45] text-[#07111f]">
+                  ما الذي يجب فحصه قبل فتح حساب تداول؟
                 </h3>
               </div>
 
-              <div className="p-5">
+              <div className="px-6 pb-6 pt-5">
                 <div className="space-y-3">
                   {[
                     "قوة الترخيص والتنظيم",
@@ -1385,9 +1401,9 @@ export default async function HomePage() {
                   ].map((item, index) => (
                     <div
                       key={item}
-                      className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm"
+                      className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm transition hover:-translate-y-1 hover:border-[#bfdbfe] hover:bg-[#fcfdff] hover:shadow-[0_12px_28px_rgba(15,23,42,0.05)]"
                     >
-                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#eff6ff] text-xs font-black text-[#1d4ed8]">
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-blue-100 bg-[#eff6ff] text-xs font-black text-[#1d4ed8] transition group-hover:bg-[#2563eb] group-hover:text-white">
                         {index + 1}
                       </span>
                       <span className="text-sm font-bold leading-6 text-[#0f172a]">
@@ -1397,13 +1413,8 @@ export default async function HomePage() {
                   ))}
                 </div>
 
-                <div className="mt-5 rounded-[18px] border border-slate-200 bg-[#f8fbff] px-4 py-4">
-                  <p className="text-sm leading-7 text-slate-600">
-                    لا تختَر شركة التداول بناءً على الإعلان فقط. افحص الترخيص،
-                    الرسوم الفعلية، ونوع الحساب الذي يناسب رأس مالك وأسلوبك في
-                    التداول.
-                  </p>
-                </div>
+                
+               
               </div>
             </div>
           </div>
@@ -1414,23 +1425,23 @@ export default async function HomePage() {
 </section>
 
 {/* WHY TRUST BROKER AL ARAB */}
-<section className="mx-auto max-w-7xl px-4 pt-3 pb-2 sm:px-6 sm:pt-1 sm:pb-3 lg:px-8">
-  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm sm:rounded-[32px]">
-
+<section className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
+  <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
     {/* HEADER */}
-    <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-5 sm:px-8 sm:py-6">
+    <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4">
+      <div className="text-center lg:text-right">
+        <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-[#2563eb] shadow-sm">
+          لماذا بروكر العرب؟
+        </span>
 
-      <h2 className="text-[24px] font-black leading-[1.2] text-[#0f172a] sm:text-[36px] lg:text-[42px]">
-        لماذا يثق المتداولون في
-        <span className="text-[#2563eb]"> بروكر العرب؟</span>
-      </h2>
+        <h2 className="mt-4 text-[30px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] sm:text-[34px] lg:text-[36px]">
+          لماذا يثق المتداولون في بروكر العرب؟
+        </h2>
 
-      <p className="mt-3 max-w-4xl text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
-        بروكر العرب منصة عربية تساعد المتداول على فهم الفروقات الحقيقية بين
-        الوسطاء من حيث التراخيص والرسوم والمنصات وأنواع الحسابات حتى يتخذ
-        قراره على أساس واضح.
-      </p>
-
+        <p className="mx-auto mt-3 max-w-[900px] text-[14px] font-semibold leading-8 text-slate-600 lg:mx-0 lg:text-[15px] lg:leading-9">
+          نساعد المتداول العربي على اختيار وسيط تداول مناسب من خلال مراجعات واضحة، مقارنات عملية، وتركيز على العوامل التي تهمه فعلًا مثل الترخيص، الرسوم، الحساب الإسلامي، وطرق الإيداع والسحب.
+        </p>
+      </div>
     </div>
 
     {/* MOBILE */}
@@ -1438,19 +1449,19 @@ export default async function HomePage() {
       {[
         {
           title: "مراجعات منظمة وواضحة",
-          desc: "كل شركة لها صفحة مستقلة تعرض الحسابات والتراخيص والرسوم بشكل مرتب.",
+          desc: "نعرض أهم معلومات الشركة في صفحة واحدة حتى تفهم الترخيص والرسوم والحسابات بسرعة.",
         },
         {
-          title: "مقارنات عملية بين الوسطاء",
-          desc: "مقارنات مباشرة توضح الفروق الحقيقية بسرعة وسهولة.",
+          title: "مقارنات تساعدك على القرار",
+          desc: "نوضح الفروقات بين الوسطاء بدل أن تضيع وقتك في فتح عدة صفحات ومراجعات متفرقة.",
         },
         {
-          title: "تركيز على المتداول العربي",
-          desc: "اهتمام بالحساب الإسلامي والدعم العربي ووسائل الإيداع.",
+          title: "تركيز على احتياجات العرب",
+          desc: "نهتم بالحساب الإسلامي، الدعم العربي، ووسائل الإيداع والسحب المناسبة للمنطقة.",
         },
         {
-          title: "بنية قوية للسيو",
-          desc: "ربط صفحات التقييم والمقارنات والدول بطريقة منظمة.",
+          title: "وصول أسرع للوسيط المناسب",
+          desc: "نرتب الشركات حسب الدولة ونوع الحساب والمقارنات حتى تصل للخيار الأقرب لاحتياجك.",
         },
       ].map((item, index) => (
         <div
@@ -1475,73 +1486,81 @@ export default async function HomePage() {
     </div>
 
     {/* DESKTOP */}
-    <div className="hidden p-6 sm:block sm:p-8">
-      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+    <div className="hidden p-5 sm:block">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {[
           {
             title: "مراجعات منظمة وواضحة",
-desc: "كل شركة لها صفحة مستقلة تعرض الحسابات والمنصات والتراخيص والرسوم بشكل واضح.",
+            desc: "نعرض أهم معلومات الشركة في صفحة واحدة: الترخيص، الرسوم، الحسابات، المنصات، وطرق الإيداع والسحب.",
+            tag: "تقييمات",
           },
           {
-            title: "مقارنات عملية بين الوسطاء",
-            desc: "صفحات مقارنة توضح الفروق الفعلية بين الشركات بدل أن يتنقل الزائر بين عدة صفحات.",
+            title: "مقارنات تساعدك على القرار",
+            desc: "نوضح الفروقات العملية بين الوسطاء حتى تعرف أي شركة أنسب لك بدل الاعتماد على الانطباع العام.",
+            tag: "مقارنات",
           },
           {
-            title: "تركيز على المتداول العربي",
-            desc: "نهتم بالحساب الإسلامي والدعم العربي ومرونة الإيداع والسحب واحتياجات المنطقة.",
+            title: "تركيز على احتياجات العرب",
+            desc: "نهتم بعوامل مهمة مثل الحساب الإسلامي، الدعم العربي، ومرونة الإيداع والسحب في الدول العربية.",
+            tag: "للمنطقة",
           },
           {
-            title: "بنية قوية للسيو والتوسع",
-            desc: "ربط صفحات التقييم والمقارنات وصفحات الدول بطريقة منظمة تعزز تجربة المستخدم والسيو.",
+            title: "وصول أسرع للخيار المناسب",
+            desc: "نرتب الشركات حسب الدولة، نوع الحساب، والرسوم حتى تصل بسرعة إلى الوسيط الأقرب لأسلوبك وميزانيتك.",
+            tag: "اختيار أسهل",
           },
         ].map((item, index) => (
           <div
             key={item.title}
-            className="group rounded-[22px] border border-slate-200 bg-[linear-gradient(180deg,#f8fbff_0%,#ffffff_100%)] px-5 py-5 shadow-sm transition hover:-translate-y-1 hover:border-[#bfdbfe] hover:shadow-[0_14px_36px_rgba(15,23,42,0.06)]"
+            className="group relative overflow-hidden rounded-[24px] border border-slate-200 bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.045)] transition duration-300 hover:-translate-y-1 hover:border-[#93c5fd] hover:bg-[#fcfdff] hover:shadow-[0_22px_50px_rgba(15,23,42,0.08)]"
           >
-            <div className="flex items-start gap-3">
-              <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#bfdbfe] bg-white text-[12px] font-black text-[#1d4ed8]">
-                {index + 1}
+            <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#2563eb] via-[#60a5fa] to-transparent opacity-55" />
+
+            <div className="mb-5 flex items-center justify-between gap-3">
+              <span className="inline-flex rounded-full border border-blue-100 bg-[#eff6ff] px-3 py-1 text-[11px] font-black text-[#2563eb]">
+                {item.tag}
               </span>
 
-              <div className="min-w-0">
-                <h3 className="text-[18px] font-black leading-[1.35] text-[#0f172a]">
-                  {item.title}
-                </h3>
-
-                <p className="mt-3 text-sm leading-7 text-slate-600">
-                  {item.desc}
-                </p>
-              </div>
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-blue-100 bg-[#f8fbff] text-[13px] font-black text-[#2563eb] transition group-hover:bg-[#2563eb] group-hover:text-white">
+                {index + 1}
+              </span>
             </div>
+
+            <h3 className="text-[20px] font-black leading-7 tracking-[-0.02em] text-[#07111f]">
+              {item.title}
+            </h3>
+
+            <p className="mt-3 min-h-[84px] text-[13px] font-medium leading-7 text-slate-600">
+              {item.desc}
+            </p>
           </div>
         ))}
       </div>
     </div>
-
   </div>
 </section>
 
 {/* FAQ */}
-<section className="mx-auto max-w-7xl px-4 pt-3 pb-2 sm:px-6 sm:pt-1 sm:pb-3 lg:px-8">
-  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm sm:rounded-[32px]">
+<section className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
+  <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
     {/* HEADER */}
-    <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-6 sm:px-8 sm:py-8">
-      <div className="inline-flex rounded-full border border-[#bfdbfe] bg-[#eff6ff] px-3 py-1 text-xs font-extrabold text-[#1d4ed8] sm:text-sm">
-        الأسئلة الشائعة
+    <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4">
+      <div className="text-center lg:text-right">
+        <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-[#2563eb] shadow-sm">
+          الأسئلة الشائعة
+        </span>
+
+        <h2 className="mt-4 text-[30px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] sm:text-[34px] lg:text-[36px]">
+          أهم الأسئلة قبل اختيار شركة التداول
+        </h2>
+
+        <p className="mx-auto mt-3 max-w-[900px] text-[14px] font-semibold leading-8 text-slate-600 lg:mx-0 lg:text-[15px] lg:leading-9">
+          إجابات مختصرة على أكثر الأسئلة التي يحتاجها المتداول قبل فتح الحساب، من الترخيص والأمان إلى الحد الأدنى للإيداع والمنصات المناسبة.
+        </p>
       </div>
-
-      <h2 className="mt-3 text-[24px] font-black leading-[1.15] text-[#0f172a] sm:text-[36px]">
-        أهم الأسئلة قبل اختيار شركة التداول
-      </h2>
-
-      <p className="mt-4 max-w-4xl text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
-        هذه أكثر الأسئلة التي تدور غالبًا في ذهن المتداول قبل فتح الحساب، ولذلك
-        جمعنا أهم الإجابات بشكل مختصر وواضح لمساعدتك على اتخاذ قرار أفضل.
-      </p>
     </div>
 
-    {/* MOBILE */}
+    {/* MOBILE - unchanged */}
     <div className="space-y-3 px-4 py-4 sm:hidden">
       {[
         {
@@ -1587,46 +1606,54 @@ desc: "كل شركة لها صفحة مستقلة تعرض الحسابات وا
     </div>
 
     {/* DESKTOP */}
-    <div className="hidden px-8 py-8 sm:block">
-      <div className="grid gap-4">
+    <div className="hidden p-5 sm:block">
+      <div className="grid gap-3">
         {[
           {
             q: "ما هي أفضل شركة تداول للمبتدئين؟",
-            a: "أفضل شركة تداول للمبتدئين هي الشركة التي توفر ترخيصًا واضحًا، منصة سهلة الاستخدام، حدًا أدنى مناسبًا للإيداع، ورسومًا مفهومة بدون تعقيد. المبتدئ لا يحتاج فقط إلى وسيط مشهور، بل إلى وسيط يساعده على التعلم والبدء بأمان.",
+            a: "أفضل شركة تداول للمبتدئين هي الشركة التي توفر ترخيصًا واضحًا، منصة سهلة الاستخدام، حدًا أدنى مناسبًا للإيداع، ورسومًا مفهومة بدون تعقيد.",
           },
           {
             q: "هل شركات التداول آمنة وموثوقة؟",
-            a: "الأمان يختلف من شركة إلى أخرى. الشركات الأكثر موثوقية تكون عادة خاضعة لهيئات رقابية معروفة، وتعرض شروطها ورسومها بشكل واضح، وتوفر إجراءات منظمة للإيداع والسحب وخدمة العملاء. لذلك يجب فحص الترخيص والسمعة وتجربة الاستخدام الفعلية.",
+            a: "الأمان يختلف من شركة إلى أخرى. الشركات الأكثر موثوقية تكون عادة خاضعة لهيئات رقابية معروفة، وتعرض شروطها ورسومها بشكل واضح.",
           },
           {
             q: "ما أقل مبلغ لفتح حساب تداول؟",
-            a: "الحد الأدنى لفتح الحساب يختلف حسب الوسيط ونوع الحساب. بعض الشركات تسمح بالبدء بمبالغ منخفضة، لكن الأهم هو ألا تختار الحساب فقط بناءً على الإيداع الأدنى، بل على مدى ملاءمته لرأس مالك وطريقة تداولك.",
+            a: "الحد الأدنى لفتح الحساب يختلف حسب الوسيط ونوع الحساب. الأهم هو اختيار حساب يناسب رأس مالك وطريقة تداولك.",
           },
           {
             q: "كيف أعرف أن شركة التداول مرخصة؟",
-            a: "يمكنك معرفة ذلك من خلال صفحة التراخيص في موقع الشركة، حيث يجب أن يظهر اسم الجهة الرقابية ورقم الترخيص بوضوح. عند الحاجة يمكن التحقق من البيانات عبر الموقع الرسمي للجهة الرقابية، وهذا يمنحك صورة أدق عن مستوى التنظيم والشفافية.",
+            a: "يمكنك معرفة ذلك من خلال صفحة التراخيص في موقع الشركة، ثم مراجعة اسم الجهة الرقابية ورقم الترخيص عند الإمكان.",
           },
           {
             q: "ما الفرق بين MT4 وMT5 وأيهما أفضل؟",
-            a: "MT4 منصة معروفة ببساطتها وانتشارها الكبير، بينما MT5 تقدم أدوات وتحسينات إضافية ويعتمد عليها كثير من الوسطاء أيضًا. الأفضلية لا تكون دائمًا باسم المنصة فقط، بل بمدى استقرارها وسهولة استخدامها وتوافقها مع احتياجاتك الفعلية.",
+            a: "MT4 معروفة ببساطتها وانتشارها، بينما MT5 تقدم أدوات إضافية. الأفضل يعتمد على أسلوبك واحتياجاتك الفعلية.",
           },
-        ].map((item) => (
+        ].map((item, index) => (
           <details
             key={item.q}
-            className="group overflow-hidden rounded-[22px] border border-slate-200 bg-[#f8fbff] shadow-sm open:bg-white"
+            className="group overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-[0_6px_20px_rgba(15,23,42,0.04)] transition hover:border-[#bfdbfe] hover:bg-[#fcfdff] hover:shadow-[0_14px_32px_rgba(15,23,42,0.05)] open:border-[#93c5fd]"
           >
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-5">
-              <span className="text-lg font-black leading-8 text-[#0f172a]">
-                {item.q}
-              </span>
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4">
+              <div className="flex items-center gap-3 text-right">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-blue-100 bg-[#eff6ff] text-xs font-black text-[#1d4ed8] transition group-open:bg-[#2563eb] group-open:text-white">
+                  {index + 1}
+                </span>
 
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#bfdbfe] bg-white text-lg font-black text-[#1d4ed8] transition group-open:rotate-180">
+                <span className="text-[16px] font-black leading-7 text-[#07111f]">
+                  {item.q}
+                </span>
+              </div>
+
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-blue-100 bg-[#f8fbff] text-[14px] font-black text-[#2563eb] transition group-open:rotate-180 group-open:bg-[#2563eb] group-open:text-white">
                 ▾
               </span>
             </summary>
 
-            <div className="border-t border-slate-200 px-5 py-5">
-              <p className="text-sm leading-8 text-slate-600">{item.a}</p>
+            <div className="border-t border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#fcfdff_100%)] px-5 py-4">
+              <p className="max-w-4xl text-[14px] font-medium leading-8 text-slate-600">
+                {item.a}
+              </p>
             </div>
           </details>
         ))}
