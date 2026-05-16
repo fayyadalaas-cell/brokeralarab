@@ -397,7 +397,7 @@ export default async function HomePage() {
     <img
       src={broker.logo}
       alt={broker.name}
-      className="max-h-[52px] max-w-[78px] object-contain transition duration-300 group-hover:scale-[1.08]"
+      className="max-h-[60px] max-w-[92px] object-contain transition duration-300 group-hover:scale-[1.08]"
     />
   ) : (
                             <span className="text-sm font-bold text-slate-900">
