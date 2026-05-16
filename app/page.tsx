@@ -327,9 +327,10 @@ export default async function HomePage() {
           `}</style>
 
           <div className="relative overflow-hidden bg-[#07111f]">
-            {/* BACKGROUND */}
-            <div className="pointer-events-none absolute inset-0">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.15),transparent_60%)]" />
+           {/* BACKGROUND */}
+<div className="pointer-events-none absolute inset-0">
+  <div className="absolute left-1/2 top-[46%] h-[420px] w-[820px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#2563eb]/20 blur-[120px]" />
+  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.15),transparent_60%)]" />
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(37,99,235,0.34),transparent_42%)]" />
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_55%,rgba(14,165,233,0.12),transparent_34%)]" />
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_82%_45%,rgba(59,130,246,0.11),transparent_30%)]" />
@@ -355,14 +356,14 @@ export default async function HomePage() {
                 <div className="mt-6 flex items-center justify-center gap-4">
                   <a
                     href="#finder"
-                    className="rounded-full bg-white px-8 py-3.5 text-[15px] font-black text-[#07111f] shadow-[0_12px_50px_rgba(59,130,246,0.25)] transition hover:-translate-y-0.5 hover:bg-slate-100"
+                    className="rounded-full bg-white px-8 py-3.5 text-[15px] font-black text-[#07111f] shadow-[0_18px_60px_rgba(37,99,235,0.30)] transition hover:-translate-y-0.5 hover:bg-slate-100"
                   >
                     ابحث عن أفضل وسيط
                   </a>
 
                   <Link
                     href="/compare"
-                    className="rounded-full border border-white/20 bg-white/[0.045] px-8 py-3.5 text-[15px] font-bold text-white transition hover:-translate-y-0.5 hover:bg-white/10"
+                    className="rounded-full border border-white/20 bg-white/[0.06] px-8 py-3.5 text-[15px] font-bold text-white transition hover:-translate-y-0.5 hover:bg-white/10"
                   >
                     تصفح المقارنات
                   </Link>
@@ -371,26 +372,26 @@ export default async function HomePage() {
             </div>
 
             {/* LOGO STRIP */}
-            <div className="relative z-10 border-y border-slate-200 bg-white" dir="ltr">
+            <div className="relative z-10 border-y border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)]" dir="ltr">
               <div className="pointer-events-none absolute left-0 top-0 z-20 h-full w-28 bg-gradient-to-r from-white to-transparent" />
               <div className="pointer-events-none absolute right-0 top-0 z-20 h-full w-28 bg-gradient-to-l from-white to-transparent" />
 
               <div className="overflow-hidden">
-                <div className="flex w-max [animation:brokerMarquee_150s_linear_infinite]">
+                <div className="flex w-max [animation:brokerMarquee_150s_linear_infinite] hover:[animation-play-state:paused]">
                   {marquee.map((broker, index) => (
                     <Link
                       key={`broker-${broker.id}-${index}`}
                       href={`/brokers/${broker.slug}`}
-                      className="group flex h-[112px] w-[320px] shrink-0 items-center justify-center border-r border-slate-200 bg-white px-8 transition hover:bg-slate-50"
+                      className="group flex h-[92px] w-[300px] shrink-0 items-center justify-center border-r border-slate-100 bg-transparent px-6 transition duration-300 hover:bg-white hover:shadow-[0_8px_24px_rgba(37,99,235,0.08)]"
                     >
-                      <div className="flex w-full items-center justify-center gap-5" dir="rtl">
+                      <div className="flex w-full items-center justify-center gap-4" dir="rtl">
                         {/* LOGO - RIGHT */}
-                        <div className="flex h-[64px] w-[86px] overflow-hidden shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white px-2 py-2 shadow-[0_10px_28px_rgba(15,23,42,0.10)]">
+                       <div className="flex h-[68px] w-[94px] shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white p-2.5 shadow-[0_6px_18px_rgba(15,23,42,0.06)]">
   {broker.logo ? (
     <img
       src={broker.logo}
       alt={broker.name}
-      className="h-[56px] w-[82px] scale-[1.45] object-contain transition duration-300 group-hover:scale-[1.55]"
+      className="max-h-[52px] max-w-[78px] object-contain transition duration-300 group-hover:scale-[1.08]"
     />
   ) : (
                             <span className="text-sm font-bold text-slate-900">
@@ -463,7 +464,7 @@ export default async function HomePage() {
       </div>
     </div>
 
-    <div className="relative z-10 border-y border-slate-200 bg-white" dir="ltr">
+    <div className="relative z-10 border-y border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)]" dir="ltr">
       <div className="pointer-events-none absolute left-0 top-0 z-20 h-full w-14 bg-gradient-to-r from-white to-transparent" />
       <div className="pointer-events-none absolute right-0 top-0 z-20 h-full w-14 bg-gradient-to-l from-white to-transparent" />
 
@@ -473,7 +474,7 @@ export default async function HomePage() {
             <Link
               key={`mobile-broker-${broker.id}-${index}`}
               href={`/brokers/${broker.slug}`}
-              className="flex h-[78px] w-[210px] shrink-0 items-center justify-center border-r border-slate-200 bg-white px-4"
+              className="flex h-[78px] w-[210px] shrink-0 items-center justify-center border-r border-slate-100 bg-white px-4"
             >
               <div className="flex w-full items-center justify-center gap-3" dir="rtl">
                 <div className="flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
