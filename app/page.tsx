@@ -570,7 +570,7 @@ export default async function HomePage() {
                   كيف نختار أفضل شركات التداول؟
                 </h2>
 
-                <p className="mt-3 max-w-4xl text-[15px] font-semibold leading-9 text-slate-600">
+                <p className="mt-3 max-w-3xl text-[15px] font-semibold leading-9 text-slate-600">
                 نراجع تقييم شركات التداول بناءً على قوة التراخيص، الرسوم والسبريد، سرعة السحب والإيداع، جودة المنصات، الحساب الإسلامي، وتجربة المتداول الفعلية قبل ترشيح أي وسيط تداول موثوق.
                 </p>
               </div>
@@ -669,241 +669,224 @@ export default async function HomePage() {
 </section>
 
 {/* TOP COMPARISONS */}
-<section className="bg-[#f4f7fb] py-3 sm:py-4">
-  <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm sm:rounded-[32px]">
-      {/* HEADER */}
-      <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-4 py-5 sm:px-7 sm:py-7">
-        <div className="flex flex-col gap-4 text-center lg:flex-row lg:items-start lg:justify-between lg:text-right">
-          <div className="max-w-none text-center lg:text-right">
-            <h2 className="text-[28px] font-black leading-[1.15] text-[#0f172a] sm:text-[34px] lg:text-[42px]">
-              أشهر مقارنات شركات التداول
-            </h2>
+<section className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
+  <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
+    {/* HEADER */}
+    <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div className="text-center lg:text-right">
+          <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-[#2563eb] shadow-sm">
+            مقارنات الوسطاء
+          </span>
 
-          {/* Mobile */}
-<p className="mt-3 max-w-[900px] text-[14px] leading-7 text-slate-600 md:hidden">
-  استعرض أكثر المقارنات قراءة بين الوسطاء، واكتشف الفروقات في
-  التراخيص والمنصات والرسوم قبل اختيار شركة التداول المناسبة.
-</p>
+          <h2 className="mt-4 text-[30px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] sm:text-[34px] lg:text-[36px]">
+            أشهر مقارنات شركات التداول
+          </h2>
 
-{/* Desktop */}
-<p className="hidden md:block mt-3 max-w-[950px] text-[15px] leading-8 text-slate-600">
-  استعرض أشهر مقارنات شركات التداول بين الوسطاء، وتعرّف على الفروقات في
-  التراخيص، أنواع الحسابات، الرسوم، والمنصات المتاحة مثل MT4 وMT5. يساعدك
-  هذا القسم على فهم الاختلافات العملية بين شركات التداول واختيار الوسيط
-  الأنسب لك وفق أسلوبك في التداول واحتياجاتك الفعلية.
-</p>
-          </div>
+          <p className="mx-auto mt-3 max-w-[900px] text-[14px] font-semibold leading-8 text-slate-600 lg:mx-0 lg:text-[15px] lg:leading-9">
+            استعرض أشهر مقارنات شركات التداول بين الوسطاء، وتعرّف على الفروقات في التراخيص، أنواع الحسابات، الرسوم، والمنصات المتاحة مثل MT4 وMT5 لاختيار الوسيط الأنسب لك.
+          </p>
+        </div>
 
-          <div className="flex justify-center md:hidden">
-  <Link
-    href="/compare"
-    className="inline-flex h-11 items-center justify-center rounded-2xl border border-slate-300 bg-white px-5 text-[13px] font-extrabold text-[#0f172a] shadow-sm transition hover:border-[#93c5fd] hover:bg-[#eff6ff]"
-  >
-    تصفح جميع المقارنات
-  </Link>
-</div>
-
-<div className="hidden md:flex shrink-0 justify-center lg:justify-start">
-  <Link
-    href="/compare"
-    className="inline-flex h-12 items-center justify-center rounded-2xl border border-slate-300 bg-white px-5 text-sm font-extrabold text-[#0f172a] shadow-sm transition hover:border-[#93c5fd] hover:bg-[#eff6ff]"
-  >
-    تصفح جميع المقارنات
-  </Link>
-</div>
+        <div className="flex justify-center lg:self-center lg:pl-2">
+          <Link
+            href="/compare"
+            className="inline-flex h-12 items-center justify-center rounded-2xl bg-[#2563eb] px-6 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(37,99,235,0.24)] transition hover:bg-[#1d4ed8]"
+          >
+            تصفح جميع المقارنات
+          </Link>
         </div>
       </div>
+    </div>
 
-      {/* MOBILE */}
-      <div className="grid gap-3 p-4 md:hidden">
-        {topComparisons.map((cmp, index) => (
-          <article
-            key={cmp.id}
-            className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm"
-          >
-            <div className="h-1 bg-gradient-to-r from-[#2563eb] via-[#60a5fa] to-transparent" />
+    {/* MOBILE - unchanged */}
+    <div className="grid gap-3 p-4 md:hidden">
+      {topComparisons.map((cmp, index) => (
+        <article
+          key={cmp.id}
+          className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm"
+        >
+          <div className="h-1 bg-gradient-to-r from-[#2563eb] via-[#60a5fa] to-transparent" />
 
-            <div className="p-3.5">
-              <div className="mb-3 flex items-center justify-between gap-2">
-                <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-bold text-slate-500">
-                  #{index + 1} الأكثر مشاهدة
-                </span>
+          <div className="p-3.5">
+            <div className="mb-3 flex items-center justify-between gap-2">
+              <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-bold text-slate-500">
+                #{index + 1} الأكثر مشاهدة
+              </span>
 
-                <span className="text-[11px] font-bold text-slate-400">
-                  {cmp.views_count ?? 0} مشاهدة
-                </span>
-              </div>
+              <span className="text-[11px] font-bold text-slate-400">
+                {cmp.views_count ?? 0} مشاهدة
+              </span>
+            </div>
 
-              <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
-                <div className="flex flex-col items-center text-center">
-                  <Link
-                    href={`/brokers/${cmp.broker_1?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_1?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_1?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_1?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
-                    className="flex h-14 w-14 items-center justify-center rounded-[16px] border border-slate-200 bg-slate-50 p-2 transition hover:border-blue-200 hover:bg-blue-50"
-                  >
-                    {cmp.broker_1?.logo ? (
-                      <img
-                        src={cmp.broker_1.logo}
-                        alt={cmp.broker_1.name || "Broker 1"}
-                        className="h-full w-full object-contain"
-                      />
-                    ) : (
-                      <span className="text-[9px] text-slate-400">Logo</span>
-                    )}
-                  </Link>
-
-                  <Link
-                    href={`/brokers/${cmp.broker_1?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_1?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_1?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_1?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
-                    className="mt-2 text-[15px] font-black leading-none text-[#0f172a] transition hover:text-[#2563eb]"
-                  >
-                    {cmp.broker_1?.name || "Broker 1"}
-                  </Link>
-
-                  <span className="mt-1 text-[11px] font-bold text-[#f59e0b]">
-                    ★ {cmp.broker_1?.rating?.toFixed(1) ?? "—"}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-center">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full border border-blue-200 bg-blue-50 text-[11px] font-extrabold text-blue-600 shadow-sm">
-                    VS
-                  </div>
-                </div>
-
-                <div className="flex flex-col items-center text-center">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-[16px] border border-slate-200 bg-slate-50 p-2">
-                    {cmp.broker_2?.logo ? (
-                      <img
-                        src={cmp.broker_2.logo}
-                        alt={cmp.broker_2.name || "Broker 2"}
-                        className="h-full w-full object-contain"
-                      />
-                    ) : (
-                      <span className="text-[9px] text-slate-400">Logo</span>
-                    )}
-                  </div>
-
-                  <span className="mt-2 text-[15px] font-black leading-none text-[#0f172a]">
-                    {cmp.broker_2?.name || "Broker 2"}
-                  </span>
-
-                  <span className="mt-1 text-[11px] font-bold text-[#f59e0b]">
-                    ★ {cmp.broker_2?.rating?.toFixed(1) ?? "—"}
-                  </span>
-                </div>
-              </div>
-
-              <div className="mt-4">
+            <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+              <div className="flex flex-col items-center text-center">
                 <Link
-                  href={`/compare/${cmp.slug}`}
-                  className="mt-3 flex w-full items-center justify-center rounded-xl bg-[#2563eb] py-2.5 text-[14px] font-bold text-white hover:bg-[#1d4ed8]"
+                  href={`/brokers/${cmp.broker_1?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_1?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_1?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_1?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
+                  className="flex h-14 w-14 items-center justify-center rounded-[16px] border border-slate-200 bg-slate-50 p-2 transition hover:border-blue-200 hover:bg-blue-50"
                 >
-                  {`مقارنة ${cmp.broker_1?.name} مع ${cmp.broker_2?.name}`}
+                  {cmp.broker_1?.logo ? (
+                    <img
+                      src={cmp.broker_1.logo}
+                      alt={cmp.broker_1.name || "Broker 1"}
+                      className="h-full w-full object-contain"
+                    />
+                  ) : (
+                    <span className="text-[9px] text-slate-400">Logo</span>
+                  )}
                 </Link>
+
+                <Link
+                  href={`/brokers/${cmp.broker_1?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_1?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_1?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_1?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
+                  className="mt-2 text-[15px] font-black leading-none text-[#0f172a] transition hover:text-[#2563eb]"
+                >
+                  {cmp.broker_1?.name || "Broker 1"}
+                </Link>
+
+                <span className="mt-1 text-[11px] font-bold text-[#f59e0b]">
+                  ★ {cmp.broker_1?.rating?.toFixed(1) ?? "—"}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-center">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full border border-blue-200 bg-blue-50 text-[11px] font-extrabold text-blue-600 shadow-sm">
+                  VS
+                </div>
+              </div>
+
+              <div className="flex flex-col items-center text-center">
+                <div className="flex h-14 w-14 items-center justify-center rounded-[16px] border border-slate-200 bg-slate-50 p-2">
+                  {cmp.broker_2?.logo ? (
+                    <img
+                      src={cmp.broker_2.logo}
+                      alt={cmp.broker_2.name || "Broker 2"}
+                      className="h-full w-full object-contain"
+                    />
+                  ) : (
+                    <span className="text-[9px] text-slate-400">Logo</span>
+                  )}
+                </div>
+
+                <span className="mt-2 text-[15px] font-black leading-none text-[#0f172a]">
+                  {cmp.broker_2?.name || "Broker 2"}
+                </span>
+
+                <span className="mt-1 text-[11px] font-bold text-[#f59e0b]">
+                  ★ {cmp.broker_2?.rating?.toFixed(1) ?? "—"}
+                </span>
               </div>
             </div>
-          </article>
-        ))}
-      </div>
 
-      {/* DESKTOP / TABLET */}
-      <div className="hidden gap-5 p-4 md:grid md:grid-cols-2 md:p-5 xl:grid-cols-3">
-        {topComparisons.map((cmp, index) => (
-          <article
-            key={cmp.id}
-            className="group overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(15,23,42,0.07)]"
-          >
-            <div className="h-1 bg-gradient-to-r from-[#2563eb] via-[#60a5fa] to-transparent" />
+            <div className="mt-4">
+              <Link
+                href={`/compare/${cmp.slug}`}
+                className="mt-3 flex w-full items-center justify-center rounded-xl bg-[#2563eb] py-2.5 text-[14px] font-bold text-white hover:bg-[#1d4ed8]"
+              >
+                {`مقارنة ${cmp.broker_1?.name} مع ${cmp.broker_2?.name}`}
+              </Link>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
 
-            <div className="p-5 lg:p-6">
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-bold text-slate-500">
-                  #{index + 1} الأكثر مشاهدة
-                </span>
+    {/* DESKTOP / TABLET */}
+    <div className="hidden gap-4 p-5 md:grid md:grid-cols-2 xl:grid-cols-3">
+      {topComparisons.map((cmp, index) => (
+        <article
+          key={cmp.id}
+          className="group overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_6px_20px_rgba(15,23,42,0.04)] transition hover:-translate-y-0.5 hover:border-[#bfdbfe] hover:shadow-[0_16px_34px_rgba(15,23,42,0.06)]"
+        >
+          <div className="h-1 bg-gradient-to-r from-[#2563eb] via-[#60a5fa] to-transparent" />
 
-                <span className="text-[12px] font-bold text-slate-400">
-                  {cmp.views_count ?? 0} مشاهدة
-                </span>
-              </div>
+          <div className="p-5">
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-bold text-slate-500">
+                #{index + 1} الأكثر مشاهدة
+              </span>
 
-              <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 lg:gap-4">
-                <div className="flex flex-col items-center text-center">
-                  <Link
-                    href={`/brokers/${cmp.broker_1?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_1?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_1?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_1?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
-                    className="flex h-20 w-20 items-center justify-center rounded-[22px] border border-slate-200 bg-slate-50 p-3 transition hover:border-blue-200 hover:bg-blue-50 lg:h-24 lg:w-24"
-                  >
-                    {cmp.broker_1?.logo ? (
-                      <img
-                        src={cmp.broker_1.logo}
-                        alt={cmp.broker_1.name || "Broker 1"}
-                        className="h-full w-full object-contain"
-                      />
-                    ) : (
-                      <span className="text-[10px] text-slate-400">Logo</span>
-                    )}
-                  </Link>
+              <span className="text-[12px] font-bold text-slate-400">
+                {cmp.views_count ?? 0} مشاهدة
+              </span>
+            </div>
 
-                  <Link
-                    href={`/brokers/${cmp.broker_1?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_1?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_1?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_1?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
-                    className="mt-3 text-[17px] font-black leading-none text-[#0f172a] transition hover:text-[#2563eb] lg:text-[20px]"
-                  >
-                    {cmp.broker_1?.name || "Broker 1"}
-                  </Link>
-
-                  <span className="mt-2 text-[12px] font-bold text-[#f59e0b] lg:text-[13px]">
-                    ★ {cmp.broker_1?.rating?.toFixed(1) ?? "—"}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-center">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-full border border-blue-200 bg-blue-50 text-[13px] font-extrabold text-blue-600 shadow-sm">
-                    VS
-                  </div>
-                </div>
-
-                <div className="flex flex-col items-center text-center">
-                  <Link
-                    href={`/brokers/${cmp.broker_2?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_2?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_2?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_2?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
-                    className="flex h-20 w-20 items-center justify-center rounded-[22px] border border-slate-200 bg-slate-50 p-3 transition hover:border-blue-200 hover:bg-blue-50 lg:h-24 lg:w-24"
-                  >
-                    {cmp.broker_2?.logo ? (
-                      <img
-                        src={cmp.broker_2.logo}
-                        alt={cmp.broker_2.name || "Broker 2"}
-                        className="h-full w-full object-contain"
-                      />
-                    ) : (
-                      <span className="text-[10px] text-slate-400">Logo</span>
-                    )}
-                  </Link>
-
-                  <Link
-                    href={`/brokers/${cmp.broker_2?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_2?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_2?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_2?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
-                    className="mt-3 text-[17px] font-black leading-none text-[#0f172a] transition hover:text-[#2563eb] lg:text-[20px]"
-                  >
-                    {cmp.broker_2?.name || "Broker 2"}
-                  </Link>
-
-                  <span className="mt-2 text-[12px] font-bold text-[#f59e0b] lg:text-[13px]">
-                    ★ {cmp.broker_2?.rating?.toFixed(1) ?? "—"}
-                  </span>
-                </div>
-              </div>
-
-              <div className="mt-5">
+            <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+              <div className="flex flex-col items-center text-center">
                 <Link
-                  href={`/compare/${cmp.slug}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex w-full min-h-[48px] items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-[15px] font-extrabold text-white transition hover:bg-[#1d4ed8] lg:min-h-[52px] lg:text-base"
+                  href={`/brokers/${cmp.broker_1?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_1?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_1?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_1?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
+                  className="flex h-[72px] w-[72px] items-center justify-center rounded-[20px] border border-slate-200 bg-slate-50 p-3 transition hover:border-blue-200 hover:bg-blue-50 lg:h-20 lg:w-20"
                 >
-                  {`مقارنة ${cmp.broker_1?.name} مع ${cmp.broker_2?.name}`}
+                  {cmp.broker_1?.logo ? (
+                    <img
+                      src={cmp.broker_1.logo}
+                      alt={cmp.broker_1.name || "Broker 1"}
+                      className="h-full w-full object-contain"
+                    />
+                  ) : (
+                    <span className="text-[10px] text-slate-400">Logo</span>
+                  )}
                 </Link>
+
+                <Link
+                  href={`/brokers/${cmp.broker_1?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_1?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_1?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_1?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
+                  className="mt-3 text-[17px] font-black leading-none text-[#0f172a] transition hover:text-[#2563eb] lg:text-[18px]"
+                >
+                  {cmp.broker_1?.name || "Broker 1"}
+                </Link>
+
+                <span className="mt-2 text-[12px] font-bold text-[#f59e0b]">
+                  ★ {cmp.broker_1?.rating?.toFixed(1) ?? "—"}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-center">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full border border-blue-200 bg-blue-50 text-[12px] font-extrabold text-blue-600 shadow-sm">
+                  VS
+                </div>
+              </div>
+
+              <div className="flex flex-col items-center text-center">
+                <Link
+                  href={`/brokers/${cmp.broker_2?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_2?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_2?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_2?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
+                  className="flex h-[72px] w-[72px] items-center justify-center rounded-[20px] border border-slate-200 bg-slate-50 p-3 transition hover:border-blue-200 hover:bg-blue-50 lg:h-20 lg:w-20"
+                >
+                  {cmp.broker_2?.logo ? (
+                    <img
+                      src={cmp.broker_2.logo}
+                      alt={cmp.broker_2.name || "Broker 2"}
+                      className="h-full w-full object-contain"
+                    />
+                  ) : (
+                    <span className="text-[10px] text-slate-400">Logo</span>
+                  )}
+                </Link>
+
+                <Link
+                  href={`/brokers/${cmp.broker_2?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_2?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_2?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_2?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
+                  className="mt-3 text-[17px] font-black leading-none text-[#0f172a] transition hover:text-[#2563eb] lg:text-[18px]"
+                >
+                  {cmp.broker_2?.name || "Broker 2"}
+                </Link>
+
+                <span className="mt-2 text-[12px] font-bold text-[#f59e0b]">
+                  ★ {cmp.broker_2?.rating?.toFixed(1) ?? "—"}
+                </span>
               </div>
             </div>
-          </article>
-        ))}
-      </div>
+
+            <div className="mt-5">
+              <Link
+                href={`/compare/${cmp.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex w-full min-h-[48px] items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-[15px] font-extrabold text-white transition hover:bg-[#1d4ed8]"
+              >
+                {`مقارنة ${cmp.broker_1?.name} مع ${cmp.broker_2?.name}`}
+              </Link>
+            </div>
+          </div>
+        </article>
+      ))}
     </div>
   </div>
 </section>
@@ -912,39 +895,39 @@ export default async function HomePage() {
 <section className="bg-[#f4f7fb] py-3 sm:py-4">
   <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm sm:rounded-[32px]">
-      {/* HEADER */}
-      <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-4 py-5 sm:px-7 sm:py-7">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div className="max-w-none text-center lg:max-w-[920px] lg:text-right">
-            <h2 className="text-[28px] font-black leading-[1.1] tracking-[-0.02em] text-[#0f172a] sm:text-[42px]">
-              أفضل شركات التداول
-              <span className="text-[#2563eb]"> حسب الدولة</span>
-            </h2>
-             
-             <p className="mt-2 text-[14px] leading-7 text-slate-600 md:hidden">
-  اختر أفضل شركات التداول حسب بلدك، وتعرّف على الوسطاء المناسبين من حيث
-  التراخيص، الحسابات، ووسائل الإيداع والسحب.
-</p>
+     {/* HEADER */}
+<div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4">
+  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+    <div className="text-center lg:text-right">
+      <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-[#2563eb] shadow-sm">
+        حسب الدولة
+      </span>
 
-            <p className="hidden md:block mt-3 max-w-[820px] text-[15px] leading-8 text-slate-600">
-  استعرض أفضل شركات التداول حسب الدولة، وقارن بين الوسطاء من حيث التراخيص،
-  الحساب الإسلامي، وسائل الإيداع والسحب، وسهولة فتح الحساب. يساعدك هذا
-  القسم على الوصول بسرعة إلى شركات تداول مناسبة لبلدك واحتياجاتك الفعلية.
-</p>
-          </div>
+      <h2 className="mt-4 text-[30px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] sm:text-[34px] lg:text-[36px]">
+        أفضل شركات التداول حسب الدولة
+      </h2>
 
-          <div className="hidden md:flex shrink-0 justify-center lg:justify-start">
-            <Link
-              href="/best-brokers"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex h-12 items-center justify-center rounded-2xl border border-slate-300 bg-white px-5 text-sm font-extrabold text-[#0f172a] shadow-sm transition hover:border-[#93c5fd] hover:bg-[#eff6ff]"
-            >
-              كل الدول الأخرى
-            </Link>
-          </div>
-        </div>
-      </div>
+      <p className="mt-3 text-[14px] font-semibold leading-8 text-slate-600 md:hidden">
+        اختر أفضل شركات التداول حسب بلدك، وتعرّف على الوسطاء المناسبين من حيث التراخيص، الحسابات، ووسائل الإيداع والسحب.
+      </p>
+
+      <p className="hidden md:block mt-3 max-w-[900px] text-[15px] font-semibold leading-9 text-slate-600">
+        استعرض أفضل شركات التداول حسب الدولة، وقارن بين الوسطاء من حيث التراخيص، الحساب الإسلامي، وسائل الإيداع والسحب، وسهولة فتح الحساب. يساعدك هذا القسم على الوصول بسرعة إلى شركات تداول مناسبة لبلدك واحتياجاتك الفعلية.
+      </p>
+    </div>
+
+    <div className="hidden md:flex shrink-0 justify-center lg:self-center lg:pl-4">
+      <Link
+        href="/best-brokers"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex h-12 min-w-[190px] items-center justify-center rounded-2xl bg-[#2563eb] px-6 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(37,99,235,0.24)] transition hover:bg-[#1d4ed8]"
+      >
+        كل الدول الأخرى
+      </Link>
+    </div>
+  </div>
+</div>
 
      {/* MOBILE */}
 <div className="p-3 md:hidden">
@@ -1015,7 +998,7 @@ export default async function HomePage() {
               target="_blank"
               rel="noopener noreferrer"
               title={`أفضل شركات التداول في ${item.badge}`}
-              className="group rounded-[22px] border border-slate-200 bg-white px-5 py-4 shadow-sm transition hover:-translate-y-0.5 hover:border-[#bfdbfe] hover:bg-[#f8fbff] hover:shadow-[0_14px_32px_rgba(15,23,42,0.05)]"
+              className="group rounded-[22px] border border-slate-200 bg-white px-5 py-4 shadow-sm transition hover:-translate-y-0.5 hover:border-[#bfdbfe] hover:bg-[#fcfdff] hover:shadow-[0_14px_32px_rgba(15,23,42,0.05)]"
             >
               <div className="flex items-center gap-4">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-[#f8fafc] shadow-sm overflow-hidden">
@@ -1092,140 +1075,179 @@ export default async function HomePage() {
 
 {/* LOWEST SPREAD HOME SECTION */}
 <section className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
-  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_14px_34px_rgba(15,23,42,0.05)]">
-    <div className="relative px-4 py-6 sm:px-6 sm:py-7 lg:px-8 lg:py-8">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.05),transparent_28%)]" />
-
-      <div className="relative">
-        {/* HEADER */}
+  <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
+    <div className="relative">
+      {/* DESKTOP HEADER */}
+      <div className="hidden border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4 lg:block">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          {/* RIGHT TITLE */}
-          <div className="text-right lg:max-w-4xl">
-            <h2 className="text-[28px] font-black leading-[1.15] tracking-[-0.02em] text-slate-950 sm:text-[34px] lg:text-[42px]">
-              أقل سبريد فعلي
-              <span className="text-[#2563eb]"> حسب نوع الحساب</span>
+          <div className="text-right">
+            <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-[#2563eb] shadow-sm">
+              حسابات منخفضة السبريد
+            </span>
+
+            <h2 className="mt-4 text-[36px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f]">
+              أقل سبريد فعلي حسب نوع الحساب
             </h2>
 
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 sm:text-[15px]">
-              مقارنة سريعة بين أفضل الحسابات حسب التكلفة الفعلية مع فصل واضح بين
-              Standard و Raw و ECN و Cent، حتى تصل بسرعة إلى الحساب الأنسب
-              لأسلوب تداولك.
+            <p className="mt-3 max-w-[860px] text-[15px] font-semibold leading-9 text-slate-600">
+              مقارنة سريعة بين أفضل الحسابات حسب التكلفة الفعلية، مع فصل واضح بين حسابات Standard وRaw وECN وCent، حتى تصل بسرعة إلى الحساب الأنسب لأسلوب تداولك.
             </p>
           </div>
 
-          {/* LEFT BUTTON */}
-          <div className="flex justify-center lg:justify-start">
-  <Link
-    href="/lowest-spread-brokers"
-    className="inline-flex items-center justify-center rounded-xl bg-[#2563eb] px-5 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
-  >
-    شركات التداول الأقل سبريد
-  </Link>
-</div>
+          <div className="hidden md:flex shrink-0 justify-center lg:self-center lg:pl-4">
+            <Link
+  href="/lowest-spread-brokers"
+  className="inline-flex h-12 min-w-[190px] items-center justify-center rounded-2xl bg-[#2563eb] px-6 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(37,99,235,0.24)] transition hover:bg-[#1d4ed8]"
+>
+  شركات الأقل سبريد
+</Link>
+          </div>
         </div>
+      </div>
 
-        {/* DESKTOP / TABLET ROWS */}
-        <div className="mt-6 hidden w-full sm:block">
-          <div className="overflow-hidden rounded-[20px] border border-slate-200 bg-white">
-            {[
-              {
-                title: "أفضل حسابات Standard",
-                suitable: "المبتدئين",
-                desc: "حسابات أبسط وبتكلفة واضحة دون تعقيد كبير.",
-              },
-              {
-                title: "أفضل حسابات Raw",
-                suitable: "السكالبينج",
-                desc: "سبريد أقل مع عمولة منفصلة للباحثين عن تكلفة أدق.",
-              },
-              {
-                title: "أفضل حسابات ECN",
-                suitable: "التنفيذ السريع",
-                desc: "خيار مناسب للمتداول الذي يهتم بالهيكل الاحترافي.",
-              },
-              {
-                title: "أفضل حسابات Cent / Micro",
-                suitable: "رأس المال الصغير",
-                desc: "مناسبة للتجربة أو البداية بمبالغ منخفضة.",
-              },
-            ].map((item, index) => (
-              <a
-                key={item.title}
-                href="/lowest-spread-brokers#account-types"
-                className={`block transition hover:bg-blue-50/30 ${
-                  index !== 0 ? "border-t border-slate-200" : ""
-                }`}
+      {/* MOBILE HEADER - unchanged */}
+      <div className="relative px-4 py-6 sm:hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.05),transparent_28%)]" />
+
+        <div className="relative">
+          {/* HEADER */}
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            {/* RIGHT TITLE */}
+            <div className="text-right lg:max-w-4xl">
+              <h2 className="text-[28px] font-black leading-[1.15] tracking-[-0.02em] text-slate-950 sm:text-[34px] lg:text-[42px]">
+                أقل سبريد فعلي
+                <span className="text-[#2563eb]"> حسب نوع الحساب</span>
+              </h2>
+
+              <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 sm:text-[15px]">
+                مقارنة سريعة بين أفضل الحسابات حسب التكلفة الفعلية مع فصل واضح بين
+                Standard و Raw و ECN و Cent، حتى تصل بسرعة إلى الحساب الأنسب
+                لأسلوب تداولك.
+              </p>
+            </div>
+
+            {/* LEFT BUTTON */}
+            <div className="flex justify-center lg:justify-start">
+              <Link
+                href="/lowest-spread-brokers"
+                className="inline-flex items-center justify-center rounded-xl bg-[#2563eb] px-5 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
               >
-                <div className="grid grid-cols-[1fr_1.2fr_88px] items-center gap-6 px-5 py-4">
-                  {/* TITLE - RIGHT */}
-                  <div className="min-w-0 text-right">
-                    <div className="text-[16px] font-black text-slate-950">
-                      {item.title}
+                شركات التداول الأقل سبريد
+              </Link>
+            </div>
+          </div>
+
+          {/* MOBILE ROWS - unchanged */}
+          <div className="mt-6 w-full sm:hidden">
+            <div className="overflow-hidden rounded-[20px] border border-slate-200 bg-white">
+              {[
+                {
+                  title: "أفضل حسابات Standard",
+                  suitable: "المبتدئين",
+                },
+                {
+                  title: "أفضل حسابات Raw",
+                  suitable: "السكالبينج",
+                },
+                {
+                  title: "أفضل حسابات ECN",
+                  suitable: "التنفيذ السريع",
+                },
+                {
+                  title: "أفضل حسابات Cent / Micro",
+                  suitable: "رأس المال الصغير",
+                },
+              ].map((item, index) => (
+                <a
+                  key={item.title}
+                  href="/lowest-spread-brokers#account-types"
+                  className={`block px-4 py-3.5 transition hover:bg-blue-50/30 ${
+                    index !== 0 ? "border-t border-slate-200" : ""
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    {/* TITLE */}
+                    <div className="min-w-0 text-right">
+                      <div className="text-[14px] font-black text-slate-950">
+                        {item.title}
+                      </div>
                     </div>
-                  </div>
 
-                  {/* DESC */}
-                  <div className="min-w-0 text-right text-sm leading-7 text-slate-600">
-                    
-                    {item.desc}
-                  </div>
-
-                  {/* ACTION - LEFT */}
-                  <div className="flex justify-center">
-                    <span className="inline-flex min-w-[68px] items-center justify-center rounded-xl bg-[#2563eb] px-3 py-2 text-[11px] font-extrabold text-white transition hover:bg-[#1d4ed8]">
+                    {/* BUTTON */}
+                    <span className="inline-flex shrink-0 items-center justify-center rounded-xl bg-[#2563eb] px-4 py-2 text-[11px] font-extrabold text-white">
                       عرض
                     </span>
                   </div>
-                </div>
-              </a>
-            ))}
+                </a>
+              ))}
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* MOBILE ROWS */}
-        <div className="mt-6 w-full sm:hidden">
-          <div className="overflow-hidden rounded-[20px] border border-slate-200 bg-white">
-            {[
-              {
-                title: "أفضل حسابات Standard",
-                suitable: "المبتدئين",
-              },
-              {
-                title: "أفضل حسابات Raw",
-                suitable: "السكالبينج",
-              },
-              {
-                title: "أفضل حسابات ECN",
-                suitable: "التنفيذ السريع",
-              },
-              {
-                title: "أفضل حسابات Cent / Micro",
-                suitable: "رأس المال الصغير",
-              },
-            ].map((item, index) => (
-              <a
-                key={item.title}
-                href="/lowest-spread-brokers#account-types"
-                className={`block px-4 py-3.5 transition hover:bg-blue-50/30 ${
-                  index !== 0 ? "border-t border-slate-200" : ""
-                }`}
-              >
-                <div className="flex items-center justify-between gap-3">
-  {/* TITLE */}
-  <div className="min-w-0 text-right">
-    <div className="text-[14px] font-black text-slate-950">
-      {item.title}
-    </div>
-  </div>
+      {/* DESKTOP / TABLET ROWS */}
+      <div className="hidden p-5 sm:block">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {[
+            {
+              title: "حسابات Standard",
+              desc: "حسابات بسيطة بتكلفة واضحة وبدون تعقيد كبير.",
+              tag: "للمبتدئين",
+            },
+            {
+  title: "حسابات السبريد المنخفض",
+  desc: "سبريد منخفض مع عمولة منفصلة لتكلفة أدق.",
+  tag: "للسكالبينج",
+},
+{
+  title: "حسابات ECN الاحترافية",
+  desc: "مناسبة للمتداولين الذين يهتمون بسرعة التنفيذ.",
+  tag: "تنفيذ سريع",
+},
+            {
+              title: "حسابات Cent / Micro",
+              desc: "مناسبة للتجربة أو البداية برأس مال صغير.",
+              tag: "رأس مال صغير",
+            },
+          ].map((item) => (
+            <Link
+              key={item.title}
+              href="/lowest-spread-brokers#account-types"
+              className="group relative overflow-hidden rounded-[24px] border border-slate-200 bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.045)] transition duration-300 hover:-translate-y-1 hover:border-[#93c5fd] hover:bg-[#fcfdff] hover:shadow-[0_22px_50px_rgba(15,23,42,0.08)]"
+            >
+              <div className="flex h-full flex-col">
+                <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#2563eb] via-[#60a5fa] to-transparent opacity-80" />
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <span className="inline-flex rounded-full border border-blue-100 bg-[#eff6ff] px-3 py-1 text-[11px] font-black text-[#2563eb]">
+                    {item.tag}
+                  </span>
 
-  {/* BUTTON */}
-  <span className="inline-flex shrink-0 items-center justify-center rounded-xl bg-[#2563eb] px-4 py-2 text-[11px] font-extrabold text-white">
-    عرض
-  </span>
-</div>
-              </a>
-            ))}
-          </div>
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-blue-100 bg-[#f8fbff] text-[13px] font-black text-[#2563eb] transition group-hover:bg-[#2563eb] group-hover:text-white">
+  ←
+</span>
+                </div>
+
+                <h3 className="text-[19px] font-black leading-6 text-[#07111f]">
+                  {item.title}
+                </h3>
+
+                <p className="mt-3 min-h-[60px] text-[13px] font-medium leading-7 text-slate-600">
+                  {item.desc}
+                </p>
+
+                <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
+                  <span className="text-[12px] font-bold text-slate-400">
+                    قارن الحسابات
+                  </span>
+
+                  <span className="inline-flex items-center gap-1 text-[13px] font-black text-[#2563eb] transition group-hover:-translate-x-1">
+  عرض التفاصيل
+  <span>←</span>
+</span>
+                </div>
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
     </div>
