@@ -313,7 +313,11 @@ export default async function HomePage() {
         logo: b.logo || null,
       }));
 
-    const marquee = [...allHeroBrokers, ...allHeroBrokers, ...allHeroBrokers];
+    const marquee = [
+  ...allHeroBrokers.map((b) => ({ ...b, duplicate: false })),
+  ...allHeroBrokers.map((b) => ({ ...b, duplicate: true })),
+  ...allHeroBrokers.map((b) => ({ ...b, duplicate: true })),
+];
 
     return (
       <>
@@ -380,10 +384,12 @@ export default async function HomePage() {
                 <div className="flex w-max [animation:brokerMarquee_150s_linear_infinite] hover:[animation-play-state:paused]">
                   {marquee.map((broker, index) => (
                     <Link
-                      key={`broker-${broker.id}-${index}`}
-                      href={`/brokers/${broker.slug}`}
-                      className="group flex h-[92px] w-[300px] shrink-0 items-center justify-center border-r border-slate-100 bg-transparent px-6 transition duration-300 hover:bg-white hover:shadow-[0_8px_24px_rgba(37,99,235,0.08)]"
-                    >
+  key={`broker-${broker.id}-${index}`}
+  href={`/brokers/${broker.slug}`}
+  aria-hidden={"duplicate" in broker && broker.duplicate ? "true" : undefined}
+  tabIndex={"duplicate" in broker && broker.duplicate ? -1 : undefined}
+  className="group flex h-[92px] w-[300px] shrink-0 items-center justify-center border-r border-slate-100 bg-transparent px-6 transition duration-300 hover:bg-white hover:shadow-[0_8px_24px_rgba(37,99,235,0.08)]"
+>
                       <div className="flex w-full items-center justify-center gap-4" dir="rtl">
                         {/* LOGO - RIGHT */}
                        <div className="flex h-[68px] w-[94px] shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white p-2.5 shadow-[0_6px_18px_rgba(15,23,42,0.06)]">
@@ -436,12 +442,12 @@ export default async function HomePage() {
     </div>
 
     <div dir="rtl" className="relative px-5 pb-7 pt-7 text-center">
-      <h1 className="mx-auto max-w-[330px] text-[31px] font-black leading-[1.16] tracking-[-0.025em] text-white drop-shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
+      <div className="mx-auto max-w-[330px] text-[31px] font-black leading-[1.16] tracking-[-0.025em] text-white drop-shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
   أفضل شركات التداول
   <span className="mt-1 block bg-gradient-to-r from-white via-blue-200 to-[#60a5fa] bg-clip-text pb-1 text-transparent">
     تقييم الوسطاء والرسوم
   </span>
-</h1>
+</div>
 
       <p className="mx-auto mt-4 max-w-[310px] text-[13px] font-semibold leading-7 text-slate-300">
   قارن التراخيص، الرسوم، السبريد والمنصات لاختيار وسيط تداول موثوق يناسبك.
@@ -472,10 +478,12 @@ export default async function HomePage() {
         <div className="flex w-max [animation:brokerMarqueeMobile_120s_linear_infinite]">
           {marquee.map((broker, index) => (
             <Link
-              key={`mobile-broker-${broker.id}-${index}`}
-              href={`/brokers/${broker.slug}`}
-              className="flex h-[78px] w-[210px] shrink-0 items-center justify-center border-r border-slate-100 bg-white px-4"
-            >
+  key={`mobile-broker-${broker.id}-${index}`}
+  href={`/brokers/${broker.slug}`}
+  aria-hidden={"duplicate" in broker && broker.duplicate ? "true" : undefined}
+  tabIndex={"duplicate" in broker && broker.duplicate ? -1 : undefined}
+  className="flex h-[78px] w-[210px] shrink-0 items-center justify-center border-r border-slate-100 bg-white px-4"
+>
               <div className="flex w-full items-center justify-center gap-3" dir="rtl">
                 <div className="flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
                   {broker.logo ? (
