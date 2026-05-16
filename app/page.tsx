@@ -202,12 +202,27 @@ type Comparison = {
   } | null;
 };
 
+export const revalidate = 3600;
+
 export default async function HomePage() {
   const supabase = await createClient();
 
   const { data } = await supabase
     .from("brokers")
-    .select("*")
+    .select(`
+      id,
+      name,
+      slug,
+      rating,
+      min_deposit,
+      platforms,
+      regulation,
+      regulation_short,
+      best_for,
+      logo,
+      islamic_account,
+      arabic_support
+    `)
     .order("rating", { ascending: false });
 
     const { data: comparisonsData } = await supabase
