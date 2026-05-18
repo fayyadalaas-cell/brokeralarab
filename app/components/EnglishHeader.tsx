@@ -7,45 +7,48 @@ import MobileNavMenu from "@/app/components/MobileNavMenu";
 const brokerLogoMap: Record<string, string> = {
   activtrades: "/brokers/activtrade.png",
   activtrade: "/brokers/activtrade.png",
-
   alpari: "/brokers/alpari.png",
   avatrade: "/brokers/avatrade.png",
-
   equiti: "/brokers/equiti.png",
-
   exness: "/brokers/exness.png",
   "exness-platform": "/brokers/exness-platform.png",
   exness2: "/brokers/exness2.png",
-
   fxpro: "/brokers/FxPro.png",
-
   "ic-markets": "/brokers/ic-markets.png",
   icmarkets: "/brokers/ic-markets.png",
-
   justmarkets: "/brokers/justmarkets.png",
   justmarket: "/brokers/justmarket.png",
   "just-markets": "/brokers/justmarkets.png",
-
   pepperstone: "/brokers/pepperstone.png",
-
   vantage: "/brokers/vantage.png",
-
   xm: "/brokers/xm.png",
   xs: "/brokers/xs.png",
-
-  // 🔴 الشركات اللي كانت عندك المشكلة فيها
   multibank: "/brokers/MultibankGroup.png",
   "multi-bank": "/brokers/MultibankGroup.png",
   "multi-bank-group": "/brokers/MultibankGroup.png",
-
   "markets-com": "/brokers/markets-com.png",
   marketscom: "/brokers/markets-com.png",
-
   plus500: "/brokers/plus500.png",
 };
 
 function getBrokerLogo(slug: string): string {
   return brokerLogoMap[slug] || "/brokers/BrokerLogo.png";
+}
+
+function getLearnTradingTitle(item: any) {
+  if (item.href === "/learn-trading/how-to-start-trading-from-zero") {
+    return "How to Start Trading from Zero";
+  }
+
+  return item.title_en || item.title || "Learn Trading";
+}
+
+function getLearnTradingHref(item: any) {
+  if (item.href?.startsWith("/en/")) {
+    return item.href;
+  }
+
+  return `/en${item.href}`;
 }
 
 export default function EnglishHeader({
@@ -61,7 +64,10 @@ export default function EnglishHeader({
       className="sticky top-0 z-50 border-b border-slate-200/90 bg-white/95 backdrop-blur-md"
     >
       <div className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-8">
-        <div className="relative flex h-16 items-center justify-between lg:h-20" dir="ltr">
+        <div
+          className="relative flex h-16 items-center justify-between lg:h-20"
+          dir="ltr"
+        >
           <Link href="/en" className="min-w-0 shrink-0">
             <Image
               src="/logo-en.png"
@@ -81,7 +87,6 @@ export default function EnglishHeader({
               Home
             </Link>
 
-            {/* REVIEWS */}
             <div className="group relative">
               <Link
                 href="/en/brokers"
@@ -137,7 +142,6 @@ export default function EnglishHeader({
               </div>
             </div>
 
-            {/* COMPARE */}
             <div className="group relative">
               <Link
                 href="/en/compare"
@@ -201,7 +205,6 @@ export default function EnglishHeader({
               </div>
             </div>
 
-            {/* BEST BROKERS */}
             <div className="group relative">
               <Link
                 href="/en/best-brokers"
@@ -219,18 +222,16 @@ export default function EnglishHeader({
                 </div>
 
                 <Link
-  href="/en/best-brokers"
-  className="block rounded-2xl px-3 py-3 transition hover:bg-blue-50"
->
+                  href="/en/best-brokers"
+                  className="block rounded-2xl px-3 py-3 transition hover:bg-blue-50"
+                >
                   <div className="text-[16px] font-black text-slate-900">
                     Best Forex Brokers in 2026
                   </div>
-                 
                 </Link>
               </div>
             </div>
 
-            {/* LEARN TRADING */}
             <div className="group relative">
               <Link
                 href="/en/learn-trading/how-to-start-trading-from-zero"
@@ -246,13 +247,16 @@ export default function EnglishHeader({
                 {learnTradingMenuItems.slice(0, 1).map((item: any) => (
                   <Link
                     key={item.href}
-                    href={`/en${item.href}`}
+                    href={getLearnTradingHref(item)}
                     className="flex items-center gap-3 rounded-[18px] border border-slate-200 bg-slate-50 p-3 transition hover:border-blue-200 hover:bg-blue-50"
                   >
                     <div className="relative h-[58px] w-[58px] shrink-0 overflow-hidden rounded-[14px] border border-slate-200 bg-white">
                       <Image
-                        src={item.image || "/articles/how-to-start-trading-from-zero.png"}
-                        alt={item.title_en || item.title}
+                        src={
+                          item.image ||
+                          "/articles/how-to-start-trading-from-zero.png"
+                        }
+                        alt={getLearnTradingTitle(item)}
                         fill
                         className="object-contain p-1.5"
                       />
@@ -260,7 +264,7 @@ export default function EnglishHeader({
 
                     <div className="min-w-0 flex-1">
                       <h3 className="line-clamp-2 text-[16px] font-black leading-7 text-slate-950">
-                        {item.title_en || item.title}
+                        {getLearnTradingTitle(item)}
                       </h3>
                     </div>
                   </Link>
@@ -277,13 +281,13 @@ export default function EnglishHeader({
           </nav>
 
           <div className="hidden min-w-[120px] items-center justify-end lg:flex">
-  <Link
-    href="/"
-    className="inline-flex items-center rounded-full border border-blue-300 bg-white px-4 py-2 text-[13px] font-bold text-blue-700 shadow-sm transition hover:border-blue-400 hover:bg-blue-50"
-  >
-    العربية
-  </Link>
-</div>
+            <Link
+              href="/"
+              className="inline-flex items-center rounded-full border border-blue-300 bg-white px-4 py-2 text-[13px] font-bold text-blue-700 shadow-sm transition hover:border-blue-400 hover:bg-blue-50"
+            >
+              العربية
+            </Link>
+          </div>
 
           <MobileNavMenu
             topBrokers={topBrokers}

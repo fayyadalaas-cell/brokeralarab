@@ -452,7 +452,11 @@ export default function MobileNavMenu({
                           <div className="relative h-[58px] w-[58px] shrink-0 overflow-hidden rounded-[14px] border border-slate-200 bg-white">
                             <Image
                               src={item.image || "/articles/how-to-start-trading-from-zero.png"}
-                              alt={isEnglish ? item.title_en || item.title : item.title}
+                              alt={isEnglish
+  ? item.href === "/learn-trading/how-to-start-trading-from-zero"
+    ? "How to Start Trading from Zero"
+    : item.title_en || item.title
+  : item.title}
                               fill
                               className="object-cover"
                             />
@@ -460,7 +464,11 @@ export default function MobileNavMenu({
 
                           <div className="min-w-0 flex-1">
                             <h3 className="line-clamp-2 text-[15px] font-black leading-7 text-slate-950">
-                              {isEnglish ? item.title_en || item.title : item.title}
+                              {isEnglish
+  ? item.href === "/learn-trading/how-to-start-trading-from-zero"
+    ? "How to Start Trading from Zero"
+    : item.title_en || item.title
+  : item.title}
                             </h3>
                           </div>
                         </Link>
