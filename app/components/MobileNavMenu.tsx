@@ -370,20 +370,28 @@ export default function MobileNavMenu({
                   </Section>
 
                   <Section
-                    title={text.best}
-                    open={openSection === "best"}
-                    onToggle={() => toggleSection("best")}
-                  >
-                    {isEnglish ? (
-                      <div className="space-y-2">
-                        <Link
-                          href="/en/best-brokers"
-                          onClick={closeMenu}
-                          className="block rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-[14px] font-extrabold text-slate-900 transition hover:bg-white"
-                        >
-                          Best Forex Brokers in 2026
-                        </Link>
-                      </div>
+  title={text.best}
+  open={openSection === "best"}
+  onToggle={() => toggleSection("best")}
+>
+  {isEnglish ? (
+    <div className="space-y-2">
+      <Link
+        href="/en/best-brokers"
+        onClick={closeMenu}
+        className="block rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-[14px] font-extrabold text-slate-900 transition hover:bg-white"
+      >
+        Best Forex Brokers in 2026
+      </Link>
+
+      <Link
+        href="/en/best-brokers/gold"
+        onClick={closeMenu}
+        className="block rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-[14px] font-extrabold text-slate-900 transition hover:bg-white"
+      >
+        Best Gold Brokers
+      </Link>
+    </div>
                     ) : (
                       <div className="space-y-4">
                         <div>

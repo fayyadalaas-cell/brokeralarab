@@ -217,18 +217,27 @@ export default function EnglishHeader({
               </Link>
 
               <div className="invisible absolute left-0 top-full z-50 mt-1 w-[360px] translate-y-2 rounded-[28px] border border-slate-200 bg-white p-4 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.14)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
-                <div className="px-2 pb-3 pt-1 text-xs font-black tracking-wide text-slate-500">
-                  Best Broker Guides
-                </div>
+              <div className="px-2 pb-3 pt-1 text-xs font-black tracking-wide text-slate-500">
+  Best Broker Guides
+</div>
 
-                <Link
-                  href="/en/best-brokers"
-                  className="block rounded-2xl px-3 py-3 transition hover:bg-blue-50"
-                >
-                  <div className="text-[16px] font-black text-slate-900">
-                    Best Forex Brokers in 2026
-                  </div>
-                </Link>
+<Link
+  href="/en/best-brokers"
+  className="block rounded-2xl px-3 py-3 transition hover:bg-blue-50"
+>
+  <div className="text-[16px] font-black text-slate-900">
+    Best Forex Brokers in 2026
+  </div>
+</Link>
+
+<Link
+  href="/en/best-brokers/gold"
+  className="block rounded-2xl px-3 py-3 transition hover:bg-blue-50"
+>
+  <div className="text-[16px] font-black text-slate-900">
+    Best Gold Brokers
+  </div>
+</Link>
               </div>
             </div>
 
