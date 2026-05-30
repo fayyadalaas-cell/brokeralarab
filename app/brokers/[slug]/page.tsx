@@ -164,6 +164,18 @@ function splitRichText(value: string | null) {
     .filter(Boolean);
 }
 
+function accountSlug(value: string | null) {
+  if (!value) return "";
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/\+/g, "plus")
+    .replace(/&/g, "and")
+    .replace(/[–—]/g, "-")
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]/g, "");
+}
+
 async function getBroker(slug: string): Promise<Broker | null> {
   const supabase = await createClient();
 
@@ -865,8 +877,10 @@ function MiniInfoCard({
 
 function MobileAccountAccordion({
   accounts,
+  brokerSlug,
 }: {
   accounts: BrokerAccount[];
+  brokerSlug: string;
 }) {
   if (!accounts.length) {
     return (
@@ -885,9 +899,12 @@ function MobileAccountAccordion({
         >
           <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
             <div className="min-w-0 text-right">
-              <div className="text-base font-black text-slate-900">
-                {acc.account_name || "-"}
-              </div>
+              <Link
+  href={`/brokers/${brokerSlug}/accounts/${accountSlug(acc.account_name)}`}
+  className="text-base font-black text-blue-700 hover:text-blue-900"
+>
+  {acc.account_name || "-"}
+</Link>
 
               <div className="mt-1 text-xs font-medium text-slate-500">
                 {acc.best_for || "تفاصيل الحساب"}
@@ -1933,9 +1950,12 @@ export default async function BrokerPage({
       >
         <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
           <div className="min-w-0 flex-1 text-right">
-            <div className="text-[16px] font-black text-slate-950">
-              {acc.account_name || "-"}
-            </div>
+            <Link
+  href={`/brokers/${broker.slug}/accounts/${accountSlug(acc.account_name)}`}
+  className="text-[16px] font-black text-blue-700 hover:text-blue-900"
+>
+  {acc.account_name || "-"}
+</Link>
             <div className="mt-1 text-xs font-medium leading-5 text-slate-500">
               {acc.best_for || "تفاصيل الحساب"}
             </div>
@@ -2037,12 +2057,15 @@ export default async function BrokerPage({
                 }`}
               >
                 <td className="p-4">
-                  <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5">
-                    <span className="h-2 w-2 rounded-full bg-blue-600" />
-                    <span className="font-bold text-blue-900">
-                      {acc.account_name || "-"}
-                    </span>
-                  </div>
+                  <Link
+  href={`/brokers/${broker.slug}/accounts/${accountSlug(acc.account_name)}`}
+  className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 transition hover:bg-blue-600 hover:text-white"
+>
+  <span className="h-2 w-2 rounded-full bg-blue-600" />
+  <span className="font-bold">
+    {acc.account_name || "-"}
+  </span>
+</Link>
                 </td>
 
                 <td className="p-4 text-center">{acc.spread || "-"}</td>

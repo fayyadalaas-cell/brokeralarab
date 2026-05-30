@@ -134,6 +134,18 @@ function splitRichText(value: string | null) {
     .filter(Boolean);
 }
 
+function accountSlug(value: string | null) {
+  if (!value) return "";
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/\+/g, "plus")
+    .replace(/&/g, "and")
+    .replace(/[–—]/g, "-")
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]/g, "");
+}
+
 async function getBroker(slug: string): Promise<Broker | null> {
   const supabase = await createClient();
 
@@ -826,8 +838,10 @@ function MiniInfoCard({
 
 function MobileAccountAccordion({
   accounts,
+  brokerSlug,
 }: {
   accounts: BrokerAccount[];
+  brokerSlug: string;
 }) {
   if (!accounts.length) {
     return (
@@ -846,9 +860,12 @@ function MobileAccountAccordion({
         >
           <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4 text-left">
             <div className="min-w-0">
-              <div className="text-base font-black text-slate-900">
-                {acc.account_name || "-"}
-              </div>
+              <Link
+  href={`/en/brokers/${brokerSlug}/accounts/${accountSlug(acc.account_name)}`}
+  className="text-base font-black text-blue-700 hover:text-blue-900"
+>
+  {acc.account_name || "-"}
+</Link>
                            <div className="mt-1 text-xs font-medium text-slate-500">
   {acc.best_for_en || acc.best_for || "Account details"}
 </div>
@@ -1690,7 +1707,10 @@ const breadcrumbSchema = {
 
  
 
-        <MobileAccountAccordion accounts={accountsData} />
+        <MobileAccountAccordion
+  accounts={accountsData}
+  brokerSlug={broker.slug || ""}
+/>
 
         <div className="mt-5 rounded-[22px] border border-blue-100 bg-blue-50 p-4 shadow-sm">
           <div className="text-[15px] font-black text-slate-950">
@@ -1836,12 +1856,15 @@ const breadcrumbSchema = {
                     } hover:bg-slate-50`}
                   >
                     <td className="p-4">
-                      <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5">
-                        <span className="h-2 w-2 rounded-full bg-blue-600" />
-                        <span className="font-bold text-blue-900">
-                          {acc.account_name || "-"}
-                        </span>
-                      </div>
+                     <Link
+  href={`/en/brokers/${broker.slug}/accounts/${accountSlug(acc.account_name)}`}
+  className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 transition hover:bg-blue-600 hover:text-white"
+>
+  <span className="h-2 w-2 rounded-full bg-blue-600" />
+  <span className="font-bold">
+    {acc.account_name || "-"}
+  </span>
+</Link>
                     </td>
                     <td className="p-4 text-center text-slate-700">{acc.spread || "-"}</td>
                     <td className="p-4 text-center text-slate-700">{acc.commission_en || acc.commission || "-"}</td>
