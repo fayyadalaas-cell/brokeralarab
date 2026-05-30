@@ -116,6 +116,18 @@ function normalizeAccountType(value: string | null | undefined) {
   return "other";
 }
 
+function accountSlug(value: string | null | undefined) {
+  if (!value) return "";
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/\+/g, "plus")
+    .replace(/&/g, "and")
+    .replace(/[–—]/g, "-")
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]/g, "");
+}
+
 function getAccountTypeLabel(type: string) {
   const map: Record<string, string> = {
     standard: "حسابات Standard",
@@ -543,9 +555,12 @@ export default async function LowestSpreadBrokersPage() {
       "@type": "ListItem",
       position: index + 1,
       name: `${item.broker_name} - ${item.account_name || "حساب تداول"}`,
-      url: item.broker_slug
-        ? `https://brokeralarab.com/brokers/${item.broker_slug}`
-        : "https://brokeralarab.com/lowest-spread-brokers",
+      url:
+  item.broker_slug && item.account_name
+    ? `https://brokeralarab.com/brokers/${item.broker_slug}/accounts/${accountSlug(item.account_name)}`
+    : item.broker_slug
+    ? `https://brokeralarab.com/brokers/${item.broker_slug}`
+    : "https://brokeralarab.com/lowest-spread-brokers",
     })),
   };
 
@@ -684,9 +699,18 @@ export default async function LowestSpreadBrokersPage() {
 
         {/* account */}
         <div className="text-right">
-          <span className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-[10px] font-extrabold text-blue-700">
-            {accountName}
-          </span>
+          {best?.broker_slug && best?.account_name ? (
+  <Link
+    href={`/brokers/${best.broker_slug}/accounts/${accountSlug(best.account_name)}`}
+    className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-[10px] font-extrabold text-blue-700 transition hover:bg-blue-600 hover:text-white"
+  >
+    {accountName}
+  </Link>
+) : (
+  <span className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-[10px] font-extrabold text-blue-700">
+    {accountName}
+  </span>
+)}
         </div>
 
         {/* broker */}
@@ -778,7 +802,18 @@ export default async function LowestSpreadBrokersPage() {
                               <td className="px-4 py-4 font-black text-slate-950">
                                 {item.broker_name}
                               </td>
-                              <td className="px-4 py-4">{item.account_name || "—"}</td>
+                              <td className="px-4 py-4">
+  {item.broker_slug && item.account_name ? (
+    <Link
+      href={`/brokers/${item.broker_slug}/accounts/${accountSlug(item.account_name)}`}
+      className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-extrabold text-blue-700 transition hover:bg-blue-600 hover:text-white"
+    >
+      {item.account_name}
+    </Link>
+  ) : (
+    "—"
+  )}
+</td>
                               <td className="px-4 py-4">
                                 <span className="inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-extrabold text-emerald-700">
                                   {item.spread || "—"}
@@ -847,9 +882,16 @@ export default async function LowestSpreadBrokersPage() {
               <div className="truncate text-[15px] font-black text-slate-950">
                 {item.broker_name}
               </div>
-              <div className="mt-0.5 text-sm font-bold text-slate-500">
-                {item.account_name || "—"}
-              </div>
+             {item.broker_slug && item.account_name ? (
+  <Link
+    href={`/brokers/${item.broker_slug}/accounts/${accountSlug(item.account_name)}`}
+    className="mt-0.5 inline-flex text-sm font-bold text-blue-700 hover:text-blue-900"
+  >
+    {item.account_name}
+  </Link>
+) : (
+  <div className="mt-0.5 text-sm font-bold text-slate-500">—</div>
+)}
             </div>
           </div>
 
@@ -1013,9 +1055,16 @@ export default async function LowestSpreadBrokersPage() {
                           <div className="truncate text-lg font-black text-slate-950">
                             {card.item.broker_name}
                           </div>
-                          <div className="mt-1 text-sm text-slate-500">
-                            {card.item.account_name || "—"}
-                          </div>
+                          {card.item.broker_slug && card.item.account_name ? (
+  <Link
+    href={`/brokers/${card.item.broker_slug}/accounts/${accountSlug(card.item.account_name)}`}
+    className="mt-1 inline-flex text-sm font-bold text-blue-700 hover:text-blue-900"
+  >
+    {card.item.account_name}
+  </Link>
+) : (
+  <div className="mt-1 text-sm text-slate-500">—</div>
+)}
                         </div>
                       </div>
 
@@ -1133,9 +1182,16 @@ export default async function LowestSpreadBrokersPage() {
                           <div className="truncate text-base font-black text-slate-950">
                             {card.item.broker_name}
                           </div>
-                          <div className="mt-1 text-sm text-slate-500">
-                            {card.item.account_name || "—"}
-                          </div>
+                          {card.item.broker_slug && card.item.account_name ? (
+  <Link
+    href={`/brokers/${card.item.broker_slug}/accounts/${accountSlug(card.item.account_name)}`}
+    className="mt-1 inline-flex text-sm font-bold text-blue-700 hover:text-blue-900"
+  >
+    {card.item.account_name}
+  </Link>
+) : (
+  <div className="mt-1 text-sm text-slate-500">—</div>
+)}
                         </div>
                       </div>
 
