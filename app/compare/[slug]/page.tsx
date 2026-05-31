@@ -1910,19 +1910,23 @@ export default async function ComparePage({ params }: PageProps) {
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row">
-            <Link
-              href={`/go/${left.slug}`}
-              className="inline-flex items-center justify-center rounded-2xl bg-[#2563eb] px-7 py-3 text-sm font-extrabold text-white shadow-md transition hover:scale-[1.02] hover:bg-[#1d4ed8]"
-            >
-              فتح حساب {left.name}
-            </Link>
+         <a
+  href={`/go/${left.slug ?? ""}?type=real`}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-flex items-center justify-center rounded-2xl bg-[#2563eb] px-7 py-3 text-sm font-extrabold text-white shadow-md transition hover:scale-[1.02] hover:bg-[#1d4ed8]"
+>
+  فتح حساب {left.name}
+</a>
 
-            <Link
-              href={`/go/${right.slug}`}
-              className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-7 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
-            >
-              فتح حساب {right.name}
-            </Link>
+<a
+  href={`/go/${right.slug ?? ""}?type=real`}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-7 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
+>
+  فتح حساب {right.name}
+</a>
           </div>
         </div>
       </div>
