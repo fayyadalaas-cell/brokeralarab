@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import Script from "next/script";
 import Link from "next/link";
-import ShareButtons from "@/app/components/ShareButtons";
+
 
 
 type Broker = {
@@ -271,21 +271,12 @@ export async function generateMetadata({
       siteName: "بروكر العرب",
       locale: "ar_AR",
       type: "article",
-      images: [
-        {
-          url: `${siteUrl}/brokers/${broker.slug}/opengraph-image?v=2`,
-          width: 1200,
-          height: 630,
-          alt: `تقييم ${broker.name}`,
-        },
-      ],
-    },
+     },
 
     twitter: {
-      card: "summary_large_image",
+      card: "summary",
       title,
       description,
-      images: [`${siteUrl}/brokers/${broker.slug}/opengraph-image?v=2`],
     },
   };
 }
@@ -1397,7 +1388,7 @@ export default async function BrokerPage({
                     </div>
                   ) : null}
 
-                  <ShareButtons url={pageUrl} title={shareTitle} />
+                
                 </div>
               </aside>
 

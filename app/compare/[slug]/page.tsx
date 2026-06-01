@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import ShareButtons from "@/app/components/ShareButtons";
 
 type Broker = {
   id: number;
@@ -286,21 +285,22 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     "x-default": `${siteUrl}/compare/${slug}`,
   },
 },
-      openGraph: {
-        title: "مقارنة شركات التداول | بروكر العرب",
-        description:
-          "مقارنات تفصيلية بين شركات التداول من حيث الحسابات والرسوم والتراخيص والمنصات.",
-        url: `${siteUrl}/compare`,
-        siteName: "Broker Al Arab",
-        locale: "ar_AR",
-        type: "website",
-      },
-      twitter: {
-        card: "summary_large_image",
-        title: "مقارنة شركات التداول | بروكر العرب",
-        description:
-          "مقارنات تفصيلية بين شركات التداول من حيث الحسابات والرسوم والتراخيص والمنصات.",
-      },
+     openGraph: {
+  title: "مقارنة شركات التداول | بروكر العرب",
+  description:
+    "مقارنات تفصيلية بين شركات التداول من حيث الحسابات والرسوم والتراخيص والمنصات.",
+  url: `${siteUrl}/compare`,
+  siteName: "Broker Al Arab",
+  locale: "ar_AR",
+  type: "website",
+},
+
+twitter: {
+  card: "summary",
+  title: "مقارنة شركات التداول | بروكر العرب",
+  description:
+    "مقارنات تفصيلية بين شركات التداول من حيث الحسابات والرسوم والتراخيص والمنصات.",
+},
     };
   }
 
@@ -321,7 +321,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const title = `مقارنة ${leftName} و ${rightName} | الرسوم والمنصات والتراخيص`;
   const description = `مقارنة شاملة بين ${leftName} و ${rightName} من حيث الحسابات والرسوم والتراخيص والمنصات والحد الأدنى للإيداع لمعرفة أيهما أنسب للمتداول العربي.`;
-  const imageUrl = `${siteUrl}/compare/${slug}/opengraph-image?v=3`;
+  const imageUrl = `${siteUrl}/og-default.jpg`;
 
   return {
     metadataBase: new URL(siteUrl),
@@ -2751,7 +2751,7 @@ export default async function ComparePage({ params }: PageProps) {
   </div>
 </section>
 
-<section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
+<section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-2 lg:px-8">
   <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white shadow-[0_25px_70px_rgba(37,99,235,0.08)]">
     <div className="absolute inset-x-0 top-0 h-1.5 bg-[#2563eb]" />
 
@@ -2838,15 +2838,11 @@ export default async function ComparePage({ params }: PageProps) {
         </div>
       </div>
 
-      <div className="mt-7 grid gap-4 rounded-[26px] border border-[#dbeafe] bg-[#f8fbff] p-5 lg:grid-cols-[1fr_auto] lg:items-center">
-        <p className="text-sm leading-7 text-slate-600 lg:text-base">
-          إذا وجدت هذه المقارنة مفيدة، يمكنك مشاركتها مع متداول آخر يبحث عن وسيط
-          مناسب بين {left.name} و {right.name}.
-        </p>
+      
 
         <div className="flex justify-start lg:justify-end">
-          <ShareButtons url={pageUrl} title={shareTitle} />
-        </div>
+        
+    
       </div>
     </div>
 
@@ -2912,19 +2908,9 @@ export default async function ComparePage({ params }: PageProps) {
       </details>
     ))}
   </div>
-
-  {/* Share (مصغر) */}
-  <div className="mt-4 rounded-[18px] border border-[#dbeafe] bg-[#f8fbff] p-3">
-    <p className="text-xs leading-6 text-slate-600 text-center">
-      شارك المقارنة مع شخص مهتم.
-    </p>
-
-    <div className="mt-3 flex justify-center">
-      <ShareButtons url={pageUrl} title={shareTitle} />
+  </div>
     </div>
-  </div>
-</div>
-  </div>
+
 </section>
 
     </main>
