@@ -321,7 +321,7 @@ twitter: {
 
   const title = `مقارنة ${leftName} و ${rightName} | الرسوم والمنصات والتراخيص`;
   const description = `مقارنة شاملة بين ${leftName} و ${rightName} من حيث الحسابات والرسوم والتراخيص والمنصات والحد الأدنى للإيداع لمعرفة أيهما أنسب للمتداول العربي.`;
-  const imageUrl = `${siteUrl}/og-default.jpg`;
+ 
 
   return {
     metadataBase: new URL(siteUrl),
@@ -351,22 +351,13 @@ twitter: {
       siteName: "Broker Al Arab",
       locale: "ar_AR",
       type: "article",
-      images: [
-        {
-          url: imageUrl,
-          width: 1200,
-          height: 630,
-          alt: `مقارنة ${leftName} و ${rightName}`,
-        },
-      ],
+     
     },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: [imageUrl],
-      creator: "@brokeralarab",
-    },
+   twitter: {
+  card: "summary",
+  title,
+  description,
+},
   };
 }
 
