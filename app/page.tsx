@@ -1569,7 +1569,6 @@ export default async function HomePage() {
 {/* FAQ */}
 <section className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
   <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
-    {/* HEADER */}
     <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4">
       <div className="text-center lg:text-right">
         <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-[#2563eb] shadow-sm">
@@ -1581,110 +1580,161 @@ export default async function HomePage() {
         </h2>
 
         <p className="mx-auto mt-3 max-w-[900px] text-[14px] font-semibold leading-8 text-slate-600 lg:mx-0 lg:text-[15px] lg:leading-9">
-          إجابات مختصرة على أكثر الأسئلة التي يحتاجها المتداول قبل فتح الحساب، من الترخيص والأمان إلى الحد الأدنى للإيداع والمنصات المناسبة.
+          إجابات عملية على أهم الأسئلة التي يبحث عنها المتداول قبل فتح حساب تداول، مع روابط تساعدك على مقارنة الوسطاء واختيار الشركة الأنسب.
         </p>
       </div>
     </div>
 
-    {/* MOBILE - unchanged */}
-    <div className="space-y-3 px-4 py-4 sm:hidden">
-      {[
+    {(() => {
+      const faqItems = [
+       {
+  q: "ما أفضل شركة تداول في السعودية؟",
+  a: (
+    <>
+      أفضل شركة تداول في السعودية تختلف حسب احتياجك: هل تبحث عن حساب إسلامي،
+      سبريد منخفض، منصة MT5، أو سهولة السحب والإيداع؟ لذلك الأفضل أن تقارن
+      الشركات حسب الترخيص والرسوم وتجربة الحساب قبل فتحه. راجع صفحة{" "}
+      <Link
+        href="/best-brokers/saudi-arabia"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="font-bold text-[#2563eb] hover:underline"
+      >
+        أفضل شركات التداول في السعودية
+      </Link>{" "}
+      لمعرفة الخيارات الأنسب للمتداولين في السعودية.
+    </>
+  ),
+},
         {
-          q: "ما هي أفضل شركة تداول للمبتدئين؟",
-          a: "أفضل شركة تداول للمبتدئين هي التي تجمع بين ترخيص واضح، منصة سهلة، حد أدنى منخفض للإيداع، ودعم جيد للعملاء. الأفضل ألا تختار بناءً على الشهرة فقط، بل على سهولة الاستخدام ووضوح الرسوم والحساب المناسب لبدايتك.",
+          q: "كيف أختار أفضل شركة تداول مناسبة لي؟",
+          a: (
+            <>
+              لا تعتمد على الإعلان أو الشهرة فقط. قارن الترخيص، الرسوم، السبريد، نوع الحساب، المنصة، وسرعة السحب. يمكنك استخدام قسم{" "}
+              <Link href="/compare" target="_blank" rel="noopener noreferrer" className="font-bold text-[#2563eb] hover:underline">
+                مقارنات شركات التداول
+              </Link>{" "}
+              لمعرفة الفروقات بين الوسطاء.
+            </>
+          ),
         },
         {
-          q: "هل شركات التداول آمنة وموثوقة؟",
-          a: "ليست كل شركات التداول بنفس مستوى الأمان. الشركة الأكثر موثوقية عادة تكون خاضعة لجهة رقابية معروفة، وتوضح شروطها ورسومها بشكل شفاف، وتوفر آليات واضحة للإيداع والسحب وخدمة العملاء.",
+          q: "هل شركات التداول المرخصة آمنة دائمًا؟",
+          a: "الترخيص مهم جدًا، لكنه لا يكفي وحده. يجب أيضًا فحص سمعة الشركة، وضوح الرسوم، سرعة السحب، شروط الحساب، وطريقة تعامل الدعم مع العملاء.",
         },
         {
-          q: "ما أقل مبلغ لفتح حساب تداول؟",
-          a: "الحد الأدنى يختلف من شركة إلى أخرى. بعض الوسطاء يتيحون البدء بمبالغ منخفضة نسبيًا، لكن الأهم من رقم الإيداع هو اختيار حساب يناسب حجم رأس مالك ولا يضعك تحت ضغط تداول أكبر من قدرتك.",
+          q: "ما الفرق بين حساب Standard وRaw وECN؟",
+          a: (
+            <>
+              حساب Standard أبسط وغالبًا تكون تكلفته داخل السبريد. حساب Raw أو ECN يقدم سبريد أقل مع عمولة منفصلة، وقد يناسب المتداول النشط أكثر. راجع صفحة{" "}
+              <Link href="/lowest-spread-brokers" target="_blank" rel="noopener noreferrer" className="font-bold text-[#2563eb] hover:underline">
+                شركات التداول الأقل سبريد
+              </Link>{" "}
+              لفهم التكلفة الفعلية.
+            </>
+          ),
         },
         {
-          q: "كيف أعرف أن شركة التداول مرخصة؟",
-          a: "يمكن معرفة ذلك من خلال صفحة التراخيص في موقع الشركة، ومراجعة اسم الجهة الرقابية ورقم الترخيص، ثم التحقق منه عند الإمكان. كما أن الشركات الجادة تعرض هذه المعلومات بوضوح ولا تخفيها داخل الشروط.",
+          q: "ما أقل مبلغ مناسب لبدء التداول؟",
+          a: "بعض الشركات تسمح بفتح حساب بمبالغ صغيرة، لكن الأهم هو إدارة المخاطر. لا تبدأ بمبلغ تحتاجه في حياتك اليومية، ولا تستخدم رافعة مالية عالية بدون فهم واضح للمخاطر.",
         },
         {
-          q: "ما الفرق بين MT4 وMT5 وأيهما أفضل؟",
-          a: "MT4 منصة مشهورة وبسيطة ويعتمد عليها كثير من المتداولين، بينما MT5 تقدم أدوات إضافية وتحديثات أكثر. الأفضل بينهما يعتمد على أسلوبك واحتياجاتك، لكن وجود منصة مستقرة وسهلة الاستخدام أهم من اسم المنصة وحده.",
+          q: "هل الحساب الإسلامي مهم عند اختيار الوسيط؟",
+          a: "نعم إذا كنت تريد تجنب فوائد التبييت. لكن يجب قراءة شروط الحساب الإسلامي جيدًا، لأن بعض الشركات تضع رسومًا بديلة أو قيودًا بعد عدد معين من الأيام.",
         },
-      ].map((item, index) => (
-        <details
-          key={item.q}
-          className="group overflow-hidden rounded-[18px] border border-slate-200 bg-[#f8fbff] shadow-sm"
-        >
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4 text-right">
-            <span className="text-[15px] font-black leading-7 text-[#0f172a]">
-              {item.q}
-            </span>
+        {
+          q: "ما الفرق بين MT4 وMT5؟",
+          a: "MT4 منصة بسيطة ومنتشرة بين متداولي الفوركس، بينما MT5 أحدث وتوفر أدوات وأسواقًا أكثر. الاختيار يعتمد على أسلوبك، لكن الاستقرار وسهولة الاستخدام أهم من اسم المنصة.",
+        },
+        {
+          q: "كيف أعرف أن شركة التداول نصابة؟",
+          a: "انتبه للوعود بأرباح مضمونة، الضغط المتكرر للإيداع، صعوبة السحب، غياب الترخيص الواضح، أو طلب تحويلات غير رسمية. الوسيط الموثوق لا يضمن الأرباح ولا يضغط عليك للتداول.",
+        },
+        {
+          q: "هل السبريد المنخفض يعني أن الشركة أفضل؟",
+          a: "ليس دائمًا. السبريد مهم، لكن يجب النظر أيضًا إلى العمولة، التنفيذ، الانزلاق السعري، السحب، والترخيص. أحيانًا يكون وسيط بسبريد أعلى قليلًا أفضل إذا كان أكثر استقرارًا ووضوحًا.",
+        },
+        {
+          q: "هل أفتح حساب مباشرة أم أقارن أولًا؟",
+          a: (
+            <>
+              الأفضل دائمًا أن تقارن أولًا. راجع تقييم الشركة، ثم قارنها مع وسيطين آخرين من حيث الترخيص والرسوم والحسابات والمنصات. ابدأ من{" "}
+              <Link href="/brokers" target="_blank" rel="noopener noreferrer" className="font-bold text-[#2563eb] hover:underline">
+                تقييمات شركات التداول
+              </Link>{" "}
+              أو من صفحة{" "}
+              <Link href="/compare" target="_blank" rel="noopener noreferrer" className="font-bold text-[#2563eb] hover:underline">
+                المقارنات
+              </Link>.
+            </>
+          ),
+        },
+      ];
 
-            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#bfdbfe] bg-white text-[15px] font-black text-[#1d4ed8] transition group-open:rotate-180">
+      const FAQItem = ({ item, index }: { item: any; index: number }) => (
+        <details className="group overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-[0_6px_20px_rgba(15,23,42,0.04)] transition hover:border-[#bfdbfe] hover:bg-[#fcfdff] hover:shadow-[0_14px_32px_rgba(15,23,42,0.05)] open:border-[#93c5fd]">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4">
+            <div className="flex items-center gap-3 text-right">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-blue-100 bg-[#eff6ff] text-xs font-black text-[#1d4ed8] transition group-open:bg-[#2563eb] group-open:text-white">
+                {index + 1}
+              </span>
+
+              <span className="text-[15px] font-black leading-7 text-[#07111f] sm:text-[16px]">
+                {item.q}
+              </span>
+            </div>
+
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-blue-100 bg-[#f8fbff] text-[14px] font-black text-[#2563eb] transition group-open:rotate-180 group-open:bg-[#2563eb] group-open:text-white">
               ▾
             </span>
           </summary>
 
-          <div className="border-t border-slate-200 bg-white px-4 py-4">
-            <p className="text-[13px] leading-7 text-slate-600">{item.a}</p>
+          <div className="border-t border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#fcfdff_100%)] px-5 py-4">
+            <div className="max-w-4xl text-[14px] font-medium leading-8 text-slate-600">
+              {item.a}
+            </div>
           </div>
         </details>
-      ))}
-    </div>
+      );
 
-    {/* DESKTOP */}
-    <div className="hidden p-5 sm:block">
-      <div className="grid gap-3">
-        {[
-          {
-            q: "ما هي أفضل شركة تداول للمبتدئين؟",
-            a: "أفضل شركة تداول للمبتدئين هي الشركة التي توفر ترخيصًا واضحًا، منصة سهلة الاستخدام، حدًا أدنى مناسبًا للإيداع، ورسومًا مفهومة بدون تعقيد.",
-          },
-          {
-            q: "هل شركات التداول آمنة وموثوقة؟",
-            a: "الأمان يختلف من شركة إلى أخرى. الشركات الأكثر موثوقية تكون عادة خاضعة لهيئات رقابية معروفة، وتعرض شروطها ورسومها بشكل واضح.",
-          },
-          {
-            q: "ما أقل مبلغ لفتح حساب تداول؟",
-            a: "الحد الأدنى لفتح الحساب يختلف حسب الوسيط ونوع الحساب. الأهم هو اختيار حساب يناسب رأس مالك وطريقة تداولك.",
-          },
-          {
-            q: "كيف أعرف أن شركة التداول مرخصة؟",
-            a: "يمكنك معرفة ذلك من خلال صفحة التراخيص في موقع الشركة، ثم مراجعة اسم الجهة الرقابية ورقم الترخيص عند الإمكان.",
-          },
-          {
-            q: "ما الفرق بين MT4 وMT5 وأيهما أفضل؟",
-            a: "MT4 معروفة ببساطتها وانتشارها، بينما MT5 تقدم أدوات إضافية. الأفضل يعتمد على أسلوبك واحتياجاتك الفعلية.",
-          },
-        ].map((item, index) => (
-          <details
-            key={item.q}
-            className="group overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-[0_6px_20px_rgba(15,23,42,0.04)] transition hover:border-[#bfdbfe] hover:bg-[#fcfdff] hover:shadow-[0_14px_32px_rgba(15,23,42,0.05)] open:border-[#93c5fd]"
-          >
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4">
-              <div className="flex items-center gap-3 text-right">
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-blue-100 bg-[#eff6ff] text-xs font-black text-[#1d4ed8] transition group-open:bg-[#2563eb] group-open:text-white">
-                  {index + 1}
-                </span>
+      return (
+        <>
+          <div className="space-y-3 px-4 py-4 sm:hidden">
+            {faqItems.slice(0, 5).map((item, index) => (
+              <FAQItem key={item.q} item={item} index={index} />
+            ))}
 
-                <span className="text-[16px] font-black leading-7 text-[#07111f]">
-                  {item.q}
-                </span>
+            <details className="group">
+              <summary className="mt-2 flex cursor-pointer list-none items-center justify-center rounded-2xl border border-[#bfdbfe] bg-[#eff6ff] px-4 py-3 text-[13px] font-black text-[#2563eb]">
+                عرض كل الأسئلة
+              </summary>
+
+              <div className="mt-3 space-y-3">
+                {faqItems.slice(5).map((item, index) => (
+                  <FAQItem key={item.q} item={item} index={index + 5} />
+                ))}
+              </div>
+            </details>
+          </div>
+
+          <div className="hidden p-5 sm:block">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-3">
+                {faqItems.slice(0, 5).map((item, index) => (
+                  <FAQItem key={item.q} item={item} index={index} />
+                ))}
               </div>
 
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-blue-100 bg-[#f8fbff] text-[14px] font-black text-[#2563eb] transition group-open:rotate-180 group-open:bg-[#2563eb] group-open:text-white">
-                ▾
-              </span>
-            </summary>
-
-            <div className="border-t border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#fcfdff_100%)] px-5 py-4">
-              <p className="max-w-4xl text-[14px] font-medium leading-8 text-slate-600">
-                {item.a}
-              </p>
+              <div className="space-y-3">
+                {faqItems.slice(5, 10).map((item, index) => (
+                  <FAQItem key={item.q} item={item} index={index + 5} />
+                ))}
+              </div>
             </div>
-          </details>
-        ))}
-      </div>
-    </div>
+          </div>
+        </>
+      );
+    })()}
   </div>
 </section>
     </main>

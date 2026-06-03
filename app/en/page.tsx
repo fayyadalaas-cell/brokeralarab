@@ -113,68 +113,84 @@ function shortPlatforms(value: string | null) {
 function getCountryPages() {
   return [
     {
-      title: "Best Brokers in Jordan",
-      href: "/en/best-brokers/jordan",
-      desc: "Top brokers suitable for traders in Jordan based on accounts, regulation, and platforms.",
-      shortDesc: "Best brokers for Jordanian traders",
-      flag: "/flags/jo.svg",
-      badge: "Jordan",
+      title: "Best Trading Brokers in the UK",
+      href: "/best-brokers",
+      desc: "Compare trusted forex and CFD brokers for UK traders.",
+      shortDesc: "Best brokers in the UK",
+      flag: "https://flagcdn.com/w80/gb.png",
+      badge: "United Kingdom",
     },
     {
-      title: "Best Brokers in Saudi Arabia",
-      href: "/en/best-brokers/saudi-arabia",
-      desc: "Brokers suitable for traders in Saudi Arabia, including Islamic accounts, deposits, and regulation.",
-      shortDesc: "Best brokers for Saudi traders",
-      flag: "/flags/sa.svg",
-      badge: "Saudi Arabia",
+      title: "Best Trading Brokers in Australia",
+      href: "/best-brokers",
+      desc: "Compare regulated brokers available in Australia.",
+      shortDesc: "Best brokers in Australia",
+      flag: "https://flagcdn.com/w80/au.png",
+      badge: "Australia",
     },
     {
-      title: "Best Brokers in Kuwait",
-      href: "/en/best-brokers/kuwait",
-      desc: "Top trading platforms for Kuwaiti traders based on account types, deposits, and support.",
-      shortDesc: "Best options in Kuwait",
-      flag: "/flags/kw.svg",
-      badge: "Kuwait",
+      title: "Best Trading Brokers in South Africa",
+      href: "/best-brokers",
+      desc: "Popular forex brokers for South African traders.",
+      shortDesc: "Best brokers in South Africa",
+      flag: "https://flagcdn.com/w80/za.png",
+      badge: "South Africa",
     },
     {
-      title: "Best Brokers in the UAE",
-      href: "/en/best-brokers/uae",
-      desc: "Compare the best brokers for traders in the UAE based on platforms, fees, and features.",
-      shortDesc: "Top brokers in the UAE",
-      flag: "/flags/ae.svg",
-      badge: "UAE",
+      title: "Best Trading Brokers in Singapore",
+      href: "/best-brokers",
+      desc: "Compare global brokers available in Singapore.",
+      shortDesc: "Best brokers in Singapore",
+      flag: "https://flagcdn.com/w80/sg.png",
+      badge: "Singapore",
     },
     {
-      title: "Best Brokers in Qatar",
-      href: "/en/best-brokers/qatar",
-      desc: "Compare brokers suitable for traders in Qatar based on regulation and account types.",
-      shortDesc: "Top options in Qatar",
-      flag: "/flags/qa.svg",
-      badge: "Qatar",
+      title: "Best Trading Brokers in Malaysia",
+      href: "/best-brokers",
+      desc: "Review brokers with strong account options.",
+      shortDesc: "Best brokers in Malaysia",
+      flag: "https://flagcdn.com/w80/my.png",
+      badge: "Malaysia",
     },
     {
-      title: "Best Brokers in Bahrain",
-      href: "/en/best-brokers/bahrain",
-      desc: "Trading platforms for Bahraini traders with a focus on fees and deposit methods.",
-      shortDesc: "Best brokers in Bahrain",
-      flag: "/flags/bh.svg",
-      badge: "Bahrain",
+      title: "Best Trading Brokers in India",
+      href: "/best-brokers",
+      desc: "Compare brokers suitable for Indian traders.",
+      shortDesc: "Best brokers in India",
+      flag: "https://flagcdn.com/w80/in.png",
+      badge: "India",
     },
     {
-      title: "Best Brokers in Oman",
-      href: "/en/best-brokers/oman",
-      desc: "Brokers suitable for traders in Oman based on ease of use, accounts, and platforms.",
-      shortDesc: "Top brokers in Oman",
-      flag: "/flags/om.svg",
-      badge: "Oman",
+      title: "Best Trading Brokers in Nigeria",
+      href: "/best-brokers",
+      desc: "Find brokers with flexible deposit options.",
+      shortDesc: "Best brokers in Nigeria",
+      flag: "https://flagcdn.com/w80/ng.png",
+      badge: "Nigeria",
     },
     {
-      title: "Best Brokers in Egypt",
-      href: "/en/best-brokers/egypt",
-      desc: "Best brokers for Egyptian traders focusing on low deposits and suitable platforms.",
-      shortDesc: "Top options in Egypt",
-      flag: "/flags/eg.svg",
-      badge: "Egypt",
+      title: "Best Trading Brokers in Thailand",
+      href: "/best-brokers",
+      desc: "Trusted brokers for Thai forex traders.",
+      shortDesc: "Best brokers in Thailand",
+      flag: "https://flagcdn.com/w80/th.png",
+      badge: "Thailand",
+    },
+    {
+      title: "Best Trading Brokers in the Philippines",
+      href: "/best-brokers",
+      desc: "Compare brokers and trading platforms.",
+      shortDesc: "Best brokers in Philippines",
+      flag: "https://flagcdn.com/w80/ph.png",
+      badge: "Philippines",
+    },
+    {
+      title: "Best Trading Brokers in Kenya",
+      href: "/best-brokers",
+      desc: "Review brokers suitable for Kenyan traders.",
+      shortDesc: "Best brokers in Kenya",
+      flag: "https://flagcdn.com/w80/ke.png",
+      badge: "Kenya",
     },
   ];
 }
@@ -268,9 +284,11 @@ broker_2:broker_2_id (
     broker_2: Array.isArray(item.broker_2) ? item.broker_2[0] ?? null : item.broker_2 ?? null,
   }))
   .filter((item) => item.slug && item.title && item.broker_1 && item.broker_2);
-  const featured = brokers[0] ?? null;
-  const countryPages = getCountryPages();
-  const typePages = getTypePages();
+const featured = brokers[0] ?? null;
+
+const countryPages = getCountryPages();
+
+const typePages = getTypePages();
 
   const faqJsonLd = {
   "@context": "https://schema.org",
@@ -401,7 +419,7 @@ broker_2:broker_2_id (
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#07111f]/10 to-[#07111f]/75" />
           </div>
 
-          {/* HERO CONTENT */}
+         {/* HERO CONTENT */}
           <div className="relative mx-auto max-w-7xl px-6 py-14 xl:py-16">
             <div dir="ltr" className="mx-auto max-w-6xl text-center">
               <h1 className="mx-auto max-w-6xl text-[52px] font-black leading-[1.05] tracking-[-0.04em] text-white drop-shadow-[0_10px_35px_rgba(0,0,0,0.35)] xl:text-[64px]">
@@ -440,22 +458,22 @@ broker_2:broker_2_id (
             <div className="pointer-events-none absolute right-0 top-0 z-20 h-full w-24 bg-gradient-to-l from-white to-transparent" />
 
             <div className="overflow-hidden">
-              <div className="flex w-max [animation:brokerMarquee_150s_linear_infinite]">
+              <div className="flex w-max [animation:brokerMarquee_150s_linear_infinite] hover:[animation-play-state:paused]">
                 {marquee.map((broker, index) => (
                   <Link
                     key={`broker-${broker.id}-${index}`}
                     href={`/en/brokers/${broker.slug}`}
-                    className="flex h-[104px] w-[320px] shrink-0 items-center justify-center border-r border-slate-200 bg-white px-7 transition hover:bg-slate-50"
+                    className="group flex h-[92px] w-[300px] shrink-0 items-center justify-center border-r border-slate-100 bg-white px-6 transition hover:bg-slate-50"
                   >
-                    <div className="flex w-full items-center justify-center gap-5">
-                     <div className="flex h-[64px] w-[86px] items-center justify-center rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-sm">
-  {broker.logo ? (
-    <img
-      src={broker.logo}
-      alt={broker.name}
-      className="h-[54px] w-[78px] scale-[1.45] object-contain"
-    />
-  ) : (
+                    <div className="flex w-full items-center justify-center gap-4">
+                      <div className="flex h-[68px] w-[94px] shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white p-2.5 shadow-sm">
+                        {broker.logo ? (
+                          <img
+                            src={broker.logo}
+                            alt={broker.name}
+                            className="max-h-[60px] max-w-[92px] object-contain transition duration-300 group-hover:scale-[1.08]"
+                          />
+                        ) : (
                           <span className="text-sm font-bold text-slate-900">
                             {broker.name.slice(0, 2)}
                           </span>
@@ -530,150 +548,148 @@ broker_2:broker_2_id (
   <BrokerFinderEN brokers={brokers} />
 </section>
 
-     {/* HOW WE RATE - PREMIUM STEPS */}
+    {/* HOW WE RATE - CLEAN TRUST SECTION */}
 <section className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
-  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] shadow-sm sm:rounded-[32px]">
+  <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
     {(() => {
       const ratingItems = [
         {
           num: "01",
-          title: "Regulation & Licensing",
-          desc: "We evaluate regulatory authorities, license strength, and client fund protection levels.",
+          title: "Regulation & Fund Protection",
+          desc: "We review licensing, regulatory strength, and how client funds are protected.",
         },
         {
           num: "02",
-          title: "Accounts & Fees",
-          desc: "We review spreads, commissions, and real account conditions—not marketing promises.",
+          title: "Fees, Spreads & Commissions",
+          desc: "We compare spreads, commissions, and the real cost of trading forex and CFDs.",
         },
         {
           num: "03",
-          title: "Platforms & Tools",
-          desc: "We assess MT4, MT5, usability, and tools suitable for daily trading.",
+          title: "Trading Platforms & Execution",
+          desc: "We assess MT4, MT5, platform usability, execution quality, and trading tools.",
         },
         {
           num: "04",
           title: "Deposits & Withdrawals",
-          desc: "We compare payment methods, withdrawal speed, and transparency of terms.",
+          desc: "We compare payment methods, withdrawal speed, processing times, and transparency.",
         },
         {
           num: "05",
-          title: "Islamic Account",
-          desc: "We verify its availability and how it is actually implemented in practice.",
+          title: "Swap-Free Account Options",
+          desc: "We check whether swap-free accounts are available and how they work in practice.",
         },
         {
           num: "06",
           title: "Support & User Experience",
-          desc: "We evaluate support quality, accessibility, and overall user experience.",
+          desc: "We evaluate customer support, account setup, accessibility, and overall usability.",
         },
       ];
 
       return (
         <>
           {/* DESKTOP */}
-          <div className="hidden lg:grid lg:grid-cols-[340px_minmax(0,1fr)] lg:gap-0">
-            {/* RIGHT INTRO */}
-            <div className="border-l border-slate-200 p-7 xl:p-8">
-              <div className="flex h-full flex-col items-center justify-center text-center">
-                
-                <h2 className="mt-4 text-[34px] font-black leading-[1.1] text-[#0f172a]">
-                  How We Rate
-                  <span className="mt-1 block text-[#2563eb]">Trading Brokers?</span>
+          <div className="hidden lg:block">
+            <div className="grid grid-cols-[1fr_270px] gap-5 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-6 py-5">
+              <div>
+                <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-[#2563eb] shadow-sm">
+                  Broker Rating Methodology
+                </span>
+
+                <h2 className="mt-4 text-[36px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f]">
+                  How We Choose the Best Trading Brokers
                 </h2>
 
-                <p className="mt-4 text-[14px] leading-7 text-slate-600">
-                  We do not rely on marketing slogans. Each broker is evaluated
-                  based on real factors that directly impact the trader’s experience,
-                  from account setup to withdrawals and support.
+                <p className="mt-3 max-w-3xl text-[15px] font-semibold leading-9 text-slate-600">
+                  We review trading brokers based on regulation, fees, spreads,
+                  withdrawal speed, trading platforms, swap-free accounts, and
+                  the real trader experience before recommending any trusted
+                  forex or CFD broker.
                 </p>
+              </div>
 
-                <div className="mt-6 flex justify-center">
-                  <Link
-                    href="/en/brokers"
-                    className="inline-flex h-11 items-center justify-center rounded-2xl bg-[#2563eb] px-5 text-[13px] font-extrabold text-white shadow-[0_12px_28px_rgba(37,99,235,0.22)] transition hover:bg-[#1d4ed8]"
-                  >
-                    Browse All Reviews
-                  </Link>
+              <div className="flex flex-col justify-center rounded-[24px] border border-slate-200 bg-white p-4 shadow-[0_10px_30px_rgba(15,23,42,0.05)]">
+                <div className="mt-1.5 text-[18px] font-black leading-6 text-[#07111f]">
+                  Practical broker reviews for smarter trading decisions
                 </div>
+
+                <Link
+                  href="/en/brokers"
+                  className="mt-5 inline-flex h-11 items-center justify-center rounded-2xl bg-[#2563eb] px-5 text-[13px] font-black text-white shadow-[0_12px_26px_rgba(37,99,235,0.22)] transition hover:bg-[#1d4ed8]"
+                >
+                  Browse All Reviews
+                </Link>
               </div>
             </div>
 
-            {/* LEFT STEPS */}
-            <div className="p-6 xl:p-8">
-              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                {ratingItems.map((item) => (
-                  <div
-                    key={item.num}
-                    className="group relative overflow-hidden rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[#bfdbfe] hover:shadow-[0_16px_35px_rgba(15,23,42,0.06)]"
-                  >
-                    <div className="absolute left-0 top-0 h-1 w-full bg-[linear-gradient(90deg,#60a5fa_0%,#2563eb_100%)] opacity-80" />
+            <div className="grid grid-cols-3 gap-4 p-5">
+              {ratingItems.map((item) => (
+                <div
+                  key={item.num}
+                  className="rounded-[22px] border border-slate-200 bg-white p-5 shadow-[0_6px_20px_rgba(15,23,42,0.04)] transition hover:-translate-y-0.5 hover:border-[#bfdbfe] hover:shadow-[0_16px_34px_rgba(15,23,42,0.06)]"
+                >
+                  <div className="flex items-start gap-4">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#eff6ff] text-[12px] font-black text-[#1d4ed8] ring-1 ring-[#bfdbfe]">
+                      {item.num}
+                    </span>
 
-                    <div className="flex items-center gap-3">
-                      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#2563eb] text-[12px] font-black text-white">
-                        {item.num}
-                      </span>
-
-                      <h3 className="text-[18px] font-black text-[#0f172a]">
+                    <div>
+                      <h3 className="text-[18px] font-black leading-6 text-[#07111f]">
                         {item.title}
                       </h3>
-                    </div>
 
-                    <p className="mt-3 text-[13px] leading-6 text-slate-600">
-                      {item.desc}
-                    </p>
+                      <p className="mt-2 text-[13px] font-semibold leading-6 text-slate-600">
+                        {item.desc}
+                      </p>
+                    </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* MOBILE / TABLET */}
+          {/* MOBILE */}
           <div className="lg:hidden">
-            <div className="border-b border-slate-200 px-4 py-4 sm:px-6 sm:py-5">
-              <div className="flex flex-col items-center text-center sm:items-start sm:text-left">
-                <h2 className="text-[28px] font-black leading-[1.15] text-[#0f172a] sm:text-[28px]">
-                  How We Rate Trading Brokers
-                </h2>
+            <div className="border-b border-slate-200 bg-gradient-to-b from-[#f8fbff] to-[#eef5ff] px-4 py-4 text-center">
+              <h2 className="mx-auto mt-3 max-w-[320px] text-[24px] font-black leading-[1.2] tracking-[-0.02em] text-[#07111f]">
+                How We Choose the Best Trading Brokers
+              </h2>
 
-                <p className="mt-2 max-w-2xl text-[13px] font-medium leading-6 text-slate-700 sm:text-[14px] sm:leading-7">
-                  We evaluate each broker based on real factors that impact the trading experience.
-                </p>
+              <p className="mx-auto mt-2 max-w-[320px] text-[12px] font-semibold leading-6 text-slate-600">
+                We review regulation, fees, platforms, withdrawals, and account
+                conditions before recommending any broker.
+              </p>
 
-                <div className="mt-3">
-                  <Link
-                    href="/en/brokers"
-                    className="inline-flex h-10 items-center justify-center rounded-2xl bg-[#2563eb] px-4 text-[12px] font-extrabold text-white shadow-[0_10px_24px_rgba(37,99,235,0.20)] transition hover:bg-[#1d4ed8]"
-                  >
-                    All Reviews
-                  </Link>
-                </div>
-              </div>
+              <Link
+                href="/en/brokers"
+                className="mt-3 inline-flex h-9 items-center justify-center rounded-2xl bg-[#2563eb] px-4 text-[11px] font-black text-white shadow-[0_10px_22px_rgba(37,99,235,0.20)]"
+              >
+                All Reviews
+              </Link>
             </div>
 
-            <div className="p-4 sm:p-5">
-              <div className="grid grid-cols-2 gap-3">
-                {ratingItems.map((item) => (
-                  <div
-                    key={item.num}
-                    className="relative overflow-hidden rounded-[18px] border border-slate-200 bg-white px-3 py-3 shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
-                  >
-                    <div className="absolute right-0 top-0 h-1 w-full bg-[linear-gradient(90deg,#60a5fa_0%,#2563eb_100%)] opacity-80" />
+            <div className="grid grid-cols-1 gap-2 bg-white p-3.5">
+              {ratingItems.map((item) => (
+                <div
+                  key={item.num}
+                  className="rounded-[18px] border border-slate-200 bg-[#fbfdff] px-3.5 py-3 shadow-[0_5px_16px_rgba(15,23,42,0.04)]"
+                >
+                  <div className="flex items-start gap-3">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#eff6ff] text-[10px] font-black text-[#1d4ed8] ring-1 ring-[#bfdbfe]">
+                      {item.num}
+                    </span>
 
-                    <div className="flex items-start gap-2">
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#2563eb] text-[10px] font-black text-white">
-                        {item.num}
-                      </span>
-
-                      <h3 className="text-[13px] font-black leading-5 text-[#0f172a]">
+                    <div>
+                      <h3 className="text-[14px] font-black leading-5 text-[#07111f]">
                         {item.title}
                       </h3>
-                    </div>
 
-                    <p className="mt-2 text-[11px] leading-5 text-slate-700">
-                      {item.desc}
-                    </p>
+                      <p className="mt-1 text-[11px] font-semibold leading-5 text-slate-600">
+                        {item.desc}
+                      </p>
+                    </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           </div>
         </>
@@ -683,246 +699,317 @@ broker_2:broker_2_id (
 </section>
 
 {/* TOP COMPARISONS */}
-<section className="bg-[#f4f7fb] py-3 sm:py-4">
-  <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm sm:rounded-[32px]">
-      {/* HEADER */}
-      <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-4 py-5 sm:px-7 sm:py-7">
-        <div className="flex flex-col gap-4 text-center lg:flex-row lg:items-start lg:justify-between lg:text-left">
-          <div className="max-w-none text-center lg:text-left">
-            <h2 className="text-[28px] font-black leading-[1.15] text-[#0f172a] sm:text-[34px] lg:text-[42px]">
-              Top Broker Comparisons
-            </h2>
+<section className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
+  <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
+    {/* HEADER */}
+    <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div className="text-center lg:text-left">
+          <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-[#2563eb] shadow-sm">
+            Broker Comparisons
+          </span>
 
-            {/* Mobile */}
-            <p className="mt-3 max-w-[900px] text-[14px] leading-7 text-slate-600 md:hidden">
-              Explore the most popular broker comparisons and discover the differences in regulation,
-              platforms, and fees before choosing the right broker.
-            </p>
+          <h2 className="mt-4 text-[30px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] sm:text-[34px] lg:text-[36px]">
+            Most Popular Broker Comparisons
+          </h2>
 
-            {/* Desktop */}
-            <p className="hidden md:block mt-3 max-w-[950px] text-[15px] leading-8 text-slate-600">
-              Browse the most popular broker comparisons and understand the differences in regulation,
-              account types, fees, and platforms such as MT4 and MT5. This section helps you clearly
-              evaluate brokers and choose the one that fits your trading style and needs.
-            </p>
-          </div>
+          <p className="mx-auto mt-3 max-w-[900px] text-[14px] font-semibold leading-8 text-slate-600 lg:mx-0 lg:text-[15px] lg:leading-9">
+            Explore the most popular trading broker comparisons and understand
+            the differences in regulation, account types, fees, spreads, and
+            platforms such as MT4 and MT5 before choosing the best broker for
+            your trading needs.
+          </p>
+        </div>
 
-          <div className="flex justify-center md:hidden">
-            <Link
-              href="/en/compare"
-              className="inline-flex h-11 items-center justify-center rounded-2xl border border-slate-300 bg-white px-5 text-[13px] font-extrabold text-[#0f172a] shadow-sm transition hover:border-[#93c5fd] hover:bg-[#eff6ff]"
-            >
-              Browse All Comparisons
-            </Link>
-          </div>
-
-          <div className="hidden md:flex shrink-0 justify-center lg:justify-start">
-            <Link
-              href="/en/compare"
-              className="inline-flex h-12 items-center justify-center rounded-2xl border border-slate-300 bg-white px-5 text-sm font-extrabold text-[#0f172a] shadow-sm transition hover:border-[#93c5fd] hover:bg-[#eff6ff]"
-            >
-              Browse All Comparisons
-            </Link>
-          </div>
+        <div className="flex justify-center lg:self-center lg:pr-2">
+          <Link
+            href="/en/compare"
+            className="inline-flex h-12 items-center justify-center rounded-2xl bg-[#2563eb] px-6 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(37,99,235,0.24)] transition hover:bg-[#1d4ed8]"
+          >
+            Browse All Comparisons
+          </Link>
         </div>
       </div>
+    </div>
 
-      {/* MOBILE */}
-      <div className="grid gap-3 p-4 md:hidden">
-        {topComparisons.map((cmp, index) => (
-          <article
-            key={cmp.id}
-            className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm"
-          >
-            <div className="h-1 bg-gradient-to-r from-[#2563eb] via-[#60a5fa] to-transparent" />
+    {/* MOBILE */}
+    <div className="grid gap-3 p-4 md:hidden">
+      {topComparisons.map((cmp, index) => (
+        <article
+          key={cmp.id}
+          className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm"
+        >
+          <div className="h-1 bg-gradient-to-r from-[#2563eb] via-[#60a5fa] to-transparent" />
 
-            <div className="p-3.5">
-              <div className="mb-3 flex items-center justify-between gap-2">
-                <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-bold text-slate-500">
-                  #{index + 1} Most Viewed
-                </span>
+          <div className="p-3.5">
+            <div className="mb-3 flex items-center justify-between gap-2">
+              <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-bold text-slate-500">
+                #{index + 1} Most Viewed
+              </span>
 
-                <span className="text-[11px] font-bold text-slate-400">
-                  {cmp.views_count ?? 0} views
-                </span>
-              </div>
+              <span className="text-[11px] font-bold text-slate-400">
+                {cmp.views_count ?? 0} views
+              </span>
+            </div>
 
-              <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
-                <div className="flex flex-col items-center text-center">
-                  <Link
-                    href={`/en/brokers/${cmp.broker_1?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_1?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_1?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_1?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
-                    className="flex h-14 w-14 items-center justify-center rounded-[16px] border border-slate-200 bg-slate-50 p-2 transition hover:border-blue-200 hover:bg-blue-50"
-                  >
-                    {cmp.broker_1?.logo ? (
-                      <img
-                        src={cmp.broker_1.logo}
-                        alt={cmp.broker_1.name || "Broker 1"}
-                        className="h-full w-full object-contain"
-                      />
-                    ) : (
-                      <span className="text-[9px] text-slate-400">Logo</span>
-                    )}
-                  </Link>
-
-                  <Link
-                    href={`/en/brokers/${cmp.broker_1?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_1?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_1?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_1?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
-                    className="mt-2 text-[15px] font-black leading-none text-[#0f172a] transition hover:text-[#2563eb]"
-                  >
-                    {cmp.broker_1?.name_en || cmp.broker_1?.name || "Broker 1"}
-                  </Link>
-
-                  <span className="mt-1 text-[11px] font-bold text-[#f59e0b]">
-                    ★ {cmp.broker_1?.rating?.toFixed(1) ?? "—"}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-center">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full border border-blue-200 bg-blue-50 text-[11px] font-extrabold text-blue-600 shadow-sm">
-                    VS
-                  </div>
-                </div>
-
-                <div className="flex flex-col items-center text-center">
-                  <Link
-                    href={`/en/brokers/${cmp.broker_2?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_2?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_2?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_2?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
-                    className="flex h-14 w-14 items-center justify-center rounded-[16px] border border-slate-200 bg-slate-50 p-2 transition hover:border-blue-200 hover:bg-blue-50"
-                  >
-                    {cmp.broker_2?.logo ? (
-                      <img
-                        src={cmp.broker_2.logo}
-                        alt={cmp.broker_2.name || "Broker 2"}
-                        className="h-full w-full object-contain"
-                      />
-                    ) : (
-                      <span className="text-[9px] text-slate-400">Logo</span>
-                    )}
-                  </Link>
-
-                  <Link
-                    href={`/en/brokers/${cmp.broker_2?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_2?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_2?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_2?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
-                    className="mt-2 text-[15px] font-black leading-none text-[#0f172a] transition hover:text-[#2563eb]"
-                  >
-                    {cmp.broker_2?.name_en || cmp.broker_2?.name || "Broker 2"}
-                  </Link>
-
-                  <span className="mt-1 text-[11px] font-bold text-[#f59e0b]">
-                    ★ {cmp.broker_2?.rating?.toFixed(1) ?? "—"}
-                  </span>
-                </div>
-              </div>
-
-              <div className="mt-4">
+            <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+              <div className="flex flex-col items-center text-center">
                 <Link
-                  href={`/en/compare/${cmp.slug}`}
-                  className="mt-3 flex w-full items-center justify-center rounded-xl bg-[#2563eb] py-2.5 text-[14px] font-bold text-white hover:bg-[#1d4ed8]"
+                  href={`/en/brokers/${
+                    cmp.broker_1?.name?.toLowerCase() === "exness"
+                      ? "exness"
+                      : cmp.broker_1?.name?.toLowerCase() === "xm"
+                      ? "xm"
+                      : cmp.broker_1?.name?.toLowerCase() === "vantage"
+                      ? "vantage"
+                      : cmp.broker_1?.name?.toLowerCase() === "equiti"
+                      ? "equiti"
+                      : ""
+                  }`}
+                  className="flex h-14 w-14 items-center justify-center rounded-[16px] border border-slate-200 bg-slate-50 p-2 transition hover:border-blue-200 hover:bg-blue-50"
                 >
-                  {`Compare ${cmp.broker_1?.name_en || cmp.broker_1?.name} vs ${cmp.broker_2?.name_en || cmp.broker_2?.name}`}
+                  {cmp.broker_1?.logo ? (
+                    <img
+                      src={cmp.broker_1.logo}
+                      alt={cmp.broker_1.name_en || cmp.broker_1.name || "Broker 1"}
+                      className="h-full w-full object-contain"
+                    />
+                  ) : (
+                    <span className="text-[9px] text-slate-400">Logo</span>
+                  )}
                 </Link>
+
+                <Link
+                  href={`/en/brokers/${
+                    cmp.broker_1?.name?.toLowerCase() === "exness"
+                      ? "exness"
+                      : cmp.broker_1?.name?.toLowerCase() === "xm"
+                      ? "xm"
+                      : cmp.broker_1?.name?.toLowerCase() === "vantage"
+                      ? "vantage"
+                      : cmp.broker_1?.name?.toLowerCase() === "equiti"
+                      ? "equiti"
+                      : ""
+                  }`}
+                  className="mt-2 text-[15px] font-black leading-none text-[#0f172a] transition hover:text-[#2563eb]"
+                >
+                  {cmp.broker_1?.name_en || cmp.broker_1?.name || "Broker 1"}
+                </Link>
+
+                <span className="mt-1 text-[11px] font-bold text-[#f59e0b]">
+                  ★ {cmp.broker_1?.rating?.toFixed(1) ?? "—"}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-center">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full border border-blue-200 bg-blue-50 text-[11px] font-extrabold text-blue-600 shadow-sm">
+                  VS
+                </div>
+              </div>
+
+              <div className="flex flex-col items-center text-center">
+                <Link
+                  href={`/en/brokers/${
+                    cmp.broker_2?.name?.toLowerCase() === "exness"
+                      ? "exness"
+                      : cmp.broker_2?.name?.toLowerCase() === "xm"
+                      ? "xm"
+                      : cmp.broker_2?.name?.toLowerCase() === "vantage"
+                      ? "vantage"
+                      : cmp.broker_2?.name?.toLowerCase() === "equiti"
+                      ? "equiti"
+                      : ""
+                  }`}
+                  className="flex h-14 w-14 items-center justify-center rounded-[16px] border border-slate-200 bg-slate-50 p-2 transition hover:border-blue-200 hover:bg-blue-50"
+                >
+                  {cmp.broker_2?.logo ? (
+                    <img
+                      src={cmp.broker_2.logo}
+                      alt={cmp.broker_2.name_en || cmp.broker_2.name || "Broker 2"}
+                      className="h-full w-full object-contain"
+                    />
+                  ) : (
+                    <span className="text-[9px] text-slate-400">Logo</span>
+                  )}
+                </Link>
+
+                <Link
+                  href={`/en/brokers/${
+                    cmp.broker_2?.name?.toLowerCase() === "exness"
+                      ? "exness"
+                      : cmp.broker_2?.name?.toLowerCase() === "xm"
+                      ? "xm"
+                      : cmp.broker_2?.name?.toLowerCase() === "vantage"
+                      ? "vantage"
+                      : cmp.broker_2?.name?.toLowerCase() === "equiti"
+                      ? "equiti"
+                      : ""
+                  }`}
+                  className="mt-2 text-[15px] font-black leading-none text-[#0f172a] transition hover:text-[#2563eb]"
+                >
+                  {cmp.broker_2?.name_en || cmp.broker_2?.name || "Broker 2"}
+                </Link>
+
+                <span className="mt-1 text-[11px] font-bold text-[#f59e0b]">
+                  ★ {cmp.broker_2?.rating?.toFixed(1) ?? "—"}
+                </span>
               </div>
             </div>
-          </article>
-        ))}
-      </div>
 
-      {/* DESKTOP / TABLET */}
-      <div className="hidden gap-5 p-4 md:grid md:grid-cols-2 md:p-5 xl:grid-cols-3">
-        {topComparisons.map((cmp, index) => (
-          <article
-            key={cmp.id}
-            className="group overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(15,23,42,0.07)]"
-          >
-            <div className="h-1 bg-gradient-to-r from-[#2563eb] via-[#60a5fa] to-transparent" />
+            <div className="mt-4">
+              <Link
+                href={`/en/compare/${cmp.slug}`}
+                className="mt-3 flex w-full items-center justify-center rounded-xl bg-[#2563eb] py-2.5 text-[14px] font-bold text-white hover:bg-[#1d4ed8]"
+              >
+                {`Compare ${cmp.broker_1?.name_en || cmp.broker_1?.name} vs ${
+                  cmp.broker_2?.name_en || cmp.broker_2?.name
+                }`}
+              </Link>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
 
-            <div className="p-5 lg:p-6">
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-bold text-slate-500">
-                  #{index + 1} Most Viewed
-                </span>
+    {/* DESKTOP / TABLET */}
+    <div className="hidden gap-4 p-5 md:grid md:grid-cols-2 xl:grid-cols-3">
+      {topComparisons.map((cmp, index) => (
+        <article
+          key={cmp.id}
+          className="group overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_6px_20px_rgba(15,23,42,0.04)] transition hover:-translate-y-0.5 hover:border-[#bfdbfe] hover:shadow-[0_16px_34px_rgba(15,23,42,0.06)]"
+        >
+          <div className="h-1 bg-gradient-to-r from-[#2563eb] via-[#60a5fa] to-transparent" />
 
-                <span className="text-[12px] font-bold text-slate-400">
-                  {cmp.views_count ?? 0} views
-                </span>
-              </div>
+          <div className="p-5">
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-bold text-slate-500">
+                #{index + 1} Most Viewed
+              </span>
 
-              <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 lg:gap-4">
-                <div className="flex flex-col items-center text-center">
-                  <Link
-                    href={`/en/brokers/${cmp.broker_1?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_1?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_1?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_1?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
-                    className="flex h-20 w-20 items-center justify-center rounded-[22px] border border-slate-200 bg-slate-50 p-3 transition hover:border-blue-200 hover:bg-blue-50 lg:h-24 lg:w-24"
-                  >
-                    {cmp.broker_1?.logo ? (
-                      <img
-                        src={cmp.broker_1.logo}
-                        alt={cmp.broker_1.name || "Broker 1"}
-                        className="h-full w-full object-contain"
-                      />
-                    ) : (
-                      <span className="text-[10px] text-slate-400">Logo</span>
-                    )}
-                  </Link>
+              <span className="text-[12px] font-bold text-slate-400">
+                {cmp.views_count ?? 0} views
+              </span>
+            </div>
 
-                  <Link
-                    href={`/en/brokers/${cmp.broker_1?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_1?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_1?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_1?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
-                    className="mt-3 text-[17px] font-black leading-none text-[#0f172a] transition hover:text-[#2563eb] lg:text-[20px]"
-                  >
-                    {cmp.broker_1?.name_en || cmp.broker_1?.name || "Broker 1"}
-                  </Link>
-
-                  <span className="mt-2 text-[12px] font-bold text-[#f59e0b] lg:text-[13px]">
-                    ★ {cmp.broker_1?.rating?.toFixed(1) ?? "—"}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-center">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-full border border-blue-200 bg-blue-50 text-[13px] font-extrabold text-blue-600 shadow-sm">
-                    VS
-                  </div>
-                </div>
-
-                <div className="flex flex-col items-center text-center">
-                  <Link
-                    href={`/en/brokers/${cmp.broker_2?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_2?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_2?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_2?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
-                    className="flex h-20 w-20 items-center justify-center rounded-[22px] border border-slate-200 bg-slate-50 p-3 transition hover:border-blue-200 hover:bg-blue-50 lg:h-24 lg:w-24"
-                  >
-                    {cmp.broker_2?.logo ? (
-                      <img
-                        src={cmp.broker_2.logo}
-                        alt={cmp.broker_2.name || "Broker 2"}
-                        className="h-full w-full object-contain"
-                      />
-                    ) : (
-                      <span className="text-[10px] text-slate-400">Logo</span>
-                    )}
-                  </Link>
-
-                  <Link
-                    href={`/en/brokers/${cmp.broker_2?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_2?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_2?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_2?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
-                    className="mt-3 text-[17px] font-black leading-none text-[#0f172a] transition hover:text-[#2563eb] lg:text-[20px]"
-                  >
-                    {cmp.broker_2?.name_en || cmp.broker_2?.name || "Broker 2"}
-                  </Link>
-
-                  <span className="mt-2 text-[12px] font-bold text-[#f59e0b] lg:text-[13px]">
-                    ★ {cmp.broker_2?.rating?.toFixed(1) ?? "—"}
-                  </span>
-                </div>
-              </div>
-
-              <div className="mt-5">
+            <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+              <div className="flex flex-col items-center text-center">
                 <Link
-                  href={`/en/compare/${cmp.slug}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex w-full min-h-[48px] items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-[15px] font-extrabold text-white transition hover:bg-[#1d4ed8] lg:min-h-[52px] lg:text-base"
+                  href={`/en/brokers/${
+                    cmp.broker_1?.name?.toLowerCase() === "exness"
+                      ? "exness"
+                      : cmp.broker_1?.name?.toLowerCase() === "xm"
+                      ? "xm"
+                      : cmp.broker_1?.name?.toLowerCase() === "vantage"
+                      ? "vantage"
+                      : cmp.broker_1?.name?.toLowerCase() === "equiti"
+                      ? "equiti"
+                      : ""
+                  }`}
+                  className="flex h-[72px] w-[72px] items-center justify-center rounded-[20px] border border-slate-200 bg-slate-50 p-3 transition hover:border-blue-200 hover:bg-blue-50 lg:h-20 lg:w-20"
                 >
-                  {`Compare ${cmp.broker_1?.name_en || cmp.broker_1?.name} vs ${cmp.broker_2?.name_en || cmp.broker_2?.name}`}
+                  {cmp.broker_1?.logo ? (
+                    <img
+                      src={cmp.broker_1.logo}
+                      alt={cmp.broker_1.name_en || cmp.broker_1.name || "Broker 1"}
+                      className="h-full w-full object-contain"
+                    />
+                  ) : (
+                    <span className="text-[10px] text-slate-400">Logo</span>
+                  )}
                 </Link>
+
+                <Link
+                  href={`/en/brokers/${
+                    cmp.broker_1?.name?.toLowerCase() === "exness"
+                      ? "exness"
+                      : cmp.broker_1?.name?.toLowerCase() === "xm"
+                      ? "xm"
+                      : cmp.broker_1?.name?.toLowerCase() === "vantage"
+                      ? "vantage"
+                      : cmp.broker_1?.name?.toLowerCase() === "equiti"
+                      ? "equiti"
+                      : ""
+                  }`}
+                  className="mt-3 text-[17px] font-black leading-none text-[#0f172a] transition hover:text-[#2563eb] lg:text-[18px]"
+                >
+                  {cmp.broker_1?.name_en || cmp.broker_1?.name || "Broker 1"}
+                </Link>
+
+                <span className="mt-2 text-[12px] font-bold text-[#f59e0b]">
+                  ★ {cmp.broker_1?.rating?.toFixed(1) ?? "—"}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-center">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full border border-blue-200 bg-blue-50 text-[12px] font-extrabold text-blue-600 shadow-sm">
+                  VS
+                </div>
+              </div>
+
+              <div className="flex flex-col items-center text-center">
+                <Link
+                  href={`/en/brokers/${
+                    cmp.broker_2?.name?.toLowerCase() === "exness"
+                      ? "exness"
+                      : cmp.broker_2?.name?.toLowerCase() === "xm"
+                      ? "xm"
+                      : cmp.broker_2?.name?.toLowerCase() === "vantage"
+                      ? "vantage"
+                      : cmp.broker_2?.name?.toLowerCase() === "equiti"
+                      ? "equiti"
+                      : ""
+                  }`}
+                  className="flex h-[72px] w-[72px] items-center justify-center rounded-[20px] border border-slate-200 bg-slate-50 p-3 transition hover:border-blue-200 hover:bg-blue-50 lg:h-20 lg:w-20"
+                >
+                  {cmp.broker_2?.logo ? (
+                    <img
+                      src={cmp.broker_2.logo}
+                      alt={cmp.broker_2.name_en || cmp.broker_2.name || "Broker 2"}
+                      className="h-full w-full object-contain"
+                    />
+                  ) : (
+                    <span className="text-[10px] text-slate-400">Logo</span>
+                  )}
+                </Link>
+
+                <Link
+                  href={`/en/brokers/${
+                    cmp.broker_2?.name?.toLowerCase() === "exness"
+                      ? "exness"
+                      : cmp.broker_2?.name?.toLowerCase() === "xm"
+                      ? "xm"
+                      : cmp.broker_2?.name?.toLowerCase() === "vantage"
+                      ? "vantage"
+                      : cmp.broker_2?.name?.toLowerCase() === "equiti"
+                      ? "equiti"
+                      : ""
+                  }`}
+                  className="mt-3 text-[17px] font-black leading-none text-[#0f172a] transition hover:text-[#2563eb] lg:text-[18px]"
+                >
+                  {cmp.broker_2?.name_en || cmp.broker_2?.name || "Broker 2"}
+                </Link>
+
+                <span className="mt-2 text-[12px] font-bold text-[#f59e0b]">
+                  ★ {cmp.broker_2?.rating?.toFixed(1) ?? "—"}
+                </span>
               </div>
             </div>
-          </article>
-        ))}
-      </div>
+
+            <div className="mt-5">
+              <Link
+                href={`/en/compare/${cmp.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex w-full min-h-[48px] items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-[15px] font-extrabold text-white transition hover:bg-[#1d4ed8]"
+              >
+                {`Compare ${cmp.broker_1?.name_en || cmp.broker_1?.name} vs ${
+                  cmp.broker_2?.name_en || cmp.broker_2?.name
+                }`}
+              </Link>
+            </div>
+          </div>
+        </article>
+      ))}
     </div>
   </div>
 </section>
@@ -931,70 +1018,64 @@ broker_2:broker_2_id (
 <section className="bg-[#f4f7fb] py-3 sm:py-4">
   <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm sm:rounded-[32px]">
-      
-      {/* HEADER */}
-      <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-4 py-5 sm:px-7 sm:py-7">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          
-          <div className="max-w-none text-center lg:max-w-[920px] lg:text-left">
-            <h2 className="text-[28px] font-black leading-[1.1] tracking-[-0.02em] text-[#0f172a] sm:text-[42px]">
-              Best Trading Brokers
-              <span className="text-[#2563eb]"> by Country</span>
+      <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-5 py-5 sm:px-6">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="text-center lg:text-left">
+            <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-[#2563eb] shadow-sm">
+              By Country
+            </span>
+
+            <h2 className="mt-3 text-[26px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] sm:text-[34px] lg:text-[36px]">
+              Best Trading Brokers by Country
             </h2>
 
-            {/* Mobile */}
-            <p className="mt-2 text-[14px] leading-7 text-slate-600 md:hidden">
-              Choose the best trading brokers based on your country, and discover the most suitable platforms in terms of regulation, accounts, and deposit/withdrawal methods.
-            </p>
-
-            {/* Desktop */}
-            <p className="hidden md:block mt-3 max-w-[820px] text-[15px] leading-8 text-slate-600">
-              Explore the best trading brokers by country and compare them based on regulation, Islamic accounts, deposit and withdrawal methods, and ease of account setup. This section helps you quickly find brokers that match your country and trading needs.
+            <p className="mx-auto mt-3 max-w-[880px] text-[13px] font-semibold leading-7 text-slate-600 sm:text-[15px] sm:leading-8 lg:mx-0">
+              Compare forex and CFD brokers by country, including regulation,
+              platforms, fees, spreads, deposits, withdrawals, and account conditions.
             </p>
           </div>
 
-          <div className="hidden md:flex shrink-0 justify-center lg:justify-start">
+          <div className="hidden lg:flex">
             <Link
               href="/en/best-brokers"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-12 items-center justify-center rounded-2xl border border-slate-300 bg-white px-5 text-sm font-extrabold text-[#0f172a] shadow-sm transition hover:border-[#93c5fd] hover:bg-[#eff6ff]"
+              className="inline-flex h-12 min-w-[190px] items-center justify-center rounded-2xl bg-[#2563eb] px-6 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(37,99,235,0.24)] transition hover:bg-[#1d4ed8]"
             >
-              All Countries
+              All Other Countries
             </Link>
           </div>
-
         </div>
       </div>
 
-      {/* MOBILE */}
+      {/* MOBILE COMPACT */}
       <div className="p-3 md:hidden">
         <div className="grid grid-cols-2 gap-2.5">
           {countryPages.map((item) => (
             <Link
-              key={item.href}
+              key={item.badge}
               href={`/en${item.href}`}
               target="_blank"
               rel="noopener noreferrer"
-              title={`Best brokers in ${item.badge}`}
-              className="group rounded-[14px] border border-slate-200 bg-white px-2 py-2 shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition hover:border-[#bfdbfe] hover:bg-[#f8fbff]"
+              title={`Best trading brokers in ${item.badge}`}
+              className="group rounded-[14px] border border-slate-200 bg-white px-2.5 py-2.5 shadow-[0_3px_10px_rgba(15,23,42,0.04)] transition hover:border-[#bfdbfe] hover:bg-[#f8fbff]"
             >
-              <div className="flex flex-col items-center justify-center gap-0.5 text-center">
-                <div className="flex items-center gap-2">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-white shadow-sm">
-                    <img
-                      src={item.flag}
-                      alt={item.badge}
-                      className="h-5 w-5 rounded-full object-cover"
-                    />
-                  </div>
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white p-[3px] shadow-sm">
+                  <img
+                    src={item.flag}
+                    alt={`${item.badge} flag`}
+                    className="h-full w-full rounded-full object-contain"
+                  />
+                </div>
 
-                  <h3 className="text-[14px] font-extrabold leading-5 text-[#0f172a]">
+                <div className="min-w-0 flex-1 text-left">
+                  <h3 className="truncate text-[13px] font-black leading-5 text-[#07111f]">
                     {item.badge}
                   </h3>
                 </div>
 
-                <span className="text-[13px] text-slate-500 transition group-hover:translate-x-[2px] group-hover:text-[#2563eb]">
+                <span className="shrink-0 text-[13px] font-bold text-slate-400 transition group-hover:translate-x-[2px] group-hover:text-[#2563eb]">
                   →
                 </span>
               </div>
@@ -1005,20 +1086,18 @@ broker_2:broker_2_id (
             href="/en/best-brokers"
             target="_blank"
             rel="noopener noreferrer"
-            className="col-span-2 group rounded-[14px] border border-dashed border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-2.5 py-2 shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition hover:bg-[#eff6ff]"
+            className="group col-span-2 rounded-[14px] border border-dashed border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-3 py-3 shadow-[0_3px_10px_rgba(15,23,42,0.04)] transition hover:bg-[#eff6ff]"
           >
-            <div className="flex flex-col items-center justify-center gap-0.5 text-center">
-              <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#bfdbfe] bg-white shadow-sm">
-                  🌍
-                </div>
-
-                <h3 className="text-[14px] font-extrabold text-[#0f172a]">
-                  All Countries
-                </h3>
+            <div className="flex items-center justify-center gap-2.5">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#bfdbfe] bg-white shadow-sm">
+                🌍
               </div>
 
-              <span className="text-[13px] text-slate-500 transition group-hover:translate-x-[2px] group-hover:text-[#2563eb]">
+              <h3 className="text-[13px] font-black text-[#07111f]">
+                All Other Countries
+              </h3>
+
+              <span className="text-[13px] font-bold text-slate-400 transition group-hover:translate-x-[2px] group-hover:text-[#2563eb]">
                 →
               </span>
             </div>
@@ -1026,207 +1105,296 @@ broker_2:broker_2_id (
         </div>
       </div>
 
-      {/* DESKTOP */}
-      <div className="hidden p-4 md:block lg:p-5">
-        <div className="grid gap-4 md:grid-cols-2">
-          {countryPages.map((item) => (
+      {/* DESKTOP / TABLET */}
+      <div className="hidden p-5 md:block">
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          {countryPages
+  .filter((item) => item.badge !== "Kenya")
+  .map((item) => (
             <Link
-              key={item.href}
+              key={item.badge}
               href={`/en${item.href}`}
               target="_blank"
               rel="noopener noreferrer"
-              title={`Best brokers in ${item.badge}`}
-              className="group rounded-[22px] border border-slate-200 bg-white px-5 py-4 shadow-sm transition hover:-translate-y-0.5 hover:border-[#bfdbfe] hover:bg-[#f8fbff]"
+              title={`Best trading brokers in ${item.badge}`}
+              className="group rounded-[20px] border border-slate-200 bg-white px-4 py-3.5 shadow-sm transition hover:-translate-y-0.5 hover:border-[#bfdbfe] hover:bg-[#fcfdff] hover:shadow-[0_12px_28px_rgba(15,23,42,0.05)]"
             >
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-[#f8fafc] overflow-hidden">
-                  <img src={item.flag} className="h-7 w-7 rounded-full object-cover" />
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white p-[4px] shadow-sm">
+                  <img
+                    src={item.flag}
+                    alt={`${item.badge} flag`}
+                    className="h-full w-full rounded-full object-contain"
+                  />
                 </div>
 
-                <div className="flex-1">
-                  <h3 className="text-[18px] font-black text-[#0f172a]">
+                <div className="min-w-0 flex-1 text-left">
+                  <h3 className="truncate text-[16px] font-black text-[#07111f]">
                     {item.title}
                   </h3>
-
-                  <p className="mt-1 text-[13px] text-slate-500">
-                    {item.shortDesc || item.desc}
+                  <p className="mt-0.5 truncate text-[12px] font-medium text-slate-500">
+                    {item.shortDesc}
                   </p>
                 </div>
 
-                <div className="text-right">
-                  <div className="text-[11px] text-slate-400">Open</div>
-                  <div className="text-[20px] text-[#2563eb]">→</div>
-                </div>
+                <span className="shrink-0 text-[18px] font-black text-[#2563eb] transition group-hover:translate-x-[3px]">
+                  →
+                </span>
               </div>
             </Link>
           ))}
 
           <Link
             href="/en/best-brokers"
-            className="md:col-span-2 mx-auto max-w-[520px] rounded-[22px] border border-dashed border-[#93c5fd] bg-[#eff6ff] px-5 py-4 text-center"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group rounded-[20px] border border-dashed border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-4 py-3.5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-[0_12px_28px_rgba(37,99,235,0.08)] md:col-span-2 xl:col-span-3 xl:mx-auto xl:w-[520px]"
           >
-            All Countries
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#bfdbfe] bg-white shadow-sm">
+                🌍
+              </div>
+
+              <div className="min-w-0 flex-1 text-left">
+                <h3 className="text-[16px] font-black text-[#07111f]">
+                  All Other Countries
+                </h3>
+                <p className="mt-0.5 text-[12px] font-medium text-slate-500">
+                  Visit the general best brokers page if your country is not listed.
+                </p>
+              </div>
+
+              <span className="text-[18px] font-black text-[#2563eb] transition group-hover:translate-x-[3px]">
+                →
+              </span>
+            </div>
           </Link>
         </div>
       </div>
-
     </div>
   </div>
 </section>
 
 {/* LOWEST SPREAD HOME SECTION */}
 <section className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
-  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_14px_34px_rgba(15,23,42,0.05)]">
-    <div className="relative px-4 py-6 sm:px-6 sm:py-7 lg:px-8 lg:py-8">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.05),transparent_28%)]" />
-
-      <div className="relative">
-        {/* HEADER */}
+  <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
+    <div className="relative">
+      {/* DESKTOP HEADER */}
+      <div className="hidden border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4 lg:block">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          
-          {/* TITLE */}
-          <div className="text-left lg:max-w-4xl">
-            <h2 className="text-[28px] font-black leading-[1.15] tracking-[-0.02em] text-slate-950 sm:text-[34px] lg:text-[42px]">
-              Lowest Spreads
-              <span className="text-[#2563eb]"> by Account Type</span>
+          <div className="text-left">
+            <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-[#2563eb] shadow-sm">
+              Low Spread Trading Accounts
+            </span>
+
+            <h2 className="mt-4 text-[36px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f]">
+              Lowest Real Spreads by Account Type
             </h2>
 
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 sm:text-[15px]">
-              A quick comparison of the best accounts based on real trading costs,
-              with a clear separation between Standard, Raw, ECN, and Cent accounts,
-              helping you find the most suitable option for your trading style.
+            <p className="mt-3 max-w-[860px] text-[15px] font-semibold leading-9 text-slate-600">
+              Compare the lowest spread brokers by account type, including
+              Standard, Raw Spread, ECN, and Cent accounts. This section helps
+              forex and CFD traders understand real trading costs before choosing
+              the right broker account.
             </p>
           </div>
 
-          {/* BUTTON */}
-          <div className="flex justify-center lg:justify-start">
+          <div className="hidden shrink-0 justify-center md:flex lg:self-center lg:pr-4">
             <Link
               href="/en/lowest-spread-brokers"
-              className="inline-flex items-center justify-center rounded-xl bg-[#2563eb] px-5 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
+              className="inline-flex h-12 min-w-[190px] items-center justify-center rounded-2xl bg-[#2563eb] px-6 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(37,99,235,0.24)] transition hover:bg-[#1d4ed8]"
             >
               Lowest Spread Brokers
             </Link>
           </div>
         </div>
+      </div>
 
-        {/* DESKTOP / TABLET */}
-        <div className="mt-6 hidden w-full sm:block">
-          <div className="overflow-hidden rounded-[20px] border border-slate-200 bg-white">
-            {[
-              {
-                title: "Best Standard Accounts",
-                desc: "Simpler accounts with clear cost structures and no complex conditions.",
-              },
-              {
-                title: "Best Raw Accounts",
-                desc: "Lower spreads with separate commission for more precise trading costs.",
-              },
-              {
-                title: "Best ECN Accounts",
-                desc: "Ideal for traders focused on execution speed and professional structure.",
-              },
-              {
-                title: "Best Cent / Micro Accounts",
-                desc: "Suitable for beginners or trading with small capital.",
-              },
-            ].map((item, index) => (
-              <a
-                key={item.title}
-                href="/en/lowest-spread-brokers#account-types"
-                className={`block transition hover:bg-blue-50/30 ${
-                  index !== 0 ? "border-t border-slate-200" : ""
-                }`}
+      {/* MOBILE HEADER */}
+      <div className="relative px-4 py-6 sm:hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.05),transparent_28%)]" />
+
+        <div className="relative">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            <div className="text-left lg:max-w-4xl">
+              <h2 className="text-[28px] font-black leading-[1.15] tracking-[-0.02em] text-slate-950 sm:text-[34px] lg:text-[42px]">
+                Lowest Real Spreads
+                <span className="text-[#2563eb]"> by Account Type</span>
+              </h2>
+
+              <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 sm:text-[15px]">
+                Compare Standard, Raw, ECN, and Cent accounts to find the most
+                suitable low-spread broker account for your trading style.
+              </p>
+            </div>
+
+            <div className="flex justify-center lg:justify-start">
+              <Link
+                href="/en/lowest-spread-brokers"
+                className="inline-flex items-center justify-center rounded-xl bg-[#2563eb] px-5 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
               >
-                <div className="grid grid-cols-[1fr_1.2fr_88px] items-center gap-6 px-5 py-4">
-                  
-                  {/* TITLE */}
-                  <div className="min-w-0 text-left">
-                    <div className="text-[16px] font-black text-slate-950">
-                      {item.title}
+                Lowest Spread Brokers
+              </Link>
+            </div>
+          </div>
+
+          {/* MOBILE ROWS */}
+          <div className="mt-6 w-full sm:hidden">
+            <div className="overflow-hidden rounded-[20px] border border-slate-200 bg-white">
+              {[
+                {
+                  title: "Best Standard Accounts",
+                  suitable: "For beginners",
+                },
+                {
+                  title: "Best Raw Spread Accounts",
+                  suitable: "For scalping",
+                },
+                {
+                  title: "Best ECN Accounts",
+                  suitable: "Fast execution",
+                },
+                {
+                  title: "Best Cent / Micro Accounts",
+                  suitable: "Small capital",
+                },
+              ].map((item, index) => (
+                <a
+                  key={item.title}
+                  href="/en/lowest-spread-brokers#account-types"
+                  className={`block px-4 py-3.5 transition hover:bg-blue-50/30 ${
+                    index !== 0 ? "border-t border-slate-200" : ""
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="min-w-0 text-left">
+                      <div className="text-[14px] font-black text-slate-950">
+                        {item.title}
+                      </div>
                     </div>
-                  </div>
 
-                  {/* DESC */}
-                  <div className="min-w-0 text-left text-sm leading-7 text-slate-600">
-                    {item.desc}
-                  </div>
-
-                  {/* ACTION */}
-                  <div className="flex justify-center">
-                    <span className="inline-flex min-w-[68px] items-center justify-center rounded-xl bg-[#2563eb] px-3 py-2 text-[11px] font-extrabold text-white transition hover:bg-[#1d4ed8]">
+                    <span className="inline-flex shrink-0 items-center justify-center rounded-xl bg-[#2563eb] px-4 py-2 text-[11px] font-extrabold text-white">
                       View
                     </span>
                   </div>
-                </div>
-              </a>
-            ))}
+                </a>
+              ))}
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* MOBILE */}
-        <div className="mt-6 w-full sm:hidden">
-          <div className="overflow-hidden rounded-[20px] border border-slate-200 bg-white">
-            {[
-              { title: "Best Standard Accounts" },
-              { title: "Best Raw Accounts" },
-              { title: "Best ECN Accounts" },
-              { title: "Best Cent / Micro Accounts" },
-            ].map((item, index) => (
-              <a
-                key={item.title}
-                href="/en/lowest-spread-brokers#account-types"
-                className={`block px-4 py-3.5 transition hover:bg-blue-50/30 ${
-                  index !== 0 ? "border-t border-slate-200" : ""
-                }`}
-              >
-                <div className="flex items-center justify-between gap-3">
-                  
-                  {/* TITLE */}
-                  <div className="min-w-0 text-left">
-                    <div className="text-[14px] font-black text-slate-950">
-                      {item.title}
-                    </div>
-                  </div>
+      {/* DESKTOP / TABLET ROWS */}
+      <div className="hidden p-5 sm:block">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {[
+            {
+              title: "Standard Accounts",
+              desc: "Simple trading accounts with clear pricing and no complex cost structure.",
+              tag: "Beginners",
+            },
+            {
+              title: "Low Spread Accounts",
+              desc: "Lower spreads with a separate commission for more accurate trading costs.",
+              tag: "Scalping",
+            },
+            {
+              title: "Professional ECN Accounts",
+              desc: "Designed for traders who need faster execution and deeper market access.",
+              tag: "Fast Execution",
+            },
+            {
+              title: "Cent / Micro Accounts",
+              desc: "Suitable for testing strategies or starting with smaller trading capital.",
+              tag: "Small Capital",
+            },
+          ].map((item) => (
+            <Link
+              key={item.title}
+              href="/en/lowest-spread-brokers#account-types"
+              className="group relative overflow-hidden rounded-[24px] border border-slate-200 bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.045)] transition duration-300 hover:-translate-y-1 hover:border-[#93c5fd] hover:bg-[#fcfdff] hover:shadow-[0_22px_50px_rgba(15,23,42,0.08)]"
+            >
+              <div className="flex h-full flex-col">
+                <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#2563eb] via-[#60a5fa] to-transparent opacity-80" />
 
-                  {/* BUTTON */}
-                  <span className="inline-flex shrink-0 items-center justify-center rounded-xl bg-[#2563eb] px-4 py-2 text-[11px] font-extrabold text-white">
-                    View
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <span className="inline-flex rounded-full border border-blue-100 bg-[#eff6ff] px-3 py-1 text-[11px] font-black text-[#2563eb]">
+                    {item.tag}
+                  </span>
+
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-blue-100 bg-[#f8fbff] text-[13px] font-black text-[#2563eb] transition group-hover:bg-[#2563eb] group-hover:text-white">
+                    →
                   </span>
                 </div>
-              </a>
-            ))}
-          </div>
-        </div>
 
+                <h3 className="text-[19px] font-black leading-6 text-[#07111f]">
+                  {item.title}
+                </h3>
+
+                <p className="mt-3 min-h-[60px] text-[13px] font-medium leading-7 text-slate-600">
+                  {item.desc}
+                </p>
+
+                <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
+                  <span className="text-[12px] font-bold text-slate-400">
+                    Compare accounts
+                  </span>
+
+                  <span className="inline-flex items-center gap-1 text-[13px] font-black text-[#2563eb] transition group-hover:translate-x-1">
+                    View details
+                    <span>→</span>
+                  </span>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-     {/* HOW TO CHOOSE A BROKER - PREMIUM SEO SECTION */}
-<section className="mx-auto max-w-7xl px-4 pt-3 pb-2 sm:px-6 sm:pt-1 sm:pb-3 lg:px-8">
-  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm sm:rounded-[32px]">
+   {/* HOW TO CHOOSE A BROKER - PREMIUM SEO SECTION */}
+<section className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
+  <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
     {/* HEADER */}
-    <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-5 sm:px-8 sm:py-7">
-      <h2 className="text-[24px] font-black leading-[1.15] text-[#0f172a] sm:text-[40px]">
-        How to Choose the Best Trading Broker for You?
-      </h2>
+    <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div className="text-center lg:text-left">
+          <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-[#2563eb] shadow-sm">
+            Broker Selection Guide
+          </span>
 
-      <p className="mt-3 max-w-4xl text-sm leading-7 text-slate-600 sm:text-[15px] sm:leading-8">
-        Choosing the best broker is not just about brand popularity or advertising.
-        It depends on regulation, trading costs, platforms, and real user experience.
-        Here are the key factors that help you choose the right broker with confidence.
-      </p>
+          <h2 className="mt-4 text-[30px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] sm:text-[34px] lg:text-[36px]">
+            How to Choose the Best Trading Broker for You?
+          </h2>
+
+          <p className="mx-auto mt-3 max-w-[900px] text-[14px] font-semibold leading-8 text-slate-600 lg:mx-0 lg:text-[15px] lg:leading-9">
+            Choosing the best forex or CFD broker is not about popularity alone.
+            You should compare regulation, trading fees, spreads, platforms,
+            deposits, withdrawals, account types, and real trading conditions before
+            opening a live account.
+          </p>
+        </div>
+
+        <div className="hidden shrink-0 justify-center md:flex lg:self-center lg:pr-4">
+          <Link
+            href="/en/best-brokers"
+            className="inline-flex h-12 min-w-[190px] items-center justify-center rounded-2xl bg-[#2563eb] px-6 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(37,99,235,0.24)] transition hover:bg-[#1d4ed8]"
+          >
+            Best Brokers
+          </Link>
+        </div>
+      </div>
     </div>
 
     {/* MOBILE */}
     <div className="px-4 py-4 sm:hidden">
       <div className="rounded-[20px] border border-slate-200 bg-[#f8fbff] p-4">
         <p className="text-sm leading-8 text-slate-600">
-          The best broker is not always the most popular one, but the one that combines
-          strong regulation, transparent fees, a suitable platform, and easy deposit
-          and withdrawal options. That’s why evaluating brokers from a practical
-          perspective is essential before opening an account.
+          The best trading broker is not always the most advertised one. A good
+          broker should combine strong regulation, transparent fees, reliable
+          platforms, and smooth deposit and withdrawal options.
         </p>
 
         <details className="mt-4 overflow-hidden rounded-[18px] border border-slate-200 bg-white">
@@ -1236,28 +1404,26 @@ broker_2:broker_2_id (
 
           <div className="space-y-4 border-t border-slate-200 px-4 py-4 text-sm leading-7 text-slate-600">
             <p>
-              The first step when choosing a broker is to check the
-              <strong> regulation and licensing</strong>. A well-known regulatory
-              authority indicates better compliance and transparency in handling client funds.
+              Start with <strong>regulation and licensing</strong>. A trusted
+              regulator is one of the strongest signals of broker transparency and
+              client fund protection.
             </p>
 
             <p>
-              Next comes the <strong>trading cost</strong>. This is not limited to
-              spreads only, but also includes commissions, swap fees, and any hidden
-              charges that may affect your real results.
+              Then compare the <strong>real trading cost</strong>, including
+              spreads, commissions, swap fees, and any additional charges that may
+              affect your results.
             </p>
 
             <p>
-              You should also consider the <strong>trading platform</strong>,
-              whether you prefer MT4, MT5, or mobile apps, as execution speed and
-              usability directly impact your trading experience.
+              You should also evaluate the <strong>trading platform</strong>,
+              whether you prefer MT4, MT5, WebTrader, or a mobile trading app.
             </p>
 
             <p>
-              For many traders, especially in the Arab region, having an
-              <strong> Islamic account</strong>, <strong>Arabic support</strong>,
-              and flexible deposit and withdrawal options are very important factors
-              that should not be ignored.
+              Finally, check <strong>account types</strong>, deposit methods,
+              withdrawal speed, customer support, and whether the broker fits your
+              country and trading style.
             </p>
           </div>
         </details>
@@ -1265,49 +1431,53 @@ broker_2:broker_2_id (
     </div>
 
     {/* DESKTOP */}
-    <div className="hidden px-8 py-8 sm:block">
-      <div className="grid gap-8 lg:grid-cols-12 lg:items-start">
+    <div className="hidden p-5 sm:block">
+      <div className="grid gap-5 lg:grid-cols-12 lg:items-start">
         {/* ARTICLE */}
         <div className="lg:col-span-8">
-          <article className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm lg:p-8">
-            <div className="space-y-5 text-[16px] leading-9 text-slate-600">
+          <article className="relative overflow-hidden rounded-[24px] border border-slate-200 bg-white p-7 shadow-[0_6px_20px_rgba(15,23,42,0.04)]">
+            <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#2563eb] via-[#60a5fa] to-transparent opacity-55" />
+
+            <div className="space-y-4 text-[15px] font-medium leading-[2.05] text-slate-600">
               <p>
                 If you are looking for the <strong>best trading broker</strong>,
-                it is important to understand that your decision should not be based
-                on brand popularity alone, but on practical factors that directly
-                affect your fund safety, execution quality, and long-term trading costs.
-                The first of these is <strong>regulation</strong>, as brokers regulated
-                by well-known authorities tend to follow stricter standards and transparency.
+                your decision should not be based only on brand awareness or online
+                advertising. A reliable broker should offer strong regulation,
+                transparent pricing, stable execution, suitable platforms, and clear
+                account conditions.
               </p>
 
               <p>
-                Then comes the <strong>actual trading cost</strong>. Many traders
-                focus only on spreads, but the full picture includes commissions,
-                swap fees, and any additional charges that may not be clearly shown
-                in marketing materials.
+                The first factor to check is <strong>regulation</strong>. Brokers
+                regulated by recognized authorities usually follow stricter standards
+                for transparency, reporting, and client fund handling.
               </p>
 
               <p>
-                The <strong>trading platform</strong> is also a key factor.
-                Some traders prefer MT4 for its simplicity, while others choose MT5
-                for its advanced tools. Many rely heavily on mobile apps, making
-                usability and execution speed extremely important.
+                The second factor is the <strong>real cost of trading</strong>.
+                Many traders focus only on spreads, but the full cost may include
+                commissions, swap charges, inactivity fees, deposit fees, or withdrawal
+                fees.
               </p>
 
               <p>
-                You should also consider <strong>account types</strong>.
-                Beginners may need low-deposit accounts with simple conditions,
-                while experienced traders may look for tighter spreads and faster execution.
-                Choosing a broker with multiple account options is always a better approach.
+                The <strong>trading platform</strong> also matters. Some traders
+                prefer MT4 for simplicity, others prefer MT5 for advanced tools, while
+                many traders rely heavily on mobile apps and WebTrader access.
               </p>
 
               <p>
-                For many traders, having an <strong>Islamic account</strong>,
-                <strong>Arabic support</strong>, and flexible deposit and withdrawal
-                methods are essential. At Broker AlArab, we rely on these factors when
-                reviewing and comparing brokers, helping you find the right broker
-                without relying only on advertising.
+                Account types are also important. Beginners may prefer low minimum
+                deposits and simple Standard accounts, while active traders may look
+                for Raw Spread, ECN, or low-commission accounts with faster execution.
               </p>
+
+              <p>
+  Finally, always compare brokers based on your own trading goals rather
+  than marketing claims. The best broker for a beginner may not be the best
+  choice for an experienced trader, so checking support quality, withdrawals,
+  platforms, and real account conditions is essential before making a decision.
+</p>
             </div>
           </article>
         </div>
@@ -1315,43 +1485,36 @@ broker_2:broker_2_id (
         {/* SIDEBAR */}
         <aside className="lg:col-span-4">
           <div className="lg:sticky lg:top-24">
-            <div className="overflow-hidden rounded-[24px] border border-[#dbeafe] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] shadow-sm">
-              <div className="border-b border-[#dbeafe] px-5 py-5">
-                <h3 className="text-[24px] font-black leading-[1.25] text-[#0f172a]">
+            <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_6px_20px_rgba(15,23,42,0.04)]">
+              <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] to-white px-5 py-5">
+                <h3 className="text-[22px] font-black leading-[1.45] text-[#07111f]">
                   What should you check before opening an account?
                 </h3>
               </div>
 
-              <div className="p-5">
+              <div className="px-6 pb-6 pt-5">
                 <div className="space-y-3">
                   {[
-                    "Regulation and licensing strength",
-                    "Spreads and commissions",
-                    "Platform type and usability",
+                    "Regulation and license strength",
+                    "Spreads, commissions, and fees",
+                    "Trading platform and execution",
                     "Deposit and withdrawal methods",
-                    "Islamic account availability",
-                    "Customer support and Arabic support",
+                    "Account types and minimum deposit",
+                    "Customer support and user experience",
                   ].map((item, index) => (
                     <div
                       key={item}
-                      className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm"
+                      className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm transition hover:-translate-y-1 hover:border-[#bfdbfe] hover:bg-[#fcfdff] hover:shadow-[0_12px_28px_rgba(15,23,42,0.05)]"
                     >
-                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#eff6ff] text-xs font-black text-[#1d4ed8]">
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-blue-100 bg-[#eff6ff] text-xs font-black text-[#1d4ed8] transition group-hover:bg-[#2563eb] group-hover:text-white">
                         {index + 1}
                       </span>
+
                       <span className="text-sm font-bold leading-6 text-[#0f172a]">
                         {item}
                       </span>
                     </div>
                   ))}
-                </div>
-
-                <div className="mt-5 rounded-[18px] border border-slate-200 bg-[#f8fbff] px-4 py-4">
-                  <p className="text-sm leading-7 text-slate-600">
-                    Do not choose a broker based on advertising alone. Always check
-                    regulation, real trading costs, and whether the account type fits
-                    your capital and trading style.
-                  </p>
                 </div>
               </div>
             </div>
@@ -1363,43 +1526,47 @@ broker_2:broker_2_id (
 </section>
 
 {/* WHY TRUST BROKER AL ARAB */}
-<section className="mx-auto max-w-7xl px-4 pt-3 pb-2 sm:px-6 sm:pt-1 sm:pb-3 lg:px-8">
-  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm sm:rounded-[32px]">
-
+<section className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
+  <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
+    
     {/* HEADER */}
-    <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-5 sm:px-8 sm:py-6">
+    <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4">
+      <div className="text-center lg:text-left">
+        <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-[#2563eb] shadow-sm">
+          Why Broker Al Arab?
+        </span>
 
-      <h2 className="text-[24px] font-black leading-[1.2] text-[#0f172a] sm:text-[36px] lg:text-[42px]">
-        Why do traders trust
-        <span className="text-[#2563eb]"> Broker AlArab?</span>
-      </h2>
+        <h2 className="mt-4 text-[30px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] sm:text-[34px] lg:text-[36px]">
+          Why Do Traders Trust Broker Al Arab?
+        </h2>
 
-      <p className="mt-3 max-w-4xl text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
-        Broker AlArab is a platform that helps traders understand the real differences
-        between brokers in terms of regulation, fees, platforms, and account types,
-        so they can make decisions based on clear and reliable information.
-      </p>
-
+        <p className="mx-auto mt-3 max-w-[900px] text-[14px] font-semibold leading-8 text-slate-600 lg:mx-0 lg:text-[15px] lg:leading-9">
+          We help traders compare brokers using practical data, transparent reviews,
+          broker comparisons, country-specific rankings, and account analysis based on
+          regulation, fees, trading platforms, deposits, withdrawals, and overall
+          trading conditions.
+        </p>
+      </div>
     </div>
 
     {/* MOBILE */}
     <div className="grid gap-3 p-4 sm:hidden">
       {[
         {
-          title: "Clear and Structured Reviews",
-          desc: "Each broker has a dedicated page showing accounts, regulation, and fees in a simple format.",
+          title: "Clear & Structured Reviews",
+          desc: "Every broker has a dedicated page covering accounts, regulation, fees, and platforms.",
         },
         {
-          title: "Practical Broker Comparisons",
-          desc: "Direct comparisons that highlight real differences quickly and clearly.",
+          title: "Practical Comparisons",
+          desc: "Side-by-side broker comparisons focused on real differences that matter.",
         },
         {
-          title: "Focused on Arab Traders",
-          desc: "Special attention to Islamic accounts, Arabic support, and deposit methods.",
+          title: "Country-Based Rankings",
+          desc: "Broker recommendations tailored to specific countries and trading needs.",
         },
         {
-          title: "Strong SEO Structure",
-          desc: "Well-connected review, comparison, and country pages for better navigation and discovery.",
+          title: "Faster Broker Selection",
+          desc: "Find suitable brokers quickly through reviews, rankings, and comparisons.",
         },
       ].map((item, index) => (
         <div
@@ -1424,45 +1591,53 @@ broker_2:broker_2_id (
     </div>
 
     {/* DESKTOP */}
-    <div className="hidden p-6 sm:block sm:p-8">
-      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+    <div className="hidden p-5 sm:block">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {[
           {
-            title: "Clear and Structured Reviews",
-            desc: "Each broker has a dedicated page showing accounts, platforms, regulation, and fees in a clear format.",
+            title: "Clear & Structured Reviews",
+            desc: "Broker review pages covering regulation, accounts, fees, platforms, deposits, and withdrawals in one place.",
+            tag: "Reviews",
           },
           {
-            title: "Practical Broker Comparisons",
-            desc: "Comparison pages that highlight real differences instead of making users navigate multiple pages.",
+            title: "Practical Comparisons",
+            desc: "Compare brokers side-by-side and understand real differences before opening an account.",
+            tag: "Compare",
           },
           {
-            title: "Focused on Arab Traders",
-            desc: "We prioritize Islamic accounts, Arabic support, flexible deposits, and regional needs.",
+            title: "Country-Based Rankings",
+            desc: "Broker recommendations organized by country to help traders find suitable options faster.",
+            tag: "Countries",
           },
           {
-            title: "Strong SEO & Scalable Structure",
-            desc: "Well-connected review, comparison, and country pages that enhance both UX and SEO.",
+            title: "Faster Broker Selection",
+            desc: "Well-structured reviews, rankings, and account filters designed to simplify broker research.",
+            tag: "Research",
           },
         ].map((item, index) => (
           <div
             key={item.title}
-            className="group rounded-[22px] border border-slate-200 bg-[linear-gradient(180deg,#f8fbff_0%,#ffffff_100%)] px-5 py-5 shadow-sm transition hover:-translate-y-1 hover:border-[#bfdbfe] hover:shadow-[0_14px_36px_rgba(15,23,42,0.06)]"
+            className="group relative overflow-hidden rounded-[24px] border border-slate-200 bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.045)] transition duration-300 hover:-translate-y-1 hover:border-[#93c5fd] hover:bg-[#fcfdff] hover:shadow-[0_22px_50px_rgba(15,23,42,0.08)]"
           >
-            <div className="flex items-start gap-3">
-              <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#bfdbfe] bg-white text-[12px] font-black text-[#1d4ed8]">
-                {index + 1}
+            <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#2563eb] via-[#60a5fa] to-transparent opacity-55" />
+
+            <div className="mb-5 flex items-center justify-between gap-3">
+              <span className="inline-flex rounded-full border border-blue-100 bg-[#eff6ff] px-3 py-1 text-[11px] font-black text-[#2563eb]">
+                {item.tag}
               </span>
 
-              <div className="min-w-0">
-                <h3 className="text-[18px] font-black leading-[1.35] text-[#0f172a]">
-                  {item.title}
-                </h3>
-
-                <p className="mt-3 text-sm leading-7 text-slate-600">
-                  {item.desc}
-                </p>
-              </div>
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-blue-100 bg-[#f8fbff] text-[13px] font-black text-[#2563eb] transition group-hover:bg-[#2563eb] group-hover:text-white">
+                {index + 1}
+              </span>
             </div>
+
+            <h3 className="text-[20px] font-black leading-7 tracking-[-0.02em] text-[#07111f]">
+              {item.title}
+            </h3>
+
+            <p className="mt-3 min-h-[84px] text-[13px] font-medium leading-7 text-slate-600">
+              {item.desc}
+            </p>
           </div>
         ))}
       </div>
@@ -1472,115 +1647,161 @@ broker_2:broker_2_id (
 </section>
 
 {/* FAQ */}
-<section className="mx-auto max-w-7xl px-4 pt-3 pb-2 sm:px-6 sm:pt-1 sm:pb-3 lg:px-8">
-  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm sm:rounded-[32px]">
-    {/* HEADER */}
-    <div className="border-b border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] px-5 py-6 sm:px-8 sm:py-8">
-      <div className="inline-flex rounded-full border border-[#bfdbfe] bg-[#eff6ff] px-3 py-1 text-xs font-extrabold text-[#1d4ed8] sm:text-sm">
-        Frequently Asked Questions
+<section className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
+  <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
+    <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4">
+      <div className="text-center lg:text-left">
+        <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-[#2563eb] shadow-sm">
+          Frequently Asked Questions
+        </span>
+
+        <h2 className="mt-4 text-[30px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] sm:text-[34px] lg:text-[36px]">
+          Common Questions Before Choosing a Broker
+        </h2>
+
+        <p className="mx-auto mt-3 max-w-[900px] text-[14px] font-semibold leading-8 text-slate-600 lg:mx-0 lg:text-[15px] lg:leading-9">
+          Answers to key questions about broker regulation, safety, spreads,
+          MT4, MT5, account types, minimum deposits, and broker comparisons.
+        </p>
       </div>
-
-      <h2 className="mt-3 text-[24px] font-black leading-[1.15] text-[#0f172a] sm:text-[36px]">
-        Key Questions Before Choosing a Broker
-      </h2>
-
-      <p className="mt-4 max-w-4xl text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
-        These are the most common questions traders ask before opening an account.
-        We’ve summarized the key answers clearly to help you make a better decision.
-      </p>
     </div>
 
-    {/* MOBILE */}
-    <div className="space-y-3 px-4 py-4 sm:hidden">
-      {[
+    {(() => {
+      const faqItems = [
         {
-          q: "What is the best broker for beginners?",
-          a: "The best broker for beginners combines clear regulation, an easy-to-use platform, a low minimum deposit, and strong customer support. You should not choose based on popularity alone, but on ease of use, transparency, and suitability for your starting level.",
+          q: "How do I choose the best trading broker?",
+          a: (
+            <>
+              The best broker depends on your country, trading style, platform,
+              fees, and regulation. Start with our{" "}
+              <Link href="/en/best-brokers" className="font-bold text-[#2563eb] hover:underline">
+                Best Brokers
+              </Link>{" "}
+              page to compare trusted options.
+            </>
+          ),
         },
         {
-          q: "Are trading brokers safe and reliable?",
-          a: "Not all brokers offer the same level of safety. The most reliable brokers are regulated by well-known authorities, provide transparent terms, and offer clear deposit, withdrawal, and support systems.",
+          q: "What is the safest regulated broker?",
+          a: "The safest brokers are usually regulated by respected authorities such as FCA, ASIC, CySEC, or FSCA. Always verify the license before opening an account.",
         },
         {
-          q: "What is the minimum amount to open a trading account?",
-          a: "The minimum deposit varies between brokers. Some allow you to start with small amounts, but what matters most is choosing an account that fits your capital and avoids unnecessary trading pressure.",
+          q: "Which broker has the lowest spreads?",
+          a: (
+            <>
+              Low spreads depend on the account type. Raw Spread and ECN accounts
+              often have tighter spreads. See our{" "}
+              <Link href="/en/lowest-spread-brokers" className="font-bold text-[#2563eb] hover:underline">
+                Lowest Spread Brokers
+              </Link>{" "}
+              page for more details.
+            </>
+          ),
         },
         {
-          q: "How can I check if a broker is regulated?",
-          a: "You can verify this on the broker’s website under the regulation section, where the regulator name and license number should be clearly displayed. You can also confirm the license directly with the regulator if needed.",
+          q: "How much money do I need to start trading?",
+          a: "Some brokers allow deposits from $5 to $100, but beginners should focus on risk management and avoid trading with money they cannot afford to lose.",
         },
         {
           q: "What is the difference between MT4 and MT5?",
-          a: "MT4 is widely used and known for its simplicity, while MT5 offers more advanced tools and features. The better choice depends on your trading style, but platform stability and ease of use are more important than the name itself.",
+          a: "MT4 is simple and widely used, while MT5 has more advanced tools, extra timeframes, and additional features. The best choice depends on your trading style.",
         },
-      ].map((item, index) => (
-        <details
-          key={item.q}
-          className="group overflow-hidden rounded-[18px] border border-slate-200 bg-[#f8fbff] shadow-sm"
-        >
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4 text-left">
-            <span className="text-[15px] font-black leading-7 text-[#0f172a]">
-              {item.q}
-            </span>
+        {
+          q: "How can I verify a broker's regulation?",
+          a: "Check the broker’s license number on its website, then verify it directly on the regulator’s official website.",
+        },
+        {
+          q: "What is the difference between Standard and ECN accounts?",
+          a: "Standard accounts usually include trading costs inside the spread. ECN accounts usually offer lower spreads with a separate commission.",
+        },
+        {
+          q: "Where can I compare brokers side by side?",
+          a: (
+            <>
+              Visit our{" "}
+              <Link href="/en/compare" className="font-bold text-[#2563eb] hover:underline">
+                Broker Comparison
+              </Link>{" "}
+              section to compare regulation, fees, platforms, spreads, and account types.
+            </>
+          ),
+        },
+        {
+          q: "Are low-deposit brokers good for beginners?",
+          a: "Low-deposit brokers can help beginners start with less capital, but regulation, fees, platform quality, and withdrawal reliability are more important than deposit size alone.",
+        },
+        {
+          q: "Should I choose a broker by country?",
+          a: "Yes. Broker availability, payment methods, leverage, and regulation can vary by country, so country-based broker rankings can help you narrow your options.",
+        },
+      ];
 
-            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#bfdbfe] bg-white text-[15px] font-black text-[#1d4ed8] transition group-open:rotate-180">
+      const FAQItem = ({ item, index }: { item: any; index: number }) => (
+        <details className="group overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-[0_6px_20px_rgba(15,23,42,0.04)] transition hover:border-[#bfdbfe] hover:bg-[#fcfdff] hover:shadow-[0_14px_32px_rgba(15,23,42,0.05)] open:border-[#93c5fd]">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4">
+            <div className="flex items-center gap-3 text-left">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-blue-100 bg-[#eff6ff] text-xs font-black text-[#1d4ed8] transition group-open:bg-[#2563eb] group-open:text-white">
+                {index + 1}
+              </span>
+
+              <span className="text-[15px] font-black leading-7 text-[#07111f] sm:text-[16px]">
+                {item.q}
+              </span>
+            </div>
+
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-blue-100 bg-[#f8fbff] text-[14px] font-black text-[#2563eb] transition group-open:rotate-180 group-open:bg-[#2563eb] group-open:text-white">
               ▾
             </span>
           </summary>
 
-          <div className="border-t border-slate-200 bg-white px-4 py-4">
-            <p className="text-[13px] leading-7 text-slate-600">{item.a}</p>
+          <div className="border-t border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#fcfdff_100%)] px-5 py-4">
+            <div className="max-w-4xl text-[14px] font-medium leading-8 text-slate-600">
+              {item.a}
+            </div>
           </div>
         </details>
-      ))}
-    </div>
+      );
 
-    {/* DESKTOP */}
-    <div className="hidden px-8 py-8 sm:block">
-      <div className="grid gap-4">
-        {[
-          {
-            q: "What is the best broker for beginners?",
-            a: "The best broker for beginners is one that offers clear regulation, an easy-to-use platform, a suitable minimum deposit, and transparent fees. Beginners should focus on usability and learning support rather than brand popularity alone.",
-          },
-          {
-            q: "Are trading brokers safe and reliable?",
-            a: "Safety varies between brokers. Reliable brokers are usually regulated by reputable authorities, provide transparent fee structures, and offer structured deposit and withdrawal processes along with strong customer support.",
-          },
-          {
-            q: "What is the minimum deposit to open a trading account?",
-            a: "The minimum deposit depends on the broker and account type. Some brokers allow small deposits, but it is more important to choose an account that matches your capital and trading approach.",
-          },
-          {
-            q: "How can I verify if a broker is regulated?",
-            a: "You can check the regulation page on the broker’s website, where the regulator and license number should be clearly stated. For extra security, verify the license directly through the regulator’s official website.",
-          },
-          {
-            q: "What is the difference between MT4 and MT5?",
-            a: "MT4 is known for its simplicity and wide adoption, while MT5 offers additional tools and improved features. The best choice depends on your needs, but platform stability and usability matter more than the platform name itself.",
-          },
-        ].map((item) => (
-          <details
-            key={item.q}
-            className="group overflow-hidden rounded-[22px] border border-slate-200 bg-[#f8fbff] shadow-sm open:bg-white"
-          >
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-5">
-              <span className="text-lg font-black leading-8 text-[#0f172a]">
-                {item.q}
-              </span>
+      return (
+        <>
+          {/* MOBILE - KEEP AS IS */}
+          <div className="space-y-3 px-4 py-4 sm:hidden">
+            {faqItems.slice(0, 5).map((item, index) => (
+              <FAQItem key={item.q} item={item} index={index} />
+            ))}
 
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#bfdbfe] bg-white text-lg font-black text-[#1d4ed8] transition group-open:rotate-180">
-                ▾
-              </span>
-            </summary>
+            <details className="group">
+              <summary className="mt-2 flex cursor-pointer list-none items-center justify-center rounded-2xl border border-[#bfdbfe] bg-[#eff6ff] px-4 py-3 text-[13px] font-black text-[#2563eb]">
+                Show All Questions
+              </summary>
 
-            <div className="border-t border-slate-200 px-5 py-5">
-              <p className="text-sm leading-8 text-slate-600">{item.a}</p>
+              <div className="mt-3 space-y-3">
+                {faqItems.slice(5).map((item, index) => (
+                  <FAQItem key={item.q} item={item} index={index + 5} />
+                ))}
+              </div>
+            </details>
+          </div>
+
+          {/* DESKTOP - TWO INDEPENDENT COLUMNS */}
+          <div className="hidden p-5 sm:block">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-3">
+                {faqItems.slice(0, 5).map((item, index) => (
+                  <FAQItem key={item.q} item={item} index={index} />
+                ))}
+              </div>
+
+              <div className="space-y-3">
+                {faqItems.slice(5, 10).map((item, index) => (
+                  <FAQItem key={item.q} item={item} index={index + 5} />
+                ))}
+              </div>
             </div>
-          </details>
-        ))}
-      </div>
-    </div>
+          </div>
+        </>
+      );
+    })()}
   </div>
 </section>
     </main>
