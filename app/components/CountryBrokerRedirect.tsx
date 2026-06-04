@@ -9,17 +9,20 @@ export default function CountryBrokerRedirect() {
 
   function handleGo() {
     const routes: Record<string, string> = {
-      all: "/best-brokers#top-brokers",
-      sa: "/best-brokers/saudi-arabia",
-      ae: "/best-brokers/uae",
-      kw: "/best-brokers/kuwait",
-      qa: "/best-brokers/qatar",
-      bh: "/best-brokers/bahrain",
-      jo: "/best-brokers/jordan",
-      eg: "/best-brokers/egypt",
-      ma: "/best-brokers/morocco",
-      om: "/best-brokers/oman",
-    };
+  all: "/best-brokers#top-brokers",
+  sa: "/best-brokers/saudi-arabia",
+  ae: "/best-brokers/uae",
+  kw: "/best-brokers/kuwait",
+  qa: "/best-brokers/qatar",
+  bh: "/best-brokers/bahrain",
+  jo: "/best-brokers/jordan",
+  eg: "/best-brokers/egypt",
+  ma: "/best-brokers/morocco",
+  om: "/best-brokers/oman",
+  iq: "/best-brokers/iraq",
+  ly: "/best-brokers/libya",
+  sy: "/best-brokers/syria",
+};
 
     router.push(routes[country] || "/best-brokers#top-brokers");
   }
@@ -46,6 +49,9 @@ export default function CountryBrokerRedirect() {
           <option value="eg">مصر</option>
           <option value="ma">المغرب</option>
           <option value="om">عمان</option>
+          <option value="iq">العراق</option>
+<option value="ly">ليبيا</option>
+<option value="sy">سوريا</option>
         </select>
       </div>
 

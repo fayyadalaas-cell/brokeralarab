@@ -65,6 +65,28 @@ export default function ArabicHeader({
   featuredComparisons,
   learnTradingMenuItems,
 }: any) {
+  const extendedCountryMenuItems = [
+    ...countryMenuItems,
+    {
+      label: "أفضل شركات التداول في العراق",
+      shortLabel: "العراق",
+      href: "/best-brokers/iraq",
+      flag: "https://flagcdn.com/w80/iq.png",
+    },
+    {
+      label: "أفضل شركات التداول في ليبيا",
+      shortLabel: "ليبيا",
+      href: "/best-brokers/libya",
+      flag: "https://flagcdn.com/w80/ly.png",
+    },
+    {
+      label: "أفضل شركات التداول في سوريا",
+      shortLabel: "سوريا",
+      href: "/best-brokers/syria",
+      flag: "https://flagcdn.com/w80/sy.png",
+    },
+  ];
+
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200/90 bg-white/95 backdrop-blur-md">
       <div className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-8">
@@ -239,21 +261,19 @@ export default function ArabicHeader({
                       أفضل الوسطاء حسب الدولة
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2">
-                      {countryMenuItems.map((item: any) => (
+                    <div className="grid grid-cols-3 gap-x-3 gap-y-1">
+  {extendedCountryMenuItems.map((item: any) => (
                         <Link
                           key={item.href}
                           href={item.href}
                           className="flex items-center gap-3 rounded-2xl px-3 py-3 transition hover:bg-blue-50"
                           title={item.label}
                         >
-                          <Image
-                            src={item.flag}
-                            alt={item.shortLabel}
-                            width={22}
-                            height={22}
-                            className="h-[22px] w-[22px] shrink-0 rounded-full object-cover"
-                          />
+                         <img
+  src={item.flag}
+  alt={item.shortLabel}
+  className="h-[22px] w-[22px] shrink-0 rounded-full object-cover"
+/>
                           <span className="whitespace-nowrap text-[14px] font-bold text-slate-700 transition hover:text-blue-700">
                             {item.shortLabel}
                           </span>

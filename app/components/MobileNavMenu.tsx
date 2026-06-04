@@ -149,9 +149,31 @@ export default function MobileNavMenu({
   learnTradingMenuItems,
 }: MobileNavMenuProps) {
   const pathname = usePathname();
-  const isEnglish = pathname.startsWith("/en");
+const isEnglish = pathname.startsWith("/en");
 
-  const [isOpen, setIsOpen] = useState(false);
+const mobileCountryMenuItems = [
+  ...countryMenuItems,
+  {
+    label: "أفضل شركات التداول في العراق",
+    shortLabel: "العراق",
+    href: "/best-brokers/iraq",
+    flag: "https://flagcdn.com/w80/iq.png",
+  },
+  {
+    label: "أفضل شركات التداول في ليبيا",
+    shortLabel: "ليبيا",
+    href: "/best-brokers/libya",
+    flag: "https://flagcdn.com/w80/ly.png",
+  },
+  {
+    label: "أفضل شركات التداول في سوريا",
+    shortLabel: "سوريا",
+    href: "/best-brokers/syria",
+    flag: "https://flagcdn.com/w80/sy.png",
+  },
+];
+
+const [isOpen, setIsOpen] = useState(false);
   const [openSection, setOpenSection] = useState<string | null>(null);
 
   useEffect(() => {
@@ -400,20 +422,18 @@ export default function MobileNavMenu({
                           </div>
 
                           <div className="grid grid-cols-2 gap-2">
-                            {countryMenuItems.map((item) => (
+                            {mobileCountryMenuItems.map((item) => (
                               <Link
                                 key={item.href}
                                 href={item.href}
                                 onClick={closeMenu}
                                 className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3"
                               >
-                                <Image
-                                  src={item.flag}
-                                  alt={item.shortLabel}
-                                  width={18}
-                                  height={18}
-                                  className="h-[18px] w-[18px] rounded-full object-cover"
-                                />
+                               <img
+  src={item.flag}
+  alt={item.shortLabel}
+  className="h-[18px] w-[18px] rounded-full object-cover"
+/>
                                 <span className="truncate text-[13px] font-bold text-slate-800">
                                   {item.shortLabel}
                                 </span>
