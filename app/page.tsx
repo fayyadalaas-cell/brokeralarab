@@ -1618,6 +1618,99 @@ export default async function HomePage() {
   </div>
 </section>
 
+{/* FOREX & FINTECH EVENTS */}
+<section className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
+  <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)] sm:rounded-[32px]">
+    <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-5 sm:px-6 sm:py-4">
+      <div className="text-center lg:text-right">
+        <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[11px] font-black text-[#2563eb] shadow-sm sm:text-[12px]">
+          معارض ومؤتمرات التداول
+        </span>
+
+        <h2 className="mx-auto mt-3 max-w-[320px] text-[26px] font-black leading-[1.2] tracking-[-0.02em] text-[#07111f] sm:max-w-none sm:text-[34px] lg:mx-0 lg:text-[36px]">
+          أهم معارض ومؤتمرات الفوركس في 2026
+        </h2>
+
+        <p className="mx-auto mt-3 max-w-[320px] text-[13px] font-semibold leading-7 text-slate-600 sm:max-w-[900px] sm:text-[14px] sm:leading-8 lg:mx-0 lg:text-[15px] lg:leading-9">
+          تابع أبرز معارض الفوركس والمؤتمرات المالية التي تجمع شركات الوساطة ومنصات التداول وخبراء التكنولوجيا المالية.
+        </p>
+      </div>
+    </div>
+
+    <div className="grid gap-3 p-3 sm:gap-4 sm:p-4 md:grid-cols-3 lg:p-5">
+      {[
+        {
+          title: "Money Expo Abu Dhabi 2026",
+          date: "8 - 9 يوليو 2026",
+          place: "ADNEC Centre Abu Dhabi",
+          city: "أبوظبي، الإمارات",
+          desc: "حدث مالي يجمع الوسطاء، المستثمرين، شركات التقنية المالية، والمؤسسات المالية في أبوظبي.",
+          tag: "قريبًا",
+          href: "https://moneyexpoglobal.com/abudhabi",
+        },
+        {
+          title: "Jeddah Fintech Week 2026",
+          date: "5 - 6 سبتمبر 2026",
+          place: "The Ritz-Carlton Jeddah",
+          city: "جدة، السعودية",
+          desc: "أحد أبرز أحداث الأسواق المالية والتعليم المالي في السعودية، مع حضور شركات وساطة وخبراء ماليين.",
+          tag: "السعودية",
+          href: "https://jeddahfintechweek.com/",
+        },
+        {
+          title: "Forex Expo Dubai 2026",
+          date: "22 - 23 سبتمبر 2026",
+          place: "Dubai World Trade Centre",
+          city: "دبي، الإمارات",
+          desc: "واحد من أكبر معارض الفوركس والتداول في المنطقة، ويجمع شركات الوساطة والتقنية المالية والمتداولين.",
+          tag: "الأكبر",
+          href: "https://theforexexpo.com/dubai",
+        },
+      ].map((event) => (
+        <article
+          key={event.title}
+          className="group relative overflow-hidden rounded-[20px] border border-slate-200 bg-white p-4 shadow-[0_6px_18px_rgba(15,23,42,0.04)] transition duration-300 hover:-translate-y-1 hover:border-[#93c5fd] hover:bg-[#fcfdff] hover:shadow-[0_22px_50px_rgba(15,23,42,0.08)] sm:rounded-[24px] sm:p-5"
+        >
+          <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#2563eb] via-[#60a5fa] to-transparent opacity-70" />
+
+          <div className="mb-3 flex items-center justify-between gap-3 sm:mb-4">
+            <span className="inline-flex rounded-full border border-blue-100 bg-[#eff6ff] px-2.5 py-1 text-[10px] font-black text-[#2563eb] sm:px-3 sm:text-[11px]">
+              {event.tag}
+            </span>
+
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-blue-100 bg-[#f8fbff] text-[16px] sm:h-10 sm:w-10 sm:rounded-2xl sm:text-[18px]">
+              📍
+            </span>
+          </div>
+
+          <h3 className="text-[17px] font-black leading-6 text-[#07111f] sm:text-[19px] sm:leading-7">
+            {event.title}
+          </h3>
+
+          <div className="mt-3 space-y-1.5 text-[12px] font-bold leading-6 text-slate-600 sm:mt-4 sm:space-y-2 sm:text-[13px]">
+            <div>📅 {event.date}</div>
+            <div>🏢 {event.place}</div>
+            <div>🌍 {event.city}</div>
+          </div>
+
+          <p className="mt-3 line-clamp-2 text-[12px] font-medium leading-6 text-slate-600 sm:mt-4 sm:min-h-[88px] sm:text-[13px] sm:leading-7">
+            {event.desc}
+          </p>
+
+          <a
+            href={event.href}
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+            className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-[#2563eb] px-4 py-2.5 text-[13px] font-black text-white transition hover:bg-[#1d4ed8] sm:mt-5 sm:rounded-2xl sm:py-3 sm:text-[14px]"
+          >
+            زيارة موقع الحدث
+          </a>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
 {/* FAQ */}
 <section className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
   <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
