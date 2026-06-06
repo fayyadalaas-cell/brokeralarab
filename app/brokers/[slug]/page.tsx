@@ -866,6 +866,62 @@ function MiniInfoCard({
   );
 }
 
+function ParagraphBlock({
+  content,
+  fallback,
+  compact = false,
+}: {
+  content: string | null;
+  fallback: string;
+  compact?: boolean;
+}) {
+  const paragraphs = (content || fallback)
+    .split("||")
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+ if (compact) {
+  return (
+    <details className="group">
+      <summary className="cursor-pointer list-none">
+        <div className="relative max-h-[120px] overflow-hidden text-[14px] leading-7 text-slate-700 group-open:hidden">
+          {paragraphs.map((paragraph, i) => (
+            <p key={i} className="mb-3 text-justify last:mb-0">
+              {paragraph}
+            </p>
+          ))}
+
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-6 bg-gradient-to-t from-white to-transparent" />
+        </div>
+
+        <div className="mt-2 flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-bold text-blue-700 hover:bg-slate-100">
+          <span className="group-open:hidden">عرض المزيد</span>
+          <span className="hidden group-open:inline">عرض أقل</span>
+        </div>
+      </summary>
+
+      <div className="mt-3 space-y-3 text-[14px] leading-7 text-slate-700">
+        {paragraphs.map((paragraph, i) => (
+          <p key={i} className="text-justify">
+            {paragraph}
+          </p>
+        ))}
+      </div>
+    </details>
+  );
+}
+
+  return (
+    <div className="space-y-4 text-sm leading-8 text-slate-700 md:text-base">
+      {paragraphs.map((paragraph, i) => (
+        <p key={i} className="text-justify">
+          {paragraph}
+        </p>
+      ))}
+    </div>
+  );
+}
+
 function MobileAccountAccordion({
   accounts,
   brokerSlug,
@@ -2130,9 +2186,29 @@ export default async function BrokerPage({
         </div>
       ) : null}
 
-      <p className="pt-2 text-[14px] leading-7 text-slate-600">
-        {depositSummary || "لا توجد معلومات كافية حاليًا حول الإيداع والسحب."}
-      </p>
+      <div className="grid grid-cols-2 gap-3">
+  <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+    <div className="text-xs font-bold text-slate-500">أقل إيداع</div>
+    <div className="mt-1 text-lg font-black text-slate-950">
+      {formatMoney(broker.min_deposit)}
+    </div>
+  </div>
+
+  <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+    <div className="text-xs font-bold text-slate-500">تقييم السحب</div>
+    <div className="mt-1 text-lg font-black text-slate-950">
+      {broker.score_deposit ?? "-"} / 5
+    </div>
+  </div>
+</div>
+
+      <div className="pt-2">
+  <ParagraphBlock
+    content={depositSummary}
+    fallback="لا توجد معلومات كافية حاليًا حول الإيداع والسحب."
+    compact
+  />
+</div>
 
       <div className="pt-2">
         <div className="mb-3 text-sm font-black text-slate-950">
@@ -2169,20 +2245,42 @@ export default async function BrokerPage({
             </div>
 
             <div className="mt-5 space-y-3">
-              <div className="rounded-[22px] border border-slate-200 bg-white px-4 py-4 shadow-sm">
-                <div className="text-[11px] font-bold text-slate-500">طرق الدفع</div>
-                <div className="mt-2 text-4xl font-extrabold text-slate-950">
-                  {paymentMethods.length || "-"}
-                </div>
-              </div>
+  <div className="rounded-[22px] border border-slate-200 bg-white px-4 py-4 shadow-sm">
+    <div className="text-[11px] font-bold text-slate-500">
+      طرق الدفع
+    </div>
+    <div className="mt-2 text-4xl font-extrabold text-slate-950">
+      {paymentMethods.length || "-"}
+    </div>
+  </div>
 
-              <div className="rounded-[22px] border border-slate-200 bg-white px-4 py-4 shadow-sm">
-                <div className="text-[11px] font-bold text-slate-500">سرعة السحب</div>
-                <div className="mt-2 text-sm font-extrabold leading-7 text-slate-900">
-                  {withdrawalSpeed || "لا توجد بيانات"}
-                </div>
-              </div>
-            </div>
+  <div className="rounded-[22px] border border-slate-200 bg-white px-4 py-4 shadow-sm">
+    <div className="text-[11px] font-bold text-slate-500">
+      سرعة السحب
+    </div>
+    <div className="mt-2 text-sm font-extrabold leading-7 text-slate-900">
+      {withdrawalSpeed || "لا توجد بيانات"}
+    </div>
+  </div>
+
+  <div className="rounded-[22px] border border-amber-200 bg-amber-50 px-4 py-4 shadow-sm">
+    <div className="text-[11px] font-bold text-amber-700">
+      الحد الأدنى للإيداع
+    </div>
+    <div className="mt-2 text-2xl font-extrabold text-slate-950">
+      {formatMoney(broker.min_deposit)}
+    </div>
+  </div>
+
+  <div className="rounded-[22px] border border-violet-200 bg-violet-50 px-4 py-4 shadow-sm">
+    <div className="text-[11px] font-bold text-violet-700">
+      تقييم الإيداع والسحب
+    </div>
+    <div className="mt-2 text-2xl font-extrabold text-slate-950">
+      {broker.score_deposit ?? "-"} / 5
+    </div>
+  </div>
+</div>
           </div>
 
           <div className="p-6 text-right xl:p-7">
@@ -2190,9 +2288,15 @@ export default async function BrokerPage({
               تفاصيل الإيداع والسحب
             </div>
 
-            <p className="mt-4 w-full text-sm leading-8 text-slate-700 md:text-base">
-              {depositSummary || "لا توجد معلومات كافية حاليًا حول الإيداع والسحب."}
-            </p>
+            <div className="mt-4 space-y-3 text-sm leading-8 text-slate-700 md:text-base">
+  {(depositSummary || "لا توجد معلومات كافية حاليًا حول الإيداع والسحب.")
+    .split("||")
+    .map((paragraph, i) => (
+      <p key={i} className="text-justify">
+        {paragraph.trim()}
+      </p>
+    ))}
+</div>
 
             <div className="mt-5">
               <div className="text-sm font-semibold text-slate-900">
@@ -2268,9 +2372,11 @@ export default async function BrokerPage({
           <div className="mb-2 text-sm font-black text-slate-950">
             تجربة منصات التداول
           </div>
-          <p className="text-[14px] leading-7 text-slate-600">
-            {platformSummary}
-          </p>
+         <ParagraphBlock
+  content={platformSummary}
+  fallback="لا توجد معلومات كافية حاليًا حول منصات التداول."
+  compact
+/>
         </div>
 
         <div className="mt-5 rounded-[22px] border border-blue-100 bg-blue-50 p-4 shadow-sm">
@@ -2351,9 +2457,15 @@ export default async function BrokerPage({
               تجربة منصات التداول
             </div>
 
-            <p className="mt-4 w-full text-sm leading-8 text-slate-700 md:text-base">
-              {platformSummary || "لا توجد معلومات كافية حول منصات التداول."}
-            </p>
+          <div className="mt-4 space-y-4 text-sm leading-8 text-slate-700 md:text-base">
+  {(platformSummary || "لا توجد معلومات كافية حول منصات التداول.")
+    .split("||")
+    .map((paragraph, i) => (
+      <p key={i} className="text-justify">
+        {paragraph.trim()}
+      </p>
+    ))}
+</div>
 
             <div className="mt-4 grid gap-4 lg:grid-cols-2">
 
@@ -2441,9 +2553,11 @@ export default async function BrokerPage({
       ) : null}
     </div>
 
-    <p className="text-[14px] leading-7 text-slate-600">
-      {regulationSummary || "لا توجد بيانات متاحة حاليًا."}
-    </p>
+    <ParagraphBlock
+  content={regulationSummary}
+  fallback="لا توجد بيانات متاحة حاليًا."
+  compact
+/>
 
     {safetyFactors.length ? (
       <div className="mt-5">
@@ -2472,9 +2586,9 @@ export default async function BrokerPage({
         <div className="text-sm font-black text-slate-900">
           حماية أموال العملاء
         </div>
-        <div className="mt-2 text-[13px] font-semibold leading-6 text-slate-600">
-          {fundProtection}
-        </div>
+        <div className="mt-2 text-[13px] font-medium leading-7 text-slate-700 text-justify">
+  {fundProtection}
+</div>
       </div>
     ) : null}
 
@@ -2520,9 +2634,9 @@ export default async function BrokerPage({
                 <div className="text-[11px] font-bold text-slate-500">
                   حماية أموال العملاء
                 </div>
-                <div className="mt-2 text-sm font-extrabold leading-7 text-slate-900">
-                  {fundProtection || "لا توجد بيانات متاحة."}
-                </div>
+               <div className="mt-2 text-[12.5px] font-semibold leading-6 text-slate-700 text-justify">
+  {fundProtection || "لا توجد بيانات متاحة."}
+</div>
               </div>
             </div>
           </div>
@@ -2532,9 +2646,15 @@ export default async function BrokerPage({
               التنظيم وحماية المتداولين
             </div>
 
-            <p className="mt-4 w-full text-sm leading-8 text-slate-700 md:text-base">
-              {regulationSummary || "لا توجد بيانات متاحة حاليًا."}
-            </p>
+           <div className="mt-4 space-y-4 text-sm leading-8 text-slate-700 md:text-base">
+  {(regulationSummary || "لا توجد بيانات متاحة حاليًا.")
+    .split("||")
+    .map((paragraph, i) => (
+      <p key={i} className="text-justify">
+        {paragraph.trim()}
+      </p>
+    ))}
+</div>
 
             <div className="mt-5">
               <div className="rounded-[22px] border border-slate-200 bg-slate-50 px-4 py-4 shadow-sm">

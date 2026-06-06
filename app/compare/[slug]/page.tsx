@@ -494,6 +494,36 @@ function AccountCard({
   );
 }
 
+function ExpandableText({
+  text,
+  fallback,
+}: {
+  text: string | null | undefined;
+  fallback: string;
+}) {
+  const content = cleanText(text) || fallback;
+
+  return (
+    <details className="group/expand">
+      <summary className="cursor-pointer list-none">
+        <div className="relative max-h-[140px] overflow-hidden text-xs leading-6 text-slate-600 group-open/expand:hidden md:text-sm md:leading-7">
+          <p className="text-justify">{content}</p>
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-[#f8fbff] to-transparent" />
+        </div>
+
+        <div className="mt-2 inline-flex rounded-full border border-[#bfdbfe] bg-white px-3 py-1.5 text-[11px] font-black text-[#2563eb]">
+          <span className="group-open/expand:hidden">عرض المزيد</span>
+          <span className="hidden group-open/expand:inline">عرض أقل</span>
+        </div>
+      </summary>
+
+      <p className="mt-2 text-justify text-xs leading-6 text-slate-600 md:text-sm md:leading-7">
+        {content}
+      </p>
+    </details>
+  );
+}
+
 export default async function ComparePage({ params }: PageProps) {
   const { slug } = await params;
   const [leftSlug, rightSlug] = slug.split("-vs-");
@@ -2320,17 +2350,20 @@ export default async function ComparePage({ params }: PageProps) {
                   </p>
                 </div>
 
-                <div className="rounded-[22px] border border-slate-200 bg-white p-4">
-                  <div className="text-sm font-black text-[#0f172a]">
-                    ملخص قوة التراخيص
-                  </div>
-                  <p className="mt-2 text-sm leading-7 text-slate-600">
-                    {cleanText((broker as any).regulation_summary_ar) ||
-                      `وجود جهات رقابية مثل ${
-                        shortReg(broker.regulation) || "الجهات التنظيمية"
-                      } يعني أن مستوى الحماية يعتمد على الكيان الذي سيتم فتح الحساب تحته وشروطه التنظيمية.`}
-                  </p>
-                </div>
+               <div className="rounded-[22px] border border-slate-200 bg-white p-4">
+  <div className="text-sm font-black text-[#0f172a]">
+    ملخص قوة التراخيص
+  </div>
+
+  <div className="mt-2">
+    <ExpandableText
+      text={(broker as any).regulation_summary_ar}
+      fallback={`وجود جهات رقابية مثل ${
+        shortReg(broker.regulation) || "الجهات التنظيمية"
+      } يعني أن مستوى الحماية يعتمد على الكيان الذي سيتم فتح الحساب تحته وشروطه التنظيمية.`}
+    />
+  </div>
+</div>
 
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="rounded-[22px] border border-slate-200 bg-white p-4">
@@ -2352,15 +2385,16 @@ export default async function ComparePage({ params }: PageProps) {
                   </div>
                 </div>
 
-                <div className="rounded-[22px] border border-[#dbeafe] bg-[#f8fbff] p-4">
-                  <div className="text-sm font-black text-[#2563eb]">
-                    حماية أموال العملاء
-                  </div>
-                  <p className="mt-2 text-sm leading-7 text-slate-600">
-                    {cleanText((broker as any).fund_protection_ar) ||
-                      "راجع تفاصيل فصل أموال العملاء، حماية الرصيد السلبي، وسياسة التعويض لدى الكيان التنظيمي الذي ستفتح الحساب تحته."}
-                  </p>
-                </div>
+        <div className="rounded-[22px] border border-[#dbeafe] bg-[#f8fbff] p-4">
+  <div className="text-sm font-black text-[#2563eb]">
+    حماية أموال العملاء
+  </div>
+
+  <p className="mt-2 text-justify text-sm leading-7 text-slate-600">
+    {cleanText((broker as any).fund_protection_ar) ||
+      "راجع تفاصيل فصل أموال العملاء، حماية الرصيد السلبي، وسياسة التعويض لدى الكيان التنظيمي الذي ستفتح الحساب تحته."}
+  </p>
+</div>
               </div>
             </div>
           );
@@ -2526,25 +2560,29 @@ export default async function ComparePage({ params }: PageProps) {
                   </div>
                 </div>
 
-                <details className="rounded-[18px] border border-[#dbeafe] bg-[#f8fbff] p-3">
-                  <summary className="cursor-pointer list-none text-[11px] font-black text-[#2563eb]">
-                    ملخص قوة التراخيص
-                  </summary>
-                  <p className="mt-2 text-xs leading-6 text-slate-600">
-                    {cleanText((broker as any).regulation_summary_ar) ||
-                      "تفاصيل الحماية تختلف حسب الكيان التنظيمي ونوع الحساب."}
-                  </p>
-                </details>
+                <div className="rounded-[18px] border border-[#dbeafe] bg-[#f8fbff] p-3">
+  <div className="text-[11px] font-black text-[#2563eb]">
+    ملخص قوة التراخيص
+  </div>
 
-                <details className="rounded-[18px] border border-[#dbeafe] bg-[#f8fbff] p-3">
-                  <summary className="cursor-pointer list-none text-[11px] font-black text-[#2563eb]">
-                    حماية أموال العملاء
-                  </summary>
-                  <p className="mt-2 text-xs leading-6 text-slate-600">
-                    {cleanText((broker as any).fund_protection_ar) ||
-                      "راجع تفاصيل فصل أموال العملاء وحماية الرصيد السلبي لدى الكيان التنظيمي."}
-                  </p>
-                </details>
+  <div className="mt-2">
+    <ExpandableText
+      text={(broker as any).regulation_summary_ar}
+      fallback="تفاصيل الحماية تختلف حسب الكيان التنظيمي ونوع الحساب."
+    />
+  </div>
+</div>
+
+                <div className="rounded-[18px] border border-[#dbeafe] bg-[#f8fbff] p-3">
+  <div className="text-[11px] font-black text-[#2563eb]">
+    حماية أموال العملاء
+  </div>
+
+  <p className="mt-2 text-justify text-xs leading-6 text-slate-600">
+    {cleanText((broker as any).fund_protection_ar) ||
+      "راجع تفاصيل فصل أموال العملاء وحماية الرصيد السلبي لدى الكيان التنظيمي."}
+  </p>
+</div>
               </div>
             </details>
           );
