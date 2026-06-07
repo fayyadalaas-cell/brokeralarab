@@ -1276,7 +1276,54 @@ export default async function BrokerPage({
         }}
       />
 
-                <main dir="rtl" className="mx-auto w-full max-w-7xl px-3 pt-5 pb-1 text-right sm:px-4 md:pt-6 md:pb-1">
+            <main dir="rtl" className="mx-auto w-full max-w-7xl px-3 pt-5 pb-1 text-right sm:px-4 md:pt-6 md:pb-1">
+
+{/* Trust Bar */}
+<section className="mb-4 overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-sm md:mb-5">
+  <div className="grid grid-cols-2 gap-0 divide-x divide-slate-100 divide-x-reverse md:grid-cols-4">
+
+    <div className="flex items-center justify-center gap-2 px-3 py-2 text-center">
+      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-xs font-black text-emerald-600">
+        ✓
+      </span>
+      <span className="text-[11px] font-black text-slate-800 md:text-sm">
+        <span className="md:hidden">50+ وسيط</span>
+        <span className="hidden md:inline">تمت مراجعة 50+ وسيط</span>
+      </span>
+    </div>
+
+    <div className="flex items-center justify-center gap-2 px-3 py-3 text-center">
+      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-50 text-xs font-black text-blue-600">
+        📊
+      </span>
+      <span className="text-[11px] font-black text-slate-800 md:text-sm">
+        <span className="md:hidden">150+ معيار</span>
+        <span className="hidden md:inline">أكثر من 150 معيار تقييم</span>
+      </span>
+    </div>
+
+    <div className="flex items-center justify-center gap-2 px-3 py-3 text-center">
+      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-50 text-xs font-black text-amber-600">
+        🔄
+      </span>
+      <span className="text-[11px] font-black text-slate-800 md:text-sm">
+        <span className="md:hidden">تحديث شهري</span>
+        <span className="hidden md:inline">تحديث البيانات شهرياً</span>
+      </span>
+    </div>
+
+    <div className="flex items-center justify-center gap-2 px-3 py-3 text-center">
+      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-black text-slate-700">
+        🛡
+      </span>
+      <span className="text-[11px] font-black text-slate-800 md:text-sm">
+        <span className="md:hidden">مراجعة مستقلة</span>
+        <span className="hidden md:inline">مراجعات مستقلة ومحايدة</span>
+      </span>
+    </div>
+
+  </div>
+</section>
 
 {/* Mobile Hero */}
 <div className="lg:hidden">
@@ -1604,10 +1651,60 @@ export default async function BrokerPage({
               </div>
             </div>
           </div>
-        </section>
+                </section>
 
+       {/* E-E-A-T Review Trust Box */}
+<section className="mt-4 rounded-[22px] border border-blue-100 bg-gradient-to-br from-white via-slate-50 to-blue-50 p-4 shadow-sm md:mt-6 md:rounded-[26px] md:p-6">
+  <div className="grid gap-4 lg:grid-cols-[minmax(0,1.8fr)_220px_260px_150px] lg:items-center">
 
-<div className="mt-4 grid min-w-0 gap-6 md:mt-6 md:gap-8">
+    <div className="text-right">
+      <div className="text-[11px] font-black tracking-wide text-blue-700 md:text-xs">
+        مراجعة مستقلة
+      </div>
+
+    <div className="mt-1 text-[18px] font-black leading-7 text-slate-950 md:text-[24px] md:leading-9 lg:whitespace-nowrap">
+  تم تقييم {broker.name} وفق منهجية
+  <br className="md:hidden" />
+  <span className="hidden md:inline"> </span>
+  بروكر العرب
+</div>
+
+      <p className="mt-2 text-[13px] leading-6 text-slate-600 md:max-w-2xl md:text-sm md:leading-7">
+نعتمد في تقييم شركات التداول على أكثر من 150 معياراً تشمل التراخيص والرسوم والحسابات ومنصات التداول والإيداع والسحب وجودة الدعم.      </p>
+    </div>
+
+    <div className="grid grid-cols-2 gap-2 md:gap-3 lg:contents">
+      <div className="rounded-2xl border border-slate-200 bg-white p-3 text-center shadow-sm md:p-4 md:text-right">
+        <div className="text-[11px] font-bold text-slate-500 md:text-xs">
+          آخر تحديث
+        </div>
+        <div className="mt-1 text-sm font-black text-slate-950 md:text-base">
+          يونيو 2026
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-slate-200 bg-white p-3 text-center shadow-sm md:p-4 md:text-right">
+        <div className="text-[11px] font-bold text-slate-500 md:text-xs">
+          تمت المراجعة بواسطة
+        </div>
+        <div className="mt-1 text-sm font-black text-slate-950 md:text-base">
+          فريق مراجعة الوسطاء
+        </div>
+      </div>
+    </div>
+
+   <Link
+  href="/how-we-review-brokers"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-flex min-h-[46px] items-center justify-center rounded-2xl border border-blue-200 bg-blue-600 px-5 py-3 text-sm font-black text-white shadow-sm transition hover:bg-blue-700 md:min-h-[50px]"
+>
+  منهجية التقييم
+</Link>
+  </div>
+</section>
+
+        <div className="mt-4 grid min-w-0 gap-6 md:mt-6 md:gap-8">
   <div className="min-w-0 space-y-8">
 
     <SectionCard
