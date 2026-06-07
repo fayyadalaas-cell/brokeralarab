@@ -1653,57 +1653,53 @@ export default async function BrokerPage({
           </div>
                 </section>
 
-       {/* E-E-A-T Review Trust Box */}
+   {/* E-E-A-T Review Trust Box */}
 <section className="mt-4 rounded-[22px] border border-blue-100 bg-gradient-to-br from-white via-slate-50 to-blue-50 p-4 shadow-sm md:mt-6 md:rounded-[26px] md:p-6">
-  <div className="grid gap-4 lg:grid-cols-[minmax(0,1.8fr)_220px_260px_150px] lg:items-center">
-
-    <div className="text-right">
+  <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_440px] lg:items-center">
+    <div className="min-w-0 text-right">
       <div className="text-[11px] font-black tracking-wide text-blue-700 md:text-xs">
         مراجعة مستقلة
       </div>
 
-    <div className="mt-1 text-[18px] font-black leading-7 text-slate-950 md:text-[24px] md:leading-9 lg:whitespace-nowrap">
-  تم تقييم {broker.name} وفق منهجية
-  <br className="md:hidden" />
-  <span className="hidden md:inline"> </span>
-  بروكر العرب
-</div>
+      <div className="mt-1 text-[18px] font-black leading-7 text-slate-950 md:text-[24px] md:leading-9">
+        تم تقييم {broker.name} وفق منهجية بروكر العرب
+      </div>
 
-      <p className="mt-2 text-[13px] leading-6 text-slate-600 md:max-w-2xl md:text-sm md:leading-7">
-نعتمد في تقييم شركات التداول على أكثر من 150 معياراً تشمل التراخيص والرسوم والحسابات ومنصات التداول والإيداع والسحب وجودة الدعم.      </p>
+      <p className="mt-2 text-[13px] leading-6 text-slate-600 md:text-sm md:leading-7">
+        نقيّم شركات التداول وفق أكثر من 150 معياراً تشمل التراخيص والرسوم والحسابات والسحب والدعم.
+      </p>
     </div>
 
-    <div className="grid grid-cols-2 gap-2 md:gap-3 lg:contents">
-      <div className="rounded-2xl border border-slate-200 bg-white p-3 text-center shadow-sm md:p-4 md:text-right">
+    <div className="grid grid-cols-2 gap-2 md:gap-3 lg:grid-cols-[1fr_1fr]">
+      <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-center shadow-sm">
         <div className="text-[11px] font-bold text-slate-500 md:text-xs">
           آخر تحديث
         </div>
-        <div className="mt-1 text-sm font-black text-slate-950 md:text-base">
+        <div className="mt-1 whitespace-nowrap text-sm font-black text-slate-950 md:text-base">
           يونيو 2026
         </div>
       </div>
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-3 text-center shadow-sm md:p-4 md:text-right">
+      <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-center shadow-sm">
         <div className="text-[11px] font-bold text-slate-500 md:text-xs">
           تمت المراجعة بواسطة
         </div>
-        <div className="mt-1 text-sm font-black text-slate-950 md:text-base">
+        <div className="mt-1 text-sm font-black leading-5 text-slate-950 md:text-base md:leading-6">
           فريق مراجعة الوسطاء
         </div>
       </div>
-    </div>
 
-   <Link
-  href="/how-we-review-brokers"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="inline-flex min-h-[46px] items-center justify-center rounded-2xl border border-blue-200 bg-blue-600 px-5 py-3 text-sm font-black text-white shadow-sm transition hover:bg-blue-700 md:min-h-[50px]"
->
-  منهجية التقييم
-</Link>
+      <Link
+        href="/how-we-review-brokers"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="col-span-2 inline-flex min-h-[48px] items-center justify-center rounded-2xl border border-blue-200 bg-blue-600 px-5 py-3 text-sm font-black text-white shadow-sm transition hover:bg-blue-700"
+      >
+        منهجية التقييم
+      </Link>
+    </div>
   </div>
 </section>
-
         <div className="mt-4 grid min-w-0 gap-6 md:mt-6 md:gap-8">
   <div className="min-w-0 space-y-8">
 
