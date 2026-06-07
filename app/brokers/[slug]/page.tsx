@@ -1999,86 +1999,86 @@ export default async function BrokerPage({
       </div>
     </div>
 
-    {/* Desktop */}
-    <div className="hidden md:block">
-      <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-sm">
-        <div className="grid gap-0 xl:grid-cols-[280px_minmax(0,1fr)]">
+  {/* Desktop */}
+<div className="hidden md:block">
+  <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-sm">
+    <div className="grid gap-0 xl:grid-cols-[280px_minmax(0,1fr)]">
 
-          <div className="border-b border-slate-200 bg-slate-50 p-6 text-right xl:border-b-0 xl:border-l">
-            <div className="text-xs font-black tracking-[0.12em] text-blue-700">
-              ملخص الحسابات
-            </div>
+      <div className="border-b border-slate-200 bg-slate-50 p-6 text-right xl:border-b-0 xl:border-l">
+        <div className="text-xs font-black tracking-[0.12em] text-blue-700">
+          ملخص الحسابات
+        </div>
 
-            <div className="mt-5">
-              <div className="text-5xl font-black leading-none text-slate-950">
-                {accountCount || "-"}
-              </div>
-              <div className="mt-2 text-sm font-medium text-slate-500">
-                عدد الحسابات المتاحة
-              </div>
-            </div>
+        <div className="mt-5">
+          <div className="text-5xl font-black leading-none text-slate-950">
+            {accountCount || "-"}
+          </div>
+          <div className="mt-2 text-sm font-medium text-slate-500">
+            عدد الحسابات المتاحة
+          </div>
+        </div>
 
-            <div className="mt-6 space-y-3">
-              <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-                <div className="text-[11px] font-bold text-slate-500">
-                  أقل إيداع
-                </div>
-                <div className="mt-1 text-lg font-black text-slate-950">
-                  {lowestDeposit?.raw || broker.min_deposit || "-"}
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-                <div className="text-[11px] font-bold text-slate-500">
-                  أقل سبريد
-                </div>
-                <div className="mt-1 text-lg font-black text-slate-950">
-                  {lowestSpread?.spread || broker.spreads || "-"}
-                </div>
-              </div>
+        <div className="mt-6 space-y-3">
+          <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+            <div className="text-[11px] font-bold text-slate-500">أقل إيداع</div>
+            <div className="mt-1 text-lg font-black text-slate-950">
+              {lowestDeposit?.raw || broker.min_deposit || "-"}
             </div>
           </div>
 
-          <div className="p-6 text-right xl:p-7">
-            <div className="text-xl font-black text-slate-950">
-              مقارنة الحسابات
-            </div>
-
-            <p className="mt-2 max-w-3xl text-sm leading-8 text-slate-600">
-              قارن بين فروقات الأسعار، العمولات، الحد الأدنى للإيداع، ونوع التنفيذ لكل حساب لمعرفة الأنسب لك.
-            </p>
-
-            <div className="mt-6 grid gap-4 lg:grid-cols-3">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
-                <div className="text-xs font-bold text-slate-500">أقل إيداع</div>
-                <div className="mt-2 text-base font-black text-slate-950">
-                  {lowestDeposit?.name || "-"}
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
-                <div className="text-xs font-bold text-slate-500">أقل سبريد</div>
-                <div className="mt-2 text-base font-black text-slate-950">
-                  {lowestSpread?.account_name || "-"}
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
-                <div className="text-xs font-bold text-slate-500">عدد حسابات العمولة</div>
-                <div className="mt-2 text-base font-black text-slate-950">
-                  {commissionAccounts.length || "0"}
-                </div>
-              </div>
+          <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+            <div className="text-[11px] font-bold text-slate-500">أقل سبريد</div>
+            <div className="mt-1 text-lg font-black text-slate-950">
+              {lowestSpread?.spread || broker.spreads || "-"}
             </div>
           </div>
-
         </div>
       </div>
-    </div>
 
-    <p className="text-right text-[14px] leading-7 text-slate-600 md:text-base md:leading-8 md:text-slate-700">
-      توفر {broker.name} عدة أنواع من الحسابات تناسب مختلف فئات المتداولين، بدءًا من الحسابات البسيطة للمبتدئين وصولًا إلى الحسابات الاحترافية ذات السبريد المنخفض أو العمولات.
-    </p>
+      <div className="p-6 text-right xl:p-7">
+        <div className="text-xl font-black text-slate-950">
+          مقارنة الحسابات
+        </div>
+
+        <p className="mt-2 max-w-4xl text-sm leading-8 text-slate-600">
+          استعرض أنواع الحسابات المتاحة وقارن بين السبريد والعمولات والحد الأدنى للإيداع وآلية التنفيذ ومزايا كل حساب لمساعدتك على اختيار الحساب المناسب لأسلوب تداولك ومستوى خبرتك. توضح هذه المقارنة الفروقات الأساسية بين الحسابات القياسية والحسابات الاحترافية من حيث تكاليف التداول وسرعة التنفيذ ومتطلبات الإيداع.
+        </p>
+
+        <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm font-bold leading-7 text-blue-700">
+          يمكنك النقر على نوع أي حساب داخل الجدول لفتح صفحة تفصيلية تشمل شروط الحساب ومميزاته.
+        </div>
+
+        <div className="mt-5 grid gap-4 lg:grid-cols-3">
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
+            <div className="text-xs font-bold text-slate-500">أقل إيداع</div>
+            <div className="mt-2 text-base font-black text-slate-950">
+              {lowestDeposit?.name || "-"}
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
+            <div className="text-xs font-bold text-slate-500">أقل سبريد</div>
+            <div className="mt-2 text-base font-black text-slate-950">
+              {lowestSpread?.account_name || "-"}
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
+            <div className="text-xs font-bold text-slate-500">عدد حسابات العمولة</div>
+            <div className="mt-2 text-base font-black text-slate-950">
+              {commissionAccounts.length || "0"}
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<p className="text-right text-[14px] leading-7 text-slate-600 md:text-base md:leading-8 md:text-slate-700">
+  توفر {broker.name} عدة أنواع من الحسابات تناسب مختلف فئات المتداولين، بدءًا من الحسابات البسيطة للمبتدئين وصولًا إلى الحسابات الاحترافية ذات السبريد المنخفض أو العمولات.
+</p>
 
   {/* Mobile Accounts Accordion */}
 <div className="space-y-3 md:hidden">
