@@ -542,6 +542,58 @@ export default async function HomePage() {
 >
   <BrokerFinder brokers={brokers} />
 </section>
+{/* HOME TRUST BAR */}
+<section className="mx-auto max-w-7xl px-4 py-2 sm:px-6 lg:px-8">
+  <div className="overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-[0_14px_40px_rgba(15,23,42,0.055)]">
+    <div className="grid grid-cols-2 divide-x divide-y divide-slate-100 divide-x-reverse md:grid-cols-4 md:divide-y-0">
+      {[
+        ["✓", "50+ وسيط", "تمت مراجعتهم"],
+        ["📊", "150+ معيار", "للتقييم والمقارنة"],
+        ["🔄", "تحديث شهري", "للبيانات المهمة"],
+        ["🛡", "مراجعة مستقلة", "وفق منهجية واضحة"],
+      ].map(([icon, title, desc]) => (
+        <div
+          key={title}
+          className="flex items-center justify-center gap-2 px-3 py-3 text-center md:gap-3 md:py-4"
+        >
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-50 text-[12px] font-black text-blue-600 md:h-8 md:w-8">
+            {icon}
+          </span>
+
+          <div className="text-right">
+            <div className="text-[12px] font-black text-slate-950 md:text-sm">
+              {title}
+            </div>
+            <div className="mt-0.5 text-[10px] font-bold text-slate-500 md:text-[11px]">
+              {desc}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div className="flex flex-col items-center justify-between gap-3 border-t border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3 text-center md:flex-row md:text-right">
+      <div>
+        <div className="mb-1 text-xs font-black text-blue-700">
+          منهجية التقييم
+        </div>
+
+        <p className="max-w-4xl text-[12px] font-semibold leading-6 text-slate-700 md:text-sm md:leading-7">
+          تعتمد تصنيفات بروكر العرب على تحليل التراخيص، الرسوم، منصات التداول، سرعة السحب، الحسابات، وجودة الدعم.
+        </p>
+      </div>
+
+      <Link
+        href="/how-we-review-brokers"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex min-h-[42px] shrink-0 items-center justify-center rounded-2xl bg-[#2563eb] px-5 text-[12px] font-black text-white shadow-[0_10px_22px_rgba(37,99,235,0.20)] transition hover:bg-[#1d4ed8] md:text-sm"
+      >
+        منهجية التقييم
+      </Link>
+    </div>
+  </div>
+</section>
 
     {/* HOW WE RATE - CLEAN TRUST SECTION */}
 <section className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
