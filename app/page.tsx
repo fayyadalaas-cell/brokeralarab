@@ -225,7 +225,7 @@ export default async function HomePage() {
     `)
     .order("rating", { ascending: false });
 
-    const { data: comparisonsData } = await supabase
+  const { data: comparisonsData } = await supabase
   .from("comparisons")
   .select(`
     id,
@@ -248,7 +248,35 @@ export default async function HomePage() {
   .order("views_count", { ascending: false })
   .limit(3);
 
+/* اضف هذا مباشرة تحتها */
+
+const { data: rankingData } = await supabase
+  .from("country_broker_rankings")
+  .select(`
+    broker_id,
+    rank_position,
+    country_rating,
+    best_for,
+    local_note,
+    country_pages (
+      slug
+    )
+  `);
+
   const brokers = ((data ?? []) as Broker[]).filter((b) => b.slug && b.name);
+  const countryRankings =
+  ((rankingData ?? []) as any[])
+    .map((row) => ({
+      country_slug: Array.isArray(row.country_pages)
+        ? row.country_pages[0]?.slug
+        : row.country_pages?.slug,
+      broker_id: row.broker_id,
+      rank_position: row.rank_position,
+      country_rating: row.country_rating,
+      best_for: row.best_for,
+      local_note: row.local_note,
+    }))
+    .filter((row) => row.country_slug);
   const topBrokers = brokers.slice(0, 6);
   const topComparisons: Comparison[] = ((comparisonsData ?? []) as any[])
   .map((item) => ({
@@ -540,7 +568,10 @@ export default async function HomePage() {
   id="finder"
   className="scroll-mt-24 mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8 lg:py-4"
 >
-  <BrokerFinder brokers={brokers} />
+  <BrokerFinder
+  brokers={brokers}
+  countryRankings={countryRankings}
+/>
 </section>
 {/* HOME TRUST BAR */}
 <section className="mx-auto max-w-7xl px-4 py-2 sm:px-6 lg:px-8">
