@@ -3,6 +3,9 @@ import type { MetadataRoute } from "next";
 
 const BASE_URL = "https://brokeralarab.com";
 
+// فعّلها لاحقًا لما تجهز صفحات الدول الإنجليزية
+const ENABLE_EN_COUNTRY_PAGES = false;
+
 function accountSlug(value: string | null) {
   if (!value) return "";
   return value
@@ -18,7 +21,6 @@ function accountSlug(value: string | null) {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = await createClient();
 
-  // 🟢 1) جلب كل البروكر
   const { data: brokers } = await supabase
     .from("brokers")
     .select("id, slug");
@@ -26,25 +28,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const brokerSlugs =
     brokers?.map((b) => b.slug).filter((slug): slug is string => Boolean(slug)) || [];
 
-  // 🟢 صفحات البروكر (AR)
   const brokerPages = brokerSlugs.map((slug) => ({
     url: `${BASE_URL}/brokers/${slug}`,
     lastModified: new Date(),
   }));
 
-  // 🟢 صفحات البروكر (EN)
   const brokerPagesEN = brokerSlugs.map((slug) => ({
     url: `${BASE_URL}/en/brokers/${slug}`,
     lastModified: new Date(),
   }));
 
-  // 🟢 جلب حسابات البروكر
   const { data: accounts } = await supabase
     .from("broker_accounts")
     .select("account_name, brokers(slug)");
 
-  // 🟢 صفحات الحسابات (AR)
   const accountPages: MetadataRoute.Sitemap = [];
+  const accountPagesEN: MetadataRoute.Sitemap = [];
 
   accounts?.forEach((row: any) => {
     const slug = row.brokers?.slug;
@@ -56,16 +55,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${BASE_URL}/brokers/${slug}/accounts/${account}`,
       lastModified: new Date(),
     });
-  });
-
-  // 🟢 صفحات الحسابات (EN)
-  const accountPagesEN: MetadataRoute.Sitemap = [];
-
-  accounts?.forEach((row: any) => {
-    const slug = row.brokers?.slug;
-    const account = accountSlug(row.account_name);
-
-    if (!slug || !account) return;
 
     accountPagesEN.push({
       url: `${BASE_URL}/en/brokers/${slug}/accounts/${account}`,
@@ -73,8 +62,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   });
 
-  // 🔥 توليد المقارنات بدون تكرار عكسي (AR)
+  // 🟢 صفحات الدول من Supabase
+  const { data: countryPagesData } = await supabase
+    .from("country_pages")
+    .select("slug");
+
+  const countrySlugs =
+    countryPagesData
+      ?.map((c) => c.slug)
+      .filter((slug): slug is string => Boolean(slug)) || [];
+
+  const countryPages = countrySlugs.map((slug) => ({
+    url: `${BASE_URL}/best-brokers/${slug}`,
+    lastModified: new Date(),
+  }));
+
+  const countryPagesEN = ENABLE_EN_COUNTRY_PAGES
+    ? countrySlugs.map((slug) => ({
+        url: `${BASE_URL}/en/best-brokers/${slug}`,
+        lastModified: new Date(),
+      }))
+    : [];
+
   const comparePages: MetadataRoute.Sitemap = [];
+  const comparePagesEN: MetadataRoute.Sitemap = [];
 
   for (let i = 0; i < brokerSlugs.length; i++) {
     for (let j = i + 1; j < brokerSlugs.length; j++) {
@@ -82,14 +93,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         url: `${BASE_URL}/compare/${brokerSlugs[i]}-vs-${brokerSlugs[j]}`,
         lastModified: new Date(),
       });
-    }
-  }
 
-  // 🔥 توليد المقارنات بدون تكرار عكسي (EN)
-  const comparePagesEN: MetadataRoute.Sitemap = [];
-
-  for (let i = 0; i < brokerSlugs.length; i++) {
-    for (let j = i + 1; j < brokerSlugs.length; j++) {
       comparePagesEN.push({
         url: `${BASE_URL}/en/compare/${brokerSlugs[i]}-vs-${brokerSlugs[j]}`,
         lastModified: new Date(),
@@ -97,27 +101,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  // 🟢 صفحات ثابتة (AR)
   const staticPages = [
     { url: `${BASE_URL}`, lastModified: new Date() },
     { url: `${BASE_URL}/brokers`, lastModified: new Date() },
     { url: `${BASE_URL}/compare`, lastModified: new Date() },
     { url: `${BASE_URL}/best-brokers`, lastModified: new Date() },
-
     { url: `${BASE_URL}/best-brokers/gold`, lastModified: new Date() },
+    { url: `${BASE_URL}/lowest-spread-brokers`, lastModified: new Date() },
     {
       url: `${BASE_URL}/learn-trading/how-to-start-trading-from-zero`,
       lastModified: new Date(),
     },
   ];
 
-  // 🟢 صفحات ثابتة (EN)
   const staticPagesEN = [
     { url: `${BASE_URL}/en`, lastModified: new Date() },
     { url: `${BASE_URL}/en/brokers`, lastModified: new Date() },
     { url: `${BASE_URL}/en/compare`, lastModified: new Date() },
     { url: `${BASE_URL}/en/best-brokers`, lastModified: new Date() },
-
     { url: `${BASE_URL}/en/best-brokers/gold`, lastModified: new Date() },
     {
       url: `${BASE_URL}/en/learn-trading/how-to-start-trading-from-zero`,
@@ -128,6 +129,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     ...staticPages,
     ...staticPagesEN,
+    ...countryPages,
+    ...countryPagesEN,
     ...brokerPages,
     ...brokerPagesEN,
     ...accountPages,
