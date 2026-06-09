@@ -23,7 +23,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .from("brokers")
     .select("id, slug");
 
-  const brokerSlugs = brokers?.map((b) => b.slug) || [];
+  const brokerSlugs =
+    brokers?.map((b) => b.slug).filter((slug): slug is string => Boolean(slug)) || [];
 
   // 🟢 صفحات البروكر (AR)
   const brokerPages = brokerSlugs.map((slug) => ({
@@ -72,31 +73,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   });
 
-  // 🔥 🧠 توليد كل المقارنات (AR)
-  const comparePages = [];
+  // 🔥 توليد المقارنات بدون تكرار عكسي (AR)
+  const comparePages: MetadataRoute.Sitemap = [];
 
   for (let i = 0; i < brokerSlugs.length; i++) {
-    for (let j = 0; j < brokerSlugs.length; j++) {
-      if (i !== j) {
-        comparePages.push({
-          url: `${BASE_URL}/compare/${brokerSlugs[i]}-vs-${brokerSlugs[j]}`,
-          lastModified: new Date(),
-        });
-      }
+    for (let j = i + 1; j < brokerSlugs.length; j++) {
+      comparePages.push({
+        url: `${BASE_URL}/compare/${brokerSlugs[i]}-vs-${brokerSlugs[j]}`,
+        lastModified: new Date(),
+      });
     }
   }
 
-  // 🔥 🧠 توليد كل المقارنات (EN)
-  const comparePagesEN = [];
+  // 🔥 توليد المقارنات بدون تكرار عكسي (EN)
+  const comparePagesEN: MetadataRoute.Sitemap = [];
 
   for (let i = 0; i < brokerSlugs.length; i++) {
-    for (let j = 0; j < brokerSlugs.length; j++) {
-      if (i !== j) {
-        comparePagesEN.push({
-          url: `${BASE_URL}/en/compare/${brokerSlugs[i]}-vs-${brokerSlugs[j]}`,
-          lastModified: new Date(),
-        });
-      }
+    for (let j = i + 1; j < brokerSlugs.length; j++) {
+      comparePagesEN.push({
+        url: `${BASE_URL}/en/compare/${brokerSlugs[i]}-vs-${brokerSlugs[j]}`,
+        lastModified: new Date(),
+      });
     }
   }
 
