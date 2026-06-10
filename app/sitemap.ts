@@ -38,6 +38,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date(),
   }));
 
+  // 🟢 صفحات شرح فتح الحساب — فقط الشركات الموجودة في Supabase والمفعّلة
+  const { data: openAccountGuides } = await supabase
+    .from("broker_open_account_guides")
+    .select("slug")
+    .eq("is_active", true);
+
+  const openAccountPages =
+    openAccountGuides
+      ?.map((g) => g.slug)
+      .filter((slug): slug is string => Boolean(slug))
+      .map((slug) => ({
+        url: `${BASE_URL}/brokers/${slug}/open-account`,
+        lastModified: new Date(),
+      })) || [];
+
   const { data: accounts } = await supabase
     .from("broker_accounts")
     .select("account_name, brokers(slug)");
@@ -133,6 +148,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...countryPagesEN,
     ...brokerPages,
     ...brokerPagesEN,
+    ...openAccountPages,
     ...accountPages,
     ...accountPagesEN,
     ...comparePages,

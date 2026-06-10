@@ -225,6 +225,21 @@ async function getBrokerAccounts(brokerId: number): Promise<BrokerAccount[]> {
   return data as BrokerAccount[];
 }
 
+async function getOpenAccountGuide(slug: string) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("broker_open_account_guides")
+    .select("slug")
+    .eq("slug", slug)
+    .eq("is_active", true)
+    .maybeSingle();
+
+  if (error || !data) return null;
+
+  return data;
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -1098,8 +1113,9 @@ export default async function BrokerPage({
     );
   }
 
-  const relatedBrokers = await getRelatedBrokers(slug);
-  const accountsData = await getBrokerAccounts(broker.id);
+ const relatedBrokers = await getRelatedBrokers(slug);
+const accountsData = await getBrokerAccounts(broker.id);
+const openAccountGuide = await getOpenAccountGuide(slug);
 
   const commissionAccounts = accountsData.filter(
   (acc) =>
@@ -1493,6 +1509,16 @@ export default async function BrokerPage({
 
                 
                 </div>
+                {openAccountGuide ? (
+  <Link
+    href={`/brokers/${broker.slug}/open-account`}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="flex min-h-[56px] items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-center text-sm font-black text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700"
+  >
+    شرح فتح حساب مع {broker.name} بالصور
+  </Link>
+) : null}
               </aside>
 
               <div className="order-1 min-w-0 text-right lg:order-1">
@@ -2857,7 +2883,9 @@ export default async function BrokerPage({
           >
             فتح حساب تداول
           </a>
+          
         </div>
+        
       </div>
     </div>
 
@@ -2898,6 +2926,16 @@ export default async function BrokerPage({
                 >
                   فتح حساب تداول
                 </a>
+                {openAccountGuide ? (
+  <Link
+    href={`/brokers/${broker.slug}/open-account`}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="mt-3 flex min-h-[54px] w-full items-center justify-center rounded-2xl border border-blue-200 bg-blue-50 px-5 py-3 text-center text-sm font-black text-blue-700 shadow-sm transition hover:border-blue-400 hover:bg-blue-100"
+  >
+    شرح فتح حساب {broker.name} بالصور
+  </Link>
+) : null}
               </div>
             </div>
           </div>
