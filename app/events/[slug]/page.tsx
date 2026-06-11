@@ -30,40 +30,56 @@ function getCountdown(startDate?: string | null) {
   };
 }
 
+function stripTags(value: string) {
+  return value.replace(/<[^>]*>/g, "").trim();
+}
+
+function extractListItems(html?: string | null) {
+  if (!html) return [];
+  const matches = [...html.matchAll(/<li[^>]*>([\s\S]*?)<\/li>/gi)];
+  return matches.map((m) => stripTags(m[1])).filter(Boolean);
+}
+
+function extractFaq(html?: string | null) {
+  if (!html) return [];
+  const matches = [
+    ...html.matchAll(/<h3[^>]*>([\s\S]*?)<\/h3>\s*<p[^>]*>([\s\S]*?)<\/p>/gi),
+  ];
+
+  return matches
+    .map((m) => ({
+      q: stripTags(m[1]),
+      a: stripTags(m[2]),
+    }))
+    .filter((item) => item.q && item.a);
+}
+
 function htmlStyle(extra = "") {
   return `
-    mt-5 text-[14px] leading-8 text-slate-700 md:text-[15px] md:leading-8
+    text-[14px] leading-8 text-slate-700 md:text-[15px] md:leading-8
     [&_p]:mb-4 [&_p]:leading-8
     [&_h2]:mt-7 [&_h2]:text-xl [&_h2]:font-black [&_h2]:text-slate-950
-    [&_h3]:mt-6 [&_h3]:rounded-2xl [&_h3]:bg-slate-50 [&_h3]:px-4 [&_h3]:py-3 [&_h3]:text-[16px] [&_h3]:font-black [&_h3]:text-slate-950
-    [&_ul]:mt-5 [&_ul]:grid [&_ul]:grid-cols-1 [&_ul]:gap-3 sm:[&_ul]:grid-cols-2 lg:[&_ul]:grid-cols-3
+    [&_h3]:mt-5 [&_h3]:rounded-2xl [&_h3]:bg-slate-50 [&_h3]:px-4 [&_h3]:py-3 [&_h3]:text-[16px] [&_h3]:font-black [&_h3]:text-slate-950
+    [&_ul]:mt-5 [&_ul]:grid [&_ul]:grid-cols-1 [&_ul]:gap-3 sm:[&_ul]:grid-cols-2 lg:[&_ul]:grid-cols-4
     [&_li]:list-none [&_li]:rounded-2xl [&_li]:border [&_li]:border-slate-200 [&_li]:bg-white [&_li]:px-4 [&_li]:py-3 [&_li]:text-center [&_li]:text-sm [&_li]:font-black [&_li]:text-slate-800 [&_li]:shadow-sm
     ${extra}
   `;
 }
 
-function ContentSection({
+function SectionShell({
   title,
-  html,
   badge,
-  blue = false,
+  children,
 }: {
   title: string;
-  html?: string | null;
   badge?: string;
-  blue?: boolean;
+  children: React.ReactNode;
 }) {
-  if (!html) return null;
-
   return (
-    <section
-      className={`overflow-hidden rounded-[28px] border shadow-[0_14px_40px_rgba(15,23,42,0.045)] ${
-        blue ? "border-blue-100 bg-blue-50/40" : "border-slate-200 bg-white"
-      }`}
-    >
+    <section className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_14px_40px_rgba(15,23,42,0.045)]">
       <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-5 py-4 md:px-7">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="text-[22px] font-black leading-8 text-slate-950 md:text-[26px]">
+          <h2 className="text-[21px] font-black leading-8 text-slate-950 md:text-[26px]">
             {title}
           </h2>
 
@@ -75,15 +91,119 @@ function ContentSection({
         </div>
       </div>
 
+      <div className="p-5 md:p-7">{children}</div>
+    </section>
+  );
+}
+
+function ContentSection({
+  title,
+  html,
+  badge,
+}: {
+  title: string;
+  html?: string | null;
+  badge?: string;
+}) {
+  if (!html) return null;
+
+  return (
+    <SectionShell title={title} badge={badge}>
       <div
-        className={htmlStyle(
-          `px-5 py-5 md:px-7 md:py-6 ${
-            blue ? "[&_h3]:bg-white [&_li]:bg-white" : ""
-          }`
-        )}
+        className={htmlStyle()}
         dangerouslySetInnerHTML={{ __html: html }}
       />
-    </section>
+    </SectionShell>
+  );
+}
+
+function SponsorsSection({ html }: { html?: string | null }) {
+  if (!html) return null;
+
+  const sponsors = extractListItems(html);
+  const intro = html.replace(/<ul[\s\S]*?<\/ul>/gi, "").trim();
+
+  if (sponsors.length === 0) {
+    return <ContentSection title="أبرز الرعاة والشركات المشاركة" html={html} />;
+  }
+
+  const firstSponsors = sponsors.slice(0, 8);
+const restSponsors = sponsors.slice(8);
+
+  return (
+    <SectionShell title="أبرز الرعاة والشركات المشاركة">
+      {intro && (
+        <div
+          className={htmlStyle("mb-5")}
+          dangerouslySetInnerHTML={{ __html: intro }}
+        />
+      )}
+
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-4">
+        {firstSponsors.map((name) => (
+          <div
+            key={name}
+            className="rounded-full border border-blue-100 bg-blue-50 px-4 py-3 text-center text-sm font-black text-slate-900 shadow-sm"
+          >
+            {name}
+          </div>
+        ))}
+      </div>
+
+      {restSponsors.length > 0 && (
+        <details className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-3">
+          <summary className="cursor-pointer list-none text-center text-sm font-black text-blue-700">
+            عرض كل الشركات المشاركة
+          </summary>
+
+          <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
+            {restSponsors.map((name) => (
+              <div
+                key={name}
+                className="rounded-full border border-slate-200 bg-white px-4 py-3 text-center text-sm font-black text-slate-800 shadow-sm"
+              >
+                {name}
+              </div>
+            ))}
+          </div>
+        </details>
+      )}
+    </SectionShell>
+  );
+}
+
+function FaqSection({ html }: { html?: string | null }) {
+  if (!html) return null;
+
+  const faqs = extractFaq(html);
+
+  if (faqs.length === 0) {
+    return <ContentSection title="الأسئلة الشائعة" html={html} />;
+  }
+
+  return (
+    <SectionShell title="الأسئلة الشائعة">
+      <div className="space-y-3">
+        {faqs.map((faq, index) => (
+          <details
+            key={faq.q}
+            open={index === 0}
+            className="group rounded-2xl border border-slate-200 bg-slate-50 p-4"
+          >
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-right text-sm font-black text-slate-950 md:text-base">
+              <span>{faq.q}</span>
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-blue-700 shadow-sm group-open:rotate-45">
+                +
+              </span>
+            </summary>
+
+            <p className="mt-3 text-sm leading-8 text-slate-600">
+              {faq.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </SectionShell>
   );
 }
 
@@ -102,6 +222,13 @@ export default async function Page({
     .single();
 
   if (!event) notFound();
+
+  const { data: relatedEvents } = await supabase
+    .from("events")
+    .select("id, slug, title_ar, start_date, city_ar, country_ar")
+    .neq("slug", slug)
+    .order("start_date", { ascending: true })
+    .limit(3);
 
   const countdown = getCountdown(event.start_date);
   const gallery = event.gallery_images || [];
@@ -124,7 +251,6 @@ export default async function Page({
         </Link>
 
         <div className="overflow-hidden rounded-[34px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
-          {/* HERO */}
           <div className="bg-gradient-to-b from-blue-50 via-white to-white px-5 py-8 text-center md:px-10 md:py-12">
             <div className="flex flex-wrap items-center justify-center gap-2">
               <span className="rounded-full bg-white px-4 py-1.5 text-xs font-black text-blue-700 shadow-sm md:text-sm">
@@ -169,7 +295,6 @@ export default async function Page({
             )}
           </div>
 
-          {/* IMAGE */}
           {event.hero_image && (
             <div className="px-4 pt-2 md:px-8">
               <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-slate-950">
@@ -185,7 +310,6 @@ export default async function Page({
             </div>
           )}
 
-          {/* STATS */}
           <div className="px-4 pt-5 md:px-8">
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
               {eventStats.map(([num, label]) => (
@@ -202,7 +326,6 @@ export default async function Page({
             </div>
           </div>
 
-          {/* QUICK INFO FULL WIDTH */}
           <div className="px-4 pt-5 md:px-8">
             <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
               <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-5 py-4">
@@ -250,7 +373,6 @@ export default async function Page({
             </div>
           </div>
 
-          {/* CONTENT FULL WIDTH */}
           <div className="space-y-6 p-4 md:p-8">
             <ContentSection
               title="نبذة عن الحدث"
@@ -267,10 +389,7 @@ export default async function Page({
               html={event.highlights_html}
             />
 
-            <ContentSection
-              title="أبرز الرعاة والشركات المشاركة"
-              html={event.sponsors_html}
-            />
+            <SponsorsSection html={event.sponsors_html} />
 
             <ContentSection title="مكان إقامة المعرض" html={event.venue_html} />
 
@@ -278,19 +397,12 @@ export default async function Page({
               title="آخر تحديث من الجهة المنظمة"
               badge="بيان صحفي"
               html={event.press_release_ar}
-              blue
             />
 
-            <ContentSection title="الأسئلة الشائعة" html={event.faq_html} />
+            <FaqSection html={event.faq_html} />
 
-            <section className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_14px_40px_rgba(15,23,42,0.045)]">
-              <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-5 py-4 md:px-7">
-                <h2 className="text-[22px] font-black text-slate-950 md:text-[26px]">
-                  لماذا يهم هذا الحدث؟
-                </h2>
-              </div>
-
-              <div className="grid gap-3 p-5 md:grid-cols-3 md:p-7">
+            <SectionShell title="لماذا يهم هذا الحدث؟">
+              <div className="grid gap-3 md:grid-cols-3">
                 {[
                   [
                     "بناء العلاقات",
@@ -314,17 +426,42 @@ export default async function Page({
                   </div>
                 ))}
               </div>
-            </section>
+            </SectionShell>
+
+            {relatedEvents && relatedEvents.length > 0 && (
+              <SectionShell title="معارض ومؤتمرات أخرى قد تهمك">
+                <div className="grid gap-3 md:grid-cols-3">
+                  {relatedEvents.map((item: any) => (
+                    <Link
+                      key={item.id}
+                      href={`/events/${item.slug}`}
+                      className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition hover:-translate-y-1 hover:border-blue-200 hover:bg-white hover:shadow-md"
+                    >
+                      <h3 className="text-lg font-black text-slate-950">
+                        {item.title_ar}
+                      </h3>
+
+                      <p className="mt-3 text-sm font-bold text-slate-600">
+                        📅 {formatDate(item.start_date)}
+                      </p>
+
+                      <p className="mt-2 text-sm font-bold text-slate-600">
+                        📍 {item.city_ar}
+                        {item.country_ar ? `، ${item.country_ar}` : ""}
+                      </p>
+
+                      <div className="mt-4 text-sm font-black text-blue-700">
+                        عرض التفاصيل ←
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </SectionShell>
+            )}
 
             {gallery.length > 0 && (
-              <section className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_14px_40px_rgba(15,23,42,0.045)]">
-                <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-5 py-4 md:px-7">
-                  <h2 className="text-[22px] font-black text-slate-950 md:text-[26px]">
-                    صور من الحدث
-                  </h2>
-                </div>
-
-                <div className="grid gap-3 p-5 md:grid-cols-2 md:p-7">
+              <SectionShell title="صور من الحدث">
+                <div className="grid gap-3 md:grid-cols-2">
                   {gallery.map((image: string, index: number) => (
                     <div
                       key={image}
@@ -339,7 +476,7 @@ export default async function Page({
                     </div>
                   ))}
                 </div>
-              </section>
+              </SectionShell>
             )}
           </div>
         </div>
