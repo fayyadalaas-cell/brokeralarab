@@ -1771,11 +1771,15 @@ const { data: rankingData } = await supabase
         >
           <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#2563eb] via-[#60a5fa] to-transparent opacity-70" />
 
-          <div className="mb-3 flex items-center justify-end">
-            <span className="flex h-10 w-10 items-center justify-center rounded-2xl border border-blue-100 bg-[#f8fbff] text-[18px]">
-              📍
-            </span>
-          </div>
+         <div className="mb-2 flex items-center justify-between">
+  <span className="rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-[11px] font-black text-[#2563eb]">
+    حدث مالي
+  </span>
+
+  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-50 text-[16px]">
+    📅
+  </span>
+</div>
 
           <h3 className="min-h-[58px] text-[18px] font-black leading-7 text-[#07111f]">
             {event.title}
