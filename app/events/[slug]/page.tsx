@@ -207,6 +207,34 @@ function FaqSection({ html }: { html?: string | null }) {
   );
 }
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const supabase = await createClient();
+
+  const { data: event } = await supabase
+    .from("events")
+    .select("title_ar, excerpt_ar, meta_title_ar, meta_description_ar")
+    .eq("slug", slug)
+    .single();
+
+  if (!event) {
+    return {
+      title: "معارض ومؤتمرات التداول | Broker Al Arab",
+      description:
+        "تابع أهم معارض ومؤتمرات الفوركس والتكنولوجيا المالية عبر Broker Al Arab.",
+    };
+  }
+
+  return {
+    title: event.meta_title_ar || event.title_ar,
+    description: event.meta_description_ar || event.excerpt_ar || "",
+  };
+}
+
 export default async function Page({
   params,
 }: {
