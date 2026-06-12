@@ -1208,7 +1208,52 @@ const breadcrumbSchema = {
 />
             <main dir="ltr" className="mx-auto w-full max-w-7xl px-3 pt-5 pb-1 text-left sm:px-4 md:pt-6 md:pb-1">
         
+{/* Trust Bar */}
+<section className="mb-4 overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-sm md:mb-5">
+  <div className="grid grid-cols-2 gap-0 divide-x divide-slate-100 md:grid-cols-4">
 
+    <div className="flex items-center justify-center gap-2 px-3 py-2 text-center">
+      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-xs font-black text-emerald-600">
+        ✓
+      </span>
+      <span className="text-[11px] font-black text-slate-800 md:text-sm">
+        <span className="md:hidden">50+ Brokers</span>
+        <span className="hidden md:inline">50+ Brokers Reviewed</span>
+      </span>
+    </div>
+
+    <div className="flex items-center justify-center gap-2 px-3 py-3 text-center">
+      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-50 text-xs font-black text-blue-600">
+        📊
+      </span>
+      <span className="text-[11px] font-black text-slate-800 md:text-sm">
+        <span className="md:hidden">150+ Criteria</span>
+        <span className="hidden md:inline">150+ Rating Criteria</span>
+      </span>
+    </div>
+
+    <div className="flex items-center justify-center gap-2 px-3 py-3 text-center">
+      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-50 text-xs font-black text-amber-600">
+        🔄
+      </span>
+      <span className="text-[11px] font-black text-slate-800 md:text-sm">
+        <span className="md:hidden">Monthly Update</span>
+        <span className="hidden md:inline">Broker Data Updated</span>
+      </span>
+    </div>
+
+    <div className="flex items-center justify-center gap-2 px-3 py-3 text-center">
+      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-black text-slate-700">
+        🛡
+      </span>
+      <span className="text-[11px] font-black text-slate-800 md:text-sm">
+        <span className="md:hidden">Independent</span>
+        <span className="hidden md:inline">Independent Reviews</span>
+      </span>
+    </div>
+
+  </div>
+</section>
         <section className="relative overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm md:rounded-[32px]">
   <div
     className={`absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r ${verdictTone.accent}`}
@@ -1451,10 +1496,57 @@ const breadcrumbSchema = {
     </div>
   </div>
 </section>
+{/* E-E-A-T Review Trust Box */}
+<section className="mt-4 rounded-[22px] border border-blue-100 bg-gradient-to-br from-white via-slate-50 to-blue-50 p-4 shadow-sm md:mt-6 md:rounded-[26px] md:p-6">
+  <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_440px] lg:items-center">
 
+    <div className="min-w-0 text-left">
+      <div className="text-[11px] font-black tracking-wide text-blue-700 md:text-xs">
+        Independent Review
+      </div>
 
-<div className="mt-6 grid min-w-0 gap-8">
-  <div className="min-w-0 space-y-8">
+      <div className="mt-1 text-[18px] font-black leading-7 text-slate-950 md:text-[24px] md:leading-9">
+        {broker.name_en || broker.name} was reviewed using Broker AlArab's methodology
+      </div>
+
+      <p className="mt-2 text-[13px] leading-6 text-slate-600 md:text-sm md:leading-7">
+        We evaluate brokers using more than 150 criteria covering regulation,
+        trading costs, account types, platforms, withdrawals, and customer support.
+      </p>
+    </div>
+
+    <div className="grid grid-cols-2 gap-2 md:gap-3">
+      <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-center shadow-sm">
+        <div className="text-[11px] font-bold text-slate-500">
+          Last Updated
+        </div>
+        <div className="mt-1 text-sm font-black text-slate-950">
+          June 2026
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-center shadow-sm">
+        <div className="text-[11px] font-bold text-slate-500">
+          Reviewed By
+        </div>
+        <div className="mt-1 text-sm font-black text-slate-950">
+          Broker Review Team
+        </div>
+      </div>
+
+      <a
+        href="/en/how-we-review-brokers"
+        className="col-span-2 inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-black text-white transition hover:bg-blue-700"
+      >
+        Rating Methodology
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<div className="mt-5 grid min-w-0 gap-6">
+  <div className="min-w-0 space-y-5 md:space-y-6">
                         
 
       <SectionCard
@@ -1655,10 +1747,7 @@ const breadcrumbSchema = {
 
 </div>
 
-{/* ❌ Desktop — لا تلمسه */}
-<div className="hidden gap-6 lg:grid lg:grid-cols-2 lg:gap-8">
-  ...
-</div>
+
 
 <SectionCard
   title="Account Types"

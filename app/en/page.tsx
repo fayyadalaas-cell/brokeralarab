@@ -548,6 +548,60 @@ const typePages = getTypePages();
   <BrokerFinderEN brokers={brokers} />
 </section>
 
+{/* HOME TRUST BAR */}
+<section className="mx-auto max-w-7xl px-4 py-2 sm:px-6 lg:px-8">
+  <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_14px_36px_rgba(15,23,42,0.05)]">
+    <div className="grid grid-cols-2 divide-x divide-y divide-slate-100 md:grid-cols-4 md:divide-y-0">
+      {[
+        ["✓", "50+ Brokers", "Reviewed"],
+        ["📊", "150+ Criteria", "For rating & comparison"],
+        ["🔄", "Monthly Updates", "Key broker data"],
+        ["🛡", "Independent Reviews", "Clear methodology"],
+      ].map(([icon, title, desc]) => (
+        <div
+          key={title}
+          className="flex items-center justify-start gap-3 px-5 py-4 md:px-6"
+        >
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-50 text-[13px] font-black text-blue-600">
+            {icon}
+          </span>
+
+          <div className="text-left">
+            <div className="text-[13px] font-black text-slate-950 md:text-[14px]">
+              {title}
+            </div>
+            <div className="mt-1 text-[11px] font-bold text-slate-500">
+              {desc}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div className="flex flex-col gap-3 border-t border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-5 py-4 md:flex-row md:items-center md:justify-between">
+      <div className="text-center md:text-left">
+        <div className="text-[12px] font-black text-blue-700">
+          Broker Rating Methodology
+        </div>
+
+        <p className="mt-1 max-w-4xl text-[13px] font-semibold leading-6 text-slate-700">
+          We rate brokers by regulation, trading costs, platforms, withdrawals,
+          account types, and support quality.
+        </p>
+      </div>
+
+      <Link
+        href="/en/how-we-review-brokers"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex min-h-[42px] shrink-0 items-center justify-center rounded-2xl bg-[#2563eb] px-5 text-[13px] font-black text-white shadow-[0_10px_22px_rgba(37,99,235,0.20)] transition hover:bg-[#1d4ed8]"
+      >
+        Learn How We Rate
+      </Link>
+    </div>
+  </div>
+</section>
+
     {/* HOW WE RATE - CLEAN TRUST SECTION */}
 <section className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
   <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
@@ -1643,6 +1697,110 @@ const typePages = getTypePages();
       </div>
     </div>
 
+  </div>
+</section>
+
+{/* EVENTS SECTION */}
+<section className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
+  <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
+    {/* HEADER */}
+    <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div className="text-center lg:text-left">
+          <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-[#2563eb] shadow-sm">
+            Forex & FinTech Events
+          </span>
+
+          <h2 className="mt-4 text-[30px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] sm:text-[34px] lg:text-[36px]">
+            Major Forex and FinTech Expos in 2026
+          </h2>
+
+          <p className="mx-auto mt-3 max-w-[900px] text-[14px] font-semibold leading-8 text-slate-600 lg:mx-0 lg:text-[15px] lg:leading-9">
+            Follow key forex, trading, fintech, and online brokerage events bringing together
+            brokers, fintech providers, investors, IBs, prop firms, and financial brands worldwide.
+          </p>
+        </div>
+
+        <div className="flex justify-center lg:self-center lg:pr-2">
+          <Link
+            href="/en/events"
+            className="inline-flex h-12 items-center justify-center rounded-2xl bg-[#2563eb] px-6 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(37,99,235,0.24)] transition hover:bg-[#1d4ed8]"
+          >
+            View All Events
+          </Link>
+        </div>
+      </div>
+    </div>
+
+    {/* EVENTS */}
+    <div className="grid gap-4 p-4 md:grid-cols-3 lg:p-5">
+      {[
+        {
+          title: "PROFX Expo Africa 2026",
+          date: "20 - 21 August 2026",
+          place: "Cape Town International Convention Centre",
+          city: "Cape Town, South Africa",
+          desc: "A forex and fintech expo connecting traders, brokers, investors, fintech innovators, and global financial brands across Africa.",
+          slug: "/en/events/profx-expo-africa-2026",
+        },
+        {
+          title: "PROFIN EXPO Bangkok 2026",
+          date: "3 - 4 September 2026",
+          place: "Bangkok, Thailand",
+          city: "Bangkok, Thailand",
+          desc: "A financial innovation event in Asia for fintech providers, finance companies, investors, and business networking opportunities.",
+          slug: "/en/events/profinexpo-bangkok-2026",
+        },
+        {
+          title: "iFX EXPO Asia 2026",
+          date: "7 - 9 October 2026",
+          place: "Hong Kong",
+          city: "Hong Kong",
+          desc: "A major online trading expo bringing together brokers, prop firms, IBs, fintechs, regtechs, and financial service providers.",
+          slug: "/en/events/ifx-expo-asia-2026",
+        },
+      ].map((event) => (
+        <article
+          key={event.title}
+          className="group relative flex h-full flex-col overflow-hidden rounded-[22px] border border-slate-200 bg-white p-5 text-left shadow-[0_6px_18px_rgba(15,23,42,0.04)] transition duration-300 hover:-translate-y-1 hover:border-[#93c5fd] hover:bg-[#fcfdff] hover:shadow-[0_22px_50px_rgba(15,23,42,0.08)]"
+        >
+          <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#2563eb] via-[#60a5fa] to-transparent opacity-80" />
+
+          <div className="mb-4 flex items-center justify-between">
+            <span className="rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-[11px] font-black text-[#2563eb]">
+              Financial Event
+            </span>
+
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-50 text-[16px]">
+              📅
+            </span>
+          </div>
+
+          <h3 className="text-[18px] font-black leading-7 text-[#07111f]">
+            {event.title}
+          </h3>
+
+          <div className="mt-4 space-y-2 text-[13px] font-bold leading-6 text-slate-600">
+            <div>📅 {event.date}</div>
+            <div>🏢 {event.place}</div>
+            <div>🌍 {event.city}</div>
+          </div>
+
+          <p className="mt-4 text-[13px] leading-7 text-slate-600">
+            {event.desc}
+          </p>
+
+          <Link
+            href={event.slug}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-auto inline-flex w-full items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-[14px] font-black text-white transition hover:bg-[#1d4ed8]"
+          >
+            View Event Details
+          </Link>
+        </article>
+      ))}
+    </div>
   </div>
 </section>
 
