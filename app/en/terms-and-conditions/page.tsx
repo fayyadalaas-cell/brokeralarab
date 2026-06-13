@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 export const metadata: Metadata = {
-  title: "Terms & Conditions | Broker Alarab",
+  title: "Terms & Conditions",
   description:
     "Read the terms and conditions for using Broker Alarab, including content limitations, liability disclaimer, affiliate links, and important notices before engaging with any broker.",
   alternates: {
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Terms & Conditions | Broker Alarab",
+  title: "Terms & Conditions",
     description:
       "Read the terms and conditions for using Broker Alarab, including content limitations, liability disclaimer, affiliate links, and important notices.",
     url: "https://brokeralarab.com/en/terms-and-conditions",

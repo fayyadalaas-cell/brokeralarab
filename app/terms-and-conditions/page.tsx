@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "الشروط والأحكام | بروكر العرب",
+  title: "الشروط والأحكام",
   description:
     "الشروط والأحكام الخاصة باستخدام موقع بروكر العرب، بما في ذلك حدود المسؤولية، طبيعة المحتوى، الروابط التابعة، والتنبيه المهم قبل التعامل مع أي شركة تداول.",
   alternates: {
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "الشروط والأحكام | بروكر العرب",
+    title: "الشروط والأحكام",
     description:
       "الشروط والأحكام الخاصة باستخدام موقع بروكر العرب، بما في ذلك حدود المسؤولية، طبيعة المحتوى، الروابط التابعة، والتنبيه المهم قبل التعامل مع أي شركة تداول.",
     url: "https://brokeralarab.com/terms-and-conditions",

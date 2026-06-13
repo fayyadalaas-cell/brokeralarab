@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Cairo } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
@@ -174,9 +175,13 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createClient();
+const headersList = await headers();
+const pathname = headersList.get("x-pathname") || "";
+const isEnglish = pathname.startsWith("/en");
 
-  const { data: brokersData } = await supabase
+const supabase = await createClient();
+
+const { data: brokersData } = await supabase
     .from("brokers")
     .select("name, name_en, slug, rating")
     .not("slug", "is", null)
@@ -192,7 +197,7 @@ export default async function RootLayout({
     })) ?? [];
 
   return (
-    <html lang="ar" dir="rtl">
+    <html lang={isEnglish ? "en" : "ar"} dir={isEnglish ? "ltr" : "rtl"}>
       <head>
         {/* Organization Schema */}
         <Script
