@@ -5,18 +5,18 @@ export const metadata: Metadata = {
   description:
     "الشروط والأحكام الخاصة باستخدام موقع بروكر العرب، بما في ذلك حدود المسؤولية، طبيعة المحتوى، الروابط التابعة، والتنبيه المهم قبل التعامل مع أي شركة تداول.",
   alternates: {
-  canonical: "https://brokeralarab.com/terms",
-  languages: {
-    ar: "https://brokeralarab.com/terms",
-    en: "https://brokeralarab.com/en/terms",
-    "x-default": "https://brokeralarab.com/en/terms",
+    canonical: "https://brokeralarab.com/terms-and-conditions",
+    languages: {
+      ar: "https://brokeralarab.com/terms-and-conditions",
+      en: "https://brokeralarab.com/en/terms-and-conditions",
+      "x-default": "https://brokeralarab.com/en/terms-and-conditions",
+    },
   },
-},
   openGraph: {
     title: "الشروط والأحكام | بروكر العرب",
     description:
       "الشروط والأحكام الخاصة باستخدام موقع بروكر العرب، بما في ذلك حدود المسؤولية، طبيعة المحتوى، الروابط التابعة، والتنبيه المهم قبل التعامل مع أي شركة تداول.",
-    url: "https://brokeralarab.com/terms",
+    url: "https://brokeralarab.com/terms-and-conditions",
     siteName: "بروكر العرب",
     type: "website",
   },
