@@ -38,7 +38,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date(),
   }));
 
-  // 🟢 صفحات شرح فتح الحساب — فقط الشركات الموجودة في Supabase والمفعّلة
   const { data: openAccountGuides } = await supabase
     .from("broker_open_account_guides")
     .select("slug")
@@ -77,7 +76,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   });
 
-  // 🟢 صفحات الدول من Supabase
   const { data: countryPagesData } = await supabase
     .from("country_pages")
     .select("slug");
@@ -116,6 +114,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
+  // 🟢 صفحات أدوات التداول
+  const toolSlugs = [
+    "risk-calculator",
+    "margin-calculator",
+  ];
+
+  const toolPages = toolSlugs.map((slug) => ({
+    url: `${BASE_URL}/tools/${slug}`,
+    lastModified: new Date(),
+  }));
+
+  const toolPagesEN = toolSlugs.map((slug) => ({
+    url: `${BASE_URL}/en/tools/${slug}`,
+    lastModified: new Date(),
+  }));
+
   const staticPages = [
     { url: `${BASE_URL}`, lastModified: new Date() },
     { url: `${BASE_URL}/brokers`, lastModified: new Date() },
@@ -144,6 +158,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     ...staticPages,
     ...staticPagesEN,
+    ...toolPages,
+    ...toolPagesEN,
     ...countryPages,
     ...countryPagesEN,
     ...brokerPages,
