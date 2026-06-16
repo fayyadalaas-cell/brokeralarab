@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import RiskCalculatorClient from "./RiskCalculatorClient";
 
 export const metadata: Metadata = {
-  title:
-    "Forex Risk Calculator | Position Size & Lot Size Calculator | Broker Al Arab",
+  title: "Forex Risk Calculator & Position Size Calculator",
+
   description:
-    "Use the Forex Risk Calculator by Broker Al Arab to calculate your risk amount, position size, and suggested lot size before opening a forex or gold trade.",
+    "Calculate your trading risk, position size, and suggested lot size for forex and gold based on account balance, risk percentage, and stop-loss distance.",
+
   alternates: {
     canonical: "https://brokeralarab.com/en/tools/risk-calculator",
     languages: {
@@ -14,11 +15,13 @@ export const metadata: Metadata = {
       "x-default": "https://brokeralarab.com/en/tools/risk-calculator",
     },
   },
+
   openGraph: {
-    title:
-      "Forex Risk Calculator | Position Size & Lot Size Calculator | Broker Al Arab",
+    title: "Forex Risk Calculator & Position Size Calculator",
+
     description:
-      "Calculate risk amount, position size, and suggested lot size before opening a forex or gold trade.",
+      "Calculate trading risk, position size, and lot size before opening a forex or gold trade.",
+
     url: "https://brokeralarab.com/en/tools/risk-calculator",
     siteName: "Broker Al Arab",
     type: "website",
