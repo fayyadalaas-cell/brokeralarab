@@ -122,6 +122,7 @@ const toolSlugs = [
   "lot-size-calculator",
   "profit-calculator",
   "leverage-calculator",
+  "drawdown-calculator",
 ];
 
   const toolPages = toolSlugs.map((slug) => ({
