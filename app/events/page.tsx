@@ -2,7 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata = {
-  title: "معارض ومؤتمرات الفوركس في 2026 | Broker Al Arab",
+  title: "معارض ومؤتمرات الفوركس في 2026",
   description:
     "تابع أهم معارض ومؤتمرات الفوركس والتكنولوجيا المالية في 2026، مع مواعيد الفعاليات، أماكنها، وأهميتها للمتداولين وشركات الوساطة.",
 };
