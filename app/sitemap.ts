@@ -114,11 +114,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  // 🟢 صفحات أدوات التداول
-  const toolSlugs = [
-    "risk-calculator",
-    "margin-calculator",
-  ];
+// 🟢 صفحات أدوات التداول
+const toolSlugs = [
+  "risk-calculator",
+  "margin-calculator",
+  "pip-calculator",
+  "lot-size-calculator",
+];
 
   const toolPages = toolSlugs.map((slug) => ({
     url: `${BASE_URL}/tools/${slug}`,
