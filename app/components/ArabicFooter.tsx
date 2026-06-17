@@ -23,13 +23,13 @@ export default function ArabicFooter() {
         <div className="hidden md:block">
           <div className="grid gap-8 py-10 lg:grid-cols-[1.15fr_0.8fr_0.8fr]">
             <div>
-              <Image
-                src="/brokers/BrokerLogo.png"
-                alt="بروكر العرب"
-                width={320}
-                height={100}
-                className="h-auto w-[210px] brightness-0 invert"
-              />
+             <Image
+  src="/logo/Asset 2@4x.png"
+  alt="Broker Al Arab"
+  width={320}
+  height={100}
+  className="h-auto w-[220px]"
+/>
 
               <p className="mt-4 max-w-xl text-[15px] leading-8 text-slate-300">
                 بروكر العرب منصة عربية متخصصة في مراجعات ومقارنات شركات التداول،

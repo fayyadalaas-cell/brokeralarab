@@ -92,14 +92,14 @@ export default function ArabicHeader({
       <div className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-8">
         <div className="relative flex h-16 items-center justify-between lg:h-20">
           <Link href="/" className="min-w-0 shrink-0 lg:justify-self-end">
-            <Image
-              src="/brokers/BrokerLogo.png"
-              alt="بروكر العرب"
-              width={300}
-              height={90}
-              priority
-              className="h-auto w-[120px] sm:w-[135px] lg:w-[200px]"
-            />
+           <Image
+  src="/logo/Asset 4@6x.png"
+  alt="Broker Al Arab"
+  width={500}
+  height={160}
+  priority
+  className="h-auto w-[130px] sm:w-[155px] lg:w-[200px]"
+/>
           </Link>
 
           <nav className="hidden flex-1 items-center justify-center gap-1 lg:flex xl:gap-2">

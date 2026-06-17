@@ -70,7 +70,7 @@ export default function EnglishHeader({
         >
           <Link href="/en" className="min-w-0 shrink-0">
             <Image
-              src="/logo-en.png"
+              src="/logo/Asset 1@3x.png"
               alt="Broker Al Arab"
               width={300}
               height={90}
