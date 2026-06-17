@@ -120,6 +120,8 @@ const toolSlugs = [
   "margin-calculator",
   "pip-calculator",
   "lot-size-calculator",
+  "profit-calculator",
+  "leverage-calculator",
 ];
 
   const toolPages = toolSlugs.map((slug) => ({
