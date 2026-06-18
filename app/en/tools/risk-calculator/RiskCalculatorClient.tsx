@@ -137,10 +137,10 @@ export default function RiskCalculatorClient() {
   return (
     <main dir="ltr" className="min-h-screen bg-[#f3f7fb] text-slate-900">
       <section className="mx-auto max-w-7xl px-3 py-4 sm:px-6 sm:py-8 lg:px-8">
-        {/* HERO */}
-        <div className="rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm sm:rounded-[2rem] sm:p-10 lg:p-12">
-          <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-            <div className="text-center lg:text-left">
+                     {/* HERO */}
+        <div className="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm sm:rounded-[2rem]">
+          <div className="grid gap-0 lg:grid-cols-[1.05fr_0.95fr]">
+            <div className="p-5 text-center sm:p-10 lg:p-12 lg:text-left">
               <span className="inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700 sm:px-4 sm:py-1.5 sm:text-sm">
                 Trading Tools
               </span>
@@ -162,6 +162,7 @@ export default function RiskCalculatorClient() {
                 >
                   Start calculating
                 </a>
+
                 <a
                   href="#guide"
                   className="rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-extrabold text-slate-700 transition hover:bg-slate-50"
@@ -171,32 +172,48 @@ export default function RiskCalculatorClient() {
               </div>
             </div>
 
-            <div className="rounded-[1.25rem] bg-slate-950 p-4 text-white shadow-sm sm:rounded-[1.75rem] sm:p-6">
-              <p className="text-sm font-bold text-blue-300">Quick example</p>
+            <div className="border-t border-slate-100 bg-gradient-to-br from-blue-50 via-white to-slate-50 p-5 sm:p-8 lg:border-l lg:border-t-0 lg:p-10">
+              <div className="rounded-[1.5rem] border border-blue-100 bg-white p-5 shadow-sm sm:rounded-[2rem] sm:p-6">
+                <p className="text-sm font-bold text-blue-700">
+                  Quick Example
+                </p>
 
-              <div className="mt-4 grid gap-3 sm:mt-5 sm:gap-4">
-                <div className="rounded-xl bg-white/10 p-3 sm:rounded-2xl sm:p-5">
-                  <p className="text-xs text-slate-300 sm:text-sm">
-                    Account balance
-                  </p>
-                  <p className="mt-1 text-xl font-extrabold sm:mt-2 sm:text-3xl">
-                    $1,000
-                  </p>
+                <div className="mt-5 grid gap-3">
+                  <div className="rounded-2xl bg-slate-50 p-4">
+                    <p className="text-xs font-bold text-slate-500">
+                      Account Balance
+                    </p>
+
+                    <p className="mt-1 text-2xl font-extrabold text-slate-950">
+                      $1,000
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl bg-slate-50 p-4">
+                    <p className="text-xs font-bold text-slate-500">
+                      Risk Amount
+                    </p>
+
+                    <p className="mt-1 text-2xl font-extrabold text-blue-700">
+                      $10 = 1%
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4">
+                    <p className="text-xs font-bold text-blue-700">
+                      Suggested Lot Size
+                    </p>
+
+                    <p className="mt-1 text-2xl font-extrabold text-blue-800">
+                      0.02 lots
+                    </p>
+                  </div>
                 </div>
 
-                <div className="rounded-xl bg-white/10 p-3 sm:rounded-2xl sm:p-5">
-                  <p className="text-xs text-slate-300 sm:text-sm">Risk</p>
-                  <p className="mt-1 text-xl font-extrabold sm:mt-2 sm:text-3xl">
-                    $10 = 1%
-                  </p>
-                </div>
-
-                <div className="rounded-xl bg-blue-600/20 p-3 sm:rounded-2xl sm:p-5">
-                  <p className="text-xs text-blue-100 sm:text-sm">Goal</p>
-                  <p className="mt-1 text-base font-extrabold leading-7 sm:mt-2 sm:text-2xl sm:leading-snug">
-                    Do not let one trade threaten your account
-                  </p>
-                </div>
+                <p className="mt-4 text-xs leading-6 text-slate-500">
+                  Example based on a $1,000 account, 1% risk, and a 50-pip stop
+                  loss on EUR/USD.
+                </p>
               </div>
             </div>
           </div>
@@ -623,14 +640,14 @@ export default function RiskCalculatorClient() {
                   </p>
                 </div>
 
-                <div className="rounded-3xl bg-slate-950 p-5 text-white shadow-sm sm:p-7">
-                  <h3 className="text-xl font-extrabold sm:text-2xl">
+                <div className="rounded-3xl border border-blue-100 bg-white p-5 shadow-sm sm:p-7">
+                  <h3 className="text-xl font-extrabold text-slate-950 sm:text-2xl">
                     Quick practical example
                   </h3>
 
                   <div className="mt-5 space-y-4">
-                    <div className="rounded-2xl bg-white/10 p-4">
-                      <div className="text-xs text-slate-300">
+                    <div className="rounded-2xl bg-slate-50 p-4">
+                      <div className="text-xs text-slate-500">
                         Account balance
                       </div>
                       <div className="mt-1 text-2xl font-extrabold">
@@ -638,8 +655,8 @@ export default function RiskCalculatorClient() {
                       </div>
                     </div>
 
-                    <div className="rounded-2xl bg-white/10 p-4">
-                      <div className="text-xs text-slate-300">Risk</div>
+                    <div className="rounded-2xl bg-slate-50 p-4">
+                      <div className="text-xs text-slate-500">Risk</div>
                       <div className="mt-1 text-2xl font-extrabold">$10</div>
                     </div>
 
