@@ -125,13 +125,13 @@ export default function ArabicFooter() {
           <div className="py-6">
             <div className="overflow-hidden rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,#0a1730_0%,#07101f_100%)] shadow-[0_20px_60px_rgba(2,6,23,0.32)]">
               <div className="px-4 py-5">
-                <Image
-                  src="/brokers/BrokerLogo.png"
-                  alt="بروكر العرب"
-                  width={260}
-                  height={90}
-                  className="mx-auto h-auto w-[170px] brightness-0 invert"
-                />
+               <Image
+  src="/logo/Asset 2@4x.png"
+  alt="بروكر العرب | Broker Al Arab"
+  width={300}
+  height={100}
+  className="mx-auto h-auto w-[190px]"
+/>
 
                 <p className="mt-4 text-center text-[14px] leading-8 text-slate-300">
                   بروكر العرب منصة عربية متخصصة في مراجعات ومقارنات شركات التداول،
