@@ -47,13 +47,16 @@ type MobileNavMenuProps = {
 
 const brokerLogoMap: Record<string, string> = {
   activtrades: "/brokers/activtrade.png",
+  activtrade: "/brokers/activtrade.png",
   alpari: "/brokers/alpari.png",
   avatrade: "/brokers/avatrade.png",
   equiti: "/brokers/equiti.png",
   exness: "/brokers/exness.png",
   "exness-platform": "/brokers/exness-platform.png",
+  exness2: "/brokers/exness2.png",
   fxpro: "/brokers/FxPro.png",
   "ic-markets": "/brokers/ic-markets.png",
+  icmarkets: "/brokers/ic-markets.png",
   justmarkets: "/brokers/justmarkets.png",
   justmarket: "/brokers/justmarket.png",
   "just-markets": "/brokers/justmarkets.png",
@@ -61,6 +64,12 @@ const brokerLogoMap: Record<string, string> = {
   vantage: "/brokers/vantage.png",
   xm: "/brokers/xm.png",
   xs: "/brokers/xs.png",
+  multibank: "/brokers/MultibankGroup.png",
+  "multi-bank": "/brokers/MultibankGroup.png",
+  "multi-bank-group": "/brokers/MultibankGroup.png",
+  "markets-com": "/brokers/markets-com.png",
+  marketscom: "/brokers/markets-com.png",
+  plus500: "/brokers/plus500.png",
 };
 
 function getBrokerLogo(slug: string): string {
@@ -77,9 +86,24 @@ function withLangHref(href: string, isEnglish: boolean) {
 function HamburgerIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden="true">
-      <path d="M4 7h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      <path d="M4 12h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      <path d="M4 17h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <path
+        d="M4 7h16"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M4 12h16"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M4 17h16"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
@@ -87,8 +111,18 @@ function HamburgerIcon() {
 function CloseIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden="true">
-      <path d="M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      <path d="M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <path
+        d="M6 6l12 12"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M18 6L6 18"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
@@ -98,7 +132,9 @@ function ChevronIcon({ open }: { open: boolean }) {
     <svg
       viewBox="0 0 20 20"
       fill="none"
-      className={`h-4 w-4 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+      className={`h-4 w-4 transition-transform duration-200 ${
+        open ? "rotate-180" : ""
+      }`}
       aria-hidden="true"
     >
       <path
@@ -107,6 +143,33 @@ function ChevronIcon({ open }: { open: boolean }) {
         strokeWidth="1.8"
         strokeLinecap="round"
         strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function ToolIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" aria-hidden="true">
+      <path
+        d="M7 14.5 4.5 17 7 19.5"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M17 4.5 19.5 7 17 9.5"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M14.5 5.5 9.5 18.5"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
       />
     </svg>
   );
@@ -130,13 +193,18 @@ function Section({
         onClick={onToggle}
         className="flex w-full items-center justify-between px-4 py-3 text-left"
       >
-        <span className="text-[15px] font-extrabold text-slate-900">{title}</span>
+        <span className="text-[15px] font-extrabold text-slate-900">
+          {title}
+        </span>
+
         <span className="text-slate-500">
           <ChevronIcon open={open} />
         </span>
       </button>
 
-      {open ? <div className="border-t border-slate-100 px-3 py-3">{children}</div> : null}
+      {open ? (
+        <div className="border-t border-slate-100 px-3 py-3">{children}</div>
+      ) : null}
     </div>
   );
 }
@@ -149,31 +217,74 @@ export default function MobileNavMenu({
   learnTradingMenuItems,
 }: MobileNavMenuProps) {
   const pathname = usePathname();
-const isEnglish = pathname.startsWith("/en");
+  const isEnglish = pathname.startsWith("/en");
 
-const mobileCountryMenuItems = [
-  ...countryMenuItems,
-  {
-    label: "أفضل شركات التداول في العراق",
-    shortLabel: "العراق",
-    href: "/best-brokers/iraq",
-    flag: "https://flagcdn.com/w80/iq.png",
-  },
-  {
-    label: "أفضل شركات التداول في ليبيا",
-    shortLabel: "ليبيا",
-    href: "/best-brokers/libya",
-    flag: "https://flagcdn.com/w80/ly.png",
-  },
-  {
-    label: "أفضل شركات التداول في سوريا",
-    shortLabel: "سوريا",
-    href: "/best-brokers/syria",
-    flag: "https://flagcdn.com/w80/sy.png",
-  },
-];
+  const mobileCountryMenuItems = [
+    ...countryMenuItems,
+    {
+      label: "أفضل شركات التداول في العراق",
+      shortLabel: "العراق",
+      href: "/best-brokers/iraq",
+      flag: "https://flagcdn.com/w80/iq.png",
+    },
+    {
+      label: "أفضل شركات التداول في ليبيا",
+      shortLabel: "ليبيا",
+      href: "/best-brokers/libya",
+      flag: "https://flagcdn.com/w80/ly.png",
+    },
+    {
+      label: "أفضل شركات التداول في سوريا",
+      shortLabel: "سوريا",
+      href: "/best-brokers/syria",
+      flag: "https://flagcdn.com/w80/sy.png",
+    },
+  ];
 
-const [isOpen, setIsOpen] = useState(false);
+  const mobileTradingTools = [
+    {
+      label: isEnglish ? "Risk Calculator" : "حاسبة إدارة المخاطر",
+      href: "/tools/risk-calculator",
+    },
+    {
+      label: isEnglish ? "Lot Size Calculator" : "حاسبة حجم اللوت",
+      href: "/tools/lot-size-calculator",
+    },
+    {
+      label: isEnglish ? "Pip Calculator" : "حاسبة النقاط",
+      href: "/tools/pip-calculator",
+    },
+    {
+      label: isEnglish ? "Profit Calculator" : "حاسبة الأرباح والخسائر",
+      href: "/tools/profit-calculator",
+    },
+    {
+      label: isEnglish ? "Margin Calculator" : "حاسبة الهامش",
+      href: "/tools/margin-calculator",
+    },
+    {
+      label: isEnglish ? "Leverage Calculator" : "حاسبة الرافعة المالية",
+      href: "/tools/leverage-calculator",
+    },
+    {
+      label: isEnglish ? "Drawdown Calculator" : "حاسبة التراجع",
+      href: "/tools/drawdown-calculator",
+    },
+    {
+      label: isEnglish ? "Compound Calculator" : "حاسبة الفائدة المركبة",
+      href: "/tools/compound-calculator",
+    },
+    {
+      label: isEnglish ? "Fibonacci Calculator" : "حاسبة فيبوناتشي",
+      href: "/tools/fibonacci-calculator",
+    },
+    {
+      label: isEnglish ? "Pivot Point Calculator" : "حاسبة نقاط الارتكاز",
+      href: "/tools/pivot-point-calculator",
+    },
+  ];
+
+  const [isOpen, setIsOpen] = useState(false);
   const [openSection, setOpenSection] = useState<string | null>(null);
 
   useEffect(() => {
@@ -183,6 +294,7 @@ const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
+
     return () => {
       document.body.style.overflow = "";
     };
@@ -224,11 +336,12 @@ const [isOpen, setIsOpen] = useState(false);
     comparisons: isEnglish ? "Comparisons" : "المقارنات",
     allComparisons: isEnglish ? "View All Comparisons" : "جميع المقارنات",
     best: isEnglish ? "Best Brokers" : "أفضل الوسطاء",
+    tools: isEnglish ? "Tools" : "الأدوات",
+    allTools: isEnglish ? "View All Tools" : "عرض جميع الأدوات",
     learn: isEnglish ? "Learn Trading" : "تعلم التداول",
     about: isEnglish ? "About" : "عن الموقع",
   };
-
-  return (
+    return (
     <div className="lg:hidden">
       <button
         type="button"
@@ -242,16 +355,19 @@ const [isOpen, setIsOpen] = useState(false);
 
       {isOpen && (
         <>
-          <div className="fixed inset-0 z-[90] bg-slate-950/10" onClick={closeMenu} />
+          <div
+            className="fixed inset-0 z-[90] bg-slate-950/10"
+            onClick={closeMenu}
+          />
 
           <div
             dir={isEnglish ? "ltr" : "rtl"}
-            className={`fixed top-16 z-[100] w-[280px] transition-all duration-200 ease-out ${
+            className={`fixed top-16 z-[100] w-[292px] transition-all duration-200 ease-out ${
               isEnglish ? "left-0 origin-top-left" : "right-0 origin-top-right"
             } ${
               isOpen
                 ? "translate-y-0 opacity-100"
-                : "-translate-y-2 opacity-0 pointer-events-none"
+                : "pointer-events-none -translate-y-2 opacity-0"
             }`}
           >
             <div
@@ -304,14 +420,19 @@ const [isOpen, setIsOpen] = useState(false);
                   >
                     <div className="space-y-2">
                       {topBrokers.map((broker) => {
-                        const brokerName = isEnglish ? broker.name_en || broker.name : broker.name;
+                        const brokerName = isEnglish
+                          ? broker.name_en || broker.name
+                          : broker.name;
 
                         return (
                           <Link
                             key={broker.slug}
-                            href={withLangHref(`/brokers/${broker.slug}`, isEnglish)}
+                            href={withLangHref(
+                              `/brokers/${broker.slug}`,
+                              isEnglish
+                            )}
                             onClick={closeMenu}
-                            className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3"
+                            className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 transition hover:bg-white"
                           >
                             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white">
                               <Image
@@ -353,7 +474,7 @@ const [isOpen, setIsOpen] = useState(false);
                           key={item.href}
                           href={withLangHref(item.href, isEnglish)}
                           onClick={closeMenu}
-                          className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3"
+                          className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 transition hover:bg-white"
                         >
                           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white">
                             <Image
@@ -392,28 +513,28 @@ const [isOpen, setIsOpen] = useState(false);
                   </Section>
 
                   <Section
-  title={text.best}
-  open={openSection === "best"}
-  onToggle={() => toggleSection("best")}
->
-  {isEnglish ? (
-    <div className="space-y-2">
-      <Link
-        href="/en/best-brokers"
-        onClick={closeMenu}
-        className="block rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-[14px] font-extrabold text-slate-900 transition hover:bg-white"
-      >
-        Best Forex Brokers in 2026
-      </Link>
+                    title={text.best}
+                    open={openSection === "best"}
+                    onToggle={() => toggleSection("best")}
+                  >
+                    {isEnglish ? (
+                      <div className="space-y-2">
+                        <Link
+                          href="/en/best-brokers"
+                          onClick={closeMenu}
+                          className="block rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-[14px] font-extrabold text-slate-900 transition hover:bg-white"
+                        >
+                          Best Forex Brokers in 2026
+                        </Link>
 
-      <Link
-        href="/en/best-brokers/gold"
-        onClick={closeMenu}
-        className="block rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-[14px] font-extrabold text-slate-900 transition hover:bg-white"
-      >
-        Best Gold Brokers
-      </Link>
-    </div>
+                        <Link
+                          href="/en/best-brokers/gold"
+                          onClick={closeMenu}
+                          className="block rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-[14px] font-extrabold text-slate-900 transition hover:bg-white"
+                        >
+                          Best Gold Brokers
+                        </Link>
+                      </div>
                     ) : (
                       <div className="space-y-4">
                         <div>
@@ -427,13 +548,13 @@ const [isOpen, setIsOpen] = useState(false);
                                 key={item.href}
                                 href={item.href}
                                 onClick={closeMenu}
-                                className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3"
+                                className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 transition hover:bg-white"
                               >
-                               <img
-  src={item.flag}
-  alt={item.shortLabel}
-  className="h-[18px] w-[18px] rounded-full object-cover"
-/>
+                                <img
+                                  src={item.flag}
+                                  alt={item.shortLabel}
+                                  className="h-[18px] w-[18px] rounded-full object-cover"
+                                />
                                 <span className="truncate text-[13px] font-bold text-slate-800">
                                   {item.shortLabel}
                                 </span>
@@ -453,7 +574,7 @@ const [isOpen, setIsOpen] = useState(false);
                                 key={`${item.href}-${item.label}`}
                                 href={item.href}
                                 onClick={closeMenu}
-                                className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-[14px] font-bold text-slate-800"
+                                className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-[14px] font-bold text-slate-800 transition hover:bg-white"
                               >
                                 {item.label}
                               </Link>
@@ -462,6 +583,41 @@ const [isOpen, setIsOpen] = useState(false);
                         </div>
                       </div>
                     )}
+                  </Section>
+
+                  <Section
+                    title={text.tools}
+                    open={openSection === "tools"}
+                    onToggle={() => toggleSection("tools")}
+                  >
+                    <div className="grid gap-2">
+                      <Link
+                        href={withLangHref("/tools", isEnglish)}
+                        onClick={closeMenu}
+                        className="rounded-2xl border border-blue-200 bg-blue-50 px-3 py-3 text-center text-sm font-extrabold text-blue-700 transition hover:bg-blue-100"
+                      >
+                        {text.allTools}
+                      </Link>
+
+                      <div className="grid grid-cols-2 gap-2">
+                        {mobileTradingTools.map((tool) => (
+                          <Link
+                            key={tool.href}
+                            href={withLangHref(tool.href, isEnglish)}
+                            onClick={closeMenu}
+                            className="group rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 transition hover:border-blue-200 hover:bg-white"
+                          >
+                            <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-xl bg-blue-100 text-blue-700">
+                              <ToolIcon />
+                            </div>
+
+                            <div className="text-[12.5px] font-extrabold leading-5 text-slate-800 group-hover:text-blue-700">
+                              {tool.label}
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
                   </Section>
 
                   <Section
@@ -479,12 +635,18 @@ const [isOpen, setIsOpen] = useState(false);
                         >
                           <div className="relative h-[58px] w-[58px] shrink-0 overflow-hidden rounded-[14px] border border-slate-200 bg-white">
                             <Image
-                              src={item.image || "/articles/how-to-start-trading-from-zero.png"}
-                              alt={isEnglish
-  ? item.href === "/learn-trading/how-to-start-trading-from-zero"
-    ? "How to Start Trading from Zero"
-    : item.title_en || item.title
-  : item.title}
+                              src={
+                                item.image ||
+                                "/articles/how-to-start-trading-from-zero.png"
+                              }
+                              alt={
+                                isEnglish
+                                  ? item.href ===
+                                    "/learn-trading/how-to-start-trading-from-zero"
+                                    ? "How to Start Trading from Zero"
+                                    : item.title_en || item.title
+                                  : item.title
+                              }
                               fill
                               className="object-cover"
                             />
@@ -493,10 +655,11 @@ const [isOpen, setIsOpen] = useState(false);
                           <div className="min-w-0 flex-1">
                             <h3 className="line-clamp-2 text-[15px] font-black leading-7 text-slate-950">
                               {isEnglish
-  ? item.href === "/learn-trading/how-to-start-trading-from-zero"
-    ? "How to Start Trading from Zero"
-    : item.title_en || item.title
-  : item.title}
+                                ? item.href ===
+                                  "/learn-trading/how-to-start-trading-from-zero"
+                                  ? "How to Start Trading from Zero"
+                                  : item.title_en || item.title
+                                : item.title}
                             </h3>
                           </div>
                         </Link>

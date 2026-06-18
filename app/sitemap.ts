@@ -123,6 +123,9 @@ const toolSlugs = [
   "profit-calculator",
   "leverage-calculator",
   "drawdown-calculator",
+  "compound-calculator",
+  "fibonacci-calculator",
+  "pivot-point-calculator",
 ];
 
   const toolPages = toolSlugs.map((slug) => ({

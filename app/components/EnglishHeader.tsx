@@ -51,6 +51,20 @@ function getLearnTradingHref(item: any) {
   return `/en${item.href}`;
 }
 
+const tradingToolsEn = [
+  { title: "Risk Calculator", href: "/en/tools/risk-calculator" },
+  { title: "Lot Size Calculator", href: "/en/tools/lot-size-calculator" },
+  { title: "Pip Calculator", href: "/en/tools/pip-calculator" },
+  { title: "Profit Calculator", href: "/en/tools/profit-calculator" },
+  { title: "Margin Calculator", href: "/en/tools/margin-calculator" },
+  { title: "Fibonacci Calculator", href: "/en/tools/fibonacci-calculator" },
+  { title: "Pivot Point Calculator", href: "/en/tools/pivot-point-calculator" },
+  { title: "Compound Calculator", href: "/en/tools/compound-calculator" },
+];
+
+const mainLinkClass =
+  "inline-flex items-center gap-2 whitespace-nowrap rounded-full px-3 py-2 text-[14px] font-extrabold text-slate-700 transition hover:bg-slate-100";
+
 export default function EnglishHeader({
   topBrokers,
   countryMenuItems,
@@ -75,23 +89,14 @@ export default function EnglishHeader({
               width={300}
               height={90}
               priority
-              className="h-auto w-[120px] sm:w-[135px] lg:w-[200px]"
+              className="h-auto w-[120px] sm:w-[135px] lg:w-[180px]"
             />
           </Link>
 
-          <nav className="hidden flex-1 items-center justify-center gap-1 lg:flex xl:gap-2">
-            <Link
-              href="/en"
-              className="rounded-full px-4 py-2.5 text-[15px] font-extrabold text-slate-700 transition hover:bg-slate-100"
-            >
-              Home
-            </Link>
-
+          <nav className="hidden flex-1 items-center justify-center gap-0.5 lg:flex xl:gap-1">
+            {/* REVIEWS */}
             <div className="group relative">
-              <Link
-                href="/en/brokers"
-                className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[15px] font-extrabold text-slate-700 transition hover:bg-slate-100"
-              >
+              <Link href="/en/brokers" className={mainLinkClass}>
                 Broker Reviews
                 <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
                   ▼
@@ -142,11 +147,9 @@ export default function EnglishHeader({
               </div>
             </div>
 
+            {/* COMPARE */}
             <div className="group relative">
-              <Link
-                href="/en/compare"
-                className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[15px] font-extrabold text-slate-700 transition hover:bg-slate-100"
-              >
+              <Link href="/en/compare" className={mainLinkClass}>
                 Comparisons
                 <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
                   ▼
@@ -205,11 +208,9 @@ export default function EnglishHeader({
               </div>
             </div>
 
+            {/* BEST BROKERS */}
             <div className="group relative">
-              <Link
-                href="/en/best-brokers"
-                className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[15px] font-extrabold text-slate-700 transition hover:bg-slate-100"
-              >
+              <Link href="/en/best-brokers" className={mainLinkClass}>
                 Best Brokers
                 <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
                   ▼
@@ -217,34 +218,70 @@ export default function EnglishHeader({
               </Link>
 
               <div className="invisible absolute left-0 top-full z-50 mt-1 w-[360px] translate-y-2 rounded-[28px] border border-slate-200 bg-white p-4 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.14)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
-              <div className="px-2 pb-3 pt-1 text-xs font-black tracking-wide text-slate-500">
-  Best Broker Guides
-</div>
+                <div className="px-2 pb-3 pt-1 text-xs font-black tracking-wide text-slate-500">
+                  Best Broker Guides
+                </div>
 
-<Link
-  href="/en/best-brokers"
-  className="block rounded-2xl px-3 py-3 transition hover:bg-blue-50"
->
-  <div className="text-[16px] font-black text-slate-900">
-    Best Forex Brokers in 2026
-  </div>
-</Link>
+                <Link
+                  href="/en/best-brokers"
+                  className="block rounded-2xl px-3 py-3 transition hover:bg-blue-50"
+                >
+                  <div className="text-[16px] font-black text-slate-900">
+                    Best Forex Brokers in 2026
+                  </div>
+                </Link>
 
-<Link
-  href="/en/best-brokers/gold"
-  className="block rounded-2xl px-3 py-3 transition hover:bg-blue-50"
->
-  <div className="text-[16px] font-black text-slate-900">
-    Best Gold Brokers
-  </div>
-</Link>
+                <Link
+                  href="/en/best-brokers/gold"
+                  className="block rounded-2xl px-3 py-3 transition hover:bg-blue-50"
+                >
+                  <div className="text-[16px] font-black text-slate-900">
+                    Best Gold Brokers
+                  </div>
+                </Link>
               </div>
             </div>
 
+            {/* TRADING TOOLS */}
+            <div className="group relative">
+              <Link href="/en/tools" className={mainLinkClass}>
+                Tools
+                <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
+                  ▼
+                </span>
+              </Link>
+
+              <div className="invisible absolute left-0 top-full z-50 mt-3 w-[420px] translate-y-2 rounded-[28px] border border-slate-200 bg-white p-4 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.14)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+                <div className="px-3 pb-3 pt-1 text-xs font-black tracking-wide text-slate-500">
+                  Trading Calculators & Tools
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  {tradingToolsEn.map((tool) => (
+                    <Link
+                      key={tool.href}
+                      href={tool.href}
+                      className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-[13px] font-extrabold text-slate-700 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700"
+                    >
+                      {tool.title}
+                    </Link>
+                  ))}
+                </div>
+
+                <Link
+                  href="/en/tools"
+                  className="mt-3 block rounded-2xl px-3 py-3 text-sm font-extrabold text-blue-700 transition hover:bg-blue-50"
+                >
+                  View All Tools →
+                </Link>
+              </div>
+            </div>
+
+            {/* LEARN TRADING */}
             <div className="group relative">
               <Link
                 href="/en/learn-trading/how-to-start-trading-from-zero"
-                className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[15px] font-extrabold text-slate-700 transition hover:bg-slate-100"
+                className={mainLinkClass}
               >
                 Learn Trading
                 <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
@@ -281,18 +318,15 @@ export default function EnglishHeader({
               </div>
             </div>
 
-            <Link
-              href="/en/about"
-              className="rounded-full px-4 py-2.5 text-[15px] font-extrabold text-slate-700 transition hover:bg-slate-100"
-            >
+            <Link href="/en/about" className={mainLinkClass}>
               About
             </Link>
           </nav>
 
-          <div className="hidden min-w-[120px] items-center justify-end lg:flex">
+          <div className="hidden min-w-[105px] items-center justify-end lg:flex">
             <Link
               href="/"
-              className="inline-flex items-center rounded-full border border-blue-300 bg-white px-4 py-2 text-[13px] font-bold text-blue-700 shadow-sm transition hover:border-blue-400 hover:bg-blue-50"
+              className="inline-flex items-center rounded-full border border-blue-300 bg-white px-3 py-1.5 text-[12px] font-bold text-blue-700 shadow-sm transition hover:border-blue-400 hover:bg-blue-50"
             >
               العربية
             </Link>
