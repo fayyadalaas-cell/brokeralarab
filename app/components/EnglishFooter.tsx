@@ -26,13 +26,13 @@ export default function EnglishFooter() {
         <div className="hidden md:block">
           <div className="grid gap-8 py-10 lg:grid-cols-[1.15fr_0.8fr_0.8fr]">
             <div>
-              <Image
-                src="/logo-en.png"
-                alt="Broker Al Arab"
-                width={320}
-                height={100}
-                className="h-auto w-[210px]"
-              />
+             <Image
+  src="/logo/Asset 5@5x.png"
+  alt="Broker Al Arab"
+  width={420}
+  height={120}
+  className="h-auto w-[240px]"
+/>
 
               <p className="mt-4 max-w-xl text-[15px] leading-8 text-slate-300">
                 Broker Al Arab is an Arabic-focused platform specializing in
@@ -134,12 +134,12 @@ export default function EnglishFooter() {
             <div className="overflow-hidden rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,#0a1730_0%,#07101f_100%)] shadow-[0_20px_60px_rgba(2,6,23,0.32)]">
               <div className="px-4 py-5">
                 <Image
-                  src="/logo-en.png"
-                  alt="Broker Al Arab"
-                  width={260}
-                  height={90}
-                  className="mx-auto h-auto w-[170px]"
-                />
+  src="/logo/Asset 5@5x.png"
+  alt="Broker Al Arab"
+  width={320}
+  height={100}
+  className="mx-auto h-auto w-[190px]"
+/>
 
                 <p className="mt-4 text-center text-[14px] leading-8 text-slate-300">
                   Broker Al Arab is a specialized platform for broker reviews
