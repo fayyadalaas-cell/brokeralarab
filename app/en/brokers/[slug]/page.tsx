@@ -238,20 +238,20 @@ export async function generateMetadata({
   locale: "en_US",
   type: "article",
   images: [
-    {
-      url: `${siteUrl}/brokers/${broker.slug}/opengraph-image?v=2`,
-      width: 1200,
-      height: 630,
-      alt: `Review ${broker.name}`,
-    },
-  ],
+  {
+    url: `${siteUrl}/og-image.png`,
+    width: 1560,
+    height: 377,
+    alt: `Review ${broker.name}`,
+  },
+],
 },
 
 twitter: {
   card: "summary_large_image",
   title,
   description,
-  images: [`${siteUrl}/brokers/${broker.slug}/opengraph-image?v=2`],
+  images: [`${siteUrl}/og-image.png`],
   creator: "@brokeralarab",
 },
   };

@@ -339,20 +339,29 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   },
 },
     openGraph: {
-      title: "Broker Comparisons | Broker AlArab",
-      description:
-        "Detailed broker comparisons covering accounts, fees, regulation, and trading platforms.",
-      url: `${siteUrl}/en/compare`,
-      siteName: "Broker Al Arab",
-      locale: "en_US",
-      type: "website",
+  title: "Broker Comparisons | Broker AlArab",
+  description:
+    "Detailed broker comparisons covering accounts, fees, regulation, and trading platforms.",
+  url: `${siteUrl}/en/compare`,
+  siteName: "Broker Al Arab",
+  locale: "en_US",
+  type: "website",
+  images: [
+    {
+      url: `${siteUrl}/og-image.png`,
+      width: 1560,
+      height: 377,
+      alt: "Broker Al Arab",
     },
-    twitter: {
-      card: "summary_large_image",
-      title: "Broker Comparisons | Broker AlArab",
-      description:
-        "Detailed broker comparisons covering accounts, fees, regulation, and trading platforms.",
-    },
+  ],
+},
+  twitter: {
+  card: "summary_large_image",
+  title: "Broker Comparisons | Broker AlArab",
+  description:
+    "Detailed broker comparisons covering accounts, fees, regulation, and trading platforms.",
+  images: [`${siteUrl}/og-image.png`],
+},
   };
 }
 
@@ -377,7 +386,7 @@ const rightName = rightBroker?.name_en || rightBroker?.name || rightSlug;
 
  const title = `${leftName} vs ${rightName} | Fees, Platforms & Regulation`;
 const description = `A detailed comparison between ${leftName} and ${rightName} covering accounts, fees, regulation, platforms, and minimum deposit to help traders choose the better broker.`;
-const imageUrl = `${siteUrl}/compare/${slug}/opengraph-image?v=3`;
+const imageUrl = `${siteUrl}/og-image.png`;
 
   
  return {
@@ -402,28 +411,29 @@ const imageUrl = `${siteUrl}/compare/${slug}/opengraph-image?v=3`;
   },
 },
   openGraph: {
-    title,
-    description,
-    url: `${siteUrl}/en/compare/${slug}`,
-    siteName: "Broker Al Arab",
-    locale: "en_US",
-    type: "article",
-    images: [
-      {
-        url: imageUrl,
-        width: 1200,
-        height: 630,
-        alt: `${leftName} vs ${rightName} comparison`,
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title,
-    description,
-    images: [imageUrl],
-    creator: "@brokeralarab",
-  },
+  title,
+  description,
+  url: `${siteUrl}/en/compare/${slug}`,
+  siteName: "Broker Al Arab",
+  locale: "en_US",
+  type: "article",
+  images: [
+    {
+      url: imageUrl,
+      width: 1560,
+      height: 377,
+      alt: "Broker Al Arab",
+    },
+  ],
+},
+
+twitter: {
+  card: "summary_large_image",
+  title,
+  description,
+  images: [imageUrl],
+  creator: "@brokeralarab",
+},
 };
 }
 

@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     en: "https://brokeralarab.com/en/brokers",
   },
 },
-  openGraph: {
+   openGraph: {
     title: "تقييم شركات التداول الموثوقة | بروكر العرب",
     description:
       "صفحة عربية احترافية لعرض تقييم شركات التداول ومقارنة أهم التفاصيل قبل فتح حساب حقيقي.",
@@ -50,6 +50,14 @@ export const metadata: Metadata = {
     siteName: "بروكر العرب",
     type: "website",
     locale: "ar_AR",
+    images: [
+      {
+        url: "https://brokeralarab.com/og-image.png",
+        width: 1560,
+        height: 377,
+        alt: "Broker Al Arab",
+      },
+    ],
   },
 };
 

@@ -17,25 +17,39 @@ export const metadata: Metadata = {
     "مراجعات شركات التداول",
     "مقارنة الوسطاء",
     "الحساب الإسلامي",
-    "بروكر العرب",
   ],
   alternates: {
-  canonical: "https://brokeralarab.com",
-  languages: {
-    ar: "https://brokeralarab.com",
-    en: "https://brokeralarab.com/en",
-    "x-default": "https://brokeralarab.com/en",
+    canonical: "https://brokeralarab.com",
+    languages: {
+      ar: "https://brokeralarab.com",
+      en: "https://brokeralarab.com/en",
+      "x-default": "https://brokeralarab.com/en",
+    },
   },
-},
-openGraph: {
-  title: "أفضل شركات التداول وتقييم الوسطاء | بروكر العرب",
-  description:
-    "أفضل شركات التداول: تقييم شامل ومقارنة بين الوسطاء من حيث التراخيص، الرسوم، والمنصات لمساعدتك في اختيار الوسيط المناسب بثقة.",
-  url: "https://brokeralarab.com",
-  siteName: "بروكر العرب",
-  type: "website",
-  locale: "ar_AR",
-},
+  openGraph: {
+    title: "أفضل شركات التداول وتقييم الوسطاء | بروكر العرب",
+    description:
+      "أفضل شركات التداول: تقييم شامل ومقارنة بين الوسطاء من حيث التراخيص، الرسوم، والمنصات لمساعدتك في اختيار الوسيط المناسب بثقة.",
+    url: "https://brokeralarab.com",
+    siteName: "بروكر العرب",
+    type: "website",
+    locale: "ar_AR",
+    images: [
+      {
+        url: "https://brokeralarab.com/og-image.png",
+        width: 1560,
+        height: 377,
+        alt: "بروكر العرب",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "أفضل شركات التداول وتقييم الوسطاء | بروكر العرب",
+    description:
+      "أفضل شركات التداول: تقييم شامل ومقارنة بين الوسطاء من حيث التراخيص، الرسوم، والمنصات لمساعدتك في اختيار الوسيط المناسب بثقة.",
+    images: ["https://brokeralarab.com/og-image.png"],
+  },
 };
 
 type Broker = {

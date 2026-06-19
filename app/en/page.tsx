@@ -29,15 +29,30 @@ export const metadata: Metadata = {
     "x-default": "https://brokeralarab.com/en",
   },
 },
-  openGraph: {
-    title: "Best Brokers & Trading Reviews | Broker AlArab",
-    description:
-      "Discover the best brokers through detailed reviews and broker comparisons, including regulation, fees, and trading platforms to help you choose the right broker with confidence.",
-    url: "https://brokeralarab.com/en",
-    siteName: "Broker AlArab",
-    type: "website",
-    locale: "en_US",
-  },
+ openGraph: {
+  title: "Best Brokers & Trading Reviews | Broker AlArab",
+  description:
+    "Discover the best brokers through detailed reviews and broker comparisons, including regulation, fees, and trading platforms to help you choose the right broker with confidence.",
+  url: "https://brokeralarab.com/en",
+  siteName: "Broker AlArab",
+  type: "website",
+  locale: "en_US",
+  images: [
+    {
+      url: "https://brokeralarab.com/og-image.png",
+      width: 1560,
+      height: 377,
+      alt: "Broker Al Arab",
+    },
+  ],
+},
+twitter: {
+  card: "summary_large_image",
+  title: "Best Brokers & Trading Reviews | Broker AlArab",
+  description:
+    "Discover the best brokers through detailed reviews and broker comparisons, including regulation, fees, and trading platforms to help you choose the right broker with confidence.",
+  images: ["https://brokeralarab.com/og-image.png"],
+},
 };
 
 type Broker = {

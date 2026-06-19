@@ -285,7 +285,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     "x-default": `${siteUrl}/compare/${slug}`,
   },
 },
-     openGraph: {
+    openGraph: {
   title: "مقارنة شركات التداول | بروكر العرب",
   description:
     "مقارنات تفصيلية بين شركات التداول من حيث الحسابات والرسوم والتراخيص والمنصات.",
@@ -293,13 +293,22 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   siteName: "Broker Al Arab",
   locale: "ar_AR",
   type: "website",
+  images: [
+    {
+      url: `${siteUrl}/og-image.png`,
+      width: 1560,
+      height: 377,
+      alt: "Broker Al Arab",
+    },
+  ],
 },
 
 twitter: {
-  card: "summary",
+  card: "summary_large_image",
   title: "مقارنة شركات التداول | بروكر العرب",
   description:
     "مقارنات تفصيلية بين شركات التداول من حيث الحسابات والرسوم والتراخيص والمنصات.",
+  images: [`${siteUrl}/og-image.png`],
 },
     };
   }
@@ -344,19 +353,28 @@ twitter: {
     "x-default": `${siteUrl}/compare/${slug}`,
   },
 },
-    openGraph: {
-      title,
-      description,
-      url: `${siteUrl}/compare/${slug}`,
-      siteName: "Broker Al Arab",
-      locale: "ar_AR",
-      type: "article",
-     
-    },
-   twitter: {
-  card: "summary",
+   openGraph: {
   title,
   description,
+  url: `${siteUrl}/compare/${slug}`,
+  siteName: "Broker Al Arab",
+  locale: "ar_AR",
+  type: "article",
+  images: [
+    {
+      url: `${siteUrl}/og-image.png`,
+      width: 1560,
+      height: 377,
+      alt: "Broker Al Arab",
+    },
+  ],
+},
+
+twitter: {
+  card: "summary_large_image",
+  title,
+  description,
+  images: [`${siteUrl}/og-image.png`],
 },
   };
 }
