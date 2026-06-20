@@ -385,7 +385,7 @@ const leftName = leftBroker?.name_en || leftBroker?.name || leftSlug;
 const rightName = rightBroker?.name_en || rightBroker?.name || rightSlug;
 
  const title = `${leftName} vs ${rightName} | Fees, Platforms & Regulation`;
-const description = `A detailed comparison between ${leftName} and ${rightName} covering accounts, fees, regulation, platforms, and minimum deposit to help traders choose the better broker.`;
+const description = `Compare ${leftName} vs ${rightName} by fees, regulation, account types, and trading platforms.`;
 const imageUrl = `${siteUrl}/og-image.png`;
 
   
@@ -615,7 +615,7 @@ export default async function ComparePage({ params }: PageProps) {
   "@type": "WebPage",
   name: `${left.name_en || left.name} vs ${right.name_en || right.name}`,
   url: `https://brokeralarab.com/en/compare/${slug}`,
-  description: `A detailed comparison between ${left.name_en || left.name} and ${right.name_en || right.name} covering accounts, fees, regulation, platforms, and minimum deposit.`,
+  description: `Compare ${left.name_en || left.name} vs ${right.name_en || right.name} by fees, regulation, account types, and trading platforms.`,
   mainEntity: {
     "@type": "ItemList",
     name: `${left.name_en || left.name} vs ${right.name_en || right.name}`,
