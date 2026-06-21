@@ -31,19 +31,52 @@ export default function ContactForm({ lang = "ar" }: { lang?: "ar" | "en" }) {
     event.preventDefault();
     setStatus("loading");
 
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
 
-    const res = await fetch("/api/contact", {
-      method: "POST",
-      body: formData,
-    });
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        body: formData,
+      });
 
-    if (res.ok) {
-      setStatus("success");
-      event.currentTarget.reset();
-    } else {
+      if (res.ok) {
+        form.reset();
+        setStatus("success");
+      } else {
+        setStatus("error");
+      }
+    } catch {
       setStatus("error");
     }
+  }
+
+  if (status === "success") {
+    return (
+      <div className="rounded-[28px] border border-green-200 bg-green-50 p-6 text-center shadow-sm md:p-8">
+        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-green-100 text-2xl font-extrabold text-green-700">
+          ✓
+        </div>
+
+        <h3 className="text-2xl font-extrabold text-green-800">
+          {isAr ? "تم إرسال رسالتك بنجاح" : "Your message has been sent"}
+        </h3>
+
+        <p className="mx-auto mt-3 max-w-2xl text-base leading-8 text-green-700">
+          {isAr
+            ? "شكراً لتواصلك معنا. سنراجع رسالتك ونعود إليك في أقرب وقت ممكن."
+            : "Thank you for contacting us. We will review your message and get back to you as soon as possible."}
+        </p>
+
+        <button
+          type="button"
+          onClick={() => setStatus("idle")}
+          className="mt-6 inline-flex items-center justify-center rounded-2xl bg-green-700 px-7 py-3 text-sm font-extrabold text-white shadow-sm transition hover:bg-green-800"
+        >
+          {isAr ? "إرسال رسالة أخرى" : "Send another message"}
+        </button>
+      </div>
+    );
   }
 
   return (
@@ -143,14 +176,6 @@ export default function ContactForm({ lang = "ar" }: { lang?: "ar" | "en" }) {
           className={`${inputClass} resize-none`}
         />
       </div>
-
-      {status === "success" && (
-        <div className="mt-5 rounded-2xl border border-green-200 bg-green-50 p-4 text-sm font-bold text-green-700">
-          {isAr
-            ? "تم إرسال رسالتك بنجاح. سنراجعها في أقرب وقت ممكن."
-            : "Your message has been sent successfully. We will review it as soon as possible."}
-        </div>
-      )}
 
       {status === "error" && (
         <div className="mt-5 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-bold text-red-700">
