@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import ContactForm from "../components/ContactForm";
 
 export const metadata: Metadata = {
   title: "اتصل بنا",
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "اتصل بنا | بروكر العرب",
+    title: "اتصل بنا",
     description:
       "تواصل مع فريق بروكر العرب للاستفسارات العامة، التعاون، الملاحظات على مراجعات شركات التداول، أو الإبلاغ عن أي معلومات تحتاج إلى تحديث.",
     url: "https://brokeralarab.com/contact",
@@ -38,24 +39,6 @@ function Section({
     </section>
   );
 }
-
-function Label({
-  children,
-  required = false,
-}: {
-  children: React.ReactNode;
-  required?: boolean;
-}) {
-  return (
-    <label className="mb-2 block text-sm font-extrabold text-slate-800">
-      {children}
-      {required && <span className="mr-1 text-red-600">*</span>}
-    </label>
-  );
-}
-
-const inputClass =
-  "w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100";
 
 export default function ContactPage() {
   return (
@@ -100,111 +83,7 @@ export default function ContactPage() {
               </p>
             </div>
 
-            <form action="/api/contact" method="post">
-              <div className="hidden" aria-hidden="true">
-                <label>
-                  Website
-                  <input
-                    type="text"
-                    name="website"
-                    tabIndex={-1}
-                    autoComplete="off"
-                  />
-                </label>
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <div>
-                  <Label required>الاسم الكامل</Label>
-                  <input
-                    name="name"
-                    type="text"
-                    required
-                    placeholder="اكتب اسمك الكامل"
-                    className={inputClass}
-                  />
-                </div>
-
-                <div>
-                  <Label required>البريد الإلكتروني</Label>
-                  <input
-                    name="email"
-                    type="email"
-                    required
-                    placeholder="you@example.com"
-                    className={inputClass}
-                    dir="ltr"
-                  />
-                </div>
-
-                <div>
-                  <Label>رقم الهاتف</Label>
-                  <input
-                    name="phone"
-                    type="tel"
-                    placeholder="اختياري"
-                    className={inputClass}
-                    dir="ltr"
-                  />
-                </div>
-
-                <div>
-                  <Label required>نوع الطلب</Label>
-                  <select
-                    name="type"
-                    required
-                    defaultValue=""
-                    className={inputClass}
-                  >
-                    <option value="" disabled>
-                      اختر نوع الطلب
-                    </option>
-                    <option value="General Inquiry">استفسار عام</option>
-                    <option value="Content Update">تحديث محتوى</option>
-                    <option value="Broker Inquiry">استفسار عن شركة تداول</option>
-                    <option value="Partnership">شراكة أو تعاون</option>
-                    <option value="Advertising">إعلان أو رعاية</option>
-                    <option value="Technical Issue">مشكلة تقنية</option>
-                  </select>
-                </div>
-
-                <div className="md:col-span-2">
-                  <Label required>عنوان الرسالة</Label>
-                  <input
-                    name="subject"
-                    type="text"
-                    required
-                    placeholder="اكتب عنواناً مختصراً"
-                    className={inputClass}
-                  />
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <Label required>الرسالة</Label>
-                <textarea
-                  name="message"
-                  required
-                  rows={6}
-                  placeholder="اكتب رسالتك هنا..."
-                  className={`${inputClass} resize-none`}
-                />
-              </div>
-
-              <div className="mt-5 flex flex-col gap-4 border-t border-slate-200 pt-5 md:flex-row md:items-center md:justify-between">
-                <p className="text-sm leading-7 text-slate-500">
-                  يرجى عدم إرسال كلمات مرور، بيانات دفع، أو معلومات دخول خاصة
-                  بحسابات التداول.
-                </p>
-
-                <button
-                  type="submit"
-                  className="inline-flex items-center justify-center rounded-2xl bg-blue-700 px-8 py-3.5 text-sm font-extrabold text-white shadow-sm transition hover:bg-blue-800"
-                >
-                  إرسال الرسالة
-                </button>
-              </div>
-            </form>
+            <ContactForm lang="ar" />
           </section>
 
           <Section title="البريد الإلكتروني">

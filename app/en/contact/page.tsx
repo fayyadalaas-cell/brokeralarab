@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import ContactForm from "../../components/ContactForm";
 
 export const metadata: Metadata = {
   title: "Contact Us",
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Contact Us | Broker Alarab",
+    title: "Contact Us",
     description:
       "Contact Broker Alarab for general inquiries, content updates, partnership opportunities, or feedback related to broker reviews and comparison pages.",
     url: "https://brokeralarab.com/en/contact",
@@ -38,24 +39,6 @@ function Section({
     </section>
   );
 }
-
-function Label({
-  children,
-  required = false,
-}: {
-  children: React.ReactNode;
-  required?: boolean;
-}) {
-  return (
-    <label className="mb-2 block text-sm font-extrabold text-slate-800">
-      {children}
-      {required && <span className="ml-1 text-red-600">*</span>}
-    </label>
-  );
-}
-
-const inputClass =
-  "w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100";
 
 export default function ContactPage() {
   return (
@@ -101,109 +84,7 @@ export default function ContactPage() {
               </p>
             </div>
 
-            <form action="/api/contact" method="post">
-              <div className="hidden" aria-hidden="true">
-                <label>
-                  Website
-                  <input
-                    type="text"
-                    name="website"
-                    tabIndex={-1}
-                    autoComplete="off"
-                  />
-                </label>
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <div>
-                  <Label required>Full Name</Label>
-                  <input
-                    name="name"
-                    type="text"
-                    required
-                    placeholder="Your full name"
-                    className={inputClass}
-                  />
-                </div>
-
-                <div>
-                  <Label required>Email Address</Label>
-                  <input
-                    name="email"
-                    type="email"
-                    required
-                    placeholder="you@example.com"
-                    className={inputClass}
-                  />
-                </div>
-
-                <div>
-                  <Label>Phone Number</Label>
-                  <input
-                    name="phone"
-                    type="tel"
-                    placeholder="Optional"
-                    className={inputClass}
-                  />
-                </div>
-
-                <div>
-                  <Label required>Inquiry Type</Label>
-                  <select
-                    name="type"
-                    required
-                    defaultValue=""
-                    className={inputClass}
-                  >
-                    <option value="" disabled>
-                      Select inquiry type
-                    </option>
-                    <option value="General Inquiry">General Inquiry</option>
-                    <option value="Content Update">Content Update</option>
-                    <option value="Broker Inquiry">Broker Inquiry</option>
-                    <option value="Partnership">Partnership</option>
-                    <option value="Advertising">Advertising</option>
-                    <option value="Technical Issue">Technical Issue</option>
-                  </select>
-                </div>
-
-                <div className="md:col-span-2">
-                  <Label required>Subject</Label>
-                  <input
-                    name="subject"
-                    type="text"
-                    required
-                    placeholder="Brief subject"
-                    className={inputClass}
-                  />
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <Label required>Message</Label>
-                <textarea
-                  name="message"
-                  required
-                  rows={6}
-                  placeholder="Write your message here..."
-                  className={`${inputClass} resize-none`}
-                />
-              </div>
-
-              <div className="mt-5 flex flex-col gap-4 border-t border-slate-200 pt-5 md:flex-row md:items-center md:justify-between">
-                <p className="text-sm leading-7 text-slate-500">
-                  Please avoid sending passwords, payment details, or trading
-                  account login information.
-                </p>
-
-                <button
-                  type="submit"
-                  className="inline-flex items-center justify-center rounded-2xl bg-blue-700 px-8 py-3.5 text-sm font-extrabold text-white shadow-sm transition hover:bg-blue-800"
-                >
-                  Send Message
-                </button>
-              </div>
-            </form>
+           <ContactForm lang="en" />
           </section>
 
           <Section title="Email">
