@@ -83,6 +83,7 @@ type Broker = {
   islamic_account: string | null;
   arabic_support: string | null;
   trading_assets: string | null;
+  real_account_url: string | null;
 };
 
 function money(value: number | null) {
@@ -224,19 +225,20 @@ export default async function HomePage() {
   const { data } = await supabase
     .from("brokers")
     .select(`
-      id,
-      name,
-      slug,
-      rating,
-      min_deposit,
-      platforms,
-      regulation,
-      regulation_short,
-      best_for,
-      logo,
-      islamic_account,
-      arabic_support
-    `)
+  id,
+  name,
+  slug,
+  rating,
+  min_deposit,
+  platforms,
+  regulation,
+  regulation_short,
+  best_for,
+  logo,
+  islamic_account,
+  arabic_support,
+  real_account_url
+`)
     .order("rating", { ascending: false });
 
   const { data: comparisonsData } = await supabase
