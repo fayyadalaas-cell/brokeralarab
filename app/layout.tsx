@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import { Cairo } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
@@ -175,9 +174,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-const headersList = await headers();
-const pathname = headersList.get("x-pathname") || "";
-const isEnglish = pathname.startsWith("/en");
+
 
 const supabase = await createClient();
 
@@ -196,10 +193,26 @@ const { data: brokersData } = await supabase
       menuLogo: getBrokerLogo(broker.slug),
     })) ?? [];
 
-  return (
-    <html lang={isEnglish ? "en" : "ar"} dir={isEnglish ? "ltr" : "rtl"}>
-      <head>
-        {/* Organization Schema */}
+return (
+  <html lang="ar" dir="rtl">
+    <head>
+      <Script
+        id="set-html-lang-dir"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            (function () {
+              var path = window.location.pathname;
+              var isEnglish = path === "/en" || path.indexOf("/en/") === 0;
+
+              document.documentElement.lang = isEnglish ? "en" : "ar";
+              document.documentElement.dir = isEnglish ? "ltr" : "rtl";
+            })();
+          `,
+        }}
+      />
+
+      {/* Organization Schema */}
         <Script
           id="organization-schema"
           type="application/ld+json"
