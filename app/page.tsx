@@ -866,9 +866,12 @@ const { data: rankingData } = await supabase
                   {cmp.broker_1?.name || "Broker 1"}
                 </Link>
 
-                <span className="mt-1 text-[11px] font-bold text-[#f59e0b]">
-                  ★ {cmp.broker_1?.rating?.toFixed(1) ?? "—"}
-                </span>
+                <span
+  aria-label={`تقييم ${cmp.broker_1?.name || "الوسيط الأول"} ${cmp.broker_1?.rating?.toFixed(1) ?? "غير متوفر"} من 5`}
+  className="mt-1 text-[11px] font-bold text-[#f59e0b]"
+>
+  ★ {cmp.broker_1?.rating?.toFixed(1) ?? "—"}
+</span>
               </div>
 
               <div className="flex items-center justify-center">
@@ -894,9 +897,12 @@ const { data: rankingData } = await supabase
                   {cmp.broker_2?.name || "Broker 2"}
                 </span>
 
-                <span className="mt-1 text-[11px] font-bold text-[#f59e0b]">
-                  ★ {cmp.broker_2?.rating?.toFixed(1) ?? "—"}
-                </span>
+                <span
+  aria-label={`تقييم ${cmp.broker_2?.name || "الوسيط الثاني"} ${cmp.broker_2?.rating?.toFixed(1) ?? "غير متوفر"} من 5`}
+  className="mt-1 text-[11px] font-bold text-[#f59e0b]"
+>
+  ★ {cmp.broker_2?.rating?.toFixed(1) ?? "—"}
+</span>
               </div>
             </div>
 
@@ -957,9 +963,12 @@ const { data: rankingData } = await supabase
                   {cmp.broker_1?.name || "Broker 1"}
                 </Link>
 
-                <span className="mt-2 text-[12px] font-bold text-[#f59e0b]">
-                  ★ {cmp.broker_1?.rating?.toFixed(1) ?? "—"}
-                </span>
+               <span
+  aria-label={`تقييم ${cmp.broker_1?.name || "الوسيط الأول"} ${cmp.broker_1?.rating?.toFixed(1) ?? "غير متوفر"} من 5`}
+  className="mt-1 text-[11px] font-bold text-[#f59e0b]"
+>
+  ★ {cmp.broker_1?.rating?.toFixed(1) ?? "—"}
+</span>
               </div>
 
               <div className="flex items-center justify-center">
@@ -991,9 +1000,12 @@ const { data: rankingData } = await supabase
                   {cmp.broker_2?.name || "Broker 2"}
                 </Link>
 
-                <span className="mt-2 text-[12px] font-bold text-[#f59e0b]">
-                  ★ {cmp.broker_2?.rating?.toFixed(1) ?? "—"}
-                </span>
+                <span
+  aria-label={`تقييم ${cmp.broker_2?.name || "الوسيط الثاني"} ${cmp.broker_2?.rating?.toFixed(1) ?? "غير متوفر"} من 5`}
+  className="mt-1 text-[11px] font-bold text-[#f59e0b]"
+>
+  ★ {cmp.broker_2?.rating?.toFixed(1) ?? "—"}
+</span>
               </div>
             </div>
 

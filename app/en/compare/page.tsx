@@ -92,14 +92,26 @@ function minDeposit(a: number | null, b: number | null) {
   return Math.min(...values);
 }
 
-function renderStars(rating: number | null, size: "sm" | "md" = "sm") {
+function renderStars(
+  rating: number | null,
+  size: "sm" | "md" = "sm",
+  label = "Broker rating"
+) {
   const stars = Math.round(rating ?? 0);
   const starClass = size === "md" ? "text-[13px]" : "text-[11px]";
+  const ratingText = rating !== null ? rating.toFixed(1) : "not available";
 
   return (
-    <div className={`flex items-center gap-0.5 text-amber-400 ${starClass}`}>
+    <div
+      aria-label={`${label} ${ratingText} out of 5`}
+      className={`flex items-center gap-0.5 text-amber-400 ${starClass}`}
+    >
       {Array.from({ length: 5 }).map((_, i) => (
-        <span key={i} className={i < stars ? "opacity-100" : "opacity-30"}>
+        <span
+          key={i}
+          aria-hidden="true"
+          className={i < stars ? "opacity-100" : "opacity-30"}
+        >
           ★
         </span>
       ))}
@@ -147,8 +159,7 @@ export default async function ComparePage() {
         name: "How do I compare two brokers?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Choose two brokers from the comparison tool at the top of the page, then go مباشرة إلى صفحة المقارنة التي تعرض الفروقات في التراخيص والمنصات والحد الأدنى للإيداع والحساب الإسلامي.",
-        },
+text: "Choose two brokers from the comparison tool at the top of the page, then open a dedicated comparison page that highlights the key differences in regulation, platforms, minimum deposit, and Islamic account availability."        },
       },
       {
         "@type": "Question",
@@ -399,7 +410,11 @@ export default async function ComparePage() {
                         <span className="text-[11px] font-bold text-slate-600">
                           {item.a.rating?.toFixed(1) ?? "-"}
                         </span>
-                        {renderStars(item.a.rating, "sm")}
+                        {renderStars(
+  item.a.rating,
+  "sm",
+  `${item.a.name_en || item.a.name || "Broker A"} rating`
+)}
                       </div>
                     </div>
 
@@ -428,7 +443,11 @@ export default async function ComparePage() {
                         <span className="text-[11px] font-bold text-slate-600">
                           {item.b.rating?.toFixed(1) ?? "-"}
                         </span>
-                        {renderStars(item.b.rating, "sm")}
+                       {renderStars(
+  item.b.rating,
+  "sm",
+  `${item.b.name_en || item.b.name || "Broker B"} rating`
+)}
                       </div>
                     </div>
                   </div>
@@ -492,7 +511,11 @@ export default async function ComparePage() {
                         <span className="text-xs font-bold text-slate-600">
                           {item.a.rating?.toFixed(1) ?? "-"}
                         </span>
-                        {renderStars(item.a.rating, "md")}
+{renderStars(
+  item.a.rating,
+  "md",
+  `${item.a.name_en || item.a.name || "Broker A"} rating`
+)}
                       </div>
                     </div>
 
@@ -521,7 +544,11 @@ export default async function ComparePage() {
                         <span className="text-xs font-bold text-slate-600">
                           {item.b.rating?.toFixed(1) ?? "-"}
                         </span>
-                        {renderStars(item.b.rating, "md")}
+                       {renderStars(
+  item.b.rating,
+  "md",
+  `${item.b.name_en || item.b.name || "Broker B"} rating`
+)}
                       </div>
                     </div>
                   </div>

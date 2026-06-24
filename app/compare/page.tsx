@@ -90,14 +90,22 @@ function minDeposit(a: number | null, b: number | null) {
   return Math.min(...values);
 }
 
-function renderStars(rating: number | null, size: "sm" | "md" = "sm") {
+function renderStars(
+  rating: number | null,
+  size: "sm" | "md" = "sm",
+  label = "تقييم الوسيط"
+) {
   const stars = Math.round(rating ?? 0);
   const starClass = size === "md" ? "text-[13px]" : "text-[11px]";
+  const ratingText = rating !== null ? rating.toFixed(1) : "غير متوفر";
 
   return (
-    <div className={`flex items-center gap-0.5 text-amber-400 ${starClass}`}>
+    <div
+      aria-label={`${label} ${ratingText} من 5`}
+      className={`flex items-center gap-0.5 text-amber-400 ${starClass}`}
+    >
       {Array.from({ length: 5 }).map((_, i) => (
-        <span key={i} className={i < stars ? "opacity-100" : "opacity-30"}>
+        <span key={i} aria-hidden="true" className={i < stars ? "opacity-100" : "opacity-30"}>
           ★
         </span>
       ))}
@@ -393,7 +401,7 @@ const featuredComparisonsMobile = sortedComparisons.slice(0, 5);
                   <span className="text-[11px] font-bold text-slate-600">
                     {item.a.rating?.toFixed(1) ?? "-"}
                   </span>
-                  {renderStars(item.a.rating, "sm")}
+                  {renderStars(item.a.rating, "sm", `تقييم ${item.a.name || "الوسيط الأول"}`)}
                 </div>
               </div>
 
@@ -422,7 +430,7 @@ const featuredComparisonsMobile = sortedComparisons.slice(0, 5);
                   <span className="text-[11px] font-bold text-slate-600">
                     {item.b.rating?.toFixed(1) ?? "-"}
                   </span>
-                  {renderStars(item.b.rating, "sm")}
+                  {renderStars(item.b.rating, "sm", `تقييم ${item.b.name || "الوسيط الثاني"}`)}
                 </div>
               </div>
             </div>
@@ -485,7 +493,7 @@ const featuredComparisonsMobile = sortedComparisons.slice(0, 5);
                   <span className="text-xs font-bold text-slate-600">
                     {item.a.rating?.toFixed(1) ?? "-"}
                   </span>
-                  {renderStars(item.a.rating, "md")}
+                  {renderStars(item.a.rating, "md", `تقييم ${item.a.name || "الوسيط الأول"}`)}
                 </div>
               </div>
 
@@ -514,7 +522,7 @@ const featuredComparisonsMobile = sortedComparisons.slice(0, 5);
                   <span className="text-xs font-bold text-slate-600">
                     {item.b.rating?.toFixed(1) ?? "-"}
                   </span>
-                  {renderStars(item.b.rating, "md")}
+                  {renderStars(item.b.rating, "md", `تقييم ${item.b.name || "الوسيط الثاني"}`)}
                 </div>
               </div>
             </div>

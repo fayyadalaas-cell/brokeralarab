@@ -2885,12 +2885,6 @@ export default async function ComparePage({ params }: PageProps) {
         </div>
       </div>
 
-      
-
-        <div className="flex justify-start lg:justify-end">
-        
-    
-      </div>
     </div>
 
     {/* Mobile */}

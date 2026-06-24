@@ -2681,16 +2681,7 @@ export default async function ComparePage({ params }: PageProps) {
         </div>
       </div>
 
-      <div className="mt-7 grid gap-4 rounded-[26px] border border-[#dbeafe] bg-[#f8fbff] p-5 lg:grid-cols-[1fr_auto] lg:items-center">
-        <p className="text-sm leading-7 text-slate-600 lg:text-base">
-          If this comparison helped you, you can share it with another trader comparing
-          {` ${left.name_en || left.name}`} and {right.name_en || right.name}.
-        </p>
-
-        <div className="flex justify-start lg:justify-end">
-          <ShareButtons url={pageUrl} title={shareTitle} />
-        </div>
-      </div>
+     
     </div>
 
     {/* Mobile */}
@@ -2751,16 +2742,6 @@ export default async function ComparePage({ params }: PageProps) {
             </p>
           </details>
         ))}
-      </div>
-
-      <div className="mt-4 rounded-[18px] border border-[#dbeafe] bg-[#f8fbff] p-3">
-        <p className="text-center text-xs leading-6 text-slate-600">
-          Share this comparison with another trader.
-        </p>
-
-        <div className="mt-3 flex justify-center">
-          <ShareButtons url={pageUrl} title={shareTitle} />
-        </div>
       </div>
     </div>
   </div>
