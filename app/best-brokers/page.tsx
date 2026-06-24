@@ -733,10 +733,13 @@ export default async function BestBrokersPage() {
 
           <form className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             <div>
-              <label className="mb-2 block text-xs font-extrabold text-slate-700">
-                قيمة الإيداع
-              </label>
-              <select className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+              <label id="deposit-filter-label" className="mb-2 block text-xs font-extrabold text-slate-700">
+  قيمة الإيداع
+</label>
+<select
+  aria-labelledby="deposit-filter-label"
+  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+>
                 <option>أقل من 100$</option>
                 <option>100$ - 500$</option>
                 <option>500$ - 1000$</option>
@@ -745,10 +748,13 @@ export default async function BestBrokersPage() {
             </div>
 
             <div>
-              <label className="mb-2 block text-xs font-extrabold text-slate-700">
-                مستوى الخبرة
-              </label>
-              <select className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+              <label id="experience-filter-label" className="mb-2 block text-xs font-extrabold text-slate-700">
+  مستوى الخبرة
+</label>
+<select
+  aria-labelledby="experience-filter-label"
+  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+>
                 <option>مبتدئ</option>
                 <option>متوسط</option>
                 <option>محترف</option>
@@ -756,10 +762,13 @@ export default async function BestBrokersPage() {
             </div>
 
             <div>
-              <label className="mb-2 block text-xs font-extrabold text-slate-700">
-                المنصة
-              </label>
-              <select className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+             <label id="platform-filter-label" className="mb-2 block text-xs font-extrabold text-slate-700">
+  المنصة
+</label>
+<select
+  aria-labelledby="platform-filter-label"
+  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+>
                 <option>أي منصة</option>
                 <option>MT4</option>
                 <option>MT5</option>
@@ -794,10 +803,13 @@ export default async function BestBrokersPage() {
         <form className="grid gap-3">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="mb-2 block text-xs font-extrabold text-slate-700">
-                قيمة الإيداع
-              </label>
-              <select className="w-full rounded-2xl border border-slate-300 bg-white px-3 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+             <label id="mobile-deposit-filter-label" className="mb-2 block text-xs font-extrabold text-slate-700">
+  قيمة الإيداع
+</label>
+<select
+  aria-labelledby="mobile-deposit-filter-label"
+  className="w-full rounded-2xl border border-slate-300 bg-white px-3 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+>
                 <option>أقل من 100$</option>
                 <option>100$ - 500$</option>
                 <option>500$ - 1000$</option>
@@ -806,10 +818,13 @@ export default async function BestBrokersPage() {
             </div>
 
             <div>
-              <label className="mb-2 block text-xs font-extrabold text-slate-700">
-                مستوى الخبرة
-              </label>
-              <select className="w-full rounded-2xl border border-slate-300 bg-white px-3 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+              <label id="mobile-experience-filter-label" className="mb-2 block text-xs font-extrabold text-slate-700">
+  مستوى الخبرة
+</label>
+<select
+  aria-labelledby="mobile-experience-filter-label"
+  className="w-full rounded-2xl border border-slate-300 bg-white px-3 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+>
                 <option>مبتدئ</option>
                 <option>متوسط</option>
                 <option>محترف</option>
@@ -818,10 +833,13 @@ export default async function BestBrokersPage() {
           </div>
 
           <div>
-            <label className="mb-2 block text-xs font-extrabold text-slate-700">
-              المنصة
-            </label>
-            <select className="w-full rounded-2xl border border-slate-300 bg-white px-3 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+           <label id="mobile-platform-filter-label" className="mb-2 block text-xs font-extrabold text-slate-700">
+  المنصة
+</label>
+<select
+  aria-labelledby="mobile-platform-filter-label"
+  className="w-full rounded-2xl border border-slate-300 bg-white px-3 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+>
               <option>أي منصة</option>
               <option>MT4</option>
               <option>MT5</option>

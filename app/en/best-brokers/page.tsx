@@ -742,10 +742,13 @@ export default async function BestBrokersPage() {
 
                 <form className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                   <div>
-                    <label className="mb-2 block text-xs font-extrabold text-slate-700">
-                      Deposit Level
-                    </label>
-                    <select className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                   <label id="desktop-deposit-filter-label" className="mb-2 block text-xs font-extrabold text-slate-700">
+  Deposit Level
+</label>
+<select
+  aria-labelledby="desktop-deposit-filter-label"
+  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+>
                       <option>Under $100</option>
                       <option>$100 - $500</option>
                       <option>$500 - $1000</option>
@@ -754,10 +757,13 @@ export default async function BestBrokersPage() {
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-extrabold text-slate-700">
-                      Experience Level
-                    </label>
-                    <select className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                    <label id="desktop-experience-filter-label" className="mb-2 block text-xs font-extrabold text-slate-700">
+  Experience Level
+</label>
+<select
+  aria-labelledby="desktop-experience-filter-label"
+  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+>
                       <option>Beginner</option>
                       <option>Intermediate</option>
                       <option>Advanced</option>
@@ -765,10 +771,13 @@ export default async function BestBrokersPage() {
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-extrabold text-slate-700">
-                      Platform
-                    </label>
-                    <select className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                    <label id="desktop-platform-filter-label" className="mb-2 block text-xs font-extrabold text-slate-700">
+  Platform
+</label>
+<select
+  aria-labelledby="desktop-platform-filter-label"
+  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+>
                       <option>Any Platform</option>
                       <option>MT4</option>
                       <option>MT5</option>
@@ -804,10 +813,13 @@ export default async function BestBrokersPage() {
               <form className="grid gap-3">
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="mb-2 block text-xs font-extrabold text-slate-700">
-                      Deposit
-                    </label>
-                    <select className="w-full rounded-2xl border border-slate-300 bg-white px-3 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                    <label id="mobile-deposit-filter-label" className="mb-2 block text-xs font-extrabold text-slate-700">
+  Deposit
+</label>
+<select
+  aria-labelledby="mobile-deposit-filter-label"
+  className="w-full rounded-2xl border border-slate-300 bg-white px-3 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+>
                       <option>Under $100</option>
                       <option>$100 - $500</option>
                       <option>$500 - $1000</option>
@@ -816,10 +828,13 @@ export default async function BestBrokersPage() {
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-extrabold text-slate-700">
-                      Experience
-                    </label>
-                    <select className="w-full rounded-2xl border border-slate-300 bg-white px-3 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                    <label id="mobile-experience-filter-label" className="mb-2 block text-xs font-extrabold text-slate-700">
+  Experience
+</label>
+<select
+  aria-labelledby="mobile-experience-filter-label"
+  className="w-full rounded-2xl border border-slate-300 bg-white px-3 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+>
                       <option>Beginner</option>
                       <option>Intermediate</option>
                       <option>Advanced</option>
@@ -828,10 +843,13 @@ export default async function BestBrokersPage() {
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-xs font-extrabold text-slate-700">
-                    Platform
-                  </label>
-                  <select className="w-full rounded-2xl border border-slate-300 bg-white px-3 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                  <label id="mobile-platform-filter-label" className="mb-2 block text-xs font-extrabold text-slate-700">
+  Platform
+</label>
+<select
+  aria-labelledby="mobile-platform-filter-label"
+  className="w-full rounded-2xl border border-slate-300 bg-white px-3 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+>
                     <option>Any Platform</option>
                     <option>MT4</option>
                     <option>MT5</option>
