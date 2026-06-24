@@ -15,6 +15,64 @@ const footerLegalLinks = [
   { href: "/terms-and-conditions", label: "الشروط والأحكام" },
 ];
 
+const socialLinks = [
+  { href: "https://x.com/brokeralarab", label: "X", type: "x" },
+  { href: "https://www.facebook.com/BrokerAlArab", label: "Facebook", type: "facebook" },
+  { href: "https://www.linkedin.com/company/broker-alarab", label: "LinkedIn", type: "linkedin" },
+  { href: "https://www.tiktok.com/@brokeralarab", label: "TikTok", type: "tiktok" },
+];
+
+function SocialIcon({ type }: { type: string }) {
+  if (type === "x") {
+    return <span className="text-[16px] font-black leading-none">𝕏</span>;
+  }
+
+  if (type === "facebook") {
+    return <span className="text-[18px] font-black leading-none">f</span>;
+  }
+
+  if (type === "linkedin") {
+    return <span className="text-[14px] font-black leading-none">in</span>;
+  }
+
+  return <span className="text-[17px] font-black leading-none">♪</span>;
+}
+
+function SocialLinks({ mobile = false }: { mobile?: boolean }) {
+  return (
+    <div className={mobile ? "mt-5 text-center" : "mt-5"}>
+      <div
+        className={
+          mobile
+            ? "mb-3 text-xs font-black text-slate-400"
+            : "mb-3 text-sm font-black text-white"
+        }
+      >
+        تابع بروكر العرب
+      </div>
+
+      <div className={mobile ? "flex items-center justify-center gap-3" : "flex items-center gap-3"}>
+        {socialLinks.map((item) => (
+          <a
+            key={item.href}
+            href={item.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={item.label}
+            className={
+              mobile
+                ? "flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-slate-300 transition hover:border-blue-400/30 hover:bg-blue-600 hover:text-white"
+                : "flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-slate-300 transition hover:border-blue-400/30 hover:bg-blue-600 hover:text-white"
+            }
+          >
+            <SocialIcon type={item.type} />
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function ArabicFooter() {
   return (
     <footer className="mt-10 border-t border-slate-800 bg-[linear-gradient(180deg,#07101f_0%,#06101d_100%)] text-slate-300 md:mt-14">
@@ -23,13 +81,13 @@ export default function ArabicFooter() {
         <div className="hidden md:block">
           <div className="grid gap-8 py-10 lg:grid-cols-[1.15fr_0.8fr_0.8fr]">
             <div>
-             <Image
-  src="/logo/Asset 2@4x.png"
-  alt="Broker Al Arab"
-  width={320}
-  height={100}
-  className="h-auto w-[220px]"
-/>
+              <Image
+                src="/logo/Asset 2@4x.png"
+                alt="Broker Al Arab"
+                width={320}
+                height={100}
+                className="h-auto w-[220px]"
+              />
 
               <p className="mt-4 max-w-xl text-[15px] leading-8 text-slate-300">
                 بروكر العرب منصة عربية متخصصة في مراجعات ومقارنات شركات التداول،
@@ -37,14 +95,9 @@ export default function ArabicFooter() {
                 الشركات والحسابات والمنصات قبل فتح الحساب.
               </p>
 
-              <div className="mt-5">
-                <a
-                  href="mailto:info@brokeralarab.com"
-                  className="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-bold text-white transition hover:border-blue-400/30 hover:bg-white/[0.08]"
-                >
-                  info@brokeralarab.com
-                </a>
-              </div>
+              
+
+              <SocialLinks />
             </div>
 
             <div>
@@ -125,13 +178,13 @@ export default function ArabicFooter() {
           <div className="py-6">
             <div className="overflow-hidden rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,#0a1730_0%,#07101f_100%)] shadow-[0_20px_60px_rgba(2,6,23,0.32)]">
               <div className="px-4 py-5">
-               <Image
-  src="/logo/Asset 2@4x.png"
-  alt="بروكر العرب | Broker Al Arab"
-  width={300}
-  height={100}
-  className="mx-auto h-auto w-[190px]"
-/>
+                <Image
+                  src="/logo/Asset 2@4x.png"
+                  alt="بروكر العرب | Broker Al Arab"
+                  width={300}
+                  height={100}
+                  className="mx-auto h-auto w-[190px]"
+                />
 
                 <p className="mt-4 text-center text-[14px] leading-8 text-slate-300">
                   بروكر العرب منصة عربية متخصصة في مراجعات ومقارنات شركات التداول،
@@ -139,14 +192,9 @@ export default function ArabicFooter() {
                   الشركات قبل فتح الحساب.
                 </p>
 
-                <div className="mt-5">
-                  <a
-                    href="mailto:info@brokeralarab.com"
-                    className="flex w-full items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3.5 text-sm font-bold text-white"
-                  >
-                    info@brokeralarab.com
-                  </a>
-                </div>
+              
+
+                <SocialLinks mobile />
               </div>
 
               <div className="border-t border-white/10 px-4 py-4">
