@@ -364,7 +364,8 @@ export default function BrokerFinder({ brokers }: Props) {
                   Country
                 </label>
                 <select
-                  value={country}
+  aria-label="Select country"
+  value={country}
                   onChange={(e) => setCountry(e.target.value)}
                   className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]"
                 >
@@ -387,7 +388,8 @@ export default function BrokerFinder({ brokers }: Props) {
                   Deposit Amount
                 </label>
                 <select
-                  value={deposit}
+  aria-label="Select deposit amount"
+  value={deposit}
                   onChange={(e) =>
                     setDeposit(e.target.value as DepositRange | "")
                   }
@@ -406,7 +408,8 @@ export default function BrokerFinder({ brokers }: Props) {
                   Experience Level
                 </label>
                 <select
-                  value={experience}
+  aria-label="Select experience level"
+  value={experience}
                   onChange={(e) =>
                     setExperience(e.target.value as Experience | "")
                   }
@@ -423,8 +426,9 @@ export default function BrokerFinder({ brokers }: Props) {
                 <label className="mb-2 block text-sm font-bold text-slate-700">
                   Platform
                 </label>
-                <select
-                  value={platform}
+               <select
+  aria-label="Select trading platform"
+  value={platform}
                   onChange={(e) =>
                     setPlatform(e.target.value as PlatformPref | "")
                   }
@@ -442,7 +446,8 @@ export default function BrokerFinder({ brokers }: Props) {
                   Swap-free Account
                 </label>
                 <select
-                  value={islamic}
+  aria-label="Select swap-free account preference"
+  value={islamic}
                   onChange={(e) => setIslamic(e.target.value)}
                   className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]"
                 >
@@ -706,7 +711,8 @@ export default function BrokerFinder({ brokers }: Props) {
 
               <div className="grid grid-cols-1 gap-2.5">
                 <select
-                  value={country}
+  aria-label="Select country"
+  value={country}
                   onChange={(e) => setCountry(e.target.value)}
                   className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]"
                 >
@@ -725,7 +731,8 @@ export default function BrokerFinder({ brokers }: Props) {
                 </select>
 
                 <select
-                  value={deposit}
+  aria-label="Select deposit amount"
+  value={deposit}
                   onChange={(e) =>
                     setDeposit(e.target.value as DepositRange | "")
                   }
@@ -739,7 +746,8 @@ export default function BrokerFinder({ brokers }: Props) {
                 </select>
 
                 <select
-                  value={experience}
+  aria-label="Select experience level"
+  value={experience}
                   onChange={(e) =>
                     setExperience(e.target.value as Experience | "")
                   }
@@ -752,7 +760,8 @@ export default function BrokerFinder({ brokers }: Props) {
                 </select>
 
                 <select
-                  value={platform}
+  aria-label="Select trading platform"
+  value={platform}
                   onChange={(e) =>
                     setPlatform(e.target.value as PlatformPref | "")
                   }
@@ -765,7 +774,8 @@ export default function BrokerFinder({ brokers }: Props) {
                 </select>
 
                 <select
-                  value={islamic}
+  aria-label="Select swap-free account preference"
+  value={islamic}
                   onChange={(e) => setIslamic(e.target.value)}
                   className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]"
                 >

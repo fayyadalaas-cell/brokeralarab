@@ -371,7 +371,10 @@ export default function BrokerFinder({ brokers, countryRankings = [] }: Props) {
             <div className="grid grid-cols-5 gap-3">
               <div>
                 <label className="mb-2 block text-sm font-bold text-slate-700">الدولة</label>
-                <select value={country} onChange={(e) => setCountry(e.target.value)} className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]">
+                <select
+  aria-label="اختر الدولة"
+  value={country}
+  onChange={(e) => setCountry(e.target.value)} className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]">
                   <option value="">اختر الدولة</option>
                   <option value="saudi-arabia">السعودية</option>
                   <option value="uae">الإمارات</option>
@@ -390,7 +393,9 @@ export default function BrokerFinder({ brokers, countryRankings = [] }: Props) {
 
               <div>
                 <label className="mb-2 block text-sm font-bold text-slate-700">قيمة الإيداع</label>
-                <select value={deposit} onChange={(e) => setDeposit(e.target.value as DepositRange | "")} className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]">
+                <select
+  aria-label="اختر مبلغ الإيداع"
+  value={deposit} onChange={(e) => setDeposit(e.target.value as DepositRange | "")} className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]">
                   <option value="">مبلغ الإيداع</option>
                   <option value="under50">أقل من 50$</option>
                   <option value="50to200">من 50$ إلى 200$</option>
@@ -401,7 +406,10 @@ export default function BrokerFinder({ brokers, countryRankings = [] }: Props) {
 
               <div>
                 <label className="mb-2 block text-sm font-bold text-slate-700">مستوى الخبرة</label>
-                <select value={experience} onChange={(e) => setExperience(e.target.value as Experience | "")} className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]">
+                <select
+  aria-label="اختر مستوى الخبرة"
+  value={experience}
+  onChange={(e) => setExperience(e.target.value as Experience | "")} className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]">
                   <option value="">اختر مستوى الخبرة</option>
                   <option value="beginner">مبتدئ</option>
                   <option value="intermediate">متوسط</option>
@@ -411,7 +419,10 @@ export default function BrokerFinder({ brokers, countryRankings = [] }: Props) {
 
               <div>
                 <label className="mb-2 block text-sm font-bold text-slate-700">المنصة</label>
-                <select value={platform} onChange={(e) => setPlatform(e.target.value as PlatformPref | "")} className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]">
+                <select
+  aria-label="اختر منصة التداول"
+  value={platform}
+  onChange={(e) => setPlatform(e.target.value as PlatformPref | "")} className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]">
                   <option value="">اختر المنصة</option>
                   <option value="any">أي منصة</option>
                   <option value="mt4">MT4</option>
@@ -421,7 +432,10 @@ export default function BrokerFinder({ brokers, countryRankings = [] }: Props) {
 
               <div>
                 <label className="mb-2 block text-sm font-bold text-slate-700">حساب إسلامي</label>
-                <select value={islamic} onChange={(e) => setIslamic(e.target.value)} className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]">
+                <select
+  aria-label="اختر تفضيل الحساب الإسلامي"
+  value={islamic}
+  onChange={(e) => setIslamic(e.target.value)} className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]">
                   <option value="yes">نعم</option>
                   <option value="no">لا يهم</option>
                 </select>
@@ -643,7 +657,11 @@ export default function BrokerFinder({ brokers, countryRankings = [] }: Props) {
               </div>
 
               <div className="grid grid-cols-1 gap-2.5">
-                <select value={country} onChange={(e) => setCountry(e.target.value)} className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]">
+                <select
+  aria-label="اختر الدولة"
+  value={country}
+  onChange={(e) => setCountry(e.target.value)}
+  className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]">
                   <option value="">اختر الدولة</option>
                   <option value="saudi-arabia">السعودية</option>
                   <option value="uae">الإمارات</option>
@@ -659,7 +677,9 @@ export default function BrokerFinder({ brokers, countryRankings = [] }: Props) {
                   <option value="other">دول أخرى</option>
                 </select>
 
-                <select value={deposit} onChange={(e) => setDeposit(e.target.value as DepositRange | "")} className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]">
+                <select
+  aria-label="اختر مبلغ الإيداع"
+  value={deposit} onChange={(e) => setDeposit(e.target.value as DepositRange | "")} className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]">
                   <option value="">مبلغ الإيداع</option>
                   <option value="under50">أقل من 50$</option>
                   <option value="50to200">من 50$ إلى 200$</option>
@@ -667,21 +687,30 @@ export default function BrokerFinder({ brokers, countryRankings = [] }: Props) {
                   <option value="over1000">أكثر من 1000$</option>
                 </select>
 
-                <select value={experience} onChange={(e) => setExperience(e.target.value as Experience | "")} className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]">
+                <select
+  aria-label="اختر مستوى الخبرة"
+  value={experience}
+  onChange={(e) => setExperience(e.target.value as Experience | "")} className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]">
                   <option value="">اختر مستوى الخبرة</option>
                   <option value="beginner">مبتدئ</option>
                   <option value="intermediate">متوسط</option>
                   <option value="pro">محترف</option>
                 </select>
 
-                <select value={platform} onChange={(e) => setPlatform(e.target.value as PlatformPref | "")} className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]">
+                <select
+  aria-label="اختر منصة التداول"
+  value={platform}
+  onChange={(e) => setPlatform(e.target.value as PlatformPref | "")} className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]">
                   <option value="">اختر المنصة</option>
                   <option value="any">أي منصة</option>
                   <option value="mt4">MT4</option>
                   <option value="mt5">MT5</option>
                 </select>
 
-                <select value={islamic} onChange={(e) => setIslamic(e.target.value)} className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]">
+                <select
+  aria-label="اختر تفضيل الحساب الإسلامي"
+  value={islamic}
+  onChange={(e) => setIslamic(e.target.value)} className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]">
                   <option value="yes">حساب إسلامي: نعم</option>
                   <option value="no">لا يهم</option>
                 </select>
