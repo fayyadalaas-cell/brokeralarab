@@ -30,15 +30,19 @@ export default function CountryBrokerRedirect() {
   return (
     <>
       <div className="sm:col-span-2 xl:col-span-1">
-        <label className="mb-2 block text-xs font-extrabold text-slate-700">
-          الدولة
-        </label>
+       <label
+  htmlFor="country-select"
+  className="mb-2 block text-xs font-extrabold text-slate-700"
+>
+  الدولة
+</label>
 
-        <select
-          value={country}
-          onChange={(e) => setCountry(e.target.value)}
-          className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-        >
+<select
+  id="country-select"
+  value={country}
+  onChange={(e) => setCountry(e.target.value)}
+  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+>
           <option value="all">كل الدول</option>
           <option value="sa">السعودية</option>
           <option value="ae">الإمارات</option>
