@@ -44,10 +44,11 @@ export default function ComparePicker({ brokers }: Props) {
 
       <div className="grid gap-4 lg:grid-cols-[1fr_1fr_auto]">
         <div>
-          <label className="mb-2 block text-sm font-bold text-slate-700">
-            الشركة الأولى
-          </label>
-          <select
+         <label id="compare-first-broker-label" className="mb-2 block text-sm font-bold text-slate-700">
+  الشركة الأولى
+</label>
+<select
+  aria-labelledby="compare-first-broker-label"
             value={first}
             onChange={(e) => {
               const value = e.target.value;
@@ -68,10 +69,11 @@ export default function ComparePicker({ brokers }: Props) {
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-bold text-slate-700">
-            الشركة الثانية
-          </label>
-          <select
+          <label id="compare-second-broker-label" className="mb-2 block text-sm font-bold text-slate-700">
+  الشركة الثانية
+</label>
+<select
+  aria-labelledby="compare-second-broker-label"
             value={second}
             onChange={(e) => setSecond(e.target.value)}
             className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none transition focus:border-[#2563eb]"

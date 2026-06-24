@@ -57,11 +57,12 @@ export default function ComparePickerEN({ brokers }: Props) {
         
         {/* FIRST */}
         <div>
-          <label className="mb-2 block text-sm font-bold text-slate-700">
-            First Broker
-          </label>
+         <label id="compare-first-broker-en-label" className="mb-2 block text-sm font-bold text-slate-700">
+  First Broker
+</label>
 
-          <select
+<select
+  aria-labelledby="compare-first-broker-en-label"
             value={first}
             onChange={(e) => {
               const value = e.target.value;
@@ -84,11 +85,12 @@ export default function ComparePickerEN({ brokers }: Props) {
 
         {/* SECOND */}
         <div>
-          <label className="mb-2 block text-sm font-bold text-slate-700">
-            Second Broker
-          </label>
+         <label id="compare-second-broker-en-label" className="mb-2 block text-sm font-bold text-slate-700">
+  Second Broker
+</label>
 
-          <select
+<select
+  aria-labelledby="compare-second-broker-en-label"
             value={second}
             onChange={(e) => setSecond(e.target.value)}
             className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none transition focus:border-[#2563eb]"
