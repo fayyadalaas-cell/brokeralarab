@@ -53,7 +53,7 @@ export default function RegulationSection({
 
   return (
     <section className="mt-6 overflow-hidden rounded-[26px] border border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] p-4 shadow-[0_12px_30px_rgba(15,23,42,0.05)] sm:mt-8 sm:rounded-[32px] sm:p-7">
-      <div className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-[11px] font-black text-blue-700 sm:text-xs">
+      <div className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-600 sm:text-xs">
         الوضع التنظيمي
       </div>
 
@@ -149,14 +149,14 @@ export default function RegulationSection({
         <div className="mt-5 space-y-3">
           <a
             href="/best-brokers"
-            className="block w-full rounded-xl bg-blue-600 px-4 py-3 text-center text-sm font-black text-white shadow hover:bg-blue-700 transition"
+            className="block w-full rounded-xl bg-brand-500 px-4 py-3 text-center text-sm font-black text-white shadow hover:bg-brand-600 transition"
           >
             شاهد أفضل الشركات
           </a>
 
           <a
             href="/brokers"
-            className="block w-full rounded-xl bg-blue-600 px-4 py-3 text-center text-sm font-black text-white shadow hover:bg-blue-700 transition"
+            className="block w-full rounded-xl bg-brand-500 px-4 py-3 text-center text-sm font-black text-white shadow hover:bg-brand-600 transition"
           >
             استعرض جميع التقييمات
           </a>
@@ -241,14 +241,14 @@ export default function RegulationSection({
               <div className="mt-6 space-y-3 border-t border-slate-200 pt-5">
                 <a
                   href="/best-brokers"
-                  className="block w-full rounded-xl bg-blue-600 px-4 py-3 text-center text-sm font-black text-white shadow hover:bg-blue-700 transition"
+                  className="block w-full rounded-xl bg-brand-500 px-4 py-3 text-center text-sm font-black text-white shadow hover:bg-brand-600 transition"
                 >
                   شاهد أفضل الشركات
                 </a>
 
                 <a
                   href="/brokers"
-                  className="block w-full rounded-xl bg-blue-600 px-4 py-3 text-center text-sm font-black text-white shadow hover:bg-blue-700 transition"
+                  className="block w-full rounded-xl bg-brand-500 px-4 py-3 text-center text-sm font-black text-white shadow hover:bg-brand-600 transition"
                 >
                   استعرض جميع التقييمات
                 </a>

@@ -61,8 +61,8 @@ function SocialLinks({ mobile = false }: { mobile?: boolean }) {
             aria-label={item.label}
             className={
               mobile
-                ? "flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-slate-300 transition hover:border-blue-400/30 hover:bg-blue-600 hover:text-white"
-                : "flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-slate-300 transition hover:border-blue-400/30 hover:bg-blue-600 hover:text-white"
+                ? "flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-slate-300 transition hover:border-blue-400/30 hover:bg-brand-500 hover:text-white"
+                : "flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-slate-300 transition hover:border-blue-400/30 hover:bg-brand-500 hover:text-white"
             }
           >
             <SocialIcon type={item.type} />

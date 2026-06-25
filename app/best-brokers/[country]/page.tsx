@@ -293,10 +293,10 @@ function Button({
 
   const style =
     variant === "primary"
-      ? "bg-blue-600 text-white shadow-[0_10px_22px_rgba(37,99,235,0.22)] hover:bg-blue-700 hover:-translate-y-0.5"
+      ? "bg-brand-500 text-white shadow-[0_10px_22px_rgba(37,99,235,0.22)] hover:bg-brand-600 hover:-translate-y-0.5"
       : variant === "dark"
       ? "bg-slate-950 text-white shadow-[0_10px_22px_rgba(15,23,42,0.18)] hover:bg-slate-800 hover:-translate-y-0.5"
-      : "border border-slate-300 bg-white text-slate-900 hover:border-blue-300 hover:text-blue-700 hover:-translate-y-0.5";
+      : "border border-slate-300 bg-white text-slate-900 hover:border-blue-300 hover:text-brand-600 hover:-translate-y-0.5";
 
   return (
     <Link
@@ -342,7 +342,7 @@ function MiniBrokerRow({ row }: { row: RankingRow }) {
    <article className="rounded-[22px] border border-slate-200 bg-white p-3 shadow-[0_10px_25px_rgba(15,23,42,0.04)] sm:rounded-[28px] sm:p-4">
       <details className="group lg:hidden">
        <summary className="grid cursor-pointer list-none grid-cols-[40px_56px_minmax(0,1fr)] items-center gap-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-600 text-sm font-black text-white">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-500 text-sm font-black text-white">
             {row.rank_position}
           </div>
 
@@ -362,7 +362,7 @@ function MiniBrokerRow({ row }: { row: RankingRow }) {
   </span>
 </div>
                         <div className="mt-2 flex items-center gap-2">
-              <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-black text-blue-700 group-open:hidden">
+              <span className="rounded-full bg-brand-50 px-3 py-1 text-xs font-black text-brand-600 group-open:hidden">
                 عرض التفاصيل
               </span>
 
@@ -372,7 +372,7 @@ function MiniBrokerRow({ row }: { row: RankingRow }) {
         </summary>
 
         {row.best_for ? (
-          <div className="mt-3 inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-black text-blue-700">
+          <div className="mt-3 inline-flex rounded-full bg-brand-50 px-3 py-1 text-xs font-black text-brand-600">
             {row.best_for}
           </div>
         ) : null}
@@ -403,7 +403,7 @@ function MiniBrokerRow({ row }: { row: RankingRow }) {
 
       <div className="hidden lg:grid lg:grid-cols-[1fr_auto] lg:items-center lg:gap-4">
         <div className="flex items-center gap-4">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-blue-600 text-sm font-black text-white">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-brand-500 text-sm font-black text-white">
             {row.rank_position}
           </div>
 
@@ -415,7 +415,7 @@ function MiniBrokerRow({ row }: { row: RankingRow }) {
                 {broker.name}
               </h3>
 
-              <span className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-black text-blue-700">
+              <span className="rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-xs font-black text-brand-600">
                 {row.country_rating || broker.rating || "—"} / 5
               </span>
 
@@ -488,7 +488,7 @@ function ComparisonSection({
       id="comparison"
      className="mt-6 rounded-[26px] border border-slate-200 bg-white p-4 shadow-[0_14px_40px_rgba(15,23,42,0.05)] sm:mt-8 sm:rounded-[32px] sm:p-7"
     >
-      <span className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-[11px] font-black text-blue-700">
+      <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-600">
         مقارنة الحسابات
       </span>
 
@@ -554,7 +554,7 @@ const accUrl = accountUrl(broker, mainAccount);
   {standardAccount ? (
     <Link
       href={accountUrl(broker, standardAccount)}
-      className="font-black text-blue-700 hover:underline"
+      className="font-black text-brand-600 hover:underline"
     >
       {standardAccount.account_name}
     </Link>
@@ -640,7 +640,7 @@ const accUrl = accountUrl(broker, mainAccount);
       >
         <details className="group">
        <summary className="grid cursor-pointer list-none grid-cols-[40px_52px_minmax(0,1fr)_auto] items-center gap-2">
-  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-sm font-black text-white">
+  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-500 text-sm font-black text-white">
     {row.rank_position}
   </div>
 
@@ -663,7 +663,7 @@ const accUrl = accountUrl(broker, mainAccount);
     <span>{row.country_rating || broker.rating || "—"} / 5</span>
   </span>
 
-  <span className="inline-flex rounded-full bg-blue-50 px-2.5 py-1 text-[11px] font-black text-blue-700">
+  <span className="inline-flex rounded-full bg-brand-50 px-2.5 py-1 text-[11px] font-black text-brand-600">
     التفاصيل
   </span>
 </div>
@@ -762,7 +762,7 @@ function ProfessionalCountryGuideSection({
     >
       <div className="grid gap-6 lg:grid-cols-[1fr_330px]">
         <div>
-          <span className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-[11px] font-black text-blue-700">
+          <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-600">
             دليل التداول
           </span>
 
@@ -807,7 +807,7 @@ function ProfessionalCountryGuideSection({
           </div>
 
           {finalVerdict ? (
-            <div className="mt-5 rounded-2xl border border-blue-200 bg-blue-50 p-5">
+            <div className="mt-5 rounded-2xl border border-brand-100 bg-brand-50 p-5">
               <h3 className="font-black text-slate-950">
                 الخلاصة: كيف تختار أفضل وسيط؟
               </h3>
@@ -819,7 +819,7 @@ function ProfessionalCountryGuideSection({
         </div>
 
         <aside className="rounded-[28px] border border-slate-200 bg-[#f8fbff] p-5 lg:sticky lg:top-24 lg:self-start">
-          <span className="inline-flex rounded-full bg-white px-3 py-1 text-[11px] font-black text-blue-700">
+          <span className="inline-flex rounded-full bg-white px-3 py-1 text-[11px] font-black text-brand-600">
             معلومات مهمة
           </span>
 
@@ -877,7 +877,7 @@ function FaqSection({
       id="faq"
       className="mt-8 rounded-[32px] border border-slate-200 bg-white p-5 shadow-[0_14px_40px_rgba(15,23,42,0.05)] sm:p-7"
     >
-      <span className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-[11px] font-black text-blue-700">
+      <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-600">
         الأسئلة الشائعة
       </span>
 
@@ -897,13 +897,13 @@ function FaqSection({
         <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-black text-slate-950">
           <span>{faq.question}</span>
 
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-blue-700 transition group-open:rotate-45">
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-brand-600 transition group-open:rotate-45">
             +
           </span>
         </summary>
 
         <div
-          className="mt-3 border-t border-slate-200 pt-3 text-sm leading-7 text-slate-600 [&_a]:font-black [&_a]:text-blue-700 [&_a]:underline"
+          className="mt-3 border-t border-slate-200 pt-3 text-sm leading-7 text-slate-600 [&_a]:font-black [&_a]:text-brand-600 [&_a]:underline"
           dangerouslySetInnerHTML={{ __html: faq.answer }}
         />
       </details>
@@ -919,13 +919,13 @@ function FaqSection({
         <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-black text-slate-950">
           <span>{faq.question}</span>
 
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-blue-700 transition group-open:rotate-45">
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-brand-600 transition group-open:rotate-45">
             +
           </span>
         </summary>
 
         <div
-          className="mt-3 border-t border-slate-200 pt-3 text-sm leading-7 text-slate-600 [&_a]:font-black [&_a]:text-blue-700 [&_a]:underline"
+          className="mt-3 border-t border-slate-200 pt-3 text-sm leading-7 text-slate-600 [&_a]:font-black [&_a]:text-brand-600 [&_a]:underline"
           dangerouslySetInnerHTML={{ __html: faq.answer }}
         />
       </details>
@@ -945,8 +945,8 @@ function FinalCtaSection({
   winner: Broker | null;
 }) {
   return (
-    <section className="mt-8 rounded-[32px] border border-blue-200 bg-blue-50 p-6 text-center shadow-[0_14px_40px_rgba(37,99,235,0.08)] sm:p-8">
-      <span className="inline-flex rounded-full bg-white px-3 py-1 text-[11px] font-black text-blue-700">
+    <section className="mt-8 rounded-[32px] border border-brand-100 bg-brand-50 p-6 text-center shadow-[0_14px_40px_rgba(37,99,235,0.08)] sm:p-8">
+      <span className="inline-flex rounded-full bg-white px-3 py-1 text-[11px] font-black text-brand-600">
         الخلاصة
       </span>
 
@@ -1051,7 +1051,7 @@ export default async function BestBrokersCountryPage({
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.10),transparent_34%)]" />
 
               <div className="relative">
-                <span className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-[11px] font-black text-blue-700">
+                <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-600">
                   {page.intro_badge ||
                     `دليل محدث للمتداولين في ${page.country_name_ar}`}
                 </span>
@@ -1076,11 +1076,11 @@ export default async function BestBrokersCountryPage({
                       ))}
                   </div>
 
-                  <span className="mt-2 inline-flex text-sm font-black text-blue-700 group-open:hidden">
+                  <span className="mt-2 inline-flex text-sm font-black text-brand-600 group-open:hidden">
                     عرض المزيد
                   </span>
 
-                  <span className="mt-2 hidden text-sm font-black text-blue-700 group-open:inline-flex">
+                  <span className="mt-2 hidden text-sm font-black text-brand-600 group-open:inline-flex">
                     عرض أقل
                   </span>
                 </summary>
@@ -1151,7 +1151,7 @@ export default async function BestBrokersCountryPage({
                   <div className="text-[10px] font-black text-slate-500">
                     التقييم
                   </div>
-                  <div className="mt-1 text-xl font-black text-blue-700">
+                  <div className="mt-1 text-xl font-black text-brand-600">
                     {winnerRow?.country_rating || winner?.rating || "—"}
                   </div>
                 </div>
@@ -1217,7 +1217,7 @@ export default async function BestBrokersCountryPage({
 >
           <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <span className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-[11px] font-black text-blue-700">
+              <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-600">
                 أفضل الشركات
               </span>
               <h2 className="mt-3 text-[25px] font-black leading-tight text-slate-950 sm:text-3xl">
@@ -1241,7 +1241,7 @@ export default async function BestBrokersCountryPage({
           id="quick-picks"
           className="mt-8 rounded-[32px] border border-slate-200 bg-white p-5 shadow-[0_14px_40px_rgba(15,23,42,0.05)] sm:p-7"
         >
-          <span className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-[11px] font-black text-blue-700">
+          <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-600">
             اختيارات حسب الحاجة
           </span>
 
@@ -1260,7 +1260,7 @@ export default async function BestBrokersCountryPage({
                   href={brokerUrl(broker)}
                 className="rounded-2xl border border-slate-200 bg-[#f8fbff] p-3 transition hover:border-blue-300 hover:bg-white hover:shadow-sm sm:p-4"
                 >
-                  <div className="text-xs font-black text-blue-700">
+                  <div className="text-xs font-black text-brand-600">
                     {item.category_title}
                   </div>
 
@@ -1300,7 +1300,7 @@ export default async function BestBrokersCountryPage({
         href={brokerUrl(broker)}
         className="rounded-2xl border border-slate-200 bg-[#f8fbff] p-3 transition hover:border-blue-300 hover:bg-white hover:shadow-sm"
       >
-        <div className="text-xs font-black text-blue-700">
+        <div className="text-xs font-black text-brand-600">
           {item.category_title}
         </div>
 

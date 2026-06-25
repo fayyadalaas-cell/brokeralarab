@@ -170,7 +170,7 @@ export default async function OpenAccountGuidePage({ params }: PageProps) {
               <div className="mb-4 flex flex-wrap justify-center gap-2 md:justify-start">
                 <Link
                   href={`/brokers/${slug}`}
-                  className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 text-[12px] font-extrabold text-blue-700 md:px-4 md:py-2 md:text-sm"
+                  className="rounded-full border border-brand-100 bg-brand-50 px-3 py-1.5 text-[12px] font-extrabold text-brand-600 md:px-4 md:py-2 md:text-sm"
                 >
                   تقييم {brokerName}
                 </Link>
@@ -203,7 +203,7 @@ export default async function OpenAccountGuidePage({ params }: PageProps) {
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white to-transparent group-open:hidden" />
       </div>
 
-      <div className="mt-3 inline-flex rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-black text-blue-700">
+      <div className="mt-3 inline-flex rounded-full border border-brand-100 bg-brand-50 px-4 py-2 text-sm font-black text-brand-600">
         <span className="group-open:hidden">عرض المزيد</span>
         <span className="hidden group-open:inline">عرض أقل</span>
       </div>
@@ -230,7 +230,7 @@ export default async function OpenAccountGuidePage({ params }: PageProps) {
                     href={realAccountUrl}
                     target="_blank"
                     rel="nofollow sponsored noopener noreferrer"
-                    className="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-blue-600 px-6 py-3 text-sm font-black text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700"
+                    className="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-brand-500 px-6 py-3 text-sm font-black text-white shadow-lg shadow-blue-200 transition hover:bg-brand-600"
                   >
                     فتح حساب حقيقي
                   </a>
@@ -241,7 +241,7 @@ export default async function OpenAccountGuidePage({ params }: PageProps) {
                     href={demoAccountUrl}
                     target="_blank"
                     rel="nofollow sponsored noopener noreferrer"
-                    className="inline-flex min-h-[48px] items-center justify-center rounded-2xl border border-blue-200 bg-white px-6 py-3 text-sm font-black text-blue-700 transition hover:bg-blue-50"
+                    className="inline-flex min-h-[48px] items-center justify-center rounded-2xl border border-brand-100 bg-white px-6 py-3 text-sm font-black text-brand-600 transition hover:bg-brand-50"
                   >
                     فتح حساب تجريبي
                   </a>
@@ -283,7 +283,7 @@ export default async function OpenAccountGuidePage({ params }: PageProps) {
                   <div className="text-xs font-bold text-slate-500 md:text-sm">
                     الوقت المتوقع
                   </div>
-                  <div className="mt-1 text-lg font-black text-blue-700 md:text-xl">
+                  <div className="mt-1 text-lg font-black text-brand-600 md:text-xl">
                     {guide.estimated_time_ar || "10 دقائق"}
                   </div>
                 </div>
@@ -301,13 +301,13 @@ export default async function OpenAccountGuidePage({ params }: PageProps) {
                   href={`/brokers/${slug}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="col-span-2 rounded-2xl border border-blue-200 bg-blue-50 p-4 text-center transition hover:border-blue-400 hover:bg-blue-100 md:col-span-1"
+                  className="col-span-2 rounded-2xl border border-brand-100 bg-brand-50 p-4 text-center transition hover:border-blue-400 hover:bg-blue-100 md:col-span-1"
                 >
                   <div className="text-sm font-bold text-slate-500">
                     تقييم {brokerName}
                   </div>
 
-                  <div className="mt-2 text-2xl font-black text-blue-700">
+                  <div className="mt-2 text-2xl font-black text-brand-600">
                     ⭐ {rating || "4.5"}
                   </div>
 
@@ -315,7 +315,7 @@ export default async function OpenAccountGuidePage({ params }: PageProps) {
                     اقرأ المراجعة الكاملة والمميزات والعيوب
                   </div>
 
-                  <div className="mt-3 text-sm font-black text-blue-700">
+                  <div className="mt-3 text-sm font-black text-brand-600">
                     عرض التقييم →
                   </div>
                 </Link>
@@ -335,7 +335,7 @@ export default async function OpenAccountGuidePage({ params }: PageProps) {
               <a
                 key={step.id}
                 href={`#step-${step.step_order}`}
-                className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-center text-[13px] font-extrabold leading-6 text-slate-700 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700 md:text-right md:text-sm"
+                className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-center text-[13px] font-extrabold leading-6 text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600 md:text-right md:text-sm"
               >
                 الخطوة {step.step_order}: {step.title_ar}
               </a>
@@ -345,7 +345,7 @@ export default async function OpenAccountGuidePage({ params }: PageProps) {
 
         {/* REQUIREMENTS */}
         <section className="mt-5 grid gap-4 md:mt-8 md:grid-cols-3 md:gap-5">
-          <div className="rounded-[24px] border border-blue-200 bg-blue-50 p-5 text-center md:rounded-[28px] md:p-6 md:text-right">
+          <div className="rounded-[24px] border border-brand-100 bg-brand-50 p-5 text-center md:rounded-[28px] md:p-6 md:text-right">
             <h3 className="text-[21px] font-black text-blue-800 md:text-xl">
               متطلبات فتح الحساب
             </h3>
@@ -391,7 +391,7 @@ export default async function OpenAccountGuidePage({ params }: PageProps) {
             >
               <div className="border-b border-slate-100 p-5 md:p-8">
                 <div className="mb-4 flex flex-wrap justify-center gap-2 md:justify-start">
-                  <span className="rounded-full bg-blue-600 px-4 py-2 text-xs font-black text-white md:text-sm">
+                  <span className="rounded-full bg-brand-500 px-4 py-2 text-xs font-black text-white md:text-sm">
                     الخطوة {step.step_order}
                   </span>
 
@@ -421,7 +421,7 @@ export default async function OpenAccountGuidePage({ params }: PageProps) {
                           href={realAccountUrl}
                           target="_blank"
                           rel="nofollow sponsored noopener noreferrer"
-                          className="font-black text-blue-700 underline underline-offset-4"
+                          className="font-black text-brand-600 underline underline-offset-4"
                         >
                           {brokerName}
                         </a>{" "}
@@ -435,7 +435,7 @@ export default async function OpenAccountGuidePage({ params }: PageProps) {
                           href={realAccountUrl}
                           target="_blank"
                           rel="nofollow sponsored noopener noreferrer"
-                          className="font-black text-blue-700 underline underline-offset-4"
+                          className="font-black text-brand-600 underline underline-offset-4"
                         >
                           النقر هنا لفتح حساب {brokerName}
                         </a>{" "}
@@ -456,7 +456,7 @@ export default async function OpenAccountGuidePage({ params }: PageProps) {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <div className="border-b border-slate-200 bg-white px-3 py-2 text-center text-xs font-black text-blue-700 md:hidden">
+                      <div className="border-b border-slate-200 bg-white px-3 py-2 text-center text-xs font-black text-brand-600 md:hidden">
                         اضغط على الصورة لتكبيرها
                       </div>
 
@@ -567,7 +567,7 @@ export default async function OpenAccountGuidePage({ params }: PageProps) {
                   href={`/brokers/${slug}/accounts/${account
                     .toLowerCase()
                     .replace(/\s+/g, "-")}`}
-                  className="rounded-2xl border border-blue-100 bg-gradient-to-b from-white to-blue-50 p-3 text-center text-xs font-black text-blue-800 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-50 hover:shadow-md md:p-4 md:text-sm"
+                  className="rounded-2xl border border-blue-100 bg-gradient-to-b from-white to-blue-50 p-3 text-center text-xs font-black text-blue-800 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:bg-brand-50 hover:shadow-md md:p-4 md:text-sm"
                 >
                   {account}
                 </Link>
@@ -596,13 +596,13 @@ export default async function OpenAccountGuidePage({ params }: PageProps) {
                   href={`/compare/${item.slug}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-[20px] border border-slate-200 bg-slate-50 p-4 text-center transition hover:border-blue-300 hover:bg-blue-50 md:rounded-[24px] md:p-5 md:text-right"
+                  className="rounded-[20px] border border-slate-200 bg-slate-50 p-4 text-center transition hover:border-blue-300 hover:bg-brand-50 md:rounded-[24px] md:p-5 md:text-right"
                 >
                   <div className="text-base font-black leading-7 text-slate-950 md:text-lg">
                     {item.title}
                   </div>
 
-                  <div className="mt-3 text-sm font-extrabold text-blue-700 md:mt-4">
+                  <div className="mt-3 text-sm font-extrabold text-brand-600 md:mt-4">
                     عرض المقارنة ←
                   </div>
                 </Link>
@@ -655,7 +655,7 @@ export default async function OpenAccountGuidePage({ params }: PageProps) {
         </section>
 
         {/* FINAL CTA */}
-        <section className="mt-6 rounded-[24px] border border-blue-200 bg-blue-50 p-5 text-center md:mt-10 md:rounded-[32px] md:p-8 md:text-right">
+        <section className="mt-6 rounded-[24px] border border-brand-100 bg-brand-50 p-5 text-center md:mt-10 md:rounded-[32px] md:p-8 md:text-right">
           <h2 className="text-[24px] font-black leading-tight text-slate-950 md:text-3xl">
             هل أنت جاهز لفتح حساب {brokerName}؟
           </h2>
@@ -672,7 +672,7 @@ export default async function OpenAccountGuidePage({ params }: PageProps) {
                 href={realAccountUrl}
                 target="_blank"
                 rel="nofollow sponsored noopener noreferrer"
-                className="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-blue-600 px-6 py-3 text-sm font-black text-white shadow-sm"
+                className="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-brand-500 px-6 py-3 text-sm font-black text-white shadow-sm"
               >
                 فتح حساب حقيقي الآن
               </a>
@@ -682,7 +682,7 @@ export default async function OpenAccountGuidePage({ params }: PageProps) {
               href={`/brokers/${slug}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-[48px] items-center justify-center rounded-2xl border border-blue-200 bg-white px-6 py-3 text-sm font-black text-blue-700 shadow-sm"
+              className="inline-flex min-h-[48px] items-center justify-center rounded-2xl border border-brand-100 bg-white px-6 py-3 text-sm font-black text-brand-600 shadow-sm"
             >
               قراءة تقييم {brokerName}
             </Link>

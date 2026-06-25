@@ -115,7 +115,7 @@ export default async function BestBrokersPage() {
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
           <a
             href="#comparison-table"
-            className="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-6 py-3.5 text-sm font-extrabold text-white shadow-sm transition hover:bg-blue-700"
+            className="inline-flex items-center justify-center rounded-2xl bg-brand-500 px-6 py-3.5 text-sm font-extrabold text-white shadow-sm transition hover:bg-brand-600"
           >
             قارن أفضل الوسطاء
           </a>
@@ -216,7 +216,7 @@ export default async function BestBrokersPage() {
               <div className="mt-5 flex gap-3">
                 <Link
                   href={`/brokers/${topPicks.overall.slug}`}
-                  className="inline-flex flex-1 items-center justify-center rounded-2xl bg-blue-600 px-4 py-3 text-sm font-extrabold text-white transition hover:bg-blue-700"
+                  className="inline-flex flex-1 items-center justify-center rounded-2xl bg-brand-500 px-4 py-3 text-sm font-extrabold text-white transition hover:bg-brand-600"
                 >
                   قراءة المراجعة
                 </Link>
@@ -266,7 +266,7 @@ export default async function BestBrokersPage() {
           ? "border-amber-200 bg-amber-50 text-amber-700"
           : index === 1
           ? "border-slate-300 bg-slate-100 text-slate-700"
-          : "border-blue-200 bg-blue-50 text-blue-700";
+          : "border-brand-100 bg-brand-50 text-brand-600";
 
       return (
         <article
@@ -359,7 +359,7 @@ export default async function BestBrokersPage() {
   href={`/brokers/${broker.slug}`}
   target="_blank"
   rel="noopener noreferrer"
-  className="mt-auto inline-flex w-full items-center justify-center rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-extrabold text-white transition hover:bg-blue-700"
+  className="mt-auto inline-flex w-full items-center justify-center rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-extrabold text-white transition hover:bg-brand-600"
 >
   قراءة المراجعة
 </a>
@@ -385,7 +385,7 @@ export default async function BestBrokersPage() {
 <section id="comparison-table" className="border-y border-slate-200 bg-white">
   <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
     <div className="mb-8 flex flex-col gap-2">
-      <div className="text-sm font-bold text-blue-700">المقارنة الرئيسية</div>
+      <div className="text-sm font-bold text-brand-600">المقارنة الرئيسية</div>
       <h2 className="text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">
         أفضل 10 شركات تداول هذا العام
       </h2>
@@ -438,7 +438,7 @@ export default async function BestBrokersPage() {
                   <div
                     className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border shadow-sm ${
                       isTop
-                        ? "border-blue-200 bg-white"
+                        ? "border-brand-100 bg-white"
                         : "border-slate-200 bg-white"
                     }`}
                   >
@@ -519,7 +519,7 @@ export default async function BestBrokersPage() {
                 <div className="flex flex-col gap-2">
                   <Link
                     href={`/brokers/${broker.slug}`}
-                    className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-extrabold text-white transition hover:bg-blue-700"
+                    className="inline-flex items-center justify-center rounded-xl bg-brand-500 px-4 py-2.5 text-xs font-extrabold text-white transition hover:bg-brand-600"
                   >
                     قراءة المراجعة
                   </Link>
@@ -555,7 +555,7 @@ export default async function BestBrokersPage() {
           <details
             key={broker.id}
             className={`group overflow-hidden rounded-[24px] border bg-white shadow-sm ${
-              isTop ? "border-blue-200" : "border-slate-200"
+              isTop ? "border-brand-100" : "border-slate-200"
             }`}
           >
             <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4">
@@ -663,7 +663,7 @@ export default async function BestBrokersPage() {
               <div className="mt-4 flex gap-3">
                 <Link
                   href={`/brokers/${broker.slug}`}
-                  className="inline-flex flex-1 items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-extrabold text-white transition hover:bg-blue-700"
+                  className="inline-flex flex-1 items-center justify-center rounded-xl bg-brand-500 px-4 py-3 text-sm font-extrabold text-white transition hover:bg-brand-600"
                 >
                   قراءة المراجعة
                 </Link>
@@ -726,7 +726,7 @@ export default async function BestBrokersPage() {
               </div>
             </div>
 
-            <div className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-extrabold text-blue-700">
+            <div className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-xs font-extrabold text-brand-600">
               فلتر ذكي
             </div>
           </div>
@@ -895,7 +895,7 @@ const lowestDepositBroker = pickBroker(sortedByDeposit);
       const categoryCards = [
         {
           title: "الأفضل إجمالًا",
-          color: "text-blue-700",
+          color: "text-brand-600",
           broker: topRatedBroker,
           description:
             "اخترناه كأفضل وسيط إجمالًا داخل الصفحة بناءً على التقييم العام والموثوقية وتوازن المزايا للمتداول العربي.",
@@ -998,7 +998,7 @@ const lowestDepositBroker = pickBroker(sortedByDeposit);
 
                   <Link
                     href={`/brokers/${broker.slug}`}
-                    className="mt-auto inline-flex w-full items-center justify-center rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-extrabold text-white transition hover:bg-blue-700"
+                    className="mt-auto inline-flex w-full items-center justify-center rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-extrabold text-white transition hover:bg-brand-600"
                   >
                     قراءة المراجعة
                   </Link>
@@ -1031,7 +1031,7 @@ const lowestDepositBroker = pickBroker(sortedByDeposit);
 
       {/* ITEM */}
       <div className="flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-sm font-extrabold text-blue-700">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-sm font-extrabold text-brand-600">
           1
         </div>
 

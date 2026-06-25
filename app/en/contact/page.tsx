@@ -64,7 +64,7 @@ export default function ContactPage() {
         <div className="grid gap-5">
           <section className="rounded-[30px] border border-slate-200 bg-white p-6 shadow-sm md:p-7">
             <div className="mb-6">
-              <div className="mb-3 inline-flex rounded-full bg-blue-50 px-3 py-1 text-sm font-bold text-blue-700">
+              <div className="mb-3 inline-flex rounded-full bg-brand-50 px-3 py-1 text-sm font-bold text-brand-600">
                 Contact Form
               </div>
 

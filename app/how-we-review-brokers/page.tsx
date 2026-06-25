@@ -61,7 +61,7 @@ export default function HowWeReviewBrokersPage() {
       <section className="overflow-hidden rounded-[34px] border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-blue-50 shadow-sm">
         <div className="grid gap-8 p-6 md:grid-cols-[minmax(0,1fr)_280px] md:p-10 md:items-center">
           <div>
-            <div className="mb-4 inline-flex rounded-full border border-blue-200 bg-white px-4 py-2 text-sm font-black text-blue-700">
+            <div className="mb-4 inline-flex rounded-full border border-brand-100 bg-white px-4 py-2 text-sm font-black text-brand-600">
               منهجية التقييم
             </div>
 
@@ -87,7 +87,7 @@ export default function HowWeReviewBrokersPage() {
             </p>
             <Link
               href="/brokers"
-              className="mt-5 inline-flex min-h-[48px] w-full items-center justify-center rounded-2xl bg-blue-600 px-5 text-sm font-black text-white hover:bg-blue-700"
+              className="mt-5 inline-flex min-h-[48px] w-full items-center justify-center rounded-2xl bg-brand-500 px-5 text-sm font-black text-white hover:bg-brand-600"
             >
               تصفح تقييمات الوسطاء
             </Link>
@@ -102,7 +102,7 @@ export default function HowWeReviewBrokersPage() {
             ["شهرياً", "تحديث البيانات"],
           ].map(([value, label]) => (
             <div key={label} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-              <div className="text-3xl font-black text-blue-700">{value}</div>
+              <div className="text-3xl font-black text-brand-600">{value}</div>
               <div className="mt-2 text-sm font-bold text-slate-600">{label}</div>
             </div>
           ))}
@@ -148,11 +148,11 @@ export default function HowWeReviewBrokersPage() {
         className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm"
       >
         <div className="mb-4 flex items-center justify-between gap-4">
-          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-50 text-sm font-black text-blue-700">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-50 text-sm font-black text-brand-600">
             {String(index + 1).padStart(2, "0")}
           </span>
 
-          <span className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-black text-blue-700">
+          <span className="rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-xs font-black text-brand-600">
             الوزن: {item.weight}
           </span>
         </div>
@@ -225,7 +225,7 @@ export default function HowWeReviewBrokersPage() {
               {criteria.map((item) => (
                 <tr key={item.title} className="bg-white">
                   <td className="p-4 font-black text-slate-950">{item.title}</td>
-                  <td className="p-4 font-black text-blue-700">{item.weight}</td>
+                  <td className="p-4 font-black text-brand-600">{item.weight}</td>
                   <td className="p-4 leading-7 text-slate-600">{item.text}</td>
                 </tr>
               ))}
@@ -267,7 +267,7 @@ export default function HowWeReviewBrokersPage() {
       </section>
 
       {/* Disclaimer */}
-      <section className="mt-8 rounded-[30px] border border-blue-200 bg-blue-50 p-6 shadow-sm md:p-8">
+      <section className="mt-8 rounded-[30px] border border-brand-100 bg-brand-50 p-6 shadow-sm md:p-8">
         <h2 className="text-2xl font-black text-slate-950">تنويه مهم</h2>
         <p className="mt-4 text-sm leading-8 text-slate-700 md:text-base">
           المحتوى المنشور في بروكر العرب لأغراض تعليمية وإعلامية فقط، ولا يمثل نصيحة
@@ -279,14 +279,14 @@ export default function HowWeReviewBrokersPage() {
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
             href="/brokers"
-            className="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-blue-600 px-6 text-sm font-black text-white hover:bg-blue-700"
+            className="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-brand-500 px-6 text-sm font-black text-white hover:bg-brand-600"
           >
             تصفح تقييمات الوسطاء
           </Link>
 
           <Link
             href="/about"
-            className="inline-flex min-h-[48px] items-center justify-center rounded-2xl border border-blue-200 bg-white px-6 text-sm font-black text-blue-700 hover:bg-blue-50"
+            className="inline-flex min-h-[48px] items-center justify-center rounded-2xl border border-brand-100 bg-white px-6 text-sm font-black text-brand-600 hover:bg-brand-50"
           >
             عن بروكر العرب
           </Link>

@@ -175,7 +175,7 @@ function SectionHeader({
   return (
     <div className={cn("mb-6", centered && "text-center")}>
       {eyebrow && (
-        <span className="inline-flex rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-[11px] font-black text-blue-700">
+        <span className="inline-flex rounded-full border border-blue-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-600">
           {eyebrow}
         </span>
       )}
@@ -414,10 +414,10 @@ function StepCard({
   return (
     <article className="rounded-[22px] border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex items-center justify-between gap-3">
-        <span className="text-[30px] font-black leading-none text-blue-700">
+        <span className="text-[30px] font-black leading-none text-brand-600">
           {number}
         </span>
-        <span className="rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-[11px] font-black text-blue-700">
+        <span className="rounded-full border border-blue-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-600">
           خطوة عملية
         </span>
       </div>
@@ -841,11 +841,11 @@ export default async function Page() {
       <div className="mt-4 space-y-3">
        <p className="w-full text-[16px] leading-8 text-slate-600 md:text-[18px] md:leading-9">
   إذا كنت تبحث عن طريقة واضحة لفهم كيف تبدأ التداول من الصفر، فهذا الدليل يأخذك خطوة بخطوة من أساسيات السوق إلى اختيار{" "}
-  <Link href="/best-brokers" className="font-black text-blue-700 hover:underline">
+  <Link href="/best-brokers" className="font-black text-brand-600 hover:underline">
     أفضل شركات التداول
   </Link>{" "}
   وفتح حساب حقيقي. ويمكنك أيضًا مراجعة{" "}
-  <Link href="/compare" className="font-black text-blue-700 hover:underline">
+  <Link href="/compare" className="font-black text-brand-600 hover:underline">
     مقارنة الوسطاء
   </Link>{" "}
   قبل اتخاذ القرار النهائي.
@@ -904,11 +904,11 @@ export default async function Page() {
     {/* Description */}
     <p className="w-full text-[16px] leading-8 text-slate-600 md:text-[18px] md:leading-9">
   إذا كنت تبحث عن طريقة واضحة لفهم كيف تبدأ التداول من الصفر، فهذا الدليل يأخذك خطوة بخطوة من أساسيات السوق إلى اختيار{" "}
-  <Link href="/best-brokers" className="font-black text-blue-700 hover:underline">
+  <Link href="/best-brokers" className="font-black text-brand-600 hover:underline">
     أفضل شركات التداول
   </Link>{" "}
   وفتح حساب حقيقي. ويمكنك أيضًا مراجعة{" "}
-  <Link href="/compare" className="font-black text-blue-700 hover:underline">
+  <Link href="/compare" className="font-black text-brand-600 hover:underline">
     مقارنة الوسطاء
   </Link>{" "}
   قبل اتخاذ القرار النهائي.
@@ -951,7 +951,7 @@ export default async function Page() {
     </div>
 
     <div className="p-4 md:p-5">
-      <div className="mt-6 rounded-2xl border border-blue-100 bg-blue-50/70 p-4 md:p-5">
+      <div className="mt-6 rounded-2xl border border-blue-100 bg-brand-50/70 p-4 md:p-5">
         <h3 className="text-[16px] font-black text-slate-900 md:text-[17px]">
           مثال سريع: كيف يبدأ المبتدئ عمليًا؟
         </h3>
@@ -969,7 +969,7 @@ export default async function Page() {
           <div className="absolute right-0 top-0 h-1.5 w-full bg-[linear-gradient(90deg,#2563eb_0%,#60a5fa_100%)] opacity-90" />
 
           <div className="flex items-start justify-between gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-600 text-[16px] font-black text-white shadow-sm">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-500 text-[16px] font-black text-white shadow-sm">
               01
             </div>
 
@@ -987,7 +987,7 @@ export default async function Page() {
             للسوق الحقيقي.
           </p>
 
-          <div className="mt-auto pt-4 min-h-[70px] rounded-[16px] border border-blue-100 bg-blue-50/70 px-3 py-2 text-[12px] font-bold leading-7 line-clamp-2 text-blue-800">
+          <div className="mt-auto pt-4 min-h-[70px] rounded-[16px] border border-blue-100 bg-brand-50/70 px-3 py-2 text-[12px] font-bold leading-7 line-clamp-2 text-blue-800">
             كل بداية قوية تبدأ من فهم واضح، لا من استعجال الدخول.
           </div>
         </article>
@@ -1086,10 +1086,10 @@ export default async function Page() {
         <div className="h-1.5 w-full bg-[linear-gradient(90deg,#2563eb_0%,#60a5fa_100%)]" />
         <div className="p-[14px]">
           <div className="flex items-center justify-between gap-3">
-            <span className="rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-[11px] font-black text-blue-700">
+            <span className="rounded-full border border-blue-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-600">
               الأساس
             </span>
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-600 text-[15px] font-black text-white shadow-sm">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-500 text-[15px] font-black text-white shadow-sm">
               01
             </div>
           </div>
@@ -1103,7 +1103,7 @@ export default async function Page() {
             للسوق الحقيقي.
           </p>
 
-          <div className="mt-4 rounded-[16px] border border-blue-100 bg-blue-50/70 px-3 py-3 text-[12px] font-bold leading-6 text-blue-800">
+          <div className="mt-4 rounded-[16px] border border-blue-100 bg-brand-50/70 px-3 py-3 text-[12px] font-bold leading-6 text-blue-800">
             كل بداية قوية تبدأ من فهم واضح، لا من استعجال الدخول.
           </div>
         </div>
@@ -1190,7 +1190,7 @@ export default async function Page() {
     <div className="p-5 md:p-7">
       <div className="grid gap-4 md:grid-cols-2">
         <div className="rounded-[22px] border border-blue-100 bg-[linear-gradient(180deg,#f8fbff_0%,#ffffff_100%)] p-5">
-          <div className="mb-4 inline-flex rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-[11px] font-black text-blue-700">
+          <div className="mb-4 inline-flex rounded-full border border-blue-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-600">
             لماذا يدخل الناس هذا المجال؟
           </div>
 
@@ -1244,7 +1244,7 @@ export default async function Page() {
     </div>
 
     <div className="rounded-[22px] border border-blue-100 bg-[linear-gradient(180deg,#f8fbff_0%,#ffffff_100%)] p-[14px] shadow-sm">
-      <div className="inline-flex rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-[11px] font-black text-blue-700">
+      <div className="inline-flex rounded-full border border-blue-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-600">
         لماذا يدخل الناس هذا المجال؟
       </div>
 
@@ -1323,7 +1323,7 @@ export default async function Page() {
               <tr
                 key={broker.id}
                 className={`border-b border-slate-200 align-middle transition ${
-                  isTopPick ? "bg-blue-50" : "bg-white hover:bg-slate-50"
+                  isTopPick ? "bg-brand-50" : "bg-white hover:bg-slate-50"
                 }`}
               >
                 {/* Company */}
@@ -1351,7 +1351,7 @@ export default async function Page() {
                           href={reviewHref}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[20px] font-black text-slate-950 transition hover:text-blue-700"
+                          className="text-[20px] font-black text-slate-950 transition hover:text-brand-600"
                         >
                           {broker.name}
                         </Link>
@@ -1504,7 +1504,7 @@ export default async function Page() {
     {broker.name}
   </h3>
 
-  <span className="mt-2 inline-flex rounded-full border border-blue-100 bg-blue-50 px-2 py-0.5 text-[9px] font-bold text-blue-700">
+  <span className="mt-2 inline-flex rounded-full border border-blue-100 bg-brand-50 px-2 py-0.5 text-[9px] font-bold text-brand-600">
     {badgeText}
   </span>
 </div>
@@ -1526,7 +1526,7 @@ export default async function Page() {
               </span>
 
               {broker.min_deposit !== null && (
-                <span className="inline-flex rounded-full border border-blue-100 bg-blue-50 px-3 py-1.5 text-[11px] font-black text-blue-700">
+                <span className="inline-flex rounded-full border border-blue-100 bg-brand-50 px-3 py-1.5 text-[11px] font-black text-brand-600">
                   من ${broker.min_deposit}
                 </span>
               )}
@@ -1580,7 +1580,7 @@ export default async function Page() {
                 href={reviewHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-[48px] items-center justify-center rounded-[16px] border border-blue-200 bg-white px-3 py-3 text-center text-[14px] font-black leading-5 text-blue-700 transition hover:bg-blue-50"
+                className="inline-flex min-h-[48px] items-center justify-center rounded-[16px] border border-brand-100 bg-white px-3 py-3 text-center text-[14px] font-black leading-5 text-brand-600 transition hover:bg-brand-50"
               >
                 التقييم
               </Link>
@@ -1589,7 +1589,7 @@ export default async function Page() {
                 href={broker.real_account_url || reviewHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-[48px] items-center justify-center rounded-[16px] border border-blue-200 bg-white px-3 py-3 text-center text-[14px] font-black leading-5 text-blue-700 transition hover:bg-blue-50"
+                className="inline-flex min-h-[48px] items-center justify-center rounded-[16px] border border-brand-100 bg-white px-3 py-3 text-center text-[14px] font-black leading-5 text-brand-600 transition hover:bg-brand-50"
               >
                 افتح حساب
               </Link>
@@ -1652,7 +1652,7 @@ export default async function Page() {
       مما يجعله سوقًا سريع التنفيذ ومتاحًا للجميع، سواء كنت مبتدئًا أو محترفًا.
     </p>
 
-    <div className="mt-5 rounded-xl bg-blue-50 border border-blue-100 p-4 text-[15px] leading-8 text-blue-800">
+    <div className="mt-5 rounded-xl bg-brand-50 border border-blue-100 p-4 text-[15px] leading-8 text-blue-800">
       الفوركس ليس استثمارًا تقليديًا، بل يعتمد على توقع حركة الأسعار، لذلك الفهم أهم من رأس المال.
     </div>
 
@@ -1781,7 +1781,7 @@ export default async function Page() {
     </p>
 
     <details className="mt-2 group">
-      <summary className="cursor-pointer list-none text-[13px] font-black text-blue-700">
+      <summary className="cursor-pointer list-none text-[13px] font-black text-brand-600">
         اقرأ المزيد
       </summary>
 
@@ -1819,7 +1819,7 @@ export default async function Page() {
             مما يجعله سوقًا سريع التنفيذ ومتاحًا للجميع، سواء كنت مبتدئًا أو محترفًا.
           </p>
 
-          <div className="mt-4 rounded-[16px] border border-blue-100 bg-blue-50 p-4 text-[14px] leading-7 text-blue-800">
+          <div className="mt-4 rounded-[16px] border border-blue-100 bg-brand-50 p-4 text-[14px] leading-7 text-blue-800">
             الفوركس ليس استثمارًا تقليديًا، بل يعتمد على توقع حركة الأسعار، لذلك الفهم أهم من رأس المال.
           </div>
         </div>
@@ -2253,14 +2253,14 @@ export default async function Page() {
       <div className="grid grid-cols-2 gap-3 pt-1">
         <Link
           href="/best-brokers"
-          className="inline-flex min-h-[48px] items-center justify-center rounded-[16px] border border-blue-200 bg-white px-3 py-3 text-center text-[14px] font-black leading-5 text-blue-700"
+          className="inline-flex min-h-[48px] items-center justify-center rounded-[16px] border border-brand-100 bg-white px-3 py-3 text-center text-[14px] font-black leading-5 text-brand-600"
         >
           أفضل الوسطاء
         </Link>
 
         <Link
           href="/compare"
-          className="inline-flex min-h-[48px] items-center justify-center rounded-[16px] border border-blue-200 bg-white px-3 py-3 text-center text-[14px] font-black leading-5 text-blue-700"
+          className="inline-flex min-h-[48px] items-center justify-center rounded-[16px] border border-brand-100 bg-white px-3 py-3 text-center text-[14px] font-black leading-5 text-brand-600"
         >
           المقارنات
         </Link>
@@ -2279,7 +2279,7 @@ export default async function Page() {
 
     {/* Header */}
     <div className="border-b border-slate-200 bg-[linear-gradient(180deg,#f8fbff_0%,#f3f7ff_100%)] px-6 py-6 md:px-8 md:py-8">
-      <div className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-[11px] font-black text-blue-700">
+      <div className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-600">
         أسئلة يبحث عنها المبتدئون قبل فتح أول حساب
       </div>
 
@@ -2298,10 +2298,10 @@ export default async function Page() {
     <div className="space-y-3 p-4 md:p-6">
 
       {/* Item */}
-      <details open className="group rounded-2xl border border-blue-200 bg-blue-50/70 p-5 shadow-sm">
+      <details open className="group rounded-2xl border border-brand-100 bg-brand-50/70 p-5 shadow-sm">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[17px] font-black text-slate-950">
           كيف تبدأ التداول من الصفر؟
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-100 text-[18px] font-black text-blue-700 shadow-sm transition group-open:rotate-180">
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-100 text-[18px] font-black text-brand-600 shadow-sm transition group-open:rotate-180">
             ⌄
           </span>
         </summary>
@@ -2318,7 +2318,7 @@ export default async function Page() {
       <details className="group px-6 py-5 md:px-8">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[18px] font-black text-slate-950">
           كم تحتاج من المال لبدء التداول؟
-          <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-50 text-[16px] font-black text-blue-600 transition group-open:rotate-180">
+          <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-50 text-[16px] font-black text-brand-500 transition group-open:rotate-180">
             ⌄
           </span>
         </summary>
@@ -2333,7 +2333,7 @@ export default async function Page() {
       <details className="group px-6 py-5 md:px-8">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[18px] font-black text-slate-950">
           ما أفضل شركة تداول للمبتدئين؟
-          <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-50 text-[16px] font-black text-blue-600 transition group-open:rotate-180">
+          <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-50 text-[16px] font-black text-brand-500 transition group-open:rotate-180">
             ⌄
           </span>
         </summary>
@@ -2348,7 +2348,7 @@ export default async function Page() {
       <details className="group px-6 py-5 md:px-8">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[18px] font-black text-slate-950">
           هل التداول مربح فعلًا؟
-          <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-50 text-[16px] font-black text-blue-600 transition group-open:rotate-180">
+          <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-50 text-[16px] font-black text-brand-500 transition group-open:rotate-180">
             ⌄
           </span>
         </summary>
@@ -2364,7 +2364,7 @@ export default async function Page() {
       <details className="group px-6 py-5 md:px-8">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[18px] font-black text-slate-950">
           هل الحساب التجريبي مهم قبل التداول الحقيقي؟
-          <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-50 text-[16px] font-black text-blue-600 transition group-open:rotate-180">
+          <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-50 text-[16px] font-black text-brand-500 transition group-open:rotate-180">
             ⌄
           </span>
         </summary>
@@ -2380,7 +2380,7 @@ export default async function Page() {
       <details className="group px-6 py-5 md:px-8">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[18px] font-black text-slate-950">
           هل التداول حلال أم حرام؟
-          <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-50 text-[16px] font-black text-blue-600 transition group-open:rotate-180">
+          <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-50 text-[16px] font-black text-brand-500 transition group-open:rotate-180">
             ⌄
           </span>
         </summary>
@@ -2396,7 +2396,7 @@ export default async function Page() {
       <details className="group px-6 py-5 md:px-8">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[18px] font-black text-slate-950">
           ما هو أفضل نوع حساب للمبتدئ؟
-          <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-50 text-[16px] font-black text-blue-600 transition group-open:rotate-180">
+          <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-50 text-[16px] font-black text-brand-500 transition group-open:rotate-180">
             ⌄
           </span>
         </summary>
@@ -2411,7 +2411,7 @@ export default async function Page() {
       <details className="group px-6 py-5 md:px-8">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[18px] font-black text-slate-950">
           ما هو السبريد ولماذا هو مهم؟
-          <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-50 text-[16px] font-black text-blue-600 transition group-open:rotate-180">
+          <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-50 text-[16px] font-black text-brand-500 transition group-open:rotate-180">
             ⌄
           </span>
         </summary>
@@ -2426,7 +2426,7 @@ export default async function Page() {
       <details className="group px-6 py-5 md:px-8">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[18px] font-black text-slate-950">
           هل يمكن التداول من الجوال؟
-          <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-50 text-[16px] font-black text-blue-600 transition group-open:rotate-180">
+          <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-50 text-[16px] font-black text-brand-500 transition group-open:rotate-180">
             ⌄
           </span>
         </summary>
@@ -2441,7 +2441,7 @@ export default async function Page() {
       <details className="group px-6 py-5 md:px-8">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[18px] font-black text-slate-950">
           هل التداول مناسب للجميع؟
-          <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-50 text-[16px] font-black text-blue-600 transition group-open:rotate-180">
+          <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-50 text-[16px] font-black text-brand-500 transition group-open:rotate-180">
             ⌄
           </span>
         </summary>
@@ -2456,7 +2456,7 @@ export default async function Page() {
       <details className="group px-6 py-5 md:px-8">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[18px] font-black text-slate-950">
           ما أهم نصيحة قبل فتح أول حساب تداول؟
-          <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-50 text-[16px] font-black text-blue-600 transition group-open:rotate-180">
+          <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-50 text-[16px] font-black text-brand-500 transition group-open:rotate-180">
             ⌄
           </span>
         </summary>
@@ -2477,7 +2477,7 @@ export default async function Page() {
 
     {/* Header */}
     <div className="border-b border-slate-200 bg-[linear-gradient(180deg,#f8fbff_0%,#f4f7fc_100%)] px-4 py-5">
-      <div className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-[10px] font-black text-blue-700">
+      <div className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[10px] font-black text-brand-600">
         أسئلة قبل أول حساب
       </div>
 
@@ -2500,7 +2500,7 @@ export default async function Page() {
             كيف تبدأ التداول من الصفر؟
           </h3>
 
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-50 text-[13px] font-black text-blue-700 transition group-open:rotate-180">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-50 text-[13px] font-black text-brand-600 transition group-open:rotate-180">
             ⌄
           </span>
         </summary>

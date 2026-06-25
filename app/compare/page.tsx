@@ -199,7 +199,7 @@ const featuredComparisonsMobile = sortedComparisons.slice(0, 5);
       <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
         <a
           href="#compare-tool"
-          className="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-6 py-3 text-sm font-extrabold text-white transition hover:bg-blue-700"
+          className="inline-flex items-center justify-center rounded-2xl bg-brand-500 px-6 py-3 text-sm font-extrabold text-white transition hover:bg-brand-600"
         >
           ابدأ المقارنة الآن
         </a>
@@ -258,13 +258,13 @@ const featuredComparisonsMobile = sortedComparisons.slice(0, 5);
 
       {/* RIGHT / INTRO */}
 <div className="relative hidden overflow-hidden border-t border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] p-5 sm:p-6 lg:block lg:border-t-0 lg:border-r lg:p-6">
-  <div className="absolute left-0 top-0 h-32 w-32 rounded-full bg-blue-50 blur-3xl" />
+  <div className="absolute left-0 top-0 h-32 w-32 rounded-full bg-brand-50 blur-3xl" />
   <div className="absolute bottom-0 right-0 h-32 w-32 rounded-full bg-slate-100 blur-3xl" />
 
   <div className="relative">
 
     <h2 className="mt-4 text-2xl font-extrabold leading-tight text-slate-900 sm:text-[40px]">
-  اختر شركتين وابدأ <span className="text-blue-700">المقارنة</span>
+  اختر شركتين وابدأ <span className="text-brand-600">المقارنة</span>
 </h2>
 
     <p className="mt-4 max-w-2xl text-sm leading-8 text-slate-600">
@@ -275,7 +275,7 @@ const featuredComparisonsMobile = sortedComparisons.slice(0, 5);
 
     <div className="mt-7 space-y-4">
       <div className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-        <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-50 text-sm font-extrabold text-blue-700">
+        <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-50 text-sm font-extrabold text-brand-600">
           1
         </div>
         <div>
@@ -290,7 +290,7 @@ const featuredComparisonsMobile = sortedComparisons.slice(0, 5);
       </div>
 
       <div className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-        <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-50 text-sm font-extrabold text-blue-700">
+        <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-50 text-sm font-extrabold text-brand-600">
           2
         </div>
         <div>
@@ -305,7 +305,7 @@ const featuredComparisonsMobile = sortedComparisons.slice(0, 5);
       </div>
 
       <div className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-        <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-50 text-sm font-extrabold text-blue-700">
+        <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-50 text-sm font-extrabold text-brand-600">
           3
         </div>
         <div>
@@ -321,7 +321,7 @@ const featuredComparisonsMobile = sortedComparisons.slice(0, 5);
     </div>
 
     <div className="mt-6 rounded-[20px] border border-blue-100 bg-[linear-gradient(180deg,#eff6ff_0%,#f8fbff_100%)] p-4">
-      <div className="text-xs font-extrabold text-blue-700">
+      <div className="text-xs font-extrabold text-brand-600">
         ماذا ستشاهد في صفحة المقارنة؟
       </div>
 
@@ -354,7 +354,7 @@ const featuredComparisonsMobile = sortedComparisons.slice(0, 5);
   <div className="rounded-[30px] border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
     <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <div className="text-sm font-extrabold text-[#2563eb]">
+        <div className="text-sm font-extrabold text-brand-500">
           أشهر المقارنات
         </div>
         <h2 className="mt-2 text-3xl font-black text-[#0f172a] sm:text-4xl">
@@ -559,7 +559,7 @@ const featuredComparisonsMobile = sortedComparisons.slice(0, 5);
   <div className="grid gap-6 lg:grid-cols-[1.05fr_.95fr]">
     {/* INTERNAL LINKS */}
     <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-      <div className="text-sm font-extrabold text-[#2563eb]">
+      <div className="text-sm font-extrabold text-brand-500">
         صفحات مهمة داخل الموقع
       </div>
 
@@ -575,7 +575,7 @@ const featuredComparisonsMobile = sortedComparisons.slice(0, 5);
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
         <Link
           href="/brokers"
-          className="group rounded-[22px] border border-slate-200 bg-[#f8fbff] p-5 transition hover:border-blue-200 hover:bg-white hover:shadow-sm"
+          className="group rounded-[22px] border border-slate-200 bg-[#f8fbff] p-5 transition hover:border-brand-100 hover:bg-white hover:shadow-sm"
         >
           <div className="text-lg font-black text-[#0f172a]">
             تقييم شركات التداول
@@ -583,14 +583,14 @@ const featuredComparisonsMobile = sortedComparisons.slice(0, 5);
           <p className="mt-2 text-sm leading-7 text-slate-600">
             راجع تقييمات الوسطاء وتفاصيل التراخيص والمنصات والحساب الإسلامي.
           </p>
-          <div className="mt-4 text-sm font-extrabold text-[#2563eb]">
+          <div className="mt-4 text-sm font-extrabold text-brand-500">
             تصفح الصفحة ←
           </div>
         </Link>
 
         <Link
           href="/best-brokers"
-          className="group rounded-[22px] border border-slate-200 bg-[#f8fbff] p-5 transition hover:border-blue-200 hover:bg-white hover:shadow-sm"
+          className="group rounded-[22px] border border-slate-200 bg-[#f8fbff] p-5 transition hover:border-brand-100 hover:bg-white hover:shadow-sm"
         >
           <div className="text-lg font-black text-[#0f172a]">
             أفضل الوسطاء
@@ -598,14 +598,14 @@ const featuredComparisonsMobile = sortedComparisons.slice(0, 5);
           <p className="mt-2 text-sm leading-7 text-slate-600">
             صفحة مختصرة لعرض الوسطاء الأقوى حسب التقييم العام والانطباع العام.
           </p>
-          <div className="mt-4 text-sm font-extrabold text-[#2563eb]">
+          <div className="mt-4 text-sm font-extrabold text-brand-500">
             اذهب الآن ←
           </div>
         </Link>
 
         <Link
           href="/best-brokers/saudi-arabia"
-          className="group rounded-[22px] border border-slate-200 bg-[#f8fbff] p-5 transition hover:border-blue-200 hover:bg-white hover:shadow-sm"
+          className="group rounded-[22px] border border-slate-200 bg-[#f8fbff] p-5 transition hover:border-brand-100 hover:bg-white hover:shadow-sm"
         >
           <div className="text-lg font-black text-[#0f172a]">
             أفضل الوسطاء في السعودية
@@ -613,14 +613,14 @@ const featuredComparisonsMobile = sortedComparisons.slice(0, 5);
           <p className="mt-2 text-sm leading-7 text-slate-600">
             تصفح الوسطاء المناسبين للمتداولين في السعودية حسب المعايير المهمة.
           </p>
-          <div className="mt-4 text-sm font-extrabold text-[#2563eb]">
+          <div className="mt-4 text-sm font-extrabold text-brand-500">
             افتح الصفحة ←
           </div>
         </Link>
 
         <Link
           href="/compare"
-          className="group rounded-[22px] border border-slate-200 bg-[#f8fbff] p-5 transition hover:border-blue-200 hover:bg-white hover:shadow-sm"
+          className="group rounded-[22px] border border-slate-200 bg-[#f8fbff] p-5 transition hover:border-brand-100 hover:bg-white hover:shadow-sm"
         >
           <div className="text-lg font-black text-[#0f172a]">
             جميع صفحات المقارنات
@@ -628,14 +628,14 @@ const featuredComparisonsMobile = sortedComparisons.slice(0, 5);
           <p className="mt-2 text-sm leading-7 text-slate-600">
             ارجع إلى صفحة المقارنات الرئيسية واختر أي شركتين تريد المقارنة بينهما.
           </p>
-          <div className="mt-4 text-sm font-extrabold text-[#2563eb]">
+          <div className="mt-4 text-sm font-extrabold text-brand-500">
             صفحة المقارنات ←
           </div>
         </Link>
       </div>
 
       <div className="mt-6 rounded-[22px] border border-blue-100 bg-[linear-gradient(180deg,#eff6ff_0%,#f8fbff_100%)] p-4">
-        <div className="text-sm font-extrabold text-[#2563eb]">
+        <div className="text-sm font-extrabold text-brand-500">
           نصيحة سريعة
         </div>
         <p className="mt-2 text-sm leading-7 text-slate-700">
@@ -648,7 +648,7 @@ const featuredComparisonsMobile = sortedComparisons.slice(0, 5);
 
     {/* QUICK GUIDE */}
     <div className="hidden rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm sm:p-6 lg:block">
-      <div className="text-sm font-extrabold text-[#2563eb]">
+      <div className="text-sm font-extrabold text-brand-500">
         دليل مختصر
       </div>
 

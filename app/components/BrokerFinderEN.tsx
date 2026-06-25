@@ -367,7 +367,7 @@ export default function BrokerFinder({ brokers }: Props) {
   aria-label="Select country"
   value={country}
                   onChange={(e) => setCountry(e.target.value)}
-                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]"
+                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
                 >
                   <option value="">Select Country</option>
                   <option value="uk">United Kingdom</option>
@@ -393,7 +393,7 @@ export default function BrokerFinder({ brokers }: Props) {
                   onChange={(e) =>
                     setDeposit(e.target.value as DepositRange | "")
                   }
-                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]"
+                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
                 >
                   <option value="">Select Deposit</option>
                   <option value="under50">Under $50</option>
@@ -413,7 +413,7 @@ export default function BrokerFinder({ brokers }: Props) {
                   onChange={(e) =>
                     setExperience(e.target.value as Experience | "")
                   }
-                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]"
+                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
                 >
                   <option value="">Select Experience</option>
                   <option value="beginner">Beginner</option>
@@ -432,7 +432,7 @@ export default function BrokerFinder({ brokers }: Props) {
                   onChange={(e) =>
                     setPlatform(e.target.value as PlatformPref | "")
                   }
-                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]"
+                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
                 >
                   <option value="">Select Platform</option>
                   <option value="any">Any Platform</option>
@@ -449,7 +449,7 @@ export default function BrokerFinder({ brokers }: Props) {
   aria-label="Select swap-free account preference"
   value={islamic}
                   onChange={(e) => setIslamic(e.target.value)}
-                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]"
+                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
                 >
                   <option value="yes">Yes</option>
                   <option value="no">Not important</option>
@@ -469,7 +469,7 @@ export default function BrokerFinder({ brokers }: Props) {
                 disabled={!canSearch}
                 className={`inline-flex min-w-[250px] items-center justify-center rounded-2xl px-5 py-3 text-sm font-extrabold transition ${
                   canSearch
-                    ? "bg-[#2563eb] text-white shadow-[0_16px_34px_rgba(37,99,235,0.25)] hover:bg-[#1d4ed8]"
+                    ? "bg-brand-500 text-white shadow-[0_16px_34px_rgba(37,99,235,0.25)] hover:bg-brand-600"
                     : "cursor-not-allowed bg-slate-200 text-slate-400"
                 }`}
               >
@@ -490,7 +490,7 @@ export default function BrokerFinder({ brokers }: Props) {
               </div>
             </div>
 
-            <span className="rounded-full bg-[#eff6ff] px-3 py-1 text-xs font-extrabold text-[#1d4ed8]">
+            <span className="rounded-full bg-brand-50 px-3 py-1 text-xs font-extrabold text-brand-600">
               Smart Ranking
             </span>
           </div>
@@ -518,12 +518,12 @@ export default function BrokerFinder({ brokers }: Props) {
                   key={broker.id}
                   className={`group relative flex min-h-[500px] flex-col overflow-hidden rounded-[30px] border bg-white/95 p-5 backdrop-blur-sm transition duration-300 ${
                     index === 0
-                      ? "border-[#60a5fa] shadow-[0_28px_70px_rgba(37,99,235,0.18)]"
+                      ? "border-brand-400 shadow-[0_28px_70px_rgba(37,99,235,0.18)]"
                       : "border-slate-200 shadow-[0_12px_35px_rgba(15,23,42,0.07)] hover:-translate-y-[4px] hover:shadow-[0_20px_50px_rgba(15,23,42,0.11)]"
                   }`}
                 >
                   {index === 0 && (
-                    <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-[#60a5fa] via-[#2563eb] to-[#1d4ed8]" />
+                    <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-brand-400 via-brand-500 to-brand-600" />
                   )}
 
                   <div className="flex items-start justify-between gap-4">
@@ -541,7 +541,7 @@ export default function BrokerFinder({ brokers }: Props) {
                             className="max-h-full max-w-full object-contain"
                           />
                         ) : (
-                          <span className="text-lg font-black text-[#2563eb]">
+                          <span className="text-lg font-black text-brand-500">
                             {getBrokerInitials(name)}
                           </span>
                         )}
@@ -549,7 +549,7 @@ export default function BrokerFinder({ brokers }: Props) {
 
                       <div className="flex min-h-[78px] min-w-0 flex-1 flex-col justify-center">
                         <div className="flex items-start gap-2">
-                          <span className="inline-flex h-7 min-w-7 shrink-0 items-center justify-center rounded-full bg-[#2563eb] px-2 text-xs font-black text-white">
+                          <span className="inline-flex h-7 min-w-7 shrink-0 items-center justify-center rounded-full bg-brand-500 px-2 text-xs font-black text-white">
                             {index + 1}
                           </span>
 
@@ -557,7 +557,7 @@ export default function BrokerFinder({ brokers }: Props) {
                             href={`/brokers/${broker.slug}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="block max-w-[170px] leading-[1.15] text-[20px] font-black text-[#07111f] transition hover:text-[#2563eb]"
+                            className="block max-w-[170px] leading-[1.15] text-[20px] font-black text-[#07111f] transition hover:text-brand-500"
                             title={name}
                           >
                             {name}
@@ -565,15 +565,15 @@ export default function BrokerFinder({ brokers }: Props) {
                         </div>
 
                         <div className="mt-2">
-                          <span className="inline-flex rounded-full bg-[#dbeafe] px-3 py-1 text-[11px] font-extrabold text-[#1d4ed8]">
+                          <span className="inline-flex rounded-full bg-[#dbeafe] px-3 py-1 text-[11px] font-extrabold text-brand-600">
                             {recommendation}
                           </span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="shrink-0 rounded-[24px] border border-[#bfdbfe] bg-[#eff6ff] px-4 py-3 text-center">
-                      <div className="text-2xl font-black text-[#1d4ed8]">
+                    <div className="shrink-0 rounded-[24px] border border-brand-100 bg-brand-50 px-4 py-3 text-center">
+                      <div className="text-2xl font-black text-brand-600">
                         {broker.rating?.toFixed(1) ?? "—"}
                       </div>
                       <div className="text-[10px] font-bold text-slate-500">
@@ -656,7 +656,7 @@ export default function BrokerFinder({ brokers }: Props) {
                       href={openAccountHref}
                       target="_blank"
                       rel="noopener noreferrer sponsored"
-                      className="inline-flex items-center justify-center rounded-[16px] bg-gradient-to-r from-[#2563eb] to-[#1d4ed8] px-4 py-3 text-sm font-extrabold text-white shadow-[0_14px_28px_rgba(37,99,235,0.28)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_36px_rgba(37,99,235,0.34)]"
+                      className="inline-flex items-center justify-center rounded-[16px] bg-gradient-to-r from-brand-500 to-brand-600 px-4 py-3 text-sm font-extrabold text-white shadow-[0_14px_28px_rgba(37,99,235,0.28)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_36px_rgba(37,99,235,0.34)]"
                     >
                       Open Live Account
                     </Link>
@@ -676,7 +676,7 @@ export default function BrokerFinder({ brokers }: Props) {
           <button
             type="button"
             onClick={() => setShowMobileFilters((prev) => !prev)}
-            className="flex w-full items-center justify-between rounded-[20px] border border-[#bfdbfe] bg-white px-4 py-3.5 text-left shadow-[0_12px_30px_rgba(37,99,235,0.10)]"
+            className="flex w-full items-center justify-between rounded-[20px] border border-brand-100 bg-white px-4 py-3.5 text-left shadow-[0_12px_30px_rgba(37,99,235,0.10)]"
           >
             <div>
               <div className="text-[15px] font-black text-[#07111f]">
@@ -687,13 +687,13 @@ export default function BrokerFinder({ brokers }: Props) {
               </div>
             </div>
 
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#eff6ff] text-xl font-black text-[#2563eb]">
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-50 text-xl font-black text-brand-500">
               {showMobileFilters ? "−" : "+"}
             </span>
           </button>
 
           {showMobileFilters && (
-            <div className="mt-3 rounded-[24px] border border-[#bfdbfe] bg-gradient-to-b from-white to-[#f8fbff] p-4 shadow-[0_16px_38px_rgba(37,99,235,0.10)]">
+            <div className="mt-3 rounded-[24px] border border-brand-100 bg-gradient-to-b from-white to-[#f8fbff] p-4 shadow-[0_16px_38px_rgba(37,99,235,0.10)]">
               <div className="mb-4 flex items-center justify-between">
                 <div>
                   <div className="text-[14px] font-black text-[#07111f]">
@@ -704,7 +704,7 @@ export default function BrokerFinder({ brokers }: Props) {
                   </div>
                 </div>
 
-                <span className="rounded-full bg-[#eff6ff] px-3 py-1 text-[10px] font-extrabold text-[#1d4ed8]">
+                <span className="rounded-full bg-brand-50 px-3 py-1 text-[10px] font-extrabold text-brand-600">
                   Quick
                 </span>
               </div>
@@ -714,7 +714,7 @@ export default function BrokerFinder({ brokers }: Props) {
   aria-label="Select country"
   value={country}
                   onChange={(e) => setCountry(e.target.value)}
-                  className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]"
+                  className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
                 >
                   <option value="">Select Country</option>
                   <option value="uk">United Kingdom</option>
@@ -736,7 +736,7 @@ export default function BrokerFinder({ brokers }: Props) {
                   onChange={(e) =>
                     setDeposit(e.target.value as DepositRange | "")
                   }
-                  className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]"
+                  className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
                 >
                   <option value="">Select Deposit</option>
                   <option value="under50">Under $50</option>
@@ -751,7 +751,7 @@ export default function BrokerFinder({ brokers }: Props) {
                   onChange={(e) =>
                     setExperience(e.target.value as Experience | "")
                   }
-                  className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]"
+                  className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
                 >
                   <option value="">Select Experience</option>
                   <option value="beginner">Beginner</option>
@@ -765,7 +765,7 @@ export default function BrokerFinder({ brokers }: Props) {
                   onChange={(e) =>
                     setPlatform(e.target.value as PlatformPref | "")
                   }
-                  className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]"
+                  className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
                 >
                   <option value="">Select Platform</option>
                   <option value="any">Any Platform</option>
@@ -777,7 +777,7 @@ export default function BrokerFinder({ brokers }: Props) {
   aria-label="Select swap-free account preference"
   value={islamic}
                   onChange={(e) => setIslamic(e.target.value)}
-                  className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-[#2563eb] focus:ring-4 focus:ring-[#dbeafe]"
+                  className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
                 >
                   <option value="yes">Swap-free Account: Yes</option>
                   <option value="no">Not important</option>
@@ -790,7 +790,7 @@ export default function BrokerFinder({ brokers }: Props) {
                 disabled={!canSearch}
                 className={`mt-4 inline-flex h-[48px] w-full items-center justify-center rounded-[18px] px-5 text-sm font-black transition ${
                   canSearch
-                    ? "bg-gradient-to-r from-[#2563eb] to-[#1d4ed8] text-white shadow-[0_14px_28px_rgba(37,99,235,0.25)]"
+                    ? "bg-gradient-to-r from-brand-500 to-brand-600 text-white shadow-[0_14px_28px_rgba(37,99,235,0.25)]"
                     : "cursor-not-allowed bg-slate-200 text-slate-400"
                 }`}
               >
@@ -811,7 +811,7 @@ export default function BrokerFinder({ brokers }: Props) {
               </div>
             </div>
 
-            <span className="rounded-full bg-[#eff6ff] px-3 py-1 text-[11px] font-extrabold text-[#1d4ed8]">
+            <span className="rounded-full bg-brand-50 px-3 py-1 text-[11px] font-extrabold text-brand-600">
               Smart Ranking
             </span>
           </div>
@@ -840,12 +840,12 @@ export default function BrokerFinder({ brokers }: Props) {
                   key={broker.id}
                   className={`overflow-hidden rounded-[22px] border bg-white transition-all duration-300 ${
                     index === 0
-                      ? "border-[#60a5fa] shadow-[0_16px_38px_rgba(37,99,235,0.14)]"
+                      ? "border-brand-400 shadow-[0_16px_38px_rgba(37,99,235,0.14)]"
                       : "border-slate-200 shadow-[0_10px_26px_rgba(15,23,42,0.06)]"
                   }`}
                 >
                   {index === 0 && (
-                    <div className="h-1.5 bg-gradient-to-r from-[#2563eb] to-[#60a5fa]" />
+                    <div className="h-1.5 bg-gradient-to-r from-brand-500 to-brand-400" />
                   )}
 
                   <button
@@ -862,12 +862,12 @@ export default function BrokerFinder({ brokers }: Props) {
                             className="max-h-full max-w-full object-contain"
                           />
                         ) : (
-                          <span className="text-sm font-black text-[#2563eb]">
+                          <span className="text-sm font-black text-brand-500">
                             {getBrokerInitials(name)}
                           </span>
                         )}
 
-                        <span className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-[#2563eb] text-[10px] font-black text-white">
+                        <span className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-brand-500 text-[10px] font-black text-white">
                           {index + 1}
                         </span>
                       </div>
@@ -877,13 +877,13 @@ export default function BrokerFinder({ brokers }: Props) {
                           {name}
                         </div>
 
-                        <div className="mt-1 inline-flex rounded-full bg-[#dbeafe] px-2.5 py-1 text-[10px] font-extrabold text-[#1d4ed8]">
+                        <div className="mt-1 inline-flex rounded-full bg-[#dbeafe] px-2.5 py-1 text-[10px] font-extrabold text-brand-600">
                           {recommendation}
                         </div>
                       </div>
 
-                      <div className="shrink-0 rounded-[15px] border border-[#bfdbfe] bg-[#eff6ff] px-2 py-2 text-center">
-                        <div className="text-[18px] font-black leading-none text-[#1d4ed8]">
+                      <div className="shrink-0 rounded-[15px] border border-brand-100 bg-brand-50 px-2 py-2 text-center">
+                        <div className="text-[18px] font-black leading-none text-brand-600">
                           {broker.rating?.toFixed(1) ?? "—"}
                         </div>
                         <div className="mt-1 text-[9px] font-bold text-slate-500">
@@ -969,7 +969,7 @@ export default function BrokerFinder({ brokers }: Props) {
                           href={openAccountHref}
                           target="_blank"
                           rel="noopener noreferrer sponsored"
-                          className="inline-flex items-center justify-center rounded-[16px] bg-gradient-to-r from-[#2563eb] to-[#1d4ed8] px-3 py-3 text-[13px] font-black text-white shadow-[0_12px_24px_rgba(37,99,235,0.22)]"
+                          className="inline-flex items-center justify-center rounded-[16px] bg-gradient-to-r from-brand-500 to-brand-600 px-3 py-3 text-[13px] font-black text-white shadow-[0_12px_24px_rgba(37,99,235,0.22)]"
                         >
                           Open Account
                         </Link>

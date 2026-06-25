@@ -63,7 +63,7 @@ export default function CountryBrokerRedirect() {
         <button
           type="button"
           onClick={handleGo}
-          className="inline-flex w-full items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-extrabold text-white shadow-[0_10px_25px_rgba(37,99,235,0.28)] transition hover:bg-blue-700"
+          className="inline-flex w-full items-center justify-center rounded-2xl bg-brand-500 px-5 py-3 text-sm font-extrabold text-white shadow-[0_10px_25px_rgba(37,99,235,0.28)] transition hover:bg-brand-600"
         >
           اعرض أفضل الوسطاء
         </button>

@@ -205,7 +205,7 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
             <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
               <a
                 href="#compare-tool"
-                className="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-6 py-3 text-sm font-extrabold text-white transition hover:bg-blue-700"
+                className="inline-flex items-center justify-center rounded-2xl bg-brand-500 px-6 py-3 text-sm font-extrabold text-white transition hover:bg-brand-600"
               >
                 Start Comparing Now
               </a>
@@ -230,13 +230,13 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
     <div className="grid lg:grid-cols-[1.02fr_.98fr]">
       {/* LEFT / INTRO */}
       <div className="relative hidden overflow-hidden border-t border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] p-5 sm:p-6 lg:block lg:border-t-0 lg:border-r lg:p-6">
-        <div className="absolute left-0 top-0 h-32 w-32 rounded-full bg-blue-50 blur-3xl" />
+        <div className="absolute left-0 top-0 h-32 w-32 rounded-full bg-brand-50 blur-3xl" />
         <div className="absolute bottom-0 right-0 h-32 w-32 rounded-full bg-slate-100 blur-3xl" />
 
         <div className="relative">
           <h2 className="mt-4 text-2xl font-extrabold leading-tight text-slate-900 sm:text-[40px]">
             Choose Two Brokers and Start the{" "}
-            <span className="text-blue-700">Comparison</span>
+            <span className="text-brand-600">Comparison</span>
           </h2>
 
           <p className="mt-4 max-w-2xl text-sm leading-8 text-slate-600">
@@ -248,7 +248,7 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
 
           <div className="mt-7 space-y-4">
             <div className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-              <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-50 text-sm font-extrabold text-blue-700">
+              <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-50 text-sm font-extrabold text-brand-600">
                 1
               </div>
               <div>
@@ -263,7 +263,7 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
             </div>
 
             <div className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-              <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-50 text-sm font-extrabold text-blue-700">
+              <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-50 text-sm font-extrabold text-brand-600">
                 2
               </div>
               <div>
@@ -279,7 +279,7 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
             </div>
 
             <div className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-              <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-50 text-sm font-extrabold text-blue-700">
+              <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-50 text-sm font-extrabold text-brand-600">
                 3
               </div>
               <div>
@@ -296,7 +296,7 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
           </div>
 
           <div className="mt-6 rounded-[20px] border border-blue-100 bg-[linear-gradient(180deg,#eff6ff_0%,#f8fbff_100%)] p-4">
-            <div className="text-xs font-extrabold text-blue-700">
+            <div className="text-xs font-extrabold text-brand-600">
               What will you see on the comparison page?
             </div>
 
@@ -363,7 +363,7 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
         <div className="rounded-[30px] border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
           <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <div className="text-sm font-extrabold text-[#2563eb]">
+              <div className="text-sm font-extrabold text-brand-500">
                 Popular Comparisons
               </div>
               <h2 className="mt-2 text-3xl font-black text-[#0f172a] sm:text-4xl">
@@ -586,7 +586,7 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
         <div className="grid gap-6 lg:grid-cols-[1.05fr_.95fr]">
           {/* INTERNAL LINKS */}
           <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-            <div className="text-sm font-extrabold text-[#2563eb]">
+            <div className="text-sm font-extrabold text-brand-500">
               Important Pages on the Site
             </div>
 
@@ -603,7 +603,7 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
               <Link
                 href="/en/brokers"
-                className="group rounded-[22px] border border-slate-200 bg-[#f8fbff] p-5 transition hover:border-blue-200 hover:bg-white hover:shadow-sm"
+                className="group rounded-[22px] border border-slate-200 bg-[#f8fbff] p-5 transition hover:border-brand-100 hover:bg-white hover:shadow-sm"
               >
                 <div className="text-lg font-black text-[#0f172a]">
                   Broker Reviews
@@ -612,14 +612,14 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
                   Review brokers, regulation details, trading platforms, and
                   Islamic account availability.
                 </p>
-                <div className="mt-4 text-sm font-extrabold text-[#2563eb]">
+                <div className="mt-4 text-sm font-extrabold text-brand-500">
                   Browse the Page →
                 </div>
               </Link>
 
               <Link
                 href="/en/best-brokers"
-                className="group rounded-[22px] border border-slate-200 bg-[#f8fbff] p-5 transition hover:border-blue-200 hover:bg-white hover:shadow-sm"
+                className="group rounded-[22px] border border-slate-200 bg-[#f8fbff] p-5 transition hover:border-brand-100 hover:bg-white hover:shadow-sm"
               >
                 <div className="text-lg font-black text-[#0f172a]">
                   Best Brokers
@@ -628,14 +628,14 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
                   A focused page showing the strongest brokers based on overall
                   rating and general performance.
                 </p>
-                <div className="mt-4 text-sm font-extrabold text-[#2563eb]">
+                <div className="mt-4 text-sm font-extrabold text-brand-500">
                   Go Now →
                 </div>
               </Link>
 
               <Link
                 href="/en/best-brokers/saudi-arabia"
-                className="group rounded-[22px] border border-slate-200 bg-[#f8fbff] p-5 transition hover:border-blue-200 hover:bg-white hover:shadow-sm"
+                className="group rounded-[22px] border border-slate-200 bg-[#f8fbff] p-5 transition hover:border-brand-100 hover:bg-white hover:shadow-sm"
               >
                 <div className="text-lg font-black text-[#0f172a]">
                   Best Brokers in Saudi Arabia
@@ -644,14 +644,14 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
                   Browse brokers that are more suitable for traders in Saudi
                   Arabia based on practical criteria.
                 </p>
-                <div className="mt-4 text-sm font-extrabold text-[#2563eb]">
+                <div className="mt-4 text-sm font-extrabold text-brand-500">
                   Open the Page →
                 </div>
               </Link>
 
               <Link
                 href="/en/compare"
-                className="group rounded-[22px] border border-slate-200 bg-[#f8fbff] p-5 transition hover:border-blue-200 hover:bg-white hover:shadow-sm"
+                className="group rounded-[22px] border border-slate-200 bg-[#f8fbff] p-5 transition hover:border-brand-100 hover:bg-white hover:shadow-sm"
               >
                 <div className="text-lg font-black text-[#0f172a]">
                   All Comparison Pages
@@ -660,14 +660,14 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
                   Go back to the main comparison page and choose any two brokers
                   you want to compare.
                 </p>
-                <div className="mt-4 text-sm font-extrabold text-[#2563eb]">
+                <div className="mt-4 text-sm font-extrabold text-brand-500">
                   Comparison Page →
                 </div>
               </Link>
             </div>
 
             <div className="mt-6 rounded-[22px] border border-blue-100 bg-[linear-gradient(180deg,#eff6ff_0%,#f8fbff_100%)] p-4">
-              <div className="text-sm font-extrabold text-[#2563eb]">
+              <div className="text-sm font-extrabold text-brand-500">
                 Quick Tip
               </div>
               <p className="mt-2 text-sm leading-7 text-slate-700">
@@ -680,7 +680,7 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
 
           {/* QUICK GUIDE */}
           <div className="hidden rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm sm:p-6 lg:block">
-            <div className="text-sm font-extrabold text-[#2563eb]">
+            <div className="text-sm font-extrabold text-brand-500">
               Quick Guide
             </div>
 

@@ -382,7 +382,7 @@ export default function MobileNavMenu({
                     onClick={closeMenu}
                     className={`rounded-2xl border px-4 py-3 text-center text-[13px] font-black transition ${
                       !isEnglish
-                        ? "border-blue-600 bg-blue-600 text-white shadow-sm"
+                        ? "border-blue-600 bg-brand-500 text-white shadow-sm"
                         : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
                     }`}
                   >
@@ -394,7 +394,7 @@ export default function MobileNavMenu({
                     onClick={closeMenu}
                     className={`rounded-2xl border px-4 py-3 text-center text-[13px] font-black transition ${
                       isEnglish
-                        ? "border-blue-600 bg-blue-600 text-white shadow-sm"
+                        ? "border-blue-600 bg-brand-500 text-white shadow-sm"
                         : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
                     }`}
                   >
@@ -456,7 +456,7 @@ export default function MobileNavMenu({
                       <Link
                         href={withLangHref("/brokers", isEnglish)}
                         onClick={closeMenu}
-                        className="block rounded-2xl border border-slate-200 bg-white px-3 py-3 text-center text-sm font-extrabold text-blue-700"
+                        className="block rounded-2xl border border-slate-200 bg-white px-3 py-3 text-center text-sm font-extrabold text-brand-600"
                       >
                         {text.allReviews}
                       </Link>
@@ -505,7 +505,7 @@ export default function MobileNavMenu({
                       <Link
                         href={withLangHref("/compare", isEnglish)}
                         onClick={closeMenu}
-                        className="block rounded-2xl border border-slate-200 bg-white px-3 py-3 text-center text-sm font-extrabold text-blue-700"
+                        className="block rounded-2xl border border-slate-200 bg-white px-3 py-3 text-center text-sm font-extrabold text-brand-600"
                       >
                         {text.allComparisons}
                       </Link>
@@ -594,7 +594,7 @@ export default function MobileNavMenu({
                       <Link
                         href={withLangHref("/tools", isEnglish)}
                         onClick={closeMenu}
-                        className="rounded-2xl border border-blue-200 bg-blue-50 px-3 py-3 text-center text-sm font-extrabold text-blue-700 transition hover:bg-blue-100"
+                        className="rounded-2xl border border-brand-100 bg-brand-50 px-3 py-3 text-center text-sm font-extrabold text-brand-600 transition hover:bg-blue-100"
                       >
                         {text.allTools}
                       </Link>
@@ -605,13 +605,13 @@ export default function MobileNavMenu({
                             key={tool.href}
                             href={withLangHref(tool.href, isEnglish)}
                             onClick={closeMenu}
-                            className="group rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 transition hover:border-blue-200 hover:bg-white"
+                            className="group rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 transition hover:border-brand-100 hover:bg-white"
                           >
-                            <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-xl bg-blue-100 text-blue-700">
+                            <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-xl bg-blue-100 text-brand-600">
                               <ToolIcon />
                             </div>
 
-                            <div className="text-[12.5px] font-extrabold leading-5 text-slate-800 group-hover:text-blue-700">
+                            <div className="text-[12.5px] font-extrabold leading-5 text-slate-800 group-hover:text-brand-600">
                               {tool.label}
                             </div>
                           </Link>

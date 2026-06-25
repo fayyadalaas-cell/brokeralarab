@@ -39,7 +39,7 @@ export default async function EventsPage() {
       <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-sm">
           <div className="relative overflow-hidden bg-gradient-to-b from-blue-50 via-white to-white px-5 py-10 text-center md:px-10 md:py-14">
-            <span className="inline-flex rounded-full bg-white px-4 py-1.5 text-sm font-black text-blue-700 shadow-sm">
+            <span className="inline-flex rounded-full bg-white px-4 py-1.5 text-sm font-black text-brand-600 shadow-sm">
               معارض ومؤتمرات التداول
             </span>
 
@@ -64,7 +64,7 @@ export default async function EventsPage() {
               {eventList.map((event) => (
                 <article
                   key={event.id}
-                 className="group flex min-h-[320px] flex-col rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-blue-200 hover:shadow-xl"
+                 className="group flex min-h-[320px] flex-col rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-brand-100 hover:shadow-xl"
                 >
                  
 
@@ -92,7 +92,7 @@ export default async function EventsPage() {
                   <div className="mt-auto pt-5">
                     <Link
                       href={`/events/${event.slug}`}
-                      className="flex w-full items-center justify-center rounded-2xl bg-blue-600 px-4 py-3 text-sm font-black text-white transition hover:bg-blue-700"
+                      className="flex w-full items-center justify-center rounded-2xl bg-brand-500 px-4 py-3 text-sm font-black text-white transition hover:bg-brand-600"
                     >
                       عرض تفاصيل الحدث
                     </Link>
@@ -117,7 +117,7 @@ export default async function EventsPage() {
                 </p>
               </div>
 
-              <div className="rounded-[26px] border border-blue-100 bg-blue-50 p-5 md:p-7">
+              <div className="rounded-[26px] border border-blue-100 bg-brand-50 p-5 md:p-7">
                 <h2 className="text-2xl font-black text-slate-950">
                   تغطية Broker Al Arab
                 </h2>

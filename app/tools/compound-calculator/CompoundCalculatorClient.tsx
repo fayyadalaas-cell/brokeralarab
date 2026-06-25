@@ -118,7 +118,7 @@ export default function CompoundCalculatorClient() {
         <div className="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm sm:rounded-[2rem]">
           <div className="grid gap-0 lg:grid-cols-[1.05fr_0.95fr]">
             <div className="p-5 text-center sm:p-10 lg:p-12 lg:text-right">
-              <span className="inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700 sm:px-4 sm:py-1.5 sm:text-sm">
+              <span className="inline-flex rounded-full bg-brand-50 px-3 py-1 text-xs font-bold text-brand-600 sm:px-4 sm:py-1.5 sm:text-sm">
                 أدوات الاستثمار والتداول
               </span>
 
@@ -136,7 +136,7 @@ export default function CompoundCalculatorClient() {
               <div className="mt-5 flex flex-col gap-3 sm:mt-7 sm:flex-row sm:flex-wrap lg:justify-start">
                 <a
                   href="#calculator"
-                  className="rounded-2xl bg-slate-950 px-5 py-3 text-sm font-extrabold text-white transition hover:bg-blue-700"
+                  className="rounded-2xl bg-slate-950 px-5 py-3 text-sm font-extrabold text-white transition hover:bg-brand-600"
                 >
                   احسب النمو المركب الآن
                 </a>
@@ -152,7 +152,7 @@ export default function CompoundCalculatorClient() {
 
             <div className="border-t border-slate-100 bg-gradient-to-br from-blue-50 via-white to-slate-50 p-5 sm:p-8 lg:border-r lg:border-t-0 lg:p-10">
               <div className="rounded-[1.5rem] border border-blue-100 bg-white p-5 shadow-sm sm:rounded-[2rem] sm:p-6">
-                <p className="text-sm font-bold text-blue-700">مثال سريع</p>
+                <p className="text-sm font-bold text-brand-600">مثال سريع</p>
 
                 <div className="mt-5 grid gap-3">
                   <div className="rounded-2xl bg-slate-50 p-4">
@@ -168,13 +168,13 @@ export default function CompoundCalculatorClient() {
                     <p className="text-xs font-bold text-slate-500">
                       عائد شهري افتراضي
                     </p>
-                    <p className="mt-1 text-2xl font-extrabold text-blue-700">
+                    <p className="mt-1 text-2xl font-extrabold text-brand-600">
                       5%
                     </p>
                   </div>
 
-                  <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4">
-                    <p className="text-xs font-bold text-blue-700">
+                  <div className="rounded-2xl border border-blue-100 bg-brand-50 p-4">
+                    <p className="text-xs font-bold text-brand-600">
                       بعد 24 شهر تقريباً
                     </p>
                     <p className="mt-1 text-2xl font-extrabold text-blue-800">
@@ -302,21 +302,21 @@ export default function CompoundCalculatorClient() {
               </p>
 
               <div className="mt-6 hidden rounded-2xl border border-blue-100 bg-white p-4 shadow-sm lg:block">
-                <h3 className="mb-3 text-center text-xs font-extrabold uppercase tracking-wide text-blue-700">
+                <h3 className="mb-3 text-center text-xs font-extrabold uppercase tracking-wide text-brand-600">
                   أدوات مرتبطة
                 </h3>
 
                 <div className="grid grid-cols-2 gap-2">
-                  <a href="/tools/drawdown-calculator" className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700">
+                  <a href="/tools/drawdown-calculator" className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600">
                     حاسبة السحب
                   </a>
-                  <a href="/tools/risk-calculator" className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700">
+                  <a href="/tools/risk-calculator" className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600">
                     حاسبة إدارة المخاطر
                   </a>
-                  <a href="/tools/profit-calculator" className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700">
+                  <a href="/tools/profit-calculator" className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600">
                     حاسبة الأرباح والخسائر
                   </a>
-                  <a href="/tools/lot-size-calculator" className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700">
+                  <a href="/tools/lot-size-calculator" className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600">
                     حاسبة حجم اللوت
                   </a>
                 </div>
@@ -326,7 +326,7 @@ export default function CompoundCalculatorClient() {
             {/* RESULT */}
             <div className="rounded-[1.25rem] border border-slate-200 bg-white p-4 shadow-sm sm:rounded-[2rem] sm:p-5">
               <div className="mb-3">
-                <p className="text-xs font-bold text-blue-700">نتيجة الحساب</p>
+                <p className="text-xs font-bold text-brand-600">نتيجة الحساب</p>
                 <h3 className="mt-1 text-xl font-extrabold text-slate-950">
                   ملخص النمو المركب
                 </h3>
@@ -334,8 +334,8 @@ export default function CompoundCalculatorClient() {
 
               {showResult && result ? (
                 <div className="grid gap-3">
-                  <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4">
-                    <p className="text-xs font-bold text-blue-700">
+                  <div className="rounded-2xl border border-blue-100 bg-brand-50 p-4">
+                    <p className="text-xs font-bold text-brand-600">
                       الرصيد النهائي المتوقع
                     </p>
                     <p className="mt-2 text-3xl font-extrabold text-blue-800">
@@ -367,7 +367,7 @@ export default function CompoundCalculatorClient() {
                   <div className="grid gap-3 sm:grid-cols-2">
                     <div className="rounded-2xl bg-slate-50 p-4">
                       <p className="text-xs font-bold text-slate-500">نسبة النمو</p>
-                      <p className="mt-2 text-xl font-extrabold text-blue-700">
+                      <p className="mt-2 text-xl font-extrabold text-brand-600">
                         {percent(result.growthPercent)}
                       </p>
                     </div>
@@ -433,7 +433,7 @@ export default function CompoundCalculatorClient() {
 
                   <tbody className="divide-y divide-slate-100">
                     {result.rows.slice(0, 24).map((row) => (
-                      <tr key={row.month} className="transition hover:bg-blue-50">
+                      <tr key={row.month} className="transition hover:bg-brand-50">
                         <td className="p-4 font-bold text-slate-700">
                           {row.month}
                         </td>
@@ -446,7 +446,7 @@ export default function CompoundCalculatorClient() {
                         <td className="p-4 font-extrabold text-green-600">
                           {money(row.profit)}
                         </td>
-                        <td className="p-4 font-extrabold text-blue-700">
+                        <td className="p-4 font-extrabold text-brand-600">
                           {money(row.endingBalance)}
                         </td>
                       </tr>
@@ -471,7 +471,7 @@ export default function CompoundCalculatorClient() {
 
                       <div>
                         <span className="text-slate-500">الرصيد النهائي</span>
-                        <div className="mt-1 font-extrabold text-blue-700">
+                        <div className="mt-1 font-extrabold text-brand-600">
                           {money(row.endingBalance)}
                         </div>
                       </div>
@@ -504,7 +504,7 @@ export default function CompoundCalculatorClient() {
           className="mt-6 overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm sm:mt-8 sm:rounded-[2rem]"
         >
           <div className="border-b border-slate-100 bg-gradient-to-l from-blue-50 via-white to-white p-5 sm:p-8 lg:p-10">
-            <p className="text-sm font-bold text-blue-700">
+            <p className="text-sm font-bold text-brand-600">
               آخر تحديث: يونيو 2026
             </p>
 
@@ -526,7 +526,7 @@ export default function CompoundCalculatorClient() {
                 showGuideMore ? "max-h-[14000px]" : "max-h-[980px]"
               }`}
             >
-              <section className="rounded-3xl border border-blue-100 bg-blue-50 p-5 sm:p-7">
+              <section className="rounded-3xl border border-blue-100 bg-brand-50 p-5 sm:p-7">
                 <h3 className="text-xl font-extrabold text-slate-950 sm:text-2xl">
                   كيف يتم حساب الفائدة المركبة؟
                 </h3>
@@ -548,7 +548,7 @@ export default function CompoundCalculatorClient() {
 
               <section className="grid gap-5 lg:grid-cols-3">
                 <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5 sm:p-6">
-                  <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-700">
+                  <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-brand-600">
                     المفهوم
                   </span>
 
@@ -564,7 +564,7 @@ export default function CompoundCalculatorClient() {
                 </div>
 
                 <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5 sm:p-6">
-                  <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-700">
+                  <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-brand-600">
                     الاستثمار
                   </span>
 
@@ -579,8 +579,8 @@ export default function CompoundCalculatorClient() {
                   </p>
                 </div>
 
-                <div className="rounded-3xl border border-blue-100 bg-blue-50 p-5 sm:p-6">
-                  <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-blue-700">
+                <div className="rounded-3xl border border-blue-100 bg-brand-50 p-5 sm:p-6">
+                  <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-brand-600">
                     التنبيه
                   </span>
 
@@ -619,17 +619,17 @@ export default function CompoundCalculatorClient() {
 
                     <tbody className="divide-y divide-slate-100">
                       {exampleRows.map((row) => (
-                        <tr key={row.monthly} className="transition hover:bg-blue-50">
+                        <tr key={row.monthly} className="transition hover:bg-brand-50">
                           <td className="p-4 font-bold text-slate-700">
                             {row.capital}
                           </td>
                           <td className="p-4 font-bold text-slate-700">
                             {row.monthly}
                           </td>
-                          <td className="p-4 font-extrabold text-blue-700">
+                          <td className="p-4 font-extrabold text-brand-600">
                             {row.year1}
                           </td>
-                          <td className="p-4 font-extrabold text-blue-700">
+                          <td className="p-4 font-extrabold text-brand-600">
                             {row.year2}
                           </td>
                         </tr>
@@ -661,14 +661,14 @@ export default function CompoundCalculatorClient() {
 
                         <div>
                           <span className="text-slate-500">12 شهر</span>
-                          <div className="mt-1 font-extrabold text-blue-700">
+                          <div className="mt-1 font-extrabold text-brand-600">
                             {row.year1}
                           </div>
                         </div>
 
                         <div>
                           <span className="text-slate-500">24 شهر</span>
-                          <div className="mt-1 font-extrabold text-blue-700">
+                          <div className="mt-1 font-extrabold text-brand-600">
                             {row.year2}
                           </div>
                         </div>
@@ -697,7 +697,7 @@ export default function CompoundCalculatorClient() {
                   </p>
                 </div>
 
-                <div className="rounded-3xl border border-blue-100 bg-blue-50 p-5 sm:p-7">
+                <div className="rounded-3xl border border-blue-100 bg-brand-50 p-5 sm:p-7">
                   <h3 className="text-xl font-extrabold text-slate-950 sm:text-2xl">
                     هل تصلح الحاسبة للتداول؟
                   </h3>
@@ -755,10 +755,10 @@ export default function CompoundCalculatorClient() {
                   ].map((item) => (
                     <div
                       key={item}
-                      className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold leading-6 text-slate-700 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700 hover:shadow-lg sm:rounded-3xl sm:p-6"
+                      className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold leading-6 text-slate-700 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-brand-100 hover:bg-brand-50 hover:text-brand-600 hover:shadow-lg sm:rounded-3xl sm:p-6"
                     >
                       <div className="grid grid-cols-[32px_1fr] items-center gap-3 text-right">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 font-extrabold text-blue-700">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 font-extrabold text-brand-600">
                           ✓
                         </div>
                         <span>{item}</span>
@@ -768,7 +768,7 @@ export default function CompoundCalculatorClient() {
                 </div>
               </section>
 
-              <section className="rounded-3xl border border-blue-100 bg-blue-50 p-5 shadow-sm sm:p-7">
+              <section className="rounded-3xl border border-blue-100 bg-brand-50 p-5 shadow-sm sm:p-7">
                 <h3 className="text-xl font-extrabold text-slate-950 sm:text-2xl">
                   أدوات تداول واستثمار مرتبطة
                 </h3>
@@ -783,7 +783,7 @@ export default function CompoundCalculatorClient() {
                     <a
                       key={title}
                       href={href}
-                      className="rounded-2xl border border-blue-200 bg-white px-4 py-4 text-center text-sm font-extrabold text-slate-800 transition-all duration-300 hover:-translate-y-1 hover:border-blue-300 hover:bg-blue-100 hover:text-blue-700 hover:shadow-md"
+                      className="rounded-2xl border border-brand-100 bg-white px-4 py-4 text-center text-sm font-extrabold text-slate-800 transition-all duration-300 hover:-translate-y-1 hover:border-blue-300 hover:bg-blue-100 hover:text-brand-600 hover:shadow-md"
                     >
                       {title}
                     </a>

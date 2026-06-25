@@ -398,7 +398,7 @@ function BrokerHeadToHeadCard({
     <div
       className={`rounded-[28px] border p-5 shadow-sm sm:p-6 ${
         isWinner
-          ? "border-[#bfdbfe] bg-[#f8fbff]"
+          ? "border-brand-100 bg-[#f8fbff]"
           : "border-slate-200 bg-white"
       }`}
     >
@@ -407,7 +407,7 @@ function BrokerHeadToHeadCard({
           <div className="flex flex-wrap items-center gap-2">
             <h2 className="text-2xl font-black sm:text-3xl">{name}</h2>
             {isWinner ? (
-              <span className="rounded-full border border-[#bfdbfe] bg-[#eff6ff] px-3 py-1 text-[11px] font-extrabold text-[#1d4ed8]">
+              <span className="rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-extrabold text-brand-600">
                 الأفضل إجمالًا
               </span>
             ) : null}
@@ -416,7 +416,7 @@ function BrokerHeadToHeadCard({
           <p className="mt-2 text-sm leading-7 text-slate-600">{reason}</p>
         </div>
 
-        <div className="flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-2xl border border-[#bfdbfe] bg-white text-[#1d4ed8] sm:h-20 sm:w-20">
+        <div className="flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-2xl border border-brand-100 bg-white text-brand-600 sm:h-20 sm:w-20">
           <span className="text-xl font-black sm:text-2xl">
             {broker.rating?.toFixed(1) ?? "—"}
           </span>
@@ -452,7 +452,7 @@ function BrokerHeadToHeadCard({
       <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
         <Link
           href={`/brokers/${slug}`}
-          className="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-[#2563eb] px-5 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
+          className="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-brand-500 px-5 py-3 text-sm font-extrabold text-white transition hover:bg-brand-600"
         >
           اقرأ تقييم {name}
         </Link>
@@ -478,7 +478,7 @@ function AccountCard({
         <div className="text-lg font-black text-[#0f172a]">
           {account.account_name || "حساب"}
         </div>
-        <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-[#1d4ed8]">
+        <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-brand-600">
           الحساب
         </span>
       </div>
@@ -529,7 +529,7 @@ function ExpandableText({
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-[#f8fbff] to-transparent" />
         </div>
 
-        <div className="mt-2 inline-flex rounded-full border border-[#bfdbfe] bg-white px-3 py-1.5 text-[11px] font-black text-[#2563eb]">
+        <div className="mt-2 inline-flex rounded-full border border-brand-100 bg-white px-3 py-1.5 text-[11px] font-black text-brand-500">
           <span className="group-open/expand:hidden">عرض المزيد</span>
           <span className="hidden group-open/expand:inline">عرض أقل</span>
         </div>
@@ -792,7 +792,7 @@ export default async function ComparePage({ params }: PageProps) {
 
       <section className="relative overflow-hidden border-b border-slate-200 bg-[linear-gradient(180deg,#f8fbff_0%,#eef4ff_100%)]">
   <div className="absolute inset-0 pointer-events-none">
-    <div className="absolute -top-20 right-0 h-72 w-72 rounded-full bg-[#2563eb]/10 blur-3xl" />
+    <div className="absolute -top-20 right-0 h-72 w-72 rounded-full bg-brand-500/10 blur-3xl" />
     <div className="absolute left-0 top-24 h-72 w-72 rounded-full bg-[#60a5fa]/10 blur-3xl" />
   </div>
 
@@ -800,11 +800,11 @@ export default async function ComparePage({ params }: PageProps) {
    {/* Top intro - Desktop only */}
 <div className="mb-5 hidden md:block">
   <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white px-8 py-8 shadow-[0_18px_55px_rgba(37,99,235,0.08)]">
-    <div className="absolute inset-x-0 top-0 h-1.5 bg-[#2563eb]" />
+    <div className="absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
     <div className="pointer-events-none absolute left-0 top-0 h-full w-[38%] bg-[radial-gradient(circle_at_top_left,rgba(37,99,235,0.10),transparent_55%)]" />
 
     <div className="relative">
-      <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#dbeafe] bg-[#f8fbff] px-4 py-2 text-xs font-extrabold text-[#2563eb]">
+      <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#dbeafe] bg-[#f8fbff] px-4 py-2 text-xs font-extrabold text-brand-500">
         <span>المقارنات</span>
         <span className="text-slate-300">/</span>
         <span>{left.name} vs {right.name}</span>
@@ -823,7 +823,7 @@ export default async function ComparePage({ params }: PageProps) {
 
       <div className="mt-7 grid max-w-6xl grid-cols-3 gap-4">
         <div className="rounded-[22px] border border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-5 py-4 shadow-sm">
-          <div className="text-xs font-black text-[#2563eb]">الفائز السريع</div>
+          <div className="text-xs font-black text-brand-500">الفائز السريع</div>
           <div className="mt-1 truncate text-xl font-black text-[#0f172a]">
             {overallWinner}
           </div>
@@ -872,7 +872,7 @@ export default async function ComparePage({ params }: PageProps) {
         {overallWinner === right.name && (
           <>
             <div className="pointer-events-none absolute inset-0 rounded-[30px] ring-2 ring-[#3b82f6]/30" />
-            <div className="absolute left-4 top-4 rounded-full bg-[#2563eb] px-3 py-1 text-[11px] font-black text-white shadow-sm">
+            <div className="absolute left-4 top-4 rounded-full bg-brand-500 px-3 py-1 text-[11px] font-black text-white shadow-sm">
               الأفضل إجمالًا
             </div>
           </>
@@ -883,12 +883,12 @@ export default async function ComparePage({ params }: PageProps) {
             <h2 className="truncate text-3xl font-black text-[#0f172a]">
               {right.name}
             </h2>
-            <p className="mt-2 text-sm font-bold text-[#2563eb]">
+            <p className="mt-2 text-sm font-bold text-brand-500">
               {cleanText(right.best_for) || "مناسب لفئات متعددة"}
             </p>
           </div>
 
-          <div className="flex h-[76px] w-[76px] shrink-0 flex-col items-center justify-center rounded-2xl border border-[#bfdbfe] bg-white text-[#2563eb] shadow-sm">
+          <div className="flex h-[76px] w-[76px] shrink-0 flex-col items-center justify-center rounded-2xl border border-brand-100 bg-white text-brand-500 shadow-sm">
             <span className="text-2xl font-black">
               {right.rating?.toFixed(1) ?? "—"}
             </span>
@@ -940,7 +940,7 @@ export default async function ComparePage({ params }: PageProps) {
         <div className="mt-6 grid grid-cols-2 gap-3">
           <a
             href={`/go/${right.slug ?? ""}?type=real`}
-            className="inline-flex min-h-[52px] items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-sm font-black text-white transition hover:bg-[#1d4ed8]"
+            className="inline-flex min-h-[52px] items-center justify-center rounded-2xl bg-brand-500 px-4 py-3 text-sm font-black text-white transition hover:bg-brand-600"
           >
             ابدأ الآن
           </a>
@@ -956,7 +956,7 @@ export default async function ComparePage({ params }: PageProps) {
 
       {/* CENTER */}
       <div className="flex flex-col items-center justify-center">
-        <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-[#2563eb] to-[#1e40af] text-2xl font-black text-white shadow-[0_10px_30px_rgba(37,99,235,0.4)]">
+        <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 to-[#1e40af] text-2xl font-black text-white shadow-[0_10px_30px_rgba(37,99,235,0.4)]">
           VS
         </div>
       </div>
@@ -972,7 +972,7 @@ export default async function ComparePage({ params }: PageProps) {
         {overallWinner === left.name && (
           <>
             <div className="pointer-events-none absolute inset-0 rounded-[30px] ring-2 ring-[#3b82f6]/30" />
-            <div className="absolute left-4 top-4 rounded-full bg-[#2563eb] px-3 py-1 text-[11px] font-black text-white shadow-sm">
+            <div className="absolute left-4 top-4 rounded-full bg-brand-500 px-3 py-1 text-[11px] font-black text-white shadow-sm">
               الأفضل إجمالًا
             </div>
           </>
@@ -983,12 +983,12 @@ export default async function ComparePage({ params }: PageProps) {
             <h2 className="truncate text-3xl font-black text-[#0f172a]">
               {left.name}
             </h2>
-            <p className="mt-2 text-sm font-bold text-[#2563eb]">
+            <p className="mt-2 text-sm font-bold text-brand-500">
               {cleanText(left.best_for) || "مناسب لفئات متعددة"}
             </p>
           </div>
 
-          <div className="flex h-[76px] w-[76px] shrink-0 flex-col items-center justify-center rounded-2xl border border-[#bfdbfe] bg-white text-[#2563eb] shadow-sm">
+          <div className="flex h-[76px] w-[76px] shrink-0 flex-col items-center justify-center rounded-2xl border border-brand-100 bg-white text-brand-500 shadow-sm">
             <span className="text-2xl font-black">
               {left.rating?.toFixed(1) ?? "—"}
             </span>
@@ -1040,7 +1040,7 @@ export default async function ComparePage({ params }: PageProps) {
         <div className="mt-6 grid grid-cols-2 gap-3">
           <a
             href={`/go/${left.slug ?? ""}?type=real`}
-            className="inline-flex min-h-[52px] items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-sm font-black text-white transition hover:bg-[#1d4ed8]"
+            className="inline-flex min-h-[52px] items-center justify-center rounded-2xl bg-brand-500 px-4 py-3 text-sm font-black text-white transition hover:bg-brand-600"
           >
             ابدأ الآن
           </a>
@@ -1062,9 +1062,9 @@ export default async function ComparePage({ params }: PageProps) {
   <div className="overflow-hidden rounded-[30px] border border-[#dbeafe] bg-white shadow-[0_20px_60px_rgba(37,99,235,0.08)]">
     {/* Mobile Hero */}
     <div className="relative overflow-hidden bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-4 pb-4 pt-5">
-      <div className="absolute inset-x-0 top-0 h-1 bg-[#2563eb]" />
+      <div className="absolute inset-x-0 top-0 h-1 bg-brand-500" />
 
-      <div className="inline-flex rounded-full border border-[#bfdbfe] bg-white px-3 py-1 text-[11px] font-black text-[#2563eb]">
+      <div className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[11px] font-black text-brand-500">
         مقارنة شركات التداول
       </div>
 
@@ -1077,8 +1077,8 @@ export default async function ComparePage({ params }: PageProps) {
         الحساب الإسلامي، المنصات، والسبريد.
       </p>
 
-      <div className="mt-4 rounded-[22px] border border-[#bfdbfe] bg-white p-4 shadow-sm">
-        <div className="text-[11px] font-black text-[#2563eb]">
+      <div className="mt-4 rounded-[22px] border border-brand-100 bg-white p-4 shadow-sm">
+        <div className="text-[11px] font-black text-brand-500">
           الترشيح السريع
         </div>
 
@@ -1133,7 +1133,7 @@ export default async function ComparePage({ params }: PageProps) {
             <div className="mb-3 flex items-center justify-between gap-3">
               <div className="min-w-0">
                 {isWinner && (
-                  <div className="mb-1.5 inline-flex rounded-full bg-[#2563eb] px-3 py-1 text-[10px] font-black text-white shadow-sm">
+                  <div className="mb-1.5 inline-flex rounded-full bg-brand-500 px-3 py-1 text-[10px] font-black text-white shadow-sm">
                     الأفضل إجمالًا
                   </div>
                 )}
@@ -1142,12 +1142,12 @@ export default async function ComparePage({ params }: PageProps) {
                   {broker.name}
                 </h2>
 
-                <p className="mt-1 line-clamp-1 text-xs font-bold text-[#2563eb]">
+                <p className="mt-1 line-clamp-1 text-xs font-bold text-brand-500">
                   {cleanText(broker.best_for) || "مناسب لفئات متعددة"}
                 </p>
               </div>
 
-              <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl border border-[#bfdbfe] bg-white text-[#2563eb] shadow-sm">
+              <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl border border-brand-100 bg-white text-brand-500 shadow-sm">
                 <span className="text-lg font-black">
                   {broker.rating?.toFixed(1) ?? "—"}
                 </span>
@@ -1201,7 +1201,7 @@ export default async function ComparePage({ params }: PageProps) {
             <div className="mt-3 grid grid-cols-2 gap-2">
               <a
                 href={`/go/${broker.slug ?? ""}?type=real`}
-                className="inline-flex min-h-[44px] items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-2.5 text-sm font-black text-white shadow-sm transition active:scale-[0.98]"
+                className="inline-flex min-h-[44px] items-center justify-center rounded-2xl bg-brand-500 px-4 py-2.5 text-sm font-black text-white shadow-sm transition active:scale-[0.98]"
               >
                 ابدأ الآن
               </a>
@@ -1224,12 +1224,12 @@ export default async function ComparePage({ params }: PageProps) {
 
 <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
   <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white shadow-[0_22px_65px_rgba(37,99,235,0.08)]">
-    <div className="pointer-events-none absolute inset-x-0 top-0 h-1.5 bg-[#2563eb]" />
+    <div className="pointer-events-none absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
 
     {/* Desktop version */}
     <div className="hidden p-6 lg:block lg:p-8">
       <div className="max-w-5xl">
-        <span className="text-sm font-black text-[#2563eb]">الحكم النهائي</span>
+        <span className="text-sm font-black text-brand-500">الحكم النهائي</span>
 
         <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-5xl">
           من الأفضل بين {left.name} و {right.name}؟
@@ -1243,10 +1243,10 @@ export default async function ComparePage({ params }: PageProps) {
 
       <div className="mt-7 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <div className="relative overflow-hidden rounded-[26px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5 shadow-[0_16px_40px_rgba(37,99,235,0.14)]">
-          <div className="absolute left-4 top-4 rounded-full bg-[#2563eb] px-3 py-1 text-[11px] font-black text-white">
+          <div className="absolute left-4 top-4 rounded-full bg-brand-500 px-3 py-1 text-[11px] font-black text-white">
             الفائز
           </div>
-          <div className="text-xs font-black text-[#2563eb]">الأفضل إجمالًا</div>
+          <div className="text-xs font-black text-brand-500">الأفضل إجمالًا</div>
           <div className="mt-3 truncate text-3xl font-black text-[#0f172a]">
             {overallWinner}
           </div>
@@ -1289,7 +1289,7 @@ export default async function ComparePage({ params }: PageProps) {
       <div className="mt-7 rounded-[28px] border border-[#dbeafe] bg-[#f8fbff] p-5 lg:p-6">
         <div className="grid gap-5 lg:grid-cols-[1.4fr_1fr] lg:items-center">
           <div>
-            <div className="text-sm font-black text-[#2563eb]">الخلاصة السريعة</div>
+            <div className="text-sm font-black text-brand-500">الخلاصة السريعة</div>
             <p className="mt-2 text-sm leading-8 text-slate-700 lg:text-base">
               إذا كنت تبحث عن أفضل وسيط بشكل عام من حيث التقييم والثقة وسهولة
               الاستخدام، فإن <strong>{overallWinner}</strong> هو الخيار الأقوى.
@@ -1304,7 +1304,7 @@ export default async function ComparePage({ params }: PageProps) {
               href={`/go/${left.slug ?? ""}?type=real`}
               className={`inline-flex min-h-[50px] items-center justify-center rounded-2xl px-6 py-3 text-sm font-black transition ${
                 overallWinner === left.name
-                  ? "bg-[#2563eb] text-white hover:bg-[#1d4ed8]"
+                  ? "bg-brand-500 text-white hover:bg-brand-600"
                   : "border border-slate-300 bg-white text-slate-800 hover:bg-slate-50"
               }`}
             >
@@ -1315,7 +1315,7 @@ export default async function ComparePage({ params }: PageProps) {
               href={`/go/${right.slug ?? ""}?type=real`}
               className={`inline-flex min-h-[50px] items-center justify-center rounded-2xl px-6 py-3 text-sm font-black transition ${
                 overallWinner === right.name
-                  ? "bg-[#2563eb] text-white hover:bg-[#1d4ed8]"
+                  ? "bg-brand-500 text-white hover:bg-brand-600"
                   : "border border-slate-300 bg-white text-slate-800 hover:bg-slate-50"
               }`}
             >
@@ -1333,7 +1333,7 @@ export default async function ComparePage({ params }: PageProps) {
    {/* Mobile version */}
 <div className="block p-4 lg:hidden">
   <div className="mb-4">
-    <span className="text-xs font-black text-[#2563eb]">الحكم النهائي</span>
+    <span className="text-xs font-black text-brand-500">الحكم النهائي</span>
 
     <h2 className="mt-2 text-[26px] font-black leading-[1.25] text-[#0f172a]">
       من الأفضل بين {left.name} و {right.name}؟
@@ -1345,7 +1345,7 @@ export default async function ComparePage({ params }: PageProps) {
   </div>
 
   <div className="rounded-[26px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-4 shadow-[0_14px_35px_rgba(37,99,235,0.14)]">
-    <div className="inline-flex rounded-full bg-[#2563eb] px-3 py-1 text-[10px] font-black text-white">
+    <div className="inline-flex rounded-full bg-brand-500 px-3 py-1 text-[10px] font-black text-white">
       الفائز إجمالًا
     </div>
 
@@ -1382,7 +1382,7 @@ export default async function ComparePage({ params }: PageProps) {
   </div>
 
   <div className="mt-4 rounded-[24px] border border-[#dbeafe] bg-[#f8fbff] p-4">
-    <div className="text-xs font-black text-[#2563eb]">الخلاصة السريعة</div>
+    <div className="text-xs font-black text-brand-500">الخلاصة السريعة</div>
 
     <p className="mt-2 text-sm leading-7 text-slate-700">
       إذا كنت تريد الخيار الأقوى إجمالًا فاختيار{" "}
@@ -1396,7 +1396,7 @@ export default async function ComparePage({ params }: PageProps) {
   <div className="mt-4 grid gap-2">
     <a
       href={`/go/${overallWinner === left.name ? left.slug ?? "" : right.slug ?? ""}?type=real`}
-      className="inline-flex min-h-[50px] items-center justify-center rounded-2xl bg-[#2563eb] px-5 py-3 text-sm font-black text-white shadow-sm"
+      className="inline-flex min-h-[50px] items-center justify-center rounded-2xl bg-brand-500 px-5 py-3 text-sm font-black text-white shadow-sm"
     >
       افتح حساب مع {overallWinner}
     </a>
@@ -1418,12 +1418,12 @@ export default async function ComparePage({ params }: PageProps) {
 
 <section className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
   <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white shadow-[0_25px_70px_rgba(37,99,235,0.08)]">
-    <div className="absolute inset-x-0 top-0 h-1.5 bg-[#2563eb]" />
+    <div className="absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
 
     {/* Desktop version - unchanged */}
     <div className="hidden p-6 md:block lg:p-8">
       <div className="max-w-5xl">
-        <span className="text-sm font-black text-[#2563eb]">تحليل النقاط</span>
+        <span className="text-sm font-black text-brand-500">تحليل النقاط</span>
 
         <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-5xl">
           تحليل نقاط القوة بين {left.name} و {right.name}
@@ -1436,7 +1436,7 @@ export default async function ComparePage({ params }: PageProps) {
       </div>
 
       <div className="mt-5 flex flex-wrap gap-3">
-        <span className="rounded-full border border-[#bfdbfe] bg-[#eff6ff] px-4 py-2 text-sm font-black text-[#2563eb]">
+        <span className="rounded-full border border-brand-100 bg-brand-50 px-4 py-2 text-sm font-black text-brand-500">
           الأفضل إجمالًا: {overallWinner}
         </span>
         <span className="rounded-full border border-slate-200 bg-gradient-to-b from-[#eff6ff] to-white px-4 py-2 text-sm font-black text-slate-600">
@@ -1507,7 +1507,7 @@ export default async function ComparePage({ params }: PageProps) {
                 <span
                   className={`shrink-0 rounded-full px-4 py-1.5 text-[12px] font-black shadow-sm ${
                     winner !== "تعادل" && !isClose
-                      ? "border border-[#bfdbfe] bg-white text-[#2563eb]"
+                      ? "border border-brand-100 bg-white text-brand-500"
                       : "border border-slate-200 bg-slate-50 text-slate-500"
                   }`}
                 >
@@ -1531,7 +1531,7 @@ export default async function ComparePage({ params }: PageProps) {
                 >
                   <div className="flex items-center justify-between gap-4">
                     <span className="font-black text-[#0f172a]">{left.name}</span>
-                    <span className="text-xl font-black text-[#2563eb]">
+                    <span className="text-xl font-black text-brand-500">
                       {item.leftScore.toFixed(1)}
                       <span className="text-xs text-slate-400"> / 5</span>
                     </span>
@@ -1539,7 +1539,7 @@ export default async function ComparePage({ params }: PageProps) {
 
                   <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100">
                     <div
-                      className="h-full rounded-full bg-[#2563eb]/70"
+                      className="h-full rounded-full bg-brand-500/70"
                       style={{ width: `${Math.min(item.leftScore * 20, 100)}%` }}
                     />
                   </div>
@@ -1554,7 +1554,7 @@ export default async function ComparePage({ params }: PageProps) {
                 >
                   <div className="flex items-center justify-between gap-4">
                     <span className="font-black text-[#0f172a]">{right.name}</span>
-                    <span className="text-xl font-black text-[#2563eb]">
+                    <span className="text-xl font-black text-brand-500">
                       {item.rightScore.toFixed(1)}
                       <span className="text-xs text-slate-400"> / 5</span>
                     </span>
@@ -1562,7 +1562,7 @@ export default async function ComparePage({ params }: PageProps) {
 
                   <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100">
                     <div
-                      className="h-full rounded-full bg-[#2563eb]/70"
+                      className="h-full rounded-full bg-brand-500/70"
                       style={{ width: `${Math.min(item.rightScore * 20, 100)}%` }}
                     />
                   </div>
@@ -1587,7 +1587,7 @@ export default async function ComparePage({ params }: PageProps) {
 
       {/* Header */}
       <div>
-        <span className="text-xs font-black text-[#2563eb]">
+        <span className="text-xs font-black text-brand-500">
           تحليل النقاط
         </span>
 
@@ -1659,7 +1659,7 @@ export default async function ComparePage({ params }: PageProps) {
                   className={`rounded-full px-3 py-1 text-[10px] font-black ${
                     isClose
                       ? "bg-slate-100 text-slate-500"
-                      : "bg-[#eff6ff] text-[#2563eb]"
+                      : "bg-brand-50 text-brand-500"
                   }`}
                 >
                   {isClose ? "متقارب" : winner}
@@ -1672,7 +1672,7 @@ export default async function ComparePage({ params }: PageProps) {
                   <span className="font-bold text-slate-600">
                     {left.name}
                   </span>
-                  <span className="font-black text-[#2563eb]">
+                  <span className="font-black text-brand-500">
                     {item.leftScore.toFixed(1)} / 5
                   </span>
                 </div>
@@ -1681,7 +1681,7 @@ export default async function ComparePage({ params }: PageProps) {
                   <span className="font-bold text-slate-600">
                     {right.name}
                   </span>
-                  <span className="font-black text-[#2563eb]">
+                  <span className="font-black text-brand-500">
                     {item.rightScore.toFixed(1)} / 5
                   </span>
                 </div>
@@ -1690,7 +1690,7 @@ export default async function ComparePage({ params }: PageProps) {
               {/* Bar */}
               <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100">
                 <div
-                  className="h-full rounded-full bg-[#2563eb]"
+                  className="h-full rounded-full bg-brand-500"
                   style={{
                     width: `${Math.min(bestScore * 20, 100)}%`,
                   }}
@@ -1714,13 +1714,13 @@ export default async function ComparePage({ params }: PageProps) {
 
 <section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
   <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white shadow-[0_25px_70px_rgba(37,99,235,0.08)]">
-    <div className="absolute inset-x-0 top-0 h-1.5 bg-[#2563eb]" />
+    <div className="absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
 
     {/* Desktop version */}
     <div className="hidden p-6 md:block lg:p-8">
       <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
         <div>
-          <span className="text-sm font-black text-[#2563eb]">
+          <span className="text-sm font-black text-brand-500">
             الحسابات وتكلفة التداول
           </span>
 
@@ -1735,7 +1735,7 @@ export default async function ComparePage({ params }: PageProps) {
         </div>
 
         <div className="rounded-[28px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5 shadow-[0_16px_40px_rgba(37,99,235,0.12)]">
-          <div className="text-xs font-black text-[#2563eb]">الخلاصة السريعة</div>
+          <div className="text-xs font-black text-brand-500">الخلاصة السريعة</div>
           <div className="mt-2 text-3xl font-black text-[#0f172a]">
             {scalpingWinner === "تعادل" ? "التكلفة متقاربة" : scalpingWinner}
           </div>
@@ -1752,13 +1752,13 @@ export default async function ComparePage({ params }: PageProps) {
           <div className="text-xs font-black text-slate-500">عدد الحسابات المتاحة</div>
           <div className="mt-3 flex items-center justify-between gap-6">
             <div>
-              <div className="text-xs font-bold text-[#2563eb]">{left.name}</div>
+              <div className="text-xs font-bold text-brand-500">{left.name}</div>
               <div className="text-3xl font-black text-[#0f172a]">
                 {leftAccounts.length}
               </div>
             </div>
             <div>
-              <div className="text-xs font-bold text-[#2563eb]">{right.name}</div>
+              <div className="text-xs font-bold text-brand-500">{right.name}</div>
               <div className="text-3xl font-black text-[#0f172a]">
                 {rightAccounts.length}
               </div>
@@ -1776,8 +1776,8 @@ export default async function ComparePage({ params }: PageProps) {
           </p>
         </div>
 
-        <div className="rounded-[24px] border border-[#bfdbfe] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5">
-          <div className="text-xs font-black text-[#2563eb]">مهم قبل الاختيار</div>
+        <div className="rounded-[24px] border border-brand-100 bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5">
+          <div className="text-xs font-black text-brand-500">مهم قبل الاختيار</div>
           <div className="mt-3 text-lg font-black leading-7 text-[#0f172a]">
             الحساب المناسب أهم من عدد الحسابات.
           </div>
@@ -1869,7 +1869,7 @@ export default async function ComparePage({ params }: PageProps) {
                   <h3 className="text-2xl font-black text-[#0f172a]">
                     حسابات {broker.name}
                   </h3>
-                  <p className="mt-1 text-sm font-bold text-[#2563eb]">
+                  <p className="mt-1 text-sm font-bold text-brand-500">
                     {brokerAccounts.length} حساب متاح
                   </p>
                 </div>
@@ -1890,7 +1890,7 @@ export default async function ComparePage({ params }: PageProps) {
                         <h4 className="text-lg font-black text-[#0f172a]">
                           {acc.account_name || "حساب"}
                         </h4>
-                        <p className="mt-1 text-xs font-bold text-[#2563eb]">
+                        <p className="mt-1 text-xs font-bold text-brand-500">
                           {acc.best_for || "مناسب لفئات متعددة"}
                         </p>
                       </div>
@@ -1953,7 +1953,7 @@ export default async function ComparePage({ params }: PageProps) {
   href={`/go/${left.slug ?? ""}?type=real`}
   target="_blank"
   rel="noopener noreferrer"
-  className="inline-flex items-center justify-center rounded-2xl bg-[#2563eb] px-7 py-3 text-sm font-extrabold text-white shadow-md transition hover:scale-[1.02] hover:bg-[#1d4ed8]"
+  className="inline-flex items-center justify-center rounded-2xl bg-brand-500 px-7 py-3 text-sm font-extrabold text-white shadow-md transition hover:scale-[1.02] hover:bg-brand-600"
 >
   فتح حساب {left.name}
 </a>
@@ -1982,7 +1982,7 @@ export default async function ComparePage({ params }: PageProps) {
     {/* Mobile version */}
 <div className="block p-4 md:hidden">
   <div>
-    <span className="text-xs font-black text-[#2563eb]">
+    <span className="text-xs font-black text-brand-500">
       الحسابات وتكلفة التداول
     </span>
 
@@ -1996,7 +1996,7 @@ export default async function ComparePage({ params }: PageProps) {
   </div>
 
   <div className="mt-4 rounded-[24px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-4 shadow-[0_12px_28px_rgba(37,99,235,0.12)]">
-    <div className="text-[11px] font-black text-[#2563eb]">
+    <div className="text-[11px] font-black text-brand-500">
       الخلاصة السريعة
     </div>
 
@@ -2030,8 +2030,8 @@ export default async function ComparePage({ params }: PageProps) {
       </div>
     </div>
 
-    <div className="rounded-2xl border border-[#bfdbfe] bg-[#eff6ff] px-2 py-3 text-center">
-      <div className="text-[10px] font-bold text-[#2563eb]">للمبتدئين</div>
+    <div className="rounded-2xl border border-brand-100 bg-brand-50 px-2 py-3 text-center">
+      <div className="text-[10px] font-bold text-brand-500">للمبتدئين</div>
       <div className="mt-1 truncate text-xs font-black text-[#0f172a]">
         {beginnerWinner === "تعادل" ? "متقارب" : beginnerWinner}
       </div>
@@ -2128,7 +2128,7 @@ export default async function ComparePage({ params }: PageProps) {
                 حسابات {broker.name}
               </h3>
 
-              <p className="mt-1 text-xs font-bold text-[#2563eb]">
+              <p className="mt-1 text-xs font-bold text-brand-500">
                 {brokerAccounts.length} حساب متاح
               </p>
             </div>
@@ -2203,7 +2203,7 @@ export default async function ComparePage({ params }: PageProps) {
     <div className="mt-4 grid gap-2">
       <Link
         href={`/go/${left.slug}`}
-        className="inline-flex min-h-[44px] items-center justify-center rounded-2xl bg-[#2563eb] px-5 py-3 text-sm font-black text-white shadow-sm"
+        className="inline-flex min-h-[44px] items-center justify-center rounded-2xl bg-brand-500 px-5 py-3 text-sm font-black text-white shadow-sm"
       >
         فتح حساب {left.name}
       </Link>
@@ -2229,13 +2229,13 @@ export default async function ComparePage({ params }: PageProps) {
 
 <section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
   <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white shadow-[0_25px_70px_rgba(37,99,235,0.08)]">
-    <div className="absolute inset-x-0 top-0 h-1.5 bg-[#2563eb]" />
+    <div className="absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
 
     {/* Desktop version */}
     <div className="hidden p-6 md:block lg:p-8">
       <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
         <div>
-          <span className="text-sm font-black text-[#2563eb]">
+          <span className="text-sm font-black text-brand-500">
             الأمان والتراخيص
           </span>
 
@@ -2250,7 +2250,7 @@ export default async function ComparePage({ params }: PageProps) {
         </div>
 
         <div className="rounded-[28px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5 shadow-[0_16px_40px_rgba(37,99,235,0.12)]">
-          <div className="text-xs font-black text-[#2563eb]">
+          <div className="text-xs font-black text-brand-500">
             الأقوى من حيث الأمان
           </div>
 
@@ -2274,7 +2274,7 @@ export default async function ComparePage({ params }: PageProps) {
 
           <div className="mt-3 flex items-center justify-between gap-6">
             <div>
-              <div className="text-xs font-bold text-[#2563eb]">{left.name}</div>
+              <div className="text-xs font-bold text-brand-500">{left.name}</div>
               <div className="text-3xl font-black text-[#0f172a]">
                 {(left.score_safety ?? 0).toFixed(1)}
                 <span className="text-sm text-slate-400"> / 5</span>
@@ -2282,7 +2282,7 @@ export default async function ComparePage({ params }: PageProps) {
             </div>
 
             <div>
-              <div className="text-xs font-bold text-[#2563eb]">{right.name}</div>
+              <div className="text-xs font-bold text-brand-500">{right.name}</div>
               <div className="text-3xl font-black text-[#0f172a]">
                 {(right.score_safety ?? 0).toFixed(1)}
                 <span className="text-sm text-slate-400"> / 5</span>
@@ -2300,8 +2300,8 @@ export default async function ComparePage({ params }: PageProps) {
           </div>
         </div>
 
-        <div className="rounded-[24px] border border-[#bfdbfe] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5">
-          <div className="text-xs font-black text-[#2563eb]">مهم قبل التسجيل</div>
+        <div className="rounded-[24px] border border-brand-100 bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5">
+          <div className="text-xs font-black text-brand-500">مهم قبل التسجيل</div>
           <div className="mt-3 text-lg font-black leading-7 text-[#0f172a]">
             تأكد من الكيان التنظيمي الذي ستفتح الحساب تحته.
           </div>
@@ -2345,14 +2345,14 @@ export default async function ComparePage({ params }: PageProps) {
                     <h3 className="text-2xl font-black text-[#0f172a]">
                       {broker.name}
                     </h3>
-                    <p className="mt-1 text-sm font-bold text-[#2563eb]">
+                    <p className="mt-1 text-sm font-bold text-brand-500">
                       الأمان والثقة
                     </p>
                   </div>
                 </div>
 
                 {isSafetyWinner && (
-                  <span className="rounded-full bg-[#2563eb] px-3 py-1 text-[11px] font-black text-white shadow-sm">
+                  <span className="rounded-full bg-brand-500 px-3 py-1 text-[11px] font-black text-white shadow-sm">
                     أقوى أمانًا
                   </span>
                 )}
@@ -2404,7 +2404,7 @@ export default async function ComparePage({ params }: PageProps) {
                 </div>
 
         <div className="rounded-[22px] border border-[#dbeafe] bg-[#f8fbff] p-4">
-  <div className="text-sm font-black text-[#2563eb]">
+  <div className="text-sm font-black text-brand-500">
     حماية أموال العملاء
   </div>
 
@@ -2431,7 +2431,7 @@ export default async function ComparePage({ params }: PageProps) {
     {/* Mobile version */}
     <div className="block p-4 md:hidden">
       <div>
-        <span className="text-xs font-black text-[#2563eb]">
+        <span className="text-xs font-black text-brand-500">
           الأمان والتراخيص
         </span>
 
@@ -2445,7 +2445,7 @@ export default async function ComparePage({ params }: PageProps) {
       </div>
 
       <div className="mt-4 rounded-[24px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-4 shadow-[0_12px_28px_rgba(37,99,235,0.12)]">
-        <div className="text-[11px] font-black text-[#2563eb]">
+        <div className="text-[11px] font-black text-brand-500">
           الأقوى من حيث الأمان
         </div>
 
@@ -2465,7 +2465,7 @@ export default async function ComparePage({ params }: PageProps) {
       <div className="mt-4 grid grid-cols-2 gap-2">
         <div className="rounded-2xl border border-slate-200 bg-[#f8fbff] px-3 py-3 text-center">
           <div className="text-[10px] font-bold text-slate-500">{left.name}</div>
-          <div className="mt-1 text-2xl font-black text-[#2563eb]">
+          <div className="mt-1 text-2xl font-black text-brand-500">
             {(left.score_safety ?? 0).toFixed(1)}
             <span className="text-xs text-slate-400"> / 5</span>
           </div>
@@ -2473,7 +2473,7 @@ export default async function ComparePage({ params }: PageProps) {
 
         <div className="rounded-2xl border border-slate-200 bg-[#f8fbff] px-3 py-3 text-center">
           <div className="text-[10px] font-bold text-slate-500">{right.name}</div>
-          <div className="mt-1 text-2xl font-black text-[#2563eb]">
+          <div className="mt-1 text-2xl font-black text-brand-500">
             {(right.score_safety ?? 0).toFixed(1)}
             <span className="text-xs text-slate-400"> / 5</span>
           </div>
@@ -2537,7 +2537,7 @@ export default async function ComparePage({ params }: PageProps) {
                     <div className="text-xl font-black text-[#0f172a]">
                       {broker.name}
                     </div>
-                    <div className="mt-0.5 text-xs font-bold text-[#2563eb]">
+                    <div className="mt-0.5 text-xs font-bold text-brand-500">
                       {isSafetyWinner ? "أقوى أمانًا" : "الأمان والثقة"}
                     </div>
                   </div>
@@ -2579,7 +2579,7 @@ export default async function ComparePage({ params }: PageProps) {
                 </div>
 
                 <div className="rounded-[18px] border border-[#dbeafe] bg-[#f8fbff] p-3">
-  <div className="text-[11px] font-black text-[#2563eb]">
+  <div className="text-[11px] font-black text-brand-500">
     ملخص قوة التراخيص
   </div>
 
@@ -2592,7 +2592,7 @@ export default async function ComparePage({ params }: PageProps) {
 </div>
 
                 <div className="rounded-[18px] border border-[#dbeafe] bg-[#f8fbff] p-3">
-  <div className="text-[11px] font-black text-[#2563eb]">
+  <div className="text-[11px] font-black text-brand-500">
     حماية أموال العملاء
   </div>
 
@@ -2619,11 +2619,11 @@ export default async function ComparePage({ params }: PageProps) {
 
 <section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
   <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white p-6 shadow-[0_25px_70px_rgba(37,99,235,0.08)] lg:p-8">
-    <div className="absolute inset-x-0 top-0 h-1.5 bg-[#2563eb]" />
+    <div className="absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
 
     <div className="hidden md:grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
       <div>
-        <span className="text-sm font-black text-[#2563eb]">اختيار سريع</span>
+        <span className="text-sm font-black text-brand-500">اختيار سريع</span>
 
         <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-5xl">
           أي وسيط تختار الآن؟
@@ -2636,7 +2636,7 @@ export default async function ComparePage({ params }: PageProps) {
       </div>
 
       <div className="rounded-[28px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5 shadow-[0_16px_40px_rgba(37,99,235,0.12)]">
-        <div className="text-xs font-black text-[#2563eb]">الترشيح العام</div>
+        <div className="text-xs font-black text-brand-500">الترشيح العام</div>
         <div className="mt-2 text-3xl font-black text-[#0f172a]">
           {overallWinner}
         </div>
@@ -2648,7 +2648,7 @@ export default async function ComparePage({ params }: PageProps) {
 
     <div className="hidden md:grid mt-8 gap-4 lg:grid-cols-3">
       <div className="rounded-[26px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5 shadow-sm">
-        <div className="text-xs font-black text-[#2563eb]">الأفضل إجمالًا</div>
+        <div className="text-xs font-black text-brand-500">الأفضل إجمالًا</div>
         <div className="mt-2 text-3xl font-black text-[#0f172a]">
           {overallWinner}
         </div>
@@ -2681,7 +2681,7 @@ export default async function ComparePage({ params }: PageProps) {
     <div className="hidden md:block mt-7 rounded-[28px] border border-[#dbeafe] bg-[#f8fbff] p-5 lg:p-6">
       <div className="grid gap-5 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
         <div>
-          <div className="text-sm font-black text-[#2563eb]">القرار المختصر</div>
+          <div className="text-sm font-black text-brand-500">القرار المختصر</div>
           <p className="mt-2 text-sm leading-8 text-slate-700 lg:text-base">
             اختر <strong>{overallWinner}</strong> إذا كنت تريد الخيار الأقوى
             إجمالًا. وإذا كنت مبتدئًا، فراجع ترشيح{" "}
@@ -2701,7 +2701,7 @@ export default async function ComparePage({ params }: PageProps) {
             href={`/go/${
               overallWinner === left.name ? left.slug ?? "" : right.slug ?? ""
             }?type=real`}
-            className="inline-flex min-h-[50px] items-center justify-center rounded-2xl bg-[#2563eb] px-6 py-3 text-sm font-black text-white transition hover:bg-[#1d4ed8]"
+            className="inline-flex min-h-[50px] items-center justify-center rounded-2xl bg-brand-500 px-6 py-3 text-sm font-black text-white transition hover:bg-brand-600"
           >
             افتح حساب مع {overallWinner}
           </a>
@@ -2721,7 +2721,7 @@ export default async function ComparePage({ params }: PageProps) {
     {/* Mobile */}
 <div className="mt-5 md:hidden">
   <div className="rounded-[24px] border border-[#dbeafe] bg-[#f8fbff] p-4">
-    <span className="text-xs font-black text-[#2563eb]">اختيار سريع</span>
+    <span className="text-xs font-black text-brand-500">اختيار سريع</span>
 
     <h2 className="mt-2 text-[24px] font-black leading-[1.25] text-[#0f172a]">
       أي وسيط تختار الآن؟
@@ -2732,7 +2732,7 @@ export default async function ComparePage({ params }: PageProps) {
     </p>
 
     <div className="mt-4 rounded-[20px] border border-[#2563eb] bg-white p-4 shadow-sm">
-      <div className="text-[11px] font-black text-[#2563eb]">
+      <div className="text-[11px] font-black text-brand-500">
         الترشيح العام
       </div>
 
@@ -2762,7 +2762,7 @@ export default async function ComparePage({ params }: PageProps) {
     </div>
 
     <div className="mt-4 rounded-[18px] border border-[#dbeafe] bg-white p-3">
-      <div className="text-xs font-black text-[#2563eb]">القرار المختصر</div>
+      <div className="text-xs font-black text-brand-500">القرار المختصر</div>
 
       <p className="mt-2 text-sm leading-7 text-slate-700">
         اختر <strong>{overallWinner}</strong> إذا كنت تريد الخيار الأقوى إجمالًا.
@@ -2779,7 +2779,7 @@ export default async function ComparePage({ params }: PageProps) {
         href={`/go/${
           overallWinner === left.name ? left.slug ?? "" : right.slug ?? ""
         }?type=real`}
-        className="inline-flex min-h-[46px] items-center justify-center rounded-2xl bg-[#2563eb] px-5 py-3 text-sm font-black text-white shadow-sm"
+        className="inline-flex min-h-[46px] items-center justify-center rounded-2xl bg-brand-500 px-5 py-3 text-sm font-black text-white shadow-sm"
       >
         افتح حساب مع {overallWinner}
       </a>
@@ -2800,12 +2800,12 @@ export default async function ComparePage({ params }: PageProps) {
 
 <section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-2 lg:px-8">
   <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white shadow-[0_25px_70px_rgba(37,99,235,0.08)]">
-    <div className="absolute inset-x-0 top-0 h-1.5 bg-[#2563eb]" />
+    <div className="absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
 
     {/* Desktop */}
     <div className="hidden p-6 md:block lg:p-8">
       <div className="max-w-4xl">
-        <span className="text-sm font-black text-[#2563eb]">الأسئلة الشائعة</span>
+        <span className="text-sm font-black text-brand-500">الأسئلة الشائعة</span>
 
         <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-5xl">
           أسئلة شائعة عن {left.name} و {right.name}
@@ -2819,7 +2819,7 @@ export default async function ComparePage({ params }: PageProps) {
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
         <div>
-          <div className="mb-4 rounded-[20px] border border-[#bfdbfe] bg-[#eff6ff] px-5 py-3">
+          <div className="mb-4 rounded-[20px] border border-brand-100 bg-brand-50 px-5 py-3">
             <h3 className="text-lg font-black text-[#0f172a]">
               أسئلة عن {left.name}
             </h3>
@@ -2831,7 +2831,7 @@ export default async function ComparePage({ params }: PageProps) {
               .map((faq, index) => (
                 <details
                   key={`left-faq-${index}`}
-                  className="group rounded-[24px] border border-slate-200 bg-[#fbfdff] p-5 shadow-sm open:border-[#bfdbfe] open:bg-white"
+                  className="group rounded-[24px] border border-slate-200 bg-[#fbfdff] p-5 shadow-sm open:border-brand-100 open:bg-white"
                 >
                   <summary className="flex min-h-[64px] cursor-pointer list-none items-center justify-between gap-4">
                     <h4 className="text-base font-black leading-7 text-[#0f172a]">
@@ -2852,7 +2852,7 @@ export default async function ComparePage({ params }: PageProps) {
         </div>
 
         <div>
-          <div className="mb-4 rounded-[20px] border border-[#bfdbfe] bg-[#eff6ff] px-5 py-3">
+          <div className="mb-4 rounded-[20px] border border-brand-100 bg-brand-50 px-5 py-3">
             <h3 className="text-lg font-black text-[#0f172a]">
               أسئلة عن {right.name}
             </h3>
@@ -2864,7 +2864,7 @@ export default async function ComparePage({ params }: PageProps) {
               .map((faq, index) => (
                 <details
                   key={`right-faq-${index}`}
-                  className="group rounded-[24px] border border-slate-200 bg-[#fbfdff] p-5 shadow-sm open:border-[#bfdbfe] open:bg-white"
+                  className="group rounded-[24px] border border-slate-200 bg-[#fbfdff] p-5 shadow-sm open:border-brand-100 open:bg-white"
                 >
                   <summary className="flex min-h-[64px] cursor-pointer list-none items-center justify-between gap-4">
                     <h4 className="text-base font-black leading-7 text-[#0f172a]">
@@ -2891,7 +2891,7 @@ export default async function ComparePage({ params }: PageProps) {
 <div className="block p-4 md:hidden">
   {/* Header */}
   <div>
-    <span className="text-xs font-black text-[#2563eb]">الأسئلة الشائعة</span>
+    <span className="text-xs font-black text-brand-500">الأسئلة الشائعة</span>
 
     <h2 className="mt-2 text-[22px] font-black leading-[1.3] text-[#0f172a]">
       أسئلة عن {left.name} و {right.name}
@@ -2904,11 +2904,11 @@ export default async function ComparePage({ params }: PageProps) {
 
   {/* Quick Tabs */}
   <div className="mt-3 grid grid-cols-2 gap-2">
-    <div className="rounded-xl border border-[#bfdbfe] bg-[#eff6ff] py-2 text-center text-xs font-black text-[#0f172a]">
+    <div className="rounded-xl border border-brand-100 bg-brand-50 py-2 text-center text-xs font-black text-[#0f172a]">
       {left.name}
     </div>
 
-    <div className="rounded-xl border border-[#bfdbfe] bg-[#eff6ff] py-2 text-center text-xs font-black text-[#0f172a]">
+    <div className="rounded-xl border border-brand-100 bg-brand-50 py-2 text-center text-xs font-black text-[#0f172a]">
       {right.name}
     </div>
   </div>
@@ -2931,7 +2931,7 @@ export default async function ComparePage({ params }: PageProps) {
     ].map((faq, index) => (
       <details
         key={`${faq.brokerName}-${index}`}
-        className="group rounded-[18px] border border-slate-200 bg-white p-3 shadow-sm open:border-[#bfdbfe]"
+        className="group rounded-[18px] border border-slate-200 bg-white p-3 shadow-sm open:border-brand-100"
       >
         <summary className="flex cursor-pointer list-none items-center justify-between gap-3">
           <h3 className="text-sm font-black leading-6 text-[#0f172a]">

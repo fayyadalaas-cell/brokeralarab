@@ -39,7 +39,7 @@ export default function ComparePickerEN({ brokers }: Props) {
       
       {/* HEADER */}
       <div className="mb-6">
-        <div className="text-sm font-bold text-[#1d4ed8]">
+        <div className="text-sm font-bold text-brand-600">
           Start Comparison
         </div>
 
@@ -73,7 +73,7 @@ export default function ComparePickerEN({ brokers }: Props) {
                 setSecond(fallback?.slug || "");
               }
             }}
-            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none transition focus:border-[#2563eb]"
+            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none transition focus:border-brand-500"
           >
             {brokers.map((broker) => (
               <option key={broker.slug} value={broker.slug}>
@@ -93,7 +93,7 @@ export default function ComparePickerEN({ brokers }: Props) {
   aria-labelledby="compare-second-broker-en-label"
             value={second}
             onChange={(e) => setSecond(e.target.value)}
-            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none transition focus:border-[#2563eb]"
+            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none transition focus:border-brand-500"
           >
             {secondOptions.map((broker) => (
               <option key={broker.slug} value={broker.slug}>
@@ -108,7 +108,7 @@ export default function ComparePickerEN({ brokers }: Props) {
           <button
             type="button"
             onClick={handleCompare}
-            className="inline-flex h-[50px] w-full items-center justify-center rounded-2xl bg-[#2563eb] px-6 text-sm font-extrabold !text-white transition hover:bg-[#1d4ed8] lg:w-auto"
+            className="inline-flex h-[50px] w-full items-center justify-center rounded-2xl bg-brand-500 px-6 text-sm font-extrabold !text-white transition hover:bg-brand-600 lg:w-auto"
           >
             Compare Now
           </button>

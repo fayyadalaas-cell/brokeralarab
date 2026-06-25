@@ -123,7 +123,7 @@ export default function ArabicHeader({
                     <Link
                       key={broker.slug}
                       href={`/brokers/${broker.slug}`}
-                      className="flex items-center justify-between gap-4 rounded-2xl px-3 py-3 transition hover:bg-blue-50"
+                      className="flex items-center justify-between gap-4 rounded-2xl px-3 py-3 transition hover:bg-brand-50"
                     >
                       <div className="min-w-0 text-right">
                         <div className="text-[15px] font-extrabold text-slate-800">
@@ -150,7 +150,7 @@ export default function ArabicHeader({
 
                 <Link
                   href="/brokers"
-                  className="mt-1 block rounded-2xl px-3 py-3 text-sm font-extrabold text-blue-700 transition hover:bg-blue-50"
+                  className="mt-1 block rounded-2xl px-3 py-3 text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
                 >
                   جميع المراجعات ←
                 </Link>
@@ -182,7 +182,7 @@ export default function ArabicHeader({
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="grid grid-cols-[52px_1fr_44px_1fr_52px] items-center gap-2 rounded-2xl px-3 py-3 transition hover:bg-blue-50"
+                      className="grid grid-cols-[52px_1fr_44px_1fr_52px] items-center gap-2 rounded-2xl px-3 py-3 transition hover:bg-brand-50"
                     >
                       <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm">
                         <Image
@@ -221,7 +221,7 @@ export default function ArabicHeader({
 
                 <Link
                   href="/compare"
-                  className="mt-1 block rounded-2xl px-3 py-3 text-sm font-extrabold text-blue-700 transition hover:bg-blue-50"
+                  className="mt-1 block rounded-2xl px-3 py-3 text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
                 >
                   جميع المقارنات ←
                 </Link>
@@ -249,7 +249,7 @@ export default function ArabicHeader({
                         <Link
                           key={item.href}
                           href={item.href}
-                          className="flex items-center gap-3 rounded-2xl px-3 py-3 transition hover:bg-blue-50"
+                          className="flex items-center gap-3 rounded-2xl px-3 py-3 transition hover:bg-brand-50"
                           title={item.label}
                         >
                           <img
@@ -257,7 +257,7 @@ export default function ArabicHeader({
                             alt={item.shortLabel}
                             className="h-[22px] w-[22px] shrink-0 rounded-full object-cover"
                           />
-                          <span className="whitespace-nowrap text-[14px] font-bold text-slate-700 transition hover:text-blue-700">
+                          <span className="whitespace-nowrap text-[14px] font-bold text-slate-700 transition hover:text-brand-600">
                             {item.shortLabel}
                           </span>
                         </Link>
@@ -266,7 +266,7 @@ export default function ArabicHeader({
 
                     <Link
                       href="/best-brokers"
-                      className="mt-3 block rounded-2xl px-3 py-3 text-sm font-extrabold text-blue-700 transition hover:bg-blue-50"
+                      className="mt-3 block rounded-2xl px-3 py-3 text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
                     >
                       جميع الدول ←
                     </Link>
@@ -282,7 +282,7 @@ export default function ArabicHeader({
                         <Link
                           key={item.href + item.label}
                           href={item.href}
-                          className="rounded-2xl px-3 py-3 text-[15px] font-bold text-slate-700 transition hover:bg-blue-50 hover:text-blue-700"
+                          className="rounded-2xl px-3 py-3 text-[15px] font-bold text-slate-700 transition hover:bg-brand-50 hover:text-brand-600"
                         >
                           {item.label}
                         </Link>
@@ -291,7 +291,7 @@ export default function ArabicHeader({
 
                     <Link
                       href="/best-brokers"
-                      className="mt-3 block rounded-2xl px-3 py-3 text-sm font-extrabold text-blue-700 transition hover:bg-blue-50"
+                      className="mt-3 block rounded-2xl px-3 py-3 text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
                     >
                       جميع التصنيفات ←
                     </Link>
@@ -319,7 +319,7 @@ export default function ArabicHeader({
                     <Link
                       key={tool.href}
                       href={tool.href}
-                      className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-[13px] font-extrabold text-slate-700 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700"
+                      className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-[13px] font-extrabold text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600"
                     >
                       {tool.title}
                     </Link>
@@ -328,7 +328,7 @@ export default function ArabicHeader({
 
                 <Link
                   href="/tools"
-                  className="mt-3 block rounded-2xl px-3 py-3 text-sm font-extrabold text-blue-700 transition hover:bg-blue-50"
+                  className="mt-3 block rounded-2xl px-3 py-3 text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
                 >
                   عرض جميع أدوات التداول ←
                 </Link>
@@ -352,7 +352,7 @@ export default function ArabicHeader({
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="flex items-center gap-3 rounded-[18px] border border-slate-200 bg-slate-50 p-3 transition hover:border-blue-200 hover:bg-blue-50"
+                    className="flex items-center gap-3 rounded-[18px] border border-slate-200 bg-slate-50 p-3 transition hover:border-brand-100 hover:bg-brand-50"
                   >
                     <div className="relative h-[58px] w-[58px] shrink-0 overflow-hidden rounded-[14px] border border-slate-200 bg-white">
                       <Image
@@ -384,7 +384,7 @@ export default function ArabicHeader({
           <div className="hidden min-w-[105px] items-center justify-start lg:flex">
             <Link
               href="/en"
-              className="inline-flex items-center rounded-full border border-blue-300 bg-white px-3 py-1.5 text-[12px] font-bold text-blue-700 shadow-sm transition hover:border-blue-400 hover:bg-blue-50"
+              className="inline-flex items-center rounded-full border border-blue-300 bg-white px-3 py-1.5 text-[12px] font-bold text-brand-600 shadow-sm transition hover:border-blue-400 hover:bg-brand-50"
             >
               English
             </Link>

@@ -455,7 +455,7 @@ function BrokerHeadToHeadCard({
   return (
     <div
       className={`rounded-[28px] border p-5 shadow-sm sm:p-6 ${
-        isWinner ? "border-[#bfdbfe] bg-[#f8fbff]" : "border-slate-200 bg-white"
+        isWinner ? "border-brand-100 bg-[#f8fbff]" : "border-slate-200 bg-white"
       }`}
     >
       <div className="flex items-start justify-between gap-4">
@@ -463,7 +463,7 @@ function BrokerHeadToHeadCard({
           <div className="flex flex-wrap items-center gap-2">
             <h2 className="text-2xl font-black sm:text-3xl">{name}</h2>
             {isWinner ? (
-              <span className="rounded-full border border-[#bfdbfe] bg-[#eff6ff] px-3 py-1 text-[11px] font-extrabold text-[#1d4ed8]">
+              <span className="rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-extrabold text-brand-600">
                 Best Overall
               </span>
             ) : null}
@@ -472,7 +472,7 @@ function BrokerHeadToHeadCard({
           <p className="mt-2 text-sm leading-7 text-slate-600">{reason}</p>
         </div>
 
-        <div className="flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-2xl border border-[#bfdbfe] bg-white text-[#1d4ed8] sm:h-20 sm:w-20">
+        <div className="flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-2xl border border-brand-100 bg-white text-brand-600 sm:h-20 sm:w-20">
           <span className="text-xl font-black sm:text-2xl">
             {broker.rating?.toFixed(1) ?? "—"}
           </span>
@@ -508,7 +508,7 @@ function BrokerHeadToHeadCard({
       <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
         <Link
           href={`/en/brokers/${slug}`}
-          className="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-[#2563eb] px-5 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
+          className="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-brand-500 px-5 py-3 text-sm font-extrabold text-white transition hover:bg-brand-600"
         >
           Read Review
         </Link>
@@ -534,7 +534,7 @@ function AccountCard({
         <div className="text-lg font-black text-[#0f172a]">
           {account.account_name_en || account.account_name || "Account"}
         </div>
-        <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-[#1d4ed8]">
+        <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-brand-600">
           Account
         </span>
       </div>
@@ -818,7 +818,7 @@ export default async function ComparePage({ params }: PageProps) {
 
            <section className="relative overflow-hidden border-b border-slate-200 bg-[linear-gradient(180deg,#f8fbff_0%,#eef4ff_100%)]">
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -top-20 left-0 h-72 w-72 rounded-full bg-[#2563eb]/10 blur-3xl" />
+          <div className="absolute -top-20 left-0 h-72 w-72 rounded-full bg-brand-500/10 blur-3xl" />
           <div className="absolute right-0 top-24 h-72 w-72 rounded-full bg-[#60a5fa]/10 blur-3xl" />
         </div>
 
@@ -826,11 +826,11 @@ export default async function ComparePage({ params }: PageProps) {
           {/* Top intro - Desktop only */}
           <div className="mb-5 hidden md:block">
             <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white px-8 py-8 shadow-[0_18px_55px_rgba(37,99,235,0.08)]">
-              <div className="absolute inset-x-0 top-0 h-1.5 bg-[#2563eb]" />
+              <div className="absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
               <div className="pointer-events-none absolute right-0 top-0 h-full w-[38%] bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.10),transparent_55%)]" />
 
               <div className="relative">
-                <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#dbeafe] bg-[#f8fbff] px-4 py-2 text-xs font-extrabold text-[#2563eb]">
+                <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#dbeafe] bg-[#f8fbff] px-4 py-2 text-xs font-extrabold text-brand-500">
                   <span>Comparisons</span>
                   <span className="text-slate-300">/</span>
                   <span>{left.name_en || left.name} vs {right.name_en || right.name}</span>
@@ -849,7 +849,7 @@ export default async function ComparePage({ params }: PageProps) {
 
                 <div className="mt-7 grid max-w-6xl grid-cols-3 gap-4">
                   <div className="rounded-[22px] border border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-5 py-4 shadow-sm">
-                    <div className="text-xs font-black text-[#2563eb]">Quick Winner</div>
+                    <div className="text-xs font-black text-brand-500">Quick Winner</div>
                     <div className="mt-1 truncate text-xl font-black text-[#0f172a]">
                       {overallWinner}
                     </div>
@@ -902,7 +902,7 @@ export default async function ComparePage({ params }: PageProps) {
                       {isWinner && (
                         <>
                           <div className="pointer-events-none absolute inset-0 rounded-[30px] ring-2 ring-[#3b82f6]/30" />
-                          <div className="absolute right-4 top-4 rounded-full bg-[#2563eb] px-3 py-1 text-[11px] font-black text-white shadow-sm">
+                          <div className="absolute right-4 top-4 rounded-full bg-brand-500 px-3 py-1 text-[11px] font-black text-white shadow-sm">
                             Best Overall
                           </div>
                         </>
@@ -914,13 +914,13 @@ export default async function ComparePage({ params }: PageProps) {
                             {brokerName}
                           </h2>
 
-                          <p className="mt-2 text-sm font-bold text-[#2563eb]">
+                          <p className="mt-2 text-sm font-bold text-brand-500">
                             {cleanText(broker.best_for_en || broker.best_for) ||
                               "Suitable for multiple trader profiles"}
                           </p>
                         </div>
 
-                        <div className="flex h-[76px] w-[76px] shrink-0 flex-col items-center justify-center rounded-2xl border border-[#bfdbfe] bg-white text-[#2563eb] shadow-sm">
+                        <div className="flex h-[76px] w-[76px] shrink-0 flex-col items-center justify-center rounded-2xl border border-brand-100 bg-white text-brand-500 shadow-sm">
                           <span className="text-2xl font-black">
                             {broker.rating?.toFixed(1) ?? "—"}
                           </span>
@@ -974,7 +974,7 @@ export default async function ComparePage({ params }: PageProps) {
                       <div className="mt-6 grid grid-cols-2 gap-3">
                         <a
                           href={`/go/${broker.slug ?? ""}?type=real`}
-                          className="inline-flex min-h-[52px] items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-sm font-black text-white transition hover:bg-[#1d4ed8]"
+                          className="inline-flex min-h-[52px] items-center justify-center rounded-2xl bg-brand-500 px-4 py-3 text-sm font-black text-white transition hover:bg-brand-600"
                         >
                           Start Now
                         </a>
@@ -992,7 +992,7 @@ export default async function ComparePage({ params }: PageProps) {
                   if (index === 1) {
                     acc.push(
                       <div key="center-vs" className="flex flex-col items-center justify-center">
-                        <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-[#2563eb] to-[#1e40af] text-2xl font-black text-white shadow-[0_10px_30px_rgba(37,99,235,0.4)]">
+                        <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 to-[#1e40af] text-2xl font-black text-white shadow-[0_10px_30px_rgba(37,99,235,0.4)]">
                           VS
                         </div>
                       </div>
@@ -1009,9 +1009,9 @@ export default async function ComparePage({ params }: PageProps) {
           <div className="md:hidden">
             <div className="overflow-hidden rounded-[30px] border border-[#dbeafe] bg-white shadow-[0_20px_60px_rgba(37,99,235,0.08)]">
               <div className="relative overflow-hidden bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-4 pb-4 pt-5">
-                <div className="absolute inset-x-0 top-0 h-1 bg-[#2563eb]" />
+                <div className="absolute inset-x-0 top-0 h-1 bg-brand-500" />
 
-                <div className="inline-flex rounded-full border border-[#bfdbfe] bg-white px-3 py-1 text-[11px] font-black text-[#2563eb]">
+                <div className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[11px] font-black text-brand-500">
                   Broker Comparison
                 </div>
 
@@ -1025,8 +1025,8 @@ export default async function ComparePage({ params }: PageProps) {
                   platforms, and spreads.
                 </p>
 
-                <div className="mt-4 rounded-[22px] border border-[#bfdbfe] bg-white p-4 shadow-sm">
-                  <div className="text-[11px] font-black text-[#2563eb]">
+                <div className="mt-4 rounded-[22px] border border-brand-100 bg-white p-4 shadow-sm">
+                  <div className="text-[11px] font-black text-brand-500">
                     Quick Recommendation
                   </div>
 
@@ -1080,7 +1080,7 @@ export default async function ComparePage({ params }: PageProps) {
                       <div className="mb-3 flex items-center justify-between gap-3">
                         <div className="min-w-0">
                           {isWinner && (
-                            <div className="mb-1.5 inline-flex rounded-full bg-[#2563eb] px-3 py-1 text-[10px] font-black text-white shadow-sm">
+                            <div className="mb-1.5 inline-flex rounded-full bg-brand-500 px-3 py-1 text-[10px] font-black text-white shadow-sm">
                               Best Overall
                             </div>
                           )}
@@ -1089,13 +1089,13 @@ export default async function ComparePage({ params }: PageProps) {
                             {brokerName}
                           </h2>
 
-                          <p className="mt-1 line-clamp-1 text-xs font-bold text-[#2563eb]">
+                          <p className="mt-1 line-clamp-1 text-xs font-bold text-brand-500">
                             {cleanText(broker.best_for_en || broker.best_for) ||
                               "Suitable for multiple trader profiles"}
                           </p>
                         </div>
 
-                        <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl border border-[#bfdbfe] bg-white text-[#2563eb] shadow-sm">
+                        <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl border border-brand-100 bg-white text-brand-500 shadow-sm">
                           <span className="text-lg font-black">
                             {broker.rating?.toFixed(1) ?? "—"}
                           </span>
@@ -1149,7 +1149,7 @@ export default async function ComparePage({ params }: PageProps) {
                       <div className="mt-3 grid grid-cols-2 gap-2">
                         <a
                           href={`/go/${broker.slug ?? ""}?type=real`}
-                          className="inline-flex min-h-[44px] items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-2.5 text-sm font-black text-white shadow-sm transition active:scale-[0.98]"
+                          className="inline-flex min-h-[44px] items-center justify-center rounded-2xl bg-brand-500 px-4 py-2.5 text-sm font-black text-white shadow-sm transition active:scale-[0.98]"
                         >
                           Start Now
                         </a>
@@ -1173,12 +1173,12 @@ export default async function ComparePage({ params }: PageProps) {
 
 <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
   <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white shadow-[0_22px_65px_rgba(37,99,235,0.08)]">
-    <div className="pointer-events-none absolute inset-x-0 top-0 h-1.5 bg-[#2563eb]" />
+    <div className="pointer-events-none absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
 
     {/* Desktop version */}
     <div className="hidden p-6 lg:block lg:p-8">
       <div className="max-w-5xl">
-        <span className="text-sm font-black text-[#2563eb]">Final Verdict</span>
+        <span className="text-sm font-black text-brand-500">Final Verdict</span>
 
         <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-5xl">
           Which broker is better: {left.name_en || left.name} or {right.name_en || right.name}?
@@ -1193,10 +1193,10 @@ export default async function ComparePage({ params }: PageProps) {
 
       <div className="mt-7 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <div className="relative overflow-hidden rounded-[26px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5 shadow-[0_16px_40px_rgba(37,99,235,0.14)]">
-          <div className="absolute right-4 top-4 rounded-full bg-[#2563eb] px-3 py-1 text-[11px] font-black text-white">
+          <div className="absolute right-4 top-4 rounded-full bg-brand-500 px-3 py-1 text-[11px] font-black text-white">
             Winner
           </div>
-          <div className="text-xs font-black text-[#2563eb]">Best Overall</div>
+          <div className="text-xs font-black text-brand-500">Best Overall</div>
           <div className="mt-3 truncate text-3xl font-black text-[#0f172a]">
             {overallWinner}
           </div>
@@ -1239,7 +1239,7 @@ export default async function ComparePage({ params }: PageProps) {
       <div className="mt-7 rounded-[28px] border border-[#dbeafe] bg-[#f8fbff] p-5 lg:p-6">
         <div className="grid gap-5 lg:grid-cols-[1.4fr_1fr] lg:items-center">
           <div>
-            <div className="text-sm font-black text-[#2563eb]">Quick Summary</div>
+            <div className="text-sm font-black text-brand-500">Quick Summary</div>
             <p className="mt-2 text-sm leading-8 text-slate-700 lg:text-base">
               If you want the stronger overall broker based on rating, trust, fees,
               and usability, <strong>{overallWinner}</strong> looks like the stronger
@@ -1254,7 +1254,7 @@ export default async function ComparePage({ params }: PageProps) {
               href={`/go/${left.slug ?? ""}?type=real`}
               className={`inline-flex min-h-[50px] items-center justify-center rounded-2xl px-6 py-3 text-sm font-black transition ${
                 overallWinner === (left.name_en || left.name)
-                  ? "bg-[#2563eb] text-white hover:bg-[#1d4ed8]"
+                  ? "bg-brand-500 text-white hover:bg-brand-600"
                   : "border border-slate-300 bg-white text-slate-800 hover:bg-slate-50"
               }`}
             >
@@ -1265,7 +1265,7 @@ export default async function ComparePage({ params }: PageProps) {
               href={`/go/${right.slug ?? ""}?type=real`}
               className={`inline-flex min-h-[50px] items-center justify-center rounded-2xl px-6 py-3 text-sm font-black transition ${
                 overallWinner === (right.name_en || right.name)
-                  ? "bg-[#2563eb] text-white hover:bg-[#1d4ed8]"
+                  ? "bg-brand-500 text-white hover:bg-brand-600"
                   : "border border-slate-300 bg-white text-slate-800 hover:bg-slate-50"
               }`}
             >
@@ -1283,7 +1283,7 @@ export default async function ComparePage({ params }: PageProps) {
     {/* Mobile version */}
     <div className="block p-4 lg:hidden">
       <div className="mb-4">
-        <span className="text-xs font-black text-[#2563eb]">Final Verdict</span>
+        <span className="text-xs font-black text-brand-500">Final Verdict</span>
 
         <h2 className="mt-2 text-[26px] font-black leading-[1.25] text-[#0f172a]">
           Which broker is better: {left.name_en || left.name} or {right.name_en || right.name}?
@@ -1295,7 +1295,7 @@ export default async function ComparePage({ params }: PageProps) {
       </div>
 
       <div className="rounded-[26px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-4 shadow-[0_14px_35px_rgba(37,99,235,0.14)]">
-        <div className="inline-flex rounded-full bg-[#2563eb] px-3 py-1 text-[10px] font-black text-white">
+        <div className="inline-flex rounded-full bg-brand-500 px-3 py-1 text-[10px] font-black text-white">
           Overall Winner
         </div>
 
@@ -1332,7 +1332,7 @@ export default async function ComparePage({ params }: PageProps) {
       </div>
 
       <div className="mt-4 rounded-[24px] border border-[#dbeafe] bg-[#f8fbff] p-4">
-        <div className="text-xs font-black text-[#2563eb]">Quick Summary</div>
+        <div className="text-xs font-black text-brand-500">Quick Summary</div>
 
         <p className="mt-2 text-sm leading-7 text-slate-700">
           If you want the stronger overall choice,{" "}
@@ -1348,7 +1348,7 @@ export default async function ComparePage({ params }: PageProps) {
       <div className="mt-4 grid gap-2">
         <a
           href={`/go/${overallWinner === (left.name_en || left.name) ? left.slug ?? "" : right.slug ?? ""}?type=real`}
-          className="inline-flex min-h-[50px] items-center justify-center rounded-2xl bg-[#2563eb] px-5 py-3 text-sm font-black text-white shadow-sm"
+          className="inline-flex min-h-[50px] items-center justify-center rounded-2xl bg-brand-500 px-5 py-3 text-sm font-black text-white shadow-sm"
         >
           Open Account with {overallWinner}
         </a>
@@ -1370,12 +1370,12 @@ export default async function ComparePage({ params }: PageProps) {
 
 <section className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
   <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white shadow-[0_25px_70px_rgba(37,99,235,0.08)]">
-    <div className="absolute inset-x-0 top-0 h-1.5 bg-[#2563eb]" />
+    <div className="absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
 
     {/* Desktop version */}
     <div className="hidden p-6 md:block lg:p-8">
       <div className="max-w-5xl">
-        <span className="text-sm font-black text-[#2563eb]">Score Analysis</span>
+        <span className="text-sm font-black text-brand-500">Score Analysis</span>
 
         <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-5xl">
           Strength Analysis Between {left.name_en || left.name} and {right.name_en || right.name}
@@ -1388,7 +1388,7 @@ export default async function ComparePage({ params }: PageProps) {
       </div>
 
       <div className="mt-5 flex flex-wrap gap-3">
-        <span className="rounded-full border border-[#bfdbfe] bg-[#eff6ff] px-4 py-2 text-sm font-black text-[#2563eb]">
+        <span className="rounded-full border border-brand-100 bg-brand-50 px-4 py-2 text-sm font-black text-brand-500">
           Best Overall: {overallWinner}
         </span>
 
@@ -1460,7 +1460,7 @@ export default async function ComparePage({ params }: PageProps) {
                 <span
                   className={`shrink-0 rounded-full px-4 py-1.5 text-[12px] font-black shadow-sm ${
                     winner !== "Tie" && !isClose
-                      ? "border border-[#bfdbfe] bg-white text-[#2563eb]"
+                      ? "border border-brand-100 bg-white text-brand-500"
                       : "border border-slate-200 bg-slate-50 text-slate-500"
                   }`}
                 >
@@ -1487,7 +1487,7 @@ export default async function ComparePage({ params }: PageProps) {
                       {left.name_en || left.name}
                     </span>
 
-                    <span className="text-xl font-black text-[#2563eb]">
+                    <span className="text-xl font-black text-brand-500">
                       {item.leftScore.toFixed(1)}
                       <span className="text-xs text-slate-400"> / 5</span>
                     </span>
@@ -1495,7 +1495,7 @@ export default async function ComparePage({ params }: PageProps) {
 
                   <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100">
                     <div
-                      className="h-full rounded-full bg-[#2563eb]/70"
+                      className="h-full rounded-full bg-brand-500/70"
                       style={{ width: `${Math.min(item.leftScore * 20, 100)}%` }}
                     />
                   </div>
@@ -1513,7 +1513,7 @@ export default async function ComparePage({ params }: PageProps) {
                       {right.name_en || right.name}
                     </span>
 
-                    <span className="text-xl font-black text-[#2563eb]">
+                    <span className="text-xl font-black text-brand-500">
                       {item.rightScore.toFixed(1)}
                       <span className="text-xs text-slate-400"> / 5</span>
                     </span>
@@ -1521,7 +1521,7 @@ export default async function ComparePage({ params }: PageProps) {
 
                   <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100">
                     <div
-                      className="h-full rounded-full bg-[#2563eb]/70"
+                      className="h-full rounded-full bg-brand-500/70"
                       style={{ width: `${Math.min(item.rightScore * 20, 100)}%` }}
                     />
                   </div>
@@ -1544,7 +1544,7 @@ export default async function ComparePage({ params }: PageProps) {
     {/* Mobile version */}
 <div className="block p-4 md:hidden">
   <div>
-    <span className="text-xs font-black text-[#2563eb]">Score Analysis</span>
+    <span className="text-xs font-black text-brand-500">Score Analysis</span>
 
     <h2 className="mt-2 text-[26px] font-black leading-[1.25] text-[#0f172a]">
       Strength Analysis Between {left.name_en || left.name} and {right.name_en || right.name}
@@ -1557,7 +1557,7 @@ export default async function ComparePage({ params }: PageProps) {
   </div>
 
   <div className="mt-4 flex flex-wrap gap-2">
-    <span className="rounded-full border border-[#bfdbfe] bg-[#eff6ff] px-3 py-1.5 text-[11px] font-black text-[#2563eb]">
+    <span className="rounded-full border border-brand-100 bg-brand-50 px-3 py-1.5 text-[11px] font-black text-brand-500">
       Best Overall: {overallWinner}
     </span>
 
@@ -1628,7 +1628,7 @@ export default async function ComparePage({ params }: PageProps) {
             <span
               className={`shrink-0 rounded-full px-3 py-1 text-[10px] font-black shadow-sm ${
                 winner !== "Tie" && !isClose
-                  ? "border border-[#bfdbfe] bg-white text-[#2563eb]"
+                  ? "border border-brand-100 bg-white text-brand-500"
                   : "border border-slate-200 bg-slate-50 text-slate-500"
               }`}
             >
@@ -1655,7 +1655,7 @@ export default async function ComparePage({ params }: PageProps) {
                   {left.name_en || left.name}
                 </span>
 
-                <span className="text-lg font-black text-[#2563eb]">
+                <span className="text-lg font-black text-brand-500">
                   {item.leftScore.toFixed(1)}
                   <span className="text-xs text-slate-400"> / 5</span>
                 </span>
@@ -1663,7 +1663,7 @@ export default async function ComparePage({ params }: PageProps) {
 
               <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100">
                 <div
-                  className="h-full rounded-full bg-[#2563eb]/70"
+                  className="h-full rounded-full bg-brand-500/70"
                   style={{ width: `${Math.min(item.leftScore * 20, 100)}%` }}
                 />
               </div>
@@ -1681,7 +1681,7 @@ export default async function ComparePage({ params }: PageProps) {
                   {right.name_en || right.name}
                 </span>
 
-                <span className="text-lg font-black text-[#2563eb]">
+                <span className="text-lg font-black text-brand-500">
                   {item.rightScore.toFixed(1)}
                   <span className="text-xs text-slate-400"> / 5</span>
                 </span>
@@ -1689,7 +1689,7 @@ export default async function ComparePage({ params }: PageProps) {
 
               <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100">
                 <div
-                  className="h-full rounded-full bg-[#2563eb]/70"
+                  className="h-full rounded-full bg-brand-500/70"
                   style={{ width: `${Math.min(item.rightScore * 20, 100)}%` }}
                 />
               </div>
@@ -1712,13 +1712,13 @@ export default async function ComparePage({ params }: PageProps) {
 
 <section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
   <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white shadow-[0_25px_70px_rgba(37,99,235,0.08)]">
-    <div className="absolute inset-x-0 top-0 h-1.5 bg-[#2563eb]" />
+    <div className="absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
 
     {/* Desktop version */}
     <div className="hidden p-6 md:block lg:p-8">
       <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
         <div>
-          <span className="text-sm font-black text-[#2563eb]">
+          <span className="text-sm font-black text-brand-500">
             Accounts & Trading Costs
           </span>
 
@@ -1733,7 +1733,7 @@ export default async function ComparePage({ params }: PageProps) {
         </div>
 
         <div className="rounded-[28px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5 shadow-[0_16px_40px_rgba(37,99,235,0.12)]">
-          <div className="text-xs font-black text-[#2563eb]">Quick Summary</div>
+          <div className="text-xs font-black text-brand-500">Quick Summary</div>
           <div className="mt-2 text-3xl font-black text-[#0f172a]">
             {scalpingWinner === "Tie" ? "Costs Are Close" : scalpingWinner}
           </div>
@@ -1750,13 +1750,13 @@ export default async function ComparePage({ params }: PageProps) {
           <div className="text-xs font-black text-slate-500">Available Accounts</div>
           <div className="mt-3 flex items-center justify-between gap-6">
             <div>
-              <div className="text-xs font-bold text-[#2563eb]">{left.name_en || left.name}</div>
+              <div className="text-xs font-bold text-brand-500">{left.name_en || left.name}</div>
               <div className="text-3xl font-black text-[#0f172a]">
                 {leftAccounts.length}
               </div>
             </div>
             <div>
-              <div className="text-xs font-bold text-[#2563eb]">{right.name_en || right.name}</div>
+              <div className="text-xs font-bold text-brand-500">{right.name_en || right.name}</div>
               <div className="text-3xl font-black text-[#0f172a]">
                 {rightAccounts.length}
               </div>
@@ -1774,8 +1774,8 @@ export default async function ComparePage({ params }: PageProps) {
           </p>
         </div>
 
-        <div className="rounded-[24px] border border-[#bfdbfe] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5">
-          <div className="text-xs font-black text-[#2563eb]">Important Before Choosing</div>
+        <div className="rounded-[24px] border border-brand-100 bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5">
+          <div className="text-xs font-black text-brand-500">Important Before Choosing</div>
           <div className="mt-3 text-lg font-black leading-7 text-[#0f172a]">
             The right account matters more than the number of accounts.
           </div>
@@ -1876,7 +1876,7 @@ export default async function ComparePage({ params }: PageProps) {
                   <h3 className="text-2xl font-black text-[#0f172a]">
                     {brokerName} Accounts
                   </h3>
-                  <p className="mt-1 text-sm font-bold text-[#2563eb]">
+                  <p className="mt-1 text-sm font-bold text-brand-500">
                     {brokerAccounts.length} available account{brokerAccounts.length === 1 ? "" : "s"}
                   </p>
                 </div>
@@ -1897,7 +1897,7 @@ export default async function ComparePage({ params }: PageProps) {
                         <h4 className="text-lg font-black text-[#0f172a]">
                           {acc.account_name_en || acc.account_name || "Account"}
                         </h4>
-                        <p className="mt-1 text-xs font-bold text-[#2563eb]">
+                        <p className="mt-1 text-xs font-bold text-brand-500">
                           {acc.best_for_en || acc.best_for || "Suitable for multiple trader profiles"}
                         </p>
                       </div>
@@ -1959,7 +1959,7 @@ export default async function ComparePage({ params }: PageProps) {
           <div className="flex flex-col gap-3 sm:flex-row">
             <Link
               href={`/go/${left.slug}`}
-              className="inline-flex items-center justify-center rounded-2xl bg-[#2563eb] px-7 py-3 text-sm font-extrabold text-white shadow-md transition hover:scale-[1.02] hover:bg-[#1d4ed8]"
+              className="inline-flex items-center justify-center rounded-2xl bg-brand-500 px-7 py-3 text-sm font-extrabold text-white shadow-md transition hover:scale-[1.02] hover:bg-brand-600"
             >
               Open {left.name_en || left.name} Account
             </Link>
@@ -1986,7 +1986,7 @@ export default async function ComparePage({ params }: PageProps) {
     {/* Mobile version */}
     <div className="block p-4 md:hidden">
       <div>
-        <span className="text-xs font-black text-[#2563eb]">
+        <span className="text-xs font-black text-brand-500">
           Accounts & Trading Costs
         </span>
 
@@ -2000,7 +2000,7 @@ export default async function ComparePage({ params }: PageProps) {
       </div>
 
       <div className="mt-4 rounded-[24px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-4 shadow-[0_12px_28px_rgba(37,99,235,0.12)]">
-        <div className="text-[11px] font-black text-[#2563eb]">
+        <div className="text-[11px] font-black text-brand-500">
           Quick Summary
         </div>
 
@@ -2034,8 +2034,8 @@ export default async function ComparePage({ params }: PageProps) {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-[#bfdbfe] bg-[#eff6ff] px-2 py-3 text-center">
-          <div className="text-[10px] font-bold text-[#2563eb]">Beginners</div>
+        <div className="rounded-2xl border border-brand-100 bg-brand-50 px-2 py-3 text-center">
+          <div className="text-[10px] font-bold text-brand-500">Beginners</div>
           <div className="mt-1 truncate text-xs font-black text-[#0f172a]">
             {beginnerWinner === "Tie" ? "Very Close" : beginnerWinner}
           </div>
@@ -2141,7 +2141,7 @@ export default async function ComparePage({ params }: PageProps) {
                     {brokerName} Accounts
                   </h3>
 
-                  <p className="mt-1 text-xs font-bold text-[#2563eb]">
+                  <p className="mt-1 text-xs font-bold text-brand-500">
                     {brokerAccounts.length} available account{brokerAccounts.length === 1 ? "" : "s"}
                   </p>
                 </div>
@@ -2216,7 +2216,7 @@ export default async function ComparePage({ params }: PageProps) {
         <div className="mt-4 grid gap-2">
           <Link
             href={`/go/${left.slug}`}
-            className="inline-flex min-h-[44px] items-center justify-center rounded-2xl bg-[#2563eb] px-5 py-3 text-sm font-black text-white shadow-sm"
+            className="inline-flex min-h-[44px] items-center justify-center rounded-2xl bg-brand-500 px-5 py-3 text-sm font-black text-white shadow-sm"
           >
             Open {left.name_en || left.name} Account
           </Link>
@@ -2243,13 +2243,13 @@ export default async function ComparePage({ params }: PageProps) {
 
 <section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
   <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white shadow-[0_25px_70px_rgba(37,99,235,0.08)]">
-    <div className="absolute inset-x-0 top-0 h-1.5 bg-[#2563eb]" />
+    <div className="absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
 
     {/* Desktop */}
     <div className="hidden p-6 md:block lg:p-8">
       <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
         <div>
-          <span className="text-sm font-black text-[#2563eb]">
+          <span className="text-sm font-black text-brand-500">
             Safety & Regulation
           </span>
 
@@ -2264,7 +2264,7 @@ export default async function ComparePage({ params }: PageProps) {
         </div>
 
         <div className="rounded-[28px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5 shadow-[0_16px_40px_rgba(37,99,235,0.12)]">
-          <div className="text-xs font-black text-[#2563eb]">
+          <div className="text-xs font-black text-brand-500">
             Stronger in Safety
           </div>
 
@@ -2289,7 +2289,7 @@ export default async function ComparePage({ params }: PageProps) {
 
           <div className="mt-3 flex items-center justify-between gap-6">
             <div>
-              <div className="text-xs font-bold text-[#2563eb]">{left.name_en || left.name}</div>
+              <div className="text-xs font-bold text-brand-500">{left.name_en || left.name}</div>
               <div className="text-3xl font-black text-[#0f172a]">
                 {(left.score_safety ?? 0).toFixed(1)}
                 <span className="text-sm text-slate-400"> / 5</span>
@@ -2297,7 +2297,7 @@ export default async function ComparePage({ params }: PageProps) {
             </div>
 
             <div>
-              <div className="text-xs font-bold text-[#2563eb]">{right.name_en || right.name}</div>
+              <div className="text-xs font-bold text-brand-500">{right.name_en || right.name}</div>
               <div className="text-3xl font-black text-[#0f172a]">
                 {(right.score_safety ?? 0).toFixed(1)}
                 <span className="text-sm text-slate-400"> / 5</span>
@@ -2315,8 +2315,8 @@ export default async function ComparePage({ params }: PageProps) {
           </div>
         </div>
 
-        <div className="rounded-[24px] border border-[#bfdbfe] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5">
-          <div className="text-xs font-black text-[#2563eb]">Important</div>
+        <div className="rounded-[24px] border border-brand-100 bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5">
+          <div className="text-xs font-black text-brand-500">Important</div>
           <div className="mt-3 text-lg font-black leading-7 text-[#0f172a]">
             Always verify which regulatory entity your account will be opened under.
           </div>
@@ -2351,14 +2351,14 @@ export default async function ComparePage({ params }: PageProps) {
                     <h3 className="text-2xl font-black text-[#0f172a]">
                       {broker.name_en || broker.name}
                     </h3>
-                    <p className="mt-1 text-sm font-bold text-[#2563eb]">
+                    <p className="mt-1 text-sm font-bold text-brand-500">
                       Safety & Trust
                     </p>
                   </div>
                 </div>
 
                 {isWinner && (
-                  <span className="rounded-full bg-[#2563eb] px-3 py-1 text-[11px] font-black text-white">
+                  <span className="rounded-full bg-brand-500 px-3 py-1 text-[11px] font-black text-white">
                     Stronger
                   </span>
                 )}
@@ -2395,7 +2395,7 @@ export default async function ComparePage({ params }: PageProps) {
                 </div>
 
                 <div className="rounded-[22px] border border-[#dbeafe] bg-[#f8fbff] p-4">
-                  <div className="text-sm font-black text-[#2563eb]">
+                  <div className="text-sm font-black text-brand-500">
                     Fund Protection
                   </div>
                   <p className="mt-2 text-sm text-slate-600">
@@ -2421,11 +2421,11 @@ export default async function ComparePage({ params }: PageProps) {
 
 <section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
   <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white p-6 shadow-[0_25px_70px_rgba(37,99,235,0.08)] lg:p-8">
-    <div className="absolute inset-x-0 top-0 h-1.5 bg-[#2563eb]" />
+    <div className="absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
 
     <div className="hidden gap-6 md:grid lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
       <div>
-        <span className="text-sm font-black text-[#2563eb]">Quick Decision</span>
+        <span className="text-sm font-black text-brand-500">Quick Decision</span>
 
         <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-5xl">
           Which Broker Should You Choose Now?
@@ -2438,7 +2438,7 @@ export default async function ComparePage({ params }: PageProps) {
       </div>
 
       <div className="rounded-[28px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5 shadow-[0_16px_40px_rgba(37,99,235,0.12)]">
-        <div className="text-xs font-black text-[#2563eb]">Overall Recommendation</div>
+        <div className="text-xs font-black text-brand-500">Overall Recommendation</div>
         <div className="mt-2 text-3xl font-black text-[#0f172a]">
           {overallWinner}
         </div>
@@ -2450,7 +2450,7 @@ export default async function ComparePage({ params }: PageProps) {
 
     <div className="mt-8 hidden gap-4 md:grid lg:grid-cols-3">
       <div className="rounded-[26px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5 shadow-sm">
-        <div className="text-xs font-black text-[#2563eb]">Best Overall</div>
+        <div className="text-xs font-black text-brand-500">Best Overall</div>
         <div className="mt-2 text-3xl font-black text-[#0f172a]">
           {overallWinner}
         </div>
@@ -2483,7 +2483,7 @@ export default async function ComparePage({ params }: PageProps) {
     <div className="mt-7 hidden rounded-[28px] border border-[#dbeafe] bg-[#f8fbff] p-5 md:block lg:p-6">
       <div className="grid gap-5 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
         <div>
-          <div className="text-sm font-black text-[#2563eb]">Short Decision</div>
+          <div className="text-sm font-black text-brand-500">Short Decision</div>
           <p className="mt-2 text-sm leading-8 text-slate-700 lg:text-base">
             Choose <strong>{overallWinner}</strong> if you want the strongest overall option.
             If you are a beginner, review{" "}
@@ -2500,7 +2500,7 @@ export default async function ComparePage({ params }: PageProps) {
             href={`/go/${
               overallWinner === (left.name_en || left.name) ? left.slug ?? "" : right.slug ?? ""
             }?type=real`}
-            className="inline-flex min-h-[50px] items-center justify-center rounded-2xl bg-[#2563eb] px-6 py-3 text-sm font-black text-white transition hover:bg-[#1d4ed8]"
+            className="inline-flex min-h-[50px] items-center justify-center rounded-2xl bg-brand-500 px-6 py-3 text-sm font-black text-white transition hover:bg-brand-600"
           >
             Open Account with {overallWinner}
           </a>
@@ -2520,7 +2520,7 @@ export default async function ComparePage({ params }: PageProps) {
     {/* Mobile */}
     <div className="mt-5 md:hidden">
       <div className="rounded-[24px] border border-[#dbeafe] bg-[#f8fbff] p-4">
-        <span className="text-xs font-black text-[#2563eb]">Quick Decision</span>
+        <span className="text-xs font-black text-brand-500">Quick Decision</span>
 
         <h2 className="mt-2 text-[24px] font-black leading-[1.25] text-[#0f172a]">
           Which Broker Should You Choose Now?
@@ -2531,7 +2531,7 @@ export default async function ComparePage({ params }: PageProps) {
         </p>
 
         <div className="mt-4 rounded-[20px] border border-[#2563eb] bg-white p-4 shadow-sm">
-          <div className="text-[11px] font-black text-[#2563eb]">
+          <div className="text-[11px] font-black text-brand-500">
             Overall Recommendation
           </div>
 
@@ -2561,7 +2561,7 @@ export default async function ComparePage({ params }: PageProps) {
         </div>
 
         <div className="mt-4 rounded-[18px] border border-[#dbeafe] bg-white p-3">
-          <div className="text-xs font-black text-[#2563eb]">Short Decision</div>
+          <div className="text-xs font-black text-brand-500">Short Decision</div>
 
           <p className="mt-2 text-sm leading-7 text-slate-700">
             Choose <strong>{overallWinner}</strong> if you want the strongest overall option.
@@ -2575,7 +2575,7 @@ export default async function ComparePage({ params }: PageProps) {
             href={`/go/${
               overallWinner === (left.name_en || left.name) ? left.slug ?? "" : right.slug ?? ""
             }?type=real`}
-            className="inline-flex min-h-[46px] items-center justify-center rounded-2xl bg-[#2563eb] px-5 py-3 text-sm font-black text-white shadow-sm"
+            className="inline-flex min-h-[46px] items-center justify-center rounded-2xl bg-brand-500 px-5 py-3 text-sm font-black text-white shadow-sm"
           >
             Open Account with {overallWinner}
           </a>
@@ -2596,12 +2596,12 @@ export default async function ComparePage({ params }: PageProps) {
 
 <section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
   <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white shadow-[0_25px_70px_rgba(37,99,235,0.08)]">
-    <div className="absolute inset-x-0 top-0 h-1.5 bg-[#2563eb]" />
+    <div className="absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
 
     {/* Desktop */}
     <div className="hidden p-6 md:block lg:p-8">
       <div className="max-w-4xl">
-        <span className="text-sm font-black text-[#2563eb]">Frequently Asked Questions</span>
+        <span className="text-sm font-black text-brand-500">Frequently Asked Questions</span>
 
         <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-5xl">
           FAQs About {left.name_en || left.name} and {right.name_en || right.name}
@@ -2615,7 +2615,7 @@ export default async function ComparePage({ params }: PageProps) {
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
         <div>
-          <div className="mb-4 rounded-[20px] border border-[#bfdbfe] bg-[#eff6ff] px-5 py-3">
+          <div className="mb-4 rounded-[20px] border border-brand-100 bg-brand-50 px-5 py-3">
             <h3 className="text-lg font-black text-[#0f172a]">
               Questions About {left.name_en || left.name}
             </h3>
@@ -2627,7 +2627,7 @@ export default async function ComparePage({ params }: PageProps) {
               .map((faq, index) => (
                 <details
                   key={`left-faq-${index}`}
-                  className="group rounded-[24px] border border-slate-200 bg-[#fbfdff] p-5 shadow-sm open:border-[#bfdbfe] open:bg-white"
+                  className="group rounded-[24px] border border-slate-200 bg-[#fbfdff] p-5 shadow-sm open:border-brand-100 open:bg-white"
                 >
                   <summary className="flex min-h-[64px] cursor-pointer list-none items-center justify-between gap-4">
                     <h4 className="text-base font-black leading-7 text-[#0f172a]">
@@ -2648,7 +2648,7 @@ export default async function ComparePage({ params }: PageProps) {
         </div>
 
         <div>
-          <div className="mb-4 rounded-[20px] border border-[#bfdbfe] bg-[#eff6ff] px-5 py-3">
+          <div className="mb-4 rounded-[20px] border border-brand-100 bg-brand-50 px-5 py-3">
             <h3 className="text-lg font-black text-[#0f172a]">
               Questions About {right.name_en || right.name}
             </h3>
@@ -2660,7 +2660,7 @@ export default async function ComparePage({ params }: PageProps) {
               .map((faq, index) => (
                 <details
                   key={`right-faq-${index}`}
-                  className="group rounded-[24px] border border-slate-200 bg-[#fbfdff] p-5 shadow-sm open:border-[#bfdbfe] open:bg-white"
+                  className="group rounded-[24px] border border-slate-200 bg-[#fbfdff] p-5 shadow-sm open:border-brand-100 open:bg-white"
                 >
                   <summary className="flex min-h-[64px] cursor-pointer list-none items-center justify-between gap-4">
                     <h4 className="text-base font-black leading-7 text-[#0f172a]">
@@ -2687,7 +2687,7 @@ export default async function ComparePage({ params }: PageProps) {
     {/* Mobile */}
     <div className="block p-4 md:hidden">
       <div>
-        <span className="text-xs font-black text-[#2563eb]">FAQs</span>
+        <span className="text-xs font-black text-brand-500">FAQs</span>
 
         <h2 className="mt-2 text-[22px] font-black leading-[1.3] text-[#0f172a]">
           Questions About {left.name_en || left.name} and {right.name_en || right.name}
@@ -2699,11 +2699,11 @@ export default async function ComparePage({ params }: PageProps) {
       </div>
 
       <div className="mt-3 grid grid-cols-2 gap-2">
-        <div className="rounded-xl border border-[#bfdbfe] bg-[#eff6ff] py-2 text-center text-xs font-black text-[#0f172a]">
+        <div className="rounded-xl border border-brand-100 bg-brand-50 py-2 text-center text-xs font-black text-[#0f172a]">
           {left.name_en || left.name}
         </div>
 
-        <div className="rounded-xl border border-[#bfdbfe] bg-[#eff6ff] py-2 text-center text-xs font-black text-[#0f172a]">
+        <div className="rounded-xl border border-brand-100 bg-brand-50 py-2 text-center text-xs font-black text-[#0f172a]">
           {right.name_en || right.name}
         </div>
       </div>
@@ -2725,7 +2725,7 @@ export default async function ComparePage({ params }: PageProps) {
         ].map((faq, index) => (
           <details
             key={`${faq.brokerName}-${index}`}
-            className="group rounded-[18px] border border-slate-200 bg-white p-3 shadow-sm open:border-[#bfdbfe]"
+            className="group rounded-[18px] border border-slate-200 bg-white p-3 shadow-sm open:border-brand-100"
           >
             <summary className="flex cursor-pointer list-none items-center justify-between gap-3">
               <h3 className="text-sm font-black leading-6 text-[#0f172a]">

@@ -407,7 +407,7 @@ function getVerdictTone(score: number | null) {
     return {
       label: "ممتاز",
       badge: "خيار قوي",
-      color: "border-blue-200 bg-blue-50 text-blue-700",
+      color: "border-brand-100 bg-brand-50 text-brand-600",
       accent: "from-blue-600 via-blue-500 to-cyan-400",
     };
   }
@@ -416,7 +416,7 @@ function getVerdictTone(score: number | null) {
     return {
       label: "جيد جدًا",
       badge: "تقييم قوي",
-      color: "border-blue-200 bg-blue-50 text-blue-700",
+      color: "border-brand-100 bg-brand-50 text-brand-600",
       accent: "from-blue-500 via-sky-400 to-cyan-400",
     };
   }
@@ -446,7 +446,7 @@ function Chip({
   tone?: "blue" | "emerald" | "amber" | "slate";
 }) {
   const styles = {
-    blue: "border-blue-200 bg-blue-50 text-blue-700",
+    blue: "border-brand-100 bg-brand-50 text-brand-600",
     emerald: "border-emerald-200 bg-emerald-50 text-emerald-700",
     amber: "border-amber-200 bg-amber-50 text-amber-700",
     slate: "border-slate-200 bg-slate-50 text-slate-700",
@@ -469,7 +469,7 @@ function QuickStat({
   accent?: "blue" | "emerald" | "amber" | "slate";
 }) {
   const bar = {
-    blue: "bg-blue-500",
+    blue: "bg-brand-500",
     emerald: "bg-emerald-500",
     amber: "bg-amber-500",
     slate: "bg-slate-500",
@@ -501,7 +501,7 @@ function ScoreBar({
         <span className="text-[11px] font-black leading-5 text-slate-700">
   {label}
 </span>
-        <span className="shrink-0 rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-black text-blue-700">
+        <span className="shrink-0 rounded-full border border-brand-100 bg-brand-50 px-2.5 py-1 text-xs font-black text-brand-600">
           {value ?? "-"} / 5
         </span>
       </div>
@@ -863,7 +863,7 @@ function MiniInfoCard({
 }) {
   const tones = {
     slate: "border-slate-200 bg-white",
-    blue: "border-blue-200 bg-blue-50",
+    blue: "border-brand-100 bg-brand-50",
     emerald: "border-emerald-200 bg-emerald-50",
     amber: "border-amber-200 bg-amber-50",
     violet: "border-violet-200 bg-violet-50",
@@ -909,7 +909,7 @@ function ParagraphBlock({
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-6 bg-gradient-to-t from-white to-transparent" />
         </div>
 
-        <div className="mt-2 flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-bold text-blue-700 hover:bg-slate-100">
+        <div className="mt-2 flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-bold text-brand-600 hover:bg-slate-100">
           <span className="group-open:hidden">عرض المزيد</span>
           <span className="hidden group-open:inline">عرض أقل</span>
         </div>
@@ -963,7 +963,7 @@ function MobileAccountAccordion({
             <div className="min-w-0 text-right">
               <Link
   href={`/brokers/${brokerSlug}/accounts/${accountSlug(acc.account_name)}`}
-  className="text-base font-black text-blue-700 hover:text-blue-900"
+  className="text-base font-black text-brand-600 hover:text-blue-900"
 >
   {acc.account_name || "-"}
 </Link>
@@ -1309,7 +1309,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
     </div>
 
     <div className="flex items-center justify-center gap-2 px-3 py-3 text-center">
-      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-50 text-xs font-black text-blue-600">
+      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-50 text-xs font-black text-brand-500">
         📊
       </span>
       <span className="text-[11px] font-black text-slate-800 md:text-sm">
@@ -1497,8 +1497,8 @@ const openAccountGuide = await getOpenAccountGuide(slug);
 
                 <div className="rounded-[24px] border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-4 shadow-sm">
                   {broker.expert_insight_ar ? (
-                    <div className="min-h-[210px] rounded-[24px] border border-blue-200 bg-blue-50 p-4 shadow-sm">
-                      <div className="text-xs font-bold uppercase tracking-wide text-blue-700">
+                    <div className="min-h-[210px] rounded-[24px] border border-brand-100 bg-brand-50 p-4 shadow-sm">
+                      <div className="text-xs font-bold uppercase tracking-wide text-brand-600">
                         رؤية تحليلية
                       </div>
                       <div className="mt-2 text-sm leading-7 text-slate-700">
@@ -1514,7 +1514,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
     href={`/brokers/${broker.slug}/open-account`}
     target="_blank"
     rel="noopener noreferrer"
-    className="flex min-h-[56px] items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-center text-sm font-black text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700"
+    className="flex min-h-[56px] items-center justify-center rounded-2xl bg-brand-500 px-5 py-3 text-center text-sm font-black text-white shadow-lg shadow-blue-200 transition hover:bg-brand-600"
   >
     شرح فتح حساب مع {broker.name} بالصور
   </Link>
@@ -1562,7 +1562,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
                 </div>
 
                 <div className="mt-4 flex w-full flex-wrap items-center justify-start gap-2">
-                  <span className="inline-flex rounded-full bg-blue-600 px-4 py-2 text-sm font-bold text-white">
+                  <span className="inline-flex rounded-full bg-brand-500 px-4 py-2 text-sm font-bold text-white">
                     مناسب للمتداولين النشطين
                   </span>
 
@@ -1642,7 +1642,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
                     href={`/go/${broker.slug}?type=real`}
                     target="_blank"
                     rel="nofollow sponsored noopener noreferrer"
-                    className="inline-flex min-h-[52px] w-full items-center justify-center rounded-2xl bg-blue-600 px-6 py-3 text-sm font-extrabold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700 sm:w-auto sm:min-w-[170px] md:text-base"
+                    className="inline-flex min-h-[52px] w-full items-center justify-center rounded-2xl bg-brand-500 px-6 py-3 text-sm font-extrabold text-white shadow-lg shadow-blue-200 transition hover:bg-brand-600 sm:w-auto sm:min-w-[170px] md:text-base"
                   >
                     فتح حساب حقيقي
                   </a>
@@ -1683,7 +1683,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
 <section className="mt-4 rounded-[22px] border border-blue-100 bg-gradient-to-br from-white via-slate-50 to-blue-50 p-4 shadow-sm md:mt-6 md:rounded-[26px] md:p-6">
   <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_440px] lg:items-center">
     <div className="min-w-0 text-right">
-      <div className="text-[11px] font-black tracking-wide text-blue-700 md:text-xs">
+      <div className="text-[11px] font-black tracking-wide text-brand-600 md:text-xs">
         مراجعة مستقلة
       </div>
 
@@ -1719,7 +1719,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
         href="/how-we-review-brokers"
         target="_blank"
         rel="noopener noreferrer"
-        className="col-span-2 inline-flex min-h-[48px] items-center justify-center rounded-2xl border border-blue-200 bg-blue-600 px-5 py-3 text-sm font-black text-white shadow-sm transition hover:bg-blue-700"
+        className="col-span-2 inline-flex min-h-[48px] items-center justify-center rounded-2xl border border-brand-100 bg-brand-500 px-5 py-3 text-sm font-black text-white shadow-sm transition hover:bg-brand-600"
       >
         منهجية التقييم
       </Link>
@@ -1743,7 +1743,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
         <span className="text-4xl font-black leading-none text-slate-950">
           {overallScore || broker.rating || "-"}
         </span>
-        <span className="pb-1 text-xs font-black text-blue-700">/ 5</span>
+        <span className="pb-1 text-xs font-black text-brand-600">/ 5</span>
       </div>
     </div>
 
@@ -1783,7 +1783,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
       <div className="mb-6 hidden overflow-hidden rounded-[28px] border border-slate-200 bg-gradient-to-br from-slate-50 via-white to-blue-50 shadow-sm md:block">
         <div className="grid gap-0 md:grid-cols-[220px_minmax(0,1fr)]">
           <div className="flex flex-col justify-center border-b border-slate-200 p-6 text-center md:border-b-0 md:border-l">
-            <div className="text-xs font-black uppercase tracking-wide text-blue-700">
+            <div className="text-xs font-black uppercase tracking-wide text-brand-600">
               التقييم العام
             </div>
 
@@ -1791,10 +1791,10 @@ const openAccountGuide = await getOpenAccountGuide(slug);
               <span className="text-5xl font-black leading-none text-slate-950">
                 {overallScore || broker.rating || "-"}
               </span>
-              <span className="text-sm font-bold text-blue-700">/ 5</span>
+              <span className="text-sm font-bold text-brand-600">/ 5</span>
             </div>
 
-            <div className="mt-3 inline-flex items-center justify-center rounded-full border border-blue-200 bg-white px-3 py-1 text-xs font-black text-blue-700">
+            <div className="mt-3 inline-flex items-center justify-center rounded-full border border-brand-100 bg-white px-3 py-1 text-xs font-black text-brand-600">
               {verdictTone.label}
             </div>
           </div>
@@ -2005,7 +2005,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
     {/* Mobile */}
     <div className="grid grid-cols-2 gap-3 md:hidden">
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-b from-white to-slate-50 shadow-sm">
-        <div className="h-1.5 bg-blue-500" />
+        <div className="h-1.5 bg-brand-500" />
         <div className="p-4 text-center">
           <div className="text-xs font-bold text-slate-500">عدد الحسابات</div>
           <div className="mt-2 text-2xl font-black text-slate-950">
@@ -2031,7 +2031,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
     <div className="grid gap-0 xl:grid-cols-[280px_minmax(0,1fr)]">
 
       <div className="border-b border-slate-200 bg-slate-50 p-6 text-right xl:border-b-0 xl:border-l">
-        <div className="text-xs font-black tracking-[0.12em] text-blue-700">
+        <div className="text-xs font-black tracking-[0.12em] text-brand-600">
           ملخص الحسابات
         </div>
 
@@ -2070,7 +2070,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
           استعرض أنواع الحسابات المتاحة وقارن بين السبريد والعمولات والحد الأدنى للإيداع وآلية التنفيذ ومزايا كل حساب لمساعدتك على اختيار الحساب المناسب لأسلوب تداولك ومستوى خبرتك. توضح هذه المقارنة الفروقات الأساسية بين الحسابات القياسية والحسابات الاحترافية من حيث تكاليف التداول وسرعة التنفيذ ومتطلبات الإيداع.
         </p>
 
-        <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm font-bold leading-7 text-blue-700">
+        <div className="mt-4 rounded-2xl border border-blue-100 bg-brand-50 px-4 py-3 text-sm font-bold leading-7 text-brand-600">
           يمكنك النقر على نوع أي حساب داخل الجدول لفتح صفحة تفصيلية تشمل شروط الحساب ومميزاته.
         </div>
 
@@ -2118,7 +2118,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
           <div className="min-w-0 flex-1 text-right">
             <Link
   href={`/brokers/${broker.slug}/accounts/${accountSlug(acc.account_name)}`}
-  className="text-[16px] font-black text-blue-700 hover:text-blue-900"
+  className="text-[16px] font-black text-brand-600 hover:text-blue-900"
 >
   {acc.account_name || "-"}
 </Link>
@@ -2216,7 +2216,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
                 key={acc.id}
                 className={`border-t border-slate-200 ${
                   index === 0
-                    ? "bg-blue-50/40"
+                    ? "bg-brand-50/40"
                     : index % 2 === 0
                     ? "bg-white"
                     : "bg-slate-50/40"
@@ -2225,9 +2225,9 @@ const openAccountGuide = await getOpenAccountGuide(slug);
                 <td className="p-4">
                   <Link
   href={`/brokers/${broker.slug}/accounts/${accountSlug(acc.account_name)}`}
-  className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 transition hover:bg-blue-600 hover:text-white"
+  className="inline-flex items-center gap-2 rounded-full border border-brand-100 bg-brand-50 px-3 py-1.5 transition hover:bg-brand-500 hover:text-white"
 >
-  <span className="h-2 w-2 rounded-full bg-blue-600" />
+  <span className="h-2 w-2 rounded-full bg-brand-500" />
   <span className="font-bold">
     {acc.account_name || "-"}
   </span>
@@ -2287,7 +2287,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
 <div className="md:hidden">
   <div className="overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-sm">
     <div className="space-y-3 p-4 text-right">
-      <div className="rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3">
+      <div className="rounded-2xl border border-blue-100 bg-brand-50 px-4 py-3">
         <div className="flex items-center justify-between gap-4">
           <span className="text-sm font-bold text-slate-500">طرق الدفع</span>
           <span className="text-2xl font-black text-slate-950">
@@ -2339,7 +2339,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
             {paymentMethods.map((item, i) => (
               <span
                 key={i}
-                className="rounded-full border border-blue-100 bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700"
+                className="rounded-full border border-blue-100 bg-brand-50 px-3 py-1.5 text-xs font-bold text-brand-600"
               >
                 {item}
               </span>
@@ -2359,7 +2359,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
         <div className="grid gap-0 xl:grid-cols-[260px_minmax(0,1fr)]">
 
           <div className="border-b border-slate-200 bg-slate-50 p-5 text-right xl:border-b-0 xl:border-l">
-            <div className="text-xs font-black tracking-[0.12em] text-blue-700">
+            <div className="text-xs font-black tracking-[0.12em] text-brand-600">
               نظرة عامة على التمويل
             </div>
 
@@ -2470,7 +2470,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
     {(availablePlatforms.length ? availablePlatforms : splitPipes(broker.platforms)).map((item, i) => (
       <span
         key={i}
-        className="rounded-full border border-blue-100 bg-blue-50 px-3 py-1.5 text-xs font-black text-blue-700"
+        className="rounded-full border border-blue-100 bg-brand-50 px-3 py-1.5 text-xs font-black text-brand-600"
       >
         {item}
       </span>
@@ -2498,7 +2498,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
 />
         </div>
 
-        <div className="mt-5 rounded-[22px] border border-blue-100 bg-blue-50 p-4 shadow-sm">
+        <div className="mt-5 rounded-[22px] border border-blue-100 bg-brand-50 p-4 shadow-sm">
           <div className="text-[15px] font-black text-slate-950">
             تحميل منصات MetaTrader
           </div>
@@ -2511,7 +2511,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
               href={`/go/${broker.slug}?type=mt4`}
               target="_blank"
               rel="nofollow sponsored noopener noreferrer"
-              className="flex min-h-[48px] items-center justify-center rounded-2xl border border-blue-200 bg-white text-sm font-black text-blue-700 shadow-sm active:scale-[0.98]"
+              className="flex min-h-[48px] items-center justify-center rounded-2xl border border-brand-100 bg-white text-sm font-black text-brand-600 shadow-sm active:scale-[0.98]"
             >
               تحميل MT4
             </a>
@@ -2520,7 +2520,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
               href={`/go/${broker.slug}?type=mt5`}
               target="_blank"
               rel="nofollow sponsored noopener noreferrer"
-              className="flex min-h-[48px] items-center justify-center rounded-2xl bg-blue-600 text-sm font-black text-white shadow-md active:scale-[0.98]"
+              className="flex min-h-[48px] items-center justify-center rounded-2xl bg-brand-500 text-sm font-black text-white shadow-md active:scale-[0.98]"
             >
               تحميل MT5
             </a>
@@ -2542,7 +2542,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
         <div className="grid gap-0 xl:grid-cols-[260px_minmax(0,1fr)]">
 
           <div className="border-b border-slate-100 bg-slate-50 p-5 text-right xl:border-b-0 xl:border-l">
-            <div className="text-xs font-black tracking-[0.12em] text-blue-700">
+            <div className="text-xs font-black tracking-[0.12em] text-brand-600">
               الوصول إلى المنصات
             </div>
 
@@ -2660,13 +2660,13 @@ const openAccountGuide = await getOpenAccountGuide(slug);
         regulationBodies.map((item, i) => (
           <span
             key={i}
-            className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-[11px] font-bold text-blue-700"
+            className="rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-bold text-brand-600"
           >
             {item}
           </span>
         ))
       ) : broker.regulation_short ? (
-        <span className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-[11px] font-bold text-blue-700">
+        <span className="rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-bold text-brand-600">
           {broker.regulation_short}
         </span>
       ) : null}
@@ -2690,7 +2690,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
               key={i}
               className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-right"
             >
-              <span className="h-2 w-2 shrink-0 rounded-full bg-blue-500" />
+              <span className="h-2 w-2 shrink-0 rounded-full bg-brand-500" />
               <span className="flex-1 text-sm font-medium leading-6 text-slate-700">
                 {item}
               </span>
@@ -2719,7 +2719,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
       <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-sm">
         <div className="grid gap-0 xl:grid-cols-[260px_minmax(0,1fr)]">
           <div className="border-b border-slate-100 bg-slate-50 p-5 text-right xl:border-b-0 xl:border-l">
-            <div className="text-xs font-black tracking-[0.12em] text-blue-700">
+            <div className="text-xs font-black tracking-[0.12em] text-brand-600">
               ملخص الأمان
             </div>
 
@@ -2734,13 +2734,13 @@ const openAccountGuide = await getOpenAccountGuide(slug);
                     regulationBodies.map((item, i) => (
                       <span
                         key={i}
-                        className="inline-flex shrink-0 items-center rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700"
+                        className="inline-flex shrink-0 items-center rounded-full border border-brand-100 bg-brand-50 px-3 py-1.5 text-xs font-bold text-brand-600"
                       >
                         {item}
                       </span>
                     ))
                   ) : broker.regulation_short ? (
-                    <span className="inline-flex shrink-0 items-center rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700">
+                    <span className="inline-flex shrink-0 items-center rounded-full border border-brand-100 bg-brand-50 px-3 py-1.5 text-xs font-bold text-brand-600">
                       {broker.regulation_short}
                     </span>
                   ) : (
@@ -2894,7 +2894,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
       <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-sm">
         <div className="grid gap-0 xl:grid-cols-[260px_minmax(0,1fr)]">
           <div className="border-b border-slate-100 bg-slate-50 p-5 text-right xl:border-b-0 xl:border-l">
-            <div className="text-xs font-black tracking-[0.12em] text-blue-700">
+            <div className="text-xs font-black tracking-[0.12em] text-brand-600">
               ملخص القرار
             </div>
 
@@ -2931,7 +2931,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
     href={`/brokers/${broker.slug}/open-account`}
     target="_blank"
     rel="noopener noreferrer"
-    className="mt-3 flex min-h-[54px] w-full items-center justify-center rounded-2xl border border-blue-200 bg-blue-50 px-5 py-3 text-center text-sm font-black text-blue-700 shadow-sm transition hover:border-blue-400 hover:bg-blue-100"
+    className="mt-3 flex min-h-[54px] w-full items-center justify-center rounded-2xl border border-brand-100 bg-brand-50 px-5 py-3 text-center text-sm font-black text-brand-600 shadow-sm transition hover:border-blue-400 hover:bg-blue-100"
   >
     شرح فتح حساب {broker.name} بالصور
   </Link>
@@ -2978,8 +2978,8 @@ const openAccountGuide = await getOpenAccountGuide(slug);
                 </div>
 
                 {broker.expert_insight_ar ? (
-                  <div className="rounded-[22px] border border-blue-200 bg-blue-50 px-5 py-5 shadow-sm">
-                    <div className="text-xs font-bold tracking-wide text-blue-700">
+                  <div className="rounded-[22px] border border-brand-100 bg-brand-50 px-5 py-5 shadow-sm">
+                    <div className="text-xs font-bold tracking-wide text-brand-600">
                       رأي تحليلي
                     </div>
                     <div className="mt-2 text-sm leading-8 text-slate-700">
@@ -3030,7 +3030,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
 
       {extraFaqItems.length > 0 && (
         <details className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-          <summary className="cursor-pointer list-none px-4 py-4 text-center text-sm font-extrabold text-blue-600">
+          <summary className="cursor-pointer list-none px-4 py-4 text-center text-sm font-extrabold text-brand-500">
             عرض المزيد من الأسئلة
           </summary>
 
@@ -3080,7 +3080,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
 
       {extraFaqItems.length > 0 && (
         <details className="group rounded-2xl border border-slate-200 bg-white shadow-sm">
-          <summary className="cursor-pointer list-none px-5 py-4 text-center text-sm font-extrabold text-blue-600">
+          <summary className="cursor-pointer list-none px-5 py-4 text-center text-sm font-extrabold text-brand-500">
             عرض المزيد من الأسئلة
           </summary>
 

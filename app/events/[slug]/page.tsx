@@ -84,7 +84,7 @@ function SectionShell({
           </h2>
 
           {badge && (
-            <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-blue-700 shadow-sm">
+            <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-brand-600 shadow-sm">
               {badge}
             </span>
           )}
@@ -143,7 +143,7 @@ const restSponsors = sponsors.slice(8);
         {firstSponsors.map((name) => (
           <div
             key={name}
-            className="rounded-full border border-blue-100 bg-blue-50 px-4 py-3 text-center text-sm font-black text-slate-900 shadow-sm"
+            className="rounded-full border border-blue-100 bg-brand-50 px-4 py-3 text-center text-sm font-black text-slate-900 shadow-sm"
           >
             {name}
           </div>
@@ -152,7 +152,7 @@ const restSponsors = sponsors.slice(8);
 
       {restSponsors.length > 0 && (
         <details className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-3">
-          <summary className="cursor-pointer list-none text-center text-sm font-black text-blue-700">
+          <summary className="cursor-pointer list-none text-center text-sm font-black text-brand-600">
             عرض كل الشركات المشاركة
           </summary>
 
@@ -192,7 +192,7 @@ function FaqSection({ html }: { html?: string | null }) {
           >
             <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-right text-sm font-black text-slate-950 md:text-base">
               <span>{faq.q}</span>
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-blue-700 shadow-sm group-open:rotate-45">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-brand-600 shadow-sm group-open:rotate-45">
                 +
               </span>
             </summary>
@@ -273,7 +273,7 @@ export default async function Page({
       <section className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
         <Link
           href="/events"
-          className="mb-4 inline-flex text-sm font-black text-blue-700 hover:text-blue-800"
+          className="mb-4 inline-flex text-sm font-black text-brand-600 hover:text-blue-800"
         >
           ← العودة إلى المعارض
         </Link>
@@ -281,7 +281,7 @@ export default async function Page({
         <div className="overflow-hidden rounded-[34px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
           <div className="bg-gradient-to-b from-blue-50 via-white to-white px-5 py-8 text-center md:px-10 md:py-12">
             <div className="flex flex-wrap items-center justify-center gap-2">
-              <span className="rounded-full bg-white px-4 py-1.5 text-xs font-black text-blue-700 shadow-sm md:text-sm">
+              <span className="rounded-full bg-white px-4 py-1.5 text-xs font-black text-brand-600 shadow-sm md:text-sm">
                 {event.category || "معرض مالي"}
               </span>
 
@@ -311,7 +311,7 @@ export default async function Page({
                     key={label}
                     className="rounded-[24px] border border-blue-100 bg-white p-4 shadow-[0_12px_30px_rgba(37,99,235,0.10)] md:p-5"
                   >
-                    <div className="text-3xl font-black text-blue-700 md:text-5xl">
+                    <div className="text-3xl font-black text-brand-600 md:text-5xl">
                       {value}
                     </div>
                     <div className="mt-1 text-xs font-black text-slate-600 md:text-sm">
@@ -345,7 +345,7 @@ export default async function Page({
                   key={label}
                   className="rounded-2xl border border-slate-200 bg-gradient-to-b from-white to-slate-50 p-4 text-center shadow-sm"
                 >
-                  <div className="text-2xl font-black text-blue-700">{num}</div>
+                  <div className="text-2xl font-black text-brand-600">{num}</div>
                   <div className="mt-1 text-sm font-bold text-slate-600">
                     {label}
                   </div>
@@ -385,7 +385,7 @@ export default async function Page({
                     href={event.official_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center rounded-2xl bg-blue-600 px-4 py-3 text-sm font-black text-white hover:bg-blue-700"
+                    className="flex items-center justify-center rounded-2xl bg-brand-500 px-4 py-3 text-sm font-black text-white hover:bg-brand-600"
                   >
                     زيارة موقع الحدث
                   </a>
@@ -463,7 +463,7 @@ export default async function Page({
                     <Link
                       key={item.id}
                       href={`/events/${item.slug}`}
-                      className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition hover:-translate-y-1 hover:border-blue-200 hover:bg-white hover:shadow-md"
+                      className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition hover:-translate-y-1 hover:border-brand-100 hover:bg-white hover:shadow-md"
                     >
                       <h3 className="text-lg font-black text-slate-950">
                         {item.title_ar}
@@ -478,7 +478,7 @@ export default async function Page({
                         {item.country_ar ? `، ${item.country_ar}` : ""}
                       </p>
 
-                      <div className="mt-4 text-sm font-black text-blue-700">
+                      <div className="mt-4 text-sm font-black text-brand-600">
                         عرض التفاصيل ←
                       </div>
                     </Link>

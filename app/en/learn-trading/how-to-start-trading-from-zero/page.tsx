@@ -123,7 +123,7 @@ function SectionTitle({
   return (
     <div className="mb-6">
       {eyebrow && (
-        <span className="inline-flex rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-[11px] font-black text-blue-700">
+        <span className="inline-flex rounded-full border border-blue-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-600">
           {eyebrow}
         </span>
       )}
@@ -165,7 +165,7 @@ function InfoCard({
   return (
     <article className="group rounded-[20px] border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md md:rounded-[22px] md:p-5">
       <div className="flex items-start gap-3">
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-[20px]">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-brand-50 text-[20px]">
           {iconMap[title] || "📘"}
         </div>
 
@@ -180,7 +180,7 @@ function InfoCard({
         </div>
       </div>
 
-      <div className="mt-4 rounded-[14px] border border-blue-100 bg-blue-50/70 px-3 py-2">
+      <div className="mt-4 rounded-[14px] border border-blue-100 bg-brand-50/70 px-3 py-2">
         <p className="text-[11px] font-bold leading-6 text-blue-800">
           {highlightMap[title]}
         </p>
@@ -205,7 +205,7 @@ function BulletBox({
         ? "border-green-100 bg-green-50/70 text-green-800"
         : tone === "slate"
           ? "border-slate-200 bg-slate-50 text-slate-700"
-          : "border-blue-100 bg-blue-50/70 text-blue-800";
+          : "border-blue-100 bg-brand-50/70 text-blue-800";
 
   return (
     <div className={cn("rounded-[22px] border p-4", toneClass)}>
@@ -241,7 +241,7 @@ function StepCard({
       <div className="absolute left-0 top-0 h-1 w-full bg-[linear-gradient(90deg,#2563eb_0%,#60a5fa_100%)] opacity-90 md:h-1.5" />
 
       <div className="flex items-start justify-between gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-600 text-[14px] font-black text-white shadow-sm md:h-11 md:w-11 md:text-[16px]">
+        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-brand-500 text-[14px] font-black text-white shadow-sm md:h-11 md:w-11 md:text-[16px]">
           {number}
         </div>
 
@@ -259,7 +259,7 @@ function StepCard({
       </p>
 
       <div className="mt-auto pt-3 md:pt-4">
-        <div className="min-h-[52px] rounded-[14px] border border-blue-100 bg-blue-50/70 px-3 py-2 text-[11px] font-bold leading-6 text-blue-800 md:min-h-[70px] md:rounded-[16px] md:text-[12px] md:leading-7">
+        <div className="min-h-[52px] rounded-[14px] border border-blue-100 bg-brand-50/70 px-3 py-2 text-[11px] font-bold leading-6 text-blue-800 md:min-h-[70px] md:rounded-[16px] md:text-[12px] md:leading-7">
           {note}
         </div>
       </div>
@@ -774,7 +774,7 @@ const tableBrokers: Broker[] = (tableBrokersData ?? []).sort(
                     account, comparing{" "}
                     <Link
                       href="/en/best-brokers"
-                      className="font-black text-blue-700 hover:underline"
+                      className="font-black text-brand-600 hover:underline"
                     >
                       regulated trading brokers
                     </Link>
@@ -852,7 +852,7 @@ const tableBrokers: Broker[] = (tableBrokersData ?? []).sort(
       but you still need to understand what happens behind every trade...
     </p>
 
-    <span className="mt-2 inline-flex text-[13px] font-black text-blue-700">
+    <span className="mt-2 inline-flex text-[13px] font-black text-brand-600">
       Read more
     </span>
   </summary>
@@ -969,7 +969,7 @@ const tableBrokers: Broker[] = (tableBrokersData ?? []).sort(
         key={step.n}
         className="flex gap-3 rounded-[18px] border border-slate-200 bg-white p-3 shadow-sm"
       >
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-blue-600 text-[13px] font-black text-white">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-brand-500 text-[13px] font-black text-white">
           {step.n}
         </div>
 
@@ -1075,7 +1075,7 @@ const tableBrokers: Broker[] = (tableBrokersData ?? []).sort(
       </p>
     </div>
 
-    <div className="rounded-[18px] border border-blue-100 bg-blue-50/70 p-4">
+    <div className="rounded-[18px] border border-blue-100 bg-brand-50/70 p-4">
       <h3 className="text-[16px] font-black text-slate-950">
         Simple example
       </h3>
@@ -1154,7 +1154,7 @@ const tableBrokers: Broker[] = (tableBrokersData ?? []).sort(
 
   {/* Mobile only */}
   <div className="md:hidden">
-    <div className="rounded-[20px] border border-blue-100 bg-blue-50/70 p-4">
+    <div className="rounded-[20px] border border-blue-100 bg-brand-50/70 p-4">
       <h3 className="text-[18px] font-black leading-7 text-slate-950">
         Quick broker shortlist
       </h3>
@@ -1257,7 +1257,7 @@ const tableBrokers: Broker[] = (tableBrokersData ?? []).sort(
         className="rounded-[20px] border border-slate-200 bg-white p-4 shadow-sm md:p-5"
       >
         <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-[20px]">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-brand-50 text-[20px]">
             {item.icon}
           </div>
 
@@ -1272,7 +1272,7 @@ const tableBrokers: Broker[] = (tableBrokersData ?? []).sort(
           </div>
         </div>
 
-        <div className="mt-4 inline-flex rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-[11px] font-black text-blue-700">
+        <div className="mt-4 inline-flex rounded-full border border-blue-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-600">
           {item.tag}
         </div>
       </article>
@@ -1351,7 +1351,7 @@ const tableBrokers: Broker[] = (tableBrokersData ?? []).sort(
   </div>
 </section>
 
-             <section className="mt-8 rounded-[22px] border border-blue-100 bg-blue-50/70 p-4 md:rounded-[26px] md:p-6">
+             <section className="mt-8 rounded-[22px] border border-blue-100 bg-brand-50/70 p-4 md:rounded-[26px] md:p-6">
   {/* Mobile */}
   <div className="md:hidden">
     <h2 className="text-[24px] font-black leading-[1.3] text-slate-950">
@@ -1374,7 +1374,7 @@ const tableBrokers: Broker[] = (tableBrokersData ?? []).sort(
           key={item}
           className="flex items-start gap-2 rounded-[14px] border border-blue-100 bg-white/70 px-3 py-2"
         >
-          <span className="mt-1 text-blue-700">✓</span>
+          <span className="mt-1 text-brand-600">✓</span>
 
           <p className="text-[13px] font-medium leading-6 text-slate-700">
             {item}

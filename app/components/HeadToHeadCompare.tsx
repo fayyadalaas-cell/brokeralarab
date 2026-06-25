@@ -111,7 +111,7 @@ function ValuePill({
       ? "bg-emerald-50 text-emerald-700"
       : tone === "gray"
       ? "bg-slate-100 text-slate-500"
-      : "bg-blue-50 text-blue-700";
+      : "bg-brand-50 text-brand-600";
 
   return (
     <span className={`inline-flex rounded-full px-3 py-1 text-xs font-extrabold ${classes}`}>
@@ -134,8 +134,8 @@ function BrokerButtons({
           href={reviewHref}
           className={`inline-flex min-w-[110px] items-center justify-center rounded-xl px-4 py-2.5 text-xs font-extrabold transition ${
             accountHref
-              ? "border border-slate-200 bg-white text-slate-700 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
-              : "bg-[#2563eb] text-white hover:bg-[#1d4ed8]"
+              ? "border border-slate-200 bg-white text-slate-700 hover:border-brand-100 hover:bg-brand-50 hover:text-brand-600"
+              : "bg-brand-500 text-white hover:bg-brand-600"
           }`}
         >
           التقييم
@@ -147,7 +147,7 @@ function BrokerButtons({
           href={accountHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex min-w-[118px] items-center justify-center rounded-xl bg-[#2563eb] px-4 py-2.5 text-xs font-extrabold text-white transition hover:bg-[#1d4ed8]"
+          className="inline-flex min-w-[118px] items-center justify-center rounded-xl bg-brand-500 px-4 py-2.5 text-xs font-extrabold text-white transition hover:bg-brand-600"
         >
           فتح حساب
         </a>
@@ -341,7 +341,7 @@ export default function HeadToHeadCompare({
 </div>
 
                 <div className="flex items-center justify-center border-x border-slate-200">
-                  <div className="rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-extrabold text-blue-700">
+                  <div className="rounded-full border border-brand-100 bg-brand-50 px-4 py-2 text-sm font-extrabold text-brand-600">
                     مقارنة مباشرة
                   </div>
                 </div>

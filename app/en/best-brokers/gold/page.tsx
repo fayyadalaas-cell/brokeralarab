@@ -252,7 +252,7 @@ function TopBrokerCard({
           href={`/en/brokers/${broker.slug}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex h-10 flex-1 items-center justify-center rounded-xl bg-blue-600 px-4 text-sm font-bold text-white transition hover:bg-blue-700"
+          className="inline-flex h-10 flex-1 items-center justify-center rounded-xl bg-brand-500 px-4 text-sm font-bold text-white transition hover:bg-brand-600"
         >
           Review
         </Link>
@@ -261,7 +261,7 @@ function TopBrokerCard({
           href={broker.real_account_url || `/en/brokers/${broker.slug}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex h-11 flex-1 items-center justify-center rounded-2xl border border-blue-200 bg-blue-50 px-4 text-sm font-bold text-blue-700 transition hover:bg-blue-100"
+          className="inline-flex h-11 flex-1 items-center justify-center rounded-2xl border border-brand-100 bg-brand-50 px-4 text-sm font-bold text-brand-600 transition hover:bg-blue-100"
         >
           Open account
         </Link>
@@ -282,11 +282,11 @@ function RankingRow({
       href={`/en/brokers/${broker.slug}`}
       target="_blank"
       rel="noopener noreferrer"
-      className="group relative flex items-center gap-5 overflow-hidden rounded-[22px] border border-blue-200 bg-white px-5 py-5 shadow-[0_4px_14px_rgba(15,23,42,0.04)] transition hover:-translate-y-[1px] hover:border-blue-300 hover:shadow-[0_8px_20px_rgba(59,130,246,0.10)]"
+      className="group relative flex items-center gap-5 overflow-hidden rounded-[22px] border border-brand-100 bg-white px-5 py-5 shadow-[0_4px_14px_rgba(15,23,42,0.04)] transition hover:-translate-y-[1px] hover:border-blue-300 hover:shadow-[0_8px_20px_rgba(59,130,246,0.10)]"
     >
       <div className="absolute inset-y-0 left-0 w-[4px] rounded-l-[22px] bg-blue-200" />
 
-      <div className="relative z-10 flex h-[60px] w-[54px] shrink-0 items-center justify-center rounded-[14px] bg-blue-100 text-[15px] font-black text-blue-700 shadow-sm">
+      <div className="relative z-10 flex h-[60px] w-[54px] shrink-0 items-center justify-center rounded-[14px] bg-blue-100 text-[15px] font-black text-brand-600 shadow-sm">
         {rank}
       </div>
 
@@ -319,7 +319,7 @@ function RankingRow({
       </div>
 
       <div
-        className="relative z-10 shrink-0 pl-1 text-blue-600 group-hover:text-blue-800"
+        className="relative z-10 shrink-0 pl-1 text-brand-500 group-hover:text-blue-800"
         aria-hidden="true"
       >
         <svg
@@ -349,7 +349,7 @@ function MobileRankingRow({
   return (
     <Link
       href={`/en/brokers/${broker.slug}`}
-      className="group block rounded-[24px] border border-blue-200 bg-white px-4 py-4 shadow-[0_8px_24px_rgba(15,23,42,0.05)] transition hover:border-blue-300 hover:shadow-[0_12px_30px_rgba(37,99,235,0.08)]"
+      className="group block rounded-[24px] border border-brand-100 bg-white px-4 py-4 shadow-[0_8px_24px_rgba(15,23,42,0.05)] transition hover:border-blue-300 hover:shadow-[0_12px_30px_rgba(37,99,235,0.08)]"
     >
       <div className="flex items-center justify-between gap-3">
         <div className="flex shrink-0 items-center gap-3">
@@ -367,7 +367,7 @@ function MobileRankingRow({
             )}
           </div>
 
-          <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-blue-50 text-sm font-black text-blue-700">
+          <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-50 text-sm font-black text-brand-600">
             {rank}
           </span>
         </div>
@@ -387,7 +387,7 @@ function MobileRankingRow({
         </div>
 
         <div className="flex shrink-0 items-center">
-          <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-blue-50 text-blue-600 transition group-hover:bg-blue-100 group-hover:text-blue-700">
+          <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-50 text-brand-500 transition group-hover:bg-blue-100 group-hover:text-brand-600">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4"
@@ -414,7 +414,7 @@ function FeatureItem({
 }) {
   return (
     <li className="flex items-start gap-3">
-      <span className="mt-1 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-black text-blue-700">
+      <span className="mt-1 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-black text-brand-600">
         ✓
       </span>
       <span className="text-[15px] leading-7 text-slate-700">
@@ -678,7 +678,7 @@ export default async function BestGoldBrokersPage() {
                 {featured.map((broker, index) => (
                   <div
                     key={broker.id}
-                    className="group relative overflow-hidden rounded-[26px] border border-blue-100 bg-white p-5 shadow-sm transition hover:-translate-y-[2px] hover:border-blue-200 hover:shadow-md"
+                    className="group relative overflow-hidden rounded-[26px] border border-blue-100 bg-white p-5 shadow-sm transition hover:-translate-y-[2px] hover:border-brand-100 hover:shadow-md"
                   >
                     <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-blue-400 to-blue-300" />
 
@@ -747,7 +747,7 @@ export default async function BestGoldBrokersPage() {
                         }
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex h-11 flex-1 items-center justify-center rounded-2xl border border-blue-200 bg-blue-50 px-4 text-sm font-bold text-blue-700 transition hover:bg-blue-100"
+                        className="inline-flex h-11 flex-1 items-center justify-center rounded-2xl border border-brand-100 bg-brand-50 px-4 text-sm font-bold text-brand-600 transition hover:bg-blue-100"
                       >
                         Open account
                       </Link>
@@ -756,7 +756,7 @@ export default async function BestGoldBrokersPage() {
                         href={`/en/brokers/${broker.slug}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex h-11 flex-1 items-center justify-center rounded-2xl bg-blue-600 px-4 text-sm font-bold text-white transition hover:bg-blue-700"
+                        className="inline-flex h-11 flex-1 items-center justify-center rounded-2xl bg-brand-500 px-4 text-sm font-bold text-white transition hover:bg-brand-600"
                       >
                         Read review
                       </Link>
@@ -782,7 +782,7 @@ export default async function BestGoldBrokersPage() {
               leverage, regulation, trading costs, and platform quality.
             </p>
 
-            <p className="mt-2 text-sm leading-7 text-blue-600 md:text-[15px]">
+            <p className="mt-2 text-sm leading-7 text-brand-500 md:text-[15px]">
               Click any broker to read the full review and check account
               details.
             </p>
@@ -908,7 +908,7 @@ export default async function BestGoldBrokersPage() {
                       key={String(r.y)}
                       className={
                         r.special
-                          ? "bg-blue-50 font-bold"
+                          ? "bg-brand-50 font-bold"
                           : i % 2 === 0
                           ? "bg-white"
                           : "bg-slate-50/60"
@@ -932,7 +932,7 @@ export default async function BestGoldBrokersPage() {
 
             <details className="border-t border-slate-200 bg-white">
               <summary className="cursor-pointer list-none select-none px-6 py-5 text-center">
-                <span className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-slate-50 px-5 py-2.5 text-sm font-black text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700">
+                <span className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-slate-50 px-5 py-2.5 text-sm font-black text-slate-700 transition hover:border-brand-100 hover:bg-brand-50 hover:text-brand-600">
                   Show more years
                 </span>
               </summary>
@@ -1122,7 +1122,7 @@ export default async function BestGoldBrokersPage() {
                 key={item.title}
                 className="rounded-[24px] border border-slate-200 bg-slate-50 p-5"
               >
-                <div className="inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-black text-blue-700">
+                <div className="inline-flex rounded-full bg-brand-50 px-3 py-1 text-xs font-black text-brand-600">
                   Key factor
                 </div>
                 <h3 className="mt-3 text-[20px] font-black text-slate-950">
@@ -1306,7 +1306,7 @@ export default async function BestGoldBrokersPage() {
           </div>
 
           <div className="px-5 pb-6 md:px-8">
-            <div className="rounded-[22px] border border-blue-100 bg-blue-50/60 p-5">
+            <div className="rounded-[22px] border border-blue-100 bg-brand-50/60 p-5">
               <p className="text-[15px] leading-8 text-slate-700">
                 For many online traders, gold trading offers a balance between
                 liquidity, volatility, and macroeconomic relevance. However, the
@@ -1335,7 +1335,7 @@ export default async function BestGoldBrokersPage() {
                   <h3 className="text-[17px] font-black text-slate-950">
                     {item.q}
                   </h3>
-                  <span className="text-xl font-black text-blue-600 group-open:rotate-45">
+                  <span className="text-xl font-black text-brand-500 group-open:rotate-45">
                     +
                   </span>
                 </summary>

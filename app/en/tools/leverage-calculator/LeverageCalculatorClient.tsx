@@ -211,7 +211,7 @@ export default function LeverageCalculatorClient() {
         <div className="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm sm:rounded-[2rem]">
           <div className="grid gap-0 lg:grid-cols-[1.05fr_0.95fr]">
             <div className="p-5 text-center sm:p-10 lg:p-12 lg:text-left">
-              <span className="inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700 sm:px-4 sm:py-1.5 sm:text-sm">
+              <span className="inline-flex rounded-full bg-brand-50 px-3 py-1 text-xs font-bold text-brand-600 sm:px-4 sm:py-1.5 sm:text-sm">
                 Trading Tools
               </span>
 
@@ -229,7 +229,7 @@ export default function LeverageCalculatorClient() {
               <div className="mt-5 flex flex-col gap-3 sm:mt-7 sm:flex-row sm:flex-wrap lg:justify-start">
                 <a
                   href="#calculator"
-                  className="rounded-2xl bg-slate-950 px-5 py-3 text-sm font-extrabold text-white transition hover:bg-blue-700"
+                  className="rounded-2xl bg-slate-950 px-5 py-3 text-sm font-extrabold text-white transition hover:bg-brand-600"
                 >
                   Calculate leverage
                 </a>
@@ -244,7 +244,7 @@ export default function LeverageCalculatorClient() {
 
             <div className="border-t border-slate-100 bg-gradient-to-br from-blue-50 via-white to-slate-50 p-5 sm:p-8 lg:border-l lg:border-t-0 lg:p-10">
               <div className="rounded-[1.5rem] border border-blue-100 bg-white p-5 shadow-sm sm:rounded-[2rem] sm:p-6">
-                <p className="text-sm font-bold text-blue-700">
+                <p className="text-sm font-bold text-brand-600">
                   Quick example
                 </p>
 
@@ -267,8 +267,8 @@ export default function LeverageCalculatorClient() {
                     </p>
                   </div>
 
-                  <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4">
-                    <p className="text-xs font-bold text-blue-700">
+                  <div className="rounded-2xl border border-blue-100 bg-brand-50 p-4">
+                    <p className="text-xs font-bold text-brand-600">
                       Effective leverage
                     </p>
                     <p className="mt-1 text-2xl font-extrabold text-blue-800">
@@ -424,7 +424,7 @@ export default function LeverageCalculatorClient() {
             <div className="rounded-[1.25rem] border border-slate-200 bg-white p-4 shadow-sm sm:rounded-[2rem] sm:p-5">
               <div className="mb-3 flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-bold text-blue-700">
+                  <p className="text-xs font-bold text-brand-600">
                     Calculation result
                   </p>
 
@@ -436,8 +436,8 @@ export default function LeverageCalculatorClient() {
 
               {showResult && result ? (
                 <div className="grid gap-3">
-                  <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4">
-                    <p className="text-xs font-bold text-blue-700">
+                  <div className="rounded-2xl border border-blue-100 bg-brand-50 p-4">
+                    <p className="text-xs font-bold text-brand-600">
                       Effective leverage
                     </p>
 
@@ -527,7 +527,7 @@ export default function LeverageCalculatorClient() {
           className="mt-6 overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm sm:mt-8 sm:rounded-[2rem]"
         >
           <div className="border-b border-slate-100 bg-gradient-to-r from-blue-50 via-white to-white p-5 sm:p-8 lg:p-10">
-            <p className="text-sm font-bold text-blue-700">
+            <p className="text-sm font-bold text-brand-600">
               Updated June 2026
             </p>
 
@@ -550,7 +550,7 @@ export default function LeverageCalculatorClient() {
                 showGuideMore ? "max-h-[14000px]" : "max-h-[980px]"
               }`}
             >
-              <section className="rounded-3xl border border-blue-100 bg-blue-50 p-5 sm:p-7">
+              <section className="rounded-3xl border border-blue-100 bg-brand-50 p-5 sm:p-7">
                 <h3 className="text-xl font-extrabold text-slate-950 sm:text-2xl">
                   How leverage is calculated
                 </h3>
@@ -569,7 +569,7 @@ export default function LeverageCalculatorClient() {
                       </div>
 
                       {index < 4 && (
-                        <span className="text-xl font-extrabold text-blue-600 sm:mt-3 sm:block sm:text-center">
+                        <span className="text-xl font-extrabold text-brand-500 sm:mt-3 sm:block sm:text-center">
                           ↓
                         </span>
                       )}
@@ -587,7 +587,7 @@ export default function LeverageCalculatorClient() {
 
               <section className="grid gap-5 lg:grid-cols-3">
                 <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5 sm:p-6">
-                  <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-700">
+                  <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-brand-600">
                     Basics
                   </span>
 
@@ -604,7 +604,7 @@ export default function LeverageCalculatorClient() {
                 </div>
 
                 <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5 sm:p-6">
-                  <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-700">
+                  <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-brand-600">
                     Margin
                   </span>
 
@@ -619,8 +619,8 @@ export default function LeverageCalculatorClient() {
                   </p>
                 </div>
 
-                <div className="rounded-3xl border border-blue-100 bg-blue-50 p-5 sm:p-6">
-                  <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-blue-700">
+                <div className="rounded-3xl border border-blue-100 bg-brand-50 p-5 sm:p-6">
+                  <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-brand-600">
                     Formula
                   </span>
 
@@ -663,13 +663,13 @@ export default function LeverageCalculatorClient() {
                         ["$100,000", "$1,000", "1:100", "$1,000"],
                         ["$235,000", "$5,000", "1:47", "$2,350"],
                       ].map((row) => (
-                        <tr key={row.join("-")} className="hover:bg-blue-50">
+                        <tr key={row.join("-")} className="hover:bg-brand-50">
                           {row.map((cell, index) => (
                             <td
                               key={`${cell}-${index}`}
                               className={`p-4 font-bold ${
                                 index === 2
-                                  ? "text-blue-700"
+                                  ? "text-brand-600"
                                   : "text-slate-700"
                               }`}
                             >
@@ -710,7 +710,7 @@ export default function LeverageCalculatorClient() {
                   </p>
                 </div>
 
-                <div className="rounded-3xl border border-blue-100 bg-blue-50 p-5 sm:p-7">
+                <div className="rounded-3xl border border-blue-100 bg-brand-50 p-5 sm:p-7">
                   <h3 className="text-xl font-extrabold text-slate-950 sm:text-2xl">
                     Is high leverage dangerous?
                   </h3>
@@ -792,7 +792,7 @@ export default function LeverageCalculatorClient() {
                       className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 font-extrabold text-blue-700">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 font-extrabold text-brand-600">
                           ✓
                         </div>
 
@@ -805,7 +805,7 @@ export default function LeverageCalculatorClient() {
                 </div>
               </section>
 
-              <section className="rounded-3xl border border-blue-100 bg-blue-50 p-5 shadow-sm sm:p-7">
+              <section className="rounded-3xl border border-blue-100 bg-brand-50 p-5 shadow-sm sm:p-7">
                 <h3 className="text-xl font-extrabold text-slate-950 sm:text-2xl">
                   Related Trading Calculators
                 </h3>
@@ -820,7 +820,7 @@ export default function LeverageCalculatorClient() {
                     <a
                       key={title}
                       href={href}
-                      className="rounded-2xl border border-blue-200 bg-white px-4 py-4 text-center text-sm font-extrabold text-slate-800 transition hover:bg-blue-100"
+                      className="rounded-2xl border border-brand-100 bg-white px-4 py-4 text-center text-sm font-extrabold text-slate-800 transition hover:bg-blue-100"
                     >
                       {title}
                     </a>

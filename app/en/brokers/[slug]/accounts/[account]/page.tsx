@@ -138,11 +138,11 @@ export default async function BrokerAccountPage({ params }: PageProps) {
     <main dir="ltr" className="min-h-screen bg-[#f3f7fb] text-[#0f172a]">
       <section className="border-b border-slate-200 bg-white">
         <div className="mx-auto max-w-7xl px-4 py-3 text-xs text-slate-500 md:py-4">
-          <Link href="/en" className="hover:text-blue-700">
+          <Link href="/en" className="hover:text-brand-600">
             Home
           </Link>
           <span className="mx-2">/</span>
-          <Link href={`/en/brokers/${broker.slug}`} className="hover:text-blue-700">
+          <Link href={`/en/brokers/${broker.slug}`} className="hover:text-brand-600">
             {brokerName} Review
           </Link>
           <span className="mx-2">/</span>
@@ -156,7 +156,7 @@ export default async function BrokerAccountPage({ params }: PageProps) {
       <section className="px-4 py-5 md:hidden">
         <div className="rounded-[28px] border border-slate-200 bg-white p-5 text-center shadow-sm">
           <div className="mb-4 flex flex-wrap justify-center gap-2">
-            <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-black text-blue-700">
+            <span className="rounded-full bg-brand-50 px-3 py-1 text-xs font-black text-brand-600">
               {brokerName} Account Guide
             </span>
             <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">
@@ -201,7 +201,7 @@ export default async function BrokerAccountPage({ params }: PageProps) {
                 href={broker.real_account_url}
                 target="_blank"
                 rel="nofollow sponsored noopener"
-                className="flex min-h-[52px] items-center justify-center rounded-2xl bg-blue-600 px-6 text-base font-black text-white shadow-md hover:bg-blue-700"
+                className="flex min-h-[52px] items-center justify-center rounded-2xl bg-brand-500 px-6 text-base font-black text-white shadow-md hover:bg-brand-600"
               >
                 Open Real Account
               </a>
@@ -236,7 +236,7 @@ export default async function BrokerAccountPage({ params }: PageProps) {
             </div>
           </div>
 
-          <div className="mt-3 rounded-2xl border border-blue-100 bg-blue-50 p-3 text-left">
+          <div className="mt-3 rounded-2xl border border-blue-100 bg-brand-50 p-3 text-left">
             <p className="text-[11px] font-bold text-blue-800">Best for</p>
             <p className="mt-1 text-sm font-black leading-6 text-blue-950">
               {currentBestFor}
@@ -252,7 +252,7 @@ export default async function BrokerAccountPage({ params }: PageProps) {
         <div className="relative mx-auto flex max-w-7xl flex-col gap-6 px-4 py-8 lg:flex-row">
           <div className="flex-1 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm lg:p-8">
             <div className="mb-5 flex flex-wrap gap-2">
-              <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700">
+              <span className="rounded-full bg-brand-50 px-3 py-1 text-xs font-bold text-brand-600">
                 {brokerName} Account Guide
               </span>
 
@@ -298,7 +298,7 @@ export default async function BrokerAccountPage({ params }: PageProps) {
                   href={broker.real_account_url}
                   target="_blank"
                   rel="nofollow sponsored noopener"
-                  className="rounded-xl bg-blue-600 px-6 py-3 text-sm font-black text-white shadow-sm hover:bg-blue-700"
+                  className="rounded-xl bg-brand-500 px-6 py-3 text-sm font-black text-white shadow-sm hover:bg-brand-600"
                 >
                   Open Real Account
                 </a>
@@ -351,7 +351,7 @@ export default async function BrokerAccountPage({ params }: PageProps) {
               ))}
             </div>
 
-            <div className="mt-5 rounded-2xl border border-blue-100 bg-blue-50 p-4">
+            <div className="mt-5 rounded-2xl border border-blue-100 bg-brand-50 p-4">
               <p className="text-xs font-bold text-blue-800">Best for</p>
               <p className="mt-2 text-sm font-black leading-7 text-blue-950">
                 {currentBestFor}
@@ -415,7 +415,7 @@ export default async function BrokerAccountPage({ params }: PageProps) {
             </p>
           </div>
 
-          <div className="rounded-3xl border border-blue-100 bg-blue-50 p-5 shadow-sm md:p-6">
+          <div className="rounded-3xl border border-blue-100 bg-brand-50 p-5 shadow-sm md:p-6">
             <h3 className="text-[22px] font-black text-blue-950 md:text-xl">
               Quick verdict
             </h3>
@@ -513,15 +513,15 @@ export default async function BrokerAccountPage({ params }: PageProps) {
                   )}`}
                   className={`rounded-2xl border p-4 transition ${
                     active
-                      ? "border-blue-300 bg-blue-50 shadow-sm"
-                      : "border-slate-200 bg-white hover:border-blue-200 hover:bg-blue-50/40"
+                      ? "border-blue-300 bg-brand-50 shadow-sm"
+                      : "border-slate-200 bg-white hover:border-brand-100 hover:bg-brand-50/40"
                   }`}
                 >
                   <div className="mb-3 flex items-center justify-between gap-3">
                     <span
                       className={`rounded-full px-3 py-1 text-xs font-black ${
                         active
-                          ? "bg-blue-600 text-white"
+                          ? "bg-brand-500 text-white"
                           : "bg-slate-100 text-slate-700"
                       }`}
                     >
@@ -529,7 +529,7 @@ export default async function BrokerAccountPage({ params }: PageProps) {
                     </span>
 
                     {active ? (
-                      <span className="text-xs font-black text-blue-700">
+                      <span className="text-xs font-black text-brand-600">
                         Current account
                       </span>
                     ) : null}
@@ -599,7 +599,7 @@ export default async function BrokerAccountPage({ params }: PageProps) {
                   const itemBestFor = item.best_for_en || item.best_for;
 
                   return (
-                    <tr key={item.id} className={active ? "bg-blue-50" : "bg-white"}>
+                    <tr key={item.id} className={active ? "bg-brand-50" : "bg-white"}>
                       <td className="p-4">
                         <Link
                           href={`/en/brokers/${broker.slug}/accounts/${slugify(
@@ -607,8 +607,8 @@ export default async function BrokerAccountPage({ params }: PageProps) {
                           )}`}
                           className={`inline-flex rounded-full px-3 py-1 text-xs font-black ${
                             active
-                              ? "bg-blue-600 text-white"
-                              : "bg-slate-100 text-slate-700 hover:bg-blue-50 hover:text-blue-700"
+                              ? "bg-brand-500 text-white"
+                              : "bg-slate-100 text-slate-700 hover:bg-brand-50 hover:text-brand-600"
                           }`}
                         >
                           {item.account_name}
@@ -733,7 +733,7 @@ export default async function BrokerAccountPage({ params }: PageProps) {
               href={broker.real_account_url}
               target="_blank"
               rel="nofollow sponsored noopener"
-              className="mt-5 inline-flex min-h-[50px] w-full items-center justify-center rounded-2xl bg-blue-600 px-6 text-sm font-black text-white hover:bg-blue-700 md:mt-0 md:w-auto"
+              className="mt-5 inline-flex min-h-[50px] w-full items-center justify-center rounded-2xl bg-brand-500 px-6 text-sm font-black text-white hover:bg-brand-600 md:mt-0 md:w-auto"
             >
               Open Real Account
             </a>

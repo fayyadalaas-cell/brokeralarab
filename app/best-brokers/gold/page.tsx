@@ -202,7 +202,7 @@ function TopBrokerCard({
           href={`/brokers/${broker.slug}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex h-10 flex-1 items-center justify-center rounded-xl bg-blue-600 px-4 text-sm font-bold text-white transition hover:bg-blue-700"
+          className="inline-flex h-10 flex-1 items-center justify-center rounded-xl bg-brand-500 px-4 text-sm font-bold text-white transition hover:bg-brand-600"
         >
           مراجعة الشركة
         </Link>
@@ -211,7 +211,7 @@ function TopBrokerCard({
   href={broker.real_account_url || `/brokers/${broker.slug}`}
   target="_blank"
   rel="noopener noreferrer"
-  className="inline-flex h-11 flex-1 items-center justify-center rounded-2xl border border-blue-200 bg-blue-50 px-4 text-sm font-bold text-blue-700 transition hover:bg-blue-100"
+  className="inline-flex h-11 flex-1 items-center justify-center rounded-2xl border border-brand-100 bg-brand-50 px-4 text-sm font-bold text-brand-600 transition hover:bg-blue-100"
 >
   فتح حساب
 </Link>
@@ -233,13 +233,13 @@ function RankingRow({
       target="_blank"
       rel="noopener noreferrer"
       dir="rtl"
-      className="group relative flex items-center gap-5 overflow-hidden rounded-[22px] border border-blue-200 bg-white px-5 py-5 shadow-[0_4px_14px_rgba(15,23,42,0.04)] transition hover:-translate-y-[1px] hover:border-blue-300 hover:shadow-[0_8px_20px_rgba(59,130,246,0.10)] focus:outline-none focus:ring-0 active:outline-none"
+      className="group relative flex items-center gap-5 overflow-hidden rounded-[22px] border border-brand-100 bg-white px-5 py-5 shadow-[0_4px_14px_rgba(15,23,42,0.04)] transition hover:-translate-y-[1px] hover:border-blue-300 hover:shadow-[0_8px_20px_rgba(59,130,246,0.10)] focus:outline-none focus:ring-0 active:outline-none"
     >
       {/* right accent */}
       <div className="absolute inset-y-0 right-0 w-[4px] rounded-r-[22px] bg-blue-200" />
 
       {/* rank */}
-      <div className="relative z-10 flex h-[60px] w-[54px] shrink-0 items-center justify-center rounded-[14px] bg-blue-100 text-[15px] font-black text-blue-700 shadow-sm">
+      <div className="relative z-10 flex h-[60px] w-[54px] shrink-0 items-center justify-center rounded-[14px] bg-blue-100 text-[15px] font-black text-brand-600 shadow-sm">
         {rank}
       </div>
 
@@ -276,7 +276,7 @@ function RankingRow({
 </div>
 
       {/* arrow */}
-     <div className="relative z-10 shrink-0 pr-1 text-blue-600 group-hover:text-blue-800" aria-hidden="true">
+     <div className="relative z-10 shrink-0 pr-1 text-brand-500 group-hover:text-blue-800" aria-hidden="true">
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 20 20"
@@ -304,7 +304,7 @@ function MobileRankingRow({
   return (
     <Link
       href={`/brokers/${broker.slug}`}
-      className="group block rounded-[24px] border border-blue-200 bg-white px-4 py-4 shadow-[0_8px_24px_rgba(15,23,42,0.05)] transition hover:border-blue-300 hover:shadow-[0_12px_30px_rgba(37,99,235,0.08)]"
+      className="group block rounded-[24px] border border-brand-100 bg-white px-4 py-4 shadow-[0_8px_24px_rgba(15,23,42,0.05)] transition hover:border-blue-300 hover:shadow-[0_12px_30px_rgba(37,99,235,0.08)]"
     >
       <div className="flex items-center justify-between gap-3">
         {/* Right side: logo + rank */}
@@ -333,7 +333,7 @@ function MobileRankingRow({
 
         {/* Left side: blue arrow */}
         <div className="flex shrink-0 items-center">
-          <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-blue-50 text-blue-600 transition group-hover:bg-blue-100 group-hover:text-blue-700">
+          <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-50 text-brand-500 transition group-hover:bg-blue-100 group-hover:text-brand-600">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4"
@@ -356,7 +356,7 @@ function MobileRankingRow({
 function FeatureItem({ children }: { children: React.ReactNode }) {
   return (
     <li className="flex items-start gap-3">
-      <span className="mt-1 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-black text-blue-700">
+      <span className="mt-1 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-black text-brand-600">
         ✓
       </span>
       <span className="text-[15px] leading-7 text-slate-700">{children}</span>
@@ -626,7 +626,7 @@ export default async function BestGoldTradingPlatformsPage() {
           {featured.map((broker, index) => (
             <div
               key={broker.id}
-              className="group relative overflow-hidden rounded-[26px] border border-blue-100 bg-white p-5 shadow-sm transition hover:-translate-y-[2px] hover:border-blue-200 hover:shadow-md"
+              className="group relative overflow-hidden rounded-[26px] border border-blue-100 bg-white p-5 shadow-sm transition hover:-translate-y-[2px] hover:border-brand-100 hover:shadow-md"
               dir="rtl"
             >
               {/* top accent */}
@@ -701,7 +701,7 @@ export default async function BestGoldTradingPlatformsPage() {
   href={broker.real_account_url || `/brokers/${broker.slug}`}
   target="_blank"
   rel="noopener noreferrer"
-  className="inline-flex h-11 flex-1 items-center justify-center rounded-2xl border border-blue-200 bg-blue-50 px-4 text-sm font-bold text-blue-700 transition hover:bg-blue-100"
+  className="inline-flex h-11 flex-1 items-center justify-center rounded-2xl border border-brand-100 bg-brand-50 px-4 text-sm font-bold text-brand-600 transition hover:bg-blue-100"
 >
   فتح حساب
 </Link>
@@ -710,7 +710,7 @@ export default async function BestGoldTradingPlatformsPage() {
                   href={`/brokers/${broker.slug}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex h-11 flex-1 items-center justify-center rounded-2xl bg-blue-600 px-4 text-sm font-bold text-white transition hover:bg-blue-700"
+                  className="inline-flex h-11 flex-1 items-center justify-center rounded-2xl bg-brand-500 px-4 text-sm font-bold text-white transition hover:bg-brand-600"
                 >
                   مراجعة الشركة
                 </Link>
@@ -734,7 +734,7 @@ export default async function BestGoldTradingPlatformsPage() {
       <p className="mt-2 text-sm leading-7 text-slate-500 md:text-base">
        اكتشف أفضل منصات تداول الذهب لعام 2026 وقارن بين الوسطاء من حيث أقل إيداع، أعلى رافعة مالية، التراخيص، والرسوم لاختيار أفضل وسيط تداول ذهب مناسب لك.
       </p>
-      <p className="mt-2 text-sm leading-7 text-blue-600 md:text-[15px]">
+      <p className="mt-2 text-sm leading-7 text-brand-500 md:text-[15px]">
   اضغط على أي شركة لعرض التقييم الكامل وفتح الحساب.
 </p>
     </div>
@@ -802,11 +802,11 @@ export default async function BestGoldTradingPlatformsPage() {
 </p>
 <p className="mt-4 text-[14px] leading-7 text-slate-600 text-right md:text-[15px]">
   إذا كنت تفكر في الاستفادة من حركة الذهب، يمكنك أيضًا الاطلاع على{" "}
-  <Link href="/best-brokers" className="font-bold text-blue-600 hover:text-blue-700">
+  <Link href="/best-brokers" className="font-bold text-brand-500 hover:text-brand-600">
     أفضل الوسطاء
   </Link>{" "}
   أو مراجعة{" "}
-  <Link href="/lowest-spread-brokers" className="font-bold text-blue-600 hover:text-blue-700">
+  <Link href="/lowest-spread-brokers" className="font-bold text-brand-500 hover:text-brand-600">
     وسطاء السبريد المنخفض
   </Link>{" "}
   لاختيار منصة مناسبة لتداول الذهب.
@@ -871,14 +871,14 @@ if (prevHigh !== null) {
               <tr
                 key={String(r.y)}
                 className={`${
-                  r.special ? "bg-blue-50 font-bold" : i % 2 === 0 ? "bg-white" : "bg-slate-50/60"
+                  r.special ? "bg-brand-50 font-bold" : i % 2 === 0 ? "bg-white" : "bg-slate-50/60"
                 }`}
               >
                 <td className="px-4 py-4 font-black">{r.y}</td>
                 <td className="px-4 py-4">${r.h}</td>
                 <td className="px-4 py-4">${r.l}</td>
                 <td className="px-4 py-4 font-bold text-amber-700">${avg}</td>
-                <td className="px-4 py-4 font-bold text-blue-700">{sar} ر.س</td>
+                <td className="px-4 py-4 font-bold text-brand-600">{sar} ر.س</td>
                 <td className="px-4 py-4">
                   <span className={`rounded-full px-2 py-1 text-xs font-bold ${color}`}>
                     {trend}
@@ -893,7 +893,7 @@ if (prevHigh !== null) {
 
       <details className="border-t border-slate-200 bg-white">
   <summary className="cursor-pointer list-none select-none px-6 py-5 text-center">
-    <span className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-slate-50 px-5 py-2.5 text-sm font-black text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700">
+    <span className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-slate-50 px-5 py-2.5 text-sm font-black text-slate-700 transition hover:border-brand-100 hover:bg-brand-50 hover:text-brand-600">
       عرض باقي السنوات
     </span>
   </summary>
@@ -976,7 +976,7 @@ if (prevHigh !== null) {
                   <td className="px-4 py-4">${r.h}</td>
                   <td className="px-4 py-4">${r.l}</td>
                   <td className="px-4 py-4 font-bold text-amber-700">${avg}</td>
-                  <td className="px-4 py-4 font-bold text-blue-700">{sar} ر.س</td>
+                  <td className="px-4 py-4 font-bold text-brand-600">{sar} ر.س</td>
                   <td className="px-4 py-4">
                     <span className={`rounded-full px-2 py-1 text-xs font-bold ${color}`}>
                       {trend}
@@ -1037,7 +1037,7 @@ if (prevHigh !== null) {
         <details
           key={String(r.y)}
           className={`group border-b border-slate-200 ${
-            r.special ? "bg-blue-50/20" : "bg-white"
+            r.special ? "bg-brand-50/20" : "bg-white"
           }`}
         >
           <summary className="list-none cursor-pointer px-4 py-3">
@@ -1089,7 +1089,7 @@ if (prevHigh !== null) {
 
       <div className="px-3 py-2 text-right">
         <div className="text-[10px] font-medium text-slate-500">بالريال السعودي</div>
-        <div className="mt-1 text-[15px] font-black text-blue-700">
+        <div className="mt-1 text-[15px] font-black text-brand-600">
           {sar} ر.س
         </div>
       </div>
@@ -1130,7 +1130,7 @@ if (prevHigh !== null) {
   {/* Remaining years */}
   <details className="bg-white" dir="rtl">
     <summary className="cursor-pointer list-none select-none border-t border-slate-200 px-4 py-4 text-center">
-      <span className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-slate-50 px-5 py-2.5 text-sm font-black text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700">
+      <span className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-slate-50 px-5 py-2.5 text-sm font-black text-slate-700 transition hover:border-brand-100 hover:bg-brand-50 hover:text-brand-600">
         عرض باقي السنوات
       </span>
     </summary>
@@ -1204,7 +1204,7 @@ if (prevHigh !== null) {
 
                 <div className="px-3 py-2 text-right">
                   <div className="text-[10px] font-medium text-slate-500">بالريال السعودي</div>
-                  <div className="mt-1 text-[14px] font-black text-blue-700">
+                  <div className="mt-1 text-[14px] font-black text-brand-600">
                     {sar} ر.س
                   </div>
                 </div>
@@ -1267,7 +1267,7 @@ if (prevHigh !== null) {
             key={item.title}
             className="rounded-[24px] border border-slate-200 bg-slate-50 p-5 text-right"
           >
-            <div className="inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-black text-blue-700">
+            <div className="inline-flex rounded-full bg-brand-50 px-3 py-1 text-xs font-black text-brand-600">
               معيار أساسي
             </div>
             <h3 className="mt-3 text-[20px] font-black text-slate-950">
@@ -1280,7 +1280,7 @@ if (prevHigh !== null) {
         ))}
       </div>
 
-      <div className="mt-6 rounded-[24px] border border-blue-100 bg-blue-50/60 p-5 text-right">
+      <div className="mt-6 rounded-[24px] border border-blue-100 bg-brand-50/60 p-5 text-right">
         <p className="text-[15px] leading-8 text-slate-700">
           لذلك عندما ترى منصة في أعلى القائمة، فهذا لا يعني فقط أنها مشهورة،
           بل يعني أنها حققت توازنًا أفضل بين الأمان، شروط التداول، سهولة
@@ -1324,7 +1324,7 @@ if (prevHigh !== null) {
         >
           <summary className="list-none cursor-pointer px-4 py-4">
             <div className="flex items-center justify-between gap-3">
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-blue-50 text-blue-700">
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-50 text-brand-600">
                 +
               </span>
               <h3 className="flex-1 text-right text-[18px] font-black text-slate-950">
@@ -1338,9 +1338,9 @@ if (prevHigh !== null) {
         </details>
       ))}
 
-      <details className="overflow-hidden rounded-[22px] border border-blue-100 bg-blue-50/60">
+      <details className="overflow-hidden rounded-[22px] border border-blue-100 bg-brand-50/60">
         <summary className="list-none cursor-pointer px-4 py-4 text-center">
-          <span className="inline-flex rounded-full border border-blue-200 bg-white px-4 py-2 text-sm font-black text-blue-700">
+          <span className="inline-flex rounded-full border border-brand-100 bg-white px-4 py-2 text-sm font-black text-brand-600">
             قراءة المزيد
           </span>
         </summary>
@@ -1701,7 +1701,7 @@ if (prevHigh !== null) {
           >
             <summary className="list-none cursor-pointer px-4 py-4 md:px-5">
               <div className="flex items-center justify-between gap-3">
-                <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-700 transition group-open:rotate-45">
+                <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-600 transition group-open:rotate-45">
                   +
                 </span>
                 <h3 className="flex-1 text-right text-[16px] font-black leading-7 text-slate-950 md:text-[18px]">
@@ -1780,13 +1780,13 @@ if (prevHigh !== null) {
                 href={item.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group rounded-[22px] border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md hover:border-blue-200"
+                className="group rounded-[22px] border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md hover:border-brand-100"
               >
                 <div className="flex items-start justify-between gap-3">
                   
                   {/* TEXT */}
                   <div className="flex-1 text-right">
-                    <h3 className="text-[18px] font-black text-slate-950 group-hover:text-blue-700">
+                    <h3 className="text-[18px] font-black text-slate-950 group-hover:text-brand-600">
                       {item.title}
                     </h3>
 
@@ -1794,13 +1794,13 @@ if (prevHigh !== null) {
                       {item.desc}
                     </p>
 
-                    <div className="mt-4 text-[13px] font-black text-blue-600">
+                    <div className="mt-4 text-[13px] font-black text-brand-500">
                       اقرأ المزيد ←
                     </div>
                   </div>
 
                   {/* ICON */}
-                  <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-blue-50 text-blue-700 shrink-0">
+                  <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-brand-50 text-brand-600 shrink-0">
                     ↗
                   </div>
                 </div>
@@ -1827,7 +1827,7 @@ if (prevHigh !== null) {
                     {item.desc}
                   </p>
 
-                  <div className="mt-3 text-[13px] font-black text-blue-600">
+                  <div className="mt-3 text-[13px] font-black text-brand-500">
                     اقرأ المزيد ←
                   </div>
                 </a>
@@ -1858,7 +1858,7 @@ if (prevHigh !== null) {
                       {item.desc}
                     </p>
 
-                    <div className="mt-3 text-[13px] font-black text-blue-600">
+                    <div className="mt-3 text-[13px] font-black text-brand-500">
                       اقرأ المزيد ←
                     </div>
                   </a>

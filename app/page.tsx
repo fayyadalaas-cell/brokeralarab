@@ -392,7 +392,7 @@ const { data: rankingData } = await supabase
           <div className="relative overflow-hidden bg-[#07111f]">
            {/* BACKGROUND */}
 <div className="pointer-events-none absolute inset-0">
-  <div className="absolute left-1/2 top-[46%] h-[420px] w-[820px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#2563eb]/20 blur-[120px]" />
+  <div className="absolute left-1/2 top-[46%] h-[420px] w-[820px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-500/20 blur-[120px]" />
   <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.15),transparent_60%)]" />
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(37,99,235,0.34),transparent_42%)]" />
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_55%,rgba(14,165,233,0.12),transparent_34%)]" />
@@ -406,7 +406,7 @@ const { data: rankingData } = await supabase
               <div dir="rtl" className="mx-auto max-w-6xl text-center">
                 <h1 className="mx-auto max-w-6xl text-[50px] font-black leading-[1.22] tracking-[-0.025em] text-white drop-shadow-[0_10px_35px_rgba(0,0,0,0.35)] xl:text-[62px]">
                   أفضل شركات التداول
-                  <span className="block bg-gradient-to-r from-white via-blue-200 to-[#60a5fa] bg-clip-text pb-2 text-transparent">
+                  <span className="block bg-gradient-to-r from-white via-blue-200 to-brand-400 bg-clip-text pb-2 text-transparent">
                     تقييم الوسطاء والرسوم والتراخيص
                   </span>
                 </h1>
@@ -503,7 +503,7 @@ const { data: rankingData } = await supabase
     <div dir="rtl" className="relative px-5 pb-7 pt-7 text-center">
       <div className="mx-auto max-w-[330px] text-[31px] font-black leading-[1.16] tracking-[-0.025em] text-white drop-shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
   أفضل شركات التداول
-  <span className="mt-1 block bg-gradient-to-r from-white via-blue-200 to-[#60a5fa] bg-clip-text pb-1 text-transparent">
+  <span className="mt-1 block bg-gradient-to-r from-white via-blue-200 to-brand-400 bg-clip-text pb-1 text-transparent">
     تقييم الوسطاء والرسوم
   </span>
 </div>
@@ -603,7 +603,7 @@ const { data: rankingData } = await supabase
           key={title}
           className="flex items-center justify-center gap-2 px-3 py-3 text-center md:gap-3 md:py-4"
         >
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-50 text-[12px] font-black text-blue-600 md:h-8 md:w-8">
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-50 text-[12px] font-black text-brand-500 md:h-8 md:w-8">
             {icon}
           </span>
 
@@ -621,7 +621,7 @@ const { data: rankingData } = await supabase
 
     <div className="flex flex-col items-center justify-between gap-3 border-t border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3 text-center md:flex-row md:text-right">
       <div>
-        <div className="mb-1 text-xs font-black text-blue-700">
+        <div className="mb-1 text-xs font-black text-brand-600">
           منهجية التقييم
         </div>
 
@@ -634,7 +634,7 @@ const { data: rankingData } = await supabase
         href="/how-we-review-brokers"
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex min-h-[42px] shrink-0 items-center justify-center rounded-2xl bg-[#2563eb] px-5 text-[12px] font-black text-white shadow-[0_10px_22px_rgba(37,99,235,0.20)] transition hover:bg-[#1d4ed8] md:text-sm"
+        className="inline-flex min-h-[42px] shrink-0 items-center justify-center rounded-2xl bg-brand-500 px-5 text-[12px] font-black text-white shadow-[0_10px_22px_rgba(37,99,235,0.20)] transition hover:bg-brand-600 md:text-sm"
       >
         منهجية التقييم
       </Link>
@@ -685,7 +685,7 @@ const { data: rankingData } = await supabase
           <div className="hidden lg:block">
             <div className="grid grid-cols-[1fr_270px] gap-5 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-6 py-5">
               <div>
-                <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-[#2563eb] shadow-sm">
+                <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
                   منهجية التقييم
                 </span>
 
@@ -706,7 +706,7 @@ const { data: rankingData } = await supabase
 
                 <Link
                   href="/brokers"
-                  className="mt-5 inline-flex h-11 items-center justify-center rounded-2xl bg-[#2563eb] px-5 text-[13px] font-black text-white shadow-[0_12px_26px_rgba(37,99,235,0.22)] transition hover:bg-[#1d4ed8]"
+                  className="mt-5 inline-flex h-11 items-center justify-center rounded-2xl bg-brand-500 px-5 text-[13px] font-black text-white shadow-[0_12px_26px_rgba(37,99,235,0.22)] transition hover:bg-brand-600"
                 >
                   تصفح جميع التقييمات
                 </Link>
@@ -717,10 +717,10 @@ const { data: rankingData } = await supabase
               {ratingItems.map((item) => (
                 <div
                   key={item.num}
-                  className="rounded-[22px] border border-slate-200 bg-white p-5 shadow-[0_6px_20px_rgba(15,23,42,0.04)] transition hover:-translate-y-0.5 hover:border-[#bfdbfe] hover:shadow-[0_16px_34px_rgba(15,23,42,0.06)]"
+                  className="rounded-[22px] border border-slate-200 bg-white p-5 shadow-[0_6px_20px_rgba(15,23,42,0.04)] transition hover:-translate-y-0.5 hover:border-brand-100 hover:shadow-[0_16px_34px_rgba(15,23,42,0.06)]"
                 >
                   <div className="flex items-start gap-4">
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#eff6ff] text-[12px] font-black text-[#1d4ed8] ring-1 ring-[#bfdbfe]">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-brand-50 text-[12px] font-black text-brand-600 ring-1 ring-[#bfdbfe]">
                       {item.num}
                     </span>
 
@@ -754,7 +754,7 @@ const { data: rankingData } = await supabase
 
               <Link
                 href="/brokers"
-                className="mt-3 inline-flex h-9 items-center justify-center rounded-2xl bg-[#2563eb] px-4 text-[11px] font-black text-white shadow-[0_10px_22px_rgba(37,99,235,0.20)]"
+                className="mt-3 inline-flex h-9 items-center justify-center rounded-2xl bg-brand-500 px-4 text-[11px] font-black text-white shadow-[0_10px_22px_rgba(37,99,235,0.20)]"
               >
                 جميع التقييمات
               </Link>
@@ -767,7 +767,7 @@ const { data: rankingData } = await supabase
                   className="rounded-[18px] border border-slate-200 bg-[#fbfdff] px-3.5 py-3 shadow-[0_5px_16px_rgba(15,23,42,0.04)]"
                 >
                   <div className="flex items-start gap-3">
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#eff6ff] text-[10px] font-black text-[#1d4ed8] ring-1 ring-[#bfdbfe]">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-[10px] font-black text-brand-600 ring-1 ring-[#bfdbfe]">
                       {item.num}
                     </span>
 
@@ -798,7 +798,7 @@ const { data: rankingData } = await supabase
     <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="text-center lg:text-right">
-          <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-[#2563eb] shadow-sm">
+          <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
             مقارنات الوسطاء
           </span>
 
@@ -814,7 +814,7 @@ const { data: rankingData } = await supabase
         <div className="flex justify-center lg:self-center lg:pl-2">
           <Link
             href="/compare"
-            className="inline-flex h-12 items-center justify-center rounded-2xl bg-[#2563eb] px-6 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(37,99,235,0.24)] transition hover:bg-[#1d4ed8]"
+            className="inline-flex h-12 items-center justify-center rounded-2xl bg-brand-500 px-6 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(37,99,235,0.24)] transition hover:bg-brand-600"
           >
             تصفح جميع المقارنات
           </Link>
@@ -829,7 +829,7 @@ const { data: rankingData } = await supabase
           key={cmp.id}
           className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm"
         >
-          <div className="h-1 bg-gradient-to-r from-[#2563eb] via-[#60a5fa] to-transparent" />
+          <div className="h-1 bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent" />
 
           <div className="p-3.5">
             <div className="mb-3 flex items-center justify-between gap-2">
@@ -846,7 +846,7 @@ const { data: rankingData } = await supabase
               <div className="flex flex-col items-center text-center">
                 <Link
                   href={`/brokers/${cmp.broker_1?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_1?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_1?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_1?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
-                  className="flex h-14 w-14 items-center justify-center rounded-[16px] border border-slate-200 bg-slate-50 p-2 transition hover:border-blue-200 hover:bg-blue-50"
+                  className="flex h-14 w-14 items-center justify-center rounded-[16px] border border-slate-200 bg-slate-50 p-2 transition hover:border-brand-100 hover:bg-brand-50"
                 >
                   {cmp.broker_1?.logo ? (
                     <img
@@ -861,7 +861,7 @@ const { data: rankingData } = await supabase
 
                 <Link
                   href={`/brokers/${cmp.broker_1?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_1?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_1?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_1?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
-                  className="mt-2 text-[15px] font-black leading-none text-[#0f172a] transition hover:text-[#2563eb]"
+                  className="mt-2 text-[15px] font-black leading-none text-[#0f172a] transition hover:text-brand-500"
                 >
                   {cmp.broker_1?.name || "Broker 1"}
                 </Link>
@@ -875,7 +875,7 @@ const { data: rankingData } = await supabase
               </div>
 
               <div className="flex items-center justify-center">
-                <div className="flex h-9 w-9 items-center justify-center rounded-full border border-blue-200 bg-blue-50 text-[11px] font-extrabold text-blue-600 shadow-sm">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full border border-brand-100 bg-brand-50 text-[11px] font-extrabold text-brand-500 shadow-sm">
                   VS
                 </div>
               </div>
@@ -909,7 +909,7 @@ const { data: rankingData } = await supabase
             <div className="mt-4">
               <Link
                 href={`/compare/${cmp.slug}`}
-                className="mt-3 flex w-full items-center justify-center rounded-xl bg-[#2563eb] py-2.5 text-[14px] font-bold text-white hover:bg-[#1d4ed8]"
+                className="mt-3 flex w-full items-center justify-center rounded-xl bg-brand-500 py-2.5 text-[14px] font-bold text-white hover:bg-brand-600"
               >
                 {`مقارنة ${cmp.broker_1?.name} مع ${cmp.broker_2?.name}`}
               </Link>
@@ -924,9 +924,9 @@ const { data: rankingData } = await supabase
       {topComparisons.map((cmp, index) => (
         <article
           key={cmp.id}
-          className="group overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_6px_20px_rgba(15,23,42,0.04)] transition hover:-translate-y-0.5 hover:border-[#bfdbfe] hover:shadow-[0_16px_34px_rgba(15,23,42,0.06)]"
+          className="group overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_6px_20px_rgba(15,23,42,0.04)] transition hover:-translate-y-0.5 hover:border-brand-100 hover:shadow-[0_16px_34px_rgba(15,23,42,0.06)]"
         >
-          <div className="h-1 bg-gradient-to-r from-[#2563eb] via-[#60a5fa] to-transparent" />
+          <div className="h-1 bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent" />
 
           <div className="p-5">
             <div className="mb-4 flex items-center justify-between gap-3">
@@ -943,7 +943,7 @@ const { data: rankingData } = await supabase
               <div className="flex flex-col items-center text-center">
                 <Link
                   href={`/brokers/${cmp.broker_1?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_1?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_1?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_1?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
-                  className="flex h-[72px] w-[72px] items-center justify-center rounded-[20px] border border-slate-200 bg-slate-50 p-3 transition hover:border-blue-200 hover:bg-blue-50 lg:h-20 lg:w-20"
+                  className="flex h-[72px] w-[72px] items-center justify-center rounded-[20px] border border-slate-200 bg-slate-50 p-3 transition hover:border-brand-100 hover:bg-brand-50 lg:h-20 lg:w-20"
                 >
                   {cmp.broker_1?.logo ? (
                     <img
@@ -958,7 +958,7 @@ const { data: rankingData } = await supabase
 
                 <Link
                   href={`/brokers/${cmp.broker_1?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_1?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_1?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_1?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
-                  className="mt-3 text-[17px] font-black leading-none text-[#0f172a] transition hover:text-[#2563eb] lg:text-[18px]"
+                  className="mt-3 text-[17px] font-black leading-none text-[#0f172a] transition hover:text-brand-500 lg:text-[18px]"
                 >
                   {cmp.broker_1?.name || "Broker 1"}
                 </Link>
@@ -972,7 +972,7 @@ const { data: rankingData } = await supabase
               </div>
 
               <div className="flex items-center justify-center">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full border border-blue-200 bg-blue-50 text-[12px] font-extrabold text-blue-600 shadow-sm">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full border border-brand-100 bg-brand-50 text-[12px] font-extrabold text-brand-500 shadow-sm">
                   VS
                 </div>
               </div>
@@ -980,7 +980,7 @@ const { data: rankingData } = await supabase
               <div className="flex flex-col items-center text-center">
                 <Link
                   href={`/brokers/${cmp.broker_2?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_2?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_2?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_2?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
-                  className="flex h-[72px] w-[72px] items-center justify-center rounded-[20px] border border-slate-200 bg-slate-50 p-3 transition hover:border-blue-200 hover:bg-blue-50 lg:h-20 lg:w-20"
+                  className="flex h-[72px] w-[72px] items-center justify-center rounded-[20px] border border-slate-200 bg-slate-50 p-3 transition hover:border-brand-100 hover:bg-brand-50 lg:h-20 lg:w-20"
                 >
                   {cmp.broker_2?.logo ? (
                     <img
@@ -995,7 +995,7 @@ const { data: rankingData } = await supabase
 
                 <Link
                   href={`/brokers/${cmp.broker_2?.name?.toLowerCase() === "exness" ? "exness" : cmp.broker_2?.name?.toLowerCase() === "xm" ? "xm" : cmp.broker_2?.name?.toLowerCase() === "vantage" ? "vantage" : cmp.broker_2?.name?.toLowerCase() === "equiti" ? "equiti" : ""}`}
-                  className="mt-3 text-[17px] font-black leading-none text-[#0f172a] transition hover:text-[#2563eb] lg:text-[18px]"
+                  className="mt-3 text-[17px] font-black leading-none text-[#0f172a] transition hover:text-brand-500 lg:text-[18px]"
                 >
                   {cmp.broker_2?.name || "Broker 2"}
                 </Link>
@@ -1014,7 +1014,7 @@ const { data: rankingData } = await supabase
                 href={`/compare/${cmp.slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex w-full min-h-[48px] items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-[15px] font-extrabold text-white transition hover:bg-[#1d4ed8]"
+                className="inline-flex w-full min-h-[48px] items-center justify-center rounded-2xl bg-brand-500 px-4 py-3 text-[15px] font-extrabold text-white transition hover:bg-brand-600"
               >
                 {`مقارنة ${cmp.broker_1?.name} مع ${cmp.broker_2?.name}`}
               </Link>
@@ -1034,7 +1034,7 @@ const { data: rankingData } = await supabase
       <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="text-center lg:text-right">
-            <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-[#2563eb] shadow-sm">
+            <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
               حسب الدولة
             </span>
 
@@ -1056,7 +1056,7 @@ const { data: rankingData } = await supabase
               href="/best-brokers"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-12 min-w-[190px] items-center justify-center rounded-2xl bg-[#2563eb] px-6 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(37,99,235,0.24)] transition hover:bg-[#1d4ed8]"
+              className="inline-flex h-12 min-w-[190px] items-center justify-center rounded-2xl bg-brand-500 px-6 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(37,99,235,0.24)] transition hover:bg-brand-600"
             >
               كل الدول الأخرى
             </Link>
@@ -1100,7 +1100,7 @@ const { data: rankingData } = await supabase
               target="_blank"
               rel="noopener noreferrer"
               title={`أفضل شركات التداول في ${item.badge}`}
-              className="group rounded-[14px] border border-slate-200 bg-white px-2 py-2 shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition hover:border-[#bfdbfe] hover:bg-[#f8fbff]"
+              className="group rounded-[14px] border border-slate-200 bg-white px-2 py-2 shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition hover:border-brand-100 hover:bg-[#f8fbff]"
             >
               <div className="flex flex-col items-center justify-center gap-0.5 text-center">
                 <div className="flex items-center gap-2">
@@ -1117,7 +1117,7 @@ const { data: rankingData } = await supabase
                   </h3>
                 </div>
 
-                <span className="text-[13px] text-slate-500 opacity-70 transition group-hover:-translate-x-[2px] group-hover:opacity-100 group-hover:text-[#2563eb]">
+                <span className="text-[13px] text-slate-500 opacity-70 transition group-hover:-translate-x-[2px] group-hover:opacity-100 group-hover:text-brand-500">
                   ←
                 </span>
               </div>
@@ -1128,11 +1128,11 @@ const { data: rankingData } = await supabase
             href="/best-brokers"
             target="_blank"
             rel="noopener noreferrer"
-            className="group rounded-[14px] border border-dashed border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-2 py-2 shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition hover:bg-[#eff6ff]"
+            className="group rounded-[14px] border border-dashed border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-2 py-2 shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition hover:bg-brand-50"
           >
             <div className="flex flex-col items-center justify-center gap-0.5 text-center">
               <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#bfdbfe] bg-white shadow-sm">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-brand-100 bg-white shadow-sm">
                   🌍
                 </div>
 
@@ -1141,7 +1141,7 @@ const { data: rankingData } = await supabase
                 </h3>
               </div>
 
-              <span className="text-[13px] text-slate-500 transition group-hover:-translate-x-[2px] group-hover:text-[#2563eb]">
+              <span className="text-[13px] text-slate-500 transition group-hover:-translate-x-[2px] group-hover:text-brand-500">
                 ←
               </span>
             </div>
@@ -1185,7 +1185,7 @@ const { data: rankingData } = await supabase
               target="_blank"
               rel="noopener noreferrer"
               title={`أفضل شركات التداول في ${item.badge}`}
-              className="group rounded-[22px] border border-slate-200 bg-white px-5 py-4 shadow-sm transition hover:-translate-y-0.5 hover:border-[#bfdbfe] hover:bg-[#fcfdff] hover:shadow-[0_14px_32px_rgba(15,23,42,0.05)]"
+              className="group rounded-[22px] border border-slate-200 bg-white px-5 py-4 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-100 hover:bg-[#fcfdff] hover:shadow-[0_14px_32px_rgba(15,23,42,0.05)]"
             >
               <div className="flex items-center gap-4">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-[#f8fafc] shadow-sm">
@@ -1202,7 +1202,7 @@ const { data: rankingData } = await supabase
                       {item.title}
                     </h3>
 
-                    <span className="shrink-0 rounded-full bg-[#eff6ff] px-2 py-0.5 text-[10px] font-extrabold text-[#1d4ed8]">
+                    <span className="shrink-0 rounded-full bg-brand-50 px-2 py-0.5 text-[10px] font-extrabold text-brand-600">
                       {item.badge}
                     </span>
                   </div>
@@ -1216,7 +1216,7 @@ const { data: rankingData } = await supabase
                   <div className="text-[11px] font-bold text-slate-400">
                     افتح الصفحة
                   </div>
-                  <div className="mt-1 text-[20px] font-black text-[#2563eb] transition group-hover:translate-x-[-3px]">
+                  <div className="mt-1 text-[20px] font-black text-brand-500 transition group-hover:translate-x-[-3px]">
                     ←
                   </div>
                 </div>
@@ -1231,7 +1231,7 @@ const { data: rankingData } = await supabase
             className="group rounded-[22px] border border-dashed border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-5 py-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-[0_14px_32px_rgba(37,99,235,0.08)]"
           >
             <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-[#bfdbfe] bg-white shadow-sm">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-brand-100 bg-white shadow-sm">
                 🌍
               </div>
 
@@ -1245,10 +1245,10 @@ const { data: rankingData } = await supabase
               </div>
 
               <div className="shrink-0 text-left">
-                <div className="text-[11px] font-bold text-[#2563eb]">
+                <div className="text-[11px] font-bold text-brand-500">
                   تصفح الكل
                 </div>
-                <div className="mt-1 text-[20px] font-black text-[#2563eb] transition group-hover:translate-x-[-3px]">
+                <div className="mt-1 text-[20px] font-black text-brand-500 transition group-hover:translate-x-[-3px]">
                   ←
                 </div>
               </div>
@@ -1268,7 +1268,7 @@ const { data: rankingData } = await supabase
       <div className="hidden border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4 lg:block">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="text-right">
-            <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-[#2563eb] shadow-sm">
+            <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
               حسابات منخفضة السبريد
             </span>
 
@@ -1284,7 +1284,7 @@ const { data: rankingData } = await supabase
           <div className="hidden md:flex shrink-0 justify-center lg:self-center lg:pl-4">
             <Link
   href="/lowest-spread-brokers"
-  className="inline-flex h-12 min-w-[190px] items-center justify-center rounded-2xl bg-[#2563eb] px-6 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(37,99,235,0.24)] transition hover:bg-[#1d4ed8]"
+  className="inline-flex h-12 min-w-[190px] items-center justify-center rounded-2xl bg-brand-500 px-6 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(37,99,235,0.24)] transition hover:bg-brand-600"
 >
   شركات الأقل سبريد
 </Link>
@@ -1303,7 +1303,7 @@ const { data: rankingData } = await supabase
             <div className="text-right lg:max-w-4xl">
               <h2 className="text-[28px] font-black leading-[1.15] tracking-[-0.02em] text-slate-950 sm:text-[34px] lg:text-[42px]">
                 أقل سبريد فعلي
-                <span className="text-[#2563eb]"> حسب نوع الحساب</span>
+                <span className="text-brand-500"> حسب نوع الحساب</span>
               </h2>
 
               <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 sm:text-[15px]">
@@ -1317,7 +1317,7 @@ const { data: rankingData } = await supabase
             <div className="flex justify-center lg:justify-start">
               <Link
                 href="/lowest-spread-brokers"
-                className="inline-flex items-center justify-center rounded-xl bg-[#2563eb] px-5 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
+                className="inline-flex items-center justify-center rounded-xl bg-brand-500 px-5 py-3 text-sm font-extrabold text-white transition hover:bg-brand-600"
               >
                 شركات التداول الأقل سبريد
               </Link>
@@ -1348,7 +1348,7 @@ const { data: rankingData } = await supabase
                 <a
                   key={item.title}
                   href="/lowest-spread-brokers#account-types"
-                  className={`block px-4 py-3.5 transition hover:bg-blue-50/30 ${
+                  className={`block px-4 py-3.5 transition hover:bg-brand-50/30 ${
                     index !== 0 ? "border-t border-slate-200" : ""
                   }`}
                 >
@@ -1361,7 +1361,7 @@ const { data: rankingData } = await supabase
                     </div>
 
                     {/* BUTTON */}
-                    <span className="inline-flex shrink-0 items-center justify-center rounded-xl bg-[#2563eb] px-4 py-2 text-[11px] font-extrabold text-white">
+                    <span className="inline-flex shrink-0 items-center justify-center rounded-xl bg-brand-500 px-4 py-2 text-[11px] font-extrabold text-white">
                       عرض
                     </span>
                   </div>
@@ -1400,16 +1400,16 @@ const { data: rankingData } = await supabase
             <Link
               key={item.title}
               href="/lowest-spread-brokers#account-types"
-              className="group relative overflow-hidden rounded-[24px] border border-slate-200 bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.045)] transition duration-300 hover:-translate-y-1 hover:border-[#93c5fd] hover:bg-[#fcfdff] hover:shadow-[0_22px_50px_rgba(15,23,42,0.08)]"
+              className="group relative overflow-hidden rounded-[24px] border border-slate-200 bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.045)] transition duration-300 hover:-translate-y-1 hover:border-brand-400 hover:bg-[#fcfdff] hover:shadow-[0_22px_50px_rgba(15,23,42,0.08)]"
             >
               <div className="flex h-full flex-col">
-                <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#2563eb] via-[#60a5fa] to-transparent opacity-80" />
+                <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent opacity-80" />
                 <div className="mb-4 flex items-center justify-between gap-3">
-                  <span className="inline-flex rounded-full border border-blue-100 bg-[#eff6ff] px-3 py-1 text-[11px] font-black text-[#2563eb]">
+                  <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-500">
                     {item.tag}
                   </span>
 
-                  <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-blue-100 bg-[#f8fbff] text-[13px] font-black text-[#2563eb] transition group-hover:bg-[#2563eb] group-hover:text-white">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-brand-100 bg-[#f8fbff] text-[13px] font-black text-brand-500 transition group-hover:bg-brand-500 group-hover:text-white">
   ←
 </span>
                 </div>
@@ -1427,7 +1427,7 @@ const { data: rankingData } = await supabase
                     قارن الحسابات
                   </span>
 
-                  <span className="inline-flex items-center gap-1 text-[13px] font-black text-[#2563eb] transition group-hover:-translate-x-1">
+                  <span className="inline-flex items-center gap-1 text-[13px] font-black text-brand-500 transition group-hover:-translate-x-1">
   عرض التفاصيل
   <span>←</span>
 </span>
@@ -1448,7 +1448,7 @@ const { data: rankingData } = await supabase
 <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4">
   <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
     <div className="text-center lg:text-right">
-      <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-[#2563eb] shadow-sm">
+      <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
         دليل اختيار الوسيط
       </span>
 
@@ -1464,7 +1464,7 @@ const { data: rankingData } = await supabase
     <div className="hidden md:flex shrink-0 justify-center lg:self-center lg:pl-4">
       <Link
         href="/best-brokers"
-        className="inline-flex h-12 min-w-[190px] items-center justify-center rounded-2xl bg-[#2563eb] px-6 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(37,99,235,0.24)] transition hover:bg-[#1d4ed8]"
+        className="inline-flex h-12 min-w-[190px] items-center justify-center rounded-2xl bg-brand-500 px-6 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(37,99,235,0.24)] transition hover:bg-brand-600"
       >
         أفضل الوسطاء
       </Link>
@@ -1482,7 +1482,7 @@ const { data: rankingData } = await supabase
         </p>
 
         <details className="mt-4 overflow-hidden rounded-[18px] border border-slate-200 bg-white">
-          <summary className="cursor-pointer list-none px-4 py-3.5 text-center text-sm font-extrabold text-[#1d4ed8]">
+          <summary className="cursor-pointer list-none px-4 py-3.5 text-center text-sm font-extrabold text-brand-600">
             اقرأ المزيد
           </summary>
 
@@ -1521,7 +1521,7 @@ const { data: rankingData } = await supabase
         {/* ARTICLE */}
         <div className="lg:col-span-8">
           <article className="relative overflow-hidden rounded-[24px] border border-slate-200 bg-white p-7 shadow-[0_6px_20px_rgba(15,23,42,0.04)]">
-  <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#2563eb] via-[#60a5fa] to-transparent opacity-55" />
+  <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent opacity-55" />
             <div className="space-y-4 text-[15px] font-medium leading-[2.05] text-slate-600">
               <p>
                 إذا كنت تبحث عن <strong>أفضل شركة تداول</strong>، فمن المهم أن
@@ -1590,9 +1590,9 @@ const { data: rankingData } = await supabase
                   ].map((item, index) => (
                     <div
                       key={item}
-                      className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm transition hover:-translate-y-1 hover:border-[#bfdbfe] hover:bg-[#fcfdff] hover:shadow-[0_12px_28px_rgba(15,23,42,0.05)]"
+                      className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm transition hover:-translate-y-1 hover:border-brand-100 hover:bg-[#fcfdff] hover:shadow-[0_12px_28px_rgba(15,23,42,0.05)]"
                     >
-                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-blue-100 bg-[#eff6ff] text-xs font-black text-[#1d4ed8] transition group-hover:bg-[#2563eb] group-hover:text-white">
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-brand-50 text-xs font-black text-brand-600 transition group-hover:bg-brand-500 group-hover:text-white">
                         {index + 1}
                       </span>
                       <span className="text-sm font-bold leading-6 text-[#0f172a]">
@@ -1619,7 +1619,7 @@ const { data: rankingData } = await supabase
     {/* HEADER */}
     <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4">
       <div className="text-center lg:text-right">
-        <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-[#2563eb] shadow-sm">
+        <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
           لماذا بروكر العرب؟
         </span>
 
@@ -1658,7 +1658,7 @@ const { data: rankingData } = await supabase
           className="rounded-[16px] border border-slate-200 bg-[#f8fbff] px-4 py-4 shadow-sm"
         >
           <div className="flex items-center gap-3">
-            <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#bfdbfe] bg-white text-[11px] font-black text-[#1d4ed8]">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full border border-brand-100 bg-white text-[11px] font-black text-brand-600">
               {index + 1}
             </span>
 
@@ -1701,16 +1701,16 @@ const { data: rankingData } = await supabase
         ].map((item, index) => (
           <div
             key={item.title}
-            className="group relative overflow-hidden rounded-[24px] border border-slate-200 bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.045)] transition duration-300 hover:-translate-y-1 hover:border-[#93c5fd] hover:bg-[#fcfdff] hover:shadow-[0_22px_50px_rgba(15,23,42,0.08)]"
+            className="group relative overflow-hidden rounded-[24px] border border-slate-200 bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.045)] transition duration-300 hover:-translate-y-1 hover:border-brand-400 hover:bg-[#fcfdff] hover:shadow-[0_22px_50px_rgba(15,23,42,0.08)]"
           >
-            <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#2563eb] via-[#60a5fa] to-transparent opacity-55" />
+            <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent opacity-55" />
 
             <div className="mb-5 flex items-center justify-between gap-3">
-              <span className="inline-flex rounded-full border border-blue-100 bg-[#eff6ff] px-3 py-1 text-[11px] font-black text-[#2563eb]">
+              <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-500">
                 {item.tag}
               </span>
 
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-blue-100 bg-[#f8fbff] text-[13px] font-black text-[#2563eb] transition group-hover:bg-[#2563eb] group-hover:text-white">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-brand-100 bg-[#f8fbff] text-[13px] font-black text-brand-500 transition group-hover:bg-brand-500 group-hover:text-white">
                 {index + 1}
               </span>
             </div>
@@ -1738,7 +1738,7 @@ const { data: rankingData } = await supabase
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
 
         <div className="text-center lg:text-right">
-          <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[11px] font-black text-[#2563eb] shadow-sm sm:text-[12px]">
+          <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[11px] font-black text-brand-500 shadow-sm sm:text-[12px]">
             معارض ومؤتمرات التداول
           </span>
 
@@ -1756,7 +1756,7 @@ const { data: rankingData } = await supabase
             href="/events"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex h-12 min-w-[190px] items-center justify-center rounded-2xl bg-[#2563eb] px-6 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(37,99,235,0.24)] transition hover:bg-[#1d4ed8]"
+            className="inline-flex h-12 min-w-[190px] items-center justify-center rounded-2xl bg-brand-500 px-6 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(37,99,235,0.24)] transition hover:bg-brand-600"
           >
             عرض جميع المعارض
           </Link>
@@ -1795,12 +1795,12 @@ const { data: rankingData } = await supabase
       ].map((event) => (
         <article
           key={event.title}
-          className="group relative overflow-hidden rounded-[20px] border border-slate-200 bg-white p-4 shadow-[0_6px_18px_rgba(15,23,42,0.04)] transition duration-300 hover:-translate-y-1 hover:border-[#93c5fd] hover:bg-[#fcfdff] hover:shadow-[0_22px_50px_rgba(15,23,42,0.08)] sm:rounded-[24px] sm:p-5"
+          className="group relative overflow-hidden rounded-[20px] border border-slate-200 bg-white p-4 shadow-[0_6px_18px_rgba(15,23,42,0.04)] transition duration-300 hover:-translate-y-1 hover:border-brand-400 hover:bg-[#fcfdff] hover:shadow-[0_22px_50px_rgba(15,23,42,0.08)] sm:rounded-[24px] sm:p-5"
         >
-          <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#2563eb] via-[#60a5fa] to-transparent opacity-70" />
+          <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent opacity-70" />
 
          <div className="mb-2 flex items-center justify-between">
-  <span className="rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-[11px] font-black text-[#2563eb]">
+  <span className="rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-500">
     حدث مالي
   </span>
 
@@ -1827,7 +1827,7 @@ const { data: rankingData } = await supabase
             href={event.slug}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-5 inline-flex w-full items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-[14px] font-black text-white transition hover:bg-[#1d4ed8]"
+            className="mt-5 inline-flex w-full items-center justify-center rounded-2xl bg-brand-500 px-4 py-3 text-[14px] font-black text-white transition hover:bg-brand-600"
           >
             عرض تفاصيل الحدث
           </Link>
@@ -1843,7 +1843,7 @@ const { data: rankingData } = await supabase
   <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
     <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4">
       <div className="text-center lg:text-right">
-        <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-[#2563eb] shadow-sm">
+        <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
           الأسئلة الشائعة
         </span>
 
@@ -1870,7 +1870,7 @@ const { data: rankingData } = await supabase
         href="/best-brokers/saudi-arabia"
         target="_blank"
         rel="noopener noreferrer"
-        className="font-bold text-[#2563eb] hover:underline"
+        className="font-bold text-brand-500 hover:underline"
       >
         أفضل شركات التداول في السعودية
       </Link>{" "}
@@ -1883,7 +1883,7 @@ const { data: rankingData } = await supabase
           a: (
             <>
               لا تعتمد على الإعلان أو الشهرة فقط. قارن الترخيص، الرسوم، السبريد، نوع الحساب، المنصة، وسرعة السحب. يمكنك استخدام قسم{" "}
-              <Link href="/compare" target="_blank" rel="noopener noreferrer" className="font-bold text-[#2563eb] hover:underline">
+              <Link href="/compare" target="_blank" rel="noopener noreferrer" className="font-bold text-brand-500 hover:underline">
                 مقارنات شركات التداول
               </Link>{" "}
               لمعرفة الفروقات بين الوسطاء.
@@ -1899,7 +1899,7 @@ const { data: rankingData } = await supabase
           a: (
             <>
               حساب Standard أبسط وغالبًا تكون تكلفته داخل السبريد. حساب Raw أو ECN يقدم سبريد أقل مع عمولة منفصلة، وقد يناسب المتداول النشط أكثر. راجع صفحة{" "}
-              <Link href="/lowest-spread-brokers" target="_blank" rel="noopener noreferrer" className="font-bold text-[#2563eb] hover:underline">
+              <Link href="/lowest-spread-brokers" target="_blank" rel="noopener noreferrer" className="font-bold text-brand-500 hover:underline">
                 شركات التداول الأقل سبريد
               </Link>{" "}
               لفهم التكلفة الفعلية.
@@ -1931,11 +1931,11 @@ const { data: rankingData } = await supabase
           a: (
             <>
               الأفضل دائمًا أن تقارن أولًا. راجع تقييم الشركة، ثم قارنها مع وسيطين آخرين من حيث الترخيص والرسوم والحسابات والمنصات. ابدأ من{" "}
-              <Link href="/brokers" target="_blank" rel="noopener noreferrer" className="font-bold text-[#2563eb] hover:underline">
+              <Link href="/brokers" target="_blank" rel="noopener noreferrer" className="font-bold text-brand-500 hover:underline">
                 تقييمات شركات التداول
               </Link>{" "}
               أو من صفحة{" "}
-              <Link href="/compare" target="_blank" rel="noopener noreferrer" className="font-bold text-[#2563eb] hover:underline">
+              <Link href="/compare" target="_blank" rel="noopener noreferrer" className="font-bold text-brand-500 hover:underline">
                 المقارنات
               </Link>.
             </>
@@ -1944,10 +1944,10 @@ const { data: rankingData } = await supabase
       ];
 
       const FAQItem = ({ item, index }: { item: any; index: number }) => (
-        <details className="group overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-[0_6px_20px_rgba(15,23,42,0.04)] transition hover:border-[#bfdbfe] hover:bg-[#fcfdff] hover:shadow-[0_14px_32px_rgba(15,23,42,0.05)] open:border-[#93c5fd]">
+        <details className="group overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-[0_6px_20px_rgba(15,23,42,0.04)] transition hover:border-brand-100 hover:bg-[#fcfdff] hover:shadow-[0_14px_32px_rgba(15,23,42,0.05)] open:border-[#93c5fd]">
           <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4">
             <div className="flex items-center gap-3 text-right">
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-blue-100 bg-[#eff6ff] text-xs font-black text-[#1d4ed8] transition group-open:bg-[#2563eb] group-open:text-white">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-brand-50 text-xs font-black text-brand-600 transition group-open:bg-brand-500 group-open:text-white">
                 {index + 1}
               </span>
 
@@ -1956,7 +1956,7 @@ const { data: rankingData } = await supabase
               </span>
             </div>
 
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-blue-100 bg-[#f8fbff] text-[14px] font-black text-[#2563eb] transition group-open:rotate-180 group-open:bg-[#2563eb] group-open:text-white">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-[#f8fbff] text-[14px] font-black text-brand-500 transition group-open:rotate-180 group-open:bg-brand-500 group-open:text-white">
               ▾
             </span>
           </summary>
@@ -1977,7 +1977,7 @@ const { data: rankingData } = await supabase
             ))}
 
             <details className="group">
-              <summary className="mt-2 flex cursor-pointer list-none items-center justify-center rounded-2xl border border-[#bfdbfe] bg-[#eff6ff] px-4 py-3 text-[13px] font-black text-[#2563eb]">
+              <summary className="mt-2 flex cursor-pointer list-none items-center justify-center rounded-2xl border border-brand-100 bg-brand-50 px-4 py-3 text-[13px] font-black text-brand-500">
                 عرض كل الأسئلة
               </summary>
 

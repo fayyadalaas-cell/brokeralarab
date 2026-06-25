@@ -113,7 +113,7 @@ export default function EnglishHeader({
                     <Link
                       key={broker.slug}
                       href={`/en/brokers/${broker.slug}`}
-                      className="flex items-center justify-between gap-4 rounded-2xl px-3 py-3 transition hover:bg-blue-50"
+                      className="flex items-center justify-between gap-4 rounded-2xl px-3 py-3 transition hover:bg-brand-50"
                     >
                       <div className="min-w-0 text-left">
                         <div className="text-[15px] font-extrabold text-slate-800">
@@ -140,7 +140,7 @@ export default function EnglishHeader({
 
                 <Link
                   href="/en/brokers"
-                  className="mt-1 block rounded-2xl px-3 py-3 text-sm font-extrabold text-blue-700 transition hover:bg-blue-50"
+                  className="mt-1 block rounded-2xl px-3 py-3 text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
                 >
                   View All Reviews →
                 </Link>
@@ -170,7 +170,7 @@ export default function EnglishHeader({
                     <Link
                       key={item.href}
                       href={`/en${item.href}`}
-                      className="flex items-center justify-between gap-3 rounded-2xl px-3 py-3 transition hover:bg-blue-50"
+                      className="flex items-center justify-between gap-3 rounded-2xl px-3 py-3 transition hover:bg-brand-50"
                     >
                       <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm">
                         <Image
@@ -201,7 +201,7 @@ export default function EnglishHeader({
 
                 <Link
                   href="/en/compare"
-                  className="mt-1 block rounded-2xl px-3 py-3 text-sm font-extrabold text-blue-700 transition hover:bg-blue-50"
+                  className="mt-1 block rounded-2xl px-3 py-3 text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
                 >
                   View All Comparisons →
                 </Link>
@@ -224,7 +224,7 @@ export default function EnglishHeader({
 
                 <Link
                   href="/en/best-brokers"
-                  className="block rounded-2xl px-3 py-3 transition hover:bg-blue-50"
+                  className="block rounded-2xl px-3 py-3 transition hover:bg-brand-50"
                 >
                   <div className="text-[16px] font-black text-slate-900">
                     Best Forex Brokers in 2026
@@ -233,7 +233,7 @@ export default function EnglishHeader({
 
                 <Link
                   href="/en/best-brokers/gold"
-                  className="block rounded-2xl px-3 py-3 transition hover:bg-blue-50"
+                  className="block rounded-2xl px-3 py-3 transition hover:bg-brand-50"
                 >
                   <div className="text-[16px] font-black text-slate-900">
                     Best Gold Brokers
@@ -261,7 +261,7 @@ export default function EnglishHeader({
                     <Link
                       key={tool.href}
                       href={tool.href}
-                      className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-[13px] font-extrabold text-slate-700 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700"
+                      className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-[13px] font-extrabold text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600"
                     >
                       {tool.title}
                     </Link>
@@ -270,7 +270,7 @@ export default function EnglishHeader({
 
                 <Link
                   href="/en/tools"
-                  className="mt-3 block rounded-2xl px-3 py-3 text-sm font-extrabold text-blue-700 transition hover:bg-blue-50"
+                  className="mt-3 block rounded-2xl px-3 py-3 text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
                 >
                   View All Tools →
                 </Link>
@@ -294,7 +294,7 @@ export default function EnglishHeader({
                   <Link
                     key={item.href}
                     href={getLearnTradingHref(item)}
-                    className="flex items-center gap-3 rounded-[18px] border border-slate-200 bg-slate-50 p-3 transition hover:border-blue-200 hover:bg-blue-50"
+                    className="flex items-center gap-3 rounded-[18px] border border-slate-200 bg-slate-50 p-3 transition hover:border-brand-100 hover:bg-brand-50"
                   >
                     <div className="relative h-[58px] w-[58px] shrink-0 overflow-hidden rounded-[14px] border border-slate-200 bg-white">
                       <Image
@@ -326,7 +326,7 @@ export default function EnglishHeader({
           <div className="hidden min-w-[105px] items-center justify-end lg:flex">
             <Link
               href="/"
-              className="inline-flex items-center rounded-full border border-blue-300 bg-white px-3 py-1.5 text-[12px] font-bold text-blue-700 shadow-sm transition hover:border-blue-400 hover:bg-blue-50"
+              className="inline-flex items-center rounded-full border border-blue-300 bg-white px-3 py-1.5 text-[12px] font-bold text-brand-600 shadow-sm transition hover:border-blue-400 hover:bg-brand-50"
             >
               العربية
             </Link>

@@ -288,7 +288,7 @@ function BrokerActionButtons({
       {reviewHref ? (
         <Link
           href={reviewHref}
-          className="inline-flex items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
+          className="inline-flex items-center justify-center rounded-2xl bg-brand-500 px-4 py-3 text-sm font-extrabold text-white transition hover:bg-brand-600"
         >
           قراءة التقييم
         </Link>
@@ -595,7 +595,7 @@ export default async function LowestSpreadBrokersPage() {
         <h1 className="text-[34px] font-black leading-[1.1] tracking-[-0.02em] text-slate-950 sm:text-[50px] lg:text-[64px]">
           أفضل شركات التداول
           <br />
-          <span className="text-[#2563eb]">بأقل سبريد في 2026</span>
+          <span className="text-brand-500">بأقل سبريد في 2026</span>
         </h1>
 
         <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
@@ -608,7 +608,7 @@ export default async function LowestSpreadBrokersPage() {
   <div className="flex w-full max-w-[340px] flex-col items-center gap-3 sm:max-w-none sm:w-auto sm:flex-row-reverse lg:ml-auto">
     <a
       href="#account-types"
-      className="inline-flex w-full sm:w-auto min-w-[220px] items-center justify-center rounded-2xl bg-[#2563eb] px-6 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
+      className="inline-flex w-full sm:w-auto min-w-[220px] items-center justify-center rounded-2xl bg-brand-500 px-6 py-3 text-sm font-extrabold text-white transition hover:bg-brand-600"
     >
       مقارنة حسب نوع الحساب
     </a>
@@ -702,12 +702,12 @@ export default async function LowestSpreadBrokersPage() {
           {best?.broker_slug && best?.account_name ? (
   <Link
     href={`/brokers/${best.broker_slug}/accounts/${accountSlug(best.account_name)}`}
-    className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-[10px] font-extrabold text-blue-700 transition hover:bg-blue-600 hover:text-white"
+    className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-2.5 py-1 text-[10px] font-extrabold text-brand-600 transition hover:bg-brand-500 hover:text-white"
   >
     {accountName}
   </Link>
 ) : (
-  <span className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-[10px] font-extrabold text-blue-700">
+  <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-2.5 py-1 text-[10px] font-extrabold text-brand-600">
     {accountName}
   </span>
 )}
@@ -806,7 +806,7 @@ export default async function LowestSpreadBrokersPage() {
   {item.broker_slug && item.account_name ? (
     <Link
       href={`/brokers/${item.broker_slug}/accounts/${accountSlug(item.account_name)}`}
-      className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-extrabold text-blue-700 transition hover:bg-blue-600 hover:text-white"
+      className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-xs font-extrabold text-brand-600 transition hover:bg-brand-500 hover:text-white"
     >
       {item.account_name}
     </Link>
@@ -832,7 +832,7 @@ export default async function LowestSpreadBrokersPage() {
         {item.broker_slug && (
           <Link
             href={`/brokers/${item.broker_slug}`}
-            className="inline-flex min-w-[88px] items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-extrabold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+            className="inline-flex min-w-[88px] items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-extrabold text-slate-700 transition hover:border-brand-100 hover:bg-brand-50 hover:text-brand-600"
           >
             التقييم
           </Link>
@@ -842,7 +842,7 @@ export default async function LowestSpreadBrokersPage() {
           href={item.broker_account_url}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex min-w-[94px] items-center justify-center rounded-xl bg-[#2563eb] px-3 py-2 text-xs font-extrabold text-white shadow-sm transition hover:bg-[#1d4ed8]"
+          className="inline-flex min-w-[94px] items-center justify-center rounded-xl bg-brand-500 px-3 py-2 text-xs font-extrabold text-white shadow-sm transition hover:bg-brand-600"
         >
           فتح حساب
         </a>
@@ -851,7 +851,7 @@ export default async function LowestSpreadBrokersPage() {
       item.broker_slug && (
         <Link
           href={`/brokers/${item.broker_slug}`}
-          className="inline-flex w-[140px] items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-extrabold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+          className="inline-flex w-[140px] items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-extrabold text-slate-700 transition hover:border-brand-100 hover:bg-brand-50 hover:text-brand-600"
         >
           التقييم
         </Link>
@@ -885,7 +885,7 @@ export default async function LowestSpreadBrokersPage() {
              {item.broker_slug && item.account_name ? (
   <Link
     href={`/brokers/${item.broker_slug}/accounts/${accountSlug(item.account_name)}`}
-    className="mt-0.5 inline-flex text-sm font-bold text-blue-700 hover:text-blue-900"
+    className="mt-0.5 inline-flex text-sm font-bold text-brand-600 hover:text-blue-900"
   >
     {item.account_name}
   </Link>
@@ -938,7 +938,7 @@ export default async function LowestSpreadBrokersPage() {
                 href={item.broker_account_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex flex-1 items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
+                className="inline-flex flex-1 items-center justify-center rounded-2xl bg-brand-500 px-4 py-3 text-sm font-extrabold text-white transition hover:bg-brand-600"
               >
                 فتح حساب
               </a>
@@ -946,7 +946,7 @@ export default async function LowestSpreadBrokersPage() {
               {item.broker_slug ? (
                 <Link
                   href={`/brokers/${item.broker_slug}`}
-                  className="inline-flex min-w-[96px] items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-extrabold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+                  className="inline-flex min-w-[96px] items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-extrabold text-slate-700 transition hover:border-brand-100 hover:bg-brand-50 hover:text-brand-600"
                 >
                   التقييم
                 </Link>
@@ -955,7 +955,7 @@ export default async function LowestSpreadBrokersPage() {
           ) : item.broker_slug ? (
             <Link
               href={`/brokers/${item.broker_slug}`}
-              className="inline-flex w-full items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
+              className="inline-flex w-full items-center justify-center rounded-2xl bg-brand-500 px-4 py-3 text-sm font-extrabold text-white transition hover:bg-brand-600"
             >
               قراءة التقييم
             </Link>
@@ -1036,7 +1036,7 @@ export default async function LowestSpreadBrokersPage() {
                       className={`inline-flex rounded-full px-3 py-1 text-[11px] font-extrabold ${
                         index === 0
                           ? "bg-amber-100 text-amber-800"
-                          : "bg-blue-50 text-blue-700"
+                          : "bg-brand-50 text-brand-600"
                       }`}
                     >
                       {card.badge}
@@ -1058,7 +1058,7 @@ export default async function LowestSpreadBrokersPage() {
                           {card.item.broker_slug && card.item.account_name ? (
   <Link
     href={`/brokers/${card.item.broker_slug}/accounts/${accountSlug(card.item.account_name)}`}
-    className="mt-1 inline-flex text-sm font-bold text-blue-700 hover:text-blue-900"
+    className="mt-1 inline-flex text-sm font-bold text-brand-600 hover:text-blue-900"
   >
     {card.item.account_name}
   </Link>
@@ -1094,8 +1094,8 @@ export default async function LowestSpreadBrokersPage() {
                             href={`/brokers/${card.item.broker_slug}`}
                             className={`inline-flex items-center justify-center rounded-2xl px-4 py-3 text-sm font-extrabold transition ${
                               card.item.broker_account_url
-                                ? "min-w-[105px] border border-slate-200 bg-white text-slate-700 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
-                                : "w-full bg-[#2563eb] text-white hover:bg-[#1d4ed8]"
+                                ? "min-w-[105px] border border-slate-200 bg-white text-slate-700 hover:border-brand-100 hover:bg-brand-50 hover:text-brand-600"
+                                : "w-full bg-brand-500 text-white hover:bg-brand-600"
                             }`}
                           >
                             التقييم
@@ -1107,7 +1107,7 @@ export default async function LowestSpreadBrokersPage() {
                             href={card.item.broker_account_url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex flex-1 items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
+                            className="inline-flex flex-1 items-center justify-center rounded-2xl bg-brand-500 px-4 py-3 text-sm font-extrabold text-white transition hover:bg-brand-600"
                           >
                             فتح حساب
                           </a>
@@ -1146,7 +1146,7 @@ export default async function LowestSpreadBrokersPage() {
                       className={`inline-flex shrink-0 rounded-full px-3 py-1 text-[11px] font-extrabold ${
                         index === 0
                           ? "bg-amber-100 text-amber-800"
-                          : "bg-blue-50 text-blue-700"
+                          : "bg-brand-50 text-brand-600"
                       }`}
                     >
                       {card.badge}
@@ -1185,7 +1185,7 @@ export default async function LowestSpreadBrokersPage() {
                           {card.item.broker_slug && card.item.account_name ? (
   <Link
     href={`/brokers/${card.item.broker_slug}/accounts/${accountSlug(card.item.account_name)}`}
-    className="mt-1 inline-flex text-sm font-bold text-blue-700 hover:text-blue-900"
+    className="mt-1 inline-flex text-sm font-bold text-brand-600 hover:text-blue-900"
   >
     {card.item.account_name}
   </Link>
@@ -1217,8 +1217,8 @@ export default async function LowestSpreadBrokersPage() {
                             href={`/brokers/${card.item.broker_slug}`}
                             className={`inline-flex items-center justify-center rounded-2xl px-4 py-3 text-sm font-extrabold transition ${
                               card.item.broker_account_url
-                                ? "min-w-[96px] border border-slate-200 bg-white text-slate-700 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
-                                : "w-full bg-[#2563eb] text-white hover:bg-[#1d4ed8]"
+                                ? "min-w-[96px] border border-slate-200 bg-white text-slate-700 hover:border-brand-100 hover:bg-brand-50 hover:text-brand-600"
+                                : "w-full bg-brand-500 text-white hover:bg-brand-600"
                             }`}
                           >
                             التقييم
@@ -1230,7 +1230,7 @@ export default async function LowestSpreadBrokersPage() {
                             href={card.item.broker_account_url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex flex-1 items-center justify-center rounded-2xl bg-[#2563eb] px-4 py-3 text-sm font-extrabold text-white transition hover:bg-[#1d4ed8]"
+                            className="inline-flex flex-1 items-center justify-center rounded-2xl bg-brand-500 px-4 py-3 text-sm font-extrabold text-white transition hover:bg-brand-600"
                           >
                             فتح حساب
                           </a>
@@ -1300,7 +1300,7 @@ export default async function LowestSpreadBrokersPage() {
             {/* 🔥 هذا هو الجزء المهم */}
             <div className="w-full text-right">
   <div className="inline-flex items-center gap-2 float-right">
-    <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-sm font-black text-blue-700">
+    <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-brand-50 text-sm font-black text-brand-600">
       {item.icon}
     </span>
 
@@ -1351,7 +1351,7 @@ export default async function LowestSpreadBrokersPage() {
               {/* 🔥 نفس الفكرة هنا */}
               <div className="w-full text-right">
   <div className="inline-flex items-center gap-2 float-right">
-    <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-sm font-black text-blue-700">
+    <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-brand-50 text-sm font-black text-brand-600">
       {item.icon}
     </span>
 
