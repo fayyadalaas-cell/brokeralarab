@@ -191,7 +191,7 @@ export default function PivotPointCalculatorClient() {
 
             <div className="border-t border-slate-100 bg-gradient-to-br from-blue-50 via-white to-slate-50 p-5 sm:p-8 lg:border-l lg:border-t-0 lg:p-10">
 
-              <div className="rounded-[1.5rem] border border-blue-100 bg-white p-5 shadow-sm sm:rounded-[2rem] sm:p-6">
+              <div className="rounded-[1.5rem] border border-brand-100 bg-white p-5 shadow-sm sm:rounded-[2rem] sm:p-6">
 
                 <p className="text-sm font-bold text-brand-600">
                   Quick Example
@@ -219,7 +219,7 @@ export default function PivotPointCalculatorClient() {
                     </p>
                   </div>
 
-                  <div className="rounded-2xl border border-blue-100 bg-brand-50 p-4">
+                  <div className="rounded-2xl border border-brand-100 bg-brand-50 p-4">
                     <p className="text-xs font-bold text-brand-600">
                       Pivot Point (PP)
                     </p>
@@ -335,7 +335,7 @@ export default function PivotPointCalculatorClient() {
                 be considered guaranteed trading signals.
               </p>
 
-              <div className="mt-6 hidden rounded-2xl border border-blue-100 bg-white p-4 shadow-sm lg:block">
+              <div className="mt-6 hidden rounded-2xl border border-brand-100 bg-white p-4 shadow-sm lg:block">
                 <h3 className="mb-3 text-center text-xs font-extrabold uppercase tracking-wide text-brand-600">
                   Related Tools
                 </h3>
@@ -386,7 +386,7 @@ export default function PivotPointCalculatorClient() {
 
               {showResult && result ? (
                 <div className="grid gap-3">
-                  <div className="rounded-2xl border border-blue-100 bg-brand-50 p-4">
+                  <div className="rounded-2xl border border-brand-100 bg-brand-50 p-4">
                     <p className="text-xs font-bold text-brand-600">
                       Central Pivot Point (PP)
                     </p>
@@ -566,7 +566,7 @@ export default function PivotPointCalculatorClient() {
                 showGuideMore ? "max-h-[14000px]" : "max-h-[980px]"
               }`}
             >
-              <section className="rounded-3xl border border-blue-100 bg-brand-50 p-5 sm:p-7">
+              <section className="rounded-3xl border border-brand-100 bg-brand-50 p-5 sm:p-7">
                 <h3 className="text-xl font-extrabold text-slate-950 sm:text-2xl">
                   How are Pivot Points calculated?
                 </h3>
@@ -621,7 +621,7 @@ export default function PivotPointCalculatorClient() {
                   </p>
                 </div>
 
-                <div className="rounded-3xl border border-blue-100 bg-brand-50 p-5 sm:p-6">
+                <div className="rounded-3xl border border-brand-100 bg-brand-50 p-5 sm:p-6">
                   <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-brand-600">
                     S1 / S2 / S3
                   </span>
@@ -756,7 +756,7 @@ export default function PivotPointCalculatorClient() {
                   </p>
                 </div>
 
-                <div className="rounded-3xl border border-blue-100 bg-brand-50 p-5 sm:p-7">
+                <div className="rounded-3xl border border-brand-100 bg-brand-50 p-5 sm:p-7">
                   <h3 className="text-xl font-extrabold text-slate-950 sm:text-2xl">
                     Are Pivot Points useful for day trading?
                   </h3>
@@ -828,7 +828,7 @@ export default function PivotPointCalculatorClient() {
                 </div>
               </section>
 
-              <section className="rounded-3xl border border-blue-100 bg-brand-50 p-5 shadow-sm sm:p-7">
+              <section className="rounded-3xl border border-brand-100 bg-brand-50 p-5 shadow-sm sm:p-7">
                 <h3 className="text-xl font-extrabold text-slate-950 sm:text-2xl">
                   Related trading calculators
                 </h3>

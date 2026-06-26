@@ -135,7 +135,7 @@ export default async function BestBrokersPage() {
               <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
                 <a
                   href="#comparison-table"
-                  className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-cyan-500 px-6 py-3.5 text-sm font-extrabold text-white shadow-[0_18px_40px_rgba(37,99,235,0.30)] transition hover:scale-[1.02]"
+                  className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-brand-500 to-cyan-500 px-6 py-3.5 text-sm font-extrabold text-white shadow-[0_18px_40px_rgba(37,99,235,0.30)] transition hover:scale-[1.02]"
                 >
                   Compare Top Brokers
                 </a>
@@ -294,7 +294,7 @@ export default async function BestBrokersPage() {
                 key={broker.id}
                 className="group relative overflow-hidden rounded-[30px] border border-slate-200 bg-white p-6 shadow-[0_10px_30px_rgba(15,23,42,0.05)] transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_55px_rgba(15,23,42,0.10)]"
               >
-                <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-600 via-blue-500 to-sky-400" />
+                <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-brand-500 via-brand-500 to-sky-400" />
 
                 <div className="flex items-center justify-between gap-3">
                   <span

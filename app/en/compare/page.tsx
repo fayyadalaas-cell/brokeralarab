@@ -295,7 +295,7 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
             </div>
           </div>
 
-          <div className="mt-6 rounded-[20px] border border-blue-100 bg-[linear-gradient(180deg,#eff6ff_0%,#f8fbff_100%)] p-4">
+          <div className="mt-6 rounded-[20px] border border-brand-100 bg-[linear-gradient(180deg,#eff6ff_0%,#f8fbff_100%)] p-4">
             <div className="text-xs font-extrabold text-brand-600">
               What will you see on the comparison page?
             </div>
@@ -666,7 +666,7 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
               </Link>
             </div>
 
-            <div className="mt-6 rounded-[22px] border border-blue-100 bg-[linear-gradient(180deg,#eff6ff_0%,#f8fbff_100%)] p-4">
+            <div className="mt-6 rounded-[22px] border border-brand-100 bg-[linear-gradient(180deg,#eff6ff_0%,#f8fbff_100%)] p-4">
               <div className="text-sm font-extrabold text-brand-500">
                 Quick Tip
               </div>

@@ -111,7 +111,7 @@ function BrokerLogo({
 }) {
   return (
     <div
-      className="flex shrink-0 items-center justify-center overflow-hidden rounded-[18px] border border-blue-100 bg-white shadow-[0_4px_14px_rgba(59,130,246,0.08)]"
+      className="flex shrink-0 items-center justify-center overflow-hidden rounded-[18px] border border-brand-100 bg-white shadow-[0_4px_14px_rgba(59,130,246,0.08)]"
       style={{ width: size, height: size }}
     >
       {logo ? (
@@ -626,11 +626,11 @@ export default async function BestGoldTradingPlatformsPage() {
           {featured.map((broker, index) => (
             <div
               key={broker.id}
-              className="group relative overflow-hidden rounded-[26px] border border-blue-100 bg-white p-5 shadow-sm transition hover:-translate-y-[2px] hover:border-brand-100 hover:shadow-md"
+              className="group relative overflow-hidden rounded-[26px] border border-brand-100 bg-white p-5 shadow-sm transition hover:-translate-y-[2px] hover:border-brand-100 hover:shadow-md"
               dir="rtl"
             >
               {/* top accent */}
-              <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-l from-blue-500 via-blue-400 to-blue-300" />
+              <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-l from-brand-500 via-blue-400 to-blue-300" />
 
              {/* top row */}
 <div className="flex items-center justify-between gap-4" dir="rtl">
@@ -1280,7 +1280,7 @@ if (prevHigh !== null) {
         ))}
       </div>
 
-      <div className="mt-6 rounded-[24px] border border-blue-100 bg-brand-50/60 p-5 text-right">
+      <div className="mt-6 rounded-[24px] border border-brand-100 bg-brand-50/60 p-5 text-right">
         <p className="text-[15px] leading-8 text-slate-700">
           لذلك عندما ترى منصة في أعلى القائمة، فهذا لا يعني فقط أنها مشهورة،
           بل يعني أنها حققت توازنًا أفضل بين الأمان، شروط التداول، سهولة
@@ -1338,13 +1338,13 @@ if (prevHigh !== null) {
         </details>
       ))}
 
-      <details className="overflow-hidden rounded-[22px] border border-blue-100 bg-brand-50/60">
+      <details className="overflow-hidden rounded-[22px] border border-brand-100 bg-brand-50/60">
         <summary className="list-none cursor-pointer px-4 py-4 text-center">
           <span className="inline-flex rounded-full border border-brand-100 bg-white px-4 py-2 text-sm font-black text-brand-600">
             قراءة المزيد
           </span>
         </summary>
-        <div className="border-t border-blue-100 px-4 py-4 text-right">
+        <div className="border-t border-brand-100 px-4 py-4 text-right">
           <p className="text-[14px] leading-8 text-slate-700">
             عندما ترى منصة في أعلى القائمة، فهذا لا يعني فقط أنها مشهورة، بل
             يعني أنها حققت توازنًا أفضل بين الأمان، شروط التداول، سهولة

@@ -567,7 +567,7 @@ export default async function OpenAccountGuidePage({ params }: PageProps) {
                   href={`/brokers/${slug}/accounts/${account
                     .toLowerCase()
                     .replace(/\s+/g, "-")}`}
-                  className="rounded-2xl border border-blue-100 bg-gradient-to-b from-white to-blue-50 p-3 text-center text-xs font-black text-blue-800 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:bg-brand-50 hover:shadow-md md:p-4 md:text-sm"
+                  className="rounded-2xl border border-brand-100 bg-gradient-to-b from-white to-brand-50 p-3 text-center text-xs font-black text-blue-800 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:bg-brand-50 hover:shadow-md md:p-4 md:text-sm"
                 >
                   {account}
                 </Link>

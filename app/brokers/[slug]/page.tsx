@@ -148,6 +148,28 @@ type BrokerAccount = {
   sort_order: number | null;
 };
 
+type BrokerLicense = {
+  id: number;
+  broker_id: number;
+  regulator_code: string | null;
+  regulator_name_ar: string | null;
+  regulator_name_en: string | null;
+  country_ar: string | null;
+  country_en: string | null;
+  country_code: string | null;
+  license_number: string | null;
+  entity_name_ar: string | null;
+  entity_name_en: string | null;
+  status_code: string | null;
+  verification_url_ar: string | null;
+  verification_url_en: string | null;
+  trust_level: string | null;
+  regulator_description_ar: string | null;
+  regulator_description_en: string | null;
+  last_verified: string | null;
+  is_active: boolean | null;
+};
+
 function splitText(value: string | null) {
   if (!value) return [];
   return value
@@ -223,6 +245,23 @@ async function getBrokerAccounts(brokerId: number): Promise<BrokerAccount[]> {
   if (error || !data) return [];
 
   return data as BrokerAccount[];
+}
+
+async function getBrokerLicenses(brokerId: number): Promise<BrokerLicense[]> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("broker_licenses")
+    .select("*")
+    .eq("broker_id", brokerId)
+    .order("regulator_code", { ascending: true });
+
+  console.log("Broker licenses error:", error);
+  console.log("Broker licenses data:", data);
+
+  if (error || !data) return [];
+
+  return data as BrokerLicense[];
 }
 
 async function getOpenAccountGuide(slug: string) {
@@ -312,7 +351,7 @@ function SectionCard({
       id={id}
       className="scroll-mt-24 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8"
     >
-      <h2 className="mb-2 text-[26px] font-extrabold leading-tight text-slate-950 md:text-2xl">
+     <h2 className="mb-2 text-[23px] font-extrabold leading-tight text-slate-950 md:text-2xl">
   {title}
 </h2>
 
@@ -408,7 +447,7 @@ function getVerdictTone(score: number | null) {
       label: "ممتاز",
       badge: "خيار قوي",
       color: "border-brand-100 bg-brand-50 text-brand-600",
-      accent: "from-blue-600 via-blue-500 to-cyan-400",
+      accent: "from-brand-500 via-brand-500 to-cyan-400",
     };
   }
 
@@ -417,7 +456,7 @@ function getVerdictTone(score: number | null) {
       label: "جيد جدًا",
       badge: "تقييم قوي",
       color: "border-brand-100 bg-brand-50 text-brand-600",
-      accent: "from-blue-500 via-sky-400 to-cyan-400",
+      accent: "from-brand-500 via-sky-400 to-cyan-400",
     };
   }
 
@@ -508,7 +547,7 @@ function ScoreBar({
 
       <div className="h-2 rounded-full bg-slate-200 md:h-2.5">
         <div
-          className="h-2 rounded-full bg-gradient-to-r from-blue-600 to-blue-400 md:h-2.5"
+          className="h-2 rounded-full bg-gradient-to-r from-brand-500 to-blue-400 md:h-2.5"
           style={{ width: `${((value ?? 0) / 5) * 100}%` }}
         />
       </div>
@@ -963,7 +1002,7 @@ function MobileAccountAccordion({
             <div className="min-w-0 text-right">
               <Link
   href={`/brokers/${brokerSlug}/accounts/${accountSlug(acc.account_name)}`}
-  className="text-base font-black text-brand-600 hover:text-blue-900"
+  className="text-base font-black text-brand-600 hover:text-brand-600"
 >
   {acc.account_name || "-"}
 </Link>
@@ -1092,6 +1131,385 @@ function MobileFeesAccordion({
   );
 }
 
+function BrokerLicensesSection({
+  brokerName,
+  licenses,
+  regulationSummary,
+  fundProtection,
+  safetyFactors,
+  regulationItems,
+}: {
+  brokerName: string | null;
+  licenses: BrokerLicense[];
+  regulationSummary: string | null;
+  fundProtection: string | null;
+  safetyFactors: string[];
+  regulationItems: string[];
+}) {
+  if (!licenses.length) return null;
+
+  const latestVerified = licenses
+    .map((l) => l.last_verified)
+    .filter(Boolean)
+    .sort()
+    .reverse()[0];
+
+  const topLicense =
+    licenses.find((l) => l.trust_level === "Tier 1") || licenses[0];
+
+  const allActive = licenses.every((l) => l.status_code === "active");
+
+  const statusLabel = (status: string | null) => {
+    if (status === "active") return "نشط";
+    if (status === "expired") return "منتهي";
+    if (status === "revoked") return "ملغي";
+    if (status === "pending") return "قيد المراجعة";
+    if (status === "suspended") return "معلّق";
+    return "غير محدد";
+  };
+
+  const stars = (tier: string | null) => {
+    if (tier === "Tier 1") return "★★★★★";
+    if (tier === "Tier 2") return "★★★★☆";
+    if (tier === "Tier 3") return "★★★☆☆";
+    return "★★★☆☆";
+  };
+
+  return (
+  <SectionCard
+  title={`تراخيص ${brokerName || "الوسيط"} والجهات الرقابية`}
+  subtitle={`نظرة تفصيلية على الجهات الرقابية التي تشرف على ${brokerName || "هذا الوسيط"}، مع أرقام التراخيص وروابط التحقق الرسمية.`}
+  id="regulation"
+>
+ <div className="mb-4 rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm md:mb-7 md:rounded-[24px] md:p-5">
+  <h3 className="text-xl font-black leading-8 text-slate-950 md:text-2xl">
+    التنظيم وحماية المتداولين
+  </h3>
+
+  <div className="mt-3 text-sm leading-7 text-slate-700 md:mt-4 md:space-y-4 md:text-base md:leading-8">
+    {(regulationSummary || "")
+      .split("||")
+      .map((item) => item.trim())
+      .filter(Boolean)
+      .slice(0, 1)
+      .map((paragraph, i) => (
+        <p key={i} className="text-justify">
+          {paragraph}
+        </p>
+      ))}
+  </div>
+
+  {safetyFactors.length > 0 ? (
+    <div className="mt-4 grid grid-cols-2 gap-2 md:mt-6 md:grid-cols-2">
+      {safetyFactors.slice(0, 2).map((item, i) => (
+        <div
+          key={i}
+          className="flex items-center justify-between gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-xs font-black text-slate-800 md:bg-white md:px-4 md:py-3 md:text-sm"
+        >
+          <span>{item}</span>
+          <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-emerald-500" />
+        </div>
+      ))}
+    </div>
+  ) : null}
+</div>
+
+  <div className="grid gap-3 md:grid-cols-4">
+        <MiniInfoCard label="عدد التراخيص" value={licenses.length} tone="blue" />
+        <MiniInfoCard label="أعلى جهة رقابية" value={topLicense?.regulator_code || "-"} tone="emerald" />
+        <MiniInfoCard label="آخر تحقق" value={latestVerified || "-"} tone="amber" />
+        <MiniInfoCard label="الحالة" value={allActive ? "كلها نشطة" : "تحتاج مراجعة"} tone="violet" />
+      </div>
+
+<p className="mt-5 text-sm leading-7 text-slate-600 md:hidden">
+  أرقام تراخيص {brokerName || "هذا الوسيط"} والكيانات القانونية، مع روابط تحقق رسمية حيثما أمكن.
+</p>
+
+<p className="mt-5 hidden text-sm leading-7 text-slate-600 md:block">
+  يوضح الجدول التالي أرقام تراخيص {brokerName || "هذا الوسيط"} والكيانات القانونية المرتبطة بكل جهة رقابية، مع روابط تحقق مباشرة من السجلات الرسمية حيثما أمكن.
+</p>
+
+     <div className="mt-6 hidden overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm md:block">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[760px] text-right text-sm">
+            <thead className="bg-slate-50 text-xs font-black text-slate-600">
+              <tr>
+                <th className="px-4 py-4">الجهة الرقابية</th>
+                <th className="px-4 py-4">الدولة</th>
+                <th className="px-4 py-4">رقم الترخيص</th>
+                <th className="px-4 py-4">الكيان القانوني</th>
+                <th className="px-4 py-4">الحالة</th>
+                <th className="px-4 py-4 text-center w-[170px]">
+  التحقق
+</th>
+              </tr>
+            </thead>
+
+            <tbody className="divide-y divide-slate-100">
+              {licenses.map((license) => (
+                <tr key={license.id} className="hover:bg-slate-50">
+                  <td className="px-4 py-4">
+                    <div className="font-black text-slate-950">
+                      {license.regulator_code}
+                    </div>
+                    <div className="mt-1 text-xs text-slate-500">
+                      {license.regulator_name_ar}
+                    </div>
+                  </td>
+
+                  <td className="px-4 py-4 font-bold text-slate-700">
+                    {license.country_ar || "-"}
+                  </td>
+
+                  <td className="px-4 py-4 font-black text-slate-950">
+                    {license.license_number || "-"}
+                  </td>
+
+                  <td className="px-4 py-4 text-slate-700">
+                    {license.entity_name_ar || license.entity_name_en || "-"}
+                  </td>
+
+                  <td className="px-4 py-4">
+                    <span className="inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">
+                      {statusLabel(license.status_code)}
+                    </span>
+                  </td>
+
+                  <td className="px-4 py-4">
+  {license.verification_url_ar || license.verification_url_en ? (
+    <a
+      href={
+        license.verification_url_ar ||
+        license.verification_url_en ||
+        "#"
+      }
+      target="_blank"
+      rel="nofollow noopener noreferrer"
+      className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-3 py-1.5 text-xs font-black text-brand-600 hover:bg-brand-100"
+    >
+      تحقق من الترخيص ↗
+    </a>
+  ) : (
+    <span className="text-xs text-slate-400">غير متاح</span>
+  )}
+</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+  <div className="mt-5 space-y-3 md:hidden">
+  {licenses.slice(0, 3).map((license) => (
+    <div
+      key={`mobile-${license.id}`}
+      className="rounded-2xl border border-slate-200 bg-white p-4 text-right shadow-sm"
+    >
+      <div className="flex items-start justify-between gap-3">
+        <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">
+          {statusLabel(license.status_code)}
+        </span>
+
+        <div>
+          <div className="text-lg font-black text-slate-950">
+            {license.regulator_code}
+          </div>
+          <div className="mt-1 text-xs leading-5 text-slate-500">
+            {license.regulator_name_ar}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-4 grid gap-2 text-sm">
+        <div className="flex justify-between gap-4 border-t border-slate-100 pt-3">
+          <span className="font-black text-slate-900">{license.country_ar || "-"}</span>
+          <span className="text-slate-500">الدولة</span>
+        </div>
+
+        <div className="flex justify-between gap-4 border-t border-slate-100 pt-3">
+          <span className="font-black text-slate-900">{license.license_number || "-"}</span>
+          <span className="text-slate-500">رقم الترخيص</span>
+        </div>
+
+        <div className="border-t border-slate-100 pt-3">
+          <div className="text-slate-500">الكيان القانوني</div>
+          <div className="mt-1 font-black text-slate-900">
+            {license.entity_name_ar || license.entity_name_en || "-"}
+          </div>
+        </div>
+      </div>
+
+      {license.verification_url_ar || license.verification_url_en ? (
+        <a
+          href={license.verification_url_ar || license.verification_url_en || "#"}
+          target="_blank"
+          rel="nofollow noopener noreferrer"
+          className="mt-4 inline-flex min-h-[42px] w-full items-center justify-center rounded-xl border border-brand-100 bg-brand-50 px-4 py-2 text-sm font-black text-brand-600"
+        >
+          عرض السجل الرسمي ↗
+        </a>
+      ) : null}
+    </div>
+  ))}
+
+  {licenses.length > 3 ? (
+    <details className="group">
+      <summary className="cursor-pointer list-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center text-sm font-black text-brand-600">
+        <span className="group-open:hidden">عرض المزيد من التراخيص</span>
+        <span className="hidden group-open:inline">عرض أقل</span>
+      </summary>
+
+      <div className="mt-3 space-y-3">
+        {licenses.slice(3).map((license) => (
+          <div
+            key={`mobile-extra-${license.id}`}
+            className="rounded-2xl border border-slate-200 bg-white p-4 text-right shadow-sm"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">
+                {statusLabel(license.status_code)}
+              </span>
+
+              <div>
+                <div className="text-lg font-black text-slate-950">
+                  {license.regulator_code}
+                </div>
+                <div className="mt-1 text-xs leading-5 text-slate-500">
+                  {license.regulator_name_ar}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4 grid gap-2 text-sm">
+              <div className="flex justify-between gap-4 border-t border-slate-100 pt-3">
+                <span className="font-black text-slate-900">{license.country_ar || "-"}</span>
+                <span className="text-slate-500">الدولة</span>
+              </div>
+
+              <div className="flex justify-between gap-4 border-t border-slate-100 pt-3">
+                <span className="font-black text-slate-900">{license.license_number || "-"}</span>
+                <span className="text-slate-500">رقم الترخيص</span>
+              </div>
+
+              <div className="border-t border-slate-100 pt-3">
+                <div className="text-slate-500">الكيان القانوني</div>
+                <div className="mt-1 font-black text-slate-900">
+                  {license.entity_name_ar || license.entity_name_en || "-"}
+                </div>
+              </div>
+            </div>
+
+            {license.verification_url_ar || license.verification_url_en ? (
+              <a
+                href={license.verification_url_ar || license.verification_url_en || "#"}
+                target="_blank"
+                rel="nofollow noopener noreferrer"
+                className="mt-4 inline-flex min-h-[42px] w-full items-center justify-center rounded-xl border border-brand-100 bg-brand-50 px-4 py-2 text-sm font-black text-brand-600"
+              >
+                عرض السجل الرسمي ↗
+              </a>
+            ) : null}
+          </div>
+        ))}
+      </div>
+    </details>
+  ) : null}
+</div>
+
+<details className="group mt-5 rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-sm leading-7 text-slate-700 md:hidden">
+  <summary className="cursor-pointer list-none">
+    <div className="font-black text-slate-950">
+      حماية أموال العملاء
+    </div>
+
+    <div className="relative mt-2 max-h-[88px] overflow-hidden text-justify group-open:hidden">
+      {fundProtection ||
+        "يساعد وجود جهة رقابية واضحة على معرفة متطلبات حماية أموال العملاء وآلية التعامل مع الشكاوى والتحقق من الكيان القانوني قبل فتح الحساب."}
+
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-emerald-50 to-transparent" />
+    </div>
+
+    <div className="mt-3 inline-flex rounded-xl border border-emerald-200 bg-white px-4 py-2 text-xs font-black text-emerald-700">
+      <span className="group-open:hidden">عرض المزيد</span>
+      <span className="hidden group-open:inline">عرض أقل</span>
+    </div>
+  </summary>
+
+  <div className="mt-3 text-justify">
+    {fundProtection ||
+      "يساعد وجود جهة رقابية واضحة على معرفة متطلبات حماية أموال العملاء وآلية التعامل مع الشكاوى والتحقق من الكيان القانوني قبل فتح الحساب."}
+  </div>
+</details>
+
+<div className="mt-5 hidden rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-sm leading-7 text-slate-700 md:block">
+  <span className="font-black text-slate-950">
+    حماية أموال العملاء:
+  </span>{" "}
+  {fundProtection ||
+    "يساعد وجود جهة رقابية واضحة على معرفة متطلبات حماية أموال العملاء وآلية التعامل مع الشكاوى والتحقق من الكيان القانوني قبل فتح الحساب."}
+</div>
+
+<div className="mt-7">
+        <h3 className="text-xl font-black text-slate-950">
+          ماذا تعني هذه التراخيص؟
+        </h3>
+
+        <div className="mt-4 grid gap-3 md:grid-cols-3">
+          {licenses.map((license) => (
+            <div
+              key={`desc-${license.id}`}
+              className="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-right"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <div className="text-lg font-black text-slate-950">
+                  {license.regulator_code}
+                </div>
+                <div className="text-sm font-black text-amber-500">
+                  {stars(license.trust_level)}
+                </div>
+              </div>
+
+              <p className="mt-3 text-sm leading-7 text-slate-700">
+                {license.regulator_description_ar || "جهة رقابية تشرف على نشاط الشركة وفق متطلبات تنظيمية محددة."}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-7">
+        <h3 className="text-xl font-black text-slate-950">
+          لماذا يهمك الترخيص؟
+        </h3>
+
+        <div className="mt-4 grid gap-3 md:grid-cols-4">
+          {[
+            ["🛡️", "فصل أموال العملاء"],
+            ["⚖️", "الرقابة القانونية"],
+            ["🏦", "حماية الرصيد"],
+            ["📋", "آلية الشكاوى"],
+          ].map(([icon, title]) => (
+            <div
+              key={title}
+              className="rounded-2xl border border-slate-200 bg-white p-4 text-center shadow-sm"
+            >
+              <div className="text-2xl">{icon}</div>
+              <div className="mt-2 text-sm font-black text-slate-900">
+                {title}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-6 rounded-2xl border border-brand-100 bg-brand-50 p-4 text-sm leading-7 text-slate-700">
+        وجود ترخيص لا يعني أن التداول بلا مخاطر، لكنه يساعد المتداول على معرفة الجهة التي تشرف على الكيان القانوني، وكيف يمكن التحقق من بيانات الشركة قبل فتح الحساب.
+      </div>
+    </SectionCard>
+  );
+}
+
 export default async function BrokerPage({
   params,
 }: {
@@ -1113,8 +1531,11 @@ export default async function BrokerPage({
     );
   }
 
- const relatedBrokers = await getRelatedBrokers(slug);
+const relatedBrokers = await getRelatedBrokers(slug);
 const accountsData = await getBrokerAccounts(broker.id);
+const brokerLicenses = await getBrokerLicenses(broker.id);
+console.log("Broker ID:", broker.id);
+console.log("Licenses:", brokerLicenses);
 const openAccountGuide = await getOpenAccountGuide(slug);
 
   const commissionAccounts = accountsData.filter(
@@ -1418,7 +1839,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
       href={`/go/${broker.slug}?type=real`}
       target="_blank"
       rel="nofollow sponsored noopener noreferrer"
-      className="flex min-h-[56px] items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 px-5 text-[16px] font-black text-white shadow-lg shadow-blue-300 transition active:scale-[0.98]"
+      className="flex min-h-[56px] items-center justify-center rounded-2xl bg-gradient-to-r from-brand-500 to-brand-600 px-5 text-[16px] font-black text-white shadow-lg shadow-blue-300 transition active:scale-[0.98]"
     >
       فتح حساب حقيقي
     </a>
@@ -1680,7 +2101,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
                 </section>
 
    {/* E-E-A-T Review Trust Box */}
-<section className="mt-4 rounded-[22px] border border-blue-100 bg-gradient-to-br from-white via-slate-50 to-blue-50 p-4 shadow-sm md:mt-6 md:rounded-[26px] md:p-6">
+<section className="mt-4 rounded-[22px] border border-brand-100 bg-gradient-to-br from-white via-slate-50 to-brand-50 p-4 shadow-sm md:mt-6 md:rounded-[26px] md:p-6">
   <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_440px] lg:items-center">
     <div className="min-w-0 text-right">
       <div className="text-[11px] font-black tracking-wide text-brand-600 md:text-xs">
@@ -1780,7 +2201,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
   </div>
 </div>
 
-      <div className="mb-6 hidden overflow-hidden rounded-[28px] border border-slate-200 bg-gradient-to-br from-slate-50 via-white to-blue-50 shadow-sm md:block">
+      <div className="mb-6 hidden overflow-hidden rounded-[28px] border border-slate-200 bg-gradient-to-br from-slate-50 via-white to-brand-50 shadow-sm md:block">
         <div className="grid gap-0 md:grid-cols-[220px_minmax(0,1fr)]">
           <div className="flex flex-col justify-center border-b border-slate-200 p-6 text-center md:border-b-0 md:border-l">
             <div className="text-xs font-black uppercase tracking-wide text-brand-600">
@@ -2070,7 +2491,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
           استعرض أنواع الحسابات المتاحة وقارن بين السبريد والعمولات والحد الأدنى للإيداع وآلية التنفيذ ومزايا كل حساب لمساعدتك على اختيار الحساب المناسب لأسلوب تداولك ومستوى خبرتك. توضح هذه المقارنة الفروقات الأساسية بين الحسابات القياسية والحسابات الاحترافية من حيث تكاليف التداول وسرعة التنفيذ ومتطلبات الإيداع.
         </p>
 
-        <div className="mt-4 rounded-2xl border border-blue-100 bg-brand-50 px-4 py-3 text-sm font-bold leading-7 text-brand-600">
+        <div className="mt-4 rounded-2xl border border-brand-100 bg-brand-50 px-4 py-3 text-sm font-bold leading-7 text-brand-600">
           يمكنك النقر على نوع أي حساب داخل الجدول لفتح صفحة تفصيلية تشمل شروط الحساب ومميزاته.
         </div>
 
@@ -2118,7 +2539,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
           <div className="min-w-0 flex-1 text-right">
             <Link
   href={`/brokers/${broker.slug}/accounts/${accountSlug(acc.account_name)}`}
-  className="text-[16px] font-black text-brand-600 hover:text-blue-900"
+  className="text-[16px] font-black text-brand-600 hover:text-brand-600"
 >
   {acc.account_name || "-"}
 </Link>
@@ -2171,7 +2592,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
 
 {/* Mobile CTA */}
 <div className="mt-5 md:hidden">
-  <div className="overflow-hidden rounded-[24px] border border-blue-100 bg-gradient-to-r from-blue-50 via-white to-blue-50 p-4 shadow-sm">
+  <div className="overflow-hidden rounded-[24px] border border-brand-100 bg-gradient-to-r from-blue-50 via-white to-brand-50 p-4 shadow-sm">
     <div className="text-right">
       <div className="text-[15px] font-black text-slate-900">
         ابدأ التداول مع {broker.name}
@@ -2185,7 +2606,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
       href={`/go/${broker.slug}?type=real`}
       target="_blank"
       rel="nofollow sponsored noopener noreferrer"
-      className="mt-4 flex min-h-[52px] items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 text-[15px] font-extrabold text-white shadow-md active:scale-[0.98]"
+      className="mt-4 flex min-h-[52px] items-center justify-center rounded-2xl bg-gradient-to-r from-brand-500 to-brand-600 text-[15px] font-extrabold text-white shadow-md active:scale-[0.98]"
     >
     <span className="flex items-center gap-2">
   <span>فتح حساب حقيقي</span>
@@ -2254,7 +2675,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
 </div>
 
 <div className="hidden md:block">
-  <div className="mt-4 overflow-hidden rounded-[28px] border border-blue-100 bg-gradient-to-r from-blue-100 via-blue-50 to-blue-100 p-6 shadow-sm">
+  <div className="mt-4 overflow-hidden rounded-[28px] border border-brand-100 bg-gradient-to-r from-brand-100 via-brand-50 to-brand-100 p-6 shadow-sm">
     <div className="flex items-center justify-between gap-6">
       <div>
         <div className="text-lg font-black text-slate-900">
@@ -2269,7 +2690,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
         href={`/go/${broker.slug}?type=real`}
         target="_blank"
         rel="nofollow sponsored noopener noreferrer"
-        className="flex min-h-[52px] items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 px-8 text-sm font-extrabold text-white shadow-md transition hover:-translate-y-0.5 hover:from-blue-700 hover:to-blue-800 hover:shadow-lg"
+        className="flex min-h-[52px] items-center justify-center rounded-2xl bg-gradient-to-r from-brand-500 to-brand-600 px-8 text-sm font-extrabold text-white shadow-md transition hover:-translate-y-0.5 hover:from-brand-600 hover:to-brand-600 hover:shadow-lg"
       >
         فتح حساب حقيقي
       </a>
@@ -2287,7 +2708,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
 <div className="md:hidden">
   <div className="overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-sm">
     <div className="space-y-3 p-4 text-right">
-      <div className="rounded-2xl border border-blue-100 bg-brand-50 px-4 py-3">
+      <div className="rounded-2xl border border-brand-100 bg-brand-50 px-4 py-3">
         <div className="flex items-center justify-between gap-4">
           <span className="text-sm font-bold text-slate-500">طرق الدفع</span>
           <span className="text-2xl font-black text-slate-950">
@@ -2339,7 +2760,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
             {paymentMethods.map((item, i) => (
               <span
                 key={i}
-                className="rounded-full border border-blue-100 bg-brand-50 px-3 py-1.5 text-xs font-bold text-brand-600"
+                className="rounded-full border border-brand-100 bg-brand-50 px-3 py-1.5 text-xs font-bold text-brand-600"
               >
                 {item}
               </span>
@@ -2470,7 +2891,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
     {(availablePlatforms.length ? availablePlatforms : splitPipes(broker.platforms)).map((item, i) => (
       <span
         key={i}
-        className="rounded-full border border-blue-100 bg-brand-50 px-3 py-1.5 text-xs font-black text-brand-600"
+        className="rounded-full border border-brand-100 bg-brand-50 px-3 py-1.5 text-xs font-black text-brand-600"
       >
         {item}
       </span>
@@ -2498,7 +2919,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
 />
         </div>
 
-        <div className="mt-5 rounded-[22px] border border-blue-100 bg-brand-50 p-4 shadow-sm">
+        <div className="mt-5 rounded-[22px] border border-brand-100 bg-brand-50 p-4 shadow-sm">
           <div className="text-[15px] font-black text-slate-950">
             تحميل منصات MetaTrader
           </div>
@@ -2644,10 +3065,20 @@ const openAccountGuide = await getOpenAccountGuide(slug);
   </div>
 </SectionCard>
 
-<SectionCard
-  title="التراخيص والأمان"
+{brokerLicenses.length > 0 ? (
+  <BrokerLicensesSection
+    brokerName={broker.name}
+    licenses={brokerLicenses}
+    regulationSummary={regulationSummary}
+    fundProtection={fundProtection}
+    safetyFactors={safetyFactors}
+    regulationItems={regulationItems}
+  />
+) : (
+  <SectionCard
+    title="التراخيص والأمان"
   subtitle={`نظرة على الوضع التنظيمي ومستوى حماية أموال العملاء لدى ${broker.name}.`}
-  id="regulation"
+  id="licenses"
 >
   <div className="space-y-5">
 
@@ -2809,6 +3240,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
 
   </div>
 </SectionCard>
+)}
 
 
 <SectionCard title="الخلاصة النهائية" id="verdict">
@@ -2879,7 +3311,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
             href={`/go/${broker.slug}?type=real`}
             target="_blank"
             rel="nofollow sponsored noopener noreferrer"
-            className="mt-5 flex min-h-[52px] items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 px-5 text-[15px] font-black text-white shadow-md active:scale-[0.98]"
+            className="mt-5 flex min-h-[52px] items-center justify-center rounded-2xl bg-gradient-to-r from-brand-500 to-brand-600 px-5 text-[15px] font-black text-white shadow-md active:scale-[0.98]"
           >
             فتح حساب تداول
           </a>
@@ -2922,7 +3354,7 @@ const openAccountGuide = await getOpenAccountGuide(slug);
                   href={`/go/${broker.slug}?type=real`}
                   target="_blank"
                   rel="nofollow sponsored noopener noreferrer"
-                  className="flex min-h-[48px] w-full items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-3 text-sm font-extrabold text-white shadow-md transition hover:from-blue-700 hover:to-blue-800 hover:shadow-lg"
+                  className="flex min-h-[48px] w-full items-center justify-center rounded-2xl bg-gradient-to-r from-brand-500 to-brand-600 px-4 py-3 text-sm font-extrabold text-white shadow-md transition hover:from-brand-600 hover:to-brand-600 hover:shadow-lg"
                 >
                   فتح حساب تداول
                 </a>

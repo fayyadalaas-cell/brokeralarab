@@ -210,7 +210,7 @@ export default function MarginCalculatorClient() {
             </div>
 
             <div className="border-t border-slate-100 bg-gradient-to-br from-blue-50 via-white to-slate-50 p-5 sm:p-8 lg:border-l lg:border-t-0 lg:p-10">
-              <div className="rounded-[1.5rem] border border-blue-100 bg-white p-5 shadow-sm sm:rounded-[2rem] sm:p-6">
+              <div className="rounded-[1.5rem] border border-brand-100 bg-white p-5 shadow-sm sm:rounded-[2rem] sm:p-6">
                 <p className="text-sm font-bold text-brand-600">
                   Quick example
                 </p>
@@ -234,7 +234,7 @@ export default function MarginCalculatorClient() {
                     </p>
                   </div>
 
-                  <div className="rounded-2xl border border-blue-100 bg-brand-50 p-4">
+                  <div className="rounded-2xl border border-brand-100 bg-brand-50 p-4">
                     <p className="text-xs font-bold text-brand-600">
                       Estimated margin
                     </p>
@@ -519,7 +519,7 @@ export default function MarginCalculatorClient() {
                 showGuideMore ? "max-h-[14000px]" : "max-h-[980px]"
               }`}
             >
-              <section className="rounded-3xl border border-blue-100 bg-brand-50 p-5 sm:p-7">
+              <section className="rounded-3xl border border-brand-100 bg-brand-50 p-5 sm:p-7">
                 <h3 className="text-xl font-extrabold text-slate-950 sm:text-2xl">
                   How does the margin calculator work?
                 </h3>
@@ -588,7 +588,7 @@ export default function MarginCalculatorClient() {
                   </p>
                 </div>
 
-                <div className="rounded-3xl border border-blue-100 bg-brand-50 p-5 sm:p-6">
+                <div className="rounded-3xl border border-brand-100 bg-brand-50 p-5 sm:p-6">
                   <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-brand-600">
                     Formula
                   </span>
@@ -728,7 +728,7 @@ export default function MarginCalculatorClient() {
                   </p>
                 </div>
 
-                <div className="rounded-3xl border border-blue-100 bg-brand-50 p-5 sm:p-7">
+                <div className="rounded-3xl border border-brand-100 bg-brand-50 p-5 sm:p-7">
                   <h3 className="text-xl font-extrabold text-slate-950 sm:text-2xl">
                     What is margin level?
                   </h3>
@@ -844,7 +844,7 @@ export default function MarginCalculatorClient() {
                 </div>
               </section>
 
-              <section className="rounded-3xl border border-blue-100 bg-brand-50 p-5 shadow-sm sm:p-7">
+              <section className="rounded-3xl border border-brand-100 bg-brand-50 p-5 shadow-sm sm:p-7">
                 <h3 className="text-xl font-extrabold text-slate-950 sm:text-2xl">
                   Related Trading Calculators
                 </h3>

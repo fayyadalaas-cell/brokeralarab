@@ -885,7 +885,7 @@ export default async function LowestSpreadBrokersPage() {
              {item.broker_slug && item.account_name ? (
   <Link
     href={`/brokers/${item.broker_slug}/accounts/${accountSlug(item.account_name)}`}
-    className="mt-0.5 inline-flex text-sm font-bold text-brand-600 hover:text-blue-900"
+    className="mt-0.5 inline-flex text-sm font-bold text-brand-600 hover:text-brand-600"
   >
     {item.account_name}
   </Link>
@@ -1058,7 +1058,7 @@ export default async function LowestSpreadBrokersPage() {
                           {card.item.broker_slug && card.item.account_name ? (
   <Link
     href={`/brokers/${card.item.broker_slug}/accounts/${accountSlug(card.item.account_name)}`}
-    className="mt-1 inline-flex text-sm font-bold text-brand-600 hover:text-blue-900"
+    className="mt-1 inline-flex text-sm font-bold text-brand-600 hover:text-brand-600"
   >
     {card.item.account_name}
   </Link>
@@ -1185,7 +1185,7 @@ export default async function LowestSpreadBrokersPage() {
                           {card.item.broker_slug && card.item.account_name ? (
   <Link
     href={`/brokers/${card.item.broker_slug}/accounts/${accountSlug(card.item.account_name)}`}
-    className="mt-1 inline-flex text-sm font-bold text-brand-600 hover:text-blue-900"
+    className="mt-1 inline-flex text-sm font-bold text-brand-600 hover:text-brand-600"
   >
     {card.item.account_name}
   </Link>
@@ -1377,7 +1377,7 @@ export default async function LowestSpreadBrokersPage() {
       </div>
 
       {/* Note - desktop only */}
-      <div className="mt-6 hidden md:block rounded-[18px] border border-blue-100 bg-[#f1f6ff] px-5 py-3.5">
+      <div className="mt-6 hidden md:block rounded-[18px] border border-brand-100 bg-[#f1f6ff] px-5 py-3.5">
   <div className="flex items-start justify-between gap-4">
     <div className="text-right">
       <h3 className="text-base font-black text-slate-950">

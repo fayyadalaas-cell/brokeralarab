@@ -154,7 +154,7 @@ function BrokerLogo({
 }) {
   return (
     <div
-      className="flex shrink-0 items-center justify-center overflow-hidden rounded-[18px] border border-blue-100 bg-white shadow-[0_4px_14px_rgba(59,130,246,0.08)]"
+      className="flex shrink-0 items-center justify-center overflow-hidden rounded-[18px] border border-brand-100 bg-white shadow-[0_4px_14px_rgba(59,130,246,0.08)]"
       style={{ width: size, height: size }}
     >
       {logo ? (
@@ -678,9 +678,9 @@ export default async function BestGoldBrokersPage() {
                 {featured.map((broker, index) => (
                   <div
                     key={broker.id}
-                    className="group relative overflow-hidden rounded-[26px] border border-blue-100 bg-white p-5 shadow-sm transition hover:-translate-y-[2px] hover:border-brand-100 hover:shadow-md"
+                    className="group relative overflow-hidden rounded-[26px] border border-brand-100 bg-white p-5 shadow-sm transition hover:-translate-y-[2px] hover:border-brand-100 hover:shadow-md"
                   >
-                    <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-blue-400 to-blue-300" />
+                    <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-brand-500 via-blue-400 to-blue-300" />
 
                     <div className="flex items-center justify-between gap-4">
                       <BrokerLogo
@@ -1306,7 +1306,7 @@ export default async function BestGoldBrokersPage() {
           </div>
 
           <div className="px-5 pb-6 md:px-8">
-            <div className="rounded-[22px] border border-blue-100 bg-brand-50/60 p-5">
+            <div className="rounded-[22px] border border-brand-100 bg-brand-50/60 p-5">
               <p className="text-[15px] leading-8 text-slate-700">
                 For many online traders, gold trading offers a balance between
                 liquidity, volatility, and macroeconomic relevance. However, the

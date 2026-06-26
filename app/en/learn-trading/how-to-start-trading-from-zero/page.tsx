@@ -123,7 +123,7 @@ function SectionTitle({
   return (
     <div className="mb-6">
       {eyebrow && (
-        <span className="inline-flex rounded-full border border-blue-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-600">
+        <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-600">
           {eyebrow}
         </span>
       )}
@@ -180,7 +180,7 @@ function InfoCard({
         </div>
       </div>
 
-      <div className="mt-4 rounded-[14px] border border-blue-100 bg-brand-50/70 px-3 py-2">
+      <div className="mt-4 rounded-[14px] border border-brand-100 bg-brand-50/70 px-3 py-2">
         <p className="text-[11px] font-bold leading-6 text-blue-800">
           {highlightMap[title]}
         </p>
@@ -205,7 +205,7 @@ function BulletBox({
         ? "border-green-100 bg-green-50/70 text-green-800"
         : tone === "slate"
           ? "border-slate-200 bg-slate-50 text-slate-700"
-          : "border-blue-100 bg-brand-50/70 text-blue-800";
+          : "border-brand-100 bg-brand-50/70 text-blue-800";
 
   return (
     <div className={cn("rounded-[22px] border p-4", toneClass)}>
@@ -259,7 +259,7 @@ function StepCard({
       </p>
 
       <div className="mt-auto pt-3 md:pt-4">
-        <div className="min-h-[52px] rounded-[14px] border border-blue-100 bg-brand-50/70 px-3 py-2 text-[11px] font-bold leading-6 text-blue-800 md:min-h-[70px] md:rounded-[16px] md:text-[12px] md:leading-7">
+        <div className="min-h-[52px] rounded-[14px] border border-brand-100 bg-brand-50/70 px-3 py-2 text-[11px] font-bold leading-6 text-blue-800 md:min-h-[70px] md:rounded-[16px] md:text-[12px] md:leading-7">
           {note}
         </div>
       </div>
@@ -1075,7 +1075,7 @@ const tableBrokers: Broker[] = (tableBrokersData ?? []).sort(
       </p>
     </div>
 
-    <div className="rounded-[18px] border border-blue-100 bg-brand-50/70 p-4">
+    <div className="rounded-[18px] border border-brand-100 bg-brand-50/70 p-4">
       <h3 className="text-[16px] font-black text-slate-950">
         Simple example
       </h3>
@@ -1154,7 +1154,7 @@ const tableBrokers: Broker[] = (tableBrokersData ?? []).sort(
 
   {/* Mobile only */}
   <div className="md:hidden">
-    <div className="rounded-[20px] border border-blue-100 bg-brand-50/70 p-4">
+    <div className="rounded-[20px] border border-brand-100 bg-brand-50/70 p-4">
       <h3 className="text-[18px] font-black leading-7 text-slate-950">
         Quick broker shortlist
       </h3>
@@ -1272,7 +1272,7 @@ const tableBrokers: Broker[] = (tableBrokersData ?? []).sort(
           </div>
         </div>
 
-        <div className="mt-4 inline-flex rounded-full border border-blue-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-600">
+        <div className="mt-4 inline-flex rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-600">
           {item.tag}
         </div>
       </article>
@@ -1351,7 +1351,7 @@ const tableBrokers: Broker[] = (tableBrokersData ?? []).sort(
   </div>
 </section>
 
-             <section className="mt-8 rounded-[22px] border border-blue-100 bg-brand-50/70 p-4 md:rounded-[26px] md:p-6">
+             <section className="mt-8 rounded-[22px] border border-brand-100 bg-brand-50/70 p-4 md:rounded-[26px] md:p-6">
   {/* Mobile */}
   <div className="md:hidden">
     <h2 className="text-[24px] font-black leading-[1.3] text-slate-950">
@@ -1372,7 +1372,7 @@ const tableBrokers: Broker[] = (tableBrokersData ?? []).sort(
       ].map((item) => (
         <div
           key={item}
-          className="flex items-start gap-2 rounded-[14px] border border-blue-100 bg-white/70 px-3 py-2"
+          className="flex items-start gap-2 rounded-[14px] border border-brand-100 bg-white/70 px-3 py-2"
         >
           <span className="mt-1 text-brand-600">✓</span>
 

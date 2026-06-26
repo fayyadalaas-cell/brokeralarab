@@ -118,6 +118,28 @@ type BrokerAccount = {
   sort_order: number | null;
 };
 
+type BrokerLicense = {
+  id: number;
+  broker_id: number;
+  regulator_code: string | null;
+  regulator_name_ar: string | null;
+  regulator_name_en: string | null;
+  country_ar: string | null;
+  country_en: string | null;
+  country_code: string | null;
+  license_number: string | null;
+  entity_name_ar: string | null;
+  entity_name_en: string | null;
+  status_code: string | null;
+  verification_url_ar: string | null;
+  verification_url_en: string | null;
+  trust_level: string | null;
+  regulator_description_ar: string | null;
+  regulator_description_en: string | null;
+  last_verified: string | null;
+  is_active: boolean | null;
+};
+
 function splitText(value: string | null) {
   if (!value) return [];
   return value
@@ -149,16 +171,13 @@ function accountSlug(value: string | null) {
 async function getBroker(slug: string): Promise<Broker | null> {
   const supabase = await createClient();
 
-  console.log("Incoming slug:", slug);
-
   const { data, error } = await supabase
     .from("brokers")
     .select("*")
     .eq("slug", slug)
     .maybeSingle();
 
-  console.log("Broker query data:", data);
-  console.log("Broker query error:", error);
+  
 
   if (error) {
     console.error("Supabase error:", error);
@@ -195,13 +214,26 @@ async function getBrokerAccounts(brokerId: number): Promise<BrokerAccount[]> {
   return data as BrokerAccount[];
 }
 
+async function getBrokerLicenses(brokerId: number): Promise<BrokerLicense[]> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("broker_licenses")
+    .select("*")
+    .eq("broker_id", brokerId)
+    .order("regulator_code", { ascending: true });
+
+  if (error || !data) return [];
+
+  return data as BrokerLicense[];
+}
+
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  console.log("Page slug param:", slug);
   const broker = await getBroker(slug);
   const siteUrl = "https://brokeralarab.com";
 
@@ -273,7 +305,9 @@ function SectionCard({
       id={id}
       className="scroll-mt-24 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8"
     >
-      <h2 className="mb-2 text-2xl font-extrabold text-slate-950">{title}</h2>
+      <h2 className="mb-2 text-[23px] font-extrabold leading-tight text-slate-950 md:text-2xl">
+  {title}
+</h2>
 
       {subtitle ? (
         <p className="mb-5 text-sm leading-7 text-slate-600 md:text-base">
@@ -367,7 +401,7 @@ function getVerdictTone(score: number | null) {
       label: "Excellent",
       badge: "Strong choice",
       color: "border-brand-100 bg-brand-50 text-brand-600",
-      accent: "from-blue-600 via-blue-500 to-cyan-400",
+      accent: "from-brand-500 via-brand-500 to-cyan-400",
     };
   }
 
@@ -376,7 +410,7 @@ function getVerdictTone(score: number | null) {
       label: "Very Good",
       badge: "Well-rated",
       color: "border-brand-100 bg-brand-50 text-brand-600",
-      accent: "from-blue-500 via-sky-400 to-cyan-400",
+      accent: "from-brand-500 via-sky-400 to-cyan-400",
     };
   }
 
@@ -467,7 +501,7 @@ function ScoreBar({
 
       <div className="h-2.5 rounded-full bg-slate-200">
         <div
-          className="h-2.5 rounded-full bg-gradient-to-r from-blue-600 to-blue-400"
+          className="h-2.5 rounded-full bg-brand-500"
           style={{ width: `${((value ?? 0) / 5) * 100}%` }}
         />
       </div>
@@ -862,7 +896,7 @@ function MobileAccountAccordion({
             <div className="min-w-0">
               <Link
   href={`/en/brokers/${brokerSlug}/accounts/${accountSlug(acc.account_name)}`}
-  className="text-base font-black text-brand-600 hover:text-blue-900"
+  className="text-base font-black text-brand-600 hover:text-brand-600"
 >
   {acc.account_name || "-"}
 </Link>
@@ -985,6 +1019,382 @@ function MobileFeesAccordion({
   );
 }
 
+function BrokerLicensesSection({
+  brokerName,
+  licenses,
+  regulationSummary,
+  fundProtection,
+  safetyFactors,
+  regulationItems,
+}: {
+  brokerName: string | null;
+  licenses: BrokerLicense[];
+  regulationSummary: string | null;
+  fundProtection: string | null;
+  safetyFactors: string[];
+  regulationItems: string[];
+}) {
+  if (!licenses.length) return null;
+
+  const latestVerified = licenses
+    .map((l) => l.last_verified)
+    .filter(Boolean)
+    .sort()
+    .reverse()[0];
+
+  const topLicense =
+    licenses.find((l) => l.trust_level === "Tier 1") || licenses[0];
+
+  const allActive = licenses.every((l) => l.status_code === "active");
+
+  const statusLabel = (status: string | null) => {
+    if (status === "active") return "Active";
+    if (status === "expired") return "Expired";
+    if (status === "revoked") return "Revoked";
+    if (status === "pending") return "Pending";
+    if (status === "suspended") return "Suspended";
+    return "Unknown";
+  };
+
+  const stars = (tier: string | null) => {
+    if (tier === "Tier 1") return "★★★★★";
+    if (tier === "Tier 2") return "★★★★☆";
+    if (tier === "Tier 3") return "★★★☆☆";
+    return "★★★☆☆";
+  };
+
+  return (
+    <SectionCard
+      title={`${brokerName || "Broker"} Licenses & Regulation`}
+      subtitle={`A detailed look at the regulators supervising ${
+        brokerName || "this broker"
+      }, including license numbers and official registry links.`}
+      id="regulation"
+    >
+      <div className="mb-4 rounded-[22px] border border-slate-200 bg-white p-4 text-left shadow-sm md:mb-7 md:p-5">
+  <h3 className="text-left text-xl font-black leading-7 text-slate-950 md:text-2xl">
+    Regulation and Trader Protection
+  </h3>
+
+  <div className="mt-3 text-sm leading-7 text-slate-700 md:text-base md:leading-8">
+    {(regulationSummary || "")
+      .split("||")
+      .map((item) => item.trim())
+      .filter(Boolean)
+      .slice(0, 1)
+      .map((paragraph, i) => (
+        <p key={i} className="text-justify">
+          {paragraph}
+        </p>
+      ))}
+  </div>
+
+  {safetyFactors.length > 0 ? (
+    <div className="mt-4 grid grid-cols-2 gap-2 md:mt-6 md:grid-cols-2">
+      {safetyFactors.slice(0, 2).map((item, i) => (
+        <div
+          key={i}
+          className="flex items-center justify-between gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-xs font-black text-slate-800 md:bg-white md:px-4 md:py-3 md:text-sm"
+        >
+          <span>{item}</span>
+          <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-emerald-500" />
+        </div>
+      ))}
+    </div>
+  ) : null}
+</div>
+
+      <div className="grid gap-3 md:grid-cols-4">
+        <MiniInfoCard label="Number of licenses" value={licenses.length} tone="blue" />
+        <MiniInfoCard label="Top regulator" value={topLicense?.regulator_code || "-"} tone="emerald" />
+        <MiniInfoCard label="Last verified" value={latestVerified || "-"} tone="amber" />
+        <MiniInfoCard label="Status" value={allActive ? "All active" : "Review needed"} tone="violet" />
+      </div>
+
+      <p className="mt-5 text-sm leading-7 text-slate-600 md:hidden">
+  License numbers, legal entities, and official verification links for {brokerName || "this broker"} where available.
+</p>
+
+<p className="mt-5 hidden text-sm leading-7 text-slate-600 md:block">
+  The table below shows {brokerName || "this broker"}’s license numbers and legal entities linked to each regulator, with direct links to official registries where available.
+</p>
+
+      <div className="mt-6 hidden overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm md:block">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[760px] text-left text-sm">
+            <thead className="bg-slate-50 text-xs font-black text-slate-600">
+              <tr>
+                <th className="px-4 py-4">Regulator</th>
+                <th className="px-4 py-4">Country</th>
+                <th className="px-4 py-4">License number</th>
+                <th className="px-4 py-4">Legal entity</th>
+                <th className="px-4 py-4">Status</th>
+                <th className="w-[170px] px-4 py-4 text-center">Official registry</th>
+              </tr>
+            </thead>
+
+            <tbody className="divide-y divide-slate-100">
+              {licenses.slice(0, 2).map((license) => (
+                <tr key={license.id} className="hover:bg-slate-50">
+                  <td className="px-4 py-4">
+                    <div className="font-black text-slate-950">
+                      {license.regulator_code}
+                    </div>
+                    <div className="mt-1 text-xs text-slate-500">
+                      {license.regulator_name_en}
+                    </div>
+                  </td>
+
+                  <td className="px-4 py-4 font-bold text-slate-700">
+                    {license.country_en || "-"}
+                  </td>
+
+                  <td className="px-4 py-4 font-black text-slate-950">
+                    {license.license_number || "-"}
+                  </td>
+
+                  <td className="px-4 py-4 text-slate-700">
+                    {license.entity_name_en || license.entity_name_ar || "-"}
+                  </td>
+
+                  <td className="px-4 py-4">
+                    <span className="inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">
+                      {statusLabel(license.status_code)}
+                    </span>
+                  </td>
+
+                  <td className="w-[170px] px-4 py-4 text-center">
+                    {license.verification_url_en || license.verification_url_ar ? (
+                      <a
+                        href={license.verification_url_en || license.verification_url_ar || "#"}
+                        target="_blank"
+                        rel="nofollow noopener noreferrer"
+                        className="inline-flex items-center justify-center rounded-full border border-brand-100 bg-brand-50 px-4 py-2 text-xs font-black text-brand-600 transition hover:bg-brand-100"
+                      >
+                        View registry ↗
+                      </a>
+                    ) : (
+                      <span className="text-xs text-slate-400">Not available</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+<div className="mt-5 space-y-3 md:hidden">
+  {licenses.slice(0, 3).map((license) => (
+    <div
+      key={`mobile-${license.id}`}
+      className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <div className="text-lg font-black text-slate-950">
+            {license.regulator_code}
+          </div>
+          <div className="mt-1 text-xs leading-5 text-slate-500">
+            {license.regulator_name_en}
+          </div>
+        </div>
+
+        <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">
+          {statusLabel(license.status_code)}
+        </span>
+      </div>
+
+      <div className="mt-4 grid gap-2 text-sm">
+        <div className="flex justify-between gap-4 border-t border-slate-100 pt-3">
+          <span className="text-slate-500">Country</span>
+          <span className="font-black text-slate-900">{license.country_en || "-"}</span>
+        </div>
+
+        <div className="flex justify-between gap-4 border-t border-slate-100 pt-3">
+          <span className="text-slate-500">License</span>
+          <span className="font-black text-slate-900">{license.license_number || "-"}</span>
+        </div>
+
+        <div className="border-t border-slate-100 pt-3">
+          <div className="text-slate-500">Legal entity</div>
+          <div className="mt-1 font-black text-slate-900">
+            {license.entity_name_en || license.entity_name_ar || "-"}
+          </div>
+        </div>
+      </div>
+
+      {license.verification_url_en || license.verification_url_ar ? (
+        <a
+          href={license.verification_url_en || license.verification_url_ar || "#"}
+          target="_blank"
+          rel="nofollow noopener noreferrer"
+          className="mt-4 inline-flex min-h-[42px] w-full items-center justify-center rounded-xl border border-brand-100 bg-brand-50 px-4 py-2 text-sm font-black text-brand-600"
+        >
+          View official registry ↗
+        </a>
+      ) : null}
+    </div>
+   ))}
+
+  {licenses.length > 3 ? (
+    <details className="group">
+      <summary className="cursor-pointer list-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center text-sm font-black text-brand-600">
+        <span className="group-open:hidden">Show more licenses</span>
+        <span className="hidden group-open:inline">Show less</span>
+      </summary>
+
+      <div className="mt-3 space-y-3">
+        {licenses.slice(3).map((license) => (
+          <div
+            key={`mobile-extra-${license.id}`}
+            className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <div className="text-lg font-black text-slate-950">
+                  {license.regulator_code}
+                </div>
+                <div className="mt-1 text-xs leading-5 text-slate-500">
+                  {license.regulator_name_en}
+                </div>
+              </div>
+
+              <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">
+                {statusLabel(license.status_code)}
+              </span>
+            </div>
+
+            <div className="mt-4 grid gap-2 text-sm">
+              <div className="flex justify-between gap-4 border-t border-slate-100 pt-3">
+                <span className="text-slate-500">Country</span>
+                <span className="font-black text-slate-900">{license.country_en || "-"}</span>
+              </div>
+
+              <div className="flex justify-between gap-4 border-t border-slate-100 pt-3">
+                <span className="text-slate-500">License</span>
+                <span className="font-black text-slate-900">{license.license_number || "-"}</span>
+              </div>
+
+              <div className="border-t border-slate-100 pt-3">
+                <div className="text-slate-500">Legal entity</div>
+                <div className="mt-1 font-black text-slate-900">
+                  {license.entity_name_en || license.entity_name_ar || "-"}
+                </div>
+              </div>
+            </div>
+
+            {license.verification_url_en || license.verification_url_ar ? (
+              <a
+                href={license.verification_url_en || license.verification_url_ar || "#"}
+                target="_blank"
+                rel="nofollow noopener noreferrer"
+                className="mt-4 inline-flex min-h-[42px] w-full items-center justify-center rounded-xl border border-brand-100 bg-brand-50 px-4 py-2 text-sm font-black text-brand-600"
+              >
+                View official registry ↗
+              </a>
+            ) : null}
+          </div>
+        ))}
+      </div>
+    </details>
+  ) : null}
+</div>
+
+     <details className="group mt-5 rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-sm leading-7 text-slate-700 md:hidden">
+  <summary className="cursor-pointer list-none">
+    <div className="font-black text-slate-950">
+      Client fund protection
+    </div>
+
+    <div className="relative mt-2 max-h-[88px] overflow-hidden text-justify group-open:hidden">
+      {fundProtection ||
+        "Clear regulation helps traders understand client money rules and verify the legal entity before opening an account."}
+
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-emerald-50 to-transparent" />
+    </div>
+
+    <div className="mt-3 inline-flex rounded-xl border border-emerald-200 bg-white px-4 py-2 text-xs font-black text-emerald-700">
+      <span className="group-open:hidden">Show more</span>
+      <span className="hidden group-open:inline">Show less</span>
+    </div>
+  </summary>
+
+  <div className="mt-3 text-justify">
+    {fundProtection ||
+      "Clear regulation helps traders understand client money rules and verify the legal entity before opening an account."}
+  </div>
+</details>
+
+<div className="mt-5 hidden rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-sm leading-7 text-slate-700 md:block">
+  <span className="font-black text-slate-950">
+    Client fund protection:
+  </span>{" "}
+  {fundProtection ||
+    "Clear regulation helps traders understand client money rules and verify the legal entity before opening an account."}
+</div>
+
+      <div className="mt-7">
+        <h3 className="text-xl font-black text-slate-950">
+          What do these licenses mean?
+        </h3>
+
+        <div className="mt-4 grid gap-3 md:grid-cols-3">
+          {licenses.map((license) => (
+            <div
+              key={`desc-${license.id}`}
+              className="rounded-2xl border border-slate-200 bg-slate-50 p-3 md:min-h-[140px] md:p-4"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <div className="text-base font-black text-slate-950 md:text-lg">
+                  {license.regulator_code}
+                </div>
+                <div className="text-xs font-black text-amber-500 md:text-sm">
+                  {stars(license.trust_level)}
+                </div>
+              </div>
+
+              <p className="mt-3 line-clamp-2 text-sm leading-7 text-slate-700 md:line-clamp-none">
+                {license.regulator_description_en ||
+                  "A regulator that supervises the company under defined regulatory requirements."}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-7">
+        <h3 className="text-xl font-black text-slate-950">
+          Why does regulation matter?
+        </h3>
+
+       <div className="mt-4 grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-3">
+  {[
+    ["🛡️", "Client funds"],
+    ["⚖️", "Legal oversight"],
+    ["🏦", "Balance protection"],
+    ["📋", "Complaints"],
+  ].map(([icon, title]) => (
+    <div
+      key={title}
+      className="rounded-2xl border border-slate-200 bg-white p-3 text-center shadow-sm md:p-4"
+    >
+      <div className="text-xl md:text-2xl">{icon}</div>
+      <div className="mt-2 text-xs font-black text-slate-900 md:text-sm">
+        {title}
+      </div>
+    </div>
+  ))}
+</div>
+      </div>
+
+      <div className="mt-6 hidden rounded-2xl border border-brand-100 bg-brand-50 p-4 text-sm leading-7 text-slate-700 md:block">
+        A license does not remove trading risk, but it helps traders identify the legal entity, the supervising regulator, and the official registry before opening an account.
+      </div>
+    </SectionCard>
+  );
+}
+
 export default async function BrokerPage({
   params,
 }: {
@@ -1006,8 +1416,9 @@ export default async function BrokerPage({
     );
   }
 
-    const relatedBrokers = await getRelatedBrokers(slug);
-  const accountsData = await getBrokerAccounts(broker.id);
+const relatedBrokers = await getRelatedBrokers(slug);
+const accountsData = await getBrokerAccounts(broker.id);
+const brokerLicenses = await getBrokerLicenses(broker.id);
   
   const pros = splitText(broker.pros_en || broker.pros);
   const cons = splitText(broker.cons_en || broker.cons);
@@ -1055,7 +1466,9 @@ const lowestSpread = accountsData.length
   : null;
 
 const noCommissionAccounts = accountsData.filter((acc) => {
-  const commission = (acc.commission || "").trim().toLowerCase();
+  const commission = (acc.commission_en || acc.commission || "")
+    .trim()
+    .toLowerCase();
 
   return (
     !commission ||
@@ -1068,7 +1481,9 @@ const noCommissionAccounts = accountsData.filter((acc) => {
 });
 
 const commissionAccounts = accountsData.filter((acc) => {
-  const commission = (acc.commission || "").trim().toLowerCase();
+  const commission = (acc.commission_en || acc.commission || "")
+    .trim()
+    .toLowerCase();
 
   return !(
     !commission ||
@@ -1080,10 +1495,9 @@ const commissionAccounts = accountsData.filter((acc) => {
   );
 });
 
-    const faqItems =
-  (broker.faq_en ?? []).filter(
-    (item) => item?.question?.trim() && item?.answer?.trim()
-  );
+const faqItems = (broker.faq_en ?? []).filter(
+  (item) => item?.question?.trim() && item?.answer?.trim()
+);
 
 const visibleFaqItems = faqItems.slice(0, 5);
 const extraFaqItems = faqItems.slice(5);
@@ -1104,7 +1518,6 @@ const paymentMethods = splitText(
 );
 
 const depositSummary = broker.deposit_withdrawal_summary_en || null;
-
 const withdrawalSpeed = broker.withdrawal_speed_en || null;
 
 const availablePlatforms = broker.available_platforms_en
@@ -1140,8 +1553,8 @@ const regulationItems = (broker.regulation_short || broker.regulation || "")
   .map((item) => item.trim())
   .filter(Boolean);
 
-  const siteUrl = "https://brokeralarab.com";
-  const pageUrl = `${siteUrl}/en/brokers/${broker.slug}`;
+const siteUrl = "https://brokeralarab.com";
+const pageUrl = `${siteUrl}/en/brokers/${broker.slug}`;
 const shareTitle = `${broker.name_en || broker.name} Review | Broker AlArab`;
 
 const breadcrumbSchema = {
@@ -1163,11 +1576,11 @@ const breadcrumbSchema = {
   ],
 };
 
-  const organizationSchema = {
+const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: broker.name_en || broker.name,
-  url: `https://brokeralarab.com/en/brokers/${broker.slug}`,
+  url: `${siteUrl}/en/brokers/${broker.slug}`,
   logo: broker.logo || undefined,
   description:
     broker.meta_description_en ||
@@ -1459,7 +1872,7 @@ const breadcrumbSchema = {
     href={`/go/${broker.slug}?type=real`}
     target="_blank"
     rel="nofollow sponsored noopener noreferrer"
-    className="inline-flex min-h-[56px] w-full items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-3 text-[15px] font-black text-white shadow-lg shadow-blue-300 transition hover:bg-brand-600 lg:w-auto lg:min-w-[170px] md:text-base"
+    className="inline-flex min-h-[56px] w-full items-center justify-center rounded-2xl bg-brand-500 px-6 py-3 text-[15px] font-black text-white shadow-lg shadow-brand-100 transition hover:bg-brand-600 lg:w-auto lg:min-w-[170px] md:text-base"
   >
     Open Real Account
   </a>
@@ -1497,7 +1910,7 @@ const breadcrumbSchema = {
   </div>
 </section>
 {/* E-E-A-T Review Trust Box */}
-<section className="mt-4 rounded-[22px] border border-blue-100 bg-gradient-to-br from-white via-slate-50 to-blue-50 p-4 shadow-sm md:mt-6 md:rounded-[26px] md:p-6">
+<section className="mt-4 rounded-[22px] border border-brand-100 bg-gradient-to-br from-white via-slate-50 to-brand-50 p-4 shadow-sm md:mt-6 md:rounded-[26px] md:p-6">
   <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_440px] lg:items-center">
 
     <div className="min-w-0 text-left">
@@ -1610,7 +2023,7 @@ const breadcrumbSchema = {
 
   {/* Desktop */}
   <div className="hidden md:block">
-    <div className="mb-6 overflow-hidden rounded-[28px] border border-slate-200 bg-gradient-to-br from-slate-50 via-white to-blue-50 shadow-sm">
+    <div className="mb-6 overflow-hidden rounded-[28px] border border-slate-200 bg-gradient-to-br from-slate-50 via-white to-brand-50 shadow-sm">
       <div className="grid gap-0 md:grid-cols-[220px_minmax(0,1fr)]">
         <div className="flex flex-col justify-center border-b border-slate-200 p-6 text-center md:border-b-0 md:border-r">
           <div className="text-xs font-black uppercase tracking-wide text-brand-600">
@@ -1801,7 +2214,7 @@ const breadcrumbSchema = {
   brokerSlug={broker.slug || ""}
 />
 
-        <div className="mt-5 rounded-[22px] border border-blue-100 bg-brand-50 p-4 shadow-sm">
+        <div className="mt-5 rounded-[22px] border border-brand-100 bg-brand-50 p-4 shadow-sm">
           <div className="text-[15px] font-black text-slate-950">
             Start trading with {broker.name_en || broker.name}
           </div>
@@ -1813,7 +2226,7 @@ const breadcrumbSchema = {
             href={`/go/${broker.slug}?type=real`}
             target="_blank"
             rel="nofollow sponsored noopener noreferrer"
-            className="mt-4 flex min-h-[52px] items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 px-5 text-sm font-black text-white shadow-md active:scale-[0.98]"
+            className="mt-4 flex min-h-[52px] items-center justify-center rounded-2xl bg-gradient-to-r from-brand-500 to-brand-600 px-5 text-sm font-black text-white shadow-md active:scale-[0.98]"
           >
             Open Real Account
           </a>
@@ -1975,7 +2388,7 @@ const breadcrumbSchema = {
     </div>
 
     <div className="hidden md:block">
-      <div className="mt-4 overflow-hidden rounded-[28px] border border-brand-100 bg-gradient-to-r from-blue-100 via-blue-50 to-blue-100 p-6 shadow-sm">
+      <div className="mt-4 overflow-hidden rounded-[28px] border border-brand-100 bg-gradient-to-r from-brand-100 via-brand-50 to-brand-100 p-6 shadow-sm">
         <div className="flex items-center justify-between gap-6">
           <div>
             <div className="text-lg font-black text-slate-900">
@@ -1990,7 +2403,7 @@ const breadcrumbSchema = {
             href={`/go/${broker.slug}?type=real`}
             target="_blank"
             rel="nofollow sponsored noopener noreferrer"
-            className="flex min-h-[52px] items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 px-8 text-sm font-extrabold text-white shadow-md transition hover:-translate-y-0.5 hover:from-blue-700 hover:to-blue-800 hover:shadow-lg"
+            className="flex min-h-[52px] items-center justify-center rounded-2xl bg-gradient-to-r from-brand-500 to-brand-600 px-8 text-sm font-extrabold text-white shadow-md transition hover:-translate-y-0.5 hover:from-brand-600 hover:to-brand-600 hover:shadow-lg"
           >
             Open Real Account
           </a>
@@ -2008,7 +2421,7 @@ const breadcrumbSchema = {
 <div className="md:hidden">
   <div className="overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-sm">
     <div className="space-y-3 bg-white p-4">
-      <div className="flex items-center justify-between rounded-2xl border border-blue-100 bg-brand-50 px-4 py-3 shadow-sm">
+      <div className="flex items-center justify-between rounded-2xl border border-brand-100 bg-brand-50 px-4 py-3 shadow-sm">
         <span className="text-sm font-bold text-slate-500">
           Payment Methods
         </span>
@@ -2042,7 +2455,7 @@ const breadcrumbSchema = {
             {paymentMethods.map((item, i) => (
               <span
                 key={i}
-                className="rounded-full border border-blue-100 bg-brand-50 px-3 py-1.5 text-xs font-bold text-brand-600 shadow-sm"
+                className="rounded-full border border-brand-100 bg-brand-50 px-3 py-1.5 text-xs font-bold text-brand-600 shadow-sm"
               >
                 {item}
               </span>
@@ -2138,7 +2551,7 @@ const breadcrumbSchema = {
         <div className="overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-sm">
 
           <div className="p-4 text-center">
-            <div className="rounded-2xl border border-blue-100 bg-brand-50 px-4 py-4">
+            <div className="rounded-2xl border border-brand-100 bg-brand-50 px-4 py-4">
               <div className="text-sm font-black text-slate-600">
                 Available Platforms
               </div>
@@ -2148,7 +2561,7 @@ const breadcrumbSchema = {
                   {availablePlatforms.map((item, i) => (
                     <span
                       key={i}
-                      className="rounded-full border border-blue-100 bg-white px-3 py-1.5 text-xs font-black text-brand-600 shadow-sm"
+                      className="rounded-full border border-brand-100 bg-white px-3 py-1.5 text-xs font-black text-brand-600 shadow-sm"
                     >
                       {item}
                     </span>
@@ -2182,7 +2595,7 @@ const breadcrumbSchema = {
               </p>
             </div>
 
-            <div className="mt-5 rounded-[22px] border border-blue-100 bg-brand-50 p-4 shadow-sm">
+            <div className="mt-5 rounded-[22px] border border-brand-100 bg-brand-50 p-4 shadow-sm">
               <div className="text-[15px] font-black text-slate-950">
                 Download MetaTrader Platforms
               </div>
@@ -2316,8 +2729,18 @@ const breadcrumbSchema = {
   </div>
 </SectionCard>
 
-<SectionCard
-  title="Regulation & Safety"
+{brokerLicenses.length > 0 ? (
+  <BrokerLicensesSection
+    brokerName={broker.name_en || broker.name}
+    licenses={brokerLicenses}
+    regulationSummary={regulationSummary}
+    fundProtection={fundProtection}
+    safetyFactors={safetyFactors}
+    regulationItems={regulationItems}
+  />
+) : (
+  <SectionCard
+    title="Regulation & Safety"
   subtitle={`An overview of the regulatory standing and safety considerations for ${broker.name_en || broker.name}.`}
   id="regulation"
 >
@@ -2463,7 +2886,7 @@ const breadcrumbSchema = {
     </div>
   </div>
 </SectionCard>
-
+)}
 
 <SectionCard title="Final Verdict" id="verdict">
   <div className="space-y-5">
@@ -2533,7 +2956,7 @@ const breadcrumbSchema = {
             href={`/go/${broker.slug}?type=real`}
             target="_blank"
             rel="nofollow sponsored noopener noreferrer"
-            className="mt-5 flex min-h-[52px] items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 px-5 text-[15px] font-black text-white shadow-md active:scale-[0.98]"
+            className="mt-5 flex min-h-[52px] items-center justify-center rounded-2xl bg-gradient-to-r from-brand-500 to-brand-600 px-5 text-[15px] font-black text-white shadow-md active:scale-[0.98]"
           >
             Open Trading Account
           </a>
@@ -2574,7 +2997,7 @@ const breadcrumbSchema = {
               href={`/go/${broker.slug}?type=real`}
               target="_blank"
               rel="nofollow sponsored noopener noreferrer"
-              className="flex min-h-[48px] w-full items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-3 text-sm font-extrabold text-white shadow-md transition hover:from-blue-700 hover:to-blue-800 hover:shadow-lg"
+              className="flex min-h-[48px] w-full items-center justify-center rounded-2xl bg-gradient-to-r from-brand-500 to-brand-600 px-4 py-3 text-sm font-extrabold text-white shadow-md transition hover:from-brand-600 hover:to-brand-600 hover:shadow-lg"
             >
               Open Trading Account
             </a>

@@ -660,7 +660,7 @@ const typePages = getTypePages();
           <div className="hidden lg:block">
             <div className="grid grid-cols-[1fr_270px] gap-5 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-6 py-5">
               <div>
-                <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
+                <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
                   Broker Rating Methodology
                 </span>
 
@@ -774,7 +774,7 @@ const typePages = getTypePages();
     <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="text-center lg:text-left">
-          <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
+          <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
             Broker Comparisons
           </span>
 
@@ -1102,7 +1102,7 @@ const typePages = getTypePages();
       <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-5 py-5 sm:px-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="text-center lg:text-left">
-            <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
+            <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
               By Country
             </span>
 
@@ -1264,7 +1264,7 @@ const typePages = getTypePages();
       <div className="hidden border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4 lg:block">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="text-left">
-            <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
+            <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
               Low Spread Trading Accounts
             </span>
 
@@ -1399,11 +1399,11 @@ const typePages = getTypePages();
                 <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent opacity-80" />
 
                 <div className="mb-4 flex items-center justify-between gap-3">
-                  <span className="inline-flex rounded-full border border-blue-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-500">
+                  <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-500">
                     {item.tag}
                   </span>
 
-                  <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-blue-100 bg-[#f8fbff] text-[13px] font-black text-brand-500 transition group-hover:bg-brand-500 group-hover:text-white">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-brand-100 bg-[#f8fbff] text-[13px] font-black text-brand-500 transition group-hover:bg-brand-500 group-hover:text-white">
                     →
                   </span>
                 </div>
@@ -1442,7 +1442,7 @@ const typePages = getTypePages();
     <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="text-center lg:text-left">
-          <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
+          <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
             Broker Selection Guide
           </span>
 
@@ -1587,7 +1587,7 @@ const typePages = getTypePages();
                       key={item}
                       className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm transition hover:-translate-y-1 hover:border-brand-100 hover:bg-[#fcfdff] hover:shadow-[0_12px_28px_rgba(15,23,42,0.05)]"
                     >
-                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-blue-100 bg-brand-50 text-xs font-black text-brand-600 transition group-hover:bg-brand-500 group-hover:text-white">
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-brand-50 text-xs font-black text-brand-600 transition group-hover:bg-brand-500 group-hover:text-white">
                         {index + 1}
                       </span>
 
@@ -1613,7 +1613,7 @@ const typePages = getTypePages();
     {/* HEADER */}
     <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4">
       <div className="text-center lg:text-left">
-        <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
+        <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
           Why Broker Al Arab?
         </span>
 
@@ -1703,11 +1703,11 @@ const typePages = getTypePages();
             <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent opacity-55" />
 
             <div className="mb-5 flex items-center justify-between gap-3">
-              <span className="inline-flex rounded-full border border-blue-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-500">
+              <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-500">
                 {item.tag}
               </span>
 
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-blue-100 bg-[#f8fbff] text-[13px] font-black text-brand-500 transition group-hover:bg-brand-500 group-hover:text-white">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-brand-100 bg-[#f8fbff] text-[13px] font-black text-brand-500 transition group-hover:bg-brand-500 group-hover:text-white">
                 {index + 1}
               </span>
             </div>
@@ -1734,7 +1734,7 @@ const typePages = getTypePages();
     <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="text-center lg:text-left">
-          <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
+          <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
             Forex & FinTech Events
           </span>
 
@@ -1794,7 +1794,7 @@ const typePages = getTypePages();
           <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent opacity-80" />
 
           <div className="mb-4 flex items-center justify-between">
-            <span className="rounded-full border border-blue-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-500">
+            <span className="rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-500">
               Financial Event
             </span>
 
@@ -1836,7 +1836,7 @@ const typePages = getTypePages();
   <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
     <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4">
       <div className="text-center lg:text-left">
-        <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
+        <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
           Frequently Asked Questions
         </span>
 
@@ -1925,7 +1925,7 @@ const typePages = getTypePages();
         <details className="group overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-[0_6px_20px_rgba(15,23,42,0.04)] transition hover:border-brand-100 hover:bg-[#fcfdff] hover:shadow-[0_14px_32px_rgba(15,23,42,0.05)] open:border-[#93c5fd]">
           <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4">
             <div className="flex items-center gap-3 text-left">
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-blue-100 bg-brand-50 text-xs font-black text-brand-600 transition group-open:bg-brand-500 group-open:text-white">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-brand-50 text-xs font-black text-brand-600 transition group-open:bg-brand-500 group-open:text-white">
                 {index + 1}
               </span>
 
@@ -1934,7 +1934,7 @@ const typePages = getTypePages();
               </span>
             </div>
 
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-blue-100 bg-[#f8fbff] text-[14px] font-black text-brand-500 transition group-open:rotate-180 group-open:bg-brand-500 group-open:text-white">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-[#f8fbff] text-[14px] font-black text-brand-500 transition group-open:rotate-180 group-open:bg-brand-500 group-open:text-white">
               ▾
             </span>
           </summary>

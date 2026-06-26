@@ -78,7 +78,7 @@ export default function HowWeReviewBrokersPage() {
   return (
     <main dir="ltr" className="mx-auto max-w-7xl px-4 pt-8 pb-2 text-left sm:px-5 md:pt-10 md:pb-3">
       {/* Hero */}
-      <section className="overflow-hidden rounded-[34px] border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-blue-50 shadow-sm">
+      <section className="overflow-hidden rounded-[34px] border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-brand-50 shadow-sm">
         <div className="grid gap-8 p-6 md:grid-cols-[minmax(0,1fr)_280px] md:items-center md:p-10">
           <div>
             <div className="mb-4 inline-flex rounded-full border border-brand-100 bg-white px-4 py-2 text-sm font-black text-brand-600">

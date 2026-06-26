@@ -320,7 +320,7 @@ const featuredComparisonsMobile = sortedComparisons.slice(0, 5);
       </div>
     </div>
 
-    <div className="mt-6 rounded-[20px] border border-blue-100 bg-[linear-gradient(180deg,#eff6ff_0%,#f8fbff_100%)] p-4">
+    <div className="mt-6 rounded-[20px] border border-brand-100 bg-[linear-gradient(180deg,#eff6ff_0%,#f8fbff_100%)] p-4">
       <div className="text-xs font-extrabold text-brand-600">
         ماذا ستشاهد في صفحة المقارنة؟
       </div>
@@ -634,7 +634,7 @@ const featuredComparisonsMobile = sortedComparisons.slice(0, 5);
         </Link>
       </div>
 
-      <div className="mt-6 rounded-[22px] border border-blue-100 bg-[linear-gradient(180deg,#eff6ff_0%,#f8fbff_100%)] p-4">
+      <div className="mt-6 rounded-[22px] border border-brand-100 bg-[linear-gradient(180deg,#eff6ff_0%,#f8fbff_100%)] p-4">
         <div className="text-sm font-extrabold text-brand-500">
           نصيحة سريعة
         </div>

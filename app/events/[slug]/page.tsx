@@ -143,7 +143,7 @@ const restSponsors = sponsors.slice(8);
         {firstSponsors.map((name) => (
           <div
             key={name}
-            className="rounded-full border border-blue-100 bg-brand-50 px-4 py-3 text-center text-sm font-black text-slate-900 shadow-sm"
+            className="rounded-full border border-brand-100 bg-brand-50 px-4 py-3 text-center text-sm font-black text-slate-900 shadow-sm"
           >
             {name}
           </div>
@@ -309,7 +309,7 @@ export default async function Page({
                 ].map(([label, value]) => (
                   <div
                     key={label}
-                    className="rounded-[24px] border border-blue-100 bg-white p-4 shadow-[0_12px_30px_rgba(37,99,235,0.10)] md:p-5"
+                    className="rounded-[24px] border border-brand-100 bg-white p-4 shadow-[0_12px_30px_rgba(37,99,235,0.10)] md:p-5"
                   >
                     <div className="text-3xl font-black text-brand-600 md:text-5xl">
                       {value}

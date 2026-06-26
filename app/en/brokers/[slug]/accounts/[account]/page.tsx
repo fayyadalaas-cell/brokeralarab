@@ -236,7 +236,7 @@ export default async function BrokerAccountPage({ params }: PageProps) {
             </div>
           </div>
 
-          <div className="mt-3 rounded-2xl border border-blue-100 bg-brand-50 p-3 text-left">
+          <div className="mt-3 rounded-2xl border border-brand-100 bg-brand-50 p-3 text-left">
             <p className="text-[11px] font-bold text-blue-800">Best for</p>
             <p className="mt-1 text-sm font-black leading-6 text-blue-950">
               {currentBestFor}
@@ -351,7 +351,7 @@ export default async function BrokerAccountPage({ params }: PageProps) {
               ))}
             </div>
 
-            <div className="mt-5 rounded-2xl border border-blue-100 bg-brand-50 p-4">
+            <div className="mt-5 rounded-2xl border border-brand-100 bg-brand-50 p-4">
               <p className="text-xs font-bold text-blue-800">Best for</p>
               <p className="mt-2 text-sm font-black leading-7 text-blue-950">
                 {currentBestFor}
@@ -415,7 +415,7 @@ export default async function BrokerAccountPage({ params }: PageProps) {
             </p>
           </div>
 
-          <div className="rounded-3xl border border-blue-100 bg-brand-50 p-5 shadow-sm md:p-6">
+          <div className="rounded-3xl border border-brand-100 bg-brand-50 p-5 shadow-sm md:p-6">
             <h3 className="text-[22px] font-black text-blue-950 md:text-xl">
               Quick verdict
             </h3>
