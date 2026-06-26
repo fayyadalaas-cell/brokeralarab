@@ -1340,81 +1340,89 @@ function BrokerLicensesSection({
         </div>
       </div>
 
-      {license.verification_url_ar || license.verification_url_en ? (
-        <a
-          href={license.verification_url_ar || license.verification_url_en || "#"}
-          target="_blank"
-          rel="nofollow noopener noreferrer"
-          className="mt-4 inline-flex min-h-[42px] w-full items-center justify-center rounded-xl border border-brand-100 bg-brand-50 px-4 py-2 text-sm font-black text-brand-600"
-        >
-          عرض السجل الرسمي ↗
-        </a>
-      ) : null}
+     {license.verification_url_ar || license.verification_url_en ? (
+  <a
+    href={license.verification_url_ar || license.verification_url_en || "#"}
+    target="_blank"
+    rel="nofollow noopener noreferrer"
+    className="mt-4 inline-flex min-h-[42px] w-full items-center justify-center rounded-xl border border-brand-100 bg-brand-50 px-4 py-2 text-sm font-black text-brand-600"
+  >
+    عرض السجل الرسمي ↗
+  </a>
+) : (
+  <div className="mt-4 inline-flex min-h-[42px] w-full items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-black text-slate-400">
+    غير متاح علنًا
+  </div>
+)}
     </div>
   ))}
 
   {licenses.length > 3 ? (
-    <details className="group">
-      <summary className="cursor-pointer list-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center text-sm font-black text-brand-600">
-        <span className="group-open:hidden">عرض المزيد من التراخيص</span>
-        <span className="hidden group-open:inline">عرض أقل</span>
-      </summary>
+  <details className="group">
+    <summary className="cursor-pointer list-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center text-sm font-black text-brand-600">
+      <span className="group-open:hidden">عرض المزيد من التراخيص</span>
+      <span className="hidden group-open:inline">عرض أقل</span>
+    </summary>
 
-      <div className="mt-3 space-y-3">
-        {licenses.slice(3).map((license) => (
-          <div
-            key={`mobile-extra-${license.id}`}
-            className="rounded-2xl border border-slate-200 bg-white p-4 text-right shadow-sm"
-          >
-            <div className="flex items-start justify-between gap-3">
-              <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">
-                {statusLabel(license.status_code)}
-              </span>
+    <div className="mt-3 space-y-3">
+      {licenses.slice(3).map((license) => (
+        <div
+          key={`mobile-extra-${license.id}`}
+          className="rounded-2xl border border-slate-200 bg-white p-4 text-right shadow-sm"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">
+              {statusLabel(license.status_code)}
+            </span>
 
-              <div>
-                <div className="text-lg font-black text-slate-950">
-                  {license.regulator_code}
-                </div>
-                <div className="mt-1 text-xs leading-5 text-slate-500">
-                  {license.regulator_name_ar}
-                </div>
+            <div>
+              <div className="text-lg font-black text-slate-950">
+                {license.regulator_code}
+              </div>
+              <div className="mt-1 text-xs leading-5 text-slate-500">
+                {license.regulator_name_ar}
               </div>
             </div>
-
-            <div className="mt-4 grid gap-2 text-sm">
-              <div className="flex justify-between gap-4 border-t border-slate-100 pt-3">
-                <span className="font-black text-slate-900">{license.country_ar || "-"}</span>
-                <span className="text-slate-500">الدولة</span>
-              </div>
-
-              <div className="flex justify-between gap-4 border-t border-slate-100 pt-3">
-                <span className="font-black text-slate-900">{license.license_number || "-"}</span>
-                <span className="text-slate-500">رقم الترخيص</span>
-              </div>
-
-              <div className="border-t border-slate-100 pt-3">
-                <div className="text-slate-500">الكيان القانوني</div>
-                <div className="mt-1 font-black text-slate-900">
-                  {license.entity_name_ar || license.entity_name_en || "-"}
-                </div>
-              </div>
-            </div>
-
-            {license.verification_url_ar || license.verification_url_en ? (
-              <a
-                href={license.verification_url_ar || license.verification_url_en || "#"}
-                target="_blank"
-                rel="nofollow noopener noreferrer"
-                className="mt-4 inline-flex min-h-[42px] w-full items-center justify-center rounded-xl border border-brand-100 bg-brand-50 px-4 py-2 text-sm font-black text-brand-600"
-              >
-                عرض السجل الرسمي ↗
-              </a>
-            ) : null}
           </div>
-        ))}
-      </div>
-    </details>
-  ) : null}
+
+          <div className="mt-4 grid gap-2 text-sm">
+            <div className="flex justify-between gap-4 border-t border-slate-100 pt-3">
+              <span className="font-black text-slate-900">{license.country_ar || "-"}</span>
+              <span className="text-slate-500">الدولة</span>
+            </div>
+
+            <div className="flex justify-between gap-4 border-t border-slate-100 pt-3">
+              <span className="font-black text-slate-900">{license.license_number || "-"}</span>
+              <span className="text-slate-500">رقم الترخيص</span>
+            </div>
+
+            <div className="border-t border-slate-100 pt-3">
+              <div className="text-slate-500">الكيان القانوني</div>
+              <div className="mt-1 font-black text-slate-900">
+                {license.entity_name_ar || license.entity_name_en || "-"}
+              </div>
+            </div>
+          </div>
+
+          {license.verification_url_ar || license.verification_url_en ? (
+            <a
+              href={license.verification_url_ar || license.verification_url_en || "#"}
+              target="_blank"
+              rel="nofollow noopener noreferrer"
+              className="mt-4 inline-flex min-h-[42px] w-full items-center justify-center rounded-xl border border-brand-100 bg-brand-50 px-4 py-2 text-sm font-black text-brand-600"
+            >
+              عرض السجل الرسمي ↗
+            </a>
+          ) : (
+            <div className="mt-4 inline-flex min-h-[42px] w-full items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-black text-slate-400">
+              غير متاح علنًا
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  </details>
+) : null}
 </div>
 
 <details className="group mt-5 rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-sm leading-7 text-slate-700 md:hidden">

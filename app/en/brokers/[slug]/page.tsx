@@ -1225,15 +1225,19 @@ function BrokerLicensesSection({
       </div>
 
       {license.verification_url_en || license.verification_url_ar ? (
-        <a
-          href={license.verification_url_en || license.verification_url_ar || "#"}
-          target="_blank"
-          rel="nofollow noopener noreferrer"
-          className="mt-4 inline-flex min-h-[42px] w-full items-center justify-center rounded-xl border border-brand-100 bg-brand-50 px-4 py-2 text-sm font-black text-brand-600"
-        >
-          View official registry ↗
-        </a>
-      ) : null}
+  <a
+    href={license.verification_url_en || license.verification_url_ar || "#"}
+    target="_blank"
+    rel="nofollow noopener noreferrer"
+    className="mt-4 inline-flex min-h-[42px] w-full items-center justify-center rounded-xl border border-brand-100 bg-brand-50 px-4 py-2 text-sm font-black text-brand-600"
+  >
+    View official registry ↗
+  </a>
+) : (
+  <div className="mt-4 inline-flex min-h-[42px] w-full items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-black text-slate-400">
+    Not publicly available
+  </div>
+)}
     </div>
    ))}
 
@@ -1284,21 +1288,25 @@ function BrokerLicensesSection({
               </div>
             </div>
 
-            {license.verification_url_en || license.verification_url_ar ? (
-              <a
-                href={license.verification_url_en || license.verification_url_ar || "#"}
-                target="_blank"
-                rel="nofollow noopener noreferrer"
-                className="mt-4 inline-flex min-h-[42px] w-full items-center justify-center rounded-xl border border-brand-100 bg-brand-50 px-4 py-2 text-sm font-black text-brand-600"
-              >
-                View official registry ↗
-              </a>
-            ) : null}
-          </div>
-        ))}
-      </div>
-    </details>
-  ) : null}
+                {license.verification_url_en || license.verification_url_ar ? (
+            <a
+              href={license.verification_url_en || license.verification_url_ar || "#"}
+              target="_blank"
+              rel="nofollow noopener noreferrer"
+              className="mt-4 inline-flex min-h-[42px] w-full items-center justify-center rounded-xl border border-brand-100 bg-brand-50 px-4 py-2 text-sm font-black text-brand-600"
+            >
+              View official registry ↗
+            </a>
+          ) : (
+            <div className="mt-4 inline-flex min-h-[42px] w-full items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-black text-slate-400">
+              Not publicly available
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  </details>
+) : null}
 </div>
 
      <details className="group mt-5 rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-sm leading-7 text-slate-700 md:hidden">
