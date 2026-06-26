@@ -1134,7 +1134,7 @@ function BrokerLicensesSection({
             </thead>
 
             <tbody className="divide-y divide-slate-100">
-              {licenses.slice(0, 2).map((license) => (
+              {licenses.map((license) => (
                 <tr key={license.id} className="hover:bg-slate-50">
                   <td className="px-4 py-4">
                     <div className="font-black text-slate-950">
