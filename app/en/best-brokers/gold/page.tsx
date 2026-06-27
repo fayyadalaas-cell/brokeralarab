@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import Script from "next/script";
 import { createClient } from "@/lib/supabase/server";
 import type { Metadata } from "next";
 
@@ -118,7 +119,6 @@ async function getTopGoldBrokers(): Promise<Broker[]> {
     .limit(10);
 
   if (error) {
-    console.error(error.message);
     return [];
   }
 
@@ -501,62 +501,79 @@ export default async function BestGoldBrokersPage() {
     })),
   };
 
-  const itemListSchema = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: "Best Gold Brokers in 2026",
-    itemListOrder: "https://schema.org/ItemListOrderAscending",
-    numberOfItems: brokers.length,
-    itemListElement: brokers.map((broker, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      name: getBrokerName(broker),
-      url: `https://brokeralarab.com/en/brokers/${broker.slug}`,
-    })),
-  };
+ const itemListSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "@id": `${PAGE_URL}#itemlist`,
+  name: "Best Gold Brokers in 2026",
+  itemListOrder: "https://schema.org/ItemListOrderAscending",
+  numberOfItems: brokers.length,
+  itemListElement: brokers.map((broker, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: getBrokerName(broker),
+    url: `https://brokeralarab.com/en/brokers/${broker.slug}`,
+  })),
+};
 
-  const collectionPageSchema = {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    name: PAGE_TITLE,
-    description: PAGE_DESCRIPTION,
-    url: PAGE_URL,
-    inLanguage: "en",
-    about: [
-      { "@type": "Thing", name: "Gold trading" },
-      { "@type": "Thing", name: "Gold brokers" },
-      { "@type": "Thing", name: "XAU/USD trading" },
-      { "@type": "Thing", name: "Gold CFD brokers" },
-    ],
-    mainEntity: itemListSchema,
-  };
+const collectionPageSchema = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "@id": `${PAGE_URL}#collection`,
+  name: PAGE_TITLE,
+  description: PAGE_DESCRIPTION,
+  url: PAGE_URL,
+  inLanguage: "en",
+  isPartOf: {
+    "@id": "https://brokeralarab.com/#website",
+  },
+  publisher: {
+    "@id": "https://brokeralarab.com/#organization",
+  },
+  about: [
+    { "@type": "Thing", name: "Gold trading" },
+    { "@type": "Thing", name: "Gold brokers" },
+    { "@type": "Thing", name: "XAU/USD trading" },
+    { "@type": "Thing", name: "Gold CFD brokers" },
+  ],
+  mainEntity: {
+    "@id": `${PAGE_URL}#itemlist`,
+  },
+};
 
   return (
     <main className="bg-slate-50">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(breadcrumbSchema),
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(faqSchema),
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(itemListSchema),
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(collectionPageSchema),
-        }}
-      />
+     <Script
+  id="gold-en-breadcrumb-schema"
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify(breadcrumbSchema),
+  }}
+/>
+
+<Script
+  id="gold-en-faq-schema"
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify(faqSchema),
+  }}
+/>
+
+<Script
+  id="gold-en-itemlist-schema"
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify(itemListSchema),
+  }}
+/>
+
+<Script
+  id="gold-en-collection-schema"
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify(collectionPageSchema),
+  }}
+/>
 
       {/* HERO */}
       <section className="hidden md:block mx-auto max-w-7xl px-4 pb-6 md:px-6 lg:px-8">

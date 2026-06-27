@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Script from "next/script";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import type { Metadata } from "next";
@@ -83,7 +84,6 @@ async function getTopGoldBrokers(): Promise<Broker[]> {
     .limit(10);
 
   if (error) {
-    console.error("Failed to fetch brokers:", error.message);
     return [];
   }
 
@@ -448,6 +448,7 @@ export default async function BestGoldTradingPlatformsPage() {
   const itemListSchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
+    "@id": `${PAGE_URL}#itemlist`,
     name: "أفضل منصات تداول الذهب في 2026",
     itemListOrder: "https://schema.org/ItemListOrderAscending",
     numberOfItems: brokers.length,
@@ -459,46 +460,53 @@ export default async function BestGoldTradingPlatformsPage() {
     })),
   };
 
-  const collectionPageSchema = {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    name: PAGE_TITLE,
-    description: PAGE_DESCRIPTION,
-    url: PAGE_URL,
-    inLanguage: "ar",
-    about: [
-      { "@type": "Thing", name: "تداول الذهب" },
-      { "@type": "Thing", name: "منصات تداول الذهب" },
-      { "@type": "Thing", name: "أفضل شركات تداول الذهب" },
-    ],
-    mainEntity: {
-      "@type": "ItemList",
-      name: "أفضل منصات تداول الذهب",
-      numberOfItems: brokers.length,
-      itemListElement: brokers.map((broker, index) => ({
-        "@type": "ListItem",
-        position: index + 1,
-        url: `https://brokeralarab.com/brokers/${broker.slug}`,
-        name: broker.name,
-      })),
-    },
-  };
+const collectionPageSchema = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "@id": `${PAGE_URL}#collection`,
+  name: PAGE_TITLE,
+  description: PAGE_DESCRIPTION,
+  url: PAGE_URL,
+  inLanguage: "ar",
+  isPartOf: {
+    "@id": "https://brokeralarab.com/#website",
+  },
+  publisher: {
+    "@id": "https://brokeralarab.com/#organization",
+  },
+  about: [
+    { "@type": "Thing", name: "تداول الذهب" },
+    { "@type": "Thing", name: "منصات تداول الذهب" },
+    { "@type": "Thing", name: "أفضل شركات تداول الذهب" },
+    { "@type": "Thing", name: "XAU/USD" },
+  ],
+  mainEntity: {
+    "@id": `${PAGE_URL}#itemlist`,
+  },
+};
 
   return (
     <main className="bg-slate-50">
-        <script
+    <Script
+  id="gold-breadcrumb-schema"
   type="application/ld+json"
   dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
 />
-<script
+
+<Script
+  id="gold-faq-schema"
   type="application/ld+json"
   dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
 />
-<script
+
+<Script
+  id="gold-itemlist-schema"
   type="application/ld+json"
   dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
 />
-<script
+
+<Script
+  id="gold-collection-schema"
   type="application/ld+json"
   dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionPageSchema) }}
 />

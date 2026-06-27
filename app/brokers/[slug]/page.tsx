@@ -201,19 +201,13 @@ function accountSlug(value: string | null) {
 async function getBroker(slug: string): Promise<Broker | null> {
   const supabase = await createClient();
 
-  console.log("Incoming slug:", slug);
-
   const { data, error } = await supabase
     .from("brokers")
     .select("*")
     .eq("slug", slug)
     .maybeSingle();
 
-  console.log("Broker query data:", data);
-  console.log("Broker query error:", error);
-
   if (error) {
-    console.error("Supabase error:", error);
     return null;
   }
 
@@ -224,12 +218,13 @@ async function getRelatedBrokers(currentSlug: string): Promise<RelatedBroker[]> 
   const supabase = await createClient();
 
   const { data, error } = await supabase
-  .from("brokers")
-  .select("id, name, name_en, slug, rating, logo")
-  .neq("slug", currentSlug)
-  .limit(3);
+    .from("brokers")
+    .select("id, name, name_en, slug, rating, logo")
+    .neq("slug", currentSlug)
+    .limit(3);
 
   if (error || !data) return [];
+
   return data as RelatedBroker[];
 }
 
@@ -1305,8 +1300,9 @@ function BrokerLicensesSection({
     <div
       key={`mobile-${license.id}`}
       className="rounded-2xl border border-slate-200 bg-white p-4 text-right shadow-sm"
+dir="rtl"
     >
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex flex-row-reverse items-start justify-between gap-3">
         <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">
           {statusLabel(license.status_code)}
         </span>
@@ -1323,14 +1319,14 @@ function BrokerLicensesSection({
 
       <div className="mt-4 grid gap-2 text-sm">
         <div className="flex justify-between gap-4 border-t border-slate-100 pt-3">
-          <span className="font-black text-slate-900">{license.country_ar || "-"}</span>
           <span className="text-slate-500">الدولة</span>
+<span className="font-black text-slate-900">{license.country_ar || "-"}</span>
         </div>
 
-        <div className="flex justify-between gap-4 border-t border-slate-100 pt-3">
-          <span className="font-black text-slate-900">{license.license_number || "-"}</span>
-          <span className="text-slate-500">رقم الترخيص</span>
-        </div>
+       <div className="flex justify-between gap-4 border-t border-slate-100 pt-3">
+  <span className="text-slate-500">رقم الترخيص</span>
+  <span className="font-black text-slate-900">{license.license_number || "-"}</span>
+</div>
 
         <div className="border-t border-slate-100 pt-3">
           <div className="text-slate-500">الكيان القانوني</div>
@@ -1369,8 +1365,9 @@ function BrokerLicensesSection({
         <div
           key={`mobile-extra-${license.id}`}
           className="rounded-2xl border border-slate-200 bg-white p-4 text-right shadow-sm"
+dir="rtl"
         >
-          <div className="flex items-start justify-between gap-3">
+          <div className="flex flex-row-reverse items-start justify-between gap-3">
             <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">
               {statusLabel(license.status_code)}
             </span>
@@ -1387,13 +1384,13 @@ function BrokerLicensesSection({
 
           <div className="mt-4 grid gap-2 text-sm">
             <div className="flex justify-between gap-4 border-t border-slate-100 pt-3">
-              <span className="font-black text-slate-900">{license.country_ar || "-"}</span>
               <span className="text-slate-500">الدولة</span>
+<span className="font-black text-slate-900">{license.country_ar || "-"}</span>
             </div>
 
             <div className="flex justify-between gap-4 border-t border-slate-100 pt-3">
-              <span className="font-black text-slate-900">{license.license_number || "-"}</span>
-              <span className="text-slate-500">رقم الترخيص</span>
+             <span className="text-slate-500">رقم الترخيص</span>
+<span className="font-black text-slate-900">{license.license_number || "-"}</span>
             </div>
 
             <div className="border-t border-slate-100 pt-3">
@@ -1677,17 +1674,73 @@ const openAccountGuide = await getOpenAccountGuide(slug);
     ],
   };
 
-  const organizationSchema = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: broker.name,
-    url: `${siteUrl}/brokers/${broker.slug}`,
-    logo: broker.logo || undefined,
-    description:
-      broker.meta_descr ||
-      broker.intro ||
-      `مراجعة شاملة لشركة ${broker.name} تشمل الرسوم، المنصات، والحسابات.`,
-  };
+const brokerLogoUrl = broker.logo
+  ? broker.logo.startsWith("http")
+    ? broker.logo
+    : `${siteUrl}${broker.logo}`
+  : undefined;
+
+const brokerEntitySchema = {
+  "@context": "https://schema.org",
+  "@type": "FinancialService",
+  "@id": `${pageUrl}#broker`,
+  name: broker.name,
+  alternateName: broker.name_en || undefined,
+  url: pageUrl,
+  image: brokerLogoUrl,
+  description:
+    broker.meta_descr ||
+    broker.intro ||
+    `مراجعة شاملة لشركة ${broker.name} تشمل الرسوم، المنصات، التراخيص، أنواع الحسابات، وطرق الإيداع والسحب.`,
+  serviceType: "Forex and CFD Broker",
+  areaServed: broker.headquarters || undefined,
+  knowsAbout: [
+    "Forex trading",
+    "CFD trading",
+    "Gold trading",
+    "Trading platforms",
+    "Broker regulation",
+    "Trading accounts",
+  ],
+  aggregateRating: overallScore
+    ? {
+        "@type": "AggregateRating",
+        ratingValue: overallScore,
+        bestRating: 5,
+        worstRating: 1,
+        ratingCount: 1,
+      }
+    : undefined,
+};
+
+const reviewSchema = {
+  "@context": "https://schema.org",
+  "@type": "Review",
+  "@id": `${pageUrl}#review`,
+  url: pageUrl,
+  name: `تقييم ${broker.name} 2026`,
+  headline: `تقييم ${broker.name} 2026`,
+  inLanguage: "ar",
+  itemReviewed: {
+    "@id": `${pageUrl}#broker`,
+  },
+  author: {
+    "@id": "https://brokeralarab.com/#organization",
+  },
+  publisher: {
+    "@id": "https://brokeralarab.com/#organization",
+  },
+  reviewRating: {
+    "@type": "Rating",
+    ratingValue: overallScore || broker.rating || undefined,
+    bestRating: 5,
+    worstRating: 1,
+  },
+  reviewBody:
+    broker.final_verdict ||
+    broker.intro ||
+    `مراجعة شاملة لشركة ${broker.name} تشمل التراخيص، الرسوم، الحسابات، المنصات، وطرق الإيداع والسحب.`,
+};
 
   return (
     <>
@@ -1713,13 +1766,21 @@ const openAccountGuide = await getOpenAccountGuide(slug);
         }}
       />
 
-      <Script
-        id="organization-schema"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(organizationSchema),
-        }}
-      />
+     <Script
+  id="broker-entity-schema"
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify(brokerEntitySchema),
+  }}
+/>
+
+<Script
+  id="broker-review-schema"
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify(reviewSchema),
+  }}
+/>
 
             <main dir="rtl" className="mx-auto w-full max-w-7xl px-3 pt-5 pb-1 text-right sm:px-4 md:pt-6 md:pb-1">
 

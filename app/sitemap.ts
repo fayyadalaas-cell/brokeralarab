@@ -1,10 +1,18 @@
 import { createClient } from "@/lib/supabase/server";
 import type { MetadataRoute } from "next";
-
-const BASE_URL = "https://brokeralarab.com";
+import {
+  BASE_URL,
+  TOOL_SLUGS,
+  STATIC_PAGES,
+  STATIC_PAGES_EN,
+  EVENT_SLUGS,
+} from "@/lib/site-map-data";
 
 // فعّلها لاحقًا لما تجهز صفحات الدول الإنجليزية
 const ENABLE_EN_COUNTRY_PAGES = false;
+
+// فعّلها لاحقًا لما تجهز صفحات الأحداث الإنجليزية
+const ENABLE_EN_EVENT_PAGES = false;
 
 function accountSlug(value: string | null) {
   if (!value) return "";
@@ -21,6 +29,8 @@ function accountSlug(value: string | null) {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = await createClient();
 
+  const now = new Date();
+
   const { data: brokers } = await supabase
     .from("brokers")
     .select("id, slug");
@@ -30,12 +40,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const brokerPages = brokerSlugs.map((slug) => ({
     url: `${BASE_URL}/brokers/${slug}`,
-    lastModified: new Date(),
+    lastModified: now,
   }));
 
   const brokerPagesEN = brokerSlugs.map((slug) => ({
     url: `${BASE_URL}/en/brokers/${slug}`,
-    lastModified: new Date(),
+    lastModified: now,
   }));
 
   const { data: openAccountGuides } = await supabase
@@ -49,7 +59,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .filter((slug): slug is string => Boolean(slug))
       .map((slug) => ({
         url: `${BASE_URL}/brokers/${slug}/open-account`,
-        lastModified: new Date(),
+        lastModified: now,
       })) || [];
 
   const { data: accounts } = await supabase
@@ -67,12 +77,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     accountPages.push({
       url: `${BASE_URL}/brokers/${slug}/accounts/${account}`,
-      lastModified: new Date(),
+      lastModified: now,
     });
 
     accountPagesEN.push({
       url: `${BASE_URL}/en/brokers/${slug}/accounts/${account}`,
-      lastModified: new Date(),
+      lastModified: now,
     });
   });
 
@@ -87,13 +97,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const countryPages = countrySlugs.map((slug) => ({
     url: `${BASE_URL}/best-brokers/${slug}`,
-    lastModified: new Date(),
+    lastModified: now,
   }));
 
   const countryPagesEN = ENABLE_EN_COUNTRY_PAGES
     ? countrySlugs.map((slug) => ({
         url: `${BASE_URL}/en/best-brokers/${slug}`,
-        lastModified: new Date(),
+        lastModified: now,
       }))
     : [];
 
@@ -104,64 +114,47 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     for (let j = i + 1; j < brokerSlugs.length; j++) {
       comparePages.push({
         url: `${BASE_URL}/compare/${brokerSlugs[i]}-vs-${brokerSlugs[j]}`,
-        lastModified: new Date(),
+        lastModified: now,
       });
 
       comparePagesEN.push({
         url: `${BASE_URL}/en/compare/${brokerSlugs[i]}-vs-${brokerSlugs[j]}`,
-        lastModified: new Date(),
+        lastModified: now,
       });
     }
   }
 
-// 🟢 صفحات أدوات التداول
-const toolSlugs = [
-  "risk-calculator",
-  "margin-calculator",
-  "pip-calculator",
-  "lot-size-calculator",
-  "profit-calculator",
-  "leverage-calculator",
-  "drawdown-calculator",
-  "compound-calculator",
-  "fibonacci-calculator",
-  "pivot-point-calculator",
-];
-
-  const toolPages = toolSlugs.map((slug) => ({
+  const toolPages = TOOL_SLUGS.map((slug) => ({
     url: `${BASE_URL}/tools/${slug}`,
-    lastModified: new Date(),
+    lastModified: now,
   }));
 
-  const toolPagesEN = toolSlugs.map((slug) => ({
+  const toolPagesEN = TOOL_SLUGS.map((slug) => ({
     url: `${BASE_URL}/en/tools/${slug}`,
-    lastModified: new Date(),
+    lastModified: now,
   }));
 
-  const staticPages = [
-    { url: `${BASE_URL}`, lastModified: new Date() },
-    { url: `${BASE_URL}/brokers`, lastModified: new Date() },
-    { url: `${BASE_URL}/compare`, lastModified: new Date() },
-    { url: `${BASE_URL}/best-brokers`, lastModified: new Date() },
-    { url: `${BASE_URL}/best-brokers/gold`, lastModified: new Date() },
-    { url: `${BASE_URL}/lowest-spread-brokers`, lastModified: new Date() },
-    {
-      url: `${BASE_URL}/learn-trading/how-to-start-trading-from-zero`,
-      lastModified: new Date(),
-    },
-  ];
+  const staticPages = STATIC_PAGES.map((page) => ({
+    url: page ? `${BASE_URL}/${page}` : BASE_URL,
+    lastModified: now,
+  }));
 
-  const staticPagesEN = [
-    { url: `${BASE_URL}/en`, lastModified: new Date() },
-    { url: `${BASE_URL}/en/brokers`, lastModified: new Date() },
-    { url: `${BASE_URL}/en/compare`, lastModified: new Date() },
-    { url: `${BASE_URL}/en/best-brokers`, lastModified: new Date() },
-    { url: `${BASE_URL}/en/best-brokers/gold`, lastModified: new Date() },
-    {
-      url: `${BASE_URL}/en/learn-trading/how-to-start-trading-from-zero`,
-      lastModified: new Date(),
-    },
-  ];
+  const staticPagesEN = STATIC_PAGES_EN.map((page) => ({
+    url: `${BASE_URL}/${page}`,
+    lastModified: now,
+  }));
+
+  const eventPages = EVENT_SLUGS.map((slug) => ({
+    url: `${BASE_URL}/events/${slug}`,
+    lastModified: now,
+  }));
+
+  const eventPagesEN = ENABLE_EN_EVENT_PAGES
+    ? EVENT_SLUGS.map((slug) => ({
+        url: `${BASE_URL}/en/events/${slug}`,
+        lastModified: now,
+      }))
+    : [];
 
   return [
     ...staticPages,
@@ -177,5 +170,7 @@ const toolSlugs = [
     ...accountPagesEN,
     ...comparePages,
     ...comparePagesEN,
+    ...eventPages,
+    ...eventPagesEN,
   ];
 }

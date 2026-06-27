@@ -199,25 +199,105 @@ const { data: brokersData } = await supabase
   return (
     <html lang={isEnglish ? "en" : "ar"} dir={isEnglish ? "ltr" : "rtl"}>
       <head>
-        {/* Organization Schema */}
-        <Script
-          id="organization-schema"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              name: "بروكر العرب",
-              alternateName: "Broker Al Arab",
-              url: "https://brokeralarab.com",
-              logo: "https://brokeralarab.com/brokers/BrokerLogo.png",
-              sameAs: [
-                "https://www.facebook.com/BrokerAlArab",
-                "https://x.com/brokeralarab",
-              ],
-            }),
-          }}
-        />
+      {/* Organization Schema */}
+<Script
+  id="organization-schema"
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "@id": "https://brokeralarab.com/#organization",
+
+      name: "Broker AlArab",
+
+      alternateName: [
+        "Broker Al Arab",
+        "بروكر العرب"
+      ],
+
+      url: "https://brokeralarab.com",
+
+      mainEntityOfPage: "https://brokeralarab.com/about",
+
+      logo: {
+        "@type": "ImageObject",
+        url: "https://brokeralarab.com/brokers/BrokerLogo.png",
+      },
+
+      email: "info@brokeralarab.com",
+
+      sameAs: [
+        "https://www.facebook.com/BrokerAlArab",
+        "https://x.com/brokeralarab"
+      ],
+
+      description:
+        "Broker AlArab is an independent bilingual broker review and comparison platform helping traders compare forex brokers, broker regulation, trading platforms, account types, trading fees, investor protection, and trading tools in Arabic and English.",
+
+      availableLanguage: [
+        "Arabic",
+        "English"
+      ],
+
+      areaServed: [
+        "Saudi Arabia",
+        "United Arab Emirates",
+        "Kuwait",
+        "Qatar",
+        "Bahrain",
+        "Oman",
+        "Jordan",
+        "Egypt",
+        "Iraq",
+        "Syria",
+        "Libya"
+      ],
+
+      knowsAbout: [
+        "Forex broker reviews",
+        "Broker comparisons",
+        "Broker regulation",
+        "License verification",
+        "Trading account types",
+        "Trading platforms",
+        "Trading calculators",
+        "Investor protection",
+        "Forex trading",
+        "CFD trading",
+        "Gold trading"
+      ]
+    }),
+  }}
+/>
+
+{/* WebSite Schema */}
+<Script
+  id="website-schema"
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "@id": "https://brokeralarab.com/#website",
+      url: "https://brokeralarab.com",
+      name: "Broker AlArab",
+      alternateName: [
+        "Broker Al Arab",
+        "بروكر العرب"
+      ],
+      publisher: {
+        "@id": "https://brokeralarab.com/#organization"
+      },
+      inLanguage: [
+        "ar",
+        "en"
+      ],
+      description:
+        "Broker AlArab is an independent bilingual broker review and comparison website covering forex brokers, broker regulation, trading platforms, account types, fees, investor protection, and trading tools."
+    }),
+  }}
+/>
 
         {/* Google Analytics */}
 <Script

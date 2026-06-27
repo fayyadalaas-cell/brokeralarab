@@ -1028,21 +1028,140 @@ export default async function BestBrokersCountryPage({
 
   const faqs = (faqData || []) as FaqRow[];
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    name: page.seo_title || page.hero_title,
-    description: page.seo_description || page.hero_description,
-    url: `https://brokeralarab.com/best-brokers/${page.slug}`,
-  };
+const pageUrl = `https://brokeralarab.com/best-brokers/${page.slug}`;
+
+const collectionPageSchema = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "@id": `${pageUrl}#collection`,
+  name:
+    page.seo_title ||
+    page.hero_title ||
+    `أفضل شركات التداول في ${page.country_name_ar}`,
+  description:
+    page.seo_description ||
+    page.hero_description ||
+    `قائمة مقارنة لأفضل شركات التداول في ${page.country_name_ar}.`,
+  url: pageUrl,
+  inLanguage: "ar",
+  isPartOf: {
+    "@id": "https://brokeralarab.com/#website",
+  },
+  publisher: {
+    "@id": "https://brokeralarab.com/#organization",
+  },
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "الرئيسية",
+      item: "https://brokeralarab.com",
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "أفضل الوسطاء",
+      item: "https://brokeralarab.com/best-brokers",
+    },
+    {
+      "@type": "ListItem",
+      position: 3,
+      name: `أفضل شركات التداول في ${page.country_name_ar}`,
+      item: pageUrl,
+    },
+  ],
+};
+
+const itemListSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "@id": `${pageUrl}#itemlist`,
+  name: `أفضل شركات التداول في ${page.country_name_ar}`,
+  itemListOrder: "https://schema.org/ItemListOrderAscending",
+  numberOfItems: topFive.length,
+  itemListElement: topFive
+    .map((row) => {
+      const broker = oneBroker(row.brokers);
+      if (!broker || !broker.slug) return null;
+
+      return {
+        "@type": "ListItem",
+        position: row.rank_position,
+        item: {
+          "@type": "FinancialService",
+          "@id": `https://brokeralarab.com/brokers/${broker.slug}#broker`,
+          name: broker.name,
+          url: `https://brokeralarab.com/brokers/${broker.slug}`,
+          image: broker.logo || undefined,
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: row.country_rating || broker.rating || undefined,
+            bestRating: 5,
+            worstRating: 1,
+            ratingCount: 1,
+          },
+        },
+      };
+    })
+    .filter(Boolean),
+};
+
+const faqSchema =
+  faqs.length > 0
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: faqs.slice(0, 10).map((faq) => ({
+          "@type": "Question",
+          name: faq.question,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: faq.answer.replace(/<[^>]*>/g, ""),
+          },
+        })),
+      }
+    : null;
 
   return (
     <main dir="rtl" className="min-h-screen bg-[#f3f7fc]">
       <Script
-        id={`country-page-schema-${page.slug}`}
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+  id={`country-collection-schema-${page.slug}`}
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify(collectionPageSchema),
+  }}
+/>
+
+<Script
+  id={`country-breadcrumb-schema-${page.slug}`}
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify(breadcrumbSchema),
+  }}
+/>
+
+<Script
+  id={`country-itemlist-schema-${page.slug}`}
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify(itemListSchema),
+  }}
+/>
+
+{faqSchema ? (
+  <Script
+    id={`country-faq-schema-${page.slug}`}
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{
+      __html: JSON.stringify(faqSchema),
+    }}
+  />
+) : null}
 
       <div className="mx-auto max-w-[1240px] px-3 py-3 sm:px-6 sm:py-6 lg:px-8">
         <section className="overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-[0_16px_45px_rgba(15,23,42,0.06)] sm:rounded-[38px] sm:shadow-[0_24px_70px_rgba(15,23,42,0.08)]">

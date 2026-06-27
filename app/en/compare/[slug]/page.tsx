@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -610,31 +611,81 @@ export default async function ComparePage({ params }: PageProps) {
 
   const faqJsonLd = buildFaqJsonLd(left, right);
 
-  const comparisonSchema = {
+  const comparisonItemListSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "@id": `${pageUrl}#itemlist`,
+  name: `${left.name_en || left.name} vs ${right.name_en || right.name}`,
+  itemListOrder: "https://schema.org/ItemListUnordered",
+  numberOfItems: 2,
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      item: {
+        "@type": "FinancialService",
+        "@id": `${siteUrl}/en/brokers/${left.slug}#broker`,
+        name: left.name_en || left.name,
+        url: `${siteUrl}/en/brokers/${left.slug}`,
+        image: left.logo || undefined,
+        aggregateRating: left.rating
+          ? {
+              "@type": "AggregateRating",
+              ratingValue: left.rating,
+              bestRating: 5,
+              worstRating: 1,
+              ratingCount: 1,
+            }
+          : undefined,
+      },
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      item: {
+        "@type": "FinancialService",
+        "@id": `${siteUrl}/en/brokers/${right.slug}#broker`,
+        name: right.name_en || right.name,
+        url: `${siteUrl}/en/brokers/${right.slug}`,
+        image: right.logo || undefined,
+        aggregateRating: right.rating
+          ? {
+              "@type": "AggregateRating",
+              ratingValue: right.rating,
+              bestRating: 5,
+              worstRating: 1,
+              ratingCount: 1,
+            }
+          : undefined,
+      },
+    },
+  ],
+};
+
+const comparisonSchema = {
   "@context": "https://schema.org",
   "@type": "WebPage",
+  "@id": `${pageUrl}#webpage`,
   name: `${left.name_en || left.name} vs ${right.name_en || right.name}`,
-  url: `https://brokeralarab.com/en/compare/${slug}`,
+  url: pageUrl,
+  inLanguage: "en",
+  isPartOf: {
+    "@id": `${siteUrl}/#website`,
+  },
+  publisher: {
+    "@id": `${siteUrl}/#organization`,
+  },
+  primaryImageOfPage: {
+    "@type": "ImageObject",
+    url: `${siteUrl}/og-image.png`,
+  },
   description: `Compare ${left.name_en || left.name} vs ${right.name_en || right.name} by fees, regulation, account types, and trading platforms.`,
+  about: [
+    { "@id": `${siteUrl}/en/brokers/${left.slug}#broker` },
+    { "@id": `${siteUrl}/en/brokers/${right.slug}#broker` },
+  ],
   mainEntity: {
-    "@type": "ItemList",
-    name: `${left.name_en || left.name} vs ${right.name_en || right.name}`,
-    itemListOrder: "https://schema.org/ItemListUnordered",
-    numberOfItems: 2,
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: left.name_en || left.name,
-        url: `https://brokeralarab.com/en/brokers/${left.slug}`,
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: right.name_en || right.name,
-        url: `https://brokeralarab.com/en/brokers/${right.slug}`,
-      },
-    ],
+    "@id": `${pageUrl}#itemlist`,
   },
 };
 
@@ -803,19 +854,29 @@ export default async function ComparePage({ params }: PageProps) {
 
   return (
     <main dir="ltr" className="min-h-screen bg-[#f4f7fb] text-[#0f172a]">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(comparisonSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-      />
+     <Script
+  id="compare-en-faq-schema"
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+/>
 
+<Script
+  id="compare-en-webpage-schema"
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{ __html: JSON.stringify(comparisonSchema) }}
+/>
+
+<Script
+  id="compare-en-itemlist-schema"
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{ __html: JSON.stringify(comparisonItemListSchema) }}
+/>
+
+<Script
+  id="compare-en-breadcrumb-schema"
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+/>
            <section className="relative overflow-hidden border-b border-slate-200 bg-[linear-gradient(180deg,#f8fbff_0%,#eef4ff_100%)]">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -top-20 left-0 h-72 w-72 rounded-full bg-brand-500/10 blur-3xl" />

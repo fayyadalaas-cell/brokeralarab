@@ -180,7 +180,6 @@ async function getBroker(slug: string): Promise<Broker | null> {
   
 
   if (error) {
-    console.error("Supabase error:", error);
     return null;
   }
 
@@ -1584,18 +1583,76 @@ const breadcrumbSchema = {
   ],
 };
 
-const organizationSchema = {
+const brokerLogoUrl = broker.logo
+  ? broker.logo.startsWith("http")
+    ? broker.logo
+    : `${siteUrl}${broker.logo}`
+  : undefined;
+
+const brokerEntitySchema = {
   "@context": "https://schema.org",
-  "@type": "Organization",
+  "@type": "FinancialService",
+  "@id": `${pageUrl}#broker`,
   name: broker.name_en || broker.name,
-  url: `${siteUrl}/en/brokers/${broker.slug}`,
-  logo: broker.logo || undefined,
+  alternateName: broker.name || undefined,
+  url: pageUrl,
+  image: brokerLogoUrl,
   description:
     broker.meta_description_en ||
-    broker.meta_descr ||
     broker.intro_en ||
+    broker.meta_descr ||
     broker.intro ||
-    `Full review of ${broker.name_en || broker.name} covering fees, platforms, and regulation.`,
+    `Full review of ${broker.name_en || broker.name} covering regulation, fees, account types, trading platforms, deposits, and withdrawals.`,
+  serviceType: "Forex and CFD Broker",
+  areaServed: broker.headquarters_en || broker.headquarters || undefined,
+  knowsAbout: [
+    "Forex trading",
+    "CFD trading",
+    "Gold trading",
+    "Trading platforms",
+    "Broker regulation",
+    "Trading accounts",
+  ],
+  aggregateRating: overallScore
+    ? {
+        "@type": "AggregateRating",
+        ratingValue: overallScore,
+        bestRating: 5,
+        worstRating: 1,
+        ratingCount: 1,
+      }
+    : undefined,
+};
+
+const reviewSchema = {
+  "@context": "https://schema.org",
+  "@type": "Review",
+  "@id": `${pageUrl}#review`,
+  url: pageUrl,
+  name: `${broker.name_en || broker.name} Review 2026`,
+  headline: `${broker.name_en || broker.name} Review 2026`,
+  inLanguage: "en",
+  itemReviewed: {
+    "@id": `${pageUrl}#broker`,
+  },
+  author: {
+    "@id": "https://brokeralarab.com/#organization",
+  },
+  publisher: {
+    "@id": "https://brokeralarab.com/#organization",
+  },
+  reviewRating: {
+    "@type": "Rating",
+    ratingValue: overallScore || broker.rating || undefined,
+    bestRating: 5,
+    worstRating: 1,
+  },
+  reviewBody:
+    broker.final_verdict_en ||
+    broker.intro_en ||
+    broker.final_verdict ||
+    broker.intro ||
+    `Full review of ${broker.name_en || broker.name} covering regulation, fees, account types, trading platforms, deposits, and withdrawals.`,
 };
 
   return (
@@ -1621,10 +1678,18 @@ const organizationSchema = {
         }}
       />
 <Script
-  id="organization-schema"
+  id="broker-entity-schema"
   type="application/ld+json"
   dangerouslySetInnerHTML={{
-    __html: JSON.stringify(organizationSchema),
+    __html: JSON.stringify(brokerEntitySchema),
+  }}
+/>
+
+<Script
+  id="broker-review-schema"
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify(reviewSchema),
   }}
 />
             <main dir="ltr" className="mx-auto w-full max-w-7xl px-3 pt-5 pb-1 text-left sm:px-4 md:pt-6 md:pb-1">
