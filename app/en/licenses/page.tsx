@@ -119,6 +119,20 @@ function plural(count: number, singular: string, pluralWord: string) {
   return count === 1 ? singular : pluralWord;
 }
 
+function formatVerifiedDate(value?: string | null) {
+  if (!value) return "Not specified";
+
+  try {
+    return new Intl.DateTimeFormat("en", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).format(new Date(value));
+  } catch {
+    return value;
+  }
+}
+
 export default async function LicensesPage({
   searchParams,
 }: {
@@ -649,10 +663,11 @@ export default async function LicensesPage({
                                 ▼
                               </span>
 
-                              <span className="rounded-full bg-brand-50 px-3 py-1 text-xs font-black text-brand-600">
-                                {group.licenses.length}{" "}
-                                {plural(group.licenses.length, "license", "licenses")}
-                              </span>
+                            <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-3.5 py-1.5 text-xs font-black text-emerald-700">
+  <span aria-hidden="true">🛡️</span>
+  {group.licenses.length} active{" "}
+  {plural(group.licenses.length, "license", "licenses")}
+</span>
 
                               {broker?.slug && (
                                 <Link
@@ -671,25 +686,30 @@ export default async function LicensesPage({
                         <table className="min-w-full text-left">
                           <thead className="bg-brand-50/40">
                             <tr className="text-[12px] font-black text-slate-500">
-                              <th className="px-5 py-3">License</th>
-                              <th className="px-5 py-3">Country</th>
-                              <th className="px-5 py-3">Legal Entity</th>
-                              <th className="px-5 py-3 text-center">Status</th>
-                              <th className="px-8 py-3 text-center">Verify</th>
+                              <th className="px-5 py-3">Regulator</th>
+<th className="px-5 py-3">Country</th>
+<th className="px-5 py-3">Legal Entity</th>
+<th className="px-5 py-3 text-center">Status</th>
+<th className="px-8 py-3 text-center">Official Verification</th>
                             </tr>
                           </thead>
 
                           <tbody className="divide-y divide-slate-100">
                             {group.licenses.map((item) => (
                               <tr key={item.id} className="transition hover:bg-slate-50">
-                                <td className="px-5 py-3">
-                                  <div className="text-sm font-black text-slate-950">
-                                    {item.regulator_code}
-                                  </div>
-                                  <div className="mt-1 text-[12px] font-bold text-slate-500">
-                                    License No: {item.license_number || "Not available"}
-                                  </div>
-                                </td>
+                               <td className="px-5 py-3">
+  <div className="text-sm font-black text-slate-950">
+    {item.regulator_code}
+  </div>
+
+  <div className="mt-1 text-[12px] font-bold leading-5 text-slate-500">
+    {item.regulator_name_en || item.regulator_name_ar}
+  </div>
+
+  <div className="mt-1 inline-flex rounded-full bg-slate-50 px-2.5 py-1 text-[11px] font-black text-slate-600">
+    License No: {item.license_number || "Not available"}
+  </div>
+</td>
 
                                 <td className="px-5 py-3 text-sm font-black text-slate-950">
                                   {item.country_en || item.country_ar}
@@ -700,9 +720,10 @@ export default async function LicensesPage({
                                 </td>
 
                                 <td className="px-5 py-3 text-center">
-                                  <span className="inline-flex items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">
-                                    {statusText(item.status_code)}
-                                  </span>
+                                 <span className="inline-flex items-center justify-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">
+  <span className="h-2 w-2 rounded-full bg-emerald-500" />
+  {statusText(item.status_code)}
+</span>
                                 </td>
 
                                 <td className="px-8 py-3 text-center">
@@ -723,9 +744,22 @@ export default async function LicensesPage({
                                 </td>
                               </tr>
                             ))}
-                          </tbody>
-                        </table>
-                      </details>
+                        </tbody>
+</table>
+
+<div className="border-t border-slate-200 bg-slate-50 px-5 py-3 text-[12px] font-bold text-slate-500">
+  Last license data verification:{" "}
+  <span className="font-black text-slate-700">
+    {formatVerifiedDate(
+      group.licenses
+        .map((license) => license.last_verified)
+        .filter(Boolean)
+        .sort()
+        .reverse()[0]
+    )}
+  </span>
+</div>
+</details>
                     );
                   })}
                 </div>
@@ -755,39 +789,41 @@ export default async function LicensesPage({
                   const broker = group.broker;
                   const brokerName = broker?.name_en || broker?.name || "Forex Broker";
 
-                  return (
-                    <div
-                      key={broker?.id || group.licenses[0]?.broker_id}
-                      className="overflow-hidden rounded-[24px] border border-brand-100 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.05)]"
-                    >
-                      <div className="border-b border-slate-200 bg-slate-50 px-4 py-4">
-                       <div className="flex items-center justify-between gap-3">
-                          <div className="flex min-w-0 items-center gap-3">
-                            <BrokerLogo broker={broker} />
+                return (
+  <details
+    key={broker?.id || group.licenses[0]?.broker_id}
+    className="group overflow-hidden rounded-[24px] border border-brand-100 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.05)]"
+  >
+<summary className="list-none cursor-pointer border-b border-slate-200 bg-slate-50 px-4 py-4">
+  <div className="flex items-center justify-between gap-3">
+    <div className="flex min-w-0 items-center gap-3">
+      <BrokerLogo broker={broker} />
 
-                            <div className="min-w-0 flex-1">
-                              {broker?.slug ? (
-                                <Link
-                                  href={`/en/brokers/${broker.slug}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="block text-[19px] font-black leading-6 text-slate-950 transition hover:text-brand-600"
-                                >
-                                  {brokerName}
-                                </Link>
-                              ) : (
-                                <div className="text-[19px] font-black leading-6 text-slate-950">
-                                  {brokerName}
-                                </div>
-                              )}
+      <div className="min-w-0 flex-1">
+        {broker?.slug ? (
+          <Link
+            href={`/en/brokers/${broker.slug}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block text-[19px] font-black leading-6 text-slate-950 transition hover:text-brand-600"
+          >
+            {brokerName}
+          </Link>
+        ) : (
+          <div className="text-[19px] font-black leading-6 text-slate-950">
+            {brokerName}
+          </div>
+        )}
+      </div>
+    </div>
 
-                           
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-sm font-black text-brand-600 transition group-open:rotate-180">
+      ▼
+    </span>
+  </div>
+</summary>
 
-                      <div className="space-y-3 p-4">
+      <div className="space-y-3 p-4">
                         {group.licenses.map((item) => (
                           <div
                             key={item.id}
@@ -866,9 +902,9 @@ export default async function LicensesPage({
                           </Link>
                         )}
                       </div>
-                    </div>
-                  );
-                })}
+                      </details>
+  );
+})}
 
                 {!showAll && groupedByBroker.length > 12 && (
                   <Link
@@ -911,9 +947,9 @@ export default async function LicensesPage({
                     {item.code}
                   </span>
 
-                  <span className="rounded-full bg-slate-50 px-2.5 py-1 text-[10px] font-black text-slate-600 md:px-3 md:text-[11px]">
-                    {item.count} {plural(item.count, "broker", "brokers")}
-                  </span>
+                  <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-black text-emerald-700 md:px-3 md:text-[11px]">
+  {item.count} regulated {plural(item.count, "broker", "brokers")}
+</span>
                 </div>
 
                 <h3 className="mt-3 text-[17px] font-black leading-7 text-slate-950 md:mt-4 md:text-[18px]">
@@ -921,8 +957,12 @@ export default async function LicensesPage({
                 </h3>
 
                 <p className="mt-1.5 line-clamp-2 text-[12px] leading-6 text-slate-600 md:mt-2 md:text-[13px] md:leading-7">
-                  {item.description}
-                </p>
+  {item.description}
+</p>
+
+<div className="mt-3 text-[12px] font-black text-brand-600">
+  View regulated brokers →
+</div>
               </Link>
             ))}
           </div>
@@ -999,16 +1039,16 @@ export default async function LicensesPage({
                         {item.title}
                       </h3>
 
-                      <p className="mt-2 text-[13px] font-semibold leading-7 text-slate-600">
-                        {item.text}
-                      </p>
+                    <p className="mt-2 line-clamp-5 text-[13px] font-semibold leading-7 text-slate-600">
+  {item.text}
+</p>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
 
-            <div className="mt-5 rounded-[24px] border border-brand-100 bg-brand-50/60 p-5">
+            <div className="mt-5 rounded-[24px] border border-brand-100 bg-gradient-to-r from-brand-50 to-white p-5 shadow-sm">
               <h3 className="text-[22px] font-black text-slate-950">
                 Key takeaway before choosing a forex broker
               </h3>
@@ -1113,7 +1153,7 @@ export default async function LicensesPage({
             ].map((item) => (
               <div
                 key={item.number}
-                className="rounded-[18px] border border-slate-200 bg-[#fbfdff] px-3.5 py-3.5 shadow-[0_5px_16px_rgba(15,23,42,0.04)] md:rounded-[20px] md:p-4"
+               className="rounded-[18px] border border-brand-100 bg-white px-3.5 py-3.5 shadow-[0_5px_16px_rgba(15,23,42,0.04)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(37,99,235,0.08)] md:rounded-[20px] md:p-4"
               >
                 <div className="flex items-start gap-3">
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-[10px] font-black text-brand-600 ring-1 ring-[#bfdbfe] md:h-9 md:w-9">

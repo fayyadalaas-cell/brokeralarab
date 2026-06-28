@@ -112,6 +112,20 @@ function statusText(status?: string) {
   return "غير محدد";
 }
 
+function formatVerifiedDate(value?: string | null) {
+  if (!value) return "غير محدد";
+
+  try {
+    return new Intl.DateTimeFormat("ar", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).format(new Date(value));
+  } catch {
+    return value;
+  }
+}
+
 export default async function LicensesPage({
   searchParams,
 }: {
@@ -639,9 +653,10 @@ const licensesItemListSchema = {
     ▼
   </span>
 
-  <span className="rounded-full bg-brand-50 px-3 py-1 text-xs font-black text-brand-600">
-    {group.licenses.length} تراخيص
-  </span>
+  <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-3.5 py-1.5 text-xs font-black text-emerald-700">
+  <span aria-hidden="true">🛡️</span>
+  {group.licenses.length} تراخيص نشطة
+</span>
 
                             {broker?.slug && (
                              <Link
@@ -659,11 +674,11 @@ const licensesItemListSchema = {
                         <table className="min-w-full text-right">
                          <thead className="bg-brand-50/40">
   <tr className="text-[12px] font-black text-slate-500">
-    <th className="px-5 py-3">الترخيص</th>
-    <th className="px-5 py-3">الدولة</th>
-    <th className="px-5 py-3">الكيان القانوني</th>
-    <th className="px-5 py-3 text-center">الحالة</th>
-<th className="px-8 py-3 text-center">التحقق</th>
+    <th className="px-5 py-3">الجهة الرقابية</th>
+<th className="px-5 py-3">الدولة</th>
+<th className="px-5 py-3">الكيان القانوني</th>
+<th className="px-5 py-3 text-center">الحالة</th>
+<th className="px-8 py-3 text-center">التحقق الرسمي</th>
   </tr>
 </thead>
 
@@ -671,26 +686,32 @@ const licensesItemListSchema = {
                             {group.licenses.map((item) => (
                             <tr key={item.id} className="transition hover:bg-slate-50">
   <td className="px-5 py-3">
-    <div className="text-sm font-black text-slate-950">
-      {item.regulator_code}
-    </div>
-    <div className="mt-1 text-[12px] font-bold text-slate-500">
-      رقم الترخيص: {item.license_number || "غير متوفر"}
-    </div>
-  </td>
+  <div className="text-sm font-black text-slate-950">
+    {item.regulator_code}
+  </div>
 
-  <td className="px-5 py-3 text-sm font-black text-slate-950">
-    {item.country_ar}
-  </td>
+  <div className="mt-1 text-[12px] font-bold leading-5 text-slate-500">
+    {item.regulator_name_ar}
+  </div>
+
+  <div className="mt-1 inline-flex rounded-full bg-slate-50 px-2.5 py-1 text-[11px] font-black text-slate-600">
+    رقم الترخيص: {item.license_number || "غير متوفر"}
+  </div>
+</td>
+
+<td className="px-5 py-3 text-sm font-black text-slate-950">
+  {item.country_ar}
+</td>
 
   <td className="max-w-[320px] px-5 py-4 text-sm font-bold leading-6 text-slate-700">
     {item.entity_name_ar || item.entity_name_en || "-"}
   </td>
 
  <td className="px-5 py-3 text-center">
-  <span className="inline-flex items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">
-    {statusText(item.status_code)}
-  </span>
+ <span className="inline-flex items-center justify-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">
+  <span className="h-2 w-2 rounded-full bg-emerald-500" />
+  {statusText(item.status_code)}
+</span>
 </td>
 
 <td className="px-8 py-3 text-center">
@@ -712,8 +733,21 @@ const licensesItemListSchema = {
 </tr>
                             ))}
                           </tbody>
-                                               </table>
-                      </details>
+                      </table>
+
+<div className="border-t border-slate-200 bg-slate-50 px-5 py-3 text-[12px] font-bold text-slate-500">
+  آخر تحقق من بيانات التراخيص:{" "}
+  <span className="font-black text-slate-700">
+    {formatVerifiedDate(
+      group.licenses
+        .map((license) => license.last_verified)
+        .filter(Boolean)
+        .sort()
+        .reverse()[0]
+    )}
+  </span>
+</div>
+</details>
                     );
                   })}
                 </div>
@@ -738,120 +772,119 @@ const licensesItemListSchema = {
       </Link>
     )}
   </div>
-                {visibleGroups.map((group) => {
-                  const broker = group.broker;
+           {visibleGroups.map((group) => {
+  const broker = group.broker;
 
-                  return (
-                    <div
-                      key={broker?.id || group.licenses[0]?.broker_id}
-                      className="overflow-hidden rounded-[24px] border border-brand-100 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.05)]"
-                    >
-                     <div className="border-b border-slate-200 bg-slate-50 px-4 py-4">
-  <div className="flex items-start justify-between gap-3">
-    <div className="flex min-w-0 items-start gap-3">
-      <BrokerLogo broker={broker} />
+  return (
+    <details
+      key={broker?.id || group.licenses[0]?.broker_id}
+      className="group overflow-hidden rounded-[24px] border border-brand-100 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.05)]"
+    >
+      <summary className="list-none cursor-pointer border-b border-slate-200 bg-slate-50 px-4 py-4">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex min-w-0 items-start gap-3">
+            <BrokerLogo broker={broker} />
 
-      <div className="min-w-0 flex-1">
-        {broker?.slug ? (
+            <div className="min-w-0 flex-1">
+              {broker?.slug ? (
+                <Link
+                  href={`/brokers/${broker.slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-[19px] font-black leading-6 text-slate-950 transition hover:text-brand-600"
+                >
+                  {broker?.name || "شركة تداول"}
+                </Link>
+              ) : (
+                <div className="text-[19px] font-black leading-6 text-slate-950">
+                  {broker?.name || "شركة تداول"}
+                </div>
+              )}
+
+              <div className="mt-1 text-xs font-bold text-slate-500">
+                {broker?.name_en || broker?.slug || "Broker"}
+              </div>
+            </div>
+          </div>
+
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-sm font-black text-brand-600 transition group-open:rotate-180">
+            ▼
+          </span>
+        </div>
+      </summary>
+
+      <div className="space-y-3 p-4">
+        {group.licenses.map((item) => (
+          <div
+            key={item.id}
+            className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
+          >
+            <div className="grid grid-cols-2 bg-slate-50">
+              <div className="border-l border-slate-200 px-3 py-3 text-right">
+                <div className="text-[10px] font-bold text-slate-500">الجهة</div>
+                <div className="mt-1 text-[13px] font-black text-slate-950">
+                  {item.regulator_code}
+                </div>
+              </div>
+
+              <div className="px-3 py-3 text-right">
+                <div className="text-[10px] font-bold text-slate-500">الدولة</div>
+                <div className="mt-1 text-[13px] font-black text-slate-950">
+                  {item.country_ar}
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 border-t border-slate-200">
+              <div className="border-l border-slate-200 px-3 py-3 text-right">
+                <div className="text-[10px] font-bold text-slate-500">رقم الترخيص</div>
+                <div className="mt-1 text-[13px] font-black text-slate-950">
+                  {item.license_number || "-"}
+                </div>
+              </div>
+
+              <div className="px-3 py-3 text-right">
+                <div className="text-[10px] font-bold text-slate-500">الحالة</div>
+                <div className="mt-1 text-[13px] font-black text-emerald-700">
+                  {statusText(item.status_code)}
+                </div>
+              </div>
+            </div>
+
+            <div className="border-t border-slate-200 px-3 py-3 text-right">
+              <div className="text-[10px] font-bold text-slate-500">الكيان القانوني</div>
+              <div className="mt-1 text-[13px] font-bold leading-6 text-slate-800">
+                {item.entity_name_ar || item.entity_name_en || "-"}
+              </div>
+            </div>
+
+            {(item.verification_url_ar || item.verification_url_en) && (
+              <div className="border-t border-slate-200 p-3">
+                <a
+                  href={item.verification_url_ar || item.verification_url_en || "#"}
+                  target="_blank"
+                  rel="nofollow noopener noreferrer"
+                  className="inline-flex h-10 w-full items-center justify-center rounded-2xl bg-brand-500 text-sm font-black text-white"
+                >
+                  تحقق رسميًا
+                </a>
+              </div>
+            )}
+          </div>
+        ))}
+
+        {broker?.slug && (
           <Link
             href={`/brokers/${broker.slug}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block text-[19px] font-black leading-6 text-slate-950 transition hover:text-brand-600"
+            className="inline-flex h-11 w-full items-center justify-center rounded-2xl border border-brand-100 bg-brand-50 text-sm font-black text-brand-600"
           >
-            {broker?.name || "شركة تداول"}
+            عرض تقييم الشركة
           </Link>
-        ) : (
-          <div className="text-[19px] font-black leading-6 text-slate-950">
-            {broker?.name || "شركة تداول"}
-          </div>
         )}
-
-        <div className="mt-1 text-xs font-bold text-slate-500">
-          {broker?.name_en || broker?.slug || "Broker"}
-        </div>
-
-       
       </div>
-    </div>
-  </div>
-</div>
-                        
-                  
-
-                      <div className="space-y-3 p-4">
-                        {group.licenses.map((item) => (
-                          <div
-                            key={item.id}
-                            className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
-                          >
-                            <div className="grid grid-cols-2 bg-slate-50">
-                              <div className="border-l border-slate-200 px-3 py-3 text-right">
-                                <div className="text-[10px] font-bold text-slate-500">الجهة</div>
-                                <div className="mt-1 text-[13px] font-black text-slate-950">
-                                  {item.regulator_code}
-                                </div>
-                              </div>
-
-                              <div className="px-3 py-3 text-right">
-                                <div className="text-[10px] font-bold text-slate-500">الدولة</div>
-                                <div className="mt-1 text-[13px] font-black text-slate-950">
-                                  {item.country_ar}
-                                </div>
-                              </div>
-                            </div>
-
-                            <div className="grid grid-cols-2 border-t border-slate-200">
-                              <div className="border-l border-slate-200 px-3 py-3 text-right">
-                                <div className="text-[10px] font-bold text-slate-500">رقم الترخيص</div>
-                                <div className="mt-1 text-[13px] font-black text-slate-950">
-                                  {item.license_number || "-"}
-                                </div>
-                              </div>
-
-                              <div className="px-3 py-3 text-right">
-                                <div className="text-[10px] font-bold text-slate-500">الحالة</div>
-                                <div className="mt-1 text-[13px] font-black text-emerald-700">
-                                  {statusText(item.status_code)}
-                                </div>
-                              </div>
-                            </div>
-
-                            <div className="border-t border-slate-200 px-3 py-3 text-right">
-                              <div className="text-[10px] font-bold text-slate-500">الكيان القانوني</div>
-                              <div className="mt-1 text-[13px] font-bold leading-6 text-slate-800">
-                                {item.entity_name_ar || item.entity_name_en || "-"}
-                              </div>
-                            </div>
-
-                            {(item.verification_url_ar || item.verification_url_en) && (
-                              <div className="border-t border-slate-200 p-3">
-                                <a
-                                  href={item.verification_url_ar || item.verification_url_en || "#"}
-                                  target="_blank"
-                                  rel="nofollow noopener noreferrer"
-                                  className="inline-flex h-10 w-full items-center justify-center rounded-2xl bg-brand-500 text-sm font-black text-white"
-                                >
-                                  تحقق رسميًا
-                                </a>
-                              </div>
-                            )}
-                          </div>
-                        ))}
-
-                        {broker?.slug && (
-                          <Link
-                            href={`/brokers/${broker.slug}`}
-                            className="inline-flex h-11 w-full items-center justify-center rounded-2xl border border-brand-100 bg-brand-50 text-sm font-black text-brand-600"
-                          >
-                            عرض تقييم الشركة
-                          </Link>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-
+    </details>
+  );
+})}
                 {!showAll && groupedByBroker.length > 12 && (
                   <Link
                     href={showAllUrl}
@@ -892,8 +925,8 @@ const licensesItemListSchema = {
   {item.code}
 </span>
 
-<span className="rounded-full bg-slate-50 px-2.5 py-1 text-[10px] font-black text-slate-600 md:px-3 md:text-[11px]">
-  {item.count} وسيط
+<span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-black text-emerald-700 md:px-3 md:text-[11px]">
+  {item.count} وسيط مرخص
 </span>
                 </div>
 
@@ -904,6 +937,9 @@ const licensesItemListSchema = {
                <p className="mt-1.5 line-clamp-2 text-[12px] leading-6 text-slate-600 md:mt-2 md:text-[13px] md:leading-7">
   {item.description || "جهة رقابية مالية مدرجة ضمن قاعدة بيانات بروكر العرب."}
 </p>
+<div className="mt-3 text-[12px] font-black text-brand-600">
+  عرض الشركات المرخصة ←
+</div>
               </Link>
             ))}
           </div>
@@ -978,16 +1014,16 @@ const licensesItemListSchema = {
         {item.title}
       </h3>
 
-      <p className="mt-2 text-[13px] font-semibold leading-7 text-slate-600">
-        {item.text}
-      </p>
+      <p className="mt-2 line-clamp-5 text-[13px] font-semibold leading-7 text-slate-600">
+  {item.text}
+</p>
     </div>
   </div>
 </div>
         ))}
       </div>
 
-      <div className="mt-5 rounded-[24px] border border-brand-100 bg-brand-50/60 p-5">
+      <div className="mt-5 rounded-[24px] border border-brand-100 bg-gradient-to-l from-brand-50 to-white p-5 shadow-sm">
         <h3 className="text-[22px] font-black text-slate-950">
           خلاصة مهمة قبل اختيار وسيط التداول
         </h3>
@@ -1089,7 +1125,7 @@ const licensesItemListSchema = {
       ].map((item) => (
         <div
           key={item.number}
-          className="rounded-[18px] border border-slate-200 bg-[#fbfdff] px-3.5 py-3.5 shadow-[0_5px_16px_rgba(15,23,42,0.04)] md:rounded-[20px] md:p-4"
+          className="rounded-[18px] border border-brand-100 bg-white px-3.5 py-3.5 shadow-[0_5px_16px_rgba(15,23,42,0.04)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(37,99,235,0.08)] md:rounded-[20px] md:p-4"
         >
           <div className="flex items-start gap-3">
             <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-[10px] font-black text-brand-600 ring-1 ring-[#bfdbfe] md:h-9 md:w-9">
@@ -1162,8 +1198,8 @@ const licensesItemListSchema = {
                 {item.desc}
               </p>
 
-              <div className="mt-2 text-[11px] font-black text-brand-600 md:mt-3 md:text-[13px]">
- انتقل الآن ←
+              <div className="mt-3 inline-flex rounded-full bg-brand-50 px-3 py-1.5 text-[11px] font-black text-brand-600 transition group-hover:bg-brand-500 group-hover:text-white md:text-[13px]">
+  انتقل الآن ←
 </div>
             </div>
           </div>
