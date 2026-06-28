@@ -62,8 +62,25 @@ const tradingToolsEn = [
   { title: "Compound Calculator", href: "/en/tools/compound-calculator" },
 ];
 
+const verificationToolsEn = [
+  {
+    title: "Verify a Broker License",
+    desc: "Search any forex broker by name or license number and verify its regulatory status.",
+    href: "/en/licenses",
+  },
+];
+
 const mainLinkClass =
   "inline-flex items-center gap-2 whitespace-nowrap rounded-full px-3 py-2 text-[14px] font-extrabold text-slate-700 transition hover:bg-slate-100";
+
+const dropdownClass =
+  "invisible absolute left-0 top-full z-50 mt-3 translate-y-2 rounded-[28px] border border-slate-200 bg-white p-4 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.14)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100";
+
+const menuCardClass =
+  "rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-[13px] font-extrabold text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600";
+
+const logoBoxClass =
+  "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm";
 
 export default function EnglishHeader({
   topBrokers,
@@ -72,7 +89,7 @@ export default function EnglishHeader({
   featuredComparisons,
   learnTradingMenuItems,
 }: any) {
-  return (
+    return (
     <header
       dir="ltr"
       className="sticky top-0 z-50 border-b border-slate-200/90 bg-white/95 backdrop-blur-md"
@@ -103,7 +120,7 @@ export default function EnglishHeader({
                 </span>
               </Link>
 
-              <div className="invisible absolute left-0 top-full z-50 mt-1 w-[360px] translate-y-2 rounded-[28px] border border-slate-200 bg-white p-3 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.14)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+              <div className={`${dropdownClass} w-[420px]`}>
                 <div className="px-3 pb-2 pt-1 text-xs font-black tracking-wide text-slate-500">
                   Top 5 Reviews Right Now
                 </div>
@@ -113,7 +130,7 @@ export default function EnglishHeader({
                     <Link
                       key={broker.slug}
                       href={`/en/brokers/${broker.slug}`}
-                      className="flex items-center justify-between gap-4 rounded-2xl px-3 py-3 transition hover:bg-brand-50"
+                      className={`${menuCardClass} mb-2 flex items-center justify-between gap-4`}
                     >
                       <div className="min-w-0 text-left">
                         <div className="text-[15px] font-extrabold text-slate-800">
@@ -121,7 +138,7 @@ export default function EnglishHeader({
                         </div>
                       </div>
 
-                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm">
+                      <div className={logoBoxClass}>
                         <Image
                           src={broker.logo || getBrokerLogo(broker.slug)}
                           alt={broker.name_en || broker.name}
@@ -156,7 +173,7 @@ export default function EnglishHeader({
                 </span>
               </Link>
 
-              <div className="invisible absolute left-0 top-full z-50 mt-1 w-[340px] translate-y-2 rounded-[28px] border border-slate-200 bg-white p-3 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.14)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+              <div className={`${dropdownClass} w-[420px]`}>
                 <div className="px-3 pb-2 pt-1 text-xs font-black tracking-wide text-slate-500">
                   Popular Comparisons
                 </div>
@@ -170,9 +187,9 @@ export default function EnglishHeader({
                     <Link
                       key={item.href}
                       href={`/en${item.href}`}
-                      className="flex items-center justify-between gap-3 rounded-2xl px-3 py-3 transition hover:bg-brand-50"
+                      className={`${menuCardClass} mb-2 flex items-center justify-between gap-3`}
                     >
-                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm">
+                      <div className={logoBoxClass}>
                         <Image
                           src={getBrokerLogo(leftSlug)}
                           alt={leftSlug || ""}
@@ -186,7 +203,7 @@ export default function EnglishHeader({
                         {item.label}
                       </div>
 
-                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm">
+                      <div className={logoBoxClass}>
                         <Image
                           src={getBrokerLogo(rightSlug)}
                           alt={rightSlug || ""}
@@ -217,28 +234,26 @@ export default function EnglishHeader({
                 </span>
               </Link>
 
-              <div className="invisible absolute left-0 top-full z-50 mt-1 w-[360px] translate-y-2 rounded-[28px] border border-slate-200 bg-white p-4 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.14)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
-                <div className="px-2 pb-3 pt-1 text-xs font-black tracking-wide text-slate-500">
+              <div className={`${dropdownClass} w-[380px]`}>
+                <div className="px-3 pb-3 pt-1 text-xs font-black tracking-wide text-slate-500">
                   Best Broker Guides
                 </div>
 
-                <Link
-                  href="/en/best-brokers"
-                  className="block rounded-2xl px-3 py-3 transition hover:bg-brand-50"
-                >
-                  <div className="text-[16px] font-black text-slate-900">
+                <div className="grid gap-2.5">
+                  <Link
+                    href="/en/best-brokers"
+                    className="block rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-left text-[13px] font-extrabold leading-6 text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600"
+                  >
                     Best Forex Brokers in 2026
-                  </div>
-                </Link>
+                  </Link>
 
-                <Link
-                  href="/en/best-brokers/gold"
-                  className="block rounded-2xl px-3 py-3 transition hover:bg-brand-50"
-                >
-                  <div className="text-[16px] font-black text-slate-900">
+                  <Link
+                    href="/en/best-brokers/gold"
+                    className="block rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-left text-[13px] font-extrabold leading-6 text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600"
+                  >
                     Best Gold Brokers
-                  </div>
-                </Link>
+                  </Link>
+                </div>
               </div>
             </div>
 
@@ -251,7 +266,7 @@ export default function EnglishHeader({
                 </span>
               </Link>
 
-              <div className="invisible absolute left-0 top-full z-50 mt-3 w-[420px] translate-y-2 rounded-[28px] border border-slate-200 bg-white p-4 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.14)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+              <div className={`${dropdownClass} w-[460px]`}>
                 <div className="px-3 pb-3 pt-1 text-xs font-black tracking-wide text-slate-500">
                   Trading Calculators & Tools
                 </div>
@@ -267,6 +282,40 @@ export default function EnglishHeader({
                     </Link>
                   ))}
                 </div>
+
+                <div className="my-4 h-px bg-slate-200" />
+
+                <div className="px-3 pb-2 text-xs font-black tracking-wide text-slate-500">
+                  Broker Verification Tools
+                </div>
+
+                {verificationToolsEn.map((tool) => (
+                  <Link
+                    key={tool.href}
+                    href={tool.href}
+                    className="group/license flex items-center justify-between gap-4 rounded-[22px] border border-brand-100 bg-gradient-to-r from-brand-50 via-white to-slate-50 px-4 py-3.5 transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-[0_12px_30px_rgba(59,130,246,0.14)]"
+                  >
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-600 text-base font-black text-white shadow-md transition group-hover/license:scale-105">
+                      →
+                    </span>
+
+                    <div className="min-w-0 flex-1 text-left">
+                      <div className="flex items-center gap-2">
+                        <div className="text-[15px] font-black text-slate-950 transition group-hover/license:text-brand-600">
+                          {tool.title}
+                        </div>
+
+                        <span className="inline-flex items-center rounded-full bg-brand-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-brand-700">
+                          New
+                        </span>
+                      </div>
+
+                      <div className="mt-1 text-[12px] font-bold leading-6 text-slate-500">
+                        {tool.desc}
+                      </div>
+                    </div>
+                  </Link>
+                ))}
 
                 <Link
                   href="/en/tools"
@@ -289,12 +338,12 @@ export default function EnglishHeader({
                 </span>
               </Link>
 
-              <div className="invisible absolute left-0 top-full z-50 mt-3 w-[320px] translate-y-2 rounded-[24px] border border-slate-200 bg-white p-4 opacity-0 shadow-[0_24px_60px_rgba(15,23,42,0.12)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+              <div className={`${dropdownClass} w-[360px]`}>
                 {learnTradingMenuItems.slice(0, 1).map((item: any) => (
                   <Link
                     key={item.href}
                     href={getLearnTradingHref(item)}
-                    className="flex items-center gap-3 rounded-[18px] border border-slate-200 bg-slate-50 p-3 transition hover:border-brand-100 hover:bg-brand-50"
+                    className={`${menuCardClass} flex items-center gap-3 p-3`}
                   >
                     <div className="relative h-[58px] w-[58px] shrink-0 overflow-hidden rounded-[14px] border border-slate-200 bg-white">
                       <Image

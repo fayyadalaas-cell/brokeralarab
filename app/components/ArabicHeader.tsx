@@ -56,8 +56,25 @@ const tradingToolsAr = [
   { title: "حاسبة الفائدة المركبة", href: "/tools/compound-calculator" },
 ];
 
+const verificationToolsAr = [
+  {
+    title: "التحقق من تراخيص الوسطاء",
+    desc: "ابحث باسم الشركة أو رقم الترخيص وتحقق من الجهة الرقابية.",
+    href: "/licenses",
+  },
+];
+
 const mainLinkClass =
   "inline-flex items-center gap-2 whitespace-nowrap rounded-full px-3 py-2 text-[14px] font-extrabold text-slate-700 transition hover:bg-slate-100";
+
+const dropdownClass =
+  "invisible absolute right-0 top-full z-50 mt-3 translate-y-2 rounded-[28px] border border-slate-200 bg-white p-4 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.14)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100";
+
+const menuCardClass =
+  "rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-[13px] font-extrabold text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600";
+
+const logoBoxClass =
+  "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm";
 
 export default function ArabicHeader({
   topBrokers,
@@ -113,7 +130,7 @@ export default function ArabicHeader({
                 </span>
               </Link>
 
-              <div className="invisible absolute right-0 top-full z-50 mt-1 w-[360px] translate-y-2 rounded-[28px] border border-slate-200 bg-white p-3 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.14)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+              <div className={`${dropdownClass} w-[420px]`}>
                 <div className="px-3 pb-2 pt-1 text-xs font-black tracking-wide text-slate-500">
                   أعلى 5 تقييمات حاليًا
                 </div>
@@ -123,7 +140,7 @@ export default function ArabicHeader({
                     <Link
                       key={broker.slug}
                       href={`/brokers/${broker.slug}`}
-                      className="flex items-center justify-between gap-4 rounded-2xl px-3 py-3 transition hover:bg-brand-50"
+                      className={`${menuCardClass} mb-2 flex items-center justify-between gap-4 text-right`}
                     >
                       <div className="min-w-0 text-right">
                         <div className="text-[15px] font-extrabold text-slate-800">
@@ -131,7 +148,7 @@ export default function ArabicHeader({
                         </div>
                       </div>
 
-                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm">
+                      <div className={logoBoxClass}>
                         <Image
                           src={broker.logo || getBrokerLogo(broker.slug)}
                           alt={broker.name}
@@ -166,7 +183,7 @@ export default function ArabicHeader({
                 </span>
               </Link>
 
-              <div className="invisible absolute right-0 top-full z-50 mt-1 w-[420px] translate-y-2 rounded-[28px] border border-slate-200 bg-white p-3 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.14)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+              <div className={`${dropdownClass} w-[460px]`}>
                 <div className="px-3 pb-2 pt-1 text-xs font-black tracking-wide text-slate-500">
                   أشهر المقارنات
                 </div>
@@ -182,7 +199,7 @@ export default function ArabicHeader({
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="grid grid-cols-[52px_1fr_44px_1fr_52px] items-center gap-2 rounded-2xl px-3 py-3 transition hover:bg-brand-50"
+                      className={`${menuCardClass} mb-2 grid grid-cols-[52px_1fr_44px_1fr_52px] items-center gap-2`}
                     >
                       <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm">
                         <Image
@@ -237,19 +254,19 @@ export default function ArabicHeader({
                 </span>
               </Link>
 
-              <div className="invisible absolute right-0 top-full z-50 mt-1 w-[640px] max-w-[calc(100vw-40px)] translate-y-2 rounded-[30px] border border-slate-200 bg-white p-5 opacity-0 shadow-[0_28px_80px_rgba(15,23,42,0.15)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
-                <div className="grid grid-cols-[1.15fr_0.95fr] gap-6 divide-x divide-slate-200 divide-x-reverse">
+              <div className={`${dropdownClass} w-[760px] max-w-[calc(100vw-40px)]`}>
+                <div className="grid grid-cols-[1.25fr_0.95fr] gap-6 divide-x divide-slate-200 divide-x-reverse">
                   <div className="pr-1">
                     <div className="mb-4 text-sm font-black text-slate-900">
                       أفضل الوسطاء حسب الدولة
                     </div>
 
-                    <div className="grid grid-cols-3 gap-x-3 gap-y-1">
+                    <div className="grid grid-cols-3 gap-3.5">
                       {extendedCountryMenuItems.map((item: any) => (
                         <Link
                           key={item.href}
                           href={item.href}
-                          className="flex items-center gap-3 rounded-2xl px-3 py-3 transition hover:bg-brand-50"
+                          className="flex h-[52px] min-w-[120px] items-center gap-3.5 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-[13px] font-extrabold text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600"
                           title={item.label}
                         >
                           <img
@@ -257,7 +274,7 @@ export default function ArabicHeader({
                             alt={item.shortLabel}
                             className="h-[22px] w-[22px] shrink-0 rounded-full object-cover"
                           />
-                          <span className="whitespace-nowrap text-[14px] font-bold text-slate-700 transition hover:text-brand-600">
+                         <span className="flex-1 text-center text-[13px] font-extrabold text-slate-700">
                             {item.shortLabel}
                           </span>
                         </Link>
@@ -272,17 +289,17 @@ export default function ArabicHeader({
                     </Link>
                   </div>
 
-                  <div className="pl-5">
+                  <div className="pl-6">
                     <div className="mb-4 text-sm font-black text-slate-900">
                       أفضل الوسطاء حسب الفئة
                     </div>
 
-                    <div className="grid gap-2">
+                    <div className="grid gap-2.5">
                       {featuredCategories.map((item: any) => (
                         <Link
                           key={item.href + item.label}
                           href={item.href}
-                          className="rounded-2xl px-3 py-3 text-[15px] font-bold text-slate-700 transition hover:bg-brand-50 hover:text-brand-600"
+                          className="block rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-right text-[13px] font-extrabold leading-6 text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600"
                         >
                           {item.label}
                         </Link>
@@ -309,30 +326,57 @@ export default function ArabicHeader({
                 </span>
               </Link>
 
-              <div className="invisible absolute right-0 top-full z-50 mt-3 w-[420px] translate-y-2 rounded-[28px] border border-slate-200 bg-white p-4 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.14)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
-                <div className="px-3 pb-3 pt-1 text-xs font-black tracking-wide text-slate-500">
-                  حاسبات وأدوات للمتداولين
-                </div>
+           <div className="invisible absolute right-0 top-full z-50 mt-3 w-[460px] translate-y-2 rounded-[28px] border border-slate-200 bg-white p-4 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.14)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+  <div className="px-3 pb-3 pt-1 text-xs font-black tracking-wide text-slate-500">
+    حاسبات وأدوات للمتداولين
+  </div>
 
-                <div className="grid grid-cols-2 gap-2">
-                  {tradingToolsAr.map((tool) => (
-                    <Link
-                      key={tool.href}
-                      href={tool.href}
-                      className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-[13px] font-extrabold text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600"
-                    >
-                      {tool.title}
-                    </Link>
-                  ))}
-                </div>
+  <div className="grid grid-cols-2 gap-2">
+    {tradingToolsAr.map((tool) => (
+      <Link
+        key={tool.href}
+        href={tool.href}
+        className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-[13px] font-extrabold text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600"
+      >
+        {tool.title}
+      </Link>
+    ))}
+  </div>
 
-                <Link
-                  href="/tools"
-                  className="mt-3 block rounded-2xl px-3 py-3 text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
-                >
-                  عرض جميع أدوات التداول ←
-                </Link>
-              </div>
+  <div className="my-4 h-px bg-slate-200" />
+
+  <div className="px-3 pb-2 text-xs font-black tracking-wide text-slate-500">
+    أدوات التحقق
+  </div>
+
+  {verificationToolsAr.map((tool) => (
+    <Link
+      key={tool.href}
+      href={tool.href}
+      className="group/license flex items-center justify-between gap-4 rounded-[22px] border border-brand-100 bg-gradient-to-l from-brand-50 via-white to-slate-50 p-4 transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-[0_12px_30px_rgba(59,130,246,0.14)]"
+    >
+      <div className="text-right">
+        <div className="text-[15px] font-black text-slate-950 transition group-hover/license:text-brand-600">
+          {tool.title}
+        </div>
+        <div className="mt-1 text-[12px] font-bold leading-6 text-slate-500">
+          {tool.desc}
+        </div>
+      </div>
+
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-brand-100 bg-white text-lg font-black text-brand-600 shadow-sm transition group-hover/license:bg-brand-500 group-hover/license:text-white">
+  ←
+</span>
+    </Link>
+  ))}
+
+  <Link
+    href="/tools"
+    className="mt-3 block rounded-2xl px-3 py-3 text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
+  >
+    عرض جميع أدوات التداول ←
+  </Link>
+</div>
             </div>
 
             {/* LEARN TRADING */}
@@ -347,7 +391,7 @@ export default function ArabicHeader({
                 </span>
               </Link>
 
-              <div className="invisible absolute right-0 top-full z-50 mt-3 w-[320px] translate-y-2 rounded-[24px] border border-slate-200 bg-white p-4 opacity-0 shadow-[0_24px_60px_rgba(15,23,42,0.12)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+              <div className={`${dropdownClass} w-[360px]`}>
                 {learnTradingMenuItems.slice(0, 1).map((item: any) => (
                   <Link
                     key={item.href}
