@@ -112,6 +112,36 @@ function statusText(status?: string) {
   return "غير محدد";
 }
 
+function regulatorMobileLabel(code: string, fallback: string) {
+  const shortNames: Record<string, string> = {
+    CySEC: "CySEC قبرص",
+    ASIC: "ASIC أستراليا",
+    FCA: "FCA بريطانيا",
+    FSC: "FSC العذراء",
+    FSCA: "FSCA جنوب أفريقيا",
+    FSA: "FSA سيشل",
+    SCB: "SCB البهاما",
+    DFSA: "DFSA دبي",
+    JSC: "JSC الأردن",
+    SCA: "SCA الإمارات",
+    VFSC: "VFSC فانواتو",
+    "ADGM FSRA": "ADGM أبوظبي",
+    BACEN: "BACEN البرازيل",
+    BaFin: "BaFin ألمانيا",
+    CBI: "CBI أيرلندا",
+    CIMA: "CIMA كايمان",
+    CMVM: "CMVM البرتغال",
+    CVM: "CVM البرازيل",
+    FMA: "FMA نيوزيلندا",
+    "FSC BVI": "FSC BVI",
+    LFSA: "LFSA لابوان",
+    MAS: "MAS سنغافورة",
+    MISA: "MISA القمر",
+  };
+
+  return shortNames[code] || code || fallback
+}
+
 function formatVerifiedDate(value?: string | null) {
   if (!value) return "غير محدد";
 
@@ -509,23 +539,39 @@ const licensesItemListSchema = {
                 />
               </div>
 
-              <div className="md:col-span-3">
-                <label className="mb-2 block text-[12px] font-black text-slate-600">
-                  الجهة الرقابية
-                </label>
-                <select
-                  name="regulator"
-                  defaultValue={selectedRegulator}
-                  className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-bold outline-none transition focus:border-brand-100 focus:bg-white"
-                >
-                  <option value="">كل الجهات</option>
-                  {regulators.map((item) => (
-                    <option key={item.code} value={item.code}>
-                      {item.code} - {item.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+             <div className="md:col-span-3">
+  <label className="mb-2 block text-[12px] font-black text-slate-600">
+    الجهة الرقابية
+  </label>
+
+  {/* Mobile: short labels */}
+  <select
+    name="regulator"
+    defaultValue={selectedRegulator}
+    className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-bold outline-none transition focus:border-brand-100 focus:bg-white md:hidden"
+  >
+    <option value="">كل الجهات</option>
+    {regulators.map((item) => (
+      <option key={item.code} value={item.code}>
+        {regulatorMobileLabel(item.code, item.name)}
+      </option>
+    ))}
+  </select>
+
+  {/* Desktop: full labels */}
+  <select
+    name="regulator"
+    defaultValue={selectedRegulator}
+    className="hidden h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-bold outline-none transition focus:border-brand-100 focus:bg-white md:block"
+  >
+    <option value="">كل الجهات</option>
+    {regulators.map((item) => (
+      <option key={item.code} value={item.code}>
+        {item.code} - {item.name}
+      </option>
+    ))}
+  </select>
+</div>
 
               <div className="md:col-span-2">
                 <label className="mb-2 block text-[12px] font-black text-slate-600">

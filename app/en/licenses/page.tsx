@@ -119,6 +119,36 @@ function plural(count: number, singular: string, pluralWord: string) {
   return count === 1 ? singular : pluralWord;
 }
 
+function regulatorMobileLabelEn(code: string, fallback: string) {
+  const shortNames: Record<string, string> = {
+    CySEC: "CySEC Cyprus",
+    ASIC: "ASIC Australia",
+    FCA: "FCA UK",
+    FSC: "FSC BVI",
+    FSCA: "FSCA South Africa",
+    FSA: "FSA Seychelles",
+    SCB: "SCB Bahamas",
+    DFSA: "DFSA Dubai",
+    JSC: "JSC Jordan",
+    SCA: "SCA UAE",
+    VFSC: "VFSC Vanuatu",
+    "ADGM FSRA": "ADGM Abu Dhabi",
+    BACEN: "BACEN Brazil",
+    BaFin: "BaFin Germany",
+    CBI: "CBI Ireland",
+    CIMA: "CIMA Cayman",
+    CMVM: "CMVM Portugal",
+    CVM: "CVM Brazil",
+    FMA: "FMA New Zealand",
+    "FSC BVI": "FSC BVI",
+    LFSA: "LFSA Labuan",
+    MAS: "MAS Singapore",
+    MISA: "MISA Comoros",
+  };
+
+  return shortNames[code] || code || fallback;
+}
+
 function formatVerifiedDate(value?: string | null) {
   if (!value) return "Not specified";
 
@@ -513,23 +543,39 @@ export default async function LicensesPage({
                 />
               </div>
 
-              <div className="md:col-span-3">
-                <label className="mb-2 block text-[12px] font-black text-slate-600">
-                  Regulator
-                </label>
-                <select
-                  name="regulator"
-                  defaultValue={selectedRegulator}
-                  className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-bold outline-none transition focus:border-brand-100 focus:bg-white"
-                >
-                  <option value="">All regulators</option>
-                  {regulators.map((item) => (
-                    <option key={item.code} value={item.code}>
-                      {item.code} - {item.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+             <div className="md:col-span-3">
+  <label className="mb-2 block text-[12px] font-black text-slate-600">
+    Regulator
+  </label>
+
+  {/* Mobile: short labels */}
+  <select
+    name="regulator"
+    defaultValue={selectedRegulator}
+    className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-bold outline-none transition focus:border-brand-100 focus:bg-white md:hidden"
+  >
+    <option value="">All regulators</option>
+    {regulators.map((item) => (
+      <option key={item.code} value={item.code}>
+        {regulatorMobileLabelEn(item.code, item.name)}
+      </option>
+    ))}
+  </select>
+
+  {/* Desktop: full labels - do not change */}
+  <select
+    name="regulator"
+    defaultValue={selectedRegulator}
+    className="hidden h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-bold outline-none transition focus:border-brand-100 focus:bg-white md:block"
+  >
+    <option value="">All regulators</option>
+    {regulators.map((item) => (
+      <option key={item.code} value={item.code}>
+        {item.code} - {item.name}
+      </option>
+    ))}
+  </select>
+</div>
 
               <div className="md:col-span-2">
                 <label className="mb-2 block text-[12px] font-black text-slate-600">
