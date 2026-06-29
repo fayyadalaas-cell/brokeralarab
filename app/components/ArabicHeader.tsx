@@ -130,7 +130,7 @@ export default function ArabicHeader({
                 </span>
               </Link>
 
-              <div className={`${dropdownClass} w-[420px]`}>
+              <div className={`${dropdownClass} w-[460px]`}>
                 <div className="px-3 pb-2 pt-1 text-xs font-black tracking-wide text-slate-500">
                   أعلى 5 تقييمات حاليًا
                 </div>
@@ -379,46 +379,55 @@ export default function ArabicHeader({
 </div>
             </div>
 
-            {/* LEARN TRADING */}
-            <div className="group relative">
-              <Link
-                href="/learn-trading/how-to-start-trading-from-zero"
-                className={mainLinkClass}
-              >
-                تعلم التداول
-                <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
-                  ▼
-                </span>
-              </Link>
+        {/* LEARN TRADING */}
+<div className="group relative">
+  <Link
+    href="/learn-trading/how-to-start-trading-from-zero"
+    className={mainLinkClass}
+  >
+    تعلم التداول
+    <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
+      ▼
+    </span>
+  </Link>
 
-              <div className={`${dropdownClass} w-[360px]`}>
-                {learnTradingMenuItems.slice(0, 1).map((item: any) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="flex items-center gap-3 rounded-[18px] border border-slate-200 bg-slate-50 p-3 transition hover:border-brand-100 hover:bg-brand-50"
-                  >
-                    <div className="relative h-[58px] w-[58px] shrink-0 overflow-hidden rounded-[14px] border border-slate-200 bg-white">
-                      <Image
-                        src={
-                          item.image ||
-                          "/articles/how-to-start-trading-from-zero.png"
-                        }
-                        alt={item.title}
-                        fill
-                        className="object-contain p-1.5"
-                      />
-                    </div>
+  <div className={`${dropdownClass} w-[420px]`}>
+    <div className="px-3 pb-3 pt-1 text-xs font-black tracking-wide text-slate-500">
+  دليل تعلم التداول
+</div>
 
-                    <div className="min-w-0 flex-1">
-                      <h3 className="line-clamp-2 text-[16px] font-black leading-7 text-slate-950">
-                        {item.title}
-                      </h3>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
+    {learnTradingMenuItems.slice(0, 1).map((item: any) => (
+      <Link
+        key={item.href}
+        href={item.href}
+        className={`${menuCardClass} flex items-center justify-between gap-4 text-right`}
+      >
+        <div className="min-w-0 flex-1 text-right">
+          <div className="line-clamp-2 text-[13px] font-extrabold leading-6 text-slate-700">
+  {item.title}
+</div>
+        </div>
+
+        <div className={logoBoxClass}>
+          <Image
+            src={item.image || "/articles/how-to-start-trading-from-zero.png"}
+            alt={item.title}
+            width={40}
+            height={40}
+            className="h-full w-full object-contain p-1"
+          />
+        </div>
+      </Link>
+    ))}
+
+    <Link
+      href="/learn-trading/how-to-start-trading-from-zero"
+      className="mt-1 block rounded-2xl px-3 py-3 text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
+    >
+      جميع دروس التداول ←
+    </Link>
+  </div>
+</div>
 
             <Link href="/about" className={mainLinkClass}>
               عن الموقع

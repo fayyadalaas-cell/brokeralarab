@@ -326,46 +326,55 @@ export default function EnglishHeader({
               </div>
             </div>
 
-            {/* LEARN TRADING */}
-            <div className="group relative">
-              <Link
-                href="/en/learn-trading/how-to-start-trading-from-zero"
-                className={mainLinkClass}
-              >
-                Learn Trading
-                <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
-                  ▼
-                </span>
-              </Link>
+          {/* LEARN TRADING */}
+<div className="group relative">
+  <Link
+    href="/en/learn-trading/how-to-start-trading-from-zero"
+    className={mainLinkClass}
+  >
+    Learn Trading
+    <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
+      ▼
+    </span>
+  </Link>
 
-              <div className={`${dropdownClass} w-[360px]`}>
-                {learnTradingMenuItems.slice(0, 1).map((item: any) => (
-                  <Link
-                    key={item.href}
-                    href={getLearnTradingHref(item)}
-                    className={`${menuCardClass} flex items-center gap-3 p-3`}
-                  >
-                    <div className="relative h-[58px] w-[58px] shrink-0 overflow-hidden rounded-[14px] border border-slate-200 bg-white">
-                      <Image
-                        src={
-                          item.image ||
-                          "/articles/how-to-start-trading-from-zero.png"
-                        }
-                        alt={getLearnTradingTitle(item)}
-                        fill
-                        className="object-contain p-1.5"
-                      />
-                    </div>
+  <div className={`${dropdownClass} w-[420px]`}>
+    <div className="px-3 pb-3 pt-1 text-xs font-black tracking-wide text-slate-500">
+      Learn Trading Guide
+    </div>
 
-                    <div className="min-w-0 flex-1">
-                      <h3 className="line-clamp-2 text-[16px] font-black leading-7 text-slate-950">
-                        {getLearnTradingTitle(item)}
-                      </h3>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
+    {learnTradingMenuItems.slice(0, 1).map((item: any) => (
+      <Link
+        key={item.href}
+        href={getLearnTradingHref(item)}
+        className={`${menuCardClass} flex items-center justify-between gap-4`}
+      >
+        <div className="min-w-0 flex-1">
+          <div className="line-clamp-2 text-[13px] font-extrabold leading-6 text-slate-700">
+            {getLearnTradingTitle(item)}
+          </div>
+        </div>
+
+        <div className={logoBoxClass}>
+          <Image
+            src={item.image || "/articles/how-to-start-trading-from-zero.png"}
+            alt={getLearnTradingTitle(item)}
+            width={40}
+            height={40}
+            className="h-full w-full object-contain p-1"
+          />
+        </div>
+      </Link>
+    ))}
+
+    <Link
+      href="/en/learn-trading/how-to-start-trading-from-zero"
+      className="mt-1 block rounded-2xl px-3 py-3 text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
+    >
+      View All Guides →
+    </Link>
+  </div>
+</div>
 
             <Link href="/en/about" className={mainLinkClass}>
               About

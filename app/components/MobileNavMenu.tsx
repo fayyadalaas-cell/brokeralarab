@@ -85,20 +85,16 @@ function withLangHref(href: string, isEnglish: boolean) {
   return `/en${href}`;
 }
 
-function getComparisonLabel(label: string, isEnglish: boolean) {
-  if (isEnglish) return label;
+function getLearnTradingTitle(item: LearnTradingMenuItem, isEnglish: boolean) {
+  if (!isEnglish) return item.title;
 
-  const parts = label.split(" vs ");
-  if (parts.length !== 2) return label;
+  if (item.href === "/learn-trading/how-to-start-trading-from-zero") {
+    return "How to Start Trading from Zero";
+  }
 
-  const leftSlug = parts[0].toLowerCase().replace(/\s+/g, "-");
-  const rightSlug = parts[1].toLowerCase().replace(/\s+/g, "-");
-
-  const leftName = brokerNamesAr[leftSlug] || parts[0];
-  const rightName = brokerNamesAr[rightSlug] || parts[1];
-
-  return `${leftName} ضد ${rightName}`;
+  return item.title_en || item.title || "Learn Trading";
 }
+
 
 function HamburgerIcon() {
   return (
@@ -153,9 +149,9 @@ function Section({
       <button
         type="button"
         onClick={onToggle}
-        className="flex w-full items-center justify-between px-4 py-3.5 text-left"
+        className="flex w-full items-center justify-between px-4 py-3 text-left"
       >
-        <span className="text-[15px] font-extrabold text-slate-900">{title}</span>
+       <span className="text-[14px] font-extrabold text-slate-900">{title}</span>
         <span className="text-slate-500">
           <ChevronIcon open={open} />
         </span>
@@ -167,7 +163,7 @@ function Section({
 }
 
 const mobileCardClass =
-  "rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-[13px] font-extrabold text-slate-800 transition hover:border-blue-300 hover:bg-white";
+  "rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-[13px] font-extrabold text-slate-800 transition hover:border-blue-300 hover:bg-white";
 
 export default function MobileNavMenu({
   topBrokers,
@@ -227,21 +223,29 @@ export default function MobileNavMenu({
     };
   }, [isOpen]);
 
-  const comparisonItems = useMemo(() => {
-    return featuredComparisons.map((item) => {
-      const rawLabel = item.label_en || item.label;
-      const parts = rawLabel.split(" vs ");
-      const leftSlug = parts[0]?.toLowerCase().replace(/\s+/g, "-") || "";
-      const rightSlug = parts[1]?.toLowerCase().replace(/\s+/g, "-") || "";
+const comparisonItems = useMemo(() => {
+  return featuredComparisons.map((item) => {
+    const rawLabel = item.label_en || item.label;
+    const parts = rawLabel.split(" vs ");
 
-      return {
-        ...item,
-        displayLabel: getComparisonLabel(rawLabel, isEnglish),
-        leftLogo: getBrokerLogo(leftSlug),
-        rightLogo: getBrokerLogo(rightSlug),
-      };
-    });
-  }, [featuredComparisons, isEnglish]);
+    const leftRaw = parts[0] || "";
+    const rightRaw = parts[1] || "";
+
+    const leftSlug = leftRaw.toLowerCase().replace(/\s+/g, "-");
+    const rightSlug = rightRaw.toLowerCase().replace(/\s+/g, "-");
+
+    const leftName = isEnglish ? leftRaw : brokerNamesAr[leftSlug] || leftRaw;
+    const rightName = isEnglish ? rightRaw : brokerNamesAr[rightSlug] || rightRaw;
+
+    return {
+      ...item,
+      displayLeft: leftName,
+      displayRight: rightName,
+      leftLogo: getBrokerLogo(leftSlug),
+      rightLogo: getBrokerLogo(rightSlug),
+    };
+  });
+}, [featuredComparisons, isEnglish]);
 
   const toggleSection = (key: string) => {
     setOpenSection((prev) => (prev === key ? null : key));
@@ -274,7 +278,8 @@ export default function MobileNavMenu({
     learn: isEnglish ? "Learn Trading" : "تعلم التداول",
     about: isEnglish ? "About" : "عن الموقع",
   };
-    return (
+
+  return (
     <div className="lg:hidden">
       <button
         type="button"
@@ -295,7 +300,7 @@ export default function MobileNavMenu({
 
           <div
             dir={isEnglish ? "ltr" : "rtl"}
-            className={`fixed top-16 z-[100] w-[310px] transition-all duration-200 ease-out ${
+            className={`fixed top-16 z-[100] w-[315px] transition-all duration-200 ease-out ${
               isEnglish ? "left-0 origin-top-left" : "right-0 origin-top-right"
             }`}
           >
@@ -339,7 +344,7 @@ export default function MobileNavMenu({
                   {text.home}
                 </Link>
 
-                <div className="space-y-2.5">
+                <div className="space-y-2">
                   <Section
                     title={text.reviews}
                     open={openSection === "reviews"}
@@ -356,7 +361,7 @@ export default function MobileNavMenu({
                             key={broker.slug}
                             href={withLangHref(`/brokers/${broker.slug}`, isEnglish)}
                             onClick={closeMenu}
-                            className={`${mobileCardClass} flex items-center justify-between gap-3`}
+                            className={`${mobileCardClass} flex h-[50px] items-center justify-between gap-2 px-2 py-2`}
                           >
                             <div className="min-w-0 flex-1">
                               {text.reviewPrefix}
@@ -364,12 +369,12 @@ export default function MobileNavMenu({
                               {text.reviewSuffix}
                             </div>
 
-                            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm">
+                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white shadow-sm">
                               <Image
-                                src={broker.menuLogo || getBrokerLogo(broker.slug)}
+                                src={getBrokerLogo(broker.slug)}
                                 alt={brokerName}
-                                width={36}
-                                height={36}
+                                width={24}
+                                height={24}
                                 className="h-full w-full object-contain p-1"
                               />
                             </div>
@@ -394,36 +399,42 @@ export default function MobileNavMenu({
                   >
                     <div className="space-y-2">
                       {comparisonItems.map((item) => (
-                        <Link
-                          key={item.href}
-                          href={withLangHref(item.href, isEnglish)}
-                          onClick={closeMenu}
-                          className={`${mobileCardClass} flex items-center gap-2`}
-                        >
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm">
-                            <Image
-                              src={item.leftLogo}
-                              alt=""
-                              width={34}
-                              height={34}
-                              className="h-full w-full object-contain p-1"
-                            />
-                          </div>
+       <Link
+  key={item.href}
+  href={withLangHref(item.href, isEnglish)}
+  onClick={closeMenu}
+  className={`${mobileCardClass} flex h-[50px] items-center justify-between gap-2 px-2 py-2`}
+>
+  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white shadow-sm">
+    <Image
+      src={item.leftLogo}
+      alt={item.displayLeft}
+      width={24}
+      height={24}
+      className="h-full w-full object-contain p-1"
+    />
+  </div>
 
-                          <div className="min-w-0 flex-1 text-center text-[13px] font-extrabold text-slate-800">
-                            {item.displayLabel}
-                          </div>
+  <div className="min-w-0 flex-1 text-center">
+    <span className="truncate text-[12px] font-extrabold text-slate-800">
+      {item.displayLeft}
+      <span className="mx-1.5 text-[11px] font-black text-slate-400">
+        {isEnglish ? "vs" : "⇄"}
+      </span>
+      {item.displayRight}
+    </span>
+  </div>
 
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm">
-                            <Image
-                              src={item.rightLogo}
-                              alt=""
-                              width={34}
-                              height={34}
-                              className="h-full w-full object-contain p-1"
-                            />
-                          </div>
-                        </Link>
+  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white shadow-sm">
+    <Image
+      src={item.rightLogo}
+      alt={item.displayRight}
+      width={24}
+      height={24}
+      className="h-full w-full object-contain p-1"
+    />
+  </div>
+</Link>
                       ))}
 
                       <Link
@@ -540,18 +551,18 @@ export default function MobileNavMenu({
                       <div className="h-px bg-slate-200" />
 
                       <div className="grid gap-2">
-  {mobileTradingTools.slice(0, 5).map((tool) => (
-    <Link
-      key={tool.href}
-      href={withLangHref(tool.href, isEnglish)}
-      onClick={closeMenu}
-      className="flex h-[46px] items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 text-[13px] font-extrabold text-slate-800 transition hover:border-blue-300 hover:bg-white"
-    >
-      <span>{tool.label}</span>
-      <span className="text-brand-600">{isEnglish ? "→" : "←"}</span>
-    </Link>
-  ))}
-</div>
+                        {mobileTradingTools.slice(0, 5).map((tool) => (
+                          <Link
+                            key={tool.href}
+                            href={withLangHref(tool.href, isEnglish)}
+                            onClick={closeMenu}
+                            className="flex h-[46px] items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 text-[13px] font-extrabold text-slate-800 transition hover:border-blue-300 hover:bg-white"
+                          >
+                            <span>{tool.label}</span>
+                            <span className="text-brand-600">{isEnglish ? "→" : "←"}</span>
+                          </Link>
+                        ))}
+                      </div>
 
                       <Link
                         href={withLangHref("/tools", isEnglish)}
@@ -569,39 +580,43 @@ export default function MobileNavMenu({
                     onToggle={() => toggleSection("learn")}
                   >
                     <div className="space-y-2">
-                      {learnTradingMenuItems.slice(0, 1).map((item) => (
-                        <Link
-                          key={item.href}
-                          href={withLangHref(item.href, isEnglish)}
-                          onClick={closeMenu}
-                          className={`${mobileCardClass} flex items-center gap-3`}
-                        >
-                          <div className="relative h-[54px] w-[54px] shrink-0 overflow-hidden rounded-[14px] border border-slate-200 bg-white">
-                            <Image
-                              src={
-                                item.image ||
-                                "/articles/how-to-start-trading-from-zero.png"
-                              }
-                              alt={isEnglish ? item.title_en || item.title : item.title}
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
+                      {learnTradingMenuItems.slice(0, 1).map((item) => {
+                        const learnTitle = getLearnTradingTitle(item, isEnglish);
 
-                          <div className="min-w-0 flex-1">
-                            <h3 className="line-clamp-2 text-[14px] font-black leading-6 text-slate-950">
-                              {isEnglish ? item.title_en || item.title : item.title}
-                            </h3>
-                          </div>
-                        </Link>
-                      ))}
+                        return (
+                          <Link
+                            key={item.href}
+                            href={withLangHref(item.href, isEnglish)}
+                            onClick={closeMenu}
+                            className={`${mobileCardClass} flex h-[50px] items-center gap-2 px-2 py-2`}
+                          >
+                            <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+                              <Image
+                                src={
+                                  item.image ||
+                                  "/articles/how-to-start-trading-from-zero.png"
+                                }
+                                alt={learnTitle}
+                                fill
+                                className="object-contain p-1"
+                              />
+                            </div>
+
+                            <div className="min-w-0 flex-1">
+                              <h3 className="line-clamp-2 text-[13px] font-extrabold leading-6 text-slate-800">
+                                {learnTitle}
+                              </h3>
+                            </div>
+                          </Link>
+                        );
+                      })}
                     </div>
                   </Section>
 
                   <Link
                     href={withLangHref("/about", isEnglish)}
                     onClick={closeMenu}
-                    className="block rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-[14px] font-extrabold text-slate-900 transition hover:bg-white"
+                    className="block rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-[14px] font-extrabold text-slate-900 transition hover:border-blue-300 hover:bg-white"
                   >
                     {text.about}
                   </Link>
