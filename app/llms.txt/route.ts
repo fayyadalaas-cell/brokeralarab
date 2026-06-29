@@ -7,20 +7,57 @@ import {
   EVENT_SLUGS,
 } from "@/lib/site-map-data";
 
+function titleFromUrl(url: string) {
+  const path = url.replace(BASE_URL, "").replace(/^\/+/, "");
+
+  if (!path) return "Homepage";
+
+  return path
+    .split("/")
+    .filter(Boolean)
+    .map((part) =>
+      part
+        .replace(/-/g, " ")
+        .replace(/\b\w/g, (char) => char.toUpperCase())
+    )
+    .join(" • ");
+}
+
 function lineList(items: string[]) {
-  return items.filter(Boolean).map((item) => `- ${item}`).join("\n");
+  return items
+    .filter(Boolean)
+    .map((item) => `- [${titleFromUrl(item)}](${item})`)
+    .join("\n");
+}
+
+function slugifyAccountName(accountName: string) {
+  return accountName
+    .toLowerCase()
+    .trim()
+    .replace(/\+/g, "plus")
+    .replace(/&/g, "and")
+    .replace(/[–—]/g, "-")
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]/g, "");
 }
 
 export async function GET() {
   const supabase = await createClient();
 
-  const [{ data: brokers }, { data: countryPages }, { data: openAccountGuides }, { data: accounts }] =
-    await Promise.all([
-      supabase.from("brokers").select("slug").order("slug"),
-      supabase.from("country_pages").select("slug").order("slug"),
-      supabase.from("broker_open_account_guides").select("slug").eq("is_active", true),
-      supabase.from("broker_accounts").select("account_name, brokers(slug)"),
-    ]);
+  const [
+    { data: brokers },
+    { data: countryPages },
+    { data: openAccountGuides },
+    { data: accounts },
+  ] = await Promise.all([
+    supabase.from("brokers").select("slug").order("slug"),
+    supabase.from("country_pages").select("slug").order("slug"),
+    supabase
+      .from("broker_open_account_guides")
+      .select("slug")
+      .eq("is_active", true),
+    supabase.from("broker_accounts").select("account_name, brokers(slug)"),
+  ]);
 
   const staticLinks = lineList(
     [...STATIC_PAGES, ...STATIC_PAGES_EN].map((page) =>
@@ -59,14 +96,7 @@ export async function GET() {
       ?.filter((row: any) => row.brokers?.slug && row.account_name)
       .flatMap((row: any) => {
         const brokerSlug = row.brokers.slug;
-        const accountSlug = row.account_name
-          .toLowerCase()
-          .trim()
-          .replace(/\+/g, "plus")
-          .replace(/&/g, "and")
-          .replace(/[–—]/g, "-")
-          .replace(/\s+/g, "-")
-          .replace(/[^\w-]/g, "");
+        const accountSlug = slugifyAccountName(row.account_name);
 
         return [
           `${BASE_URL}/brokers/${brokerSlug}/accounts/${accountSlug}`,
@@ -75,13 +105,13 @@ export async function GET() {
       }) || []
   );
 
-const eventLinks = lineList(
-  EVENT_SLUGS.map((event) => `${BASE_URL}/events/${event}`)
-);
+  const eventLinks = lineList(
+    EVENT_SLUGS.map((event) => `${BASE_URL}/events/${event}`)
+  );
 
   const content = `# Broker AlArab
 
-Broker AlArab is an independent bilingual broker review and comparison platform helping traders compare forex brokers, trading platforms, account types, fees, regulation, licenses, investor protection, trading tools, and broker alternatives in Arabic and English.
+> Broker AlArab is an independent bilingual broker review and comparison platform helping traders compare forex brokers, trading platforms, account types, fees, regulation, licenses, investor protection, trading tools, and broker alternatives in Arabic and English.
 
 ## Languages
 
@@ -130,6 +160,16 @@ ${accountLinks}
 
 ${eventLinks}
 
+## XML Resources
+
+- [XML Sitemap](${BASE_URL}/sitemap.xml)
+- [Robots.txt](${BASE_URL}/robots.txt)
+
+## Contact
+
+- [Contact Broker AlArab](${BASE_URL}/contact)
+- [English Contact](${BASE_URL}/en/contact)
+
 ## Editorial Principles
 
 - Independent reviews
@@ -143,7 +183,7 @@ ${eventLinks}
 
   return new Response(content, {
     headers: {
-      "Content-Type": "text/plain; charset=utf-8",
+      "Content-Type": "text/markdown; charset=utf-8",
       "Cache-Control": "public, max-age=3600",
     },
   });
