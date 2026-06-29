@@ -24,11 +24,13 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
+type ParamValue = string | string[] | undefined;
+
 type PageSearchParams = {
-  q?: string;
-  regulator?: string;
-  country?: string;
-  all?: string;
+  q?: ParamValue;
+  regulator?: ParamValue;
+  country?: ParamValue;
+  all?: ParamValue;
 };
 
 type License = {
@@ -109,6 +111,14 @@ function cleanText(value?: string | null) {
   return (value || "").trim().toLowerCase();
 }
 
+function getSearchParam(value: ParamValue) {
+  if (Array.isArray(value)) {
+    return value.find((item) => item && item.trim() !== "") || "";
+  }
+
+  return value?.trim() || "";
+}
+
 function statusText(status?: string) {
   if (status === "active") return "Active";
   if (status === "inactive") return "Inactive";
@@ -171,11 +181,11 @@ export default async function LicensesPage({
   const params = (await searchParams) || {};
   const { licenses, brokers } = await getData();
 
-  const qRaw = params.q?.trim() || "";
-  const q = qRaw.toLowerCase();
-  const selectedRegulator = params.regulator?.trim() || "";
-  const selectedCountry = params.country?.trim() || "";
-  const showAll = params.all === "1";
+const qRaw = getSearchParam(params.q);
+const q = qRaw.toLowerCase();
+const selectedRegulator = getSearchParam(params.regulator);
+const selectedCountry = getSearchParam(params.country);
+const showAll = getSearchParam(params.all) === "1";
 
   const brokerMap = new Map<number, Broker>();
   brokers.forEach((broker) => brokerMap.set(broker.id, broker));
