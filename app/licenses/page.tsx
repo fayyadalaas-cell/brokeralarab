@@ -971,9 +971,11 @@ const licensesItemListSchema = {
 
           <div className="grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-4 md:p-5">
             {regulators.slice(0, 8).map((item) => (
-              <Link
+      <Link
   key={item.code}
-  href={`/licenses?regulator=${item.code}#license-search`}
+  href={`/licenses/${item.code.toLowerCase()}`}
+  target="_blank"
+  rel="noopener noreferrer"
   className="group rounded-[20px] border border-brand-100 bg-white px-4 py-3.5 shadow-sm transition hover:-translate-y-[2px] hover:border-brand-200 hover:shadow-[0_10px_24px_rgba(59,130,246,0.12)] md:rounded-[22px] md:p-4"
 >
                 <div className="flex items-center justify-between gap-3">
