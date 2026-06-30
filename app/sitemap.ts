@@ -156,6 +156,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }))
     : [];
 
+  const regulatorSlugs = [
+    "fca",
+    "asic",
+    "cysec",
+    "dfsa",
+    "fsca",
+    "fsa",
+    "scb",
+    "fsc",
+  ];
+
+  const regulatorPages = regulatorSlugs.map((slug) => ({
+    url: `${BASE_URL}/licenses/${slug}`,
+    lastModified: now,
+  }));
+
+  const regulatorPagesEN = regulatorSlugs.map((slug) => ({
+    url: `${BASE_URL}/en/licenses/${slug}`,
+    lastModified: now,
+  }));
+
   return [
     ...staticPages,
     ...staticPagesEN,
@@ -172,5 +193,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...comparePagesEN,
     ...eventPages,
     ...eventPagesEN,
+    ...regulatorPages,
+    ...regulatorPagesEN,
   ];
 }
