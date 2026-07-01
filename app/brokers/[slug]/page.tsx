@@ -1126,6 +1126,17 @@ function MobileFeesAccordion({
   );
 }
 
+function regulatorPageHref(code: string | null) {
+  if (!code) return null;
+
+  const slug = code
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-");
+
+  return `/licenses/${slug}`;
+}
+
 function BrokerLicensesSection({
   brokerName,
   licenses,
@@ -1244,12 +1255,30 @@ function BrokerLicensesSection({
               {licenses.map((license) => (
                 <tr key={license.id} className="hover:bg-slate-50">
                   <td className="px-4 py-4">
-                    <div className="font-black text-slate-950">
-                      {license.regulator_code}
-                    </div>
-                    <div className="mt-1 text-xs text-slate-500">
-                      {license.regulator_name_ar}
-                    </div>
+                   {regulatorPageHref(license.regulator_code) ? (
+  <Link
+    href={regulatorPageHref(license.regulator_code)!}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-block hover:text-brand-600"
+  >
+    <div className="font-black text-slate-950 underline-offset-4 hover:underline">
+      {license.regulator_code}
+    </div>
+    <div className="mt-1 text-xs text-slate-500">
+      {license.regulator_name_ar}
+    </div>
+  </Link>
+) : (
+  <>
+    <div className="font-black text-slate-950">
+      {license.regulator_code}
+    </div>
+    <div className="mt-1 text-xs text-slate-500">
+      {license.regulator_name_ar}
+    </div>
+  </>
+)}
                   </td>
 
                   <td className="px-4 py-4 font-bold text-slate-700">
@@ -1462,10 +1491,13 @@ dir="rtl"
 
         <div className="mt-4 grid gap-3 md:grid-cols-3">
           {licenses.map((license) => (
-            <div
-              key={`desc-${license.id}`}
-              className="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-right"
-            >
+            <Link
+  key={`desc-${license.id}`}
+  href={regulatorPageHref(license.regulator_code) || "#"}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="block rounded-2xl border border-slate-200 bg-slate-50 p-3 text-right transition hover:border-brand-200 hover:bg-brand-50/40"
+>
               <div className="flex items-center justify-between gap-3">
                 <div className="text-lg font-black text-slate-950">
                   {license.regulator_code}
@@ -1478,7 +1510,7 @@ dir="rtl"
               <p className="mt-3 text-sm leading-7 text-slate-700">
                 {license.regulator_description_ar || "جهة رقابية تشرف على نشاط الشركة وفق متطلبات تنظيمية محددة."}
               </p>
-            </div>
+           </Link>
           ))}
         </div>
       </div>

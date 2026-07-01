@@ -1018,6 +1018,17 @@ function MobileFeesAccordion({
   );
 }
 
+function regulatorPageHref(code: string | null) {
+  if (!code) return null;
+
+  const slug = code
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-");
+
+  return `/en/licenses/${slug}`;
+}
+
 function BrokerLicensesSection({
   brokerName,
   licenses,
@@ -1136,12 +1147,32 @@ function BrokerLicensesSection({
               {licenses.map((license) => (
                 <tr key={license.id} className="hover:bg-slate-50">
                   <td className="px-4 py-4">
-                    <div className="font-black text-slate-950">
-                      {license.regulator_code}
-                    </div>
-                    <div className="mt-1 text-xs text-slate-500">
-                      {license.regulator_name_en}
-                    </div>
+                   {regulatorPageHref(license.regulator_code) ? (
+  <Link
+    href={regulatorPageHref(license.regulator_code)!}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-block hover:text-brand-600"
+  >
+    <div className="font-black text-slate-950 underline-offset-4 hover:underline">
+      {license.regulator_code}
+    </div>
+
+    <div className="mt-1 text-xs text-slate-500">
+      {license.regulator_name_en}
+    </div>
+  </Link>
+) : (
+  <>
+    <div className="font-black text-slate-950">
+      {license.regulator_code}
+    </div>
+
+    <div className="mt-1 text-xs text-slate-500">
+      {license.regulator_name_en}
+    </div>
+  </>
+)}
                   </td>
 
                   <td className="px-4 py-4 font-bold text-slate-700">
@@ -1348,10 +1379,13 @@ function BrokerLicensesSection({
 
         <div className="mt-4 grid gap-3 md:grid-cols-3">
           {licenses.map((license) => (
-            <div
-              key={`desc-${license.id}`}
-              className="rounded-2xl border border-slate-200 bg-slate-50 p-3 md:min-h-[140px] md:p-4"
-            >
+            <Link
+  key={`desc-${license.id}`}
+  href={regulatorPageHref(license.regulator_code) || "#"}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="block rounded-2xl border border-slate-200 bg-slate-50 p-3 transition hover:border-brand-200 hover:bg-brand-50/40 md:min-h-[140px] md:p-4"
+>
               <div className="flex items-center justify-between gap-3">
                 <div className="text-base font-black text-slate-950 md:text-lg">
                   {license.regulator_code}
@@ -1365,7 +1399,7 @@ function BrokerLicensesSection({
                 {license.regulator_description_en ||
                   "A regulator that supervises the company under defined regulatory requirements."}
               </p>
-            </div>
+           </Link>
           ))}
         </div>
       </div>

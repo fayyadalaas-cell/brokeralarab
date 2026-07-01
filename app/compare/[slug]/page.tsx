@@ -113,6 +113,19 @@ function numericLeverage(value: string | null) {
   return Number(match.join(""));
 }
 
+function accountSlug(value: string | null) {
+  if (!value) return "";
+
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/\+/g, "plus")
+    .replace(/&/g, "and")
+    .replace(/[–—]/g, "-")
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]/g, "");
+}
+
 function getBetterValueLabel(left: Broker, right: Broker) {
   const leftDeposit = left.min_deposit ?? 999999;
   const rightDeposit = right.min_deposit ?? 999999;
@@ -1889,9 +1902,14 @@ export default async function ComparePage({ params }: PageProps) {
                       className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm"
                     >
                       <div className="mb-4">
-                        <h4 className="text-lg font-black text-[#0f172a]">
-                          {acc.account_name || "حساب"}
-                        </h4>
+                       <Link
+  href={`/brokers/${broker.slug}/accounts/${accountSlug(acc.account_name)}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-block text-lg font-black text-[#0f172a] transition hover:text-brand-500 hover:underline"
+>
+  {acc.account_name || "حساب"}
+</Link>
                         <p className="mt-1 text-xs font-bold text-brand-500">
                           {acc.best_for || "مناسب لفئات متعددة"}
                         </p>
@@ -2147,9 +2165,14 @@ export default async function ComparePage({ params }: PageProps) {
                   key={acc.id}
                   className="rounded-[20px] border border-slate-200 bg-white p-4"
                 >
-                  <div className="text-sm font-black text-[#0f172a]">
-                    {acc.account_name || "حساب"}
-                  </div>
+                  <Link
+  href={`/brokers/${broker.slug}/accounts/${accountSlug(acc.account_name)}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-block text-sm font-black text-[#0f172a] transition hover:text-brand-500 hover:underline"
+>
+  {acc.account_name || "حساب"}
+</Link>
 
                   <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
                     <div className="rounded-xl bg-[#fbfdff] p-3">

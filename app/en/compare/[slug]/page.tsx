@@ -144,6 +144,19 @@ function numericLeverage(value: string | null) {
   return Number(match.join(""));
 }
 
+function accountSlug(value: string | null) {
+  if (!value) return "";
+
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/\+/g, "plus")
+    .replace(/&/g, "and")
+    .replace(/[–—]/g, "-")
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]/g, "");
+}
+
 function getBetterValueLabel(left: Broker, right: Broker) {
   const leftDeposit = left.min_deposit ?? 999999;
   const rightDeposit = right.min_deposit ?? 999999;
@@ -528,15 +541,22 @@ function BrokerHeadToHeadCard({
 
 function AccountCard({
   account,
+  brokerSlug,
 }: {
   account: BrokerAccount;
-}) {
+  brokerSlug: string;
+}){
   return (
     <div className="rounded-[22px] border border-slate-200 bg-[#f8fbff] p-4">
       <div className="flex items-start justify-between gap-3">
-        <div className="text-lg font-black text-[#0f172a]">
-          {account.account_name_en || account.account_name || "Account"}
-        </div>
+       <Link
+  href={`/en/brokers/${brokerSlug}/accounts/${accountSlug(account.account_name_en || account.account_name)}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-block text-lg font-black text-[#0f172a] transition hover:text-brand-500 hover:underline"
+>
+  {account.account_name_en || account.account_name || "Account"}
+</Link>
         <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-brand-600">
           Account
         </span>
@@ -1957,9 +1977,14 @@ const comparisonSchema = {
                       className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm"
                     >
                       <div className="mb-4">
-                        <h4 className="text-lg font-black text-[#0f172a]">
-                          {acc.account_name_en || acc.account_name || "Account"}
-                        </h4>
+                       <Link
+  href={`/en/brokers/${broker.slug}/accounts/${accountSlug(acc.account_name_en || acc.account_name)}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-block text-lg font-black text-[#0f172a] transition hover:text-brand-500 hover:underline"
+>
+  {acc.account_name_en || acc.account_name || "Account"}
+</Link>
                         <p className="mt-1 text-xs font-bold text-brand-500">
                           {acc.best_for_en || acc.best_for || "Suitable for multiple trader profiles"}
                         </p>
@@ -2221,9 +2246,14 @@ const comparisonSchema = {
                       key={acc.id}
                       className="rounded-[20px] border border-slate-200 bg-white p-4"
                     >
-                      <div className="text-sm font-black text-[#0f172a]">
-                        {acc.account_name_en || acc.account_name || "Account"}
-                      </div>
+                     <Link
+  href={`/en/brokers/${broker.slug}/accounts/${accountSlug(acc.account_name_en || acc.account_name)}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-block text-sm font-black text-[#0f172a] transition hover:text-brand-500 hover:underline"
+>
+  {acc.account_name_en || acc.account_name || "Account"}
+</Link>
 
                       <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
                         <div className="rounded-xl bg-[#fbfdff] p-3">
