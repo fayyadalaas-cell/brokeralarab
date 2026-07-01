@@ -159,7 +159,7 @@ export async function generateMetadata({
       url: pageUrl,
       siteName: "Broker Al Arab",
       locale: "en_US",
-      type: "article",
+      type: "website",
     },
     robots: { index: true, follow: true },
   };
@@ -367,6 +367,50 @@ export default async function LicenseSlugPage({ params }: PageProps) {
       },
     })),
   };
+
+    const webPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": `${pageUrl}#webpage`,
+    url: pageUrl,
+    name:
+      regulator.meta_title_en ||
+      `${regulator.short_name} License for Forex and CFD Brokers`,
+    description:
+      regulator.meta_description_en ||
+      `Learn about the ${regulator.short_name} license, how to verify brokers, and what this regulator means for traders.`,
+    inLanguage: "en",
+    isPartOf: {
+      "@id": `${BASE_URL}/#website`,
+    },
+    publisher: {
+      "@id": `${BASE_URL}/#organization`,
+    },
+    about: {
+      "@type": "GovernmentOrganization",
+      name: regulator.name_en,
+      alternateName: regulator.short_name,
+      url: regulator.website_url || pageUrl,
+    },
+    mainEntity: {
+      "@id": `${pageUrl}#regulated-brokers`,
+    },
+  };
+
+    const regulatorSchema = {
+    "@context": "https://schema.org",
+    "@type": "GovernmentOrganization",
+    "@id": `${pageUrl}#regulator`,
+    name: regulator.name_en,
+    alternateName: regulator.short_name,
+    url: regulator.website_url || pageUrl,
+    foundingDate: regulator.founded_year
+      ? String(regulator.founded_year)
+      : undefined,
+    areaServed: regulator.country_en || undefined,
+    sameAs: regulator.website_url ? [regulator.website_url] : undefined,
+  };
+
     return (
     <main className="bg-slate-50" dir="ltr">
       <Script
@@ -383,10 +427,22 @@ export default async function LicenseSlugPage({ params }: PageProps) {
         />
       )}
 
-      <Script
+            <Script
         id="license-slug-itemlist-schema"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+      />
+
+      <Script
+        id="license-slug-webpage-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }}
+      />
+
+      <Script
+        id="license-slug-regulator-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(regulatorSchema) }}
       />
 
       <section className="mx-auto max-w-7xl px-2.5 pb-4 md:px-6 lg:px-8">

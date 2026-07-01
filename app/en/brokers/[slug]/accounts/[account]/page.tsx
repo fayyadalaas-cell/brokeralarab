@@ -59,9 +59,15 @@ export async function generateMetadata({ params }: PageProps) {
 
   const brokerName = broker.name_en || broker.name;
 
-  return {
-    title: `${brokerName} ${current.account_name} Account Review: Spreads, Fees & Minimum Deposit`,
-    description: `Detailed ${current.account_name} account review for ${brokerName}. Compare spreads, commissions, minimum deposit, execution type, trading costs, and the best account type for your strategy.`,
+const title = `${brokerName} ${current.account_name} Account Review: Spreads, Fees & Minimum Deposit`;
+
+const description = `${brokerName} ${current.account_name} account review covering spreads, fees, minimum deposit and trading costs.`;
+
+return {
+  title: {
+    absolute: title,
+  },
+  description,
     alternates: {
       canonical: `/en/brokers/${broker.slug}/accounts/${slugify(
         current.account_name

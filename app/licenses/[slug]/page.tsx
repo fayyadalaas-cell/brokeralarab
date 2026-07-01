@@ -146,7 +146,7 @@ export async function generateMetadata({
       url: pageUrl,
       siteName: "Broker Al Arab",
       locale: "ar_AR",
-      type: "article",
+      type: "website",
     },
     robots: { index: true, follow: true },
   };
@@ -355,6 +355,49 @@ export default async function LicenseSlugPage({ params }: PageProps) {
     })),
   };
 
+  const webPageSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": `${pageUrl}#webpage`,
+  url: pageUrl,
+  name:
+    regulator.meta_title_ar ||
+    `ترخيص ${regulator.short_name} لشركات التداول`,
+  description:
+    regulator.meta_description_ar ||
+    `تعرف على ترخيص ${regulator.short_name}، طريقة التحقق من الوسطاء، وما يعنيه هذا الترخيص للمتداولين.`,
+  inLanguage: "ar",
+  isPartOf: {
+    "@id": `${BASE_URL}/#website`,
+  },
+  publisher: {
+    "@id": `${BASE_URL}/#organization`,
+  },
+  about: {
+    "@type": "GovernmentOrganization",
+    name: regulator.name_ar,
+    alternateName: regulator.short_name,
+    url: regulator.website_url || pageUrl,
+  },
+  mainEntity: {
+    "@id": `${pageUrl}#regulated-brokers`,
+  },
+};
+
+const regulatorSchema = {
+  "@context": "https://schema.org",
+  "@type": "GovernmentOrganization",
+  "@id": `${pageUrl}#regulator`,
+  name: regulator.name_ar,
+  alternateName: regulator.short_name,
+  url: regulator.website_url || pageUrl,
+  foundingDate: regulator.founded_year
+    ? String(regulator.founded_year)
+    : undefined,
+  areaServed: regulator.country_ar || undefined,
+  sameAs: regulator.website_url ? [regulator.website_url] : undefined,
+};
+
   return (
     <main className="bg-slate-50" dir="rtl">
       <Script
@@ -376,6 +419,18 @@ export default async function LicenseSlugPage({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
       />
+
+      <Script
+  id="license-slug-webpage-schema"
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }}
+/>
+
+<Script
+  id="license-slug-regulator-schema"
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{ __html: JSON.stringify(regulatorSchema) }}
+/>
 
       <section className="mx-auto max-w-7xl px-2.5 pb-4 md:px-6 lg:px-8">
   <div className="overflow-hidden rounded-[24px] border border-brand-100 bg-gradient-to-l from-brand-50 via-white to-slate-50 shadow-sm md:rounded-[30px]">

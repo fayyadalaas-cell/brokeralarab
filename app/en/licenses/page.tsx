@@ -466,7 +466,7 @@ const showAll = getSearchParam(params.all) === "1";
         <div className="overflow-hidden rounded-[30px] border border-brand-100 bg-gradient-to-r from-brand-50 via-white to-slate-50 shadow-sm">
           <div className="px-5 py-8 text-center md:px-12 md:py-8">
             <div className="mx-auto mb-4 inline-flex rounded-full border border-brand-100 bg-white px-4 py-2 text-[12px] font-black text-brand-600 shadow-sm">
-              Check broker regulation before opening an account
+              Verify a forex broker license before opening an account
             </div>
 
             <h1 className="mx-auto max-w-4xl text-[34px] font-black leading-[1.18] tracking-tight text-slate-950 md:text-5xl">
@@ -527,7 +527,7 @@ const showAll = getSearchParam(params.all) === "1";
         <div className="overflow-hidden rounded-[28px] border border-brand-100 bg-white shadow-sm">
           <div className="border-b border-slate-200 px-5 py-5 text-left md:px-8">
             <h2 className="text-2xl font-black text-slate-950 md:text-3xl">
-              Search the Forex Broker Regulation Database
+              Search the Broker License Database
             </h2>
             <p className="mt-2 text-sm leading-7 text-slate-500 md:text-base">
               Enter a broker name or license number, then filter by regulator or country
@@ -543,7 +543,7 @@ const showAll = getSearchParam(params.all) === "1";
             <div className="grid gap-3 md:grid-cols-12">
               <div className="md:col-span-5">
                 <label className="mb-2 block text-[12px] font-black text-slate-600">
-                  Search
+                  Verify License
                 </label>
                 <input
                   name="q"

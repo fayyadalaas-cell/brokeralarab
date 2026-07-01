@@ -390,9 +390,11 @@ const description = `Compare ${leftName} vs ${rightName} by fees, regulation, ac
 const imageUrl = `${siteUrl}/og-image.png`;
 
   
- return {
+return {
   metadataBase: new URL(siteUrl),
-  title,
+  title: {
+    absolute: title,
+  },
   description,
   keywords: [
     `${leftName} vs ${rightName}`,
@@ -417,7 +419,7 @@ const imageUrl = `${siteUrl}/og-image.png`;
   url: `${siteUrl}/en/compare/${slug}`,
   siteName: "Broker Al Arab",
   locale: "en_US",
-  type: "article",
+  type: "website",
   images: [
     {
       url: imageUrl,

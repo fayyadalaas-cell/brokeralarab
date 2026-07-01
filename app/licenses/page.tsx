@@ -149,7 +149,7 @@ function regulatorMobileLabel(code: string, fallback: string) {
     MISA: "MISA القمر",
   };
 
-  return shortNames[code] || code || fallback
+  return shortNames[code] || code || fallback;
 }
 
 function formatVerifiedDate(value?: string | null) {
@@ -295,14 +295,15 @@ const regulators = Array.from(
   const visibleGroups = showAll ? groupedByBroker : groupedByBroker.slice(0, 12);
   const uniqueBrokersCount = new Set(licenses.map((x) => x.broker_id)).size;
 
-  const showAllUrl =
-    "/licenses?" +
-    new URLSearchParams({
-      ...(qRaw ? { q: qRaw } : {}),
-      ...(selectedRegulator ? { regulator: selectedRegulator } : {}),
-      ...(selectedCountry ? { country: selectedCountry } : {}),
-      all: "1",
-    }).toString();
+const showAllUrl =
+  "/licenses?" +
+  new URLSearchParams({
+    ...(qRaw ? { q: qRaw } : {}),
+    ...(selectedRegulator ? { regulator: selectedRegulator } : {}),
+    ...(selectedCountry ? { country: selectedCountry } : {}),
+    all: "1",
+  }).toString() +
+  "#license-search";
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",

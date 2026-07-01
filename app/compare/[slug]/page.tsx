@@ -332,10 +332,12 @@ twitter: {
   const description = `مقارنة شاملة بين ${leftName} و ${rightName} من حيث الحسابات والرسوم والتراخيص والمنصات والحد الأدنى للإيداع لمعرفة أيهما أنسب للمتداول العربي.`;
  
 
-  return {
-    metadataBase: new URL(siteUrl),
-    title,
-    description,
+ return {
+  metadataBase: new URL(siteUrl),
+  title: {
+    absolute: title,
+  },
+  description,
     keywords: [
       `مقارنة ${leftName} و ${rightName}`,
       `${leftName} vs ${rightName}`,
@@ -359,7 +361,7 @@ twitter: {
   url: `${siteUrl}/compare/${slug}`,
   siteName: "Broker Al Arab",
   locale: "ar_AR",
-  type: "article",
+  type: "website",
   images: [
     {
       url: `${siteUrl}/og-image.png`,
