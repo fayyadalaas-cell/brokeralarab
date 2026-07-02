@@ -71,7 +71,7 @@ function SectionShell({
   badge,
   children,
 }: {
-  title: string;
+  title: React.ReactNode;
   badge?: string;
   children: React.ReactNode;
 }) {
@@ -421,11 +421,76 @@ export default async function Page({
 
             <ContentSection title="مكان إقامة المعرض" html={event.venue_html} />
 
-            <ContentSection
-              title="آخر تحديث من الجهة المنظمة"
-              badge="بيان صحفي"
-              html={event.press_release_ar}
-            />
+       {event.press_release_ar && (
+  <SectionShell
+  title={
+    <>
+      <span className="hidden sm:inline">
+        آخر تحديث من الجهة المنظمة
+      </span>
+
+      <span className="sm:hidden">
+        آخر تحديث
+      </span>
+    </>
+  }
+  badge="بيان صحفي"
+>
+    <article className="rounded-[24px] bg-white p-4 md:border md:border-slate-200 md:p-6 md:shadow-sm">
+      {event.press_release_image && (
+        <div className="overflow-hidden rounded-[20px] border border-slate-200 bg-white">
+          <Image
+            src={event.press_release_image}
+            alt={event.press_release_title_ar || "بيان صحفي"}
+            width={1400}
+            height={735}
+            className="h-auto w-full object-contain"
+          />
+        </div>
+      )}
+
+      <div className="mt-5">
+        <div className="mb-3 flex flex-wrap items-center justify-center gap-2 md:justify-start">
+          <span className="rounded-full bg-brand-600 px-4 py-1.5 text-xs font-black text-white">
+            بيان صحفي
+          </span>
+
+          {event.press_release_date && (
+            <span className="rounded-full bg-slate-50 px-4 py-1.5 text-xs font-black text-slate-600">
+              {formatDate(event.press_release_date)}
+            </span>
+          )}
+        </div>
+
+        {event.press_release_title_ar && (
+          <h2 className="mx-auto max-w-xl text-center text-[17px] font-black leading-8 text-slate-950 sm:text-[20px] md:mx-0 md:max-w-none md:text-right md:text-3xl md:leading-[1.45]">
+            {event.press_release_title_ar}
+          </h2>
+        )}
+
+        <p className="mx-auto mt-4 max-w-2xl text-center text-[13px] leading-7 text-slate-600 md:mx-0 md:max-w-none md:text-right md:text-[15px] md:leading-8">
+          أعلنت الجهة المنظمة لمعرض Forex Expo Dubai 2026 عن تأكيد مشاركة أكثر من 200 علامة تجارية وأكثر من 100 متحدث في النسخة القادمة من المعرض.
+        </p>
+
+<div
+  className="mt-5 hidden rounded-2xl border border-slate-200 bg-slate-50 p-5 text-justify text-sm leading-8 text-slate-700 md:block [&_p]:mb-4 [&_strong]:font-normal [&_strong]:text-slate-700"
+  dangerouslySetInnerHTML={{ __html: event.press_release_ar }}
+/>
+
+        <details className="mt-5 md:hidden">
+          <summary className="cursor-pointer list-none rounded-2xl border border-brand-100 bg-brand-50 px-4 py-3 text-center text-sm font-black text-brand-700">
+            قراءة البيان الصحفي الكامل
+          </summary>
+
+        <div
+  className="mt-5 text-justify text-[13px] leading-8 text-slate-700 [&_p]:mb-4 [&_strong]:font-normal [&_strong]:text-slate-700"
+            dangerouslySetInnerHTML={{ __html: event.press_release_ar }}
+          />
+        </details>
+      </div>
+    </article>
+  </SectionShell>
+)}
 
             <FaqSection html={event.faq_html} />
 
