@@ -574,44 +574,55 @@ const comparisonItems = useMemo(() => {
                     </div>
                   </Section>
 
-                  <Section
-                    title={text.learn}
-                    open={openSection === "learn"}
-                    onToggle={() => toggleSection("learn")}
-                  >
-                    <div className="space-y-2">
-                      {learnTradingMenuItems.slice(0, 1).map((item) => {
-                        const learnTitle = getLearnTradingTitle(item, isEnglish);
+                 <Section
+  title={text.learn}
+  open={openSection === "learn"}
+  onToggle={() => toggleSection("learn")}
+>
+  <div className="space-y-2">
+    {learnTradingMenuItems.slice(0, 1).map((item) => {
+      const learnTitle = isEnglish
+  ? "Start Trading from Zero"
+  : "ابدأ التداول من الصفر";
 
-                        return (
-                          <Link
-                            key={item.href}
-                            href={withLangHref(item.href, isEnglish)}
-                            onClick={closeMenu}
-                            className={`${mobileCardClass} flex h-[50px] items-center gap-2 px-2 py-2`}
-                          >
-                            <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-                              <Image
-                                src={
-                                  item.image ||
-                                  "/articles/how-to-start-trading-from-zero.png"
-                                }
-                                alt={learnTitle}
-                                fill
-                                className="object-contain p-1"
-                              />
-                            </div>
+      return (
+        <Link
+          key={item.href}
+          href={withLangHref(item.href, isEnglish)}
+          onClick={closeMenu}
+          className={`${mobileCardClass} flex min-h-[50px] items-center px-4 py-3`}
+        >
+          <div className="min-w-0 flex-1">
+            <h3 className="line-clamp-2 text-[13px] font-extrabold leading-6 text-slate-800">
+              {learnTitle}
+            </h3>
+          </div>
+        </Link>
+      );
+    })}
 
-                            <div className="min-w-0 flex-1">
-                              <h3 className="line-clamp-2 text-[13px] font-extrabold leading-6 text-slate-800">
-                                {learnTitle}
-                              </h3>
-                            </div>
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  </Section>
+    <Link
+      href={isEnglish ? "/en/learn-trading/economic-indicators" : "/learn-trading/economic-indicators"}
+      onClick={closeMenu}
+      className={`${mobileCardClass} flex min-h-[50px] items-center px-4 py-3`}
+    >
+      <div className="min-w-0 flex-1">
+        <h3 className="line-clamp-2 text-[13px] font-extrabold leading-6 text-slate-800">
+         {isEnglish ? "Economic Indicators Guide" : "دليل المؤشرات الاقتصادية"}
+        </h3>
+      </div>
+
+    </Link>
+
+    <Link
+      href={isEnglish ? "/en/learn-trading" : "/learn-trading"}
+      onClick={closeMenu}
+      className="block rounded-2xl border border-slate-200 bg-white px-3 py-3 text-center text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
+    >
+      {isEnglish ? "View All Guides" : "جميع دروس التداول"}
+    </Link>
+  </div>
+</Section>
 
                   <Link
                     href={withLangHref("/about", isEnglish)}

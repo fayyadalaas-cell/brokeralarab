@@ -396,32 +396,39 @@ export default function ArabicHeader({
   دليل تعلم التداول
 </div>
 
-    {learnTradingMenuItems.slice(0, 1).map((item: any) => (
-      <Link
-        key={item.href}
-        href={item.href}
-        className={`${menuCardClass} flex items-center justify-between gap-4 text-right`}
-      >
-        <div className="min-w-0 flex-1 text-right">
-          <div className="line-clamp-2 text-[13px] font-extrabold leading-6 text-slate-700">
-  {item.title}
-</div>
-        </div>
+   {learnTradingMenuItems.slice(0, 1).map((item: any) => (
+  <Link
+    key={item.href}
+    href={item.href}
+    className={`${menuCardClass} flex items-center justify-between gap-4 text-right`}
+  >
+    <div className="min-w-0 flex-1 text-right">
+      <div className="line-clamp-2 text-[13px] font-extrabold leading-6 text-slate-700">
+        {item.title}
+      </div>
+    </div>
 
-        <div className={logoBoxClass}>
-          <Image
-            src={item.image || "/articles/how-to-start-trading-from-zero.png"}
-            alt={item.title}
-            width={40}
-            height={40}
-            className="h-full w-full object-contain p-1"
-          />
-        </div>
-      </Link>
-    ))}
+    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-lg font-black text-brand-600 shadow-sm">
+      ←
+    </span>
+  </Link>
+))}
+<Link
+  href="/learn-trading/economic-indicators"
+  className={`${menuCardClass} mt-2 flex items-center justify-between gap-4 text-right`}
+>
+  <div className="min-w-0 flex-1 text-right">
+    <div className="line-clamp-2 text-[13px] font-extrabold leading-6 text-slate-700">
+      المؤشرات الاقتصادية وتأثيرها على التداول
+    </div>
+  </div>
 
+  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-lg font-black text-brand-600 shadow-sm">
+    ←
+  </span>
+</Link>
     <Link
-      href="/learn-trading/how-to-start-trading-from-zero"
+      href="/learn-trading"
       className="mt-1 block rounded-2xl px-3 py-3 text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
     >
       جميع دروس التداول ←

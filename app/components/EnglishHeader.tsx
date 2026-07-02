@@ -340,35 +340,42 @@ export default function EnglishHeader({
 
   <div className={`${dropdownClass} w-[420px]`}>
     <div className="px-3 pb-3 pt-1 text-xs font-black tracking-wide text-slate-500">
-      Learn Trading Guide
+      Trading Guides
     </div>
 
     {learnTradingMenuItems.slice(0, 1).map((item: any) => (
-      <Link
-        key={item.href}
-        href={getLearnTradingHref(item)}
-        className={`${menuCardClass} flex items-center justify-between gap-4`}
-      >
-        <div className="min-w-0 flex-1">
-          <div className="line-clamp-2 text-[13px] font-extrabold leading-6 text-slate-700">
-            {getLearnTradingTitle(item)}
-          </div>
-        </div>
+  <Link
+    key={item.href}
+    href={getLearnTradingHref(item)}
+    className={`${menuCardClass} flex items-center justify-between gap-4`}
+  >
+    <div className="min-w-0 flex-1">
+      <div className="line-clamp-2 text-[13px] font-extrabold leading-6 text-slate-700">
+        {getLearnTradingTitle(item)}
+      </div>
+    </div>
 
-        <div className={logoBoxClass}>
-          <Image
-            src={item.image || "/articles/how-to-start-trading-from-zero.png"}
-            alt={getLearnTradingTitle(item)}
-            width={40}
-            height={40}
-            className="h-full w-full object-contain p-1"
-          />
-        </div>
-      </Link>
-    ))}
+    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-lg font-black text-brand-600 shadow-sm">
+      →
+    </span>
+  </Link>
+))}
+<Link
+  href="/en/learn-trading/economic-indicators"
+  className={`${menuCardClass} mt-2 flex items-center justify-between gap-4`}
+>
+  <div className="min-w-0 flex-1">
+    <div className="line-clamp-2 text-[13px] font-extrabold leading-6 text-slate-700">
+      Economic Indicators and Their Impact on Trading
+    </div>
+  </div>
 
+  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-lg font-black text-brand-600 shadow-sm">
+    →
+  </span>
+</Link>
     <Link
-      href="/en/learn-trading/how-to-start-trading-from-zero"
+      href="/en/learn-trading"
       className="mt-1 block rounded-2xl px-3 py-3 text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
     >
       View All Guides →
