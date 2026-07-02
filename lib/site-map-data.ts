@@ -21,6 +21,7 @@ export const STATIC_PAGES = [
   "best-brokers/gold",
   "lowest-spread-brokers",
   "learn-trading/how-to-start-trading-from-zero",
+  "learn-trading/economic-indicators",
   "licenses",
   "about",
   "contact",
@@ -36,7 +37,13 @@ export const STATIC_PAGES_EN = [
   "en/best-brokers",
   "en/best-brokers/gold",
   "en/learn-trading/how-to-start-trading-from-zero",
+  "en/learn-trading/economic-indicators",
   "en/licenses",
+  "en/about",
+  "en/contact",
+  "en/how-we-review-brokers",
+  "en/privacy-policy",
+  "en/terms-and-conditions",
 ];
 
 export const EVENT_SLUGS = [
