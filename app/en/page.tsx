@@ -103,6 +103,7 @@ type Broker = {
   arabic_support: string | null;
   trading_assets: string | null;
   trading_assets_en: string | null;
+  real_account_url: string | null;
 };
 
 function money(value: number | null) {
@@ -289,6 +290,10 @@ broker_2:broker_2_id (
 
   const brokers = ((data ?? []) as Broker[]).filter((b) => b.slug && b.name);
   const topBrokers = brokers.slice(0, 6);
+  const footerFeaturedBrokers = brokers
+  .filter((broker) => broker.logo && broker.slug && (broker.name_en || broker.name))
+  .sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0))
+  .slice(0, 5);
   const topComparisons: Comparison[] = ((comparisonsData ?? []) as any[])
   .map((item) => ({
     id: item.id,
@@ -1987,6 +1992,102 @@ const typePages = getTypePages();
         </>
       );
     })()}
+  </div>
+</section>
+
+{/* FEATURED BROKERS BEFORE FOOTER - DESKTOP ONLY */}
+<section className="mx-auto hidden max-w-7xl px-4 pb-0 pt-3 sm:px-6 md:block lg:px-8">
+  <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.07)]">
+    <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-6 py-6 text-center">
+      <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[11px] font-black text-brand-600 shadow-sm">
+        ⭐ Best Brokers 2026
+      </span>
+
+      <h2 className="mt-3 text-[30px] font-black leading-[1.15] text-[#07111f] lg:text-[36px]">
+        Broker Alarab Recommended Brokers
+      </h2>
+
+      <p className="mx-auto mt-2 max-w-3xl text-[13px] font-semibold leading-7 text-slate-600 lg:text-[14px]">
+        A curated list of the highest-rated trading brokers based on regulation, fees, accounts, platforms, and user experience.
+      </p>
+
+      <Link
+        href="/en/brokers"
+        className="mt-4 inline-flex h-11 items-center justify-center rounded-2xl bg-brand-500 px-6 text-[13px] font-black text-white shadow-[0_12px_26px_rgba(37,99,235,0.22)] hover:bg-brand-600"
+      >
+        View All Brokers
+      </Link>
+    </div>
+
+    <div className="grid gap-3 bg-white px-4 pb-2 pt-4 md:grid-cols-5">
+      {footerFeaturedBrokers.map((broker, index) => {
+        const rankBadges = ["👑", "🥈", "🥉", "#4", "#5"];
+
+        return (
+          <article
+            key={broker.id}
+            className="group relative overflow-hidden rounded-[26px] border border-slate-200 bg-[#fbfdff] p-4 text-center shadow-sm transition duration-300 hover:-translate-y-1 hover:border-brand-200 hover:bg-white hover:shadow-[0_18px_38px_rgba(15,23,42,0.10)]"
+          >
+            <div className="absolute inset-x-0 top-0 h-[6px] rounded-t-[26px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent" />
+
+            <div className="mb-3 flex items-center justify-between gap-2 pt-1">
+              <span className="flex h-8 min-w-8 items-center justify-center rounded-full bg-brand-50 px-2 text-[11px] font-black text-brand-600 ring-1 ring-brand-100">
+                {rankBadges[index]}
+              </span>
+            </div>
+
+            <Link
+              href={`/en/brokers/${broker.slug}`}
+              className="mx-auto flex h-[76px] w-[94px] items-center justify-center rounded-[20px] border border-slate-200 bg-white p-2 shadow-[0_8px_22px_rgba(15,23,42,0.06)]"
+            >
+              <img
+                src={broker.logo || ""}
+                alt={broker.name_en || broker.name || "Trading broker"}
+                className="max-h-[68px] max-w-[96%] object-contain transition duration-300 group-hover:scale-[1.12]"
+              />
+            </Link>
+
+            <Link
+              href={`/en/brokers/${broker.slug}`}
+              className="mt-3 block truncate text-[18px] font-black text-slate-950 hover:text-brand-500"
+            >
+              {broker.name_en || broker.name}
+            </Link>
+
+            <p className="mt-1 line-clamp-1 text-[11px] font-bold text-slate-500">
+              {broker.best_for_en || broker.best_for || "Trusted trading broker"}
+            </p>
+
+            <div className="mt-3 rounded-2xl border border-slate-200 bg-white px-3 py-2">
+              <div className="text-[22px] font-extrabold leading-none text-brand-600">
+                {broker.rating?.toFixed(1) ?? "—"}
+              </div>
+              <div className="mt-1 text-[10px] font-black text-slate-500">
+                Overall rating
+              </div>
+            </div>
+
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              <Link
+                href={`/en/brokers/${broker.slug}`}
+                className="inline-flex h-9 items-center justify-center rounded-xl border border-slate-200 bg-white text-[11px] font-black text-slate-700 hover:bg-slate-50"
+              >
+                Review
+              </Link>
+
+             <a
+  href={broker.real_account_url || `/en/brokers/${broker.slug}`}
+  target="_blank"
+  rel="nofollow sponsored noopener noreferrer"
+  className="inline-flex h-9 items-center justify-center rounded-xl bg-brand-500 text-[11px] font-black text-white hover:bg-brand-600"
+>
+  Open Account
+</a>
+            </div>
+          </article>
+        );
+      })}
+    </div>
   </div>
 </section>
     </main>
