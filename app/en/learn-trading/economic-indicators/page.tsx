@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Economic Indicators and Their Impact on Trading | Broker Alarab",
+  title: "Economic Indicators and Their Impact on Trading",
   description:
   "Learn how interest rates, CPI, PPI, Nonfarm Payrolls (NFP), GDP, PMI, unemployment, retail sales, crude oil inventories and central bank meetings affect forex, gold, stocks and financial markets.",
   alternates: {
