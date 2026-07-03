@@ -3,7 +3,6 @@ import Script from "next/script";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import ShareButtons from "@/app/components/ShareButtons";
 import React from "react";
 
 type Broker = {
@@ -629,7 +628,6 @@ export default async function ComparePage({ params }: PageProps) {
   const safetyWinner = getSafetyWinner(left, right);
   const siteUrl = "https://brokeralarab.com";
   const pageUrl = `${siteUrl}/en/compare/${slug}`;
-  const shareTitle = `${left.name_en || left.name} vs ${right.name_en || right.name} | Broker AlArab`;
 
   const faqJsonLd = buildFaqJsonLd(left, right);
 

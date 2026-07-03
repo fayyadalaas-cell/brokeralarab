@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import Script from "next/script";
 import Link from "next/link";
-import ShareButtons from "@/app/components/ShareButtons";
 
 
 type Broker = {
@@ -1596,7 +1595,6 @@ const regulationItems = (broker.regulation_short || broker.regulation || "")
 
 const siteUrl = "https://brokeralarab.com";
 const pageUrl = `${siteUrl}/en/brokers/${broker.slug}`;
-const shareTitle = `${broker.name_en || broker.name} Review | Broker AlArab`;
 
 const breadcrumbSchema = {
   "@context": "https://schema.org",
@@ -1843,7 +1841,7 @@ const reviewSchema = {
     </div>
   </div>
 ) : null}
-          <ShareButtons url={pageUrl} title={shareTitle} />
+        
         </div>
       </aside>
 
