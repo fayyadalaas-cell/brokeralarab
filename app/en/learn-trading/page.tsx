@@ -274,7 +274,7 @@ export default function LearnTradingPage() {
 
       <main
         dir="ltr"
-        className="mx-auto w-full max-w-7xl px-3 pt-5 pb-10 text-left sm:px-4 md:pt-6"
+        className="mx-auto w-full max-w-7xl px-3 pt-5 pb-0 text-left sm:px-4 md:pt-6"
       >
         <section className="mb-4 overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-sm">
           <div className="grid grid-cols-2 divide-x divide-slate-100 md:grid-cols-4">
@@ -300,7 +300,7 @@ export default function LearnTradingPage() {
         </section>
 
         <section className="relative overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm md:rounded-[34px]">
-          <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-brand-500 via-blue-500 to-cyan-400" />
+          <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-brand-500 via-brand-500 to-cyan-400" />
 
           <div className="grid gap-6 p-5 md:p-8 lg:grid-cols-[1fr_360px] lg:items-center">
             <div>
@@ -322,7 +322,7 @@ export default function LearnTradingPage() {
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <InternalLink
                   href="/en/learn-trading/how-to-start-trading-from-zero"
-                  className="inline-flex min-h-[52px] items-center justify-center rounded-2xl bg-gradient-to-r from-brand-500 to-blue-600 px-6 text-sm font-black text-white shadow-lg shadow-blue-200 transition hover:scale-[1.01] hover:shadow-xl md:text-base"
+                  className="inline-flex min-h-[52px] items-center justify-center rounded-2xl bg-gradient-to-r from-brand-500 to-brand-600 px-6 text-sm font-black text-white shadow-lg shadow-brand-100 transition hover:scale-[1.01] hover:shadow-xl md:text-base"
                 >
                   Start from Scratch
                 </InternalLink>
@@ -372,7 +372,7 @@ export default function LearnTradingPage() {
               href={lesson.href}
               className="group overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:border-brand-200 hover:shadow-xl"
             >
-              <div className="h-1.5 bg-gradient-to-r from-brand-500 to-cyan-400" />
+              <div className="h-1.5 bg-gradient-to-r from-brand-500 to-brand-400" />
 
               <div className="p-5 md:p-6">
                 <div className="mb-4 flex items-center justify-between gap-3">
@@ -611,11 +611,11 @@ export default function LearnTradingPage() {
           </div>
         </section>
 
-        <section className="mt-5 overflow-hidden rounded-[28px] border border-brand-200 bg-gradient-to-r from-brand-600 via-brand-500 to-cyan-400 p-6 text-center text-white shadow-xl md:p-8">
+        <section className="mt-5 overflow-hidden rounded-[28px] border border-brand-200 bg-gradient-to-r from-brand-600 via-brand-500 to-brand-400 p-6 text-center text-white shadow-xl md:p-8">
           <h2 className="text-2xl font-black md:text-3xl">
             Ready to Start Learning Trading?
           </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-blue-50 md:text-base md:leading-8">
+          <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-brand-50 md:text-base md:leading-8">
             Start with the beginner guide, then use trading calculators and
             compare brokers before opening a live trading account.
           </p>
