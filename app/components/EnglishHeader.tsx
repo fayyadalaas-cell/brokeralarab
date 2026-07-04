@@ -329,10 +329,10 @@ export default function EnglishHeader({
           {/* LEARN TRADING */}
 <div className="group relative">
   <Link
-    href="/en/learn-trading/how-to-start-trading-from-zero"
-    className={mainLinkClass}
-  >
-    Learn Trading
+  href="/en/learn-trading"
+  className={mainLinkClass}
+>
+  Learn Trading
     <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
       ▼
     </span>

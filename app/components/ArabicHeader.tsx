@@ -382,10 +382,10 @@ export default function ArabicHeader({
         {/* LEARN TRADING */}
 <div className="group relative">
   <Link
-    href="/learn-trading/how-to-start-trading-from-zero"
-    className={mainLinkClass}
-  >
-    تعلم التداول
+  href="/learn-trading"
+  className={mainLinkClass}
+>
+  تعلم التداول
     <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
       ▼
     </span>
