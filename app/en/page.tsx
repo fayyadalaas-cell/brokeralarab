@@ -42,7 +42,7 @@ export const metadata: Metadata = {
       url: "https://brokeralarab.com/og-image.png",
       width: 1560,
       height: 377,
-      alt: "Broker Al Arab",
+      alt: "Broker Alarab",
     },
   ],
 },
@@ -1611,7 +1611,7 @@ const typePages = getTypePages();
   </div>
 </section>
 
-{/* WHY TRUST BROKER AL ARAB */}
+{/* WHY TRUST BROKER ALARAB */}
 <section className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
   <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
     
@@ -1619,11 +1619,11 @@ const typePages = getTypePages();
     <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4">
       <div className="text-center lg:text-left">
         <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
-          Why Broker Al Arab?
+          Why Broker Alarab?
         </span>
 
         <h2 className="mt-4 text-[30px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] sm:text-[34px] lg:text-[36px]">
-          Why Do Traders Trust Broker Al Arab?
+          Why Do Traders Trust Broker Alarab?
         </h2>
 
         <p className="mx-auto mt-3 max-w-[900px] text-[14px] font-semibold leading-8 text-slate-600 lg:mx-0 lg:text-[15px] lg:leading-9">

@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     description:
       "احسب الربح والخسارة المتوقعة في الفوركس والذهب حسب سعر الدخول والخروج وحجم اللوت.",
     url: "https://brokeralarab.com/tools/profit-calculator",
-    siteName: "Broker Al Arab",
+    siteName: "Broker Alarab",
     type: "website",
   },
 };

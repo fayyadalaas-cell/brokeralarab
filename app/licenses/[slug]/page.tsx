@@ -144,7 +144,7 @@ export async function generateMetadata({
         regulator.meta_description_ar ||
         `تعرف على ترخيص ${regulator.short_name} وكيفية التحقق من الوسطاء المرخصين.`,
       url: pageUrl,
-      siteName: "Broker Al Arab",
+      siteName: "Broker Alarab",
       locale: "ar_AR",
       type: "website",
     },

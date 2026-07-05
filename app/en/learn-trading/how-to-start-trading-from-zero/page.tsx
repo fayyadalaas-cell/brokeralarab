@@ -633,12 +633,12 @@ const tableBrokers: Broker[] = (tableBrokersData ?? []).sort(
                 },
                 author: {
                   "@type": "Organization",
-                  name: "Broker Al Arab",
+                  name: "Broker Alarab",
                   url: "https://brokeralarab.com",
                 },
                 publisher: {
                   "@type": "Organization",
-                  name: "Broker Al Arab",
+                  name: "Broker Alarab",
                   logo: {
                     "@type": "ImageObject",
                     url: "https://brokeralarab.com/logo.png",
@@ -1284,7 +1284,7 @@ const tableBrokers: Broker[] = (tableBrokersData ?? []).sort(
   {/* Mobile */}
   <div className="md:hidden">
     <span className="inline-flex rounded-full border border-white/10 bg-white/10 px-3 py-1 text-[11px] font-black text-blue-100">
-      Broker Al Arab Guide
+      Broker Alarab Guide
     </span>
 
     <h2 className="mt-3 text-[22px] font-black leading-[1.25]">
@@ -1317,7 +1317,7 @@ const tableBrokers: Broker[] = (tableBrokersData ?? []).sort(
   <div className="hidden gap-6 md:grid md:grid-cols-[1.2fr_0.8fr] md:items-center">
     <div>
       <span className="inline-flex rounded-full border border-white/10 bg-white/10 px-3 py-1 text-[11px] font-black text-blue-100">
-        Broker Al Arab Learning Guide
+        Broker Alarab Learning Guide
       </span>
 
       <h2 className="mt-3 text-[34px] font-black leading-[1.25]">

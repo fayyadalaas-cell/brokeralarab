@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     description:
       "احسب قيمة النقطة بالدولار لأزواج الفوركس والذهب بناءً على حجم اللوت والسعر الحالي.",
     url: "https://brokeralarab.com/tools/pip-calculator",
-    siteName: "Broker Al Arab",
+    siteName: "Broker Alarab",
     type: "website",
   },
 };

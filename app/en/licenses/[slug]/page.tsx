@@ -157,7 +157,7 @@ export async function generateMetadata({
         regulator.meta_description_en ||
         `Learn about the ${regulator.short_name} license and how to verify brokers regulated by this authority.`,
       url: pageUrl,
-      siteName: "Broker Al Arab",
+      siteName: "Broker Alarab",
       locale: "en_US",
       type: "website",
     },
@@ -701,7 +701,7 @@ export default async function LicenseSlugPage({ params }: PageProps) {
         <div className="overflow-hidden rounded-[28px] border border-brand-100 bg-white shadow-sm">
           <SectionTitle
             title={`Brokers regulated by ${regulator.short_name}`}
-            description="A list of brokers in the Broker Al Arab database with license numbers, legal entities, and official verification links where available."
+            description="A list of brokers in the Broker Alarab database with license numbers, legal entities, and official verification links where available."
           />
 
           {brokerGroups.length === 0 ? (

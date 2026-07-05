@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     description:
       "احسب الرصيد المتبقي بعد الخسارة ونسبة الربح المطلوبة للتعافي من السحب.",
     url: "https://brokeralarab.com/tools/drawdown-calculator",
-    siteName: "Broker Al Arab",
+    siteName: "Broker Alarab",
     type: "website",
   },
 };

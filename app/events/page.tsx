@@ -119,7 +119,7 @@ export default async function EventsPage() {
 
               <div className="rounded-[26px] border border-brand-100 bg-brand-50 p-5 md:p-7">
                 <h2 className="text-2xl font-black text-slate-950">
-                  تغطية Broker Al Arab
+                  تغطية Broker Alarab
                 </h2>
 
                 <p className="mt-4 text-sm leading-8 text-slate-700 md:text-base">

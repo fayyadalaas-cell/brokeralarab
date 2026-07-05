@@ -223,9 +223,9 @@ export async function generateMetadata({
 
   if (!event) {
     return {
-      title: "معارض ومؤتمرات التداول | Broker Al Arab",
+      title: "معارض ومؤتمرات التداول | Broker Alarab",
       description:
-        "تابع أهم معارض ومؤتمرات الفوركس والتكنولوجيا المالية عبر Broker Al Arab.",
+        "تابع أهم معارض ومؤتمرات الفوركس والتكنولوجيا المالية عبر Broker Alarab.",
     };
   }
 
@@ -297,7 +297,7 @@ export default async function Page({
             </h1>
 
             <p className="mx-auto mt-4 max-w-4xl text-sm leading-8 text-slate-600 md:text-lg">
-              {event.excerpt_ar || "تابع تفاصيل هذا الحدث عبر Broker Al Arab."}
+              {event.excerpt_ar || "تابع تفاصيل هذا الحدث عبر Broker Alarab."}
             </p>
 
             {countdown && (
@@ -394,7 +394,7 @@ export default async function Page({
 
               {event.is_media_partner && (
                 <div className="mx-4 mb-4 rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-center text-sm font-bold leading-7 text-slate-700">
-                  <strong className="text-emerald-700">Broker Al Arab</strong>{" "}
+                  <strong className="text-emerald-700">Broker Alarab</strong>{" "}
                   شريك إعلامي لهذا الحدث ويتابع أبرز الأخبار والتحديثات المتعلقة به.
                 </div>
               )}
@@ -507,7 +507,7 @@ export default async function Page({
                   ],
                   [
                     "تغطية إعلامية",
-                    "متابعة أهم الأخبار والتحديثات عبر Broker Al Arab.",
+                    "متابعة أهم الأخبار والتحديثات عبر Broker Alarab.",
                   ],
                 ].map(([title, text]) => (
                   <div

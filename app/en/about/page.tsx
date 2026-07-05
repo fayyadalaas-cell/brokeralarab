@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About Broker Al Arab | How We Review Brokers",
+  title: "About Broker Alarab | How We Review Brokers",
   description:
-    "Learn about Broker Al Arab, our broker review methodology, our mission, and important disclaimers before using any review or comparison.",
+    "Learn about Broker Alarab, our broker review methodology, our mission, and important disclaimers before using any review or comparison.",
   alternates: {
   canonical: "https://brokeralarab.com/en/about",
   languages: {
@@ -12,11 +12,11 @@ export const metadata: Metadata = {
   },
 },
   openGraph: {
-    title: "About Broker Al Arab | How We Review Brokers",
+    title: "About Broker Alarab | How We Review Brokers",
     description:
-      "Discover how Broker Al Arab evaluates trading brokers, our goals, and key disclaimers before using any review or comparison.",
+      "Discover how Broker Alarab evaluates trading brokers, our goals, and key disclaimers before using any review or comparison.",
     url: "https://brokeralarab.com/en/about",
-    siteName: "Broker Al Arab",
+    siteName: "Broker Alarab",
     type: "website",
   },
 };
@@ -46,20 +46,20 @@ export default function AboutPage() {
           </div>
 
           <h1 className="mb-4 text-4xl font-extrabold leading-tight text-slate-950 md:text-5xl">
-            About Broker Al Arab
+            About Broker Alarab
           </h1>
 
           <p className="max-w-6xl text-lg leading-9 text-slate-600">
-            Broker Al Arab is a specialized platform focused on reviewing and comparing trading brokers,
+            Broker Alarab is a specialized platform focused on reviewing and comparing trading brokers,
             with the goal of helping traders access clear, structured, and reliable information before opening a real or demo account.
           </p>
         </header>
 
         <div className="grid gap-6">
 
-          <Section title="What is Broker Al Arab?">
+          <Section title="What is Broker Alarab?">
             <p>
-              Broker Al Arab provides structured and professional content that covers the key factors traders look for
+              Broker Alarab provides structured and professional content that covers the key factors traders look for
               before choosing a broker, including regulation, trading platforms, fees and spreads, minimum deposits,
               account types, withdrawal and deposit methods, Islamic account availability, and overall suitability.
             </p>
@@ -118,7 +118,7 @@ export default function AboutPage() {
 
           <Section title="Do we provide investment advice?">
             <p>
-              No. Broker Al Arab does not provide investment advice, trading recommendations, or portfolio management.
+              No. Broker Alarab does not provide investment advice, trading recommendations, or portfolio management.
             </p>
 
             <p>
@@ -145,7 +145,7 @@ export default function AboutPage() {
 
             <p>
               Any action taken based on the information provided on this website is at your own responsibility,
-              and Broker Al Arab is not liable for any financial or legal outcomes resulting from such actions.
+              and Broker Alarab is not liable for any financial or legal outcomes resulting from such actions.
             </p>
           </Section>
 

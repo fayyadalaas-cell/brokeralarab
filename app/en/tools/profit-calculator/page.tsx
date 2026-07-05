@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     description:
       "Calculate estimated profit, loss, pips, and account impact for forex and gold trades.",
     url: "https://brokeralarab.com/en/tools/profit-calculator",
-    siteName: "Broker Al Arab",
+    siteName: "Broker Alarab",
     type: "website",
   },
 };

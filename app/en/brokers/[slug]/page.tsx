@@ -264,7 +264,7 @@ export async function generateMetadata({
   title,
   description,
   url: `${siteUrl}/en/brokers/${broker.slug}`,
-  siteName: "Broker Al Arab",
+  siteName: "Broker Alarab",
   locale: "en_US",
   type: "article",
   images: [

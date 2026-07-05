@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     description:
       "احسب الرافعة الفعلية والهامش المطلوب وقيمة الصفقة في الفوركس والذهب.",
     url: "https://brokeralarab.com/tools/leverage-calculator",
-    siteName: "Broker Al Arab",
+    siteName: "Broker Alarab",
     type: "website",
   },
 };

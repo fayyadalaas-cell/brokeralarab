@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     description:
       "Estimate future value, compound growth, total profit, and monthly investment growth over time.",
     url: "https://brokeralarab.com/en/tools/compound-calculator",
-    siteName: "Broker Al Arab",
+    siteName: "Broker Alarab",
     type: "website",
   },
 };

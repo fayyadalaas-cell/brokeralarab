@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
     url: PAGE_URL,
-    siteName: "Broker Al Arab",
+    siteName: "Broker Alarab",
     locale: "en_US",
     type: "website",
     images: [

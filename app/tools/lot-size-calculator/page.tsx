@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 
     url: "https://brokeralarab.com/tools/lot-size-calculator",
 
-    siteName: "Broker Al Arab",
+    siteName: "Broker Alarab",
 
     type: "website",
   },

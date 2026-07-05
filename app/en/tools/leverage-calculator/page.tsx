@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     description:
       "Calculate effective leverage, margin requirements, and position exposure before opening forex or gold trades.",
     url: "https://brokeralarab.com/en/tools/leverage-calculator",
-    siteName: "Broker Al Arab",
+    siteName: "Broker Alarab",
     type: "website",
   },
 };

@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     description:
       "احسب الرصيد النهائي ونمو رأس المال مع إعادة استثمار الأرباح والإيداعات الشهرية.",
     url: "https://brokeralarab.com/tools/compound-calculator",
-    siteName: "Broker Al Arab",
+    siteName: "Broker Alarab",
     type: "website",
   },
 };

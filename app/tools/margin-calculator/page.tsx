@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     description:
       "احسب الهامش المطلوب وقيمة الصفقة الاسمية قبل فتح أي صفقة في الفوركس أو الذهب.",
     url: "https://brokeralarab.com/tools/margin-calculator",
-    siteName: "Broker Al Arab",
+    siteName: "Broker Alarab",
     type: "website",
   },
 };

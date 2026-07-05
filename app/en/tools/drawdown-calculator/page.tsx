@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 
     url: "https://brokeralarab.com/en/tools/drawdown-calculator",
 
-    siteName: "Broker Al Arab",
+    siteName: "Broker Alarab",
 
     type: "website",
   },

@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
     url: PAGE_URL,
-    siteName: "Broker Al Arab",
+    siteName: "Broker Alarab",
     locale: "en_US",
     type: "website",
   },
@@ -200,7 +200,7 @@ const showAll = getSearchParam(params.all) === "1";
           description:
             item.regulator_description_en ||
             item.regulator_description_ar ||
-            "A financial regulatory authority listed in the Broker Al Arab license database.",
+            "A financial regulatory authority listed in the Broker Alarab license database.",
           count: new Set(
             licenses
               .filter((x) => x.regulator_code === item.regulator_code)
@@ -357,7 +357,7 @@ const showAll = getSearchParam(params.all) === "1";
     "@context": "https://schema.org",
     "@type": "Dataset",
     "@id": `${PAGE_URL}#license-dataset`,
-    name: "Broker Al Arab Forex Broker License Database",
+    name: "Broker Alarab Forex Broker License Database",
     description:
       "A structured database of forex broker licenses, regulators, countries, license numbers, legal entity names and official verification links when available.",
     url: PAGE_URL,
@@ -619,7 +619,7 @@ const showAll = getSearchParam(params.all) === "1";
                 Matching Regulated Brokers
               </h3>
               <p className="mt-1 text-sm font-bold text-slate-500">
-                Ranked by Broker Al Arab rating · Showing {groupedByBroker.length}{" "}
+                Ranked by Broker Alarab rating · Showing {groupedByBroker.length}{" "}
                 {plural(groupedByBroker.length, "broker", "brokers")} with{" "}
                 {filteredLicenses.length}{" "}
                 {plural(filteredLicenses.length, "license", "licenses")}
@@ -645,7 +645,7 @@ const showAll = getSearchParam(params.all) === "1";
 
                 <p className="mx-auto mt-3 max-w-2xl text-sm font-medium leading-7 text-slate-600">
                   {qRaw
-                    ? `We could not find a broker or license record matching "${qRaw}" in the Broker Al Arab database. The broker may not be listed yet, or the name/license number may be written differently.`
+                    ? `We could not find a broker or license record matching "${qRaw}" in the Broker Alarab database. The broker may not be listed yet, or the name/license number may be written differently.`
                     : "No records match the selected filters. Try changing the regulator or country filter."}
                 </p>
 
@@ -1092,7 +1092,7 @@ const showAll = getSearchParam(params.all) === "1";
                 {
                   number: "6",
                   title: "Why we built this broker license database",
-                  text: "Many broker review pages mention regulators without organizing license numbers, legal entities and verification links in one place. Broker Al Arab connects broker reviews, comparisons and regulation data into a structured database.",
+                  text: "Many broker review pages mention regulators without organizing license numbers, legal entities and verification links in one place. Broker Alarab connects broker reviews, comparisons and regulation data into a structured database.",
                   mobileText: "The database connects licenses, regulators, legal entities and official verification links.",
                 },
               ].map((item) => (

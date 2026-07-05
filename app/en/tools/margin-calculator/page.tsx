@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     description:
       "Calculate margin requirements, leverage impact, and position value before opening forex or gold trades.",
     url: "https://brokeralarab.com/en/tools/margin-calculator",
-    siteName: "Broker Al Arab",
+    siteName: "Broker Alarab",
     type: "website",
   },
 };

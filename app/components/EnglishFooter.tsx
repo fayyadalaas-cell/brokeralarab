@@ -9,7 +9,7 @@ const footerMainLinks = [
 ];
 
 const footerLegalLinks = [
-  { href: "/en/about", label: "About Broker Al Arab" },
+  { href: "/en/about", label: "About Broker Alarab" },
   { href: "/en/contact", label: "Contact Us" },
   { href: "/en/privacy-policy", label: "Privacy Policy" },
   { href: "/en/terms-and-conditions", label: "Terms & Conditions" },
@@ -86,14 +86,14 @@ export default function EnglishFooter() {
             <div>
               <Image
                 src="/logo/Asset 5@5x.png"
-                alt="Broker Al Arab"
+                alt="Broker Alarab"
                 width={420}
                 height={120}
                 className="h-auto w-[240px]"
               />
 
               <p className="mt-4 max-w-xl text-[15px] leading-8 text-slate-300">
-                Broker Al Arab is an Arabic-focused platform specializing in
+                Broker Alarab is an Arabic-focused platform specializing in
                 broker reviews and comparisons, helping traders choose the right
                 broker and understand the differences between companies,
                 accounts, and platforms before opening an account.
@@ -153,7 +153,7 @@ export default function EnglishFooter() {
               <p className="text-sm leading-8 text-slate-400">
                 The information provided on this website is for educational and
                 informational purposes only and does not constitute financial or
-                investment advice. Broker Al Arab does not offer direct trading
+                investment advice. Broker Alarab does not offer direct trading
                 services and does not hold client funds. Forex, CFDs, and
                 cryptocurrency trading involve significant risk and may not be
                 suitable for all investors. Your losses may exceed your initial
@@ -164,7 +164,7 @@ export default function EnglishFooter() {
 
           <div className="border-t border-white/10 py-4">
             <div className="flex items-center justify-between text-sm text-slate-500">
-              <div>© {new Date().getFullYear()} Broker Al Arab — All rights reserved</div>
+              <div>© {new Date().getFullYear()} Broker Alarab — All rights reserved</div>
 
               <div className="flex items-center gap-3">
                 <Link href="/en/privacy-policy" className="transition hover:text-white">
@@ -186,14 +186,14 @@ export default function EnglishFooter() {
               <div className="px-4 py-5">
                 <Image
                   src="/logo/Asset 5@5x.png"
-                  alt="Broker Al Arab"
+                  alt="Broker Alarab"
                   width={320}
                   height={100}
                   className="mx-auto h-auto w-[190px]"
                 />
 
                 <p className="mt-4 text-center text-[14px] leading-8 text-slate-300">
-                  Broker Al Arab is a specialized platform for broker reviews
+                  Broker Alarab is a specialized platform for broker reviews
                   and comparisons, helping traders understand key differences
                   between brokers before opening an account.
                 </p>
@@ -247,7 +247,7 @@ export default function EnglishFooter() {
                     <p className="text-[13px] leading-7 text-slate-300">
                       The information on this website is for educational and
                       informational purposes only and does not constitute
-                      financial or investment advice. Broker Al Arab does not
+                      financial or investment advice. Broker Alarab does not
                       provide direct trading services or hold client funds.
                       Forex, CFDs, and cryptocurrency trading involve high risk
                       and may not be suitable for all investors.
@@ -258,7 +258,7 @@ export default function EnglishFooter() {
 
               <div className="border-t border-white/10 px-4 py-4 text-center">
                 <div className="text-xs text-slate-500">
-                  © {new Date().getFullYear()} Broker Al Arab — All rights reserved
+                  © {new Date().getFullYear()} Broker Alarab — All rights reserved
                 </div>
 
                 <div className="mt-2 flex items-center justify-center gap-3 text-[12px] text-slate-500">

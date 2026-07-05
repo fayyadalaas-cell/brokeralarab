@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     description:
       "Calculate the value of one pip in forex and gold trading based on lot size, contract size, and current market price.",
     url: "https://brokeralarab.com/en/tools/pip-calculator",
-    siteName: "Broker Al Arab",
+    siteName: "Broker Alarab",
     type: "website",
   },
 };

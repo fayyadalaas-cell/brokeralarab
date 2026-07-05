@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     "open live trading account",
     "forex brokers",
     "Islamic account",
-    "Broker Al Arab",
+    "Broker Alarab",
   ],
   alternates: {
     canonical: "https://brokeralarab.com/en/brokers",
@@ -45,11 +45,11 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Trusted Broker Reviews | Broker Al Arab",
+    title: "Trusted Broker Reviews | Broker Alarab",
     description:
       "A professional English page to explore broker reviews and compare key details before opening a live account.",
     url: "https://brokeralarab.com/en/brokers",
-    siteName: "Broker Al Arab",
+    siteName: "Broker Alarab",
     type: "website",
     locale: "en_US",
   },

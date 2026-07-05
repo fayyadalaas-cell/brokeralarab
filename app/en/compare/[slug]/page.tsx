@@ -356,7 +356,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   description:
     "Detailed broker comparisons covering accounts, fees, regulation, and trading platforms.",
   url: `${siteUrl}/en/compare`,
-  siteName: "Broker Al Arab",
+  siteName: "Broker Alarab",
   locale: "en_US",
   type: "website",
   images: [
@@ -364,7 +364,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       url: `${siteUrl}/og-image.png`,
       width: 1560,
       height: 377,
-      alt: "Broker Al Arab",
+      alt: "Broker Alarab",
     },
   ],
 },
@@ -429,7 +429,7 @@ return {
   title,
   description,
   url: `${siteUrl}/en/compare/${slug}`,
-  siteName: "Broker Al Arab",
+  siteName: "Broker Alarab",
   locale: "en_US",
   type: "website",
   images: [
@@ -437,7 +437,7 @@ return {
       url: imageUrl,
       width: 1560,
       height: 377,
-      alt: "Broker Al Arab",
+      alt: "Broker Alarab",
     },
   ],
 },

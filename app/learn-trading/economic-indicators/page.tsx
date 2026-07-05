@@ -461,12 +461,12 @@ const articleSchema = {
   inLanguage: "ar",
   author: {
     "@type": "Organization",
-    name: "Broker Al Arab",
+    name: "Broker Alarab",
     url: "https://brokeralarab.com",
   },
   publisher: {
     "@type": "Organization",
-    name: "Broker Al Arab",
+    name: "Broker Alarab",
     url: "https://brokeralarab.com",
   },
   mainEntityOfPage: {

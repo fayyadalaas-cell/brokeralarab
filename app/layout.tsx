@@ -212,7 +212,7 @@ const { data: brokersData } = await supabase
       name: "Broker AlArab",
 
       alternateName: [
-        "Broker Al Arab",
+        "Broker Alarab",
         "بروكر العرب"
       ],
 
@@ -283,7 +283,7 @@ const { data: brokersData } = await supabase
       url: "https://brokeralarab.com",
       name: "Broker AlArab",
       alternateName: [
-        "Broker Al Arab",
+        "Broker Alarab",
         "بروكر العرب"
       ],
       publisher: {

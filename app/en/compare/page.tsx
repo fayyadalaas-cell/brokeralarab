@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     "broker comparison",
     "Exness vs XM",
     "XS vs Vantage",
-    "Broker Al Arab",
+    "Broker Alarab",
   ],
  alternates: {
   canonical: "https://brokeralarab.com/en/compare",
@@ -40,11 +40,11 @@ export const metadata: Metadata = {
   },
 },
   openGraph: {
-    title: "Compare Trading Brokers | Broker Al Arab",
+    title: "Compare Trading Brokers | Broker Alarab",
     description:
       "A professional broker comparison page that helps traders understand the key differences between brokers.",
     url: "https://brokeralarab.com/en/compare",
-    siteName: "Broker Al Arab",
+    siteName: "Broker Alarab",
     type: "website",
     locale: "en_US",
   },

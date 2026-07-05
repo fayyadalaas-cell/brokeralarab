@@ -23,7 +23,7 @@ export const metadata: Metadata = {
       "Calculate trading risk, position size, and lot size before opening a forex or gold trade.",
 
     url: "https://brokeralarab.com/en/tools/risk-calculator",
-    siteName: "Broker Al Arab",
+    siteName: "Broker Alarab",
     type: "website",
   },
 };

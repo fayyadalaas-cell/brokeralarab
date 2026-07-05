@@ -719,12 +719,12 @@ export default async function Page() {
                 },
                 author: {
   "@type": "Organization",
-  name: "Broker Al Arab",
+  name: "Broker Alarab",
   url: "https://brokeralarab.com",
 },
                 publisher: {
                   "@type": "Organization",
-                  name: "Broker Al Arab",
+                  name: "Broker Alarab",
                   logo: {
                     "@type": "ImageObject",
                     url: "https://brokeralarab.com/logo.png",
