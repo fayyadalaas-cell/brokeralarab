@@ -1617,7 +1617,7 @@ const { data: rankingData } = await supabase
   </div>
 </section>
 
-{/* WHY TRUST BROKER AL ARAB */}
+{/* WHY TRUST BROKER ALARAB */}
 <section className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
   <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
     {/* HEADER */}

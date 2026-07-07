@@ -992,26 +992,12 @@ const showAll = getSearchParam(params.all) === "1";
           </div>
 
           <div className="grid auto-rows-fr gap-3 p-4 sm:grid-cols-2 lg:grid-cols-4 md:p-5">
-           {regulators.slice(0, 8).map((item) => {
-  const regulatorSlug: Record<string, string> = {
-    FCA: "fca",
-    CySEC: "cysec",
-    ASIC: "asic",
-    DFSA: "dfsa",
-    FSCA: "fsca",
-    FSA: "fsa",
-    SCB: "scb",
-    FSC: "fsc",
-  };
-
-  return (
-<Link
-  key={item.code}
-  href={`/en/licenses/${regulatorSlug[item.code] || item.code.toLowerCase()}`}
-  target="_blank"
-  rel="noopener noreferrer"
-  className="group flex h-full min-h-[214px] flex-col rounded-[20px] border border-brand-100 bg-white px-4 py-3.5 shadow-sm transition hover:-translate-y-[2px] hover:border-brand-200 hover:shadow-[0_10px_24px_rgba(59,130,246,0.12)] md:rounded-[22px] md:p-4"
->
+{regulators.slice(0, 8).map((item) => (
+  <div
+    key={item.code}
+    className="group flex h-full min-h-[214px] flex-col rounded-[20px] border border-brand-100 bg-white px-4 py-3.5 shadow-sm transition hover:-translate-y-[2px] hover:border-brand-200 hover:shadow-[0_10px_24px_rgba(59,130,246,0.12)] md:rounded-[22px] md:p-4"
+  >
+  
                 <div className="flex items-center justify-between gap-3">
                   <span className="inline-flex h-9 min-w-12 items-center justify-center rounded-[13px] bg-brand-50 px-3 text-[13px] font-black text-brand-600 md:h-10 md:min-w-14 md:rounded-[14px] md:text-sm">
                     {item.code}
@@ -1033,9 +1019,8 @@ const showAll = getSearchParam(params.all) === "1";
 <div className="mt-auto pt-3 text-[12px] font-black text-brand-600">
   View regulated brokers →
 </div>
-</Link>
-);
-})}
+</div>
+))}
           </div>
         </div>
       </section>
