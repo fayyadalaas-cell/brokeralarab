@@ -317,20 +317,20 @@ export default async function Page({
             )}
           </div>
 
-          {event.hero_image && (
-            <div className="px-4 pt-2 md:px-8">
-              <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-slate-950">
-                <Image
-                  src={event.hero_image}
-                  alt={event.title_ar || event.title_en}
-                  width={1600}
-                  height={900}
-                  className="h-auto w-full object-contain"
-                  priority
-                />
-              </div>
-            </div>
-          )}
+         {event.hero_image && (
+  <div className="px-4 pt-2 md:px-8">
+    <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-slate-950">
+      <Image
+        src={event.hero_image}
+        alt={event.title_ar || event.title_en}
+        width={1600}
+        height={900}
+        className="w-full h-auto object-contain"
+        priority
+      />
+    </div>
+  </div>
+)}
 
           <div className="px-4 pt-5 md:px-8">
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
