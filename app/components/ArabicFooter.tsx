@@ -83,10 +83,10 @@ export default function ArabicFooter() {
             <div>
               <Image
                 src="/logo/Asset 2@4x.png"
-                alt="Broker Al Arab"
+                alt="Broker Alarab"
                 width={320}
                 height={100}
-                className="h-auto w-[220px]"
+                className="ml-auto h-auto w-[220px]"
               />
 
               <p className="mt-4 max-w-xl text-[15px] leading-8 text-slate-300">
@@ -180,7 +180,7 @@ export default function ArabicFooter() {
               <div className="px-4 py-5">
                 <Image
                   src="/logo/Asset 2@4x.png"
-                  alt="بروكر العرب | Broker Al Arab"
+                  alt="بروكر العرب | Broker Alarab"
                   width={300}
                   height={100}
                   className="mx-auto h-auto w-[190px]"
