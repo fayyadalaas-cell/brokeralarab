@@ -341,6 +341,48 @@ const typePages = getTypePages();
   ],
 };
 
+const today = new Date().toISOString().split("T")[0];
+
+const { data: homeEvents } = await supabase
+  .from("events")
+  .select(`
+    id,
+    slug,
+    title_en,
+    excerpt_en,
+    category,
+    start_date,
+    end_date,
+    venue_en,
+    city_en,
+    country_en,
+    status
+  `)
+  .eq("status", "upcoming")
+  .not("title_en", "is", null)
+  .not("slug", "is", null)
+  .gte("end_date", today)
+  .order("start_date", { ascending: true })
+  .limit(3);
+
+const eventList = homeEvents || [];
+
+function formatEventDate(start?: string | null, end?: string | null) {
+  if (!start) return "To be announced";
+
+  const format = (date: string) => {
+    const [year, month, day] = date.split("-").map(Number);
+    return new Intl.DateTimeFormat("en", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).format(new Date(year, month - 1, day));
+  };
+
+  if (!end || end === start) return format(start);
+  return `${format(start)} - ${format(end)}`;
+}
+
   return (
     <main dir="ltr" className="min-h-screen bg-[#f4f7fb] text-[#0f172a]">
       <script
@@ -1735,7 +1777,6 @@ const typePages = getTypePages();
 {/* EVENTS SECTION */}
 <section className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
   <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
-    {/* HEADER */}
     <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="text-center lg:text-left">
@@ -1764,43 +1805,17 @@ const typePages = getTypePages();
       </div>
     </div>
 
-    {/* EVENTS */}
     <div className="grid gap-4 p-4 md:grid-cols-3 lg:p-5">
-      {[
-        {
-          title: "PROFX Expo Africa 2026",
-          date: "20 - 21 August 2026",
-          place: "Cape Town International Convention Centre",
-          city: "Cape Town, South Africa",
-          desc: "A forex and fintech expo connecting traders, brokers, investors, fintech innovators, and global financial brands across Africa.",
-          slug: "/en/events/profx-expo-africa-2026",
-        },
-        {
-          title: "PROFIN EXPO Bangkok 2026",
-          date: "3 - 4 September 2026",
-          place: "Bangkok, Thailand",
-          city: "Bangkok, Thailand",
-          desc: "A financial innovation event in Asia for fintech providers, finance companies, investors, and business networking opportunities.",
-          slug: "/en/events/profinexpo-bangkok-2026",
-        },
-        {
-          title: "iFX EXPO Asia 2026",
-          date: "7 - 9 October 2026",
-          place: "Hong Kong",
-          city: "Hong Kong",
-          desc: "A major online trading expo bringing together brokers, prop firms, IBs, fintechs, regtechs, and financial service providers.",
-          slug: "/en/events/ifx-expo-asia-2026",
-        },
-      ].map((event) => (
+      {eventList.map((event) => (
         <article
-          key={event.title}
+          key={event.id}
           className="group relative flex h-full flex-col overflow-hidden rounded-[22px] border border-slate-200 bg-white p-5 text-left shadow-[0_6px_18px_rgba(15,23,42,0.04)] transition duration-300 hover:-translate-y-1 hover:border-brand-400 hover:bg-[#fcfdff] hover:shadow-[0_22px_50px_rgba(15,23,42,0.08)]"
         >
           <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent opacity-80" />
 
           <div className="mb-4 flex items-center justify-between">
             <span className="rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-500">
-              Financial Event
+              {event.category || "Financial Event"}
             </span>
 
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-50 text-[16px]">
@@ -1809,23 +1824,24 @@ const typePages = getTypePages();
           </div>
 
           <h3 className="text-[18px] font-black leading-7 text-[#07111f]">
-            {event.title}
+            {event.title_en}
           </h3>
 
           <div className="mt-4 space-y-2 text-[13px] font-bold leading-6 text-slate-600">
-            <div>📅 {event.date}</div>
-            <div>🏢 {event.place}</div>
-            <div>🌍 {event.city}</div>
+            <div>📅 {formatEventDate(event.start_date, event.end_date)}</div>
+            <div>🏢 {event.venue_en || "To be announced"}</div>
+            <div>
+              🌍 {event.city_en}
+              {event.country_en ? `, ${event.country_en}` : ""}
+            </div>
           </div>
 
           <p className="mt-4 text-[13px] leading-7 text-slate-600">
-            {event.desc}
+            {event.excerpt_en || "Event details will be updated soon."}
           </p>
 
           <Link
-            href={event.slug}
-            target="_blank"
-            rel="noopener noreferrer"
+            href={`/en/events/${event.slug}`}
             className="mt-auto inline-flex w-full items-center justify-center rounded-2xl bg-brand-500 px-4 py-3 text-[14px] font-black text-white transition hover:bg-brand-600"
           >
             View Event Details

@@ -312,6 +312,49 @@ const { data: rankingData } = await supabase
   const countryPages = getCountryPages();
   const typePages = getTypePages();
 
+  const today = new Date().toISOString().split("T")[0];
+
+const { data: homeEvents } = await supabase
+  .from("events")
+  .select(`
+    id,
+    slug,
+    title_ar,
+    excerpt_ar,
+    category,
+    start_date,
+    end_date,
+    venue_ar,
+    city_ar,
+    country_ar,
+    status
+  `)
+  .eq("status", "upcoming")
+  .not("title_ar", "is", null)
+  .not("slug", "is", null)
+  .gte("end_date", today)
+  .order("start_date", { ascending: true })
+  .limit(3);
+
+const eventList = homeEvents || [];
+
+function formatEventDate(start?: string | null, end?: string | null) {
+  if (!start) return "سيتم الإعلان لاحقاً";
+
+  const format = (date: string) => {
+    const [year, month, day] = date.split("-").map(Number);
+
+    return new Intl.DateTimeFormat("ar", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).format(new Date(year, month - 1, day));
+  };
+
+  if (!end || end === start) return format(start);
+  return `${format(start)} - ${format(end)}`;
+}
+
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -1770,74 +1813,57 @@ const { data: rankingData } = await supabase
     </div>
 
     {/* EVENTS */}
-    <div className="grid gap-3 p-3 sm:gap-4 sm:p-4 md:grid-cols-3 lg:p-5">
-      {[
-        {
-          title: "Money Expo Abu Dhabi 2026",
-          date: "8 - 9 يوليو 2026",
-          place: "ADNEC Centre Abu Dhabi",
-          city: "أبوظبي، الإمارات",
-          desc: "معرض مالي عالمي يجمع شركات الوساطة والتكنولوجيا المالية ومزودي الخدمات الاستثمارية والمتداولين من مختلف الأسواق.",
-          slug: "/events/money-expo-abu-dhabi-2026",
-        },
-        {
-          title: "Jeddah Fintech Week 2026",
-          date: "5 - 6 سبتمبر 2026",
-          place: "The Ritz-Carlton Jeddah",
-          city: "جدة، السعودية",
-          desc: "أحد أبرز أحداث التقنية المالية والتعليم الاستثماري في المملكة العربية السعودية بمشاركة خبراء ومؤسسات مالية عالمية.",
-          slug: "/events/jeddah-fintech-week-2026",
-        },
-        {
-          title: "Forex Expo Dubai 2026",
-          date: "22 - 23 سبتمبر 2026",
-          place: "Dubai World Trade Centre",
-          city: "دبي، الإمارات",
-          desc: "أكبر معرض فوركس وتداول في المنطقة يجمع شركات الوساطة ومنصات التداول ومزودي التكنولوجيا المالية والمتداولين.",
-          slug: "/events/forex-expo-dubai-2026",
-        },
-      ].map((event) => (
-        <article
-          key={event.title}
-          className="group relative overflow-hidden rounded-[20px] border border-slate-200 bg-white p-4 shadow-[0_6px_18px_rgba(15,23,42,0.04)] transition duration-300 hover:-translate-y-1 hover:border-brand-400 hover:bg-[#fcfdff] hover:shadow-[0_22px_50px_rgba(15,23,42,0.08)] sm:rounded-[24px] sm:p-5"
-        >
-          <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent opacity-70" />
+<div className="grid gap-3 p-3 sm:gap-4 sm:p-4 md:grid-cols-3 lg:p-5">
+  {eventList.map((event) => (
+    <article
+      key={event.id}
+      className="group relative overflow-hidden rounded-[20px] border border-slate-200 bg-white p-4 shadow-[0_6px_18px_rgba(15,23,42,0.04)] transition duration-300 hover:-translate-y-1 hover:border-brand-400 hover:bg-[#fcfdff] hover:shadow-[0_22px_50px_rgba(15,23,42,0.08)] sm:rounded-[24px] sm:p-5"
+    >
+      <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent opacity-70" />
 
-         <div className="mb-2 flex items-center justify-between">
-  <span className="rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-500">
-    حدث مالي
-  </span>
+      <div className="mb-2 flex items-center justify-between">
+        <span className="rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-500">
+          {event.category || "حدث مالي"}
+        </span>
 
-  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-50 text-[16px]">
-    📅
-  </span>
+        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-50 text-[16px]">
+          📅
+        </span>
+      </div>
+
+      <h3 className="min-h-[58px] text-[18px] font-black leading-7 text-[#07111f]">
+        {event.title_ar}
+      </h3>
+
+      <div className="mt-4 space-y-2 text-[13px] font-bold leading-6 text-slate-600">
+        <div>
+          📅 {formatEventDate(event.start_date, event.end_date)}
+        </div>
+
+        <div>
+          🏢 {event.venue_ar || "سيتم الإعلان لاحقاً"}
+        </div>
+
+        <div>
+          🌍 {event.city_ar}
+          {event.country_ar ? `، ${event.country_ar}` : ""}
+        </div>
+      </div>
+
+      <p className="mt-4 min-h-[84px] text-[13px] leading-7 text-slate-600">
+        {event.excerpt_ar ||
+          "تابع تفاصيل هذا الحدث عبر بروكر العرب."}
+      </p>
+
+      <Link
+        href={`/events/${event.slug}`}
+        className="mt-5 inline-flex w-full items-center justify-center rounded-2xl bg-brand-500 px-4 py-3 text-[14px] font-black text-white transition hover:bg-brand-600"
+      >
+        عرض تفاصيل الحدث
+      </Link>
+    </article>
+    ))}
 </div>
-
-          <h3 className="min-h-[58px] text-[18px] font-black leading-7 text-[#07111f]">
-            {event.title}
-          </h3>
-
-          <div className="mt-4 space-y-2 text-[13px] font-bold leading-6 text-slate-600">
-            <div>📅 {event.date}</div>
-            <div>🏢 {event.place}</div>
-            <div>🌍 {event.city}</div>
-          </div>
-
-          <p className="mt-4 min-h-[84px] text-[13px] leading-7 text-slate-600">
-            {event.desc}
-          </p>
-
-          <Link
-            href={event.slug}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-5 inline-flex w-full items-center justify-center rounded-2xl bg-brand-500 px-4 py-3 text-[14px] font-black text-white transition hover:bg-brand-600"
-          >
-            عرض تفاصيل الحدث
-          </Link>
-        </article>
-      ))}
-    </div>
 
   </div>
 </section>
