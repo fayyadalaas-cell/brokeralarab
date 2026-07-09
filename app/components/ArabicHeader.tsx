@@ -108,11 +108,11 @@ export default function ArabicHeader({
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200/90 bg-white/95 backdrop-blur-md">
       <div className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-8">
-        <div className="relative flex h-16 items-center justify-between lg:h-20">
+        <div dir="rtl" className="relative flex h-16 items-center justify-between lg:h-20">
           <Link href="/" className="min-w-0 shrink-0 lg:justify-self-end">
             <Image
               src="/logo/Asset 4@6x.png"
-              alt="Broker Al Arab"
+              alt="Broker Alarab"
               width={500}
               height={160}
               priority
