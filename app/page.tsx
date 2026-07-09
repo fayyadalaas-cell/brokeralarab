@@ -312,7 +312,9 @@ const { data: rankingData } = await supabase
   const countryPages = getCountryPages();
   const typePages = getTypePages();
 
-  const today = new Date().toISOString().split("T")[0];
+  const todayDate = new Date();
+todayDate.setHours(0, 0, 0, 0);
+const today = todayDate.toISOString().split("T")[0];
 
 const { data: homeEvents } = await supabase
   .from("events")
@@ -327,7 +329,8 @@ const { data: homeEvents } = await supabase
     venue_ar,
     city_ar,
     country_ar,
-    status
+    status,
+    hero_image
   `)
   .eq("status", "upcoming")
   .not("title_ar", "is", null)
@@ -353,6 +356,47 @@ function formatEventDate(start?: string | null, end?: string | null) {
 
   if (!end || end === start) return format(start);
   return `${format(start)} - ${format(end)}`;
+}
+
+function eventCountdown(start?: string | null, end?: string | null) {
+  if (!start) return { status: "unknown", days: "—", hours: "—" };
+
+  const now = new Date();
+
+  const startDate = new Date(`${start}T00:00:00`);
+  const endDate = end ? new Date(`${end}T23:59:59`) : startDate;
+
+  if (now > endDate) {
+    return { status: "ended", days: 0, hours: 0 };
+  }
+
+  if (now >= startDate && now <= endDate) {
+    return { status: "live", days: 0, hours: 0 };
+  }
+
+  const diff = startDate.getTime() - now.getTime();
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+
+  return { status: "upcoming", days, hours };
+}
+
+function getEventTitleParts(title?: string | null) {
+  const clean = (title || "معرض تداول").replace(" 2026", "").trim();
+
+  if (clean.toLowerCase().includes("bangkok")) {
+    return { main: clean.replace(/bangkok/i, "").trim(), location: "Bangkok" };
+  }
+
+  if (clean.toLowerCase().includes("abu dhabi")) {
+    return { main: clean.replace(/abu dhabi/i, "").trim(), location: "Abu Dhabi" };
+  }
+
+  if (clean.toLowerCase().includes("africa")) {
+    return { main: clean.replace(/africa/i, "").trim(), location: "Africa" };
+  }
+
+  return { main: clean, location: "" };
 }
 
   const faqJsonLd = {
@@ -1779,92 +1823,106 @@ function formatEventDate(start?: string | null, end?: string | null) {
 {/* FOREX & FINTECH EVENTS */}
 <section className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
   <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)] sm:rounded-[32px]">
-
-    {/* HEADER */}
-    <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-5 sm:px-6 sm:py-4">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-
+    <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-5 sm:px-6">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="text-center lg:text-right">
-          <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[11px] font-black text-brand-500 shadow-sm sm:text-[12px]">
+          <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[11px] font-black text-brand-500 shadow-sm">
             معارض ومؤتمرات التداول
           </span>
 
-          <h2 className="mx-auto mt-3 max-w-[320px] text-[26px] font-black leading-[1.2] tracking-[-0.02em] text-[#07111f] sm:max-w-none sm:text-[34px] lg:mx-0 lg:text-[36px]">
+          <h2 className="mx-auto mt-3 max-w-[320px] text-[26px] font-black leading-[1.15] text-[#07111f] sm:max-w-none sm:text-[36px]">
             أهم معارض ومؤتمرات الفوركس في 2026
           </h2>
 
-          <p className="mx-auto mt-3 max-w-[320px] text-[13px] font-semibold leading-7 text-slate-600 sm:max-w-[900px] sm:text-[14px] sm:leading-8 lg:mx-0 lg:text-[15px] lg:leading-9">
+          <p className="mx-auto mt-3 max-w-[320px] text-[13px] font-semibold leading-7 text-slate-600 sm:max-w-[900px] sm:text-[15px] sm:leading-8 lg:mx-0">
             تابع أبرز معارض الفوركس والمؤتمرات المالية التي تجمع شركات الوساطة ومنصات التداول وخبراء التكنولوجيا المالية حول العالم.
           </p>
         </div>
 
-        <div className="flex justify-center lg:self-center lg:pl-4">
-          <Link
-            href="/events"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex h-12 min-w-[190px] items-center justify-center rounded-2xl bg-brand-500 px-6 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(37,99,235,0.24)] transition hover:bg-brand-600"
-          >
-            عرض جميع المعارض
-          </Link>
-        </div>
-
+        <Link
+          href="/events"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mx-auto inline-flex h-12 min-w-[190px] items-center justify-center rounded-2xl bg-brand-500 px-6 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(37,99,235,0.24)] transition hover:-translate-y-0.5 hover:bg-brand-600 lg:mx-0"
+        >
+          عرض جميع المعارض
+        </Link>
       </div>
     </div>
 
-    {/* EVENTS */}
-<div className="grid gap-3 p-3 sm:gap-4 sm:p-4 md:grid-cols-3 lg:p-5">
-  {eventList.map((event) => (
-    <article
-      key={event.id}
-      className="group relative overflow-hidden rounded-[20px] border border-slate-200 bg-white p-4 shadow-[0_6px_18px_rgba(15,23,42,0.04)] transition duration-300 hover:-translate-y-1 hover:border-brand-400 hover:bg-[#fcfdff] hover:shadow-[0_22px_50px_rgba(15,23,42,0.08)] sm:rounded-[24px] sm:p-5"
-    >
-      <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent opacity-70" />
+    <div className="grid gap-3 p-3 md:grid-cols-3 lg:gap-4 lg:p-5">
+      {eventList.map((event) => {
+        const count = eventCountdown(event.start_date, event.end_date);
+        const titleParts = getEventTitleParts(event.title_ar);
 
-      <div className="mb-2 flex items-center justify-between">
-        <span className="rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-500">
-          {event.category || "حدث مالي"}
-        </span>
+        return (
+          <article
+            key={event.id}
+            className="group flex h-full flex-col overflow-hidden rounded-[18px] border border-slate-200 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.045)] transition duration-300 hover:-translate-y-1 hover:border-brand-300 hover:shadow-[0_22px_50px_rgba(15,23,42,0.08)] sm:rounded-[24px]"
+          >
+            <div className="relative overflow-hidden bg-gradient-to-br from-[#06152a] via-[#0b2b52] to-[#06111f] px-3 py-2.5 text-center sm:px-4 sm:py-5">
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(34,211,238,0.16),transparent_45%)]" />
+              <div className="relative">
+                <h3 className="text-[15px] font-black leading-5 text-white sm:text-[19px] sm:leading-6">
+                  {titleParts.main}
+                </h3>
+                {titleParts.location && (
+                  <div className="mt-0.5 text-[12px] font-black text-cyan-400 sm:mt-1 sm:text-[15px] sm:text-cyan-300">
+                    {titleParts.location}
+                  </div>
+                )}
+              </div>
+            </div>
 
-        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-50 text-[16px]">
-          📅
-        </span>
-      </div>
+            {count.status === "live" ? (
+              <div className="flex h-[64px] flex-col items-center justify-center border-b border-emerald-100 bg-emerald-50 px-3 text-center sm:h-[76px]">
+                <div className="text-[20px] font-black text-emerald-600 sm:text-[22px]">
+                  جاري الآن
+                </div>
+                <div className="mt-0.5 text-[10px] font-bold text-emerald-700 sm:mt-1 sm:text-[11px]">
+                  الحدث منعقد حالياً
+                </div>
+              </div>
+            ) : (
+              <div className="grid h-[64px] grid-cols-2 border-b border-slate-100 bg-[#f8fbff] sm:h-[76px]">
+                <div className="border-l border-slate-100 px-3 py-2 text-center sm:py-3">
+                  <div className="text-[21px] font-black text-brand-600 sm:text-[24px]">
+                    {count.days}
+                  </div>
+                  <div className="text-[10px] font-bold text-slate-500 sm:text-[11px]">يوم</div>
+                </div>
 
-      <h3 className="min-h-[58px] text-[18px] font-black leading-7 text-[#07111f]">
-        {event.title_ar}
-      </h3>
+                <div className="px-3 py-2 text-center sm:py-3">
+                  <div className="text-[21px] font-black text-brand-600 sm:text-[24px]">
+                    {count.hours}
+                  </div>
+                  <div className="text-[10px] font-bold text-slate-500 sm:text-[11px]">ساعة</div>
+                </div>
+              </div>
+            )}
 
-      <div className="mt-4 space-y-2 text-[13px] font-bold leading-6 text-slate-600">
-        <div>
-          📅 {formatEventDate(event.start_date, event.end_date)}
-        </div>
+            <div className="flex flex-1 flex-col p-3.5 sm:p-5">
+              <div className="flex h-[34px] flex-col items-center justify-center text-center text-[12px] font-bold leading-5 text-slate-700 sm:h-[42px] sm:text-[13px] sm:leading-6">
+                <div className="text-center">
+                  {formatEventDate(event.start_date, event.end_date)}
+                </div>
+              </div>
 
-        <div>
-          🏢 {event.venue_ar || "سيتم الإعلان لاحقاً"}
-        </div>
+              <p className="mt-4 hidden h-[84px] overflow-hidden text-center text-[13px] leading-7 text-slate-600 sm:block">
+                {event.excerpt_ar || "تابع تفاصيل هذا الحدث عبر بروكر العرب."}
+              </p>
 
-        <div>
-          🌍 {event.city_ar}
-          {event.country_ar ? `، ${event.country_ar}` : ""}
-        </div>
-      </div>
-
-      <p className="mt-4 min-h-[84px] text-[13px] leading-7 text-slate-600">
-        {event.excerpt_ar ||
-          "تابع تفاصيل هذا الحدث عبر بروكر العرب."}
-      </p>
-
-      <Link
-        href={`/events/${event.slug}`}
-        className="mt-5 inline-flex w-full items-center justify-center rounded-2xl bg-brand-500 px-4 py-3 text-[14px] font-black text-white transition hover:bg-brand-600"
-      >
-        عرض تفاصيل الحدث
-      </Link>
-    </article>
-    ))}
-</div>
-
+              <Link
+                href={`/events/${event.slug}`}
+                className="mt-auto inline-flex w-full items-center justify-center rounded-2xl bg-brand-500 px-4 py-2.5 text-[13px] font-black text-white shadow-[0_12px_26px_rgba(37,99,235,0.18)] transition hover:-translate-y-0.5 hover:bg-brand-600 sm:py-3 sm:text-[14px]"
+              >
+                عرض تفاصيل الحدث
+              </Link>
+            </div>
+          </article>
+        );
+      })}
+    </div>
   </div>
 </section>
 
