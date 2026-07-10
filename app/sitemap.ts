@@ -12,7 +12,7 @@ import {
 const ENABLE_EN_COUNTRY_PAGES = false;
 
 // فعّلها لاحقًا لما تجهز صفحات الأحداث الإنجليزية
-const ENABLE_EN_EVENT_PAGES = false;
+const ENABLE_EN_EVENT_PAGES = true;
 
 function accountSlug(value: string | null) {
   if (!value) return "";

@@ -66,6 +66,7 @@ const tradingTerms = [
   [
     "السبريد",
     "السبريد هو الفرق بين سعر الشراء وسعر البيع في منصة التداول. كلما كان السبريد أقل، كانت تكلفة الدخول والخروج من الصفقة أقل، خصوصًا للمتداولين النشطين والسكالبينج.",
+    "/learn-trading/spread",
   ],
   [
     "الرافعة المالية",
@@ -538,16 +539,49 @@ export default function LearnTradingPage() {
   </div>
 
   <div className="grid gap-3 md:grid-cols-3">
-    {tradingTerms.map(([term, desc]) => (
+  {tradingTerms.map(([term, desc, href]) =>
+    href ? (
+      <Link
+        key={term}
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:-translate-y-0.5 hover:border-brand-200 hover:bg-white hover:shadow-md"
+      >
+        <div className="flex items-center justify-between gap-3">
+          <h3 className="text-lg font-black text-slate-950 transition group-hover:text-brand-600">
+            {term}
+          </h3>
+
+          <span className="text-sm font-black text-brand-500 transition group-hover:-translate-x-1">
+            ←
+          </span>
+        </div>
+
+        <p className="mt-2 text-sm leading-7 text-slate-600">
+          {desc}
+        </p>
+
+        <span className="mt-3 inline-flex text-sm font-black text-brand-600">
+          قراءة الدليل كاملًا ←
+        </span>
+      </Link>
+    ) : (
       <div
         key={term}
         className="rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:border-brand-200 hover:bg-white hover:shadow-md"
       >
-        <h3 className="text-lg font-black text-slate-950">{term}</h3>
-        <p className="mt-2 text-sm leading-7 text-slate-600">{desc}</p>
+        <h3 className="text-lg font-black text-slate-950">
+          {term}
+        </h3>
+
+        <p className="mt-2 text-sm leading-7 text-slate-600">
+          {desc}
+        </p>
       </div>
-    ))}
-  </div>
+    )
+  )}
+</div>
 </section>
 
        <section className="mt-5 rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm md:p-7">
