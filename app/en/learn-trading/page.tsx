@@ -59,33 +59,34 @@ const learningTracks = [
 ];
 
 const tradingTerms = [
-    [
+  [
     "Spread",
-    "The spread is the difference between the buy price and the sell price on a trading platform. A lower spread usually means lower trading costs, especially for active traders and scalpers.",
+    "The spread is the difference between the bid and ask price on a trading platform. Lower spreads generally reduce trading costs, making them especially important for active traders, scalpers, and day traders.",
     "/en/learn-trading/spread",
   ],
   [
     "Leverage",
-    "Leverage allows you to control a larger position with a smaller amount of capital. It can increase potential gains, but it also increases risk and should be used carefully.",
+    "Leverage lets traders control a larger market position with a relatively small amount of capital. While it can amplify potential returns, it also increases risk and should always be combined with proper risk management.",
+    "/en/learn-trading/leverage",
   ],
   [
     "Margin",
-    "Margin is the amount of money a broker sets aside from your balance to keep a trade open. If the market moves strongly against you, your account may face a margin call or automatic position closure.",
+    "Margin is the amount of capital your broker temporarily reserves to keep a leveraged trade open. Understanding margin requirements helps you avoid margin calls and manage your account more effectively.",
+    "/en/learn-trading/margin",
   ],
   [
     "Lot Size",
-    "Lot size is the trade volume you choose in forex, gold, or CFD trading. Choosing the right lot size helps you control risk and avoid oversized losses.",
+    "Lot size represents the trading volume of a position in forex, gold, or CFDs. Selecting the correct lot size is one of the most important steps in controlling trading risk.",
   ],
   [
     "Stop Loss",
-    "A stop-loss order automatically closes your trade if the market moves against you to a certain price. It helps protect your account and reduce emotional decision-making.",
+    "A stop-loss order automatically closes your position when price reaches a predefined level. It is one of the most effective tools for limiting losses and protecting trading capital.",
   ],
   [
     "Take Profit",
-    "A take-profit order automatically closes your trade when price reaches your target. It helps you follow your plan instead of exiting randomly or holding out of greed.",
+    "A take-profit order automatically closes a trade once your target price is reached. It helps traders stick to their strategy and avoid making emotional exit decisions.",
   ],
 ];
-
 const siteSections = [
   ["Broker Reviews", "Read detailed broker reviews before opening an account.", "/en/brokers"],
   ["Broker Comparison", "Compare two brokers side by side by fees, platforms, accounts, and regulation.", "/en/compare"],
