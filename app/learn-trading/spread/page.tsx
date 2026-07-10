@@ -394,10 +394,8 @@ export default function SpreadPage() {
             </p>
 
             <div className="mt-6 grid grid-cols-2 gap-2.5 sm:flex sm:flex-wrap sm:gap-3">
-             <a
+          <a
   href="#definition"
-  target="_blank"
-  rel="noopener noreferrer"
   className="inline-flex min-h-12 items-center justify-center rounded-2xl bg-brand-500 px-3 py-3 text-center text-[13px] font-black text-white shadow-[0_12px_28px_rgba(30,91,184,0.22)] transition hover:bg-brand-600 sm:px-5 sm:text-sm"
 >
   ابدأ الشرح
@@ -507,15 +505,13 @@ export default function SpreadPage() {
       className="grid auto-cols-max grid-flow-col grid-rows-2 gap-2 overflow-x-auto py-3 pb-3.5 [scrollbar-width:none] sm:flex sm:grid-flow-row sm:grid-rows-none sm:flex-nowrap sm:py-3 [&::-webkit-scrollbar]:hidden"
     >
       {tableOfContents.map((item) => (
-        <a
-          key={item.id}
-          href={`#${item.id}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex min-h-9 shrink-0 snap-start items-center justify-center whitespace-nowrap rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-[11px] font-black text-slate-700 transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-600 sm:min-h-0 sm:px-4 sm:py-2 sm:text-sm"
-        >
-          {item.label}
-        </a>
+       <a
+  key={item.id}
+  href={`#${item.id}`}
+  className="flex min-h-9 shrink-0 snap-start items-center justify-center whitespace-nowrap rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-[11px] font-black text-slate-700 transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-600 sm:min-h-0 sm:px-4 sm:py-2 sm:text-sm"
+>
+  {item.label}
+</a>
       ))}
     </nav>
   </div>
@@ -1241,11 +1237,9 @@ export default function SpreadPage() {
 
               <nav className="mt-4 space-y-1.5">
                 {tableOfContents.map((item, index) => (
-                  <a
+                <a
   key={item.id}
   href={`#${item.id}`}
-  target="_blank"
-  rel="noopener noreferrer"
   className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-bold text-slate-600 transition hover:bg-brand-50 hover:text-brand-600"
 >
                     <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-[10px] font-black">
