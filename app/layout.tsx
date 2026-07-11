@@ -3,7 +3,6 @@ import { headers } from "next/headers";
 import { Cairo } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
-import { createClient } from "@/lib/supabase/server";
 import HeaderSwitcher from "@/app/components/HeaderSwitcher";
 import FooterSwitcher from "@/app/components/FooterSwitcher";
 
@@ -170,6 +169,66 @@ function getBrokerLogo(slug: string): string {
   return brokerLogoMap[slug] || "/brokers/BrokerLogo.png";
 }
 
+async function getTopBrokers(): Promise<BrokerMenuItem[]> {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return [];
+  }
+
+  const query =
+    "select=name,name_en,slug,rating&slug=not.is.null&order=rating.desc&limit=5";
+
+  const response = await fetch(
+    `${supabaseUrl}/rest/v1/brokers?${query}`,
+    {
+      headers: {
+        apikey: supabaseAnonKey,
+        Authorization: `Bearer ${supabaseAnonKey}`,
+      },
+      next: {
+        revalidate: 3600,
+        tags: ["header-top-brokers"],
+      },
+    }
+  );
+
+  if (!response.ok) {
+    console.error(
+      "Failed to load header brokers:",
+      response.status,
+      response.statusText
+    );
+    return [];
+  }
+
+  const brokersData: Array<{
+    name: string | null;
+    name_en: string | null;
+    slug: string | null;
+    rating: number | null;
+  }> = await response.json();
+
+  return brokersData
+    .filter(
+      (
+        broker
+      ): broker is {
+        name: string;
+        name_en: string | null;
+        slug: string;
+        rating: number | null;
+      } => Boolean(broker.name && broker.slug)
+    )
+    .map((broker) => ({
+      name: broker.name,
+      name_en: broker.name_en ?? undefined,
+      slug: broker.slug,
+      menuLogo: getBrokerLogo(broker.slug),
+    }));
+}
+
 export default async function RootLayout({
   children,
 }: {
@@ -179,22 +238,7 @@ const headersList = await headers();
 const pathname = headersList.get("x-pathname") || "";
 const isEnglish = pathname.startsWith("/en");
 
-const supabase = await createClient();
-
-const { data: brokersData } = await supabase
-    .from("brokers")
-    .select("name, name_en, slug, rating")
-    .not("slug", "is", null)
-    .order("rating", { ascending: false })
-    .limit(5);
-
-  const topBrokers: BrokerMenuItem[] =
-    brokersData?.map((broker) => ({
-      name: broker.name,
-      name_en: broker.name_en,
-      slug: broker.slug,
-      menuLogo: getBrokerLogo(broker.slug),
-    })) ?? [];
+const topBrokers = await getTopBrokers();
 
   return (
     <html lang={isEnglish ? "en" : "ar"} dir={isEnglish ? "ltr" : "rtl"}>

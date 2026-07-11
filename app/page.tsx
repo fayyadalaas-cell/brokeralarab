@@ -222,66 +222,100 @@ export const revalidate = 3600;
 export default async function HomePage() {
   const supabase = await createClient();
 
-  const { data } = await supabase
-    .from("brokers")
-    .select(`
-  id,
-  name,
-  slug,
-  rating,
-  min_deposit,
-  platforms,
-  regulation,
-  regulation_short,
-  best_for,
-  logo,
-  islamic_account,
-  arabic_support,
-  real_account_url
-`)
-    .order("rating", { ascending: false });
+  const todayDate = new Date();
+  todayDate.setHours(0, 0, 0, 0);
+  const today = todayDate.toISOString().split("T")[0];
 
-  const { data: comparisonsData } = await supabase
-  .from("comparisons")
-  .select(`
-    id,
-    slug,
-    title,
-    views_count,
-    broker_1:broker_1_id (
-      name,
-      logo,
-      rating
-    ),
-    broker_2:broker_2_id (
-      name,
-      logo,
-      rating
-    )
-  `)
-  .not("slug", "is", null)
-  .not("title", "is", null)
-  .order("views_count", { ascending: false })
-  .limit(3);
+  const [
+    { data },
+    { data: comparisonsData },
+    { data: rankingData },
+    { data: homeEvents },
+  ] = await Promise.all([
+    supabase
+      .from("brokers")
+      .select(`
+        id,
+        name,
+        slug,
+        rating,
+        min_deposit,
+        platforms,
+        regulation,
+        regulation_short,
+        best_for,
+        logo,
+        islamic_account,
+        arabic_support,
+        real_account_url
+      `)
+      .order("rating", { ascending: false }),
 
-/* اضف هذا مباشرة تحتها */
+    supabase
+      .from("comparisons")
+      .select(`
+        id,
+        slug,
+        title,
+        views_count,
+        broker_1:broker_1_id (
+          name,
+          logo,
+          rating
+        ),
+        broker_2:broker_2_id (
+          name,
+          logo,
+          rating
+        )
+      `)
+      .not("slug", "is", null)
+      .not("title", "is", null)
+      .order("views_count", { ascending: false })
+      .limit(3),
 
-const { data: rankingData } = await supabase
-  .from("country_broker_rankings")
-  .select(`
-    broker_id,
-    rank_position,
-    country_rating,
-    best_for,
-    local_note,
-    country_pages (
-      slug
-    )
-  `);
+    supabase
+      .from("country_broker_rankings")
+      .select(`
+        broker_id,
+        rank_position,
+        country_rating,
+        best_for,
+        local_note,
+        country_pages (
+          slug
+        )
+      `),
 
-  const brokers = ((data ?? []) as Broker[]).filter((b) => b.slug && b.name);
-  const countryRankings =
-  ((rankingData ?? []) as any[])
+    supabase
+      .from("events")
+      .select(`
+        id,
+        slug,
+        title_ar,
+        excerpt_ar,
+        category,
+        start_date,
+        end_date,
+        venue_ar,
+        city_ar,
+        country_ar,
+        status,
+        hero_image
+      `)
+      .eq("status", "upcoming")
+      .not("title_ar", "is", null)
+      .not("slug", "is", null)
+      .gte("end_date", today)
+      .order("start_date", { ascending: true })
+      .limit(3),
+  ]);
+
+  const brokers = ((data ?? []) as Broker[]).filter(
+    (broker) => broker.slug && broker.name
+  );
+
+  const countryRankings = ((rankingData ?? []) as any[])
     .map((row) => ({
       country_slug: Array.isArray(row.country_pages)
         ? row.country_pages[0]?.slug
@@ -293,53 +327,39 @@ const { data: rankingData } = await supabase
       local_note: row.local_note,
     }))
     .filter((row) => row.country_slug);
+
   const topBrokers = brokers.slice(0, 6);
+
   const footerFeaturedBrokers = brokers
-  .filter((broker) => broker.logo && broker.slug && broker.name)
-  .sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0))
-  .slice(0, 5);
+    .filter((broker) => broker.logo && broker.slug && broker.name)
+    .sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0))
+    .slice(0, 5);
+
   const topComparisons: Comparison[] = ((comparisonsData ?? []) as any[])
-  .map((item) => ({
-    id: item.id,
-    slug: item.slug,
-    title: item.title,
-    views_count: item.views_count,
-    broker_1: Array.isArray(item.broker_1) ? item.broker_1[0] ?? null : item.broker_1 ?? null,
-    broker_2: Array.isArray(item.broker_2) ? item.broker_2[0] ?? null : item.broker_2 ?? null,
-  }))
-  .filter((item) => item.slug && item.title && item.broker_1 && item.broker_2);
+    .map((item) => ({
+      id: item.id,
+      slug: item.slug,
+      title: item.title,
+      views_count: item.views_count,
+      broker_1: Array.isArray(item.broker_1)
+        ? item.broker_1[0] ?? null
+        : item.broker_1 ?? null,
+      broker_2: Array.isArray(item.broker_2)
+        ? item.broker_2[0] ?? null
+        : item.broker_2 ?? null,
+    }))
+    .filter(
+      (item) =>
+        item.slug &&
+        item.title &&
+        item.broker_1 &&
+        item.broker_2
+    );
+
   const featured = brokers[0] ?? null;
   const countryPages = getCountryPages();
   const typePages = getTypePages();
-
-  const todayDate = new Date();
-todayDate.setHours(0, 0, 0, 0);
-const today = todayDate.toISOString().split("T")[0];
-
-const { data: homeEvents } = await supabase
-  .from("events")
-  .select(`
-    id,
-    slug,
-    title_ar,
-    excerpt_ar,
-    category,
-    start_date,
-    end_date,
-    venue_ar,
-    city_ar,
-    country_ar,
-    status,
-    hero_image
-  `)
-  .eq("status", "upcoming")
-  .not("title_ar", "is", null)
-  .not("slug", "is", null)
-  .gte("end_date", today)
-  .order("start_date", { ascending: true })
-  .limit(3);
-
-const eventList = homeEvents || [];
+  const eventList = homeEvents || [];
 
 function formatEventDate(start?: string | null, end?: string | null) {
   if (!start) return "سيتم الإعلان لاحقاً";
@@ -575,12 +595,12 @@ function eventCountdown(start?: string | null, end?: string | null) {
     </div>
 
     <div dir="rtl" className="relative px-5 pb-7 pt-7 text-center">
-      <div className="mx-auto max-w-[330px] text-[31px] font-black leading-[1.16] tracking-[-0.025em] text-white drop-shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
+      <h1 className="mx-auto max-w-[330px] text-[31px] font-black leading-[1.16] tracking-[-0.025em] text-white drop-shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
   أفضل شركات التداول
   <span className="mt-1 block bg-gradient-to-r from-white via-blue-200 to-brand-400 bg-clip-text pb-1 text-transparent">
     تقييم الوسطاء والرسوم
   </span>
-</div>
+</h1>
 
       <p className="mx-auto mt-4 max-w-[310px] text-[13px] font-semibold leading-7 text-slate-300">
   قارن التراخيص، الرسوم، السبريد والمنصات لاختيار وسيط تداول موثوق يناسبك.
