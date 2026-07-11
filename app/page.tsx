@@ -381,24 +381,6 @@ function eventCountdown(start?: string | null, end?: string | null) {
   return { status: "upcoming", days, hours };
 }
 
-function getEventTitleParts(title?: string | null) {
-  const clean = (title || "معرض تداول").replace(" 2026", "").trim();
-
-  if (clean.toLowerCase().includes("bangkok")) {
-    return { main: clean.replace(/bangkok/i, "").trim(), location: "Bangkok" };
-  }
-
-  if (clean.toLowerCase().includes("abu dhabi")) {
-    return { main: clean.replace(/abu dhabi/i, "").trim(), location: "Abu Dhabi" };
-  }
-
-  if (clean.toLowerCase().includes("africa")) {
-    return { main: clean.replace(/africa/i, "").trim(), location: "Africa" };
-  }
-
-  return { main: clean, location: "" };
-}
-
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -1852,28 +1834,38 @@ function getEventTitleParts(title?: string | null) {
 
     <div className="grid gap-3 p-3 md:grid-cols-3 lg:gap-4 lg:p-5">
       {eventList.map((event) => {
-        const count = eventCountdown(event.start_date, event.end_date);
-        const titleParts = getEventTitleParts(event.title_ar);
+  const count = eventCountdown(event.start_date, event.end_date);
 
-        return (
+  const eventTitle = (event.title_ar || "معرض تداول")
+    .replace(/\s*2026\s*/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  const eventLocation =
+    event.city_ar?.trim() ||
+    event.country_ar?.trim() ||
+    "";
+
+  return (
           <article
             key={event.id}
             className="group flex h-full flex-col overflow-hidden rounded-[18px] border border-slate-200 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.045)] transition duration-300 hover:-translate-y-1 hover:border-brand-300 hover:shadow-[0_22px_50px_rgba(15,23,42,0.08)] sm:rounded-[24px]"
           >
-            <div className="relative overflow-hidden bg-gradient-to-br from-[#06152a] via-[#0b2b52] to-[#06111f] px-3 py-2.5 text-center sm:px-4 sm:py-5">
-              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(34,211,238,0.16),transparent_45%)]" />
-              <div className="relative">
-                <h3 className="text-[15px] font-black leading-5 text-white sm:text-[19px] sm:leading-6">
-                  {titleParts.main}
-                </h3>
-                {titleParts.location && (
-                  <div className="mt-0.5 text-[12px] font-black text-cyan-400 sm:mt-1 sm:text-[15px] sm:text-cyan-300">
-                    {titleParts.location}
-                  </div>
-                )}
-              </div>
-            </div>
+       <div className="relative flex min-h-[78px] flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-brand-600 via-brand-500 to-brand-400 px-3 py-3 text-center sm:min-h-[90px] sm:px-4 sm:py-4">
+  <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.20),transparent_48%)]" />
 
+  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-black/10 to-transparent" />
+
+  <div className="relative flex flex-col items-center justify-center">
+    <h3 className="text-[16px] font-black leading-5 text-white sm:text-[18px] sm:leading-6">
+      {eventTitle}
+    </h3>
+
+    <div className="mt-1 min-h-[20px] text-[12px] font-black text-white/85 sm:text-[13px]">
+      {eventLocation || "\u00A0"}
+    </div>
+  </div>
+</div>
             {count.status === "live" ? (
               <div className="flex h-[64px] flex-col items-center justify-center border-b border-emerald-100 bg-emerald-50 px-3 text-center sm:h-[76px]">
                 <div className="text-[20px] font-black text-emerald-600 sm:text-[22px]">
@@ -1902,11 +1894,20 @@ function getEventTitleParts(title?: string | null) {
             )}
 
             <div className="flex flex-1 flex-col p-3.5 sm:p-5">
-              <div className="flex h-[34px] flex-col items-center justify-center text-center text-[12px] font-bold leading-5 text-slate-700 sm:h-[42px] sm:text-[13px] sm:leading-6">
-                <div className="text-center">
-                  {formatEventDate(event.start_date, event.end_date)}
-                </div>
-              </div>
+              <div className="flex h-[58px] flex-col items-center justify-center gap-1 text-center text-[12px] font-bold leading-5 text-slate-700 sm:h-[96px] sm:gap-2 sm:text-[13px] sm:leading-6">
+  <div>
+    {formatEventDate(event.start_date, event.end_date)}
+  </div>
+
+  <div>
+    {event.city_ar || event.country_ar || "سيتم الإعلان عن الموقع لاحقاً"}
+    {event.city_ar && event.country_ar ? `، ${event.country_ar}` : ""}
+  </div>
+
+  <div className="hidden sm:block">
+    {event.venue_ar || "سيتم الإعلان عن المكان لاحقاً"}
+  </div>
+</div>
 
               <p className="mt-4 hidden h-[84px] overflow-hidden text-center text-[13px] leading-7 text-slate-600 sm:block">
                 {event.excerpt_ar || "تابع تفاصيل هذا الحدث عبر بروكر العرب."}
