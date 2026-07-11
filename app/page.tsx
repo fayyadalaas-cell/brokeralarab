@@ -515,9 +515,10 @@ function eventCountdown(start?: string | null, end?: string | null) {
               <div className="overflow-hidden">
                 <div className="flex w-max [animation:brokerMarquee_150s_linear_infinite] hover:[animation-play-state:paused]">
                   {marquee.map((broker, index) => (
-                    <Link
+                   <Link
   key={`broker-${broker.id}-${index}`}
   href={`/brokers/${broker.slug}`}
+  prefetch={false}
   aria-hidden={"duplicate" in broker && broker.duplicate ? "true" : undefined}
   tabIndex={"duplicate" in broker && broker.duplicate ? -1 : undefined}
   className="group flex h-[92px] w-[300px] shrink-0 items-center justify-center border-r border-slate-100 bg-transparent px-6 transition duration-300 hover:bg-white hover:shadow-[0_8px_24px_rgba(37,99,235,0.08)]"
@@ -609,9 +610,10 @@ function eventCountdown(start?: string | null, end?: string | null) {
       <div className="overflow-hidden">
         <div className="flex w-max [animation:brokerMarqueeMobile_120s_linear_infinite]">
           {marquee.map((broker, index) => (
-            <Link
+           <Link
   key={`mobile-broker-${broker.id}-${index}`}
   href={`/brokers/${broker.slug}`}
+  prefetch={false}
   aria-hidden={"duplicate" in broker && broker.duplicate ? "true" : undefined}
   tabIndex={"duplicate" in broker && broker.duplicate ? -1 : undefined}
   className="flex h-[78px] w-[210px] shrink-0 items-center justify-center border-r border-slate-100 bg-white px-4"

@@ -540,12 +540,13 @@ function eventCountdown(start?: string | null, end?: string | null) {
 
             <div className="overflow-hidden">
               <div className="flex w-max [animation:brokerMarquee_150s_linear_infinite] hover:[animation-play-state:paused]">
-                {marquee.map((broker, index) => (
-                  <Link
-                    key={`broker-${broker.id}-${index}`}
-                    href={`/en/brokers/${broker.slug}`}
-                    className="group flex h-[92px] w-[300px] shrink-0 items-center justify-center border-r border-slate-100 bg-white px-6 transition hover:bg-slate-50"
-                  >
+{marquee.map((broker, index) => (
+  <Link
+    key={`broker-${broker.id}-${index}`}
+    href={`/en/brokers/${broker.slug}`}
+    prefetch={false}
+    className="group flex h-[92px] w-[300px] shrink-0 items-center justify-center border-r border-slate-100 bg-white px-6 transition hover:bg-slate-50"
+  >
                     <div className="flex w-full items-center justify-center gap-4">
                       <div className="flex h-[68px] w-[94px] shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white p-2.5 shadow-sm">
                         {broker.logo ? (
