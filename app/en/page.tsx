@@ -255,38 +255,88 @@ broker_2: {
 } | null;
 };
 
+export const revalidate = 3600;
+
 export default async function HomePage() {
   const supabase = await createClient();
 
-  const { data } = await supabase
-    .from("brokers")
-    .select("*")
-    .order("rating", { ascending: false });
+  const todayDate = new Date();
+  todayDate.setHours(0, 0, 0, 0);
+  const today = todayDate.toISOString().split("T")[0];
 
-    const { data: comparisonsData } = await supabase
-  .from("comparisons")
-  .select(`
-    id,
-    slug,
-    title,
-    views_count,
- broker_1:broker_1_id (
-  name,
-  name_en,
-  logo,
-  rating
-),
-broker_2:broker_2_id (
-  name,
-  name_en,
-  logo,
-  rating
-)
-  `)
-  .not("slug", "is", null)
-  .not("title", "is", null)
-  .order("views_count", { ascending: false })
-  .limit(3);
+  const [
+    { data },
+    { data: comparisonsData },
+    { data: homeEvents },
+  ] = await Promise.all([
+    supabase
+      .from("brokers")
+      .select(`
+        id,
+        name,
+        name_en,
+        slug,
+        rating,
+        min_deposit,
+        platforms,
+        regulation,
+        regulation_short,
+        best_for,
+        best_for_en,
+        logo,
+        islamic_account,
+        arabic_support,
+        real_account_url
+      `)
+      .order("rating", { ascending: false }),
+
+    supabase
+      .from("comparisons")
+      .select(`
+        id,
+        slug,
+        title,
+        views_count,
+        broker_1:broker_1_id (
+          name,
+          name_en,
+          logo,
+          rating
+        ),
+        broker_2:broker_2_id (
+          name,
+          name_en,
+          logo,
+          rating
+        )
+      `)
+      .not("slug", "is", null)
+      .not("title", "is", null)
+      .order("views_count", { ascending: false })
+      .limit(3),
+
+    supabase
+      .from("events")
+      .select(`
+        id,
+        slug,
+        title_en,
+        excerpt_en,
+        category,
+        start_date,
+        end_date,
+        venue_en,
+        city_en,
+        country_en,
+        status
+      `)
+      .eq("status", "upcoming")
+      .not("title_en", "is", null)
+      .not("slug", "is", null)
+      .gte("end_date", today)
+      .order("start_date", { ascending: true })
+      .limit(3),
+  ]);
 
   const brokers = ((data ?? []) as Broker[]).filter((b) => b.slug && b.name);
   const topBrokers = brokers.slice(0, 6);
@@ -341,31 +391,6 @@ const typePages = getTypePages();
   ],
 };
 
-const todayDate = new Date();
-todayDate.setHours(0, 0, 0, 0);
-const today = todayDate.toISOString().split("T")[0];
-
-const { data: homeEvents } = await supabase
-  .from("events")
-  .select(`
-    id,
-    slug,
-    title_en,
-    excerpt_en,
-    category,
-    start_date,
-    end_date,
-    venue_en,
-    city_en,
-    country_en,
-    status
-  `)
-  .eq("status", "upcoming")
-  .not("title_en", "is", null)
-  .not("slug", "is", null)
-  .gte("end_date", today)
-  .order("start_date", { ascending: true })
-  .limit(3);
 
 const eventList = homeEvents || [];
 
