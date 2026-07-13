@@ -595,12 +595,12 @@ function eventCountdown(start?: string | null, end?: string | null) {
     </div>
 
     <div dir="rtl" className="relative px-5 pb-7 pt-7 text-center">
-      <h1 className="mx-auto max-w-[330px] text-[31px] font-black leading-[1.16] tracking-[-0.025em] text-white drop-shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
+    <div className="mx-auto max-w-[330px] text-[31px] font-black leading-[1.16] tracking-[-0.025em] text-white drop-shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
   أفضل شركات التداول
   <span className="mt-1 block bg-gradient-to-r from-white via-blue-200 to-brand-400 bg-clip-text pb-1 text-transparent">
     تقييم الوسطاء والرسوم
   </span>
-</h1>
+</div>
 
       <p className="mx-auto mt-4 max-w-[310px] text-[13px] font-semibold leading-7 text-slate-300">
   قارن التراخيص، الرسوم، السبريد والمنصات لاختيار وسيط تداول موثوق يناسبك.
