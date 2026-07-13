@@ -76,15 +76,18 @@ const tradingTerms = [
   ],
   [
     "Lot Size",
-    "Lot size represents the trading volume of a position in forex, gold, or CFDs. Selecting the correct lot size is one of the most important steps in controlling trading risk.",
+    "Lot size represents the trading volume of a forex, gold, or CFD position. Choosing the correct lot size is essential for controlling risk and managing position exposure.",
+    "/en/learn-trading/lot",
   ],
   [
     "Stop Loss",
-    "A stop-loss order automatically closes your position when price reaches a predefined level. It is one of the most effective tools for limiting losses and protecting trading capital.",
+    "A stop-loss order automatically closes a trade when the market reaches a predefined loss level. It is one of the most effective tools for protecting trading capital and managing downside risk.",
+    "/en/learn-trading/stop-loss",
   ],
   [
     "Take Profit",
-    "A take-profit order automatically closes a trade once your target price is reached. It helps traders stick to their strategy and avoid making emotional exit decisions.",
+    "A take-profit order automatically closes a trade after the market reaches your planned profit target. It helps traders lock in gains and follow a disciplined trading strategy.",
+    "/en/learn-trading/take-profit",
   ],
 ];
 const siteSections = [
