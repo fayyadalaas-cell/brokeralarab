@@ -93,6 +93,21 @@ const tradingTerms = [
     "جني الأرباح هو أمر يغلق الصفقة تلقائيًا عند الوصول إلى هدف سعري محدد. يساعدك على الالتزام بالخطة بدل الطمع أو الخروج العشوائي من الصفقة.",
     "/learn-trading/take-profit",
   ],
+  [
+    "الهيدج",
+    "الهيدج هو أسلوب لإدارة المخاطر يعتمد على فتح مراكز تعوض جزءًا من الخسائر المحتملة عند تحرك السوق بعكس توقعات المتداول.",
+    "/learn-trading/hedging",
+  ],
+  [
+    "السيولة",
+    "السيولة تعبر عن سهولة شراء أو بيع الأصل بسرعة وبأفضل سعر ممكن، وتؤثر بشكل مباشر على سرعة التنفيذ والانزلاق السعري.",
+    "/learn-trading/liquidity",
+  ],
+  [
+    "نداء الهامش",
+    "نداء الهامش هو تنبيه يرسله الوسيط عندما ينخفض مستوى الهامش بشكل كبير، وقد يؤدي تجاهله إلى إغلاق الصفقات تلقائيًا.",
+    "/learn-trading/margin-call",
+  ],
 ];
 
 const siteSections = [
@@ -558,9 +573,7 @@ export default function LearnTradingPage() {
             {term}
           </h3>
 
-          <span className="text-sm font-black text-brand-500 transition group-hover:-translate-x-1">
-            ←
-          </span>
+         
         </div>
 
         <p className="mt-2 text-sm leading-7 text-slate-600">

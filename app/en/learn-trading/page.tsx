@@ -89,6 +89,21 @@ const tradingTerms = [
     "A take-profit order automatically closes a trade after the market reaches your planned profit target. It helps traders lock in gains and follow a disciplined trading strategy.",
     "/en/learn-trading/take-profit",
   ],
+ [
+  "Hedging",
+  "Hedging helps reduce market exposure by opening offsetting positions, making it a common risk-management strategy in forex and CFD trading.",
+  "/en/learn-trading/hedging",
+],
+  [
+    "Liquidity",
+    "Liquidity describes how easily an asset can be bought or sold near the current market price. Higher liquidity generally supports tighter spreads, lower slippage, and more efficient order execution.",
+    "/en/learn-trading/liquidity",
+  ],
+  [
+    "Margin Call",
+    "A margin call occurs when account equity falls too low relative to the margin required for open positions. Understanding margin level and stop-out rules can help traders reduce the risk of forced liquidation.",
+    "/en/learn-trading/margin-call",
+  ],
 ];
 const siteSections = [
   ["Broker Reviews", "Read detailed broker reviews before opening an account.", "/en/brokers"],
@@ -553,15 +568,9 @@ export default function LearnTradingPage() {
         rel="noopener noreferrer"
         className="group rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:-translate-y-0.5 hover:border-brand-200 hover:bg-white hover:shadow-md"
       >
-        <div className="flex items-center justify-between gap-3">
-          <h3 className="text-lg font-black text-slate-950 transition group-hover:text-brand-600">
-            {term}
-          </h3>
-
-          <span className="text-sm font-black text-brand-500 transition group-hover:translate-x-1">
-            →
-          </span>
-        </div>
+        <h3 className="text-lg font-black text-slate-950 transition group-hover:text-brand-600">
+  {term}
+</h3>
 
         <p className="mt-2 text-sm leading-7 text-slate-600">
           {desc}
