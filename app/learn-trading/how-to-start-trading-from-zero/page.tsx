@@ -1701,12 +1701,50 @@ export default async function Page() {
       قبل أن تبدأ، هناك مصطلحات أساسية يجب فهمها:
     </p>
 
-    <ul className="mt-3 space-y-3 text-[17px] leading-8 text-slate-700">
-      <li><strong>• السبريد:</strong> الفرق بين سعر الشراء والبيع (تكلفة التداول)</li>
-      <li><strong>• اللوت:</strong> حجم الصفقة (0.01 مناسب للمبتدئين)</li>
-      <li><strong>• الرافعة المالية:</strong> تضاعف رأس المال لكنها تزيد المخاطر</li>
-      <li><strong>• الحساب التجريبي:</strong> للتعلم بدون مخاطرة</li>
-    </ul>
+   <ul className="mt-3 space-y-3 text-[17px] leading-8 text-slate-700">
+  <li>
+    •{" "}
+    <Link
+      href="/learn-trading/spread"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="font-black text-brand-600 hover:underline"
+    >
+      السبريد
+    </Link>
+    : الفرق بين سعر الشراء والبيع (تكلفة التداول)
+  </li>
+
+  <li>
+    •{" "}
+    <Link
+      href="/learn-trading/lot"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="font-black text-brand-600 hover:underline"
+    >
+      اللوت
+    </Link>
+    : حجم الصفقة (0.01 مناسب للمبتدئين)
+  </li>
+
+  <li>
+    •{" "}
+    <Link
+      href="/learn-trading/leverage"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="font-black text-brand-600 hover:underline"
+    >
+      الرافعة المالية
+    </Link>
+    : تضاعف رأس المال لكنها تزيد المخاطر
+  </li>
+
+  <li>
+    <strong>• الحساب التجريبي:</strong> للتعلم بدون مخاطرة
+  </li>
+</ul>
 
     {/* Section 5 */}
     <h3 className="mt-8 text-[22px] font-black text-slate-900">
@@ -1886,32 +1924,70 @@ export default async function Page() {
       </details>
 
       {/* Section 4 */}
-      <details className="group overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm">
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4">
-          <div>
-            <h3 className="text-[18px] font-black leading-7 text-slate-950">
-              أهم مصطلحات التداول التي يجب أن تعرفها
-            </h3>
-          </div>
+<details className="group overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm">
+  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4">
+    <div>
+      <h3 className="text-[18px] font-black leading-7 text-slate-950">
+        أهم مصطلحات التداول التي يجب أن تعرفها
+      </h3>
+    </div>
 
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-[11px] text-slate-500 transition group-open:rotate-180">
-            ⌄
-          </div>
-        </summary>
+    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-[11px] text-slate-500 transition group-open:rotate-180">
+      ⌄
+    </div>
+  </summary>
 
-        <div className="border-t border-slate-200 px-4 pb-4 pt-3">
-          <p className="text-[15px] leading-8 text-slate-700">
-            قبل أن تبدأ، هناك مصطلحات أساسية يجب فهمها:
-          </p>
+  <div className="border-t border-slate-200 px-4 pb-4 pt-3">
+    <p className="text-[15px] leading-8 text-slate-700">
+      قبل أن تبدأ، هناك مصطلحات أساسية يجب فهمها:
+    </p>
 
-          <ul className="mt-3 space-y-3 text-[15px] leading-8 text-slate-700">
-            <li><strong>• السبريد:</strong> الفرق بين سعر الشراء والبيع (تكلفة التداول)</li>
-            <li><strong>• اللوت:</strong> حجم الصفقة (0.01 مناسب للمبتدئين)</li>
-            <li><strong>• الرافعة المالية:</strong> تضاعف رأس المال لكنها تزيد المخاطر</li>
-            <li><strong>• الحساب التجريبي:</strong> للتعلم بدون مخاطرة</li>
-          </ul>
-        </div>
-      </details>
+    <ul className="mt-3 space-y-3 text-[15px] leading-8 text-slate-700">
+      <li>
+        <strong>• </strong>
+        <Link
+          href="/learn-trading/spread"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-black text-brand-600 hover:underline"
+        >
+          السبريد
+        </Link>
+        : الفرق بين سعر الشراء والبيع (تكلفة التداول)
+      </li>
+
+      <li>
+        <strong>• </strong>
+        <Link
+          href="/learn-trading/lot"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-black text-brand-600 hover:underline"
+        >
+          اللوت
+        </Link>
+        : حجم الصفقة (0.01 مناسب للمبتدئين)
+      </li>
+
+      <li>
+        <strong>• </strong>
+        <Link
+          href="/learn-trading/leverage"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-black text-brand-600 hover:underline"
+        >
+          الرافعة المالية
+        </Link>
+        : تضاعف رأس المال لكنها تزيد المخاطر
+      </li>
+
+      <li>
+        <strong>• الحساب التجريبي:</strong> للتعلم بدون مخاطرة
+      </li>
+    </ul>
+  </div>
+</details>
 
       {/* Section 5 */}
       <details className="group overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm">

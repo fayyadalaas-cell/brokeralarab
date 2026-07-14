@@ -907,27 +907,57 @@ const tableBrokers: Broker[] = (tableBrokersData ?? []).sort(
                   description="Before comparing brokers or opening an account, make sure you understand the basic building blocks of trading. These concepts will appear everywhere once you start using a trading platform."
                 />
 
-                <div className="grid gap-4 md:grid-cols-2">
-                  <InfoCard
-                    title="What is trading?"
-                    text="Trading means buying or selling financial instruments with the goal of benefiting from price movement. You are not simply clicking buy and sell; you are making decisions based on price, timing, risk, and probability."
-                  />
+              <div className="grid gap-4 md:grid-cols-2">
 
-                  <InfoCard
-                    title="What is a broker?"
-                    text="A broker is the company that gives you access to markets and trading platforms. A good broker should offer clear fees, reliable platforms, transparent withdrawals, and regulation from known authorities."
-                  />
+  <Link
+    href="/en/learn-trading/lot"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="block"
+  >
+    <InfoCard
+      title="What is lot size?"
+      text="Lot size represents the volume of a trade in forex, gold, and CFDs. Choosing the right lot size is essential for controlling risk, position size, and the potential profit or loss of every trade."
+    />
+  </Link>
 
-                  <InfoCard
-                    title="What is spread?"
-                    text="Spread is the difference between the buy price and the sell price. It is one of the main trading costs, especially for short-term traders who open and close positions frequently."
-                  />
+  <Link
+    href="/en/best-brokers"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="block"
+  >
+    <InfoCard
+      title="What is a broker?"
+      text="A broker is the company that gives you access to markets and trading platforms. A good broker should offer clear fees, reliable platforms, transparent withdrawals, and regulation from known authorities."
+    />
+  </Link>
 
-                  <InfoCard
-                    title="What is leverage?"
-                    text="Leverage allows you to control a larger position with a smaller amount of capital. It can increase potential profit, but it can also increase losses quickly if it is used without risk management."
-                  />
-                </div>
+  <Link
+    href="/en/learn-trading/spread"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="block"
+  >
+    <InfoCard
+      title="What is spread?"
+      text="Spread is the difference between the buy price and the sell price. It is one of the main trading costs, especially for short-term traders."
+    />
+  </Link>
+
+  <Link
+    href="/en/learn-trading/leverage"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="block"
+  >
+    <InfoCard
+      title="What is leverage?"
+      text="Leverage allows you to control a larger position with a smaller amount of capital. It can increase potential profit, but it can also increase losses quickly."
+    />
+  </Link>
+</div>
+ 
               </section>
 
              <section className="mt-8">
