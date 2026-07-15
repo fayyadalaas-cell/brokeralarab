@@ -71,7 +71,7 @@ const verificationToolsEn = [
 ];
 
 const mainLinkClass =
-  "inline-flex items-center gap-2 whitespace-nowrap rounded-full px-3 py-2 text-[14px] font-extrabold text-slate-700 transition hover:bg-slate-100";
+  "inline-flex items-center gap-2 whitespace-nowrap rounded-full px-4 py-2.5 text-[14px] font-extrabold text-slate-700 transition hover:bg-slate-100 xl:px-5";
 
 const dropdownClass =
   "invisible absolute left-0 top-full z-50 mt-3 translate-y-2 rounded-[28px] border border-slate-200 bg-white p-4 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.14)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100";
@@ -94,23 +94,23 @@ export default function EnglishHeader({
       dir="ltr"
       className="sticky top-0 z-50 border-b border-slate-200/90 bg-white/95 backdrop-blur-md"
     >
-      <div className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-8">
+      <div className="mx-auto w-full max-w-[1560px] px-4 sm:px-6 lg:px-8">
         <div
           className="relative flex h-16 items-center justify-between lg:h-20"
           dir="ltr"
         >
-          <Link href="/en" className="min-w-0 shrink-0">
+          <Link href="/en" className="min-w-0 shrink-0 lg:justify-self-start">
             <Image
               src="/logo/Asset 1@3x.png"
               alt="Broker Alarab"
               width={300}
               height={90}
               priority
-              className="h-auto w-[120px] sm:w-[135px] lg:w-[180px]"
+              className="h-auto w-[130px] sm:w-[155px] lg:w-[180px]"
             />
           </Link>
 
-          <nav className="hidden flex-1 items-center justify-center gap-0.5 lg:flex xl:gap-1">
+          <nav className="mx-8 hidden flex-1 items-center justify-evenly gap-2 lg:flex xl:mx-12 xl:gap-4">
             {/* REVIEWS */}
             <div className="group relative">
               <Link href="/en/brokers" className={mainLinkClass}>
@@ -388,7 +388,7 @@ export default function EnglishHeader({
             </Link>
           </nav>
 
-          <div className="hidden min-w-[105px] items-center justify-end lg:flex">
+          <div className="hidden min-w-[125px] items-center justify-start pl-3 lg:flex xl:pl-5">
             <Link
               href="/"
               className="inline-flex items-center rounded-full border border-blue-300 bg-white px-3 py-1.5 text-[12px] font-bold text-brand-600 shadow-sm transition hover:border-blue-400 hover:bg-brand-50"

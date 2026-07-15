@@ -690,137 +690,102 @@ function eventCountdown(start?: string | null, end?: string | null) {
   countryRankings={countryRankings}
 />
 </section>
-{/* HOME TRUST BAR */}
-<section className="mx-auto w-full max-w-7xl px-0 py-2">
-  <div className="overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-[0_14px_40px_rgba(15,23,42,0.055)]">
-    <div className="grid grid-cols-2 divide-x divide-y divide-slate-100 divide-x-reverse md:grid-cols-4 md:divide-y-0">
-      {[
-        ["✓", "50+ وسيط", "تمت مراجعتهم"],
-        ["📊", "150+ معيار", "للتقييم والمقارنة"],
-        ["🔄", "تحديث شهري", "للبيانات المهمة"],
-        ["🛡", "مراجعة مستقلة", "وفق منهجية واضحة"],
-      ].map(([icon, title, desc]) => (
-        <div
-          key={title}
-          className="flex items-center justify-center gap-2 px-3 py-3 text-center md:gap-3 md:py-4"
-        >
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-50 text-[12px] font-black text-brand-500 md:h-8 md:w-8">
-            {icon}
-          </span>
-
-          <div className="text-right">
-            <div className="text-[12px] font-black text-slate-950 md:text-sm">
-              {title}
-            </div>
-            <div className="mt-0.5 text-[10px] font-bold text-slate-500 md:text-[11px]">
-              {desc}
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-
-    <div className="flex flex-col items-center justify-between gap-3 border-t border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3 text-center md:flex-row md:text-right">
-      <div>
-        <div className="mb-1 text-xs font-black text-brand-600">
-          منهجية التقييم
-        </div>
-
-        <p className="max-w-4xl text-[12px] font-semibold leading-6 text-slate-700 md:text-sm md:leading-7">
-          تعتمد تصنيفات بروكر العرب على تحليل التراخيص، الرسوم، منصات التداول، سرعة السحب، الحسابات، وجودة الدعم.
-        </p>
-      </div>
-
-      <Link
-        href="/how-we-review-brokers"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex min-h-[42px] shrink-0 items-center justify-center rounded-2xl bg-brand-500 px-5 text-[12px] font-black text-white shadow-[0_10px_22px_rgba(37,99,235,0.20)] transition hover:bg-brand-600 md:text-sm"
-      >
-        منهجية التقييم
-      </Link>
-    </div>
-  </div>
-</section>
 
    {/* HOW WE RATE - CLEAN TRUST SECTION */}
 <section className="mx-auto w-full max-w-7xl px-0 py-3 sm:py-4">
   <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
     {(() => {
-      const ratingItems = [
-        {
-          num: "01",
-          title: "الترخيص وحماية الأموال",
-          desc: "نفحص الجهة الرقابية وقوة الترخيص ووضوح حماية أموال العملاء.",
-        },
-        {
-          num: "02",
-          title: "الرسوم والسبريد",
-          desc: "نقارن السبريد، العمولات، وتكلفة التداول الفعلية.",
-        },
-        {
-          num: "03",
-          title: "المنصات والتنفيذ",
-          desc: "نراجع MT4 وMT5 وسهولة الاستخدام وسرعة التنفيذ.",
-        },
-        {
-          num: "04",
-          title: "الإيداع والسحب",
-          desc: "نقارن طرق الدفع، سرعة السحب، ووضوح الشروط.",
-        },
-        {
-          num: "05",
-          title: "الحساب الإسلامي",
-          desc: "نتحقق من توفر الحساب الإسلامي وطريقة تطبيقه.",
-        },
-        {
-          num: "06",
-          title: "الدعم وتجربة المستخدم",
-          desc: "نراجع جودة الدعم وسهولة الوصول للمعلومات.",
-        },
-      ];
+     const ratingItems = [
+  {
+    num: "01",
+    title: "الترخيص وحماية الأموال",
+    desc: "نفحص قوة الجهة الرقابية، حماية أموال العملاء، ووضوح إجراءات الأمان والشفافية.",
+  },
+  {
+    num: "02",
+    title: "الرسوم والسبريد",
+    desc: "نقارن السبريد، العمولات، رسوم التبييت، وتكلفة التداول الفعلية للحساب.",
+  },
+  {
+    num: "03",
+    title: "المنصات والتنفيذ",
+    desc: "نراجع منصات MT4 وMT5، سهولة الاستخدام، استقرار الأداء، وسرعة تنفيذ الأوامر.",
+  },
+  {
+    num: "04",
+    title: "الإيداع والسحب",
+    desc: "نقارن طرق الدفع، سرعة معالجة السحب، مدة التحويل، ووضوح الشروط والرسوم.",
+  },
+  {
+    num: "05",
+    title: "الحساب الإسلامي",
+    desc: "نتحقق من توفر الحساب الإسلامي، شروطه الفعلية، والرسوم أو القيود المرتبطة به.",
+  },
+  {
+    num: "06",
+    title: "الدعم وتجربة المستخدم",
+    desc: "نراجع جودة الدعم، سرعة الاستجابة، سهولة فتح الحساب، والوصول إلى المعلومات.",
+  },
+];
 
       return (
         <>
-          {/* DESKTOP */}
-          <div className="hidden lg:block">
-            <div className="grid grid-cols-[1fr_270px] gap-5 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-6 py-5">
-              <div>
-                <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
-                  منهجية التقييم
-                </span>
+{/* DESKTOP */}
+<div className="hidden lg:block">
+  <div className="grid grid-cols-[1fr_270px] items-center gap-5 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-6 py-5">
+    
+    {/* TITLE AND DESCRIPTION */}
+    <div>
+      <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
+        منهجية تقييم الوسطاء
+      </span>
 
-                <h2 className="mt-4 text-[36px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f]">
-                  كيف نختار أفضل شركات التداول؟
-                </h2>
+      <h2 className="mt-4 text-[36px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f]">
+        كيف نختار أفضل شركات التداول؟
+      </h2>
 
-                <p className="mt-3 max-w-3xl text-[15px] font-semibold leading-9 text-slate-600">
-                نراجع تقييم شركات التداول بناءً على قوة التراخيص، الرسوم والسبريد، سرعة السحب والإيداع، جودة المنصات، الحساب الإسلامي، وتجربة المتداول الفعلية قبل ترشيح أي وسيط تداول موثوق.
-                </p>
-              </div>
+     <p className="mt-3 max-w-[760px] text-[15px] font-semibold leading-9 text-slate-600">
+  نراجع شركات التداول بناءً على قوة التراخيص، مستوى حماية أموال العملاء،
+  الرسوم والسبريد وتكلفة التداول الفعلية، إضافة إلى جودة منصات التداول
+  وسرعة تنفيذ الأوامر. كما نقارن طرق الإيداع والسحب، الحساب الإسلامي،
+  جودة الدعم وتجربة المستخدم قبل ترشيح أي وسيط للمتداولين، مع تحديث
+  البيانات والمراجعات بشكل دوري ومستمر.
+</p>
+    </div>
 
-              <div className="flex flex-col justify-center rounded-[24px] border border-slate-200 bg-white p-4 shadow-[0_10px_30px_rgba(15,23,42,0.05)]">
-                
-                <div className="mt-1.5 text-[18px] font-black leading-6 text-[#07111f]">
-                  تقييم عملي لاختيار وسيط تداول موثوق
-                </div>
+    {/* METHODOLOGY BOX */}
+    <div className="self-center rounded-[24px] border border-slate-200 bg-white p-4 shadow-[0_10px_30px_rgba(15,23,42,0.05)]">
+      <div className="mt-1.5 text-[18px] font-black leading-7 text-[#07111f]">
+        تقييم عملي لاختيار وسيط تداول موثوق
+      </div>
 
-                <Link
-                  href="/brokers"
-                  className="mt-5 inline-flex h-11 items-center justify-center rounded-2xl bg-brand-500 px-5 text-[13px] font-black text-white shadow-[0_12px_26px_rgba(37,99,235,0.22)] transition hover:bg-brand-600"
-                >
-                  تصفح جميع التقييمات
-                </Link>
-              </div>
-            </div>
+      <div className="mt-5 grid gap-2">
+        <Link
+          href="/how-we-review-brokers"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex h-11 items-center justify-center rounded-2xl bg-brand-500 px-5 text-[13px] font-black text-white shadow-[0_12px_26px_rgba(37,99,235,0.22)] transition hover:bg-brand-600"
+        >
+          منهجية تقييم الوسطاء
+        </Link>
+
+        <Link
+          href="/brokers"
+          className="inline-flex h-11 items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 text-[13px] font-black text-slate-800 transition hover:border-brand-200 hover:text-brand-600"
+        >
+          تصفح جميع التقييمات
+        </Link>
+      </div>
+    </div>
+  </div>
 
             <div className="grid grid-cols-3 gap-4 p-5">
               {ratingItems.map((item) => (
                 <div
                   key={item.num}
-                  className="rounded-[22px] border border-slate-200 bg-white p-5 shadow-[0_6px_20px_rgba(15,23,42,0.04)] transition hover:-translate-y-0.5 hover:border-brand-100 hover:shadow-[0_16px_34px_rgba(15,23,42,0.06)]"
+                  className="h-full min-h-[122px] rounded-[22px] border border-slate-200 bg-white p-5 shadow-[0_6px_20px_rgba(15,23,42,0.04)] transition hover:-translate-y-0.5 hover:border-brand-100 hover:shadow-[0_16px_34px_rgba(15,23,42,0.06)]"
                 >
-                  <div className="flex items-start gap-4">
+                  <div className="flex h-full items-start gap-4">
                     <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-brand-50 text-[12px] font-black text-brand-600 ring-1 ring-[#bfdbfe]">
                       {item.num}
                     </span>
@@ -830,7 +795,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
                         {item.title}
                       </h3>
 
-                      <p className="mt-2 text-[13px] font-semibold leading-6 text-slate-600">
+                      <p className="mt-2 max-w-[310px] text-[13px] font-semibold leading-6 text-slate-600">
                         {item.desc}
                       </p>
                     </div>
@@ -853,12 +818,23 @@ function eventCountdown(start?: string | null, end?: string | null) {
                 نراجع التراخيص، الرسوم، المنصات، السحب والحساب الإسلامي قبل ترشيح أي وسيط.
               </p>
 
-              <Link
-                href="/brokers"
-                className="mt-3 inline-flex h-9 items-center justify-center rounded-2xl bg-brand-500 px-4 text-[11px] font-black text-white shadow-[0_10px_22px_rgba(37,99,235,0.20)]"
-              >
-                جميع التقييمات
-              </Link>
+             <div className="mt-3 grid gap-2">
+  <Link
+    href="/how-we-review-brokers"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-flex h-10 items-center justify-center rounded-2xl bg-brand-500 px-4 text-[11px] font-black text-white shadow-[0_10px_22px_rgba(37,99,235,0.20)]"
+  >
+    منهجية تقييم الوسطاء
+  </Link>
+
+  <Link
+    href="/brokers"
+    className="inline-flex h-10 items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 text-[11px] font-black text-slate-800"
+  >
+    جميع التقييمات
+  </Link>
+</div>
             </div>
 
             <div className="grid grid-cols-1 gap-2 bg-white p-3.5">

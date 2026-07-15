@@ -79,7 +79,7 @@ export default function EnglishFooter() {
       dir="ltr"
       className="mt-10 border-t border-slate-800 bg-[linear-gradient(180deg,#07101f_0%,#06101d_100%)] text-slate-300 md:mt-14"
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-[1560px] px-4 sm:px-6 lg:px-8">
         {/* Desktop */}
         <div className="hidden md:block">
           <div className="grid gap-8 py-10 lg:grid-cols-[1.15fr_0.8fr_0.8fr]">
@@ -89,14 +89,11 @@ export default function EnglishFooter() {
                 alt="Broker Alarab"
                 width={420}
                 height={120}
-                className="h-auto w-[240px]"
+                className="h-auto w-[270px]"
               />
 
-              <p className="mt-4 max-w-xl text-[15px] leading-8 text-slate-300">
-                Broker Alarab is an Arabic-focused platform specializing in
-                broker reviews and comparisons, helping traders choose the right
-                broker and understand the differences between companies,
-                accounts, and platforms before opening an account.
+<p className="mt-4 max-w-[520px] text-[15px] leading-8 text-slate-300 text-balance">
+                Broker Alarab helps traders compare forex and CFD brokers through independent reviews, broker comparisons, regulation analysis, trading fees, account types, and educational guides to make smarter trading decisions.
               </p>
 
               <SocialLinks />

@@ -189,7 +189,7 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
 
       {/* HERO */}
       <section className="relative overflow-hidden border-b border-slate-200 bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-10 md:py-14">
+        <div className="mx-auto max-w-[1520px] px-4 py-10 md:py-14">
           <div className="mx-auto max-w-4xl text-center">
             <h1 className="text-3xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-5xl">
               Compare Trading Brokers
@@ -224,7 +224,7 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
       {/* COMPARE TOOL */}
 <section
   id="compare-tool"
-  className="mx-auto max-w-7xl px-4 pt-4 pb-8 sm:px-6 lg:px-8 md:pt-4 md:pb-10"
+  className="mx-auto max-w-[1520px] px-4 pt-4 pb-8 sm:px-6 lg:px-8 md:pt-4 md:pb-10"
 >
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_12px_35px_rgba(15,23,42,0.05)]">
     <div className="grid lg:grid-cols-[1.02fr_.98fr]">
@@ -359,7 +359,7 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
 </section>
 
       {/* FEATURED COMPARISONS */}
-      <section className="mx-auto max-w-7xl px-4 pt-2 pb-10 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-[1520px] px-4 pt-2 pb-10 sm:px-6 lg:px-8">
         <div className="rounded-[30px] border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
           <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
@@ -582,7 +582,7 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
       </section>
 
       {/* USEFUL INTERNAL SEO SECTIONS */}
-      <section className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-[1520px] px-4 pb-12 sm:px-6 lg:px-8">
         <div className="grid gap-6 lg:grid-cols-[1.05fr_.95fr]">
           {/* INTERNAL LINKS */}
           <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">

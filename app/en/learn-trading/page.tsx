@@ -294,7 +294,7 @@ export default function LearnTradingPage() {
 
       <main
         dir="ltr"
-        className="mx-auto w-full max-w-7xl px-3 pt-5 pb-0 text-left sm:px-4 md:pt-6"
+        className="mx-auto w-full max-w-[1520px] px-3 pt-5 pb-0 text-left sm:px-4 md:pt-6"
       >
         <section className="mb-4 overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-sm">
           <div className="grid grid-cols-2 divide-x divide-slate-100 md:grid-cols-4">

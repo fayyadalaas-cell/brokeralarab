@@ -367,7 +367,7 @@ export default async function BrokersPage() {
 
   if (error) {
     return (
-      <main className="mx-auto max-w-7xl px-4 py-16">
+      <main className="mx-auto max-w-[1520px] px-4 py-16">
         <div className="rounded-3xl border border-red-200 bg-red-50 p-6 text-red-700">
           An error occurred while loading the broker reviews page.
         </div>
@@ -390,7 +390,7 @@ export default async function BrokersPage() {
 
       <main className="bg-slate-50" dir="ltr">
         <section className="relative overflow-hidden border-b border-slate-200 bg-white">
-          <div className="mx-auto max-w-7xl px-4 py-10 md:py-14">
+          <div className="mx-auto max-w-[1520px] px-4 py-10 md:py-14">
             <div className="mx-auto max-w-4xl text-center">
               <h1 className="text-3xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-5xl">
                 Trusted Broker Reviews
@@ -423,7 +423,7 @@ export default async function BrokersPage() {
 
         <section
           id="brokers-grid"
-          className="mx-auto max-w-7xl px-4 pt-6 pb-10 md:pt-5 md:pb-14"
+          className="mx-auto max-w-[1520px] px-4 pt-6 pb-10 md:pt-5 md:pb-14"
         >
           <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div></div>

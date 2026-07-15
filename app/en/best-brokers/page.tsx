@@ -110,7 +110,7 @@ export default async function BestBrokersPage() {
           <div className="absolute inset-0 opacity-[0.04] [background-image:linear-gradient(rgba(255,255,255,0.7)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.7)_1px,transparent_1px)] [background-size:48px_48px]" />
         </div>
 
-        <div className="relative mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+        <div className="relative mx-auto max-w-[1520px] px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
           <div className="grid items-center gap-10 lg:grid-cols-[1.08fr_0.92fr]">
             {/* LEFT CONTENT */}
             <div className="text-center lg:text-left">
@@ -265,7 +265,7 @@ export default async function BestBrokersPage() {
       </section>
 
       {/* 2) QUICK TOP BROKERS */}
-      <section id="top-brokers" className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <section id="top-brokers" className="mx-auto max-w-[1520px] px-4 py-12 sm:px-6 lg:px-8">
         <div className="mb-8 flex flex-col gap-2 text-left">
           <h2 className="text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">
             Top 3 Forex Brokers This Year
@@ -400,7 +400,7 @@ export default async function BestBrokersPage() {
 
       {/* 3) FULL COMPARISON TABLE */}
       <section id="comparison-table" className="border-y border-slate-200 bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[1520px] px-4 py-12 sm:px-6 lg:px-8">
           <div className="mb-8 flex flex-col gap-2 text-left">
             <div className="text-sm font-bold text-brand-600">Main Comparison</div>
             <h2 className="text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">
@@ -704,7 +704,7 @@ export default async function BestBrokersPage() {
       <section className="border-t border-slate-200 bg-white">
         <div
           id="broker-finder"
-          className="scroll-mt-40 mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8"
+          className="scroll-mt-40 mx-auto max-w-[1520px] px-4 py-6 sm:px-6 lg:px-8"
         >
           {/* DESKTOP */}
           <div className="hidden overflow-hidden rounded-[30px] border border-slate-200 bg-slate-950 shadow-[0_20px_60px_rgba(15,23,42,0.16)] lg:block">
@@ -870,7 +870,7 @@ export default async function BestBrokersPage() {
         id="broker-finder-categories"
         className="scroll-mt-28 border-t border-slate-200 bg-white"
       >
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[1520px] px-4 py-12 sm:px-6 lg:px-8">
           {(() => {
             const used = new Set<number>();
 
@@ -1024,7 +1024,7 @@ export default async function BestBrokersPage() {
 
       {/* 6) HOW WE RATE BROKERS */}
       <section className="border-t border-slate-200 bg-slate-50">
-        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[1520px] px-4 py-10 sm:px-6 lg:px-8">
           <div className="mb-8 text-left">
             <h2 className="text-2xl font-extrabold text-slate-950 sm:text-3xl">
               How We Rate Forex Brokers
@@ -1120,7 +1120,7 @@ export default async function BestBrokersPage() {
 
       {/* 7) FAQ */}
       <section className="border-t border-slate-200 bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[1520px] px-4 py-12 sm:px-6 lg:px-8">
           <div className="mb-8 text-left">
             <h2 className="text-2xl font-extrabold text-slate-950 sm:text-3xl">
               Forex Broker FAQ
