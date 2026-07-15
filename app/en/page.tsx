@@ -799,12 +799,23 @@ function eventCountdown(start?: string | null, end?: string | null) {
                 conditions before recommending any broker.
               </p>
 
-              <Link
-                href="/en/brokers"
-                className="mt-3 inline-flex h-9 items-center justify-center rounded-2xl bg-brand-500 px-4 text-[11px] font-black text-white shadow-[0_10px_22px_rgba(37,99,235,0.20)]"
-              >
-                All Reviews
-              </Link>
+             <div className="mt-3 grid gap-2">
+  <Link
+    href="/en/how-we-review-brokers"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-flex h-10 items-center justify-center rounded-2xl bg-brand-500 px-4 text-[11px] font-black text-white shadow-[0_10px_22px_rgba(37,99,235,0.20)]"
+  >
+    View Our Rating Methodology
+  </Link>
+
+  <Link
+    href="/en/brokers"
+    className="inline-flex h-10 items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 text-[11px] font-black text-slate-800"
+  >
+    All Reviews
+  </Link>
+</div>
             </div>
 
             <div className="grid grid-cols-1 gap-2 bg-white p-3.5">

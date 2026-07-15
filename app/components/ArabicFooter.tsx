@@ -198,7 +198,10 @@ export default function ArabicFooter() {
 
               <div className="border-t border-white/10 px-4 py-4">
                 <details className="group rounded-2xl border border-white/8 bg-white/[0.03]">
-                  <summary className="flex cursor-pointer items-center justify-between px-4 py-3.5 text-sm font-black text-white marker:content-none">
+                <summary
+  dir="rtl"
+  className="flex cursor-pointer items-center justify-between px-4 py-3.5 text-right text-sm font-black text-white marker:content-none"
+>
                     <span>روابط الموقع</span>
                     <span className="text-slate-400 transition group-open:rotate-180">⌄</span>
                   </summary>
@@ -207,7 +210,7 @@ export default function ArabicFooter() {
                       <Link
                         key={item.href}
                         href={item.href}
-                        className="block rounded-xl px-3 py-2.5 text-sm font-bold text-slate-300 transition hover:bg-white/[0.04] hover:text-white"
+                        className="block rounded-xl px-3 py-2.5 text-right text-sm font-bold text-slate-300 transition hover:bg-white/[0.04] hover:text-white"
                       >
                         {item.label}
                       </Link>
