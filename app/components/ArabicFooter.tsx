@@ -76,7 +76,7 @@ function SocialLinks({ mobile = false }: { mobile?: boolean }) {
 export default function ArabicFooter() {
   return (
     <footer className="mt-10 border-t border-slate-800 bg-[linear-gradient(180deg,#07101f_0%,#06101d_100%)] text-slate-300 md:mt-14">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div className="mx-auto w-full max-w-[1560px] px-4 sm:px-6 lg:px-8">
         {/* Desktop */}
         <div className="hidden md:block">
           <div className="grid gap-8 py-10 lg:grid-cols-[1.15fr_0.8fr_0.8fr]">
@@ -89,11 +89,10 @@ export default function ArabicFooter() {
                 className="ml-auto h-auto w-[220px]"
               />
 
-              <p className="mt-4 max-w-xl text-[15px] leading-8 text-slate-300">
-                بروكر العرب منصة عربية متخصصة في مراجعات ومقارنات شركات التداول،
-                تساعد المتداول العربي على اختيار الوسيط المناسب وفهم الفروقات بين
-                الشركات والحسابات والمنصات قبل فتح الحساب.
-              </p>
+              <p className="mt-4 max-w-[420px] text-sm leading-8 text-slate-300">
+  بروكر العرب منصة عربية متخصصة في مراجعات ومقارنات شركات التداول، تساعد المتداول العربي
+  على اختيار الوسيط المناسب وفهم الفروقات بين الشركات والحسابات والمنصات قبل فتح الحساب.
+</p>
 
               
 

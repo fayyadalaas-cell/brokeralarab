@@ -55,7 +55,7 @@ export const metadata: Metadata = {
         url: "https://brokeralarab.com/og-image.png",
         width: 1560,
         height: 377,
-        alt: "Broker Al Arab",
+        alt: "Broker Alarab",
       },
     ],
   },
@@ -449,7 +449,7 @@ export default async function BrokersPage() {
       <main className="bg-slate-50">
         {/* HERO */}
         <section className="relative overflow-hidden border-b border-slate-200 bg-white">
-          <div className="mx-auto max-w-7xl px-4 py-10 md:py-14">
+          <div className="mx-auto max-w-[1560px] px-4 py-10 md:py-14">
             <div className="mx-auto max-w-4xl text-center">
               <h1 className="text-3xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-5xl">
                 تقييم شركات التداول الموثوقة
@@ -482,7 +482,7 @@ export default async function BrokersPage() {
        
 
         {/* CARDS GRID */}
-        <section id="brokers-grid" className="mx-auto max-w-7xl px-4 pt-6 pb-10 md:pt-5 md:pb-14">
+        <section id="brokers-grid" className="mx-auto max-w-[1560px] px-4 pt-6 pb-10 md:pt-5 md:pb-14">
           <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
        

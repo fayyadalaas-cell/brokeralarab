@@ -65,7 +65,7 @@ const verificationToolsAr = [
 ];
 
 const mainLinkClass =
-  "inline-flex items-center gap-2 whitespace-nowrap rounded-full px-3 py-2 text-[14px] font-extrabold text-slate-700 transition hover:bg-slate-100";
+  "inline-flex items-center gap-2 whitespace-nowrap rounded-full px-4 py-2.5 text-[14px] font-extrabold text-slate-700 transition hover:bg-slate-100 xl:px-5";
 
 const dropdownClass =
   "invisible absolute right-0 top-full z-50 mt-3 translate-y-2 rounded-[28px] border border-slate-200 bg-white p-4 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.14)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100";
@@ -82,6 +82,7 @@ export default function ArabicHeader({
   featuredCategories,
   featuredComparisons,
   learnTradingMenuItems,
+  wide = false,
 }: any) {
   const extendedCountryMenuItems = [
     ...countryMenuItems,
@@ -107,7 +108,11 @@ export default function ArabicHeader({
 
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200/90 bg-white/95 backdrop-blur-md">
-      <div className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-8">
+     <div
+  className={`mx-auto w-full ${
+    wide ? "max-w-[1560px]" : "max-w-7xl"
+  } px-4 sm:px-6 lg:px-8`}
+>
         <div dir="rtl" className="relative flex h-16 items-center justify-between lg:h-20">
           <Link href="/" className="min-w-0 shrink-0 lg:justify-self-end">
             <Image
@@ -120,7 +125,13 @@ export default function ArabicHeader({
             />
           </Link>
 
-          <nav className="hidden flex-1 items-center justify-center gap-0.5 lg:flex xl:gap-1">
+          <nav
+  className={`hidden items-center justify-center lg:flex ${
+    wide
+      ? "mx-8 flex-1 justify-evenly gap-2 xl:mx-12 xl:gap-4"
+      : "flex-1 gap-0.5 xl:gap-1"
+  }`}
+>
             {/* REVIEWS */}
             <div className="group relative">
               <Link href="/brokers" className={mainLinkClass}>

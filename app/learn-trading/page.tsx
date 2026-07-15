@@ -297,7 +297,7 @@ export default function LearnTradingPage() {
 
       <main
         dir="rtl"
-        className="mx-auto w-full max-w-7xl px-3 pt-5 pb-0 text-right sm:px-4 md:pt-6"
+        className="mx-auto w-full max-w-[1560px] px-3 pt-5 pb-0 text-right sm:px-4 md:pt-6"
       >
         <section className="mb-4 overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-sm">
           <div className="grid grid-cols-2 divide-x divide-slate-100 divide-x-reverse md:grid-cols-4">
@@ -325,23 +325,33 @@ export default function LearnTradingPage() {
         <section className="relative overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm md:rounded-[34px]">
           <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-l from-brand-600 via-brand-500 to-brand-400" />
 
-          <div className="grid gap-6 p-5 md:p-8 lg:grid-cols-[1fr_360px] lg:items-center">
+         <div className="grid gap-6 p-5 md:p-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-center lg:gap-8">
             <div>
               <div className="mb-4 inline-flex rounded-full border border-brand-100 bg-brand-50 px-4 py-1.5 text-xs font-black text-brand-600">
                 دليل تعلم التداول
               </div>
 
               <>
- <h1 className="max-w-3xl text-[38px] font-black leading-tight text-slate-950 md:text-[54px]">
+ <h1 className="w-full text-[38px] font-black leading-tight text-slate-950 md:text-[54px]">
   دليل تعلم التداول
 </h1>
 </>
 
-              <p className="mt-5 max-w-3xl text-[15px] leading-8 text-slate-600 md:text-lg md:leading-9">
-             ابدأ رحلتك في تعلم التداول من الصفر من خلال دروس مبسطة، وأدوات
-مجانية، ومراجع تساعدك على فهم الأسواق، وإدارة المخاطر، واختيار
-وسيط تداول موثوق قبل فتح حساب حقيقي.
-              </p>
+             {/* Desktop */}
+<p className="mt-5 hidden w-full text-[15px] font-medium leading-8 text-slate-600 md:block md:text-lg md:leading-9">
+  ابدأ رحلتك في تعلم التداول من الصفر من خلال دروس مبسطة ومنظمة تساعدك
+  على فهم كيفية عمل الأسواق، وأساسيات الفوركس، والسبريد، والرافعة المالية،
+  والهامش، وحجم الصفقة. تعلّم إدارة المخاطر واستخدام وقف الخسارة، ثم استفد
+  من حاسبات التداول العملية لفهم تكلفة الصفقة قبل تنفيذها. كما يساعدك هذا
+  الدليل على قراءة المؤشرات الاقتصادية، مقارنة شركات التداول، واختيار وسيط
+  موثوق من حيث الترخيص والرسوم والمنصات قبل الانتقال إلى حساب حقيقي.
+</p>
+
+{/* Mobile */}
+<p className="mt-5 block text-[15px] leading-8 text-slate-600 md:hidden">
+  ابدأ رحلتك في تعلم التداول من الصفر من خلال دروس مبسطة وأدوات مجانية تساعدك
+  على فهم الأسواق، وإدارة المخاطر، واختيار وسيط تداول موثوق قبل فتح حساب حقيقي.
+</p>
 
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <InternalLink

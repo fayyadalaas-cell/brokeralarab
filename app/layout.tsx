@@ -236,7 +236,9 @@ export default async function RootLayout({
 }) {
 const headersList = await headers();
 const pathname = headersList.get("x-pathname") || "";
+
 const isEnglish = pathname.startsWith("/en");
+const isArabicHome = !isEnglish && (pathname === "/" || pathname === "");
 
 const topBrokers = await getTopBrokers();
 
@@ -382,13 +384,14 @@ const topBrokers = await getTopBrokers();
       <body
         className={`${cairo.variable} bg-[#f4f7fb] font-sans text-[#0f172a] antialiased`}
       >
-        <HeaderSwitcher
-          topBrokers={topBrokers}
-          countryMenuItems={countryMenuItems}
-          featuredCategories={featuredCategories}
-          featuredComparisons={featuredComparisons}
-          learnTradingMenuItems={learnTradingMenuItems}
-        />
+       <HeaderSwitcher
+  wide
+  topBrokers={topBrokers}
+  countryMenuItems={countryMenuItems}
+  featuredCategories={featuredCategories}
+  featuredComparisons={featuredComparisons}
+  learnTradingMenuItems={learnTradingMenuItems}
+/>
 
         <main>{children}</main>
 

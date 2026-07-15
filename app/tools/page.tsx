@@ -89,7 +89,7 @@ const tools = [
 export default function ToolsPage() {
   return (
     <main dir="rtl" className="min-h-screen bg-[#f3f7fb] text-slate-900">
-      <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8">
+      <section className="mx-auto max-w-[1560px] px-4 py-6 sm:px-6 sm:py-10 lg:px-8">
         <div className="overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-sm sm:rounded-[2.25rem]">
           <div className="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 px-5 py-12 text-center sm:px-10 sm:py-16 lg:px-14 lg:py-20">
             <span className="inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-extrabold text-blue-100">
@@ -148,46 +148,56 @@ export default function ToolsPage() {
       لماذا تحتاج إلى أدوات التداول؟
     </h2>
 
-    <p className="mt-4 max-w-5xl text-sm leading-8 text-slate-600 sm:text-base sm:leading-9">
-      أدوات التداول تساعدك على تحويل قراراتك من تخمين إلى حساب واضح. قبل فتح أي
-      صفقة، يحتاج المتداول إلى معرفة حجم المخاطرة، قيمة النقطة، الهامش المطلوب،
-      حجم اللوت المناسب، ومستويات الدعم والمقاومة المحتملة.
-    </p>
+    <p className="mt-4 w-full text-sm font-medium leading-8 text-slate-600 sm:text-base sm:leading-9">
+  تساعدك أدوات التداول على تحويل قراراتك من التخمين إلى حسابات واضحة مبنية على
+  أرقام فعلية. قبل فتح أي صفقة، يحتاج المتداول إلى معرفة حجم المخاطرة المناسب،
+  وقيمة النقطة، والهامش المطلوب، وحجم اللوت الذي يتوافق مع رأس المال ووقف
+  الخسارة. كما تساعدك هذه الأدوات على تقدير الربح والخسارة المحتملة، وفهم تأثير
+  الرافعة المالية، ومتابعة نسبة التراجع في الحساب، بدل اتخاذ قرارات عشوائية قد
+  تعرض رأس المال لمخاطر غير محسوبة. ويمكن أيضًا استخدام حاسبات فيبوناتشي ونقاط
+  الارتكاز لتحديد مستويات الدعم والمقاومة المحتملة وبناء خطة دخول وخروج أكثر
+  تنظيمًا قبل تنفيذ الصفقة.
+</p>
   </div>
 
   <div className="grid gap-4 p-5 sm:p-8 md:grid-cols-3 lg:p-10">
     {[
-      {
-        title: "حساب المخاطرة بدقة",
-        text: "اعرف كم تخاطر في كل صفقة قبل الدخول، وحدد حجم الصفقة المناسب لرأس المال.",
-      },
-      {
-        title: "فهم تكلفة الصفقة",
-        text: "احسب قيمة النقطة، الهامش، الرافعة المالية، والربح أو الخسارة المتوقعة.",
-      },
-      {
-        title: "تحسين التحليل الفني",
-        text: "استخدم فيبوناتشي ونقاط الارتكاز لتحديد مناطق الدعم والمقاومة المحتملة.",
-      },
-    ].map((item) => (
-      <div
-        key={item.title}
-        className="rounded-3xl border border-slate-200 bg-slate-50 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-brand-100 hover:bg-brand-50 hover:shadow-lg"
-      >
-        <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-100 text-lg font-black text-brand-600">
-          ✓
-        </div>
+  {
+    title: "حساب المخاطرة بدقة",
+    text: "حدد نسبة المخاطرة المناسبة قبل فتح الصفقة، واحسب حجم العقد والمبلغ الذي يمكنك خسارته دون التأثير على رأس المال."
+  },
+  {
+    title: "فهم تكلفة الصفقة",
+    text: "احسب قيمة النقطة، الهامش المطلوب، الرافعة المالية، والأرباح أو الخسائر المتوقعة قبل التنفيذ، حتى تعرف التكلفة الحقيقية لكل عملية تداول.",
+  },
+  {
+    title: "تحسين التحليل الفني",
+    text: "استخدم أدوات فيبوناتشي ونقاط الارتكاز لتحديد مستويات الدعم والمقاومة وتحسين نقاط الدخول والخروج واتخاذ قرارات تداول أكثر دقة.",
+  },
+].map((item) => (
+  <div
+    key={item.title}
+    className="flex h-full flex-col rounded-3xl border border-slate-200 bg-slate-50 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-brand-100 hover:bg-brand-50 hover:shadow-lg"
+  >
+    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-100 text-lg font-black text-brand-600">
+      ✓
+    </div>
 
-        <h3 className="text-lg font-black text-slate-950">{item.title}</h3>
+    <h3 className="text-lg font-black text-slate-950">
+      {item.title}
+    </h3>
 
-        <p className="mt-3 text-sm leading-7 text-slate-600">{item.text}</p>
-      </div>
-    ))}
+    <p className="mt-3 flex-1 text-sm leading-8 text-slate-600">
+      {item.text}
+    </p>
+  </div>
+))
+   }
   </div>
 </section>
 
 <section className="mt-6 overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm sm:mt-8 sm:rounded-[2rem]">
-  <div className="border-b border-slate-100 bg-gradient-to-l from-blue-50 via-white to-white p-5 sm:p-8 lg:p-10">
+  <div className="border-b border-slate-100 bg-gradient-to-l from-blue-50 via-white to-white p-5 sm:p-8 lg:px-10 lg:py-9">
     <span className="inline-flex rounded-full bg-blue-100 px-3 py-1 text-xs font-extrabold text-brand-600">
       أسئلة المتداولين
     </span>

@@ -8,6 +8,11 @@ export default function FooterSwitcher() {
   const pathname = usePathname();
 
   const isEnglish = pathname === "/en" || pathname.startsWith("/en/");
+  const isArabicHome = pathname === "/";
 
-  return isEnglish ? <EnglishFooter /> : <ArabicFooter />;
+  if (isEnglish) {
+    return <EnglishFooter />;
+  }
+
+  return <ArabicFooter />;
 }
