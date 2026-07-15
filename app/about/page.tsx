@@ -32,15 +32,15 @@ type SectionProps = {
 /* الأقسام الظاهرة دائمًا */
 function Section({ title, children }: SectionProps) {
   return (
-    <section className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_10px_32px_rgba(15,23,42,0.045)] sm:rounded-[32px]">
-      <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-white px-4 py-4 sm:px-7 sm:py-5 md:px-8">
-        <h2 className="text-[25px] font-black leading-[1.2] text-slate-950 sm:text-[27px]">
+    <section className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_10px_32px_rgba(15,23,42,0.045)] sm:rounded-[28px]">
+      <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-white px-4 py-4 sm:px-7 sm:py-3.5 md:px-8">
+        <h2 className="text-[25px] font-black leading-[1.2] text-slate-950 sm:text-[24px] sm:leading-[1.3] lg:text-[26px]">
           {title}
         </h2>
       </div>
 
-      <div className="px-4 py-5 sm:px-7 sm:py-6 md:px-8">
-        <div className="max-w-[1260px] space-y-4 text-[15px] font-medium leading-8 text-slate-700 sm:space-y-5 sm:text-[16px] sm:leading-9">
+      <div className="px-4 py-5 sm:px-7 sm:py-4 md:px-8 lg:py-5">
+        <div className="max-w-[1260px] space-y-4 text-[15px] font-medium leading-8 text-slate-700 sm:max-w-none sm:space-y-3 sm:text-[15px] sm:leading-8 lg:text-[16px]">
           {children}
         </div>
       </div>
@@ -53,16 +53,16 @@ function ResponsiveTextSection({ title, children }: SectionProps) {
   return (
     <>
       {/* MOBILE */}
-      <details className="group overflow-hidden rounded-[18px] border border-slate-200 bg-white shadow-[0_6px_20px_rgba(15,23,42,0.04)] sm:rounded-[32px]">
-<summary className="flex cursor-pointer list-none items-center justify-between gap-3 bg-white px-4 py-3.5 text-right sm:hidden">
-  <h2 className="text-[17px] font-black leading-6 text-slate-950">
-    {title}
-  </h2>
+      <details className="group overflow-hidden rounded-[18px] border border-slate-200 bg-white shadow-[0_6px_20px_rgba(15,23,42,0.04)] sm:hidden">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 bg-white px-4 py-3.5 text-right">
+          <h2 className="text-[17px] font-black leading-6 text-slate-950">
+            {title}
+          </h2>
 
-  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-[#f8fbff] text-[11px] font-black text-brand-600 transition duration-300 group-open:rotate-180">
-    ▼
-  </span>
-</summary>
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-[#f8fbff] text-[11px] font-black text-brand-600 transition duration-300 group-open:rotate-180">
+            ▼
+          </span>
+        </summary>
 
         <div className="border-t border-slate-100 px-4 py-5">
           <div className="space-y-4 text-[15px] font-medium leading-8 text-slate-700">
@@ -72,15 +72,15 @@ function ResponsiveTextSection({ title, children }: SectionProps) {
       </details>
 
       {/* TABLET / DESKTOP */}
-      <section className="hidden overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_10px_32px_rgba(15,23,42,0.045)] sm:block">
-        <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-white px-7 py-5 md:px-8">
-          <h2 className="text-[27px] font-black leading-[1.25] text-slate-950">
+      <section className="hidden overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_10px_32px_rgba(15,23,42,0.045)] sm:block">
+        <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-white px-7 py-3.5 md:px-8">
+          <h2 className="text-[24px] font-black leading-[1.3] text-slate-950 lg:text-[26px]">
             {title}
           </h2>
         </div>
 
-        <div className="px-7 py-6 md:px-8">
-          <div className="max-w-[1260px] space-y-5 text-[16px] font-medium leading-9 text-slate-700">
+        <div className="px-7 py-4 md:px-8 lg:py-5">
+          <div className="max-w-none space-y-3 text-[15px] font-medium leading-8 text-slate-700 lg:text-[16px]">
             {children}
           </div>
         </div>
@@ -99,39 +99,38 @@ function InfoCards({ items }: { items: InfoCardItem[] }) {
   return (
     <div className="grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-3">
       {items.map((item) => {
-        const hideOnMobile =
-          item.title === "الشفافية وتحديث البيانات";
+        const hideOnMobile = item.title === "الشفافية وتحديث البيانات";
 
         return (
           <div
             key={item.title}
-            className={`group min-h-[132px] rounded-[18px] border border-slate-200 bg-[#fbfdff] p-3.5 transition duration-300 hover:-translate-y-0.5 hover:border-brand-100 hover:bg-brand-50/40 hover:shadow-[0_14px_30px_rgba(15,23,42,0.06)] sm:min-h-[145px] sm:rounded-[22px] sm:p-5 ${
+            className={`group min-h-[132px] rounded-[18px] border border-slate-200 bg-[#fbfdff] p-3.5 transition duration-300 hover:-translate-y-0.5 hover:border-brand-100 hover:bg-brand-50/40 hover:shadow-[0_14px_30px_rgba(15,23,42,0.06)] sm:min-h-0 sm:rounded-[18px] sm:p-4 ${
               hideOnMobile ? "hidden sm:block" : "block"
             }`}
           >
-           {/* MOBILE */}
-<div className="flex h-full flex-col items-center justify-center text-center sm:hidden">
-  <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-brand-100 bg-white text-[17px] shadow-sm">
-    {item.icon}
-  </span>
+            {/* MOBILE */}
+            <div className="flex h-full flex-col items-center justify-center text-center sm:hidden">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-brand-100 bg-white text-[17px] shadow-sm">
+                {item.icon}
+              </span>
 
-  <h3 className="mt-3 text-[14px] font-black leading-5 text-slate-950">
-    {item.title}
-  </h3>
-</div>
+              <h3 className="mt-3 text-[14px] font-black leading-5 text-slate-950">
+                {item.title}
+              </h3>
+            </div>
 
             {/* TABLET / DESKTOP */}
             <div className="hidden items-start gap-3 sm:flex">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-brand-100 bg-white text-[18px] shadow-sm">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-[16px] shadow-sm lg:h-10 lg:w-10 lg:text-[18px]">
                 {item.icon}
               </span>
 
               <div className="min-w-0">
-                <h3 className="text-[16px] font-black leading-6 text-slate-950">
+                <h3 className="text-[15px] font-black leading-6 text-slate-950 lg:text-[16px]">
                   {item.title}
                 </h3>
 
-                <p className="mt-2 text-[14px] font-medium leading-7 text-slate-600">
+                <p className="mt-1.5 text-[13px] font-medium leading-6 text-slate-600 lg:text-[14px] lg:leading-7">
                   {item.text}
                 </p>
               </div>
@@ -146,15 +145,15 @@ function InfoCards({ items }: { items: InfoCardItem[] }) {
 export default function AboutPage() {
   return (
     <main dir="rtl" className="min-h-screen bg-[#f4f7fb] text-slate-900">
-      <div className="mx-auto w-full max-w-[1520px] px-3 py-5 sm:px-6 sm:py-10 lg:px-8 lg:py-12">
+      <div className="mx-auto w-full max-w-[1520px] px-3 py-5 sm:px-6 sm:py-7 lg:px-8 lg:py-8">
         {/* PAGE HERO */}
-        <header className="mb-5 overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_14px_40px_rgba(15,23,42,0.05)] sm:mb-8 sm:rounded-[32px]">
-          <div className="bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-5 py-6 sm:px-8 sm:py-9 lg:px-10 lg:py-10">
-            <div className="inline-flex rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[11px] font-black text-brand-600 shadow-sm sm:text-[12px]">
+        <header className="mb-5 overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_14px_40px_rgba(15,23,42,0.05)] sm:mb-5 sm:rounded-[28px]">
+          <div className="bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-5 py-6 sm:px-8 sm:py-6 lg:px-10 lg:py-7">
+            <div className="inline-flex rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[11px] font-black text-brand-600 shadow-sm sm:px-3 sm:py-1 sm:text-[11px]">
               من نحن
             </div>
 
-            <h1 className="mt-4 text-[34px] font-black leading-[1.12] tracking-[-0.025em] text-slate-950 sm:text-[44px] lg:text-[52px]">
+            <h1 className="mt-4 text-[34px] font-black leading-[1.12] tracking-[-0.025em] text-slate-950 sm:mt-3 sm:text-[38px] sm:leading-[1.2] lg:text-[44px]">
               عن بروكر العرب
             </h1>
 
@@ -166,7 +165,7 @@ export default function AboutPage() {
             </p>
 
             {/* DESKTOP DESCRIPTION */}
-            <p className="mt-5 hidden max-w-[1180px] text-[18px] font-medium leading-10 text-slate-600 sm:block">
+            <p className="mt-3 hidden max-w-none text-[15px] font-medium leading-8 text-slate-600 sm:block lg:max-w-[1380px] lg:text-[16px] lg:leading-8">
               بروكر العرب موقع متخصص في مراجعات وتقييم شركات التداول والمقارنات
               بين الوسطاء، ويهدف إلى مساعدة المتداولين على الوصول إلى معلومات
               واضحة ومنظمة قبل فتح حساب حقيقي أو تجريبي مع أي شركة تداول. نعمل
@@ -176,7 +175,7 @@ export default function AboutPage() {
           </div>
         </header>
 
-        <div className="grid gap-4 sm:gap-7">
+        <div className="grid gap-4 sm:gap-5">
           <ResponsiveTextSection title="ما هو بروكر العرب؟">
             <p>
               يركز موقع بروكر العرب على تقديم محتوى احترافي يغطي أهم الجوانب

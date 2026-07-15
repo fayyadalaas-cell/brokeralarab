@@ -24,9 +24,9 @@ type Broker = {
 };
 
 export const metadata: Metadata = {
-  title: "Trusted Broker Reviews",
+  title: "Trusted Broker Reviews and Comparisons",
   description:
-    "Browse trusted broker reviews, compare regulation, minimum deposit, trading platforms, and Islamic account availability, then choose the right broker before opening a live account.",
+  "Browse trusted broker reviews and compare regulation, trading costs, minimum deposits, platforms, and account conditions before choosing a trading broker.",
   keywords: [
     "broker reviews",
     "trusted brokers",
@@ -34,7 +34,6 @@ export const metadata: Metadata = {
     "broker comparison",
     "open live trading account",
     "forex brokers",
-    "Islamic account",
     "Broker Alarab",
   ],
   alternates: {
@@ -45,7 +44,7 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Trusted Broker Reviews | Broker Alarab",
+    title: "Trusted Broker Reviews and Comparisons | Broker Alarab",
     description:
       "A professional English page to explore broker reviews and compare key details before opening a live account.",
     url: "https://brokeralarab.com/en/brokers",
@@ -67,33 +66,6 @@ function formatDeposit(value: number | null) {
 
 function normalizeText(value: string | null | undefined, fallback = "Not specified") {
   if (!value || !value.trim()) return fallback;
-  return value;
-}
-
-function islamicAccountLabel(value: string | null | undefined) {
-  if (!value || !value.trim()) return "Not specified";
-
-  const v = value.trim().toLowerCase();
-
-  if (
-    v.includes("yes") ||
-    v.includes("available") ||
-    v.includes("true") ||
-    v.includes("islamic") ||
-    v.includes("نعم")
-  ) {
-    return "Available";
-  }
-
-  if (
-    v.includes("no") ||
-    v.includes("false") ||
-    v.includes("not available") ||
-    v.includes("غير متوفر")
-  ) {
-    return "Not available";
-  }
-
   return value;
 }
 
@@ -175,7 +147,6 @@ function BrokerCard({
   const realLink = hasRealAccountLink(broker.real_account_url);
   const platformBadges = splitToBadges(broker.platforms).slice(0, 2);
   const regulationBadges = splitToBadges(broker.regulation).slice(0, 2);
-  const islamicLabel = islamicAccountLabel(broker.islamic_account);
   const brokerName = broker.name_en || broker.name || "Broker";
 
   return (
@@ -224,29 +195,14 @@ function BrokerCard({
 
       <div className="mt-5 border-t border-slate-200 pt-4">
         <div className="space-y-2 text-sm">
-          <div className="flex items-center justify-between gap-4">
-            <span className="text-slate-500">Minimum deposit</span>
-            <span className="font-extrabold text-slate-900">
-              {formatDeposit(broker.min_deposit)}
-            </span>
-          </div>
+         <div className="flex items-center justify-between gap-4">
+  <span className="text-slate-500">Minimum deposit</span>
 
-          <div className="flex items-center justify-between gap-4">
-            <span className="text-slate-500">Islamic account</span>
-            <span
-              className={`font-extrabold ${
-                islamicLabel === "Available"
-                  ? "text-emerald-700"
-                  : islamicLabel === "Not available"
-                  ? "text-rose-700"
-                  : "text-slate-700"
-              }`}
-            >
-              {islamicLabel}
-            </span>
-          </div>
-
-          <div className="flex items-start justify-between gap-4">
+  <span className="font-extrabold text-slate-900">
+    {formatDeposit(broker.min_deposit)}
+  </span>
+</div>
+                   <div className="flex items-start justify-between gap-4">
             <span className="text-slate-500">Regulation</span>
             <span className="text-right font-bold text-slate-900">
               {regulationBadges.join(", ") || "Not specified"}
@@ -276,12 +232,12 @@ function BrokerCard({
         {realLink ? (
           <a
             href={`/go/${broker.slug}?type=real`}
-            className="inline-flex min-h-[48px] w-full items-center justify-center rounded-2xl bg-brand-500 px-5 py-3 text-sm font-extrabold text-white transition hover:bg-brand-600"
+            className="inline-flex min-h-[48px] w-full items-center justify-center rounded-2xl bg-brand-500 px-5 py-2.5 text-sm font-extrabold text-white transition hover:bg-brand-600"
           >
             Open Live Account
           </a>
         ) : (
-          <span className="inline-flex min-h-[48px] w-full cursor-not-allowed items-center justify-center rounded-2xl bg-slate-200 px-5 py-3 text-sm font-extrabold text-slate-500">
+          <span className="inline-flex min-h-[48px] w-full cursor-not-allowed items-center justify-center rounded-2xl bg-slate-200 px-5 py-2.5 text-sm font-extrabold text-slate-500">
             Coming Soon
           </span>
         )}
@@ -308,9 +264,9 @@ export default async function BrokersPage() {
 
   const { data, error } = await supabase
     .from("brokers")
-    .select(
-      "id,name,name_en,slug,rating,min_deposit,best_for,best_for_en,regulation,platforms,islamic_account,logo,real_account_url,demo_account_url"
-    )
+   .select(
+  "id,name,name_en,slug,rating,min_deposit,best_for,best_for_en,regulation,platforms,logo,real_account_url,demo_account_url"
+)
     .order("rating", { ascending: false });
 
   const brokers = (data as Broker[] | null) ?? [];
@@ -324,7 +280,7 @@ export default async function BrokersPage() {
         name: "How do I choose the best broker before opening a live account?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Choosing the right broker depends on regulatory strength, trading costs, minimum deposit, platform quality, execution standards, and whether an Islamic account is available if that matters to you.",
+          text: "Choosing the right broker depends on regulatory strength, trading costs, minimum deposit, platform quality, execution standards, account conditions, and the services available in your country.",
         },
       },
       {
@@ -389,47 +345,106 @@ export default async function BrokersPage() {
       />
 
       <main className="bg-slate-50" dir="ltr">
-        <section className="relative overflow-hidden border-b border-slate-200 bg-white">
-          <div className="mx-auto max-w-[1520px] px-4 py-10 md:py-14">
-            <div className="mx-auto max-w-4xl text-center">
-              <h1 className="text-3xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-5xl">
-                Trusted Broker Reviews
-              </h1>
+       <section className="relative overflow-hidden border-b border-brand-100 bg-[#eaf3ff]">
+  {/* BACKGROUND */}
+  <div
+    aria-hidden="true"
+    className="pointer-events-none absolute inset-0 overflow-hidden"
+  >
+    <div className="absolute inset-0 bg-gradient-to-br from-[#f5f9ff] via-[#e8f2ff] to-[#cfe3ff]" />
 
-              <p className="mx-auto mt-4 max-w-3xl text-base leading-8 text-slate-600 md:text-lg">
-                Review brokers, compare regulation, platforms, minimum deposit,
-                and Islamic account availability, then choose the right trading
-                company before opening a live account.
-              </p>
+    <div className="absolute left-[-120px] top-[-130px] h-[360px] w-[360px] rounded-full bg-white/70 blur-3xl" />
 
-              <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-                <Link
-                  href="/en/compare"
-                  className="inline-flex items-center justify-center rounded-2xl bg-brand-500 px-6 py-3 text-sm font-extrabold text-white transition hover:bg-brand-600"
-                >
-                  Start Broker Comparison
-                </Link>
+    <div className="absolute bottom-[-160px] right-[-100px] h-[420px] w-[420px] rounded-full bg-blue-300/25 blur-3xl" />
+<div className="absolute left-1/2 top-[120px] h-[260px] w-[520px] -translate-x-1/2 rounded-full bg-blue-300/20 blur-[100px]" />
+    <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(30,91,184,0.025)_1px,transparent_1px),linear-gradient(to_bottom,rgba(30,91,184,0.025)_1px,transparent_1px)] bg-[size:46px_46px]" />
+  </div>
 
-                <a
-                  href="#brokers-grid"
-                  className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-100"
-                >
-                  Browse Reviews
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
+  <div className="relative mx-auto w-full max-w-[1520px] px-4 py-7 sm:px-6 sm:py-10 lg:px-8 lg:py-11">
+    <div className="mx-auto max-w-[1160px] text-center">
+      {/* LABEL */}
+      <div className="inline-flex items-center gap-2 rounded-full border border-white/90 bg-white/90 px-4 py-2 text-[11px] font-extrabold text-brand-700 shadow-sm backdrop-blur sm:text-xs">
+        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand-50 text-[11px] text-brand-600">
+          ✓
+        </span>
+
+        Independent Broker Research
+      </div>
+
+      {/* TITLE */}
+<h1 className="mt-4 text-[34px] font-black leading-[1.08] tracking-[-0.04em] text-slate-950 sm:text-[48px] lg:text-[60px]">        Find and Compare
+        <span className="mt-1 block text-[#1E5BB8]">
+          Trusted Trading Brokers
+        </span>
+      </h1>
+
+      {/* DESCRIPTION */}
+     <p className="mx-auto mt-5 max-w-[900px] text-[15px] font-medium leading-8 text-slate-600 sm:text-[17px] sm:leading-9 lg:text-[18px]">
+  Compare regulation, trading platforms, pricing, minimum deposits, and
+  account conditions to find the broker that best matches your trading
+  needs.
+</p>
+
+      {/* TRUST POINTS */}
+      <div className="mx-auto mt-6 grid max-w-[900px] grid-cols-1 gap-2.5 sm:grid-cols-3 sm:gap-3">
+        <div className="flex min-h-[48px] items-center justify-center gap-2 rounded-2xl border border-white bg-white/90 px-4 py-2.5 text-[13px] font-extrabold text-slate-700 shadow-[0_8px_24px_rgba(30,91,184,0.08)] backdrop-blur">
+          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-[15px]">
+            ✓
+          </span>
+
+          Regulation Reviewed
+        </div>
+
+        <div className="flex min-h-[48px] items-center justify-center gap-2 rounded-2xl border border-white bg-white/90 px-4 py-2.5 text-[13px] font-extrabold text-slate-700 shadow-[0_8px_24px_rgba(30,91,184,0.08)] backdrop-blur">
+          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-50 text-[15px] font-black text-brand-600">
+  $
+</span>
+
+          Fees and Costs Compared
+        </div>
+
+        <div className="flex min-h-[48px] items-center justify-center gap-2 rounded-2xl border border-white bg-white/90 px-4 py-2.5 text-[13px] font-extrabold text-slate-700 shadow-[0_8px_24px_rgba(30,91,184,0.08)] backdrop-blur">
+         <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-violet-50 text-[16px] font-black text-violet-600">
+  ▣
+</span>
+
+          Platforms Reviewed
+        </div>
+      </div>
+
+      {/* BUTTONS */}
+      <div className="mt-7 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
+        <Link
+          href="/en/compare"
+          className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-2xl bg-[#1E5BB8] px-7 py-3 text-sm font-extrabold text-white shadow-[0_14px_30px_rgba(30,91,184,0.25)] transition duration-300 hover:-translate-y-0.5 hover:bg-[#174a98]"
+        >
+          Compare Brokers
+          <span aria-hidden="true">→</span>
+        </Link>
+
+        <a
+          href="#brokers-grid"
+          className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-2xl border border-white bg-white/90 px-7 py-3 text-sm font-extrabold text-slate-800 shadow-sm backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:border-brand-100 hover:bg-white hover:text-brand-700"
+        >
+          Browse Broker Reviews
+          <span aria-hidden="true">↓</span>
+        </a>
+      </div>
+
+      {/* NOTICE */}
+      <p className="mx-auto mt-4 max-w-[760px] text-[11px] font-medium leading-5 text-slate-500 sm:text-xs">
+        Review each broker’s official terms, regulatory entity, fees, and risk
+        disclosures before opening or funding an account.
+      </p>
+    </div>
+  </div>
+</section>
 
         <section
           id="brokers-grid"
-          className="mx-auto max-w-[1520px] px-4 pt-6 pb-10 md:pt-5 md:pb-14"
+          className="mx-auto max-w-[1520px] px-4 pb-10 pt-5 sm:px-6 md:pb-14 md:pt-6 lg:px-8"
         >
-          <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-            <div></div>
-          </div>
-
-          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {brokers.map((broker, index) => (
               <BrokerCard key={broker.id} broker={broker} index={index} />
             ))}
