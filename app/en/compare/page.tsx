@@ -187,46 +187,123 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
 
-      {/* HERO */}
-      <section className="relative overflow-hidden border-b border-slate-200 bg-white">
-        <div className="mx-auto max-w-[1520px] px-4 py-10 md:py-14">
-          <div className="mx-auto max-w-4xl text-center">
-            <h1 className="text-3xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-5xl">
-              Compare Trading Brokers
-            </h1>
+     {/* HERO */}
+<section className="relative overflow-hidden border-b border-brand-100 bg-[#eaf3ff]">
+  {/* BACKGROUND */}
+  <div
+    aria-hidden="true"
+    className="pointer-events-none absolute inset-0 overflow-hidden"
+  >
+    <div className="absolute inset-0 bg-gradient-to-br from-[#f5f9ff] via-[#e8f2ff] to-[#cfe3ff]" />
 
-            <p className="mx-auto mt-4 max-w-3xl text-base leading-8 text-slate-600 md:text-lg">
-              Compare the most popular trading brokers by regulation, platforms,
-              minimum deposit, and Islamic account availability, then open a
-              clear comparison page that helps you choose the right broker
-              before opening an account.
-            </p>
+    <div className="absolute left-[-120px] top-[-130px] h-[360px] w-[360px] rounded-full bg-white/70 blur-3xl" />
 
-            <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-              <a
-                href="#compare-tool"
-                className="inline-flex items-center justify-center rounded-2xl bg-brand-500 px-6 py-3 text-sm font-extrabold text-white transition hover:bg-brand-600"
-              >
-                Start Comparing Now
-              </a>
+    <div className="absolute bottom-[-160px] right-[-100px] h-[420px] w-[420px] rounded-full bg-blue-300/25 blur-3xl" />
 
-              <a
-                href="#featured-comparisons"
-                className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-100"
-              >
-                Browse Popular Comparisons
-              </a>
-            </div>
-          </div>
+    <div className="absolute left-1/2 top-[120px] h-[260px] w-[520px] -translate-x-1/2 rounded-full bg-blue-300/20 blur-[100px]" />
+
+    <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(30,91,184,0.025)_1px,transparent_1px),linear-gradient(to_bottom,rgba(30,91,184,0.025)_1px,transparent_1px)] bg-[size:46px_46px]" />
+  </div>
+
+  <div className="relative mx-auto w-full max-w-[1520px] px-4 py-7 sm:px-6 sm:py-10 lg:px-8 lg:py-11">
+    <div className="mx-auto max-w-[1160px] text-center">
+      {/* LABEL */}
+      <div className="inline-flex items-center gap-2 rounded-full border border-white/90 bg-white/90 px-4 py-2 text-[11px] font-extrabold text-brand-700 shadow-sm backdrop-blur sm:text-xs">
+        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand-50 text-[11px] text-brand-600">
+          ✓
+        </span>
+
+        Direct Broker Comparisons
+      </div>
+
+      {/* TITLE */}
+      <h1 className="mt-4 font-black leading-[1.08] tracking-[-0.04em] text-slate-950">
+        {/* DESKTOP */}
+        <span className="hidden text-[48px] sm:block lg:text-[60px]">
+          Compare Trading Brokers
+          <span className="mt-1 block text-[#1E5BB8]">
+            and Choose with Confidence
+          </span>
+        </span>
+
+        {/* MOBILE */}
+        <span className="block text-[34px] sm:hidden">
+          Compare Trading Brokers
+          <span className="mt-1 block text-[#1E5BB8]">
+            Before You Open an Account
+          </span>
+        </span>
+      </h1>
+
+      {/* DESCRIPTION */}
+      <p className="mx-auto mt-5 max-w-[900px] text-[15px] font-medium leading-8 text-slate-600 sm:text-[17px] sm:leading-9 lg:text-[18px]">
+        Select two brokers and review the key differences in regulation,
+        pricing, platforms, minimum deposits, and account conditions on one
+        clear comparison page.
+      </p>
+
+      {/* TRUST POINTS */}
+      <div className="mx-auto mt-6 grid max-w-[900px] grid-cols-1 gap-2.5 sm:grid-cols-3 sm:gap-3">
+        <div className="flex min-h-[48px] items-center justify-center gap-2 rounded-2xl border border-white bg-white/90 px-4 py-2.5 text-[13px] font-extrabold text-slate-700 shadow-[0_8px_24px_rgba(30,91,184,0.08)] backdrop-blur">
+          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-[15px] text-emerald-700">
+            ✓
+          </span>
+
+          Clear Side-by-Side Comparison
         </div>
-      </section>
 
-      {/* COMPARE TOOL */}
+        <div className="flex min-h-[48px] items-center justify-center gap-2 rounded-2xl border border-white bg-white/90 px-4 py-2.5 text-[13px] font-extrabold text-slate-700 shadow-[0_8px_24px_rgba(30,91,184,0.08)] backdrop-blur">
+          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-50 text-[15px] font-black text-brand-600">
+            $
+          </span>
+
+          Fees and Account Terms
+        </div>
+
+        <div className="flex min-h-[48px] items-center justify-center gap-2 rounded-2xl border border-white bg-white/90 px-4 py-2.5 text-[13px] font-extrabold text-slate-700 shadow-[0_8px_24px_rgba(30,91,184,0.08)] backdrop-blur">
+          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-violet-50 text-[16px] font-black text-violet-600">
+            ▣
+          </span>
+
+          Regulation and Platforms
+        </div>
+      </div>
+
+      {/* BUTTONS */}
+      <div className="mt-7 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
+        <a
+          href="#compare-tool"
+          className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-2xl bg-[#1E5BB8] px-7 py-3 text-sm font-extrabold text-white shadow-[0_14px_30px_rgba(30,91,184,0.25)] transition duration-300 hover:-translate-y-0.5 hover:bg-[#174a98]"
+        >
+          Choose Two Brokers
+          <span aria-hidden="true">↓</span>
+        </a>
+
+        <a
+          href="#featured-comparisons"
+          className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-2xl border border-white bg-white/90 px-7 py-3 text-sm font-extrabold text-slate-800 shadow-sm backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:border-brand-100 hover:bg-white hover:text-brand-700"
+        >
+          Browse Popular Comparisons
+          <span aria-hidden="true">↓</span>
+        </a>
+      </div>
+
+      {/* NOTICE */}
+      <p className="mx-auto mt-4 max-w-[760px] text-[11px] font-medium leading-5 text-slate-500 sm:text-xs">
+        Comparison pages highlight key differences, but you should still review
+        each broker’s official terms and risk disclosures before opening or
+        funding an account.
+      </p>
+    </div>
+  </div>
+</section>
+
+   {/* COMPARE TOOL */}
 <section
   id="compare-tool"
-  className="mx-auto max-w-[1520px] px-4 pt-4 pb-8 sm:px-6 lg:px-8 md:pt-4 md:pb-10"
+  className="mx-auto max-w-[1520px] px-3 pb-7 pt-3 sm:px-6 sm:pb-8 sm:pt-4 lg:px-8 lg:pb-10"
 >
-  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_12px_35px_rgba(15,23,42,0.05)]">
+  <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_12px_35px_rgba(15,23,42,0.05)] sm:rounded-[28px]">
     <div className="grid lg:grid-cols-[1.02fr_.98fr]">
       {/* LEFT / INTRO */}
       <div className="relative hidden overflow-hidden border-t border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] p-5 sm:p-6 lg:block lg:border-t-0 lg:border-r lg:p-6">
@@ -235,15 +312,14 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
 
         <div className="relative">
           <h2 className="mt-4 text-2xl font-extrabold leading-tight text-slate-900 sm:text-[40px]">
-            Choose Two Brokers and Start the{" "}
-            <span className="text-brand-600">Comparison</span>
+            Everything You Need Before{" "}
+            <span className="text-brand-600">Choosing a Broker</span>
           </h2>
 
           <p className="mt-4 max-w-2xl text-sm leading-8 text-slate-600">
-            Instead of reading two full reviews and trying to figure out the
-            differences by yourself, use this tool to go directly to a clear
-            comparison page that highlights the most important points traders
-            need before opening an account.
+            Use the comparison tool to open a clear side-by-side page showing
+            the key differences between two brokers before you register or fund
+            an account.
           </p>
 
           <div className="mt-7 space-y-4">
@@ -251,13 +327,15 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
               <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-50 text-sm font-extrabold text-brand-600">
                 1
               </div>
+
               <div>
                 <h3 className="text-sm font-extrabold text-slate-900">
-                  Compare Only the Key Criteria
+                  Focus on the Key Criteria
                 </h3>
+
                 <p className="mt-1 text-xs leading-6 text-slate-500">
-                  Regulation, minimum deposit, platforms, and Islamic account
-                  availability without noise or distraction.
+                  Compare regulation, minimum deposits, trading platforms,
+                  pricing, and account conditions without unnecessary detail.
                 </p>
               </div>
             </div>
@@ -266,14 +344,15 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
               <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-50 text-sm font-extrabold text-brand-600">
                 2
               </div>
+
               <div>
                 <h3 className="text-sm font-extrabold text-slate-900">
-                  Faster Decision Before Signup
+                  Make a Faster Decision
                 </h3>
+
                 <p className="mt-1 text-xs leading-6 text-slate-500">
-                  Instead of switching between many pages and collecting
-                  information manually, you will see the differences clearly on
-                  one page.
+                  See the differences on one page instead of switching between
+                  multiple broker reviews and collecting information manually.
                 </p>
               </div>
             </div>
@@ -282,14 +361,15 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
               <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-50 text-sm font-extrabold text-brand-600">
                 3
               </div>
+
               <div>
                 <h3 className="text-sm font-extrabold text-slate-900">
-                  Better for Practical Decision-Making
+                  Choose Based on Your Priorities
                 </h3>
+
                 <p className="mt-1 text-xs leading-6 text-slate-500">
-                  This tool helps you choose the broker that fits you better
-                  before opening a real account, especially if you care about
-                  regulation or Islamic account options.
+                  Review the criteria that matter most to your trading needs,
+                  account size, experience, and preferred platform.
                 </p>
               </div>
             </div>
@@ -304,17 +384,21 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
               <span className="rounded-full bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm">
                 Regulation
               </span>
+
               <span className="rounded-full bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm">
-                Deposit
+                Minimum Deposit
               </span>
+
+              <span className="rounded-full bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm">
+                Trading Costs
+              </span>
+
               <span className="rounded-full bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm">
                 Platforms
               </span>
+
               <span className="rounded-full bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm">
-                Islamic Account
-              </span>
-              <span className="rounded-full bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-sm">
-                Key Differences
+                Account Conditions
               </span>
             </div>
           </div>
@@ -322,34 +406,38 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
       </div>
 
       {/* RIGHT / TOOL */}
-      <div className="bg-[linear-gradient(180deg,#0f172a_0%,#172554_100%)] p-5 sm:p-6 lg:p-7">
+      <div className="bg-[linear-gradient(180deg,#0f172a_0%,#172554_100%)] px-3 py-4 sm:p-6 lg:p-7">
         <div className="mx-auto max-w-xl">
-          <div className="mb-4 text-center">
+          {/* TABLET / DESKTOP */}
+          <div className="mb-4 hidden text-center sm:block">
             <div className="inline-flex rounded-full bg-white/10 px-3 py-1 text-[11px] font-extrabold text-blue-100">
-              Start Now
+              Comparison Tool
             </div>
 
-            <h3 className="mt-3 text-xl font-extrabold text-white sm:text-2xl">
-              Choose Two Brokers to Compare
-            </h3>
-
-            <p className="mt-2 text-sm leading-7 text-blue-100/90">
-              Select the first and second broker, then go directly to the full
-              comparison page between them.
+            <p className="mt-3 text-sm leading-7 text-blue-100/90">
+              Select two brokers from the list, then open a dedicated page
+              showing the key differences between them.
             </p>
           </div>
 
-          <div className="rounded-[22px] border border-white/10 bg-white p-4 shadow-[0_16px_35px_rgba(0,0,0,0.16)] sm:p-5">
-            <ComparePickerEN
-  brokers={brokers.map((b) => ({
-    name: b.name_en || b.name || "",
-    slug: b.slug || "",
-  }))}
-/>
+          {/* MOBILE */}
+          <div className="mb-3 text-center sm:hidden">
+            <div className="inline-flex rounded-full bg-white/10 px-3 py-1 text-[10px] font-extrabold text-blue-100">
+              Comparison Tool
+            </div>
           </div>
 
-          <div className="mt-3 rounded-2xl border border-blue-400/20 bg-white/5 px-4 py-3 text-center text-[11px] font-medium leading-6 text-blue-100/90">
-            Compare two brokers with similar rating or regulation to make the
+          <div className="rounded-[20px] border border-white/10 bg-white p-3 shadow-[0_14px_30px_rgba(0,0,0,0.16)] sm:rounded-[22px] sm:p-5">
+            <ComparePickerEN
+              brokers={brokers.map((b) => ({
+                name: b.name_en || b.name || "",
+                slug: b.slug || "",
+              }))}
+            />
+          </div>
+
+          <div className="mt-3 hidden rounded-2xl border border-blue-400/20 bg-white/5 px-4 py-3 text-center text-[11px] font-medium leading-6 text-blue-100/90 sm:block">
+            Compare two brokers with similar services or ratings to make the
             differences clearer and easier to evaluate.
           </div>
         </div>
@@ -358,8 +446,11 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
   </div>
 </section>
 
-      {/* FEATURED COMPARISONS */}
-      <section className="mx-auto max-w-[1520px] px-4 pt-2 pb-10 sm:px-6 lg:px-8">
+     {/* FEATURED COMPARISONS */}
+<section
+  id="featured-comparisons"
+  className="mx-auto max-w-[1520px] px-4 pb-10 pt-2 sm:px-6 lg:px-8"
+>
         <div className="rounded-[30px] border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
           <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
@@ -469,9 +560,9 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
                     </span>
                   </div>
 
-                  <div className="mt-4 text-center text-sm font-extrabold text-emerald-700">
-                    Read Comparison →
-                  </div>
+                  <div className="mt-4 text-center text-sm font-extrabold text-[#1E5BB8] transition group-hover:text-[#174a98]">
+  Read Comparison →
+</div>
                 </Link>
               );
             })}
@@ -571,9 +662,9 @@ text: "Choose two brokers from the comparison tool at the top of the page, then 
                     </span>
                   </div>
 
-                  <div className="mt-4 text-center text-sm font-extrabold text-emerald-700 transition group-hover:text-emerald-800">
-                    Read Comparison →
-                  </div>
+                 <div className="mt-4 text-center text-sm font-extrabold text-[#1E5BB8] transition group-hover:text-[#174a98]">
+  Read Comparison →
+</div>
                 </Link>
               );
             })}
