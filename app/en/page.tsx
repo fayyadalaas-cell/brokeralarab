@@ -2309,12 +2309,12 @@ const eventLocation =
       </div>
 
       {[
-        ["FCA", "UK Regulation", "/en/regulators/fca"],
-        ["ASIC", "Australian Regulation", "/en/regulators/asic"],
-        ["DFSA", "Dubai Regulation", "/en/regulators/dfsa"],
-        ["CySEC", "Cyprus Regulation", "/en/regulators/cysec"],
-        ["FSCA", "South Africa Regulation", "/en/regulators/fsca"],
-      ].map(([code, title, href]) => (
+  ["FCA", "UK Regulation", "/en/licenses/fca"],
+  ["ASIC", "Australian Regulation", "/en/licenses/asic"],
+  ["DFSA", "Dubai Regulation", "/en/licenses/dfsa"],
+  ["CySEC", "Cyprus Regulation", "/en/licenses/cysec"],
+  ["FSCA", "South Africa Regulation", "/en/licenses/fsca"],
+].map(([code, title, href]) => (
         <Link
           key={code}
           href={href}
