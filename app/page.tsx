@@ -1033,7 +1033,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
 
 <div className="mt-3 grid grid-cols-2 gap-2">
   <div className="flex min-h-[48px] items-center justify-center rounded-xl bg-brand-50 px-2.5 py-2 text-center text-[10px] font-bold leading-4 text-brand-700">
-    أبرز الفروقات في الحسابات والرسوم
+    مقارنة الحسابات والرسوم
   </div>
 
   <div className="flex min-h-[48px] items-center justify-center rounded-xl bg-slate-50 px-2.5 py-2 text-center text-[10px] font-bold leading-4 text-slate-600 ring-1 ring-slate-200">
@@ -1427,14 +1427,14 @@ function eventCountdown(start?: string | null, end?: string | null) {
             اختر نوع الحساب المناسب لأسلوب تداولك
           </h2>
 
-         <p className="mx-auto mt-3 max-w-[720px] text-[13px] font-semibold leading-7 text-slate-600 sm:text-[15px] sm:leading-8 lg:mx-0">
+        <p className="mx-auto mt-3 max-w-[720px] text-[13px] font-semibold leading-7 text-slate-600 sm:text-[15px] sm:leading-8 lg:mx-0">
   تعرّف على مزايا حسابات التداول المختلفة، وقارن بين
   <span dir="ltr" className="mx-1 inline-block font-bold">
     Standard
   </span>
   و
   <span dir="ltr" className="mx-1 inline-block font-bold">
-    Low Spread
+    Raw Spread
   </span>
   و
   <span dir="ltr" className="mx-1 inline-block font-bold">
@@ -1470,10 +1470,10 @@ function eventCountdown(start?: string | null, end?: string | null) {
             badge: "سهولة البدء",
           },
           {
-            title: "حسابات السبريد المنخفض",
-            suitable: "مناسبة للسكالبينج والمتداول النشط",
-            desc: "سبريد أقل مع عمولة منفصلة لتكلفة تداول أدق.",
-            badge: "تكلفة أقل",
+            title: "حسابات Raw Spread",
+suitable: "مناسبة للسكالبينج والمتداول النشط",
+desc: "سبريد يبدأ من 0.0 نقطة مع عمولة ثابتة لتنفيذ احترافي.",
+badge: "أقل سبريد",
           },
           {
             title: "حسابات ECN",
@@ -1542,10 +1542,10 @@ function eventCountdown(start?: string | null, end?: string | null) {
             badge: "سهولة البدء",
           },
           {
-            title: "حسابات السبريد المنخفض",
-            suitable: "مناسبة للسكالبينج والمتداول النشط",
-            desc: "سبريد منخفض مع عمولة منفصلة لتحديد التكلفة بدقة.",
-            badge: "تكلفة أقل",
+           title: "حسابات Raw Spread",
+suitable: "مناسبة للسكالبينج والمتداول النشط",
+desc: "سبريد يبدأ من 0.0 نقطة مع عمولة ثابتة لتنفيذ احترافي.",
+badge: "أقل سبريد",
           },
           {
             title: "حسابات ECN",
@@ -1611,44 +1611,38 @@ function eventCountdown(start?: string | null, end?: string | null) {
 <section className="mx-auto w-full max-w-7xl px-0 py-3 sm:py-4">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)] sm:rounded-[32px]">
     {(() => {
-      const brokerChecks = [
-        {
-          num: "01",
-          title: "الترخيص والتنظيم",
-          text: "تحقق من الجهة الرقابية وحماية أموال العملاء.",
-          href: "/licenses",
-        },
-        {
-          num: "02",
-          title: "السبريد والعمولات",
-          text: "قارن التكلفة الفعلية ورسوم التبييت.",
-          href: "/learn-trading/spread",
-        },
-        {
-          num: "03",
-          title: "المنصة والتنفيذ",
-          text: "اختر منصة مستقرة وسريعة وسهلة الاستخدام.",
-          href: "/learn-trading",
-        },
-        {
-          num: "04",
-          title: "الإيداع والسحب",
-          text: "راجع طرق الدفع وسرعة السحب والرسوم.",
-          href: "/best-brokers",
-        },
-        {
-          num: "05",
-          title: "الحساب الإسلامي",
-          text: "تأكد من الشروط والرسوم والقيود المرتبطة به.",
-          href: "/best-brokers/islamic",
-        },
-        {
-          num: "06",
-          title: "الحسابات والدعم",
-          text: "اختر حساباً مناسباً مع دعم عربي موثوق.",
-          href: "/lowest-spread-brokers#account-types",
-        },
-      ];
+const brokerChecks = [
+  {
+    num: "01",
+    title: "الترخيص والتنظيم",
+    text: "تحقق من الجهة الرقابية وحماية أموال العملاء.",
+  },
+  {
+    num: "02",
+    title: "السبريد والعمولات",
+    text: "قارن التكلفة الفعلية ورسوم التبييت.",
+  },
+  {
+    num: "03",
+    title: "المنصة والتنفيذ",
+    text: "اختر منصة مستقرة وسريعة وسهلة الاستخدام.",
+  },
+  {
+    num: "04",
+    title: "الإيداع والسحب",
+    text: "راجع طرق الدفع وسرعة السحب والرسوم.",
+  },
+  {
+    num: "05",
+    title: "الحساب الإسلامي",
+    text: "تأكد من الشروط والرسوم والقيود المرتبطة به.",
+  },
+  {
+    num: "06",
+    title: "الحسابات والدعم",
+    text: "اختر حسابًا مناسبًا مع دعم عربي موثوق.",
+  },
+];
 
       return (
         <>
@@ -1723,35 +1717,28 @@ function eventCountdown(start?: string | null, end?: string | null) {
               </p>
             </div>
 
-            <div className="mt-3 grid grid-cols-2 gap-2.5">
-              {brokerChecks.map((item) => (
-                <Link
-                  key={item.num}
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group flex min-h-[118px] flex-col rounded-[17px] border border-slate-200 bg-white p-3 shadow-[0_4px_14px_rgba(15,23,42,0.04)] transition hover:border-brand-200 hover:bg-[#fbfdff]"
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-brand-100 bg-brand-50 text-[9px] font-black text-brand-600">
-                      {item.num}
-                    </span>
+           <div className="mt-3 grid grid-cols-2 gap-2.5">
+  {brokerChecks.map((item) => (
+    <div
+      key={item.num}
+      className="flex min-h-[118px] flex-col rounded-[17px] border border-slate-200 bg-white p-3 shadow-[0_4px_14px_rgba(15,23,42,0.04)]"
+    >
+      <div className="flex items-center justify-between gap-2">
+        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-brand-100 bg-brand-50 text-[9px] font-black text-brand-600">
+          {item.num}
+        </span>
+      </div>
 
-                    <span className="text-[13px] font-black text-brand-500 transition group-hover:-translate-x-1">
-                      ←
-                    </span>
-                  </div>
+      <h3 className="mt-3 flex min-h-[40px] items-center text-[13px] font-black leading-5 text-[#07111f]">
+        {item.title}
+      </h3>
 
-                 <h3 className="mt-3 flex min-h-[40px] items-center text-[13px] font-black leading-5 text-[#07111f]">
-  {item.title}
-</h3>
-
-                  <p className="mt-1 line-clamp-2 min-h-[32px] text-[10px] font-semibold leading-4 text-slate-500">
-  {item.text}
-</p>
-                </Link>
-              ))}
-            </div>
+      <p className="mt-1 line-clamp-2 min-h-[32px] text-[10px] font-semibold leading-4 text-slate-500">
+        {item.text}
+      </p>
+    </div>
+  ))}
+</div>
 
             <Link
               href="/learn-trading"
@@ -1875,35 +1862,28 @@ function eventCountdown(start?: string | null, end?: string | null) {
                   </p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2.5 p-4">
-                  {brokerChecks.map((item) => (
-                    <Link
-                      key={item.num}
-                      href={item.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group min-h-[112px] rounded-[18px] border border-slate-200 bg-white p-3 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:bg-[#fcfdff]"
-                    >
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="flex h-7 w-7 items-center justify-center rounded-lg border border-brand-100 bg-brand-50 text-[9px] font-black text-brand-600">
-                          {item.num}
-                        </span>
+              <div className="grid grid-cols-2 gap-2.5 p-4">
+  {brokerChecks.map((item) => (
+    <div
+      key={item.num}
+      className="min-h-[112px] rounded-[18px] border border-slate-200 bg-white p-3 shadow-sm"
+    >
+      <div className="flex items-start justify-between gap-2">
+        <span className="flex h-7 min-w-7 shrink-0 items-center justify-center rounded-lg border border-brand-100 bg-brand-50 px-1.5 text-[9px] font-black text-brand-600">
+          {item.num}
+        </span>
+      </div>
 
-                        <span className="text-[12px] font-black text-brand-500 transition group-hover:-translate-x-1">
-                          ←
-                        </span>
-                      </div>
+      <h4 className="mt-4 text-[13px] font-black leading-5 text-[#07111f]">
+        {item.title}
+      </h4>
 
-                      <div className="mt-2 text-[12px] font-black leading-5 text-[#0f172a]">
-                        {item.title}
-                      </div>
-
-                      <div className="mt-1 text-[10px] font-semibold leading-4 text-slate-500">
-  {item.text}
+      <p className="mt-1 text-[10px] font-semibold leading-5 text-slate-500">
+        {item.text}
+      </p>
+    </div>
+  ))}
 </div>
-                    </Link>
-                  ))}
-                </div>
               </aside>
             </div>
           </div>
