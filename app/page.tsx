@@ -2070,8 +2070,8 @@ function eventCountdown(start?: string | null, end?: string | null) {
         <>
           {/* HEADER */}
           <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-4 sm:px-6 sm:py-5">
-            <div>
-              <div className="text-center lg:text-right">
+  <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+    <div className="min-w-0 flex-1 text-center lg:text-right">
                 <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[11px] font-black text-brand-500 shadow-sm sm:text-[12px]">
                   معارض ومؤتمرات التداول
                 </span>
