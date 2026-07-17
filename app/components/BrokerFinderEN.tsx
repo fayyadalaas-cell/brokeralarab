@@ -43,7 +43,19 @@ type Broker = {
   expert_insight_en?: string | null;
 };
 
-type Props = { brokers: Broker[] };
+type CountryRanking = {
+  country_slug: string;
+  broker_id: number;
+  rank_position: number;
+  country_rating: number | null;
+  best_for: string | null;
+  local_note: string | null;
+};
+
+type Props = {
+  brokers: Broker[];
+  countryRankings?: CountryRanking[];
+};
 
 type Experience = "beginner" | "intermediate" | "pro";
 type DepositRange = "under50" | "50to200" | "200to1000" | "over1000";
@@ -53,7 +65,10 @@ function normalize(text: string | null | undefined) {
   return (text || "").toLowerCase();
 }
 
-function cleanText(value: string | null | undefined, fallback = "Not specified") {
+function cleanText(
+  value: string | null | undefined,
+  fallback = "Not specified",
+) {
   return (value || fallback).trim();
 }
 
@@ -109,31 +124,58 @@ function getBrokerInitials(name: string | null | undefined) {
   return cleanText(name, "Broker").slice(0, 2).toUpperCase();
 }
 
-function getCountryPriority(broker: Broker, country: string) {
+function getOldCountryPriority(broker: Broker, country: string) {
   switch (country) {
     case "uk":
+    case "united-kingdom":
       return broker.priority_uk ?? 3;
     case "au":
+    case "australia":
       return broker.priority_australia ?? 3;
     case "za":
+    case "south-africa":
       return broker.priority_south_africa ?? 3;
     case "sg":
+    case "singapore":
       return broker.priority_singapore ?? 3;
     case "my":
+    case "malaysia":
       return broker.priority_malaysia ?? 3;
     case "in":
+    case "india":
       return broker.priority_india ?? 3;
     case "ng":
+    case "nigeria":
       return broker.priority_nigeria ?? 3;
     case "th":
+    case "thailand":
       return broker.priority_thailand ?? 3;
     case "ph":
+    case "philippines":
       return broker.priority_philippines ?? 3;
     case "ke":
+    case "kenya":
       return broker.priority_kenya ?? 3;
     default:
       return 3;
   }
+}
+
+function getCountryAliases(country: string) {
+  const aliases: Record<string, string[]> = {
+    uk: ["uk", "united-kingdom"],
+    au: ["au", "australia"],
+    za: ["za", "south-africa"],
+    sg: ["sg", "singapore"],
+    my: ["my", "malaysia"],
+    in: ["in", "india"],
+    ng: ["ng", "nigeria"],
+    th: ["th", "thailand"],
+    ph: ["ph", "philippines"],
+    ke: ["ke", "kenya"],
+  };
+
+  return aliases[country] || [country];
 }
 
 function priorityScore(priority: number | null | undefined) {
@@ -150,13 +192,15 @@ function priorityScore(priority: number | null | undefined) {
 }
 
 function getRecommendationLabel(
-  broker: Broker,
+  broker: Broker & {
+    countryBestFor?: string | null;
+  },
   index: number,
   experience: Experience | "",
   deposit: DepositRange | "",
-  hasSearched: boolean
+  hasSearched: boolean,
 ) {
-  const bestFor = normalize(brokerBestFor(broker));
+  const bestFor = normalize(broker.countryBestFor || brokerBestFor(broker));
 
   if (index === 0) return "Top Pick";
   if (bestFor.includes("beginner") || bestFor.includes("new trader")) {
@@ -189,7 +233,7 @@ function scoreText(value: number | null | undefined) {
   return "Average";
 }
 
-export default function BrokerFinder({ brokers }: Props) {
+export default function BrokerFinder({ brokers, countryRankings = [] }: Props) {
   const [country, setCountry] = useState("");
   const [deposit, setDeposit] = useState<DepositRange | "">("");
   const [experience, setExperience] = useState<Experience | "">("");
@@ -200,13 +244,8 @@ export default function BrokerFinder({ brokers }: Props) {
   const [expandedMobileId, setExpandedMobileId] = useState<number | null>(null);
 
   const canSearch =
-  country === "other" ||
-  (
-    country !== "" &&
-    deposit !== "" &&
-    experience !== "" &&
-    platform !== ""
-  );
+    country === "other" ||
+    (country !== "" && deposit !== "" && experience !== "" && platform !== "");
 
   const results = useMemo(() => {
     const hasActiveFilters = hasSearched && canSearch;
@@ -222,10 +261,34 @@ export default function BrokerFinder({ brokers }: Props) {
         normalize(broker.islamic_account).includes("yes") ||
         normalize(broker.islamic_account).includes("available");
 
-      const countryPriority = getCountryPriority(broker, country);
+      const activeCountry = hasActiveFilters ? country : "";
+      const activeAliases = getCountryAliases(activeCountry);
+
+      const countryRanking = hasActiveFilters
+        ? countryRankings.find(
+            (row) =>
+              activeAliases.includes(row.country_slug) &&
+              row.broker_id === broker.id,
+          )
+        : undefined;
+
+      const oldPriority = hasActiveFilters
+        ? getOldCountryPriority(broker, activeCountry)
+        : 3;
+
+      const countryPriority = hasActiveFilters
+        ? (countryRanking?.rank_position ?? oldPriority)
+        : 3;
 
       score += (broker.rating || 0) * 5;
-      score += priorityScore(countryPriority);
+
+      if (countryRanking) {
+  score += 22;
+  score += Math.max(0, 8 - countryRanking.rank_position);
+  score += (countryRanking.country_rating || broker.rating || 0) * 5;
+} else {
+        score += priorityScore(oldPriority);
+      }
 
       if (hasActiveFilters) {
         const maxDeposit = depositValue(deposit as DepositRange);
@@ -274,7 +337,7 @@ export default function BrokerFinder({ brokers }: Props) {
 
         if (
           ["uk", "au", "za", "sg", "my", "in", "ng", "th", "ph", "ke"].includes(
-            country
+            country,
           )
         ) {
           if (
@@ -290,22 +353,37 @@ export default function BrokerFinder({ brokers }: Props) {
         }
       }
 
-      return { ...broker, score, countryPriority };
+      return {
+        ...broker,
+        score,
+        countryPriority,
+        countryRating: countryRanking?.country_rating ?? broker.rating,
+        countryBestFor:
+          countryRanking?.best_for ?? broker.best_for_en ?? broker.best_for,
+        countryLocalNote: countryRanking?.local_note ?? null,
+      };
     });
 
     return scored
-      .sort((a, b) => {
-        if (b.score !== a.score) return b.score - a.score;
+  .sort((a, b) => {
+    if (!hasActiveFilters) {
+      return (b.rating || 0) - (a.rating || 0);
+    }
 
-        if ((a.countryPriority ?? 3) !== (b.countryPriority ?? 3)) {
-          return (a.countryPriority ?? 3) - (b.countryPriority ?? 3);
-        }
+   if (b.score !== a.score) {
+  return b.score - a.score;
+}
 
-        return (b.rating || 0) - (a.rating || 0);
-      })
-      .slice(0, 3);
+if ((a.countryPriority ?? 999) !== (b.countryPriority ?? 999)) {
+  return (a.countryPriority ?? 999) - (b.countryPriority ?? 999);
+}
+
+    return (b.rating || 0) - (a.rating || 0);
+  })
+  .slice(0, 3);
   }, [
     brokers,
+    countryRankings,
     country,
     deposit,
     experience,
@@ -315,19 +393,18 @@ export default function BrokerFinder({ brokers }: Props) {
     canSearch,
   ]);
 
- function handleSearch() {
-  if (country === "other") {
-    window.location.href =
-      "https://brokeralarab.com/en/best-brokers";
-    return;
+  function handleSearch() {
+    if (country === "other") {
+      window.location.href = "https://brokeralarab.com/en/best-brokers";
+      return;
+    }
+
+    if (!canSearch) return;
+
+    setHasSearched(true);
+    setShowMobileFilters(false);
+    setExpandedMobileId(results[0]?.id ?? null);
   }
-
-  if (!canSearch) return;
-
-  setHasSearched(true);
-  setShowMobileFilters(false);
-  setExpandedMobileId(results[0]?.id ?? null);
-}
 
   function toggleMobileRow(id: number) {
     setExpandedMobileId((prev) => (prev === id ? null : id));
@@ -341,22 +418,26 @@ export default function BrokerFinder({ brokers }: Props) {
       >
         <div className="p-6">
           <div className="rounded-[26px] border border-slate-200 bg-[#f8fbff] p-4">
-            <div className="mb-5 flex items-center justify-between">
-              <div>
-                <h2 className="text-[24px] font-black tracking-[-0.02em] text-[#07111f]">
-                  Find the Best 3 Brokers for You
-                </h2>
+           <div className="mb-5 flex items-start justify-between gap-6">
+  <div className="min-w-0">
+    <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[10px] font-black text-brand-600 shadow-sm">
+      Personalized Broker Finder
+    </span>
 
-                <p className="mt-1 text-[15px] font-semibold text-slate-500">
-                  Select your country, deposit amount, experience level, and
-                  platform to get smarter broker recommendations.
-                </p>
-              </div>
+    <h2 className="mt-3 text-[25px] font-black tracking-[-0.02em] text-[#07111f]">
+      Find the Right Trading Broker for You
+    </h2>
 
-              <span className="rounded-full bg-white px-3 py-1 text-xs font-extrabold text-slate-600 shadow-sm ring-1 ring-slate-200">
-                Quick Filter
-              </span>
-            </div>
+    <p className="mt-1.5 max-w-[760px] text-[14px] font-semibold leading-6 text-slate-500">
+      Select your country, deposit range, experience level and preferred
+      platform to receive more relevant broker recommendations.
+    </p>
+  </div>
+
+  <span className="inline-flex shrink-0 rounded-full bg-white px-3 py-1.5 text-[10px] font-black text-slate-600 shadow-sm ring-1 ring-slate-200">
+    Quick Filter
+  </span>
+</div>
 
             <div className="grid grid-cols-5 gap-3">
               <div>
@@ -364,9 +445,12 @@ export default function BrokerFinder({ brokers }: Props) {
                   Country
                 </label>
                 <select
-  aria-label="Select country"
-  value={country}
-                  onChange={(e) => setCountry(e.target.value)}
+                  aria-label="Select country"
+                  value={country}
+                  onChange={(e) => {
+                    setCountry(e.target.value);
+                    setHasSearched(false);
+                  }}
                   className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
                 >
                   <option value="">Select Country</option>
@@ -383,16 +467,17 @@ export default function BrokerFinder({ brokers }: Props) {
                   <option value="other">All Other Countries</option>
                 </select>
               </div>
-                            <div>
+              <div>
                 <label className="mb-2 block text-sm font-bold text-slate-700">
                   Deposit Amount
                 </label>
                 <select
-  aria-label="Select deposit amount"
-  value={deposit}
-                  onChange={(e) =>
-                    setDeposit(e.target.value as DepositRange | "")
-                  }
+                  aria-label="Select deposit amount"
+                  value={deposit}
+                  onChange={(e) => {
+                    setDeposit(e.target.value as DepositRange | "");
+                    setHasSearched(false);
+                  }}
                   className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
                 >
                   <option value="">Select Deposit</option>
@@ -408,11 +493,12 @@ export default function BrokerFinder({ brokers }: Props) {
                   Experience Level
                 </label>
                 <select
-  aria-label="Select experience level"
-  value={experience}
-                  onChange={(e) =>
-                    setExperience(e.target.value as Experience | "")
-                  }
+                  aria-label="Select experience level"
+                  value={experience}
+                  onChange={(e) => {
+                    setExperience(e.target.value as Experience | "");
+                    setHasSearched(false);
+                  }}
                   className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
                 >
                   <option value="">Select Experience</option>
@@ -426,12 +512,13 @@ export default function BrokerFinder({ brokers }: Props) {
                 <label className="mb-2 block text-sm font-bold text-slate-700">
                   Platform
                 </label>
-               <select
-  aria-label="Select trading platform"
-  value={platform}
-                  onChange={(e) =>
-                    setPlatform(e.target.value as PlatformPref | "")
-                  }
+                <select
+                  aria-label="Select trading platform"
+                  value={platform}
+                  onChange={(e) => {
+                    setPlatform(e.target.value as PlatformPref | "");
+                    setHasSearched(false);
+                  }}
                   className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
                 >
                   <option value="">Select Platform</option>
@@ -446,9 +533,12 @@ export default function BrokerFinder({ brokers }: Props) {
                   Swap-free Account
                 </label>
                 <select
-  aria-label="Select swap-free account preference"
-  value={islamic}
-                  onChange={(e) => setIslamic(e.target.value)}
+                  aria-label="Select swap-free account preference"
+                  value={islamic}
+                  onChange={(e) => {
+                    setIslamic(e.target.value);
+                    setHasSearched(false);
+                  }}
                   className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
                 >
                   <option value="yes">Yes</option>
@@ -473,7 +563,7 @@ export default function BrokerFinder({ brokers }: Props) {
                     : "cursor-not-allowed bg-slate-200 text-slate-400"
                 }`}
               >
-                Show Top 3 Brokers
+                Find My Top 3 Brokers
               </button>
             </div>
           </div>
@@ -481,12 +571,12 @@ export default function BrokerFinder({ brokers }: Props) {
           <div className="mt-5 flex items-end justify-between">
             <div>
               <div className="text-xl font-black text-[#07111f]">
-                Top 3 Results for You
+                Your Best Broker Matches
               </div>
               <div className="mt-1 text-sm font-semibold text-slate-500">
-                {hasSearched
-                  ? "Ranked based on your selected preferences"
-                  : "Top current broker options"}
+              {hasSearched
+  ? "Ranked according to your country and selected preferences."
+  : "Leading options based on current ratings and broker data."}
               </div>
             </div>
 
@@ -503,10 +593,10 @@ export default function BrokerFinder({ brokers }: Props) {
                 index,
                 experience,
                 deposit,
-                hasSearched
+                hasSearched,
               );
               const openAccountHref =
-                broker.real_account_url || `/brokers/${broker.slug}`;
+                broker.real_account_url || `/en/brokers/${broker.slug}`;
               const strength = brokerStrength(broker, index);
               const weakness = brokerWeakness(broker);
               const withdrawal = brokerWithdrawal(broker);
@@ -516,7 +606,7 @@ export default function BrokerFinder({ brokers }: Props) {
               return (
                 <article
                   key={broker.id}
-                  className={`group relative flex min-h-[500px] flex-col overflow-hidden rounded-[30px] border bg-white/95 p-5 backdrop-blur-sm transition duration-300 ${
+                  className={`group relative flex min-h-[470px] flex-col overflow-hidden rounded-[26px] border bg-white/95 p-4 backdrop-blur-sm transition duration-300 ${
                     index === 0
                       ? "border-brand-400 shadow-[0_28px_70px_rgba(37,99,235,0.18)]"
                       : "border-slate-200 shadow-[0_12px_35px_rgba(15,23,42,0.07)] hover:-translate-y-[4px] hover:shadow-[0_20px_50px_rgba(15,23,42,0.11)]"
@@ -529,7 +619,7 @@ export default function BrokerFinder({ brokers }: Props) {
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex min-w-0 flex-1 items-center gap-4">
                       <Link
-                        href={`/brokers/${broker.slug}`}
+                        href={`/en/brokers/${broker.slug}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex h-[78px] w-[78px] shrink-0 items-center justify-center overflow-hidden rounded-[24px] border border-slate-200 bg-white p-2 shadow-[0_12px_28px_rgba(15,23,42,0.08)] transition hover:scale-[1.03]"
@@ -554,7 +644,7 @@ export default function BrokerFinder({ brokers }: Props) {
                           </span>
 
                           <Link
-                            href={`/brokers/${broker.slug}`}
+                            href={`/en/brokers/${broker.slug}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="block max-w-[170px] leading-[1.15] text-[20px] font-black text-[#07111f] transition hover:text-brand-500"
@@ -574,7 +664,9 @@ export default function BrokerFinder({ brokers }: Props) {
 
                     <div className="shrink-0 rounded-[24px] border border-brand-100 bg-brand-50 px-4 py-3 text-center">
                       <div className="text-2xl font-black text-brand-600">
-                        {broker.rating?.toFixed(1) ?? "—"}
+                        {broker.countryRating?.toFixed(1) ??
+                          broker.rating?.toFixed(1) ??
+                          "—"}
                       </div>
                       <div className="text-[10px] font-bold text-slate-500">
                         / 5
@@ -582,7 +674,7 @@ export default function BrokerFinder({ brokers }: Props) {
                     </div>
                   </div>
 
-                  <div className="mt-5 rounded-[22px] border border-slate-100 bg-slate-50/80 p-4">
+                  <div className="mt-4 rounded-[20px] border border-slate-100 bg-slate-50/80 p-3.5">
                     <div className="text-xs font-black text-slate-500">
                       Quick Summary
                     </div>
@@ -610,7 +702,11 @@ export default function BrokerFinder({ brokers }: Props) {
                         Safety
                       </div>
                       <div className="mt-1 text-sm font-black text-[#07111f]">
-                        {scoreText(broker.score_safety ?? broker.rating)}
+                        {scoreText(
+                          broker.score_safety ??
+                            broker.countryRating ??
+                            broker.rating,
+                        )}
                       </div>
                     </div>
 
@@ -619,7 +715,11 @@ export default function BrokerFinder({ brokers }: Props) {
                         Fees
                       </div>
                       <div className="mt-1 text-sm font-black text-[#07111f]">
-                        {scoreText(broker.score_fees ?? broker.rating)}
+                        {scoreText(
+                          broker.score_fees ??
+                            broker.countryRating ??
+                            broker.rating,
+                        )}
                       </div>
                     </div>
                   </div>
@@ -644,7 +744,7 @@ export default function BrokerFinder({ brokers }: Props) {
 
                   <div className="mt-auto grid grid-cols-2 gap-3 border-t border-slate-100 pt-5">
                     <Link
-                      href={`/brokers/${broker.slug}`}
+                      href={`/en/brokers/${broker.slug}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex w-full items-center justify-center rounded-[16px] border border-slate-200 bg-white px-4 py-3 text-[14px] font-extrabold text-[#07111f] transition hover:bg-slate-50"
@@ -669,28 +769,29 @@ export default function BrokerFinder({ brokers }: Props) {
       </section>
 
       <section
-        dir="ltr"
-        className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_22px_70px_rgba(15,23,42,0.08)] lg:hidden"
-      >
-        <div className="px-4 pb-4 pt-2">
-          <button
-            type="button"
-            onClick={() => setShowMobileFilters((prev) => !prev)}
-            className="flex w-full items-center justify-between rounded-[20px] border border-brand-100 bg-white px-4 py-3.5 text-left shadow-[0_12px_30px_rgba(37,99,235,0.10)]"
-          >
-            <div>
-              <div className="text-[15px] font-black text-[#07111f]">
-                Choose Country & Preferences
-              </div>
-              <div className="mt-1 text-[12px] font-semibold text-slate-500">
-                Country, deposit, experience, platform
-              </div>
-            </div>
+  dir="ltr"
+  className="overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.07)] lg:hidden"
+>
+      <div className="px-3 pb-2 pt-2">
+         <button
+  type="button"
+  onClick={() => setShowMobileFilters((prev) => !prev)}
+  className="flex w-full items-center justify-between rounded-[20px] border border-brand-100 bg-white px-3.5 py-3 text-left shadow-[0_8px_22px_rgba(37,99,235,0.08)] transition hover:border-brand-200"
+>
+  <div className="min-w-0 pr-3">
+   <div className="text-[16px] font-black leading-6 text-[#07111f]">
+  Find Your Right Broker
+</div>
 
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-50 text-xl font-black text-brand-500">
-              {showMobileFilters ? "−" : "+"}
-            </span>
-          </button>
+<div className="mt-1 text-[12px] font-semibold leading-5 text-slate-500">
+  Set your preferences for more relevant recommendations.
+</div>
+  </div>
+
+  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-50 text-lg font-black text-brand-500">
+    {showMobileFilters ? "−" : "+"}
+  </span>
+</button>
 
           {showMobileFilters && (
             <div className="mt-3 rounded-[24px] border border-brand-100 bg-gradient-to-b from-white to-[#f8fbff] p-4 shadow-[0_16px_38px_rgba(37,99,235,0.10)]">
@@ -711,9 +812,12 @@ export default function BrokerFinder({ brokers }: Props) {
 
               <div className="grid grid-cols-1 gap-2.5">
                 <select
-  aria-label="Select country"
-  value={country}
-                  onChange={(e) => setCountry(e.target.value)}
+                  aria-label="Select country"
+                  value={country}
+                  onChange={(e) => {
+                    setCountry(e.target.value);
+                    setHasSearched(false);
+                  }}
                   className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
                 >
                   <option value="">Select Country</option>
@@ -731,11 +835,12 @@ export default function BrokerFinder({ brokers }: Props) {
                 </select>
 
                 <select
-  aria-label="Select deposit amount"
-  value={deposit}
-                  onChange={(e) =>
-                    setDeposit(e.target.value as DepositRange | "")
-                  }
+                  aria-label="Select deposit amount"
+                  value={deposit}
+                  onChange={(e) => {
+                    setDeposit(e.target.value as DepositRange | "");
+                    setHasSearched(false);
+                  }}
                   className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
                 >
                   <option value="">Select Deposit</option>
@@ -746,11 +851,12 @@ export default function BrokerFinder({ brokers }: Props) {
                 </select>
 
                 <select
-  aria-label="Select experience level"
-  value={experience}
-                  onChange={(e) =>
-                    setExperience(e.target.value as Experience | "")
-                  }
+                  aria-label="Select experience level"
+                  value={experience}
+                  onChange={(e) => {
+                    setExperience(e.target.value as Experience | "");
+                    setHasSearched(false);
+                  }}
                   className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
                 >
                   <option value="">Select Experience</option>
@@ -760,11 +866,12 @@ export default function BrokerFinder({ brokers }: Props) {
                 </select>
 
                 <select
-  aria-label="Select trading platform"
-  value={platform}
-                  onChange={(e) =>
-                    setPlatform(e.target.value as PlatformPref | "")
-                  }
+                  aria-label="Select trading platform"
+                  value={platform}
+                  onChange={(e) => {
+                    setPlatform(e.target.value as PlatformPref | "");
+                    setHasSearched(false);
+                  }}
                   className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
                 >
                   <option value="">Select Platform</option>
@@ -774,9 +881,12 @@ export default function BrokerFinder({ brokers }: Props) {
                 </select>
 
                 <select
-  aria-label="Select swap-free account preference"
-  value={islamic}
-                  onChange={(e) => setIslamic(e.target.value)}
+                  aria-label="Select swap-free account preference"
+                  value={islamic}
+                  onChange={(e) => {
+                    setIslamic(e.target.value);
+                    setHasSearched(false);
+                  }}
                   className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
                 >
                   <option value="yes">Swap-free Account: Yes</option>
@@ -794,192 +904,224 @@ export default function BrokerFinder({ brokers }: Props) {
                     : "cursor-not-allowed bg-slate-200 text-slate-400"
                 }`}
               >
-                Show Top 3 Brokers
+                Find My Top 3 Brokers
               </button>
             </div>
           )}
 
-          <div className="mt-6 flex items-center justify-between">
-            <div>
-              <div className="text-[20px] font-black text-[#07111f]">
-                Top 3 Results for You
+      {/* MOBILE RESULTS HEADER */}
+<div className="mt-4">
+  <div className="flex items-start justify-between gap-3">
+    <div className="min-w-0 flex-1">
+      <h2 className="text-[21px] font-black leading-[1.18] tracking-[-0.02em] text-[#07111f]">
+        Your Best Broker Matches
+      </h2>
+
+      <p className="mt-1.5 max-w-[220px] text-[11px] font-semibold leading-5 text-slate-500">
+        {hasSearched
+          ? "Selected according to your trading preferences."
+          : "Leading options based on broker ratings and data."}
+      </p>
+    </div>
+
+    <span className="mt-1 inline-flex shrink-0 rounded-full border border-brand-100 bg-brand-50 px-2.5 py-1.5 text-[9px] font-black text-brand-600">
+      Smart Ranking
+    </span>
+  </div>
+</div>
+
+{/* MOBILE BROKER RESULTS */}
+<div className="mt-4 space-y-2.5 pb-0">
+  {results.map((broker, index) => {
+    const isOpen = expandedMobileId === broker.id;
+    const name = brokerName(broker);
+
+    const recommendation = getRecommendationLabel(
+      broker,
+      index,
+      experience,
+      deposit,
+      hasSearched,
+    );
+
+    const openAccountHref =
+      broker.real_account_url || `/en/brokers/${broker.slug}`;
+
+    const strength = brokerStrength(broker, index);
+    const weakness = brokerWeakness(broker);
+    const withdrawal = brokerWithdrawal(broker);
+
+    const reg =
+      broker.regulation_short ||
+      broker.regulation ||
+      "Not specified";
+
+    return (
+      <div
+        key={broker.id}
+        className={`overflow-hidden rounded-[22px] border bg-white transition-all duration-300 ${
+          index === 0
+            ? "border-brand-500 shadow-[0_14px_32px_rgba(37,99,235,0.13)]"
+            : "border-slate-200 shadow-[0_7px_20px_rgba(15,23,42,0.055)]"
+        }`}
+      >
+        {index === 0 && (
+          <div className="h-[4px] bg-gradient-to-r from-brand-500 via-[#3b82f6] to-brand-400" />
+        )}
+
+        <button
+          type="button"
+          onClick={() => toggleMobileRow(broker.id)}
+          className="w-full px-3 py-3 text-left"
+        >
+          <div className="grid grid-cols-[58px_minmax(0,1fr)_55px] items-center gap-3">
+            {/* LOGO */}
+            <div className="relative flex h-[54px] w-[54px] items-center justify-center rounded-[17px] border border-slate-200 bg-white p-2 shadow-[0_7px_18px_rgba(15,23,42,0.07)]">
+              {broker.logo ? (
+                <img
+                  src={broker.logo}
+                  alt={`${name} logo`}
+                  className="max-h-full max-w-full object-contain"
+                />
+              ) : (
+                <span className="text-[12px] font-black text-brand-500">
+                  {getBrokerInitials(name)}
+                </span>
+              )}
+
+              <span className="absolute -right-1.5 -top-1.5 flex h-[22px] w-[22px] items-center justify-center rounded-full bg-brand-500 text-[9px] font-black text-white shadow-sm">
+                {index + 1}
+              </span>
+            </div>
+
+            {/* BROKER NAME */}
+           <div className="min-w-0">
+  <div
+    title={name}
+    className="flex min-h-[40px] items-center text-[17px] font-black leading-[1.18] text-[#07111f]"
+  >
+    {name}
+  </div>
+
+  <span className="mt-1 inline-flex max-w-full rounded-full bg-[#dbeafe] px-2.5 py-1 text-[9px] font-black leading-4 text-brand-600">
+    {recommendation}
+  </span>
+</div>
+
+            {/* RATING */}
+            <div className="flex h-[58px] w-[55px] flex-col items-center justify-center rounded-[16px] border border-brand-100 bg-brand-50 text-center">
+              <div className="text-[18px] font-black leading-none text-brand-600">
+                {broker.countryRating?.toFixed(1) ??
+                  broker.rating?.toFixed(1) ??
+                  "—"}
               </div>
-              <div className="mt-1 text-[12px] font-semibold text-slate-500">
-                {hasSearched
-                  ? "Ranked based on your choices"
-                  : "Top current broker options"}
+
+              <div className="mt-1 text-[9px] font-bold text-slate-500">
+                / 5
+              </div>
+            </div>
+          </div>
+        </button>
+
+        {isOpen && (
+          <div className="border-t border-slate-100 px-3.5 pb-4 pt-3.5">
+            <div className="rounded-[18px] border border-slate-200 bg-slate-50/80 p-3">
+              <div className="text-[10px] font-black text-slate-500">
+                Quick Summary
+              </div>
+
+              <div className="mt-2 space-y-1 text-[12px] font-bold leading-5 text-slate-700">
+                <div>✓ {shortText(strength, 46)}</div>
+                <div>✓ Selected for rating, safety and fees</div>
               </div>
             </div>
 
-            <span className="rounded-full bg-brand-50 px-3 py-1 text-[11px] font-extrabold text-brand-600">
-              Smart Ranking
-            </span>
-          </div>
+            <div className="mt-3 grid grid-cols-3 gap-2">
+              <div className="rounded-xl border border-slate-200 bg-white px-1.5 py-2.5 text-center">
+                <div className="text-[9px] font-bold text-slate-500">
+                  Deposit
+                </div>
 
-          <div className="mt-4 space-y-2.5">
-            {results.map((broker, index) => {
-              const isOpen = expandedMobileId === broker.id;
-              const name = brokerName(broker);
-              const recommendation = getRecommendationLabel(
-                broker,
-                index,
-                experience,
-                deposit,
-                hasSearched
-              );
-              const openAccountHref =
-                broker.real_account_url || `/brokers/${broker.slug}`;
-              const strength = brokerStrength(broker, index);
-              const weakness = brokerWeakness(broker);
-              const withdrawal = brokerWithdrawal(broker);
-              const reg =
-                broker.regulation_short || broker.regulation || "Not specified";
+                <div className="mt-1 text-[12px] font-black text-[#07111f]">
+                  {broker.min_deposit !== null
+                    ? `$${broker.min_deposit}`
+                    : "N/A"}
+                </div>
+              </div>
 
-              return (
-                <div
-                  key={broker.id}
-                  className={`overflow-hidden rounded-[22px] border bg-white transition-all duration-300 ${
-                    index === 0
-                      ? "border-brand-400 shadow-[0_16px_38px_rgba(37,99,235,0.14)]"
-                      : "border-slate-200 shadow-[0_10px_26px_rgba(15,23,42,0.06)]"
-                  }`}
-                >
-                  {index === 0 && (
-                    <div className="h-1.5 bg-gradient-to-r from-brand-500 to-brand-400" />
-                  )}
+              <div className="rounded-xl border border-slate-200 bg-white px-1.5 py-2.5 text-center">
+                <div className="text-[9px] font-bold text-slate-500">
+                  Safety
+                </div>
 
-                  <button
-                    type="button"
-                    onClick={() => toggleMobileRow(broker.id)}
-                    className="w-full px-3.5 py-3 text-left"
-                  >
-                    <div className="grid grid-cols-[54px_1fr_50px] items-center gap-2.5">
-                      <div className="relative flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-[17px] border border-slate-200 bg-white p-2 shadow-[0_8px_20px_rgba(15,23,42,0.08)]">
-                        {broker.logo ? (
-                          <img
-                            src={broker.logo}
-                            alt={`${name} logo`}
-                            className="max-h-full max-w-full object-contain"
-                          />
-                        ) : (
-                          <span className="text-sm font-black text-brand-500">
-                            {getBrokerInitials(name)}
-                          </span>
-                        )}
-
-                        <span className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-brand-500 text-[10px] font-black text-white">
-                          {index + 1}
-                        </span>
-                      </div>
-
-                      <div className="min-w-0 flex-1">
-                        <div className="line-clamp-1 text-[18px] font-black leading-tight text-[#07111f]">
-                          {name}
-                        </div>
-
-                        <div className="mt-1 inline-flex rounded-full bg-[#dbeafe] px-2.5 py-1 text-[10px] font-extrabold text-brand-600">
-                          {recommendation}
-                        </div>
-                      </div>
-
-                      <div className="shrink-0 rounded-[15px] border border-brand-100 bg-brand-50 px-2 py-2 text-center">
-                        <div className="text-[18px] font-black leading-none text-brand-600">
-                          {broker.rating?.toFixed(1) ?? "—"}
-                        </div>
-                        <div className="mt-1 text-[9px] font-bold text-slate-500">
-                          / 5
-                        </div>
-                      </div>
-                    </div>
-                  </button>
-
-                  {isOpen && (
-                    <div className="border-t border-slate-100 px-4 pb-4 pt-4">
-                      <div className="rounded-[20px] border border-slate-200 bg-slate-50/80 p-3">
-                        <div className="text-[11px] font-black text-slate-500">
-                          Quick Summary
-                        </div>
-
-                        <div className="mt-2 space-y-1 text-[13px] font-bold leading-6 text-slate-700">
-                          <div>✓ {shortText(strength, 46)}</div>
-                          <div>✓ Selected for rating, safety, and fees</div>
-                        </div>
-                      </div>
-
-                      <div className="mt-3 grid grid-cols-3 gap-2">
-                        <div className="rounded-2xl bg-[#f8fafc] px-2 py-3 text-center ring-1 ring-slate-200">
-                          <div className="text-[10px] font-bold text-slate-500">
-                            Deposit
-                          </div>
-                          <div className="mt-1 text-[13px] font-black text-[#07111f]">
-                            {broker.min_deposit !== null
-                              ? `$${broker.min_deposit}`
-                              : "N/A"}
-                          </div>
-                        </div>
-
-                        <div className="rounded-2xl bg-[#f8fafc] px-2 py-3 text-center ring-1 ring-slate-200">
-                          <div className="text-[10px] font-bold text-slate-500">
-                            Safety
-                          </div>
-                          <div className="mt-1 text-[13px] font-black text-[#07111f]">
-                            {scoreText(broker.score_safety ?? broker.rating)}
-                          </div>
-                        </div>
-
-                        <div className="rounded-2xl bg-[#f8fafc] px-2 py-3 text-center ring-1 ring-slate-200">
-                          <div className="text-[10px] font-bold text-slate-500">
-                            Fees
-                          </div>
-                          <div className="mt-1 text-[13px] font-black text-[#07111f]">
-                            {scoreText(broker.score_fees ?? broker.rating)}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="mt-3 space-y-2">
-                        <div className="flex min-h-[44px] items-center justify-center rounded-[18px] bg-slate-50 px-3 text-center text-[12px] font-bold leading-[1.5] text-slate-700 ring-1 ring-slate-200">
-                          <span className="line-clamp-2">
-                            Regulation: {reg}
-                          </span>
-                        </div>
-
-                        <div className="flex min-h-[50px] items-center justify-center rounded-[18px] bg-slate-50 px-3 text-center text-[12px] font-bold leading-[1.5] text-slate-700 ring-1 ring-slate-200">
-                          <span className="line-clamp-2">
-                            Withdrawals: {shortText(withdrawal, 74)}
-                          </span>
-                        </div>
-
-                        <div className="rounded-[18px] bg-orange-50 px-3 py-3 text-center text-[12px] font-bold text-orange-700 ring-1 ring-orange-100">
-                          Note: {shortText(weakness, 52)}
-                        </div>
-                      </div>
-
-                      <div className="mt-4 grid grid-cols-2 gap-2">
-                        <Link
-                          href={`/brokers/${broker.slug}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center justify-center rounded-[16px] border border-slate-200 bg-white px-3 py-3 text-[13px] font-black text-[#07111f]"
-                        >
-                          Read Review
-                        </Link>
-
-                        <Link
-                          href={openAccountHref}
-                          target="_blank"
-                          rel="noopener noreferrer sponsored"
-                          className="inline-flex items-center justify-center rounded-[16px] bg-gradient-to-r from-brand-500 to-brand-600 px-3 py-3 text-[13px] font-black text-white shadow-[0_12px_24px_rgba(37,99,235,0.22)]"
-                        >
-                          Open Account
-                        </Link>
-                      </div>
-                    </div>
+                <div className="mt-1 text-[11px] font-black text-[#07111f]">
+                  {scoreText(
+                    broker.score_safety ??
+                      broker.countryRating ??
+                      broker.rating,
                   )}
                 </div>
-              );
-            })}
+              </div>
+
+              <div className="rounded-xl border border-slate-200 bg-white px-1.5 py-2.5 text-center">
+                <div className="text-[9px] font-bold text-slate-500">
+                  Fees
+                </div>
+
+                <div className="mt-1 text-[11px] font-black text-[#07111f]">
+                  {scoreText(
+                    broker.score_fees ??
+                      broker.countryRating ??
+                      broker.rating,
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-3 space-y-2">
+              <div className="flex min-h-[42px] items-center justify-center rounded-[15px] bg-slate-50 px-3 text-center text-[11px] font-bold leading-5 text-slate-700 ring-1 ring-slate-200">
+                <span className="line-clamp-2">
+                  Regulation: {reg}
+                </span>
+              </div>
+
+              <div className="flex min-h-[46px] items-center justify-center rounded-[15px] bg-slate-50 px-3 text-center text-[11px] font-bold leading-5 text-slate-700 ring-1 ring-slate-200">
+                <span className="line-clamp-2">
+                  Withdrawals: {shortText(withdrawal, 74)}
+                </span>
+              </div>
+
+              <div className="rounded-[15px] bg-orange-50 px-3 py-2.5 text-center text-[11px] font-bold leading-5 text-orange-700 ring-1 ring-orange-100">
+                Note: {shortText(weakness, 52)}
+              </div>
+            </div>
+
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <Link
+                href={`/en/brokers/${broker.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-[42px] items-center justify-center rounded-[14px] border border-slate-200 bg-white px-3 text-[12px] font-black text-[#07111f]"
+              >
+                Read Review
+              </Link>
+
+              <Link
+                href={openAccountHref}
+                target="_blank"
+                rel="noopener noreferrer sponsored"
+                className="inline-flex min-h-[42px] items-center justify-center rounded-[14px] bg-brand-500 px-3 text-[12px] font-black text-white shadow-[0_10px_22px_rgba(37,99,235,0.20)]"
+              >
+                Open Account
+              </Link>
+            </div>
           </div>
+        )}
+      </div>
+    );
+  })}
+</div>
+          
         </div>
       </section>
     </>
