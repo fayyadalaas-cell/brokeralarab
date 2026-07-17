@@ -2583,10 +2583,9 @@ const selectedEvents = mediaPartnerEvent
     {/* CLOSE ALL ENGLISH HOME PAGE SECTIONS */}
     </div>
 
-    {/* BROKERS SIDEBAR - DESKTOP ONLY */}
-    <aside className="hidden min-h-full pt-4 xl:block">
+  {/* BROKERS SIDEBAR - DESKTOP ONLY */}
+<aside className="hidden min-h-full pt-4 xl:block">
   <div className="sticky top-24 overflow-hidden rounded-[30px] border border-slate-200 bg-white pb-3 shadow-[0_16px_45px_rgba(15,23,42,0.07)]">
-
     {/* SIDEBAR HEADER */}
     <div className="border-b border-slate-200 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-5 py-3">
       <div className="flex items-center justify-between gap-3">
@@ -2606,7 +2605,7 @@ const selectedEvents = mediaPartnerEvent
       </div>
 
       <p className="mt-1 text-[10px] font-medium leading-5 text-slate-500">
-        Browse reviews of leading forex and CFD brokers.
+        Browse independent reviews of leading forex and CFD brokers.
       </p>
     </div>
 
@@ -2615,6 +2614,7 @@ const selectedEvents = mediaPartnerEvent
       <div className="space-y-1.5">
         {sidebarBrokers.map((broker, index) => {
           const isFeatured = index === 0;
+          const brokerName = broker.name_en || broker.name || "Trading Broker";
 
           return (
             <Link
@@ -2629,46 +2629,74 @@ const selectedEvents = mediaPartnerEvent
               prefetch={false}
               className={`group relative flex min-h-[74px] items-center justify-between gap-2.5 overflow-hidden rounded-[18px] px-2.5 py-2 transition duration-300 ${
                 isFeatured
-                  ? "border border-[#0f2747] bg-gradient-to-r from-white via-[#f8fbff] to-[#edf5ff] shadow-[0_12px_28px_rgba(15,39,71,0.12)]"
-                  : "border border-transparent hover:border-slate-200 hover:bg-[#f8fbff]"
+                  ? "border border-brand-300 bg-gradient-to-r from-[#eff6ff] via-white to-[#f8fbff] shadow-[0_12px_32px_rgba(37,99,235,0.16)] hover:border-brand-400 hover:shadow-[0_18px_40px_rgba(37,99,235,0.22)]"
+                  : "border border-transparent hover:border-slate-200 hover:bg-slate-50"
               }`}
             >
-              <div className="flex h-[48px] w-[104px] shrink-0 items-center justify-center rounded-[14px] border border-slate-200 bg-white px-2 shadow-sm">
+              {/* FEATURED TOP LINE */}
+              {isFeatured && (
+                <span className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#f59e0b] via-[#facc15] to-brand-500" />
+              )}
+
+              {/* LOGO */}
+              <div
+                className={`relative flex h-[42px] w-[102px] shrink-0 items-center justify-center rounded-xl border bg-white px-1.5 transition duration-300 ${
+                  isFeatured
+                    ? "border-brand-200 shadow-[0_8px_22px_rgba(37,99,235,0.14)]"
+                    : "border-slate-200 shadow-[0_4px_14px_rgba(15,23,42,0.05)] group-hover:border-brand-200"
+                }`}
+              >
                 {broker.logo ? (
                   <img
                     src={broker.logo}
-                    alt={`${broker.name_en || broker.name} logo`}
-                    className="max-h-[52px] max-w-[112px] object-contain transition duration-300 group-hover:scale-105"
+                    alt={`${brokerName} logo`}
+                    className={`max-h-[42px] max-w-[100px] object-contain transition duration-300 ${
+                      isFeatured
+                        ? "scale-[1.28] group-hover:scale-[1.36]"
+                        : "scale-[1.18] group-hover:scale-[1.26]"
+                    }`}
+                    loading="lazy"
                   />
                 ) : (
-                  <span className="text-[10px] font-black text-slate-700">
-                    {broker.name_en || broker.name}
+                  <span className="truncate text-xs font-black text-slate-700">
+                    {brokerName}
                   </span>
                 )}
               </div>
 
-              <div className="min-w-0 flex-1 text-left">
+              {/* BROKER INFO */}
+              <div className="min-w-0 flex-1 overflow-visible text-left">
                 {isFeatured && (
-                  <span className="mb-1 inline-flex items-center gap-1 rounded-full border border-[#0f2747] bg-white px-2 py-0.5 text-[8px] font-black text-[#0f2747]">
-                    <span className="h-1.5 w-1.5 rounded-full bg-brand-500" />
-                    Featured Partner
-                  </span>
+                  <div className="mb-1.5 flex justify-start">
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-200 bg-brand-50 px-2.5 py-1 text-[9px] font-black leading-none text-brand-700 shadow-sm">
+                      <span className="h-1.5 w-1.5 rounded-full bg-brand-500" />
+                      Featured Partner
+                    </span>
+                  </div>
                 )}
 
-                <div className="truncate text-[12px] font-black text-[#07111f]">
-                  {broker.name_en || broker.name}
+                <div
+                  className={`text-[12px] font-black leading-5 transition ${
+                    isFeatured
+                      ? "text-brand-700"
+                      : "text-slate-950 group-hover:text-brand-600"
+                  }`}
+                >
+                  {brokerName}
                 </div>
 
-                <div className="mt-1 text-[9px] font-black text-[#f59e0b]">
-                  ★ {broker.rating?.toFixed(1) ?? "—"}
+                <div className="mt-1 flex items-center justify-start gap-1 text-[10px] font-bold text-[#f59e0b]">
+                  <span>★</span>
+                  <span>{broker.rating?.toFixed(1) ?? "—"}</span>
                 </div>
               </div>
 
+              {/* ARROW */}
               <span
-                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[15px] font-black transition ${
+                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[15px] font-black transition duration-300 group-hover:translate-x-1 ${
                   isFeatured
-                    ? "bg-brand-500 text-white shadow-[0_8px_18px_rgba(37,99,235,0.22)]"
-                    : "bg-brand-50 text-brand-600 group-hover:bg-brand-500 group-hover:text-white"
+                    ? "bg-brand-500 text-white shadow-[0_8px_18px_rgba(37,99,235,0.25)]"
+                    : "bg-brand-50 text-brand-500"
                 }`}
               >
                 →
@@ -2679,152 +2707,300 @@ const selectedEvents = mediaPartnerEvent
       </div>
     </div>
 
-    {/* REGULATORS */}
-    <div className="mt-3 overflow-hidden rounded-[24px] border border-slate-200 bg-white">
-      <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] to-white px-4 py-3">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-[15px] font-black text-[#07111f]">
-              Broker Regulation
-            </h3>
+    {/* SIDEBAR IMPORTANT LINKS */}
+    <div className="space-y-3 px-3 pb-1">
+      {/* LICENSES */}
+      <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
+        <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3.5">
+          <div className="flex items-center gap-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-emerald-200 bg-emerald-50 text-[17px]">
+              🛡️
+            </span>
 
-            <p className="mt-1 text-[9px] font-medium text-slate-500">
-              Learn about major financial regulators.
-            </p>
+            <div className="min-w-0">
+              <h3 className="text-[14px] font-black text-[#07111f]">
+                Broker Regulation
+              </h3>
+
+              <p className="mt-0.5 text-[9px] font-semibold leading-4 text-slate-500">
+                Learn about major global financial regulators.
+              </p>
+            </div>
           </div>
+        </div>
 
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-emerald-200 bg-emerald-50">
-            🛡
+        <div className="divide-y divide-slate-100 px-3">
+          {[
+            {
+              code: "FCA",
+              title: "UK Regulation",
+              href: "/en/licenses/fca",
+            },
+            {
+              code: "ASIC",
+              title: "Australian Regulation",
+              href: "/en/licenses/asic",
+            },
+            {
+              code: "DFSA",
+              title: "Dubai Financial Regulation",
+              href: "/en/licenses/dfsa",
+            },
+            {
+              code: "CySEC",
+              title: "Cyprus Regulation",
+              href: "/en/licenses/cysec",
+            },
+            {
+              code: "FSCA",
+              title: "South Africa Regulation",
+              href: "/en/licenses/fsca",
+            },
+          ].map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex min-h-[50px] items-center justify-between gap-3 py-2.5"
+            >
+              <div className="flex min-w-0 items-center gap-2.5">
+                <span className="inline-flex h-7 min-w-[45px] shrink-0 items-center justify-center rounded-lg border border-emerald-200 bg-emerald-50 px-2 text-[9px] font-black text-emerald-700">
+                  {item.code}
+                </span>
+
+                <span className="truncate text-[11px] font-black text-slate-700 transition group-hover:text-brand-600">
+                  {item.title}
+                </span>
+              </div>
+
+              <span className="shrink-0 text-[14px] font-black text-slate-300 transition group-hover:translate-x-1 group-hover:text-brand-500">
+                →
+              </span>
+            </Link>
+          ))}
+        </div>
+
+        <Link
+          href="/en/licenses"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex min-h-[40px] items-center justify-center border-t border-slate-100 bg-emerald-50/50 px-4 text-[10px] font-black text-emerald-700 transition hover:bg-emerald-50"
+        >
+          View All Regulators
+          <span className="ml-1.5">→</span>
+        </Link>
+      </div>
+
+      {/* ONEROYAL SPONSORED SIDEBAR AD */}
+      <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white p-2 shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
+        <div className="mb-2 flex items-center justify-between px-1">
+          <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[8px] font-black text-slate-500">
+            Advertisement
+          </span>
+
+          <span className="text-[10px] font-bold text-slate-600">
+            OneRoyal
           </span>
         </div>
+
+        <a
+          href="https://vc.cabinet.oneroyal.com/links/go/15855"
+          target="_blank"
+          rel="nofollow sponsored noopener noreferrer"
+          aria-label="Open a trading account with OneRoyal"
+          className="group block overflow-hidden rounded-[16px] bg-white"
+        >
+          <img
+            src="https://vc.cabinet.oneroyal.com/uploads/public/banners/2024/01/25/b7a653ad68c699083b38e7f823a1a35f.png"
+            alt="OneRoyal trading account advertisement"
+            title="Open a trading account with OneRoyal"
+            loading="lazy"
+            className="mx-auto block h-auto w-full max-w-[300px] object-contain transition duration-300 group-hover:scale-[1.02]"
+          />
+        </a>
       </div>
 
-      {[
-  ["FCA", "UK Regulation", "/en/licenses/fca"],
-  ["ASIC", "Australian Regulation", "/en/licenses/asic"],
-  ["DFSA", "Dubai Regulation", "/en/licenses/dfsa"],
-  ["CySEC", "Cyprus Regulation", "/en/licenses/cysec"],
-  ["FSCA", "South Africa Regulation", "/en/licenses/fsca"],
-].map(([code, title, href]) => (
-        <Link
-          key={code}
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-between border-b border-slate-100 px-4 py-3 last:border-b-0 hover:bg-[#f8fbff]"
-        >
+      {/* TRADING TERMS */}
+      <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
+        <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3.5">
           <div className="flex items-center gap-3">
-            <span className="inline-flex min-w-[46px] items-center justify-center rounded-lg border border-emerald-200 bg-emerald-50 px-2 py-1 text-[9px] font-black text-emerald-700">
-              {code}
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-blue-200 bg-blue-50 text-[17px]">
+              📘
             </span>
 
-            <span className="text-[11px] font-bold text-slate-700">
-              {title}
-            </span>
+            <div className="min-w-0">
+              <h3 className="text-[14px] font-black text-[#07111f]">
+                Essential Trading Terms
+              </h3>
+
+              <p className="mt-0.5 text-[9px] font-semibold leading-4 text-slate-500">
+                Understand the key concepts before you trade.
+              </p>
+            </div>
           </div>
+        </div>
 
-          <span className="text-brand-500">→</span>
-        </Link>
-      ))}
+        <div className="divide-y divide-slate-100 px-3">
+          {[
+            {
+              label: "Spread",
+              desc: "The difference between bid and ask prices",
+              href: "/en/learn-trading/spread",
+            },
+            {
+              label: "Leverage",
+              desc: "Controlling a larger position with less capital",
+              href: "/en/learn-trading/leverage",
+            },
+            {
+              label: "Margin",
+              desc: "The capital required to open a position",
+              href: "/en/learn-trading/margin",
+            },
+          ].map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex min-h-[56px] items-center justify-between gap-3 py-2.5"
+            >
+              <div className="min-w-0">
+                <div className="text-[11px] font-black text-slate-800 transition group-hover:text-brand-600">
+                  {item.label}
+                </div>
 
-      <Link
-        href="/en/licenses"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center justify-center bg-emerald-50 px-4 py-3 text-[11px] font-black text-emerald-700"
-      >
-        View All Regulators →
-      </Link>
-    </div>
+                <div className="mt-0.5 truncate text-[8px] font-semibold text-slate-400">
+                  {item.desc}
+                </div>
+              </div>
 
-    {/* TRADING TERMS */}
-    <div className="mt-3 overflow-hidden rounded-[24px] border border-slate-200 bg-white">
-      <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] to-white px-4 py-3">
-        <h3 className="text-[15px] font-black text-[#07111f]">
-          Essential Trading Terms
-        </h3>
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-[12px] font-black text-brand-500 transition group-hover:bg-brand-500 group-hover:text-white">
+                →
+              </span>
+            </Link>
+          ))}
+        </div>
 
-        <p className="mt-1 text-[9px] font-medium text-slate-500">
-          Understand the basics before you trade.
-        </p>
-      </div>
-
-      {[
-        ["Spread", "/en/learn-trading/spread"],
-        ["Financial Leverage", "/en/learn-trading/leverage"],
-        ["Margin", "/en/learn-trading/margin"],
-        ["Lot Size", "/en/learn-trading/lot-size"],
-        ["Stop Loss", "/en/learn-trading/stop-loss"],
-      ].map(([title, href]) => (
         <Link
-          key={title}
-          href={href}
+          href="/en/learn-trading"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-between border-b border-slate-100 px-4 py-3 last:border-b-0 hover:bg-[#f8fbff]"
+          className="flex min-h-[40px] items-center justify-center border-t border-slate-100 bg-blue-50/50 px-4 text-[10px] font-black text-brand-600 transition hover:bg-blue-50"
         >
-          <span className="text-[11px] font-bold text-slate-700">
-            {title}
-          </span>
-
-          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-brand-50 text-brand-600">
-            →
-          </span>
+          Browse Trading Education
+          <span className="ml-1.5">→</span>
         </Link>
-      ))}
-
-      <Link
-        href="/en/learn-trading"
-        className="flex items-center justify-center bg-brand-50 px-4 py-3 text-[11px] font-black text-brand-600"
-      >
-        Browse Trading Education →
-      </Link>
-    </div>
-
-    {/* CALCULATORS */}
-    <div className="mt-3 overflow-hidden rounded-[24px] border border-slate-200 bg-white">
-      <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] to-white px-4 py-3">
-        <h3 className="text-[15px] font-black text-[#07111f]">
-          Trading Calculators
-        </h3>
-
-        <p className="mt-1 text-[9px] font-medium text-slate-500">
-          Practical tools for risk and trade planning.
-        </p>
       </div>
 
-      {[
-        ["Risk Calculator", "/en/tools/risk-calculator"],
-        ["Pip Calculator", "/en/tools/pip-calculator"],
-        ["Lot Size Calculator", "/en/tools/lot-size-calculator"],
-        ["Margin Calculator", "/en/tools/margin-calculator"],
-        ["Profit Calculator", "/en/tools/profit-calculator"],
-      ].map(([title, href]) => (
+      {/* TRADING CALCULATORS */}
+      <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
+        <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3.5">
+          <div className="flex items-center gap-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-violet-200 bg-violet-50 text-[17px]">
+              🧮
+            </span>
+
+            <div className="min-w-0">
+              <h3 className="text-[14px] font-black text-[#07111f]">
+                Trading Calculators
+              </h3>
+
+              <p className="mt-0.5 text-[9px] font-semibold leading-4 text-slate-500">
+                Practical tools for trade and risk planning.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-2 p-3">
+          {[
+            {
+              title: "Risk Calculator",
+              short: "Risk",
+              href: "/en/tools/risk-calculator",
+            },
+            {
+              title: "Pip Calculator",
+              short: "Pip",
+              href: "/en/tools/pip-calculator",
+            },
+            {
+              title: "Margin Calculator",
+              short: "Margin",
+              href: "/en/tools/margin-calculator",
+            },
+          ].map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex min-h-[48px] items-center justify-between gap-3 rounded-[14px] border border-slate-200 bg-[#fbfdff] px-3 py-2 transition hover:border-violet-200 hover:bg-violet-50/40"
+            >
+              <div className="flex min-w-0 items-center gap-2.5">
+                <span className="inline-flex h-7 min-w-[48px] shrink-0 items-center justify-center rounded-lg bg-violet-50 px-2 text-[8px] font-black text-violet-700">
+                  {item.short}
+                </span>
+
+                <span className="truncate text-[10px] font-black text-slate-700 transition group-hover:text-violet-700">
+                  {item.title}
+                </span>
+              </div>
+
+              <span className="shrink-0 text-[13px] font-black text-slate-300 transition group-hover:translate-x-1 group-hover:text-violet-600">
+                →
+              </span>
+            </Link>
+          ))}
+        </div>
+
         <Link
-          key={title}
-          href={href}
+          href="/en/tools"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-between border-b border-slate-100 px-4 py-3 last:border-b-0 hover:bg-[#f8fbff]"
+          className="flex min-h-[40px] items-center justify-center border-t border-slate-100 bg-violet-50/50 px-4 text-[10px] font-black text-violet-700 transition hover:bg-violet-50"
         >
-          <span className="text-[11px] font-bold text-slate-700">
-            {title}
-          </span>
-
-          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-violet-50 text-violet-600">
-            →
-          </span>
+          View All Trading Calculators
+          <span className="ml-1.5">→</span>
         </Link>
-      ))}
+      </div>
+    </div>
 
-      <Link
-        href="/en/tools"
-        className="flex items-center justify-center bg-violet-50 px-4 py-3 text-[11px] font-black text-violet-600"
-      >
-        View All Trading Tools →
-      </Link>
+    {/* MULTIBANK SPONSORED SIDEBAR AD */}
+    <div className="px-3 pt-3">
+      <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white p-2 shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
+        <div className="mb-2 flex items-center justify-between px-1">
+          <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[8px] font-black text-slate-500">
+            Advertisement
+          </span>
+
+          <span className="text-[10px] font-bold text-slate-600">
+            MultiBank Group
+          </span>
+        </div>
+
+        <a
+          href="https://trade.multibankfx.com/register?ibNum=9951544&utm_source=ib-media-generator&utm_media=300x250&utm_term=9951544"
+          target="_blank"
+          rel="nofollow sponsored noopener noreferrer"
+          aria-label="Open a real trading account with MultiBank Group"
+          className="group block overflow-hidden rounded-[16px] bg-[#081528]"
+        >
+          <img
+            src="https://my.multibankfx.com/build/client/images/ib-media/5/en-300x250.png"
+            width="300"
+            height="250"
+            alt="MultiBank Group trading account advertisement"
+            title="Open a real trading account with MultiBank Group"
+            loading="lazy"
+            className="mx-auto block h-auto w-full max-w-[300px] object-contain transition duration-300 group-hover:scale-[1.015]"
+          />
+        </a>
+      </div>
     </div>
-    </div>
+  </div>
 </aside>
 
   </div>
