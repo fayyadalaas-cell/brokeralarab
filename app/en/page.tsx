@@ -141,7 +141,7 @@ function getCountryPages() {
       href: "/best-brokers",
       desc: "Compare trusted forex and CFD brokers for UK traders.",
       shortDesc: "Best brokers in the UK",
-      flag: "https://flagcdn.com/w80/gb.png",
+      flag: "https://hatscripts.github.io/circle-flags/flags/gb.svg",
       badge: "United Kingdom",
     },
     {
@@ -149,7 +149,7 @@ function getCountryPages() {
       href: "/best-brokers",
       desc: "Compare regulated brokers available in Australia.",
       shortDesc: "Best brokers in Australia",
-      flag: "https://flagcdn.com/w80/au.png",
+      flag: "https://hatscripts.github.io/circle-flags/flags/au.svg",
       badge: "Australia",
     },
     {
@@ -157,7 +157,7 @@ function getCountryPages() {
       href: "/best-brokers",
       desc: "Popular forex brokers for South African traders.",
       shortDesc: "Best brokers in South Africa",
-      flag: "https://flagcdn.com/w80/za.png",
+      flag: "https://hatscripts.github.io/circle-flags/flags/za.svg",
       badge: "South Africa",
     },
     {
@@ -165,7 +165,7 @@ function getCountryPages() {
       href: "/best-brokers",
       desc: "Compare global brokers available in Singapore.",
       shortDesc: "Best brokers in Singapore",
-      flag: "https://flagcdn.com/w80/sg.png",
+      flag: "https://hatscripts.github.io/circle-flags/flags/sg.svg",
       badge: "Singapore",
     },
     {
@@ -173,7 +173,7 @@ function getCountryPages() {
       href: "/best-brokers",
       desc: "Review brokers with strong account options.",
       shortDesc: "Best brokers in Malaysia",
-      flag: "https://flagcdn.com/w80/my.png",
+      flag: "https://hatscripts.github.io/circle-flags/flags/my.svg",
       badge: "Malaysia",
     },
     {
@@ -181,7 +181,7 @@ function getCountryPages() {
       href: "/best-brokers",
       desc: "Compare brokers suitable for Indian traders.",
       shortDesc: "Best brokers in India",
-      flag: "https://flagcdn.com/w80/in.png",
+      flag: "https://hatscripts.github.io/circle-flags/flags/in.svg",
       badge: "India",
     },
     {
@@ -189,7 +189,7 @@ function getCountryPages() {
       href: "/best-brokers",
       desc: "Find brokers with flexible deposit options.",
       shortDesc: "Best brokers in Nigeria",
-      flag: "https://flagcdn.com/w80/ng.png",
+      flag: "https://hatscripts.github.io/circle-flags/flags/ng.svg",
       badge: "Nigeria",
     },
     {
@@ -197,15 +197,15 @@ function getCountryPages() {
       href: "/best-brokers",
       desc: "Trusted brokers for Thai forex traders.",
       shortDesc: "Best brokers in Thailand",
-      flag: "https://flagcdn.com/w80/th.png",
+      flag: "https://hatscripts.github.io/circle-flags/flags/th.svg",
       badge: "Thailand",
     },
     {
       title: "Best Trading Brokers in the Philippines",
       href: "/best-brokers",
       desc: "Compare brokers and trading platforms.",
-      shortDesc: "Best brokers in Philippines",
-      flag: "https://flagcdn.com/w80/ph.png",
+      shortDesc: "Best brokers in the Philippines",
+      flag: "https://hatscripts.github.io/circle-flags/flags/ph.svg",
       badge: "Philippines",
     },
     {
@@ -213,7 +213,7 @@ function getCountryPages() {
       href: "/best-brokers",
       desc: "Review brokers suitable for Kenyan traders.",
       shortDesc: "Best brokers in Kenya",
-      flag: "https://flagcdn.com/w80/ke.png",
+      flag: "https://hatscripts.github.io/circle-flags/flags/ke.svg",
       badge: "Kenya",
     },
   ];
@@ -1245,170 +1245,191 @@ function eventCountdown(start?: string | null, end?: string | null) {
   </div>
 </section>
 
-{/* COUNTRIES DIRECTORY - FINAL */}
+{/* COUNTRIES DIRECTORY - ENGLISH FINAL */}
 <section className="mx-auto w-full max-w-7xl px-0 py-3 sm:py-4">
-    <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm sm:rounded-[32px]">
-     {/* HEADER */}
-<div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4">
-  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-    <div className="text-center lg:text-left">
-      <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
-        By Country
-      </span>
+  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)] sm:rounded-[32px]">
+    {/* HEADER */}
+    <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-5 sm:px-6">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="text-center lg:text-left">
+          <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[11px] font-black text-brand-500 shadow-sm sm:text-[12px]">
+            Brokers by Country
+          </span>
 
-      <h2 className="mx-auto mt-3 max-w-[290px] text-[26px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] sm:max-w-none sm:text-[34px] lg:mx-0 lg:text-[36px]">
-        Best Trading Brokers by Country
-      </h2>
+          <h2 className="mx-auto mt-3 max-w-[310px] text-[26px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] sm:max-w-none sm:text-[34px] lg:mx-0 lg:text-[36px]">
+            Best Trading Brokers by Country
+          </h2>
 
-      <p className="mx-auto mt-3 max-w-[300px] text-[13px] font-semibold leading-7 text-slate-600 md:hidden">
-        Select your country to find brokers that match local regulation,
-        accounts and payment options.
-      </p>
+          <p className="mx-auto mt-3 max-w-[330px] text-[13px] font-semibold leading-7 text-slate-600 sm:max-w-[900px] sm:text-[15px] sm:leading-8 lg:mx-0">
+            Explore broker options for traders in different countries and
+            compare regulation, account types, platforms, deposits and
+            withdrawals.
+          </p>
+        </div>
 
-      <p className="mt-3 hidden max-w-[900px] text-[15px] font-semibold leading-8 text-slate-600 md:block">
-        Explore trading brokers by country and compare regulation, account
-        options, deposits, withdrawals, platforms and local availability.
-      </p>
+        <Link
+          href="/en/best-brokers"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mx-auto inline-flex h-11 items-center justify-center rounded-2xl bg-brand-500 px-6 text-[13px] font-black text-white shadow-[0_12px_26px_rgba(37,99,235,0.22)] transition hover:-translate-y-0.5 hover:bg-brand-600 sm:h-12 sm:min-w-[190px] sm:text-[14px] lg:mx-0"
+        >
+          View All Brokers
+        </Link>
+      </div>
     </div>
 
-    <div className="hidden shrink-0 justify-center md:flex lg:self-center lg:pr-4">
-      <Link
-        href="/en/best-brokers"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex h-12 min-w-[190px] items-center justify-center rounded-2xl bg-brand-500 px-6 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(37,99,235,0.24)] transition hover:bg-brand-600"
-      >
-        View All Countries
-      </Link>
-    </div>
-  </div>
-</div>
-
-      {/* MOBILE COMPACT */}
-      <div className="p-3 md:hidden">
-        <div className="grid grid-cols-2 gap-2.5">
-          {countryPages.map((item) => (
-            <Link
-              key={item.badge}
-              href={`/en${item.href}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={`Best trading brokers in ${item.badge}`}
-              className="group rounded-[14px] border border-slate-200 bg-white px-2.5 py-2.5 shadow-[0_3px_10px_rgba(15,23,42,0.04)] transition hover:border-brand-100 hover:bg-[#f8fbff]"
-            >
-              <div className="flex items-center gap-2.5">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white p-[3px] shadow-sm">
-                  <img
-                    src={item.flag}
-                    alt={`${item.badge} flag`}
-                    className="h-full w-full rounded-full object-contain"
-                  />
-                </div>
-
-                <div className="min-w-0 flex-1 text-left">
-                  <h3 className="truncate text-[13px] font-black leading-5 text-[#07111f]">
-                    {item.badge}
-                  </h3>
-                </div>
-
-                <span className="shrink-0 text-[13px] font-bold text-slate-400 transition group-hover:translate-x-[2px] group-hover:text-brand-500">
-                  →
-                </span>
-              </div>
-            </Link>
-          ))}
-
+    {/* MOBILE */}
+    <div className="p-3 sm:hidden">
+      <div className="grid grid-cols-2 gap-2.5">
+        {countryPages.map((item) => (
           <Link
+            key={item.badge}
             href="/en/best-brokers"
             target="_blank"
             rel="noopener noreferrer"
-            className="group col-span-2 rounded-[14px] border border-dashed border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-3 py-3 shadow-[0_3px_10px_rgba(15,23,42,0.04)] transition hover:bg-brand-50"
+            title={`View brokers available for traders in ${item.badge}`}
+            className="group flex min-h-[128px] flex-col rounded-[18px] border border-slate-200 bg-white p-3 shadow-[0_4px_14px_rgba(15,23,42,0.04)] transition hover:border-brand-200 hover:bg-[#fbfdff]"
           >
-            <div className="flex items-center justify-center gap-2.5">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-brand-100 bg-white shadow-sm">
-                🌍
-              </div>
+            <div className="flex items-start justify-between gap-2">
+<div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white p-[3px] shadow-sm">
+  <img
+    src={item.flag}
+    alt={`${item.badge} flag`}
+    className="h-full w-full rounded-full object-contain"
+    loading="lazy"
+  />
+</div>
 
-              <h3 className="text-[13px] font-black text-[#07111f]">
-                All Other Countries
-              </h3>
-
-              <span className="text-[13px] font-bold text-slate-400 transition group-hover:translate-x-[2px] group-hover:text-brand-500">
+              <span className="text-[14px] font-black text-brand-500 transition group-hover:translate-x-1">
                 →
               </span>
             </div>
+
+            <h3 className="mt-3 text-[14px] font-black leading-5 text-[#07111f]">
+              {item.badge}
+            </h3>
+
+            <p className="mt-1.5 line-clamp-2 min-h-[36px] text-[10px] font-semibold leading-[18px] text-slate-500">
+              {item.shortDesc}
+            </p>
           </Link>
-        </div>
+        ))}
+
+        <Link
+          href="/en/best-brokers"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group col-span-2 flex min-h-[82px] items-center gap-3 rounded-[18px] border border-dashed border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-4 py-3 shadow-[0_4px_14px_rgba(15,23,42,0.04)] transition hover:border-brand-300 hover:bg-brand-50"
+        >
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-brand-100 bg-white text-[18px] shadow-sm">
+            🌍
+          </div>
+
+          <div className="min-w-0 flex-1 text-left">
+            <h3 className="text-[14px] font-black text-[#07111f]">
+              Explore All Broker Options
+            </h3>
+
+            <p className="mt-1 text-[10px] font-semibold leading-5 text-slate-500">
+              Browse our general ranking of reviewed trading brokers.
+            </p>
+          </div>
+
+          <span className="shrink-0 text-[15px] font-black text-brand-500 transition group-hover:translate-x-1">
+            →
+          </span>
+        </Link>
       </div>
+    </div>
 
-      {/* DESKTOP / TABLET */}
-      <div className="hidden p-5 md:block">
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-          {countryPages
-  .filter((item) => item.badge !== "Kenya")
-  .map((item) => (
-            <Link
-              key={item.badge}
-              href={`/en${item.href}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={`Best trading brokers in ${item.badge}`}
-              className="group rounded-[20px] border border-slate-200 bg-white px-4 py-3.5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-100 hover:bg-[#fcfdff] hover:shadow-[0_12px_28px_rgba(15,23,42,0.05)]"
-            >
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white p-[4px] shadow-sm">
-                  <img
-                    src={item.flag}
-                    alt={`${item.badge} flag`}
-                    className="h-full w-full rounded-full object-contain"
-                  />
-                </div>
-
-                <div className="min-w-0 flex-1 text-left">
-                  <h3 className="truncate text-[16px] font-black text-[#07111f]">
-                    {item.title}
-                  </h3>
-                  <p className="mt-0.5 truncate text-[12px] font-medium text-slate-500">
-                    {item.shortDesc}
-                  </p>
-                </div>
-
-                <span className="shrink-0 text-[18px] font-black text-brand-500 transition group-hover:translate-x-[3px]">
-                  →
-                </span>
-              </div>
-            </Link>
-          ))}
-
+    {/* DESKTOP / TABLET */}
+    <div className="hidden p-5 sm:block">
+      <div className="grid gap-3 md:grid-cols-2">
+        {countryPages.map((item) => (
           <Link
+            key={item.badge}
             href="/en/best-brokers"
             target="_blank"
             rel="noopener noreferrer"
-            className="group rounded-[20px] border border-dashed border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-4 py-3.5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-[0_12px_28px_rgba(37,99,235,0.08)] md:col-span-2 xl:col-span-3 xl:mx-auto xl:w-[520px]"
+            title={`View brokers available for traders in ${item.badge}`}
+            className="group min-h-[92px] rounded-[20px] border border-slate-200 bg-white px-4 py-3.5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:bg-[#fcfdff] hover:shadow-[0_12px_28px_rgba(15,23,42,0.05)]"
           >
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-brand-100 bg-white shadow-sm">
-                🌍
-              </div>
+            <div className="flex min-h-[64px] items-center gap-3">
+             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white p-[3px] shadow-sm">
+  <img
+    src={item.flag}
+    alt={`${item.badge} flag`}
+    className="h-full w-full rounded-full object-contain"
+    loading="lazy"
+  />
+</div>
 
               <div className="min-w-0 flex-1 text-left">
-                <h3 className="text-[16px] font-black text-[#07111f]">
-                  All Other Countries
-                </h3>
-                <p className="mt-0.5 text-[12px] font-medium text-slate-500">
-                  Visit the general best brokers page if your country is not listed.
+                <div className="flex items-center gap-2">
+                  <h3 className="truncate text-[15px] font-black text-[#07111f]">
+                    {item.title}
+                  </h3>
+
+                  <span className="inline-flex shrink-0 rounded-full border border-brand-100 bg-brand-50 px-2 py-0.5 text-[8px] font-black text-brand-600">
+                    {item.badge}
+                  </span>
+                </div>
+
+                <p className="mt-1 truncate text-[11px] font-semibold text-slate-500">
+                  {item.shortDesc}
                 </p>
               </div>
 
-              <span className="text-[18px] font-black text-brand-500 transition group-hover:translate-x-[3px]">
+              <div className="flex min-w-[58px] flex-col items-end gap-1">
+                <span className="text-[9px] font-bold text-slate-400">
+                  View brokers
+                </span>
+
+                <span className="text-[16px] font-black text-brand-500 transition group-hover:translate-x-1">
+                  →
+                </span>
+              </div>
+            </div>
+          </Link>
+        ))}
+
+       <Link
+  href="/en/best-brokers"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="group min-h-[92px] rounded-[20px] border border-dashed border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-4 py-3.5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-[0_12px_28px_rgba(37,99,235,0.08)] md:col-span-2 md:mx-auto md:w-[520px]"
+>
+          <div className="flex min-h-[64px] items-center gap-3">
+           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-brand-100 bg-white text-[21px] shadow-sm">
+  🌍
+</div>
+
+            <div className="min-w-0 flex-1 text-left">
+              <h3 className="text-[15px] font-black text-[#07111f]">
+                Explore More Broker Options
+              </h3>
+
+              <p className="mt-1 text-[11px] font-semibold text-slate-500">
+                Visit the general broker ranking to compare all reviewed
+                companies.
+              </p>
+            </div>
+
+            <div className="flex min-w-[58px] flex-col items-end gap-1">
+              <span className="text-[9px] font-bold text-slate-400">
+                View all
+              </span>
+
+              <span className="text-[16px] font-black text-brand-500 transition group-hover:translate-x-1">
                 →
               </span>
             </div>
-          </Link>
-        </div>
+          </div>
+        </Link>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
 {/* ACCOUNT TYPES HOME SECTION */}
 <section className="mx-auto w-full max-w-7xl px-0 py-3 sm:py-4">
