@@ -570,7 +570,7 @@ export default async function EventsPage() {
         }}
       />
 
-      <section className="mx-auto max-w-7xl px-4 py-5 sm:px-6 sm:py-7 lg:px-8">
+      <section className="mx-auto w-full max-w-[1520px] px-4 py-5 sm:px-6 sm:py-7 lg:px-8">
         <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_60px_rgba(15,23,42,0.06)] sm:rounded-[34px]">
           {/* HERO */}
           <div className="relative overflow-hidden border-b border-slate-100 bg-gradient-to-b from-[#eef5ff] via-white to-white">

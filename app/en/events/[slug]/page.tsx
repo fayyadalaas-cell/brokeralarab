@@ -255,6 +255,39 @@ export default async function Page({
   const countdown = getCountdown(event.start_date);
   const gallery = event.gallery_images || [];
 
+  const pressReleases = [
+  {
+    content: event.press_release_en,
+    title: event.press_release_title_en,
+    image: event.press_release_image,
+    date: event.press_release_date,
+  },
+  {
+    content: event.press_release_2_en,
+    title: event.press_release_2_title_en,
+    image: event.press_release_2_image,
+    date: event.press_release_2_date,
+  },
+  {
+    content: event.press_release_3_en,
+    title: event.press_release_3_title_en,
+    image: event.press_release_3_image,
+    date: event.press_release_3_date,
+  },
+]
+  .filter((release) => release.content)
+  .sort((a, b) => {
+    const firstDate = a.date
+      ? new Date(`${a.date}T00:00:00`).getTime()
+      : 0;
+
+    const secondDate = b.date
+      ? new Date(`${b.date}T00:00:00`).getTime()
+      : 0;
+
+    return secondDate - firstDate;
+  });
+
   const eventStats = [
     [event.stat_1_value || "30,000+", event.stat_1_label_en || "Attendees"],
     [event.stat_2_value || "240+", event.stat_2_label_en || "Exhibitors"],
@@ -264,7 +297,7 @@ export default async function Page({
 
   return (
     <main dir="ltr" className="min-h-screen bg-[#f4f7fb] text-slate-950">
-      <section className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
+      <section className="mx-auto w-full max-w-[1520px] px-4 py-5 sm:px-6 lg:px-8">
         <Link
           href="/en/events"
           className="mb-4 inline-flex text-sm font-black text-brand-600 hover:text-blue-800"
@@ -415,59 +448,87 @@ export default async function Page({
 
             <ContentSection title="Event Venue" html={event.venue_html_en} />
 
-            {event.press_release_en && (
-              <SectionShell title="Latest Update from the Organizer" badge="Press Release">
-                <article className="rounded-[24px] bg-white p-4 md:border md:border-slate-200 md:p-6 md:shadow-sm">
-                  {event.press_release_image && (
-                    <div className="overflow-hidden rounded-[20px] border border-slate-200 bg-white">
-                      <Image
-                        src={event.press_release_image}
-                        alt={event.press_release_title_en || "Press release"}
-                        width={1400}
-                        height={735}
-                        className="h-auto w-full object-contain"
-                      />
-                    </div>
-                  )}
+           {pressReleases.length > 0 && (
+  <SectionShell
+    title="Latest Updates from the Organizer"
+    badge={`${pressReleases.length} ${
+      pressReleases.length === 1 ? "Press Release" : "Press Releases"
+    }`}
+  >
+    <div className="space-y-5">
+      {pressReleases.map((release, index) => (
+        <article
+          key={`${release.date || "press-release"}-${index}`}
+          className={`rounded-[24px] bg-white p-4 md:border md:border-slate-200 md:p-6 md:shadow-sm ${
+            index > 0 ? "border-t border-slate-200 pt-6" : ""
+          }`}
+        >
+          {index === 0 && (
+            <div className="mb-4 flex justify-start">
+              <span className="rounded-full border border-emerald-100 bg-emerald-50 px-4 py-1.5 text-xs font-black text-emerald-700">
+                Latest Update
+              </span>
+            </div>
+          )}
 
-                  <div className="mt-5">
-                    <div className="mb-3 flex flex-wrap items-center justify-center gap-2 md:justify-start">
-                      <span className="rounded-full bg-brand-600 px-4 py-1.5 text-xs font-black text-white">
-                        Press Release
-                      </span>
+          {release.image && (
+            <div className="overflow-hidden rounded-[20px] border border-slate-200 bg-white">
+              <Image
+                src={release.image}
+                alt={release.title || "Press Release"}
+                width={1400}
+                height={735}
+                className="h-auto w-full object-contain"
+              />
+            </div>
+          )}
 
-                      {event.press_release_date && (
-                        <span className="rounded-full bg-slate-50 px-4 py-1.5 text-xs font-black text-slate-600">
-                          {formatDate(event.press_release_date)}
-                        </span>
-                      )}
-                    </div>
+          <div className="mt-5">
+            <div className="mb-3 flex flex-wrap items-center gap-2">
+              <span className="rounded-full bg-brand-600 px-4 py-1.5 text-xs font-black text-white">
+                Press Release
+              </span>
 
-                    {event.press_release_title_en && (
-                      <h2 className="mx-auto max-w-xl text-center text-[17px] font-black leading-8 text-slate-950 sm:text-[20px] md:mx-0 md:max-w-none md:text-left md:text-3xl md:leading-[1.45]">
-                        {event.press_release_title_en}
-                      </h2>
-                    )}
+              {release.date && (
+                <span className="rounded-full bg-slate-50 px-4 py-1.5 text-xs font-black text-slate-600">
+                  {formatDate(release.date)}
+                </span>
+              )}
+            </div>
 
-                    <div
-                      className="mt-5 hidden rounded-2xl border border-slate-200 bg-slate-50 p-5 text-sm leading-8 text-slate-700 md:block [&_p]:mb-4 [&_strong]:font-normal [&_strong]:text-slate-700"
-                      dangerouslySetInnerHTML={{ __html: event.press_release_en }}
-                    />
-
-                    <details className="mt-5 md:hidden">
-                      <summary className="cursor-pointer list-none rounded-2xl border border-brand-100 bg-brand-50 px-4 py-3 text-center text-sm font-black text-brand-700">
-                        Read the full press release
-                      </summary>
-
-                      <div
-                        className="mt-5 text-[13px] leading-8 text-slate-700 [&_p]:mb-4 [&_strong]:font-normal [&_strong]:text-slate-700"
-                        dangerouslySetInnerHTML={{ __html: event.press_release_en }}
-                      />
-                    </details>
-                  </div>
-                </article>
-              </SectionShell>
+            {release.title && (
+              <h2 className="text-[17px] font-black leading-8 text-slate-950 sm:text-[20px] md:text-left md:text-3xl md:leading-[1.45]">
+                {release.title}
+              </h2>
             )}
+
+            <div
+              className="mt-5 hidden rounded-2xl border border-slate-200 bg-slate-50 p-5 text-sm leading-8 text-slate-700 md:block [&_p]:mb-4 [&_strong]:font-normal [&_strong]:text-slate-700"
+              dangerouslySetInnerHTML={{
+                __html: release.content,
+              }}
+            />
+
+            <details className="mt-5 md:hidden" open={index === 0}>
+              <summary className="cursor-pointer list-none rounded-2xl border border-brand-100 bg-brand-50 px-4 py-3 text-center text-sm font-black text-brand-700">
+                {index === 0
+                  ? "Read the latest press release"
+                  : "Read the full press release"}
+              </summary>
+
+              <div
+                className="mt-5 text-[13px] leading-8 text-slate-700 [&_p]:mb-4 [&_strong]:font-normal [&_strong]:text-slate-700"
+                dangerouslySetInnerHTML={{
+                  __html: release.content,
+                }}
+              />
+            </details>
+          </div>
+        </article>
+      ))}
+    </div>
+  </SectionShell>
+)}
 
             <FaqSection html={event.faq_html_en} />
 

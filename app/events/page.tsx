@@ -553,7 +553,7 @@ export default async function EventsPage() {
       }}
     />
 
-    <section className="mx-auto max-w-7xl px-4 py-5 sm:px-6 sm:py-7 lg:px-8">
+    <section className="mx-auto w-full max-w-[1520px] px-4 py-5 sm:px-6 sm:py-7 lg:px-8">
         <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_60px_rgba(15,23,42,0.06)] sm:rounded-[34px]">
          {/* HERO */}
 <div className="relative overflow-hidden border-b border-slate-100 bg-gradient-to-b from-[#eef5ff] via-white to-white">
@@ -1063,7 +1063,7 @@ export default async function EventsPage() {
 </section>
 
 {/* WHO SHOULD ATTEND */}
-<section className="mt-6 overflow-hidden rounded-[24px] border border-brand-400/30 bg-gradient-to-br from-brand-600 via-brand-500 to-brand-400 shadow-[0_20px_55px_rgba(30,91,184,0.22)] md:rounded-[30px]">
+<section className="mt-6 overflow-hidden rounded-[24px] border border-brand-500/30 bg-gradient-to-br from-brand-600 via-brand-500 to-[#1E5BB8] shadow-[0_20px_55px_rgba(30,91,184,0.22)] md:rounded-[30px]">
   <div className="relative px-4 py-7 md:px-8 md:py-10">
     <div className="pointer-events-none absolute inset-0">
 <div className="absolute right-[-100px] top-[-120px] h-[340px] w-[340px] rounded-full bg-white/15 blur-3xl" />
