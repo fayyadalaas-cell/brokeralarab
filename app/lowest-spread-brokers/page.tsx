@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Script from "next/script";
 import { createClient } from "@/lib/supabase/server";
-import HeadToHeadCompare from "@/app/components/HeadToHeadCompare";
+import LowestSpreadHeadToHead from "@/app/components/LowestSpreadHeadToHead";
 
 export const metadata: Metadata = {
   title: "أفضل شركات التداول بأقل سبريد 2026",
   description:
-    "مقارنة قوية لأفضل شركات التداول بأقل سبريد في 2026، مع ترتيب أفضل حسابات Standard وRaw وECN وCent، وإبراز الحسابات الإسلامية وأقل تكلفة فعلية.",
+    "قارن أفضل شركات التداول بأقل سبريد في 2026 حسب نوع الحساب ومتوسط السبريد والعمولة والحد الأدنى للإيداع، بما يشمل حسابات Standard وRaw وECN وCent.",
   keywords: [
     "أفضل شركات التداول بأقل سبريد",
     "أقل سبريد فوركس",
@@ -15,19 +15,23 @@ export const metadata: Metadata = {
     "أفضل حساب Raw Spread",
     "أفضل حساب Standard",
     "أفضل حسابات ECN",
+    "أفضل حسابات Cent",
     "أفضل حسابات إسلامية",
-    "Lowest spread brokers",
+    "lowest spread brokers",
     "lowest spread forex brokers",
-    "best low spread brokers",
   ],
   alternates: {
-    canonical: "/lowest-spread-brokers",
+    canonical: "https://brokeralarab.com/lowest-spread-brokers",
+    languages: {
+      ar: "https://brokeralarab.com/lowest-spread-brokers",
+      "x-default": "https://brokeralarab.com/lowest-spread-brokers",
+    },
   },
   openGraph: {
     title: "أفضل شركات التداول بأقل سبريد 2026 | بروكر العرب",
     description:
-      "ترتيب ومقارنة أفضل حسابات التداول حسب متوسط السبريد والعمولة والتكلفة الفعلية.",
-    url: "/lowest-spread-brokers",
+      "مقارنة أفضل حسابات التداول حسب متوسط السبريد والعمولة والتكلفة الفعلية.",
+    url: "https://brokeralarab.com/lowest-spread-brokers",
     type: "website",
     siteName: "بروكر العرب",
     locale: "ar_AR",
@@ -36,7 +40,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "أفضل شركات التداول بأقل سبريد 2026 | بروكر العرب",
     description:
-      "مقارنة أفضل حسابات التداول بأقل سبريد حسب نوع الحساب والتكلفة الفعلية.",
+      "قارن أفضل حسابات Standard وRaw وECN وCent حسب السبريد والعمولة.",
   },
   robots: {
     index: true,
@@ -67,8 +71,7 @@ type BrokerAccountRow = {
   account_type: string | null;
   is_islamic_available: boolean | null;
   islamic_conditions: string | null;
-  real_account_url: string | null;
-};
+ };
 
 type BrokerGenericRow = {
   [key: string]: any;
@@ -105,19 +108,29 @@ type BrokerSummary = {
 };
 
 function toNumber(value: unknown, fallback = 9999) {
-  const n = Number(value);
-  return Number.isFinite(n) ? n : fallback;
+  const numberValue = Number(value);
+  return Number.isFinite(numberValue) ? numberValue : fallback;
 }
 
 function normalizeAccountType(value: string | null | undefined) {
-  const v = (value || "").toLowerCase().trim();
-  if (!v) return "other";
-  if (["standard", "raw", "ecn", "zero", "pro", "cent"].includes(v)) return v;
+  const normalizedValue = (value || "").toLowerCase().trim();
+
+  if (!normalizedValue) return "other";
+
+  if (
+    ["standard", "raw", "ecn", "zero", "pro", "cent"].includes(
+      normalizedValue
+    )
+  ) {
+    return normalizedValue;
+  }
+
   return "other";
 }
 
 function accountSlug(value: string | null | undefined) {
   if (!value) return "";
+
   return value
     .toLowerCase()
     .trim()
@@ -129,77 +142,82 @@ function accountSlug(value: string | null | undefined) {
 }
 
 function getAccountTypeLabel(type: string) {
-  const map: Record<string, string> = {
+  const labels: Record<string, string> = {
     standard: "حسابات Standard",
-    raw: "حسابات Raw",
+    raw: "حسابات Raw Spread",
     ecn: "حسابات ECN",
     zero: "حسابات Zero",
     pro: "حسابات Pro",
     cent: "حسابات Cent / Micro",
     other: "حسابات أخرى",
   };
-  return map[type] || type;
+
+  return labels[type] || type;
+}
+
+function getAccountTypeShortLabel(type: string) {
+  const labels: Record<string, string> = {
+    standard: "Standard",
+    raw: "Raw",
+    ecn: "ECN",
+    zero: "Zero",
+    pro: "Pro",
+    cent: "Cent",
+    other: "Other",
+  };
+
+  return labels[type] || type;
 }
 
 function getAccountTypeIntro(type: string) {
-  const map: Record<string, string> = {
+  const introductions: Record<string, string> = {
     standard:
-      "هذه الفئة مناسبة لمعظم المتداولين الباحثين عن حسابات بدون عمولة مباشرة مع فروقات أسعار متوازنة نسبيًا.",
+      "حسابات مناسبة لمعظم المتداولين، وتأتي غالبًا دون عمولة منفصلة، بينما تكون تكلفة التداول مدمجة داخل السبريد.",
     raw:
-      "حسابات Raw مناسبة لمن يبحث عن أقل سبريد ممكن مع عمولة منفصلة، وهي شائعة بين متداولي السكالبينج والتنفيذ السريع.",
+      "حسابات تقدم سبريدًا منخفضًا جدًا مع عمولة منفصلة، وتناسب السكالبينج والمتداولين النشطين الذين ينفذون صفقات متكررة.",
     ecn:
-      "حسابات ECN تستهدف من يريد بيئة تداول أقرب للأسعار الفعلية مع تنفيذ أسرع وهيكل تكلفة مختلف حسب الشركة.",
+      "حسابات تستهدف المتداولين الباحثين عن تنفيذ أسرع وتسعير أقرب للسوق، مع اختلاف العمولة وشروط التنفيذ بين وسيط وآخر.",
     cent:
-      "حسابات Cent وMicro مناسبة للمبتدئين أو للتجربة برأس مال منخفض، لكنها ليست دائمًا الأفضل من ناحية التكلفة النهائية.",
+      "حسابات تسمح بالتداول بأحجام صغيرة، وتناسب التجربة والتعلم وإدارة المخاطر برأس مال محدود.",
     other:
-      "هذه الفئة تختلف من وسيط إلى آخر، لذلك يجب النظر إلى السبريد والعمولة والحد الأدنى للإيداع معًا.",
+      "تختلف خصائص هذه الحسابات بين الوسطاء، لذلك يجب مقارنة السبريد والعمولة والإيداع وشروط التنفيذ معًا.",
   };
-  return map[type] || map.other;
+
+  return introductions[type] || introductions.other;
+}
+
+function getAccountTypeRecommendation(type: string) {
+  const recommendations: Record<string, string> = {
+    standard: "مناسب للمبتدئين والتداول المعتدل",
+    raw: "مناسب للسكالبينج والتداول النشط",
+    ecn: "مناسب لمن يهتم بسرعة التنفيذ",
+    cent: "مناسب للتجربة ورأس المال الصغير",
+    other: "راجع شروط الحساب بعناية",
+  };
+
+  return recommendations[type] || recommendations.other;
 }
 
 function compareByRealCost(a: PreparedAccount, b: PreparedAccount) {
   if (a.total_cost_score !== b.total_cost_score) {
     return a.total_cost_score - b.total_cost_score;
   }
+
   if (toNumber(a.spread_avg) !== toNumber(b.spread_avg)) {
     return toNumber(a.spread_avg) - toNumber(b.spread_avg);
   }
+
   if (toNumber(a.spread_min) !== toNumber(b.spread_min)) {
     return toNumber(a.spread_min) - toNumber(b.spread_min);
   }
+
   return (a.sort_order ?? 999) - (b.sort_order ?? 999);
 }
 
-function buildSpreadSummary(accounts: PreparedAccount[]) {
-  const sorted = [...accounts].sort(compareByRealCost);
-  const bestRaw = sorted.find((a) => a.normalized_account_type === "raw");
-  const bestStandard = sorted.find((a) => a.normalized_account_type === "standard");
-  const bestECN = sorted.find((a) => a.normalized_account_type === "ecn");
-
-  const parts: string[] = [];
-
-  if (bestRaw) {
-    parts.push(
-      `يبدأ أقل سبريد فعلي في هذه الصفحة من ${bestRaw.spread_min ?? 0} نقطة عبر حساب ${bestRaw.account_name} لدى ${bestRaw.broker_name}.`
-    );
-  }
-
-  if (bestStandard) {
-    parts.push(
-      `أما أفضل حساب Standard من حيث متوسط السبريد حاليًا فهو ${bestStandard.account_name} لدى ${bestStandard.broker_name} بمتوسط يقارب ${bestStandard.spread_avg} نقطة.`
-    );
-  }
-
-  if (bestECN) {
-    parts.push(
-      `وفي فئة ECN يتصدر ${bestECN.broker_name} عبر حساب ${bestECN.account_name} بمتوسط يقارب ${bestECN.spread_avg} نقطة.`
-    );
-  }
-
-  return parts.join(" ");
-}
-
-function getBrokerName(broker: BrokerGenericRow | undefined, brokerId: number) {
+function getBrokerName(
+  broker: BrokerGenericRow | undefined,
+  brokerId: number
+) {
   return (
     broker?.name ||
     broker?.title ||
@@ -235,62 +253,118 @@ function getBrokerWebsiteUrl(broker: BrokerGenericRow | undefined) {
   return broker?.website_url || broker?.account_url || null;
 }
 
-function getPairWinner(
-  a: PreparedAccount | null | undefined,
-  b: PreparedAccount | null | undefined
-) {
-  if (!a && !b) return "—";
-  if (a && !b) return a.broker_name;
-  if (!a && b) return b.broker_name;
-  if (!a || !b) return "—";
-  return compareByRealCost(a, b) <= 0 ? a.broker_name : b.broker_name;
-}
+function formatRating(value: number | string | null) {
+  if (value === null || value === undefined || value === "") return null;
 
-function compactMoney(value: string | null | undefined) {
-  return value || "—";
+  const rating = Number(value);
+
+  if (!Number.isFinite(rating)) return String(value);
+
+  return rating.toFixed(1);
 }
 
 function CompactLogo({
   src,
   alt,
+  size = "normal",
 }: {
   src: string | null;
   alt: string;
+  size?: "small" | "normal" | "large";
 }) {
-  if (!src) {
-    return (
-      <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-200 bg-white text-[10px] font-black text-slate-500">
-        LOGO
-      </div>
-    );
-  }
+  const sizeClasses = {
+    small: "h-9 w-9 rounded-xl",
+    normal: "h-11 w-11 rounded-2xl",
+    large: "h-14 w-14 rounded-2xl",
+  };
 
   return (
-    <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-200 bg-white overflow-hidden">
-      <img
-        src={src}
-        alt={alt}
-        className="h-full w-full object-contain"
-      />
+    <div
+      className={`flex shrink-0 items-center justify-center overflow-hidden border border-slate-200 bg-white p-1.5 ${sizeClasses[size]}`}
+    >
+      {src ? (
+        <img
+          src={src}
+          alt={alt}
+          className="h-full w-full object-contain"
+          loading="lazy"
+        />
+      ) : (
+        <span className="text-[9px] font-black text-slate-400">LOGO</span>
+      )}
     </div>
   );
 }
 
-function BrokerActionButtons({
-  reviewHref,
-  accountHref,
-}: {
-  reviewHref: string | null;
-  accountHref: string | null;
-}) {
+function RankingBadge({ index }: { index: number }) {
   return (
-    <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+    <span
+      className={`inline-flex h-7 min-w-7 items-center justify-center rounded-full px-2 text-[11px] font-black ${
+        index === 0
+          ? "bg-amber-100 text-amber-800"
+          : "bg-slate-100 text-slate-600"
+      }`}
+    >
+      #{index + 1}
+    </span>
+  );
+}
+
+function AccountLink({ item }: { item: PreparedAccount }) {
+  if (!item.broker_slug || !item.account_name) {
+    return (
+      <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-extrabold text-slate-600">
+        {item.account_name || "—"}
+      </span>
+    );
+  }
+
+  return (
+    <Link
+      href={`/brokers/${item.broker_slug}/accounts/${accountSlug(
+        item.account_name
+      )}`}
+      className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-2.5 py-1 text-[11px] font-extrabold text-brand-600 transition hover:border-brand-500 hover:bg-brand-500 hover:text-white"
+    >
+      {item.account_name}
+    </Link>
+  );
+}
+
+function ActionButtons({
+  item,
+  compact = false,
+}: {
+  item: PreparedAccount;
+  compact?: boolean;
+}) {
+  const reviewHref = item.broker_slug
+    ? `/brokers/${item.broker_slug}`
+    : null;
+
+  const accountHref =
+    item.broker_account_url ||
+    item.broker_website_url ||
+    null;
+
+  if (!reviewHref && !accountHref) return null;
+
+  return (
+    <div
+      className={`flex items-center gap-2 ${
+        compact ? "justify-center" : "w-full"
+      }`}
+    >
       {reviewHref ? (
         <Link
           href={reviewHref}
-          className="inline-flex items-center justify-center rounded-2xl bg-brand-500 px-4 py-3 text-sm font-extrabold text-white transition hover:bg-brand-600"
+          className={`inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white font-extrabold text-slate-700 transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-600 ${
+            compact
+              ? "min-w-[76px] px-3 py-2 text-[11px]"
+              : "flex-1 px-4 py-2.5 text-xs"
+          }`}
         >
-          قراءة التقييم
+          التقييم
         </Link>
       ) : null}
 
@@ -299,9 +373,13 @@ function BrokerActionButtons({
           href={accountHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-extrabold text-slate-800 transition hover:border-slate-400"
+          className={`inline-flex items-center justify-center rounded-xl bg-brand-500 font-extrabold text-white shadow-sm transition hover:bg-brand-600 ${
+            compact
+              ? "min-w-[82px] px-3 py-2 text-[11px]"
+              : "flex-1 px-4 py-2.5 text-xs"
+          }`}
         >
-          فتح حساب حقيقي
+          فتح حساب
         </a>
       ) : null}
     </div>
@@ -313,7 +391,7 @@ export default async function LowestSpreadBrokersPage() {
 
   const { data: accountsData, error: accountsError } = await supabase
     .from("broker_accounts")
-    .select(`
+  .select(`
   id,
   broker_id,
   account_name,
@@ -335,17 +413,26 @@ export default async function LowestSpreadBrokersPage() {
 
   if (accountsError) {
     return (
-      <main className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="rounded-[28px] border border-red-200 bg-red-50 p-8 text-right">
-          <h1 className="text-2xl font-black text-slate-900">تعذر تحميل بيانات الحسابات</h1>
-          <p className="mt-3 text-sm text-slate-600">{accountsError.message}</p>
+      <main className="min-h-screen bg-[#f5f7fb] px-4 py-16">
+        <div className="mx-auto max-w-[1520px] rounded-[28px] border border-red-200 bg-red-50 p-7 text-right">
+          <h1 className="text-2xl font-black text-slate-950">
+            تعذر تحميل بيانات الحسابات
+          </h1>
+
+          <p className="mt-3 text-sm leading-7 text-slate-600">
+            {accountsError.message}
+          </p>
         </div>
       </main>
     );
   }
 
   const brokerIds = Array.from(
-    new Set((accountsData ?? []).map((row) => row.broker_id).filter(Boolean))
+    new Set(
+      (accountsData ?? [])
+        .map((row) => row.broker_id)
+        .filter((brokerId): brokerId is number => Boolean(brokerId))
+    )
   );
 
   const { data: brokersData, error: brokersError } = await supabase
@@ -355,124 +442,130 @@ export default async function LowestSpreadBrokersPage() {
 
   if (brokersError) {
     return (
-      <main className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="rounded-[28px] border border-red-200 bg-red-50 p-8 text-right">
-          <h1 className="text-2xl font-black text-slate-900">تعذر تحميل بيانات الشركات</h1>
-          <p className="mt-3 text-sm text-slate-600">{brokersError.message}</p>
+      <main className="min-h-screen bg-[#f5f7fb] px-4 py-16">
+        <div className="mx-auto max-w-[1520px] rounded-[28px] border border-red-200 bg-red-50 p-7 text-right">
+          <h1 className="text-2xl font-black text-slate-950">
+            تعذر تحميل بيانات شركات التداول
+          </h1>
+
+          <p className="mt-3 text-sm leading-7 text-slate-600">
+            {brokersError.message}
+          </p>
         </div>
       </main>
     );
   }
 
   const brokersMap = new Map<number, BrokerGenericRow>(
-    ((brokersData ?? []) as BrokerGenericRow[]).map((broker) => [broker.id, broker])
+    ((brokersData ?? []) as BrokerGenericRow[]).map((broker) => [
+      broker.id,
+      broker,
+    ])
   );
 
-  const accounts: PreparedAccount[] = ((accountsData ?? []) as BrokerAccountRow[]).map((row) => {
+  const accounts: PreparedAccount[] = (
+    (accountsData ?? []) as BrokerAccountRow[]
+  ).map((row) => {
     const broker = brokersMap.get(row.broker_id);
 
-    const brokerName = getBrokerName(broker, row.broker_id);
-    const brokerSlug = getBrokerSlug(broker);
-    const brokerRating = getBrokerRating(broker);
-    const brokerLogo = getBrokerLogo(broker);
-    const brokerAccountUrl = getBrokerAccountUrl(broker);
-    const brokerWebsiteUrl = getBrokerWebsiteUrl(broker);
-
-    const spreadAvg = toNumber(row.spread_avg);
+    const spreadAverage = toNumber(row.spread_avg);
     const commissionValue = toNumber(row.commission_value ?? 0, 0);
-    const normalizedType = normalizeAccountType(row.account_type);
 
     return {
-  ...row,
-  real_account_url: row.real_account_url,
-  broker_name: brokerName,
-  broker_slug: brokerSlug,
-  broker_rating: brokerRating,
-  broker_logo: brokerLogo,
-  broker_intro: broker?.intro || null,
-  broker_best_for: broker?.best_for || null,
-  broker_account_url: brokerAccountUrl,
-  broker_website_url: brokerWebsiteUrl,
-  broker_islamic_label:
-    broker?.islamic_ar ?? broker?.islamic ?? null,
-  broker_arabic_support:
-    broker?.arabic_support ?? broker?.arabic_sup ?? null,
-  normalized_account_type: normalizedType,
-  total_cost_score: spreadAvg + commissionValue / 10,
-};
+      ...row,
+      broker_name: getBrokerName(broker, row.broker_id),
+      broker_slug: getBrokerSlug(broker),
+      broker_rating: getBrokerRating(broker),
+      broker_logo: getBrokerLogo(broker),
+      broker_intro: broker?.intro || null,
+      broker_best_for: broker?.best_for || null,
+      broker_account_url: getBrokerAccountUrl(broker),
+      broker_website_url: getBrokerWebsiteUrl(broker),
+      broker_islamic_label:
+        broker?.islamic_ar ?? broker?.islamic ?? null,
+      broker_arabic_support:
+        broker?.arabic_support ?? broker?.arabic_sup ?? null,
+      normalized_account_type: normalizeAccountType(row.account_type),
+      total_cost_score: spreadAverage + commissionValue / 10,
+    };
   });
-
-  const uniqueBrokerCount = new Set(accounts.map((a) => a.broker_id)).size;
-  const bestOverall = [...accounts].sort(compareByRealCost).slice(0, 8);
-  const spreadSummary = buildSpreadSummary(accounts);
 
   const groupedByType = ["standard", "raw", "ecn", "cent"]
     .map((type) => {
       const items = accounts
-        .filter((a) => a.normalized_account_type === type)
+        .filter((account) => account.normalized_account_type === type)
         .sort(compareByRealCost);
 
       return {
         type,
         label: getAccountTypeLabel(type),
+        shortLabel: getAccountTypeShortLabel(type),
         intro: getAccountTypeIntro(type),
+        recommendation: getAccountTypeRecommendation(type),
         winner: items[0] || null,
         items,
       };
     })
     .filter((group) => group.items.length > 0);
 
-  const bestWithoutCommission = [...accounts]
-    .filter((a) => toNumber(a.commission_value ?? 0, 0) === 0)
-    .sort(compareByRealCost)
-    .slice(0, 6);
+  const bestOverall = [...accounts].sort(compareByRealCost).slice(0, 8);
 
-  const islamicAccounts = [...accounts]
-    .filter((a) => Boolean(a.is_islamic_available))
-    .sort(compareByRealCost)
-    .slice(0, 6);
+  const uniqueBrokerCount = new Set(
+    accounts.map((account) => account.broker_id)
+  ).size;
+
+  const bestStandard =
+    groupedByType.find((group) => group.type === "standard")?.winner || null;
+
+  const bestRaw =
+    groupedByType.find((group) => group.type === "raw")?.winner || null;
+
+  const bestEcn =
+    groupedByType.find((group) => group.type === "ecn")?.winner || null;
+
+  const bestCent =
+    groupedByType.find((group) => group.type === "cent")?.winner || null;
 
   const brokerSummaries: BrokerSummary[] = Array.from(
-    new Set(accounts.map((a) => a.broker_id))
+    new Set(accounts.map((account) => account.broker_id))
   )
     .map((brokerId) => {
-      const items = accounts.filter((a) => a.broker_id === brokerId).sort(compareByRealCost);
-      const first = items[0];
-      if (!first) return null;
+      const brokerAccounts = accounts
+        .filter((account) => account.broker_id === brokerId)
+        .sort(compareByRealCost);
+
+      const firstAccount = brokerAccounts[0];
+
+      if (!firstAccount) return null;
 
       return {
         broker_id: brokerId,
-        broker_name: first.broker_name,
-        broker_slug: first.broker_slug,
-        broker_logo: first.broker_logo,
-        broker_rating: first.broker_rating,
-        broker_account_url: first.broker_account_url,
-        broker_website_url: first.broker_website_url,
-        best_standard: items.find((i) => i.normalized_account_type === "standard") || null,
-        best_raw: items.find((i) => i.normalized_account_type === "raw") || null,
-        best_ecn: items.find((i) => i.normalized_account_type === "ecn") || null,
-        best_cent: items.find((i) => i.normalized_account_type === "cent") || null,
-        best_overall: items[0] || null,
+        broker_name: firstAccount.broker_name,
+        broker_slug: firstAccount.broker_slug,
+        broker_logo: firstAccount.broker_logo,
+        broker_rating: firstAccount.broker_rating,
+        broker_account_url: firstAccount.broker_account_url,
+        broker_website_url: firstAccount.broker_website_url,
+        best_standard:
+          brokerAccounts.find(
+            (account) => account.normalized_account_type === "standard"
+          ) || null,
+        best_raw:
+          brokerAccounts.find(
+            (account) => account.normalized_account_type === "raw"
+          ) || null,
+        best_ecn:
+          brokerAccounts.find(
+            (account) => account.normalized_account_type === "ecn"
+          ) || null,
+        best_cent:
+          brokerAccounts.find(
+            (account) => account.normalized_account_type === "cent"
+          ) || null,
+        best_overall: firstAccount,
       };
     })
     .filter(Boolean) as BrokerSummary[];
-
-  const comparisonCandidates = [...brokerSummaries]
-    .sort((a, b) => {
-      const aRating = toNumber(a.broker_rating, 0);
-      const bRating = toNumber(b.broker_rating, 0);
-      return bRating - aRating;
-    })
-    .slice(0, 4);
-
-  const pairComparisons = [];
-  for (let i = 0; i < comparisonCandidates.length; i += 2) {
-    const a = comparisonCandidates[i];
-    const b = comparisonCandidates[i + 1];
-    if (a && b) {
-      pairComparisons.push({ a, b });
-    }
-  }
 
   const faqJsonLd = {
     "@context": "https://schema.org",
@@ -483,7 +576,7 @@ export default async function LowestSpreadBrokersPage() {
         name: "ما المقصود بأقل سبريد في شركات التداول؟",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "المقصود هو أقل فارق سعري بين الشراء والبيع يقدمه الوسيط على نوع حساب معين. لكن يجب النظر أيضًا إلى العمولات لأن بعض الحسابات تعوض انخفاض السبريد بعمولة منفصلة.",
+          text: "المقصود هو أقل فارق بين سعر الشراء وسعر البيع يقدمه الوسيط على نوع حساب محدد، مع ضرورة احتساب أي عمولة منفصلة.",
         },
       },
       {
@@ -491,7 +584,7 @@ export default async function LowestSpreadBrokersPage() {
         name: "هل الحساب ذو السبريد الأقل هو الأفضل دائمًا؟",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "ليس دائمًا. الأفضلية تعتمد على متوسط السبريد والعمولة وسرعة التنفيذ والحد الأدنى للإيداع ومدى توفر الحساب الإسلامي.",
+          text: "ليس دائمًا، لأن التكلفة الفعلية تشمل متوسط السبريد والعمولة وجودة التنفيذ والحد الأدنى للإيداع وشروط الحساب.",
         },
       },
       {
@@ -499,13 +592,13 @@ export default async function LowestSpreadBrokersPage() {
         name: "ما الفرق بين Standard وRaw وECN؟",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "حساب Standard غالبًا يأتي بدون عمولة مباشرة لكن بسبريد أعلى نسبيًا، بينما Raw وECN يقدمان سبريدًا أقل عادةً مع عمولة منفصلة لكل لوت.",
+          text: "حساب Standard يأتي غالبًا دون عمولة منفصلة مع سبريد أعلى نسبيًا، بينما تقدم حسابات Raw وECN سبريدًا أقل عادةً مقابل عمولة منفصلة.",
         },
       },
     ],
   };
 
-    const breadcrumbJsonLd = {
+  const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
@@ -536,7 +629,7 @@ export default async function LowestSpreadBrokersPage() {
     name: "أفضل شركات التداول بأقل سبريد 2026",
     url: "https://brokeralarab.com/lowest-spread-brokers",
     description:
-      "مقارنة قوية لأفضل شركات التداول بأقل سبريد في 2026، مع ترتيب أفضل حسابات Standard وRaw وECN وCent.",
+      "مقارنة أفضل شركات التداول بأقل سبريد حسب نوع الحساب ومتوسط السبريد والعمولة.",
     inLanguage: "ar",
     isPartOf: {
       "@type": "WebSite",
@@ -550,1033 +643,1583 @@ export default async function LowestSpreadBrokersPage() {
     "@type": "ItemList",
     name: "أفضل شركات التداول بأقل سبريد",
     itemListOrder: "https://schema.org/ItemListOrderAscending",
-    numberOfItems: Math.min(bestOverall.length, 8),
-    itemListElement: bestOverall.slice(0, 8).map((item, index) => ({
+    numberOfItems: bestOverall.length,
+    itemListElement: bestOverall.map((item, index) => ({
       "@type": "ListItem",
       position: index + 1,
-      name: `${item.broker_name} - ${item.account_name || "حساب تداول"}`,
+      name: `${item.broker_name} - ${
+        item.account_name || "حساب تداول"
+      }`,
       url:
-  item.broker_slug && item.account_name
-    ? `https://brokeralarab.com/brokers/${item.broker_slug}/accounts/${accountSlug(item.account_name)}`
-    : item.broker_slug
-    ? `https://brokeralarab.com/brokers/${item.broker_slug}`
-    : "https://brokeralarab.com/lowest-spread-brokers",
+        item.broker_slug && item.account_name
+          ? `https://brokeralarab.com/brokers/${
+              item.broker_slug
+            }/accounts/${accountSlug(item.account_name)}`
+          : item.broker_slug
+          ? `https://brokeralarab.com/brokers/${item.broker_slug}`
+          : "https://brokeralarab.com/lowest-spread-brokers",
     })),
   };
 
+  const heroWinners = [
+    {
+      type: "standard",
+      label: "أفضل Standard",
+      item: bestStandard,
+    },
+    {
+      type: "raw",
+      label: "أفضل Raw",
+      item: bestRaw,
+    },
+    {
+      type: "ecn",
+      label: "أفضل ECN",
+      item: bestEcn,
+    },
+  ].filter(
+    (
+      winner
+    ): winner is {
+      type: string;
+      label: string;
+      item: PreparedAccount;
+    } => Boolean(winner.item)
+  );
+
   return (
-    <main className="bg-[#f6f8fb] text-slate-900">
-            <Script
-        id="lowest-spread-brokers-faq-jsonld"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-      />
+    <main dir="rtl" className="min-h-screen bg-[#f5f7fb] text-slate-900">
       <Script
-        id="lowest-spread-brokers-breadcrumb-jsonld"
+        id="lowest-spread-faq-jsonld"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
-      />
-      <Script
-        id="lowest-spread-brokers-webpage-jsonld"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageJsonLd) }}
-      />
-      <Script
-        id="lowest-spread-brokers-itemlist-jsonld"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(faqJsonLd),
+        }}
       />
 
-  <section className="border-b border-slate-200 bg-white">
-  <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
-    <div className="grid items-center gap-10 lg:grid-cols-[1.34fr_0.66fr]">
-      {/* RIGHT SIDE */}
+      <Script
+        id="lowest-spread-breadcrumb-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbJsonLd),
+        }}
+      />
+
+      <Script
+        id="lowest-spread-webpage-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(webPageJsonLd),
+        }}
+      />
+
+      <Script
+        id="lowest-spread-itemlist-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(itemListJsonLd),
+        }}
+      />
+
+     {/* HERO */}
+<section className="overflow-hidden border-b border-slate-200 bg-white">
+  <div className="mx-auto max-w-[1520px] px-4 pb-6 pt-7 sm:px-6 sm:pb-8 sm:pt-9 lg:px-8 lg:py-10 xl:px-10">
+    <div className="grid items-center gap-7 lg:grid-cols-[minmax(0,1.35fr)_minmax(380px,0.65fr)] lg:gap-10 xl:gap-12">
+      {/* HERO CONTENT */}
       <div className="text-right">
-        <h1 className="text-[34px] font-black leading-[1.1] tracking-[-0.02em] text-slate-950 sm:text-[50px] lg:text-[64px]">
+        <div className="inline-flex items-center gap-2 rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-extrabold text-brand-600 sm:py-1.5 sm:text-xs">
+          <span className="h-1.5 w-1.5 rounded-full bg-brand-500 sm:h-2 sm:w-2" />
+          مقارنة حسابات التداول 2026
+        </div>
+
+        <h1 className="mt-4 max-w-[920px] text-[30px] font-black leading-[1.18] tracking-[-0.02em] text-slate-950 min-[380px]:text-[32px] sm:text-[46px] sm:leading-[1.12] lg:text-[54px] xl:text-[60px]">
           أفضل شركات التداول
-          <br />
-          <span className="text-brand-500">بأقل سبريد في 2026</span>
+          <span className="mt-1 block text-brand-500">
+            بأقل سبريد في 2026
+          </span>
         </h1>
 
-        <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
-          مقارنة احترافية لأفضل حسابات التداول حسب التكلفة الفعلية
-          <span className="font-bold text-slate-900"> (السبريد + العمولة) </span>
-          مع إبراز أفضل حسابات Standard وRaw وECN لمساعدتك على اختيار الحساب الأنسب.
+        <p className="mt-4 max-w-[820px] text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
+          قارن أفضل حسابات التداول حسب{" "}
+          <strong className="font-black text-slate-900">
+            متوسط السبريد والعمولة والتكلفة الفعلية
+          </strong>
+          ، مع فصل حسابات Standard وRaw وECN وCent للحصول على مقارنة عادلة
+          وواضحة.
         </p>
 
-        <div className="mt-6 flex w-full justify-center lg:justify-start">
-  <div className="flex w-full max-w-[340px] flex-col items-center gap-3 sm:max-w-none sm:w-auto sm:flex-row-reverse lg:ml-auto">
-    <a
-      href="#account-types"
-      className="inline-flex w-full sm:w-auto min-w-[220px] items-center justify-center rounded-2xl bg-brand-500 px-6 py-3 text-sm font-extrabold text-white transition hover:bg-brand-600"
-    >
-      مقارنة حسب نوع الحساب
-    </a>
+        <div className="mt-5 grid max-w-[640px] grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3">
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-center sm:px-4">
+            <div className="text-xl font-black text-slate-950 sm:text-2xl">
+              {uniqueBrokerCount}
+            </div>
 
-    <a
-      href="#head-to-head"
-      className="inline-flex w-full sm:w-auto min-w-[220px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-extrabold text-slate-800 transition hover:border-slate-400"
-    >
-      مقارنة شركة بشركة
-    </a>
-  </div>
-</div>
-</div>
+            <div className="mt-0.5 text-[10px] font-bold text-slate-500 sm:text-xs">
+              شركة مقارنة
+            </div>
+          </div>
 
-      {/* LEFT SIDE */}
-<div
-  dir="rtl"
-  className="hidden w-full max-w-[430px] mr-auto overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.06)] lg:block"
->
-  {/* HEADER */}
-  <div className="border-b border-slate-200 bg-[linear-gradient(180deg,#fffdf7_0%,#f8fafc_100%)] px-5 py-4 text-right">
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-center sm:px-4">
+            <div className="text-xl font-black text-slate-950 sm:text-2xl">
+              {accounts.length}
+            </div>
 
+            <div className="mt-0.5 text-[10px] font-bold text-slate-500 sm:text-xs">
+              حساب تداول
+            </div>
+          </div>
 
-    <h2 className="text-lg font-black text-slate-950">
-      أفضل الحسابات
-    </h2>
+          <div className="hidden rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-center sm:block">
+            <div className="text-2xl font-black text-slate-950">
+              {groupedByType.length}
+            </div>
 
-    <p className="mt-3 text-[13px] leading-7 text-slate-600">
-    مقارنة سريعة لأفضل حسابات التداول حسب نوع الحساب، مع إبراز الحسابات المناسبة
-    للسبريد المنخفض والتكلفة الفعلية للمتداولين.
-  </p>
-  </div>
-
-  {/* TABLE */}
-  <div className="px-4 py-4">
-    <div className="overflow-hidden rounded-[22px] border border-slate-200">
-  {/* HEADER ROW */}
-  <div className="grid grid-cols-[70px_1fr_1.2fr_1fr] items-center gap-3 bg-[#f8fafc] px-4 py-3 text-[11px] font-extrabold text-slate-500 text-right">
-    <div className="text-center">الشعار</div>
-    <div>الحساب</div>
-    <div>الشركة</div>
-    <div>الفئة</div>
-  </div>
-
-  {[
-    {
-      shortLabel: "Raw",
-      best: accounts
-        .filter((acc) => acc.normalized_account_type === "raw")
-        .sort(compareByRealCost)[0],
-    },
-    {
-      shortLabel: "Standard",
-      best: accounts
-        .filter((acc) => acc.normalized_account_type === "standard")
-        .sort(compareByRealCost)[0],
-    },
-    {
-      shortLabel: "ECN",
-      best: accounts
-        .filter((acc) => acc.normalized_account_type === "ecn")
-        .sort(compareByRealCost)[0],
-    },
-  ].map((item) => {
-    const best = item.best;
-    const brokerName = best?.broker_name || "غير متوفر";
-    const accountName = best?.account_name || "—";
-
-    return (
-      <div
-        key={item.shortLabel}
-        className="grid grid-cols-[70px_1fr_1.2fr_1fr] items-center gap-3 border-t border-slate-200 px-4 py-3 text-right hover:bg-slate-50"
-      >
-        {/* logo */}
-        <div className="flex justify-center">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white p-1">
-            {best?.broker_logo ? (
-              <img
-                src={best.broker_logo}
-                alt={brokerName}
-                className="h-full w-full object-contain"
-              />
-            ) : (
-              <span className="text-[10px] text-slate-400">—</span>
-            )}
+            <div className="mt-0.5 text-xs font-bold text-slate-500">
+              فئات حسابات
+            </div>
           </div>
         </div>
 
-        {/* account */}
-        <div className="text-right">
-          {best?.broker_slug && best?.account_name ? (
-  <Link
-    href={`/brokers/${best.broker_slug}/accounts/${accountSlug(best.account_name)}`}
-    className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-2.5 py-1 text-[10px] font-extrabold text-brand-600 transition hover:bg-brand-500 hover:text-white"
-  >
-    {accountName}
-  </Link>
-) : (
-  <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-2.5 py-1 text-[10px] font-extrabold text-brand-600">
-    {accountName}
-  </span>
-)}
-        </div>
+        <div className="mt-5 flex flex-col gap-3 sm:mt-6 sm:flex-row">
+          <a
+            href="#account-types"
+            className="inline-flex min-h-12 w-full items-center justify-center rounded-2xl bg-brand-500 px-6 py-3 text-sm font-extrabold text-white shadow-[0_10px_24px_rgba(30,91,184,0.18)] transition hover:bg-brand-600 sm:w-auto sm:min-w-[220px]"
+          >
+            قارن حسب نوع الحساب
+          </a>
 
-        {/* broker */}
-        <div className="truncate text-[15px] font-black text-slate-950 text-right">
-          {brokerName}
-        </div>
-
-        {/* category */}
-        <div className="font-bold text-slate-700 text-right">
-          {item.shortLabel}
+          <a
+            href="#head-to-head"
+            className="hidden min-h-12 items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-extrabold text-slate-800 transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-600 sm:inline-flex sm:min-w-[200px]"
+          >
+            مقارنة شركة بشركة
+          </a>
         </div>
       </div>
-    );
-  })}
-</div>
 
-    {/* FOOTER NOTE */}
-      
-    
-  </div>
-</div>
+      {/* DESKTOP SUMMARY */}
+      <div className="hidden lg:block">
+        <div className="overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-[0_14px_40px_rgba(15,23,42,0.07)]">
+          <div className="flex items-center justify-between gap-4 border-b border-slate-200 bg-slate-50/70 px-5 py-4">
+            <div>
+              <h2 className="text-lg font-black text-slate-950">
+                أفضل حساب في كل فئة
+              </h2>
+
+              <p className="mt-1 text-xs text-slate-500">
+                خلاصة سريعة لأفضل النتائج
+              </p>
+            </div>
+
+            <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-extrabold text-emerald-700">
+              محدثة
+            </span>
+          </div>
+
+          <div className="divide-y divide-slate-200">
+            {heroWinners.map(({ type, label, item }, index) => (
+              <div
+                key={type}
+                className="grid grid-cols-[32px_40px_minmax(0,1fr)_auto] items-center gap-3 px-5 py-3.5"
+              >
+                <RankingBadge index={index} />
+
+                <CompactLogo
+                  src={item.broker_logo}
+                  alt={item.broker_name}
+                  size="small"
+                />
+
+                <div className="min-w-0">
+                  <div className="truncate text-sm font-black text-slate-950">
+                    {item.broker_name}
+                  </div>
+
+                  <div className="mt-0.5 truncate text-[11px] font-bold text-slate-500">
+                    {item.account_name || "—"}
+                  </div>
+                </div>
+
+                <div className="shrink-0 text-left">
+                  <div className="text-[10px] font-extrabold text-brand-600">
+                    {label}
+                  </div>
+
+                  <div className="mt-0.5 text-xs font-black text-emerald-700">
+                    {item.spread || "—"}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="border-t border-slate-200 bg-slate-50 px-5 py-3">
+            <p className="text-[11px] leading-5 text-slate-500">
+              يعتمد الترتيب على متوسط السبريد والعمولة والتكلفة الفعلية.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* MOBILE QUICK WINNERS */}
+    <div className="mt-5 overflow-hidden rounded-[22px] border border-slate-200 bg-slate-50 lg:hidden">
+      <div className="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3">
+        <h2 className="text-sm font-black text-slate-950">
+          أفضل الحسابات سريعًا
+        </h2>
+
+        <span className="text-[10px] font-extrabold text-brand-600">
+          حسب الفئة
+        </span>
+      </div>
+
+      <div className="divide-y divide-slate-200">
+        {heroWinners.map(({ type, label, item }, index) => (
+          <div
+            key={type}
+            className="grid grid-cols-[30px_36px_minmax(0,1fr)_auto] items-center gap-2.5 px-3.5 py-3"
+          >
+            <RankingBadge index={index} />
+
+            <CompactLogo
+              src={item.broker_logo}
+              alt={item.broker_name}
+              size="small"
+            />
+
+            <div className="min-w-0">
+              <div className="truncate text-sm font-black text-slate-950">
+                {item.broker_name}
+              </div>
+
+              <div className="mt-0.5 truncate text-[10px] font-bold text-slate-500">
+                {item.account_name || "—"}
+              </div>
+            </div>
+
+            <div className="shrink-0 text-left">
+              <div className="text-[9px] font-extrabold text-brand-600">
+                {label}
+              </div>
+
+              <div className="mt-0.5 text-[11px] font-black text-emerald-700">
+                {item.spread || "—"}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   </div>
 </section>
 
-      {/* ACCOUNT TYPES */}
-      <section id="account-types" className="mx-auto max-w-7xl px-4 pt-4 pb-10 sm:px-6 lg:px-8">
-        <div className="w-full text-right">
-          <h2 className="text-3xl font-black text-slate-950 sm:text-4xl">
-            مقارنة أقل سبريد حسب نوع الحساب
-          </h2>
-          <p className="mt-2 text-[15px] leading-7 text-slate-600 whitespace-normal">
-  لتكون المقارنة عادلة، قمنا بفصل الترتيب حسب نوع الحساب. فمقارنة حساب Raw مع Standard بشكل مباشر قد تكون مضللة، لذلك ستجد أدناه أفضل الشركات في كل فئة على حدة.
-</p>
+{/* PAGE NAVIGATION */}
+<section className="hidden border-b border-slate-200 bg-white sm:block">
+  <div className="mx-auto max-w-[1520px] px-6 py-3 lg:px-8 xl:px-10">
+    <nav
+      aria-label="التنقل داخل الصفحة"
+      className="flex flex-wrap items-center justify-center gap-2 lg:justify-start"
+    >
+      {[
+        {
+          href: "#account-types",
+          label: "المقارنة حسب الحساب",
+        },
+        {
+          href: "#head-to-head",
+          label: "مقارنة الشركات",
+        },
+        {
+          href: "#best-by-category",
+          label: "أفضل حساب بكل فئة",
+        },
+        {
+          href: "#selection-method",
+          label: "منهجية الاختيار",
+        },
+        {
+          href: "#faq",
+          label: "الأسئلة الشائعة",
+        },
+      ].map((item) => (
+        <a
+          key={item.href}
+          href={item.href}
+          className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-extrabold text-slate-700 transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-600"
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+  </div>
+</section>
+
+     {/* ACCOUNT TYPES */}
+<section
+  id="account-types"
+  className="scroll-mt-24 pb-8 pt-7 sm:py-10 lg:py-12"
+>
+  <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-8 xl:px-10">
+    {/* SECTION INTRO */}
+    <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end lg:gap-8">
+      <div className="max-w-[950px] text-right">
+        <span className="inline-flex rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-[10px] font-black text-brand-600 sm:text-[11px]">
+          مقارنة عادلة حسب الفئة
+        </span>
+
+        <h2 className="mt-3 max-w-[820px] text-[26px] font-black leading-[1.22] text-slate-950 sm:text-4xl sm:leading-tight">
+          مقارنة أقل سبريد حسب نوع الحساب
+        </h2>
+
+        <p className="mt-3 max-w-[920px] text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
+          لا نقارن حساب Raw بحساب Standard داخل ترتيب واحد، لأن طريقة
+          احتساب التكلفة تختلف. لذلك نفصل النتائج حسب نوع الحساب لإظهار
+          الأقوى داخل كل فئة.
+        </p>
+      </div>
+
+      <div className="hidden rounded-[20px] border border-amber-200 bg-amber-50 px-5 py-4 text-right lg:block">
+        <div className="flex items-center gap-2">
+          <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-amber-100 text-xs font-black text-amber-800">
+            !
+          </span>
+
+          <div className="text-xs font-black text-amber-950">
+            انتبه إلى التكلفة الفعلية
+          </div>
         </div>
 
-        <div className="mt-8 space-y-8">
-          {groupedByType.map((group) => (
-            <section
-              key={group.type}
-              className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.06)]"
-            >
-              <div className="p-5 sm:p-7">
-                
+        <p className="mt-2 text-xs leading-6 text-amber-900/80">
+          السبريد المنخفض لا يعني دائمًا أن الحساب أرخص، لأن حسابات Raw
+          وECN قد تضيف عمولة منفصلة.
+        </p>
+      </div>
+    </div>
 
-                <div className="text-right">
-                  
-
-                  <h3 className="text-2xl font-black text-slate-950 sm:text-3xl">
-                    أفضل {group.label} من حيث السبريد والتكلفة
-                  </h3>
-
-                  <p className="mt-3 text-base leading-8 text-slate-600">
-                    {group.intro}
-                  </p>
-
-                  {/* Desktop Table */}
-                  <div className="mt-6 hidden overflow-hidden rounded-[24px] border border-slate-200 bg-white lg:block">
-                    <div className="overflow-x-auto">
-                      <table className="min-w-full text-right">
-                        <thead className="bg-slate-50">
-                         <tr className="text-sm text-slate-600">
-                            <th className="px-4 py-4 font-extrabold">الترتيب</th>
-                            <th className="px-4 py-4 font-extrabold">الشركة</th>
-                            <th className="px-4 py-4 font-extrabold">الحساب</th>
-                            <th className="px-4 py-4 font-extrabold">السبريد</th>
-                            <th className="px-4 py-4 font-extrabold">العمولة</th>
-                            <th className="px-4 py-4 font-extrabold">الإيداع</th>
-                            <th className="w-[220px] px-4 py-4 text-center font-extrabold">الرابط</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {group.items.slice(0, 7).map((item, index) => (
-                            <tr
-  key={item.id}
-  className="border-t border-slate-200 text-sm text-slate-700 transition-colors hover:bg-slate-50/80"
->
-                              <td className="px-4 py-4">
-                                <span
-                                  className={`inline-flex rounded-full px-3 py-1 text-xs font-extrabold ${
-                                    index === 0
-                                      ? "bg-amber-100 text-amber-800"
-                                      : "bg-slate-100 text-slate-700"
-                                  }`}
-                                >
-                                  #{index + 1}
-                                </span>
-                              </td>
-                              <td className="px-4 py-4 font-black text-slate-950">
-                                {item.broker_name}
-                              </td>
-                              <td className="px-4 py-4">
-  {item.broker_slug && item.account_name ? (
-    <Link
-      href={`/brokers/${item.broker_slug}/accounts/${accountSlug(item.account_name)}`}
-      className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-xs font-extrabold text-brand-600 transition hover:bg-brand-500 hover:text-white"
-    >
-      {item.account_name}
-    </Link>
-  ) : (
-    "—"
-  )}
-</td>
-                              <td className="px-4 py-4">
-                                <span className="inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-extrabold text-emerald-700">
-                                  {item.spread || "—"}
-                                </span>
-                              </td>
-                              <td className="px-4 py-4">{item.commission || "—"}</td>
-                              <td className="px-4 py-4">{item.min_deposit || "—"}</td>
-                             <td className="px-4 py-4">
-  <div
-    className={`flex ${
-      item.broker_account_url ? "justify-end gap-2" : "justify-center"
-    }`}
-  >
-    {item.broker_account_url ? (
-      <>
-        {item.broker_slug && (
-          <Link
-            href={`/brokers/${item.broker_slug}`}
-            className="inline-flex min-w-[88px] items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-extrabold text-slate-700 transition hover:border-brand-100 hover:bg-brand-50 hover:text-brand-600"
-          >
-            التقييم
-          </Link>
-        )}
-
-        <a
-          href={item.broker_account_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex min-w-[94px] items-center justify-center rounded-xl bg-brand-500 px-3 py-2 text-xs font-extrabold text-white shadow-sm transition hover:bg-brand-600"
+    {/* ACCOUNT GROUPS */}
+    <div className="mt-6 space-y-5 sm:mt-8 sm:space-y-6 lg:space-y-7">
+      {groupedByType.map((group) => (
+        <article
+          key={group.type}
+          className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_10px_28px_rgba(15,23,42,0.055)] sm:rounded-[28px]"
         >
-          فتح حساب
-        </a>
-      </>
-    ) : (
-      item.broker_slug && (
-        <Link
-          href={`/brokers/${item.broker_slug}`}
-          className="inline-flex w-[140px] items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-extrabold text-slate-700 transition hover:border-brand-100 hover:bg-brand-50 hover:text-brand-600"
-        >
-          التقييم
-        </Link>
-      )
-    )}
-  </div>
-</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+          {/* GROUP HEADER */}
+          <div className="border-b border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] px-4 py-4 sm:px-6 sm:py-5 lg:px-7">
+            <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-center">
+              <div className="min-w-0 text-right">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="inline-flex rounded-full bg-brand-500 px-3 py-1 text-[10px] font-black text-white sm:text-[11px]">
+                    {group.shortLabel}
+                  </span>
+
+                  <span className="inline-flex rounded-full border border-slate-200 bg-white px-3 py-1 text-[10px] font-extrabold text-slate-600 sm:text-[11px]">
+                    {group.recommendation}
+                  </span>
+                </div>
+
+                <h3 className="mt-3 text-[20px] font-black leading-[1.28] text-slate-950 min-[380px]:text-[21px] sm:text-2xl lg:text-[28px]">
+                  أفضل {group.label} من حيث السبريد والتكلفة
+                </h3>
+
+                <p className="mt-2 max-w-[920px] text-[13px] leading-6 text-slate-600 sm:text-[15px] sm:leading-7">
+                  {group.intro}
+                </p>
+              </div>
+
+              {group.winner ? (
+                <div className="grid grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-3 rounded-[18px] border border-emerald-300 bg-emerald-50 px-3.5 py-3">
+                  <CompactLogo
+                    src={group.winner.broker_logo}
+                    alt={group.winner.broker_name}
+                    size="small"
+                  />
+
+                  <div className="min-w-0">
+                    <div className="text-[9px] font-black text-emerald-700 sm:text-[10px]">
+                      الأفضل في هذه الفئة
+                    </div>
+
+                    <div className="mt-0.5 truncate text-sm font-black text-slate-950">
+                      {group.winner.broker_name}
+                    </div>
+
+                    <div className="mt-0.5 truncate text-[10px] font-extrabold text-slate-500 sm:text-[11px]">
+                      {group.winner.account_name || "—"}
                     </div>
                   </div>
 
-                 {/* Mobile Cards */}
-<div className="mt-5 grid gap-3 lg:hidden">
-  {group.items.slice(0, 3).map((item, index) => (
-    <div
-      key={item.id}
-      className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.05)]"
-    >
-      <div className="p-4">
-        {/* Top row */}
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <CompactLogo src={item.broker_logo} alt={item.broker_name} />
-            <div className="min-w-0 text-right">
-              <div className="truncate text-[15px] font-black text-slate-950">
-                {item.broker_name}
-              </div>
-             {item.broker_slug && item.account_name ? (
-  <Link
-    href={`/brokers/${item.broker_slug}/accounts/${accountSlug(item.account_name)}`}
-    className="mt-0.5 inline-flex text-sm font-bold text-brand-600 hover:text-brand-600"
-  >
-    {item.account_name}
-  </Link>
-) : (
-  <div className="mt-0.5 text-sm font-bold text-slate-500">—</div>
-)}
-            </div>
-          </div>
+                  <div className="shrink-0 border-r border-emerald-200 pr-3 text-left">
+                    <div className="text-[9px] font-bold text-slate-500">
+                      السبريد
+                    </div>
 
-          <span
-            className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-extrabold ${
-              index === 0
-                ? "bg-amber-100 text-amber-800"
-                : "bg-slate-100 text-slate-700"
-            }`}
-          >
-            #{index + 1}
-          </span>
-        </div>
-
-        {/* Stats row */}
-        <div className="mt-4 grid grid-cols-3 gap-2">
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 px-2 py-2.5 text-center">
-            <div className="text-[10px] font-bold text-slate-500">السبريد</div>
-            <div className="mt-1 text-[13px] font-black text-emerald-700">
-              {item.spread || "—"}
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 px-2 py-2.5 text-center">
-            <div className="text-[10px] font-bold text-slate-500">العمولة</div>
-            <div className="mt-1 text-[13px] font-black text-slate-950">
-              {item.commission || "—"}
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 px-2 py-2.5 text-center">
-            <div className="text-[10px] font-bold text-slate-500">الإيداع</div>
-            <div className="mt-1 text-[13px] font-black text-slate-950">
-              {item.min_deposit || "—"}
-            </div>
-          </div>
-        </div>
-
-        {/* Actions */}
-        <div className="mt-4 flex gap-2">
-          {item.broker_account_url ? (
-            <>
-              <a
-                href={item.broker_account_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex flex-1 items-center justify-center rounded-2xl bg-brand-500 px-4 py-3 text-sm font-extrabold text-white transition hover:bg-brand-600"
-              >
-                فتح حساب
-              </a>
-
-              {item.broker_slug ? (
-                <Link
-                  href={`/brokers/${item.broker_slug}`}
-                  className="inline-flex min-w-[96px] items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-extrabold text-slate-700 transition hover:border-brand-100 hover:bg-brand-50 hover:text-brand-600"
-                >
-                  التقييم
-                </Link>
+                    <div className="mt-0.5 text-xs font-black text-emerald-700 sm:text-sm">
+                      {group.winner.spread || "—"}
+                    </div>
+                  </div>
+                </div>
               ) : null}
-            </>
-          ) : item.broker_slug ? (
-            <Link
-              href={`/brokers/${item.broker_slug}`}
-              className="inline-flex w-full items-center justify-center rounded-2xl bg-brand-500 px-4 py-3 text-sm font-extrabold text-white transition hover:bg-brand-600"
-            >
-              قراءة التقييم
-            </Link>
-          ) : null}
+            </div>
+          </div>
+
+          {/* DESKTOP TABLE */}
+          <div className="hidden p-5 lg:block lg:p-6">
+            <div className="overflow-hidden rounded-[20px] border border-slate-200">
+              <table className="w-full table-fixed text-right">
+               <thead className="bg-slate-100/80">
+  <tr className="text-[11px] text-slate-600">
+    <th className="w-[7%] px-4 py-3.5 text-center font-black">
+      الترتيب
+    </th>
+
+    <th className="w-[30%] px-4 py-3.5 font-black">
+      الشركة والحساب
+    </th>
+
+    <th className="w-[13%] px-4 py-3.5 text-center font-black">
+      السبريد
+    </th>
+
+    <th className="w-[15%] px-4 py-3.5 text-center font-black">
+      العمولة
+    </th>
+
+    <th className="w-[13%] px-4 py-3.5 text-center font-black">
+      الإيداع
+    </th>
+
+    <th className="w-[22%] px-4 py-3.5 text-center font-black">
+      الانتقال
+    </th>
+  </tr>
+</thead>
+
+          <tbody>
+  {group.items.slice(0, 7).map((item, index) => (
+    <tr
+      key={item.id}
+      className="border-t border-slate-200 bg-white text-sm transition hover:bg-brand-50/30"
+    >
+      {/* الترتيب */}
+      <td className="px-4 py-3 text-center">
+        <RankingBadge index={index} />
+      </td>
+
+      {/* الشركة والحساب */}
+      <td className="px-4 py-3">
+        <div className="flex items-center gap-3">
+          <CompactLogo
+            src={item.broker_logo}
+            alt={item.broker_name}
+            size="small"
+          />
+
+          <div className="min-w-0">
+            <div className="truncate text-[13px] font-black text-slate-950">
+              {item.broker_name}
+            </div>
+
+            <div className="mt-1 flex flex-wrap items-center gap-2">
+              <AccountLink item={item} />
+
+              {formatRating(item.broker_rating) ? (
+                <span className="text-[10px] font-black text-amber-600">
+                  ★ {formatRating(item.broker_rating)}
+                </span>
+              ) : null}
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      </td>
+
+      {/* السبريد */}
+      <td className="px-4 py-3 text-center">
+        <span className="inline-flex rounded-full border border-emerald-300 bg-emerald-50 px-3 py-1 text-[11px] font-black text-emerald-700">
+          {item.spread || "—"}
+        </span>
+      </td>
+
+      {/* العمولة */}
+      <td className="px-4 py-3 text-center text-xs font-extrabold text-slate-800">
+        {item.commission || "—"}
+      </td>
+
+      {/* الإيداع */}
+      <td className="px-4 py-3 text-center text-xs font-extrabold text-slate-800">
+        {item.min_deposit || "—"}
+      </td>
+
+      {/* الانتقال */}
+      <td className="px-4 py-3">
+        <div className="flex justify-center">
+          <ActionButtons item={item} compact />
+        </div>
+      </td>
+    </tr>
   ))}
-</div>
-</div>
-              </div>
-            </section>
-          ))}
-        </div>
-      </section>
+</tbody>
+              </table>
+            </div>
+          </div>
 
-      <HeadToHeadCompare brokers={brokerSummaries} />
+          {/* MOBILE CARDS */}
+          <div className="grid gap-3 p-3.5 lg:hidden">
+            {group.items
+              .slice(0, 2)
+              .map((item, index) => {
+              
+                return (
+                  <div
+                    key={item.id}
+                    className="rounded-[20px] border border-slate-200 bg-white p-3.5 shadow-[0_5px_16px_rgba(15,23,42,0.035)]"
+                  >
+                    <div className="grid grid-cols-[30px_42px_minmax(0,1fr)] items-center gap-2.5">
+                      <RankingBadge index={index} />
 
-      {/* BEST BROKER BY CATEGORY */}
-<section className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
-  <div className="rounded-[30px] border border-slate-200 bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.05)] sm:p-7">
-    <div className="max-w-3xl text-right">
-      <h2 className="text-3xl font-black text-slate-950 sm:text-4xl">
-        أفضل وسيط حسب نوع الحساب
+                      <CompactLogo
+                        src={item.broker_logo}
+                        alt={item.broker_name}
+                        size="small"
+                      />
+
+                      <div className="min-w-0">
+                        <div className="truncate text-[15px] font-black text-slate-950">
+  {item.broker_name}
+</div>
+
+                        <div className="mt-1">
+                          <AccountLink item={item} />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-3 grid grid-cols-3 overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
+                      <div className="border-l border-slate-200 px-1.5 py-2.5 text-center">
+                        <div className="text-[8px] font-extrabold text-slate-500">
+                          السبريد
+                        </div>
+
+                        <div className="mt-1 text-[11px] font-black leading-5 text-emerald-700">
+                          {item.spread || "—"}
+                        </div>
+                      </div>
+
+                      <div className="border-l border-slate-200 px-1.5 py-2.5 text-center">
+                        <div className="text-[8px] font-extrabold text-slate-500">
+                          العمولة
+                        </div>
+
+                        <div className="mt-1 min-h-[20px] break-words text-[10px] font-black leading-5 text-slate-900">
+                          {item.commission || "—"}
+                        </div>
+                      </div>
+
+                      <div className="px-1.5 py-2.5 text-center">
+                        <div className="text-[8px] font-extrabold text-slate-500">
+                          الإيداع
+                        </div>
+
+                        <div className="mt-1 text-[11px] font-black leading-5 text-slate-900">
+                          {item.min_deposit || "—"}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-3">
+                      <ActionButtons item={item} />
+                    </div>
+                  </div>
+                );
+              })}
+
+            {group.items.length > 2 ? (
+              <details className="group overflow-hidden rounded-[18px] border border-slate-200 bg-slate-50">
+                <summary className="flex cursor-pointer list-none items-center justify-center gap-2 px-4 py-3 text-xs font-black text-brand-600">
+                  عرض باقي الحسابات
+
+                  <span className="transition group-open:rotate-180">
+                    ▼
+                  </span>
+                </summary>
+
+                <div className="grid gap-2.5 border-t border-slate-200 bg-white p-3">
+                  {group.items
+                    .slice(2, 7)
+                   .map((item, index) => {
+  return (
+                        <div
+                          key={item.id}
+                          className="rounded-[17px] border border-slate-200 bg-white p-3"
+                        >
+                          <div className="grid grid-cols-[28px_36px_minmax(0,1fr)] items-center gap-2">
+                            <RankingBadge index={index + 2} />
+
+                            <CompactLogo
+                              src={item.broker_logo}
+                              alt={item.broker_name}
+                              size="small"
+                            />
+
+                            <div className="min-w-0">
+                              <div className="truncate text-sm font-black text-slate-950">
+  {item.broker_name}
+</div>
+
+                              <div className="mt-0.5 truncate text-[10px] font-extrabold text-slate-500">
+                                {item.account_name || "—"}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="mt-3 grid grid-cols-3 overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
+                            <div className="border-l border-slate-200 px-1 py-2 text-center">
+                              <div className="text-[8px] font-bold text-slate-500">
+                                السبريد
+                              </div>
+
+                              <div className="mt-0.5 text-[10px] font-black leading-5 text-emerald-700">
+                                {item.spread || "—"}
+                              </div>
+                            </div>
+
+                            <div className="border-l border-slate-200 px-1 py-2 text-center">
+                              <div className="text-[8px] font-bold text-slate-500">
+                                العمولة
+                              </div>
+
+                              <div className="mt-0.5 break-words text-[9px] font-black leading-4 text-slate-900">
+                                {item.commission || "—"}
+                              </div>
+                            </div>
+
+                            <div className="px-1 py-2 text-center">
+                              <div className="text-[8px] font-bold text-slate-500">
+                                الإيداع
+                              </div>
+
+                              <div className="mt-0.5 text-[10px] font-black leading-5 text-slate-900">
+                                {item.min_deposit || "—"}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="mt-2.5">
+                            <ActionButtons item={item} />
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+              </details>
+            ) : null}
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+{/* HEAD TO HEAD COMPARISON */}
+<section
+  id="head-to-head"
+  className="scroll-mt-24 pb-8 sm:pb-10 lg:pb-12"
+>
+  <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-8 xl:px-10">
+    <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.055)] sm:rounded-[28px]">
+      {/* SECTION HEADER */}
+<div className="border-b border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] px-4 py-4 sm:px-7 sm:py-6">
+  <div className="flex items-center justify-between gap-3">
+    <div className="min-w-0">
+      <span className="inline-flex rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-[9px] font-black text-brand-600 sm:text-[11px]">
+        مقارنة مباشرة
+      </span>
+
+      <h2 className="mt-2.5 max-w-[850px] text-[23px] font-black leading-[1.25] text-slate-950 min-[380px]:text-[25px] sm:mt-3 sm:text-4xl sm:leading-tight">
+        قارن بين شركتين حسب نوع الحساب
       </h2>
-      <p className="mt-3 hidden text-base text-slate-600 lg:block whitespace-nowrap">
-        هذه الخلاصة السريعة تعرض أفضل وسيط في كل نوع حساب بناءً على متوسط السبريد
-        والتكلفة الفعلية، حتى تصل إلى الخيار الأنسب بسرعة.
+
+      <p className="mt-2 max-w-[900px] text-[12px] leading-6 text-slate-600 sm:mt-3 sm:text-base sm:leading-8">
+        اختر شركتين لمعرفة الحساب الأقل تكلفة داخل كل فئة.
       </p>
     </div>
+  </div>
+</div>
 
-    {(() => {
-      const bestByCategory = [
-        {
-          title: "أفضل حساب Standard",
-          badge: "Standard",
-          item: accounts
-            .filter((acc) => acc.normalized_account_type === "standard")
-            .sort((a, b) => a.total_cost_score - b.total_cost_score)[0],
-        },
-        {
-          title: "أفضل حساب Raw",
-          badge: "Raw",
-          item: accounts
-            .filter((acc) => acc.normalized_account_type === "raw")
-            .sort((a, b) => a.total_cost_score - b.total_cost_score)[0],
-        },
-        {
-          title: "أفضل حساب ECN",
-          badge: "ECN",
-          item: accounts
-            .filter((acc) => acc.normalized_account_type === "ecn")
-            .sort((a, b) => a.total_cost_score - b.total_cost_score)[0],
-        },
-        {
-          title: "أفضل حساب Cent / Micro",
-          badge: "Cent",
-          item: accounts
-            .filter((acc) => acc.normalized_account_type === "cent")
-            .sort((a, b) => a.total_cost_score - b.total_cost_score)[0],
-        },
-      ];
+      {/* COMPARISON COMPONENT */}
+      <div className="p-3.5 sm:p-5 lg:p-6">
+        <LowestSpreadHeadToHead brokers={brokerSummaries} />
+      </div>
+    </div>
+  </div>
+</section>
 
-      return (
-        <>
-          {/* Desktop */}
-          <div className="mt-6 hidden gap-4 md:grid md:grid-cols-2 xl:grid-cols-4">
-            {bestByCategory.map((card, index) => (
-              <div
-                key={card.badge}
-                className="overflow-hidden rounded-[24px] border border-slate-200 bg-slate-50"
-              >
-                <div className="p-4 text-right">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="text-sm font-black text-slate-900">{card.title}</div>
+{/* BEST BY CATEGORY */}
+<section
+  id="best-by-category"
+  className="scroll-mt-24 pb-8 sm:pb-10 lg:pb-12"
+>
+  <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-8 xl:px-10">
+    <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.055)] sm:rounded-[28px]">
+      {/* SECTION HEADER */}
+      <div className="border-b border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] px-5 py-6 sm:px-7">
+        <span className="inline-flex rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-[10px] font-black text-brand-600 sm:text-[11px]">
+          الخلاصة السريعة
+        </span>
+
+        <h2 className="mt-3 max-w-[820px] text-[26px] font-black leading-[1.22] text-slate-950 sm:text-4xl sm:leading-tight">
+          أفضل وسيط حسب نوع الحساب
+        </h2>
+
+        <p className="mt-3 max-w-[950px] text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
+          اخترنا الحساب المتصدر داخل كل فئة بناءً على متوسط السبريد
+          والعمولة والتكلفة الفعلية، بدل وضع جميع أنواع الحسابات في ترتيب
+          واحد غير عادل.
+        </p>
+      </div>
+
+      {(() => {
+        const bestByCategory = [
+          {
+            title: "أفضل حساب Standard",
+            mobileTitle: "أفضل حساب Standard",
+            type: "Standard",
+            description: "للمبتدئين والتداول اليومي المعتدل",
+            item: bestStandard,
+          },
+          {
+            title: "أفضل حساب Raw Spread",
+            mobileTitle: "أفضل حساب Raw",
+            type: "Raw",
+            description: "للسكالبينج والصفقات المتكررة",
+            item: bestRaw,
+          },
+          {
+            title: "أفضل حساب ECN",
+            mobileTitle: "أفضل حساب ECN",
+            type: "ECN",
+            description: "لمن يهتم بالتنفيذ والتسعير",
+            item: bestEcn,
+          },
+          {
+            title: "أفضل حساب Cent / Micro",
+            mobileTitle: "أفضل حساب Cent / Micro",
+            type: "Cent",
+            description: "للتعلم ورأس المال المحدود",
+            item: bestCent,
+          },
+        ];
+
+        return (
+          <>
+            {/* DESKTOP */}
+            <div className="hidden grid-cols-2 gap-4 p-5 md:grid sm:p-7 xl:grid-cols-4">
+              {bestByCategory.map((card, index) => (
+                <article
+                  key={card.type}
+                  className="flex h-full min-w-0 flex-col rounded-[22px] border border-slate-200 bg-slate-50/70 p-5 transition hover:-translate-y-0.5 hover:border-brand-200 hover:bg-white hover:shadow-[0_12px_28px_rgba(15,23,42,0.06)]"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <h3 className="text-base font-black leading-6 text-slate-950 lg:text-lg">
+                        {card.title}
+                      </h3>
+
+                      <p className="mt-1 text-[11px] font-bold leading-5 text-slate-500">
+                        {card.description}
+                      </p>
+                    </div>
 
                     <span
-                      className={`inline-flex rounded-full px-3 py-1 text-[11px] font-extrabold ${
+                      className={`inline-flex shrink-0 rounded-full px-2.5 py-1 text-[9px] font-black ${
                         index === 0
                           ? "bg-amber-100 text-amber-800"
-                          : "bg-brand-50 text-brand-600"
+                          : "bg-brand-100 text-brand-700"
                       }`}
                     >
-                      {card.badge}
+                      {card.type}
                     </span>
                   </div>
 
                   {card.item ? (
                     <>
-                      <div className="mt-4 flex items-center justify-between gap-3">
+                      <div className="mt-5 flex items-center gap-3">
                         <CompactLogo
                           src={card.item.broker_logo}
                           alt={card.item.broker_name}
+                          size="normal"
                         />
 
-                        <div className="min-w-0 flex-1 text-right">
-                          <div className="truncate text-lg font-black text-slate-950">
+                        <div className="min-w-0 flex-1">
+                          <div className="truncate text-base font-black text-slate-950">
                             {card.item.broker_name}
                           </div>
-                          {card.item.broker_slug && card.item.account_name ? (
-  <Link
-    href={`/brokers/${card.item.broker_slug}/accounts/${accountSlug(card.item.account_name)}`}
-    className="mt-1 inline-flex text-sm font-bold text-brand-600 hover:text-brand-600"
-  >
-    {card.item.account_name}
-  </Link>
-) : (
-  <div className="mt-1 text-sm text-slate-500">—</div>
-)}
+
+                          <div className="mt-1">
+                            <AccountLink item={card.item} />
+                          </div>
+
+                          {formatRating(card.item.broker_rating) ? (
+                            <div className="mt-1.5 text-[11px] font-black text-amber-600">
+                              ★ {formatRating(card.item.broker_rating)}
+                            </div>
+                          ) : null}
                         </div>
                       </div>
 
-                      <div className="mt-4 grid grid-cols-2 gap-2">
-                        <div className="rounded-2xl border border-slate-200 bg-white p-3 text-center">
-                          <div className="text-[10px] font-bold text-slate-500">
+                      <div className="mt-5 grid grid-cols-3 overflow-hidden rounded-xl border border-slate-200 bg-white">
+                        <div className="border-l border-slate-200 px-1.5 py-3 text-center">
+                          <div className="text-[8px] font-extrabold text-slate-500">
+                            السبريد
+                          </div>
+
+                          <div className="mt-1 text-[11px] font-black text-emerald-700">
+                            {card.item.spread || "—"}
+                          </div>
+                        </div>
+
+                        <div className="border-l border-slate-200 px-1.5 py-3 text-center">
+                          <div className="text-[8px] font-extrabold text-slate-500">
                             العمولة
                           </div>
-                          <div className="mt-1 text-sm font-black text-slate-950">
+
+                          <div className="mt-1 break-words text-[10px] font-black text-slate-950">
                             {card.item.commission || "—"}
                           </div>
                         </div>
 
-                        <div className="rounded-2xl border border-slate-200 bg-white p-3 text-center">
-                          <div className="text-[10px] font-bold text-slate-500">
-                            متوسط السبريد
+                        <div className="px-1.5 py-3 text-center">
+                          <div className="text-[8px] font-extrabold text-slate-500">
+                            الإيداع
                           </div>
-                          <div className="mt-1 text-sm font-black text-emerald-700">
-                            {card.item.spread_avg ?? "—"}
+
+                          <div className="mt-1 text-[11px] font-black text-slate-950">
+                            {card.item.min_deposit || "—"}
                           </div>
                         </div>
                       </div>
 
-                      <div className="mt-4 flex gap-2">
-                        {card.item.broker_slug ? (
-                          <Link
-                            href={`/brokers/${card.item.broker_slug}`}
-                            className={`inline-flex items-center justify-center rounded-2xl px-4 py-3 text-sm font-extrabold transition ${
-                              card.item.broker_account_url
-                                ? "min-w-[105px] border border-slate-200 bg-white text-slate-700 hover:border-brand-100 hover:bg-brand-50 hover:text-brand-600"
-                                : "w-full bg-brand-500 text-white hover:bg-brand-600"
-                            }`}
-                          >
-                            التقييم
-                          </Link>
-                        ) : null}
-
-                        {card.item.broker_account_url ? (
-                          <a
-                            href={card.item.broker_account_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex flex-1 items-center justify-center rounded-2xl bg-brand-500 px-4 py-3 text-sm font-extrabold text-white transition hover:bg-brand-600"
-                          >
-                            فتح حساب
-                          </a>
-                        ) : null}
+                      <div className="mt-auto pt-5">
+                        <ActionButtons item={card.item} />
                       </div>
                     </>
                   ) : (
-                    <div className="mt-4 rounded-2xl border border-slate-200 bg-white px-4 py-6 text-center text-sm font-bold text-slate-500">
-                      لا توجد بيانات كافية في هذه الفئة حاليًا
+                    <div className="mt-5 flex flex-1 items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-8 text-center text-sm font-bold text-slate-500">
+                      لا توجد بيانات كافية لهذه الفئة حاليًا
                     </div>
                   )}
-                </div>
-              </div>
-            ))}
-          </div>
+                </article>
+              ))}
+            </div>
 
-          {/* Mobile */}
-          <div className="mt-6 space-y-3 md:hidden">
-            {bestByCategory.map((card, index) => (
-              <details
-                key={card.badge}
-                className="group overflow-hidden rounded-[22px] border border-slate-200 bg-slate-50"
-              >
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 text-right">
-                  <div className="flex min-w-0 flex-1 items-center justify-between gap-3">
+            {/* MOBILE */}
+            <div className="grid gap-3 p-4 md:hidden">
+              {bestByCategory.map((card, index) => (
+                <details
+                  key={card.type}
+                  className="group overflow-hidden rounded-[20px] border border-slate-200 bg-slate-50"
+                >
+                  <summary className="grid cursor-pointer list-none grid-cols-[38px_minmax(0,1fr)_auto] items-center gap-3 p-3.5">
+                    {card.item ? (
+                      <CompactLogo
+                        src={card.item.broker_logo}
+                        alt={card.item.broker_name}
+                        size="small"
+                      />
+                    ) : (
+                      <div className="h-9 w-9 shrink-0 rounded-xl border border-slate-200 bg-white" />
+                    )}
+
                     <div className="min-w-0 text-right">
-                      <div className="text-sm font-black text-slate-950">
-                        {card.title}
+                      <div className="flex min-w-0 items-center gap-2">
+                        <h3 className="min-w-0 flex-1 text-[13px] font-black leading-5 text-slate-950">
+                          {card.mobileTitle}
+                        </h3>
+
+                        <span
+                          className={`inline-flex shrink-0 rounded-full px-2 py-0.5 text-[8px] font-black ${
+                            index === 0
+                              ? "bg-amber-100 text-amber-800"
+                              : "bg-brand-100 text-brand-700"
+                          }`}
+                        >
+                          {card.type}
+                        </span>
                       </div>
-                      <div className="mt-1 text-xs text-slate-500">
+
+                      <p className="mt-1 truncate text-[10px] font-extrabold text-slate-500">
                         {card.item?.broker_name || "غير متوفر"}
-                      </div>
+                      </p>
                     </div>
 
-                    <span
-                      className={`inline-flex shrink-0 rounded-full px-3 py-1 text-[11px] font-extrabold ${
-                        index === 0
-                          ? "bg-amber-100 text-amber-800"
-                          : "bg-brand-50 text-brand-600"
-                      }`}
-                    >
-                      {card.badge}
+                    <span className="shrink-0 text-xs text-slate-400 transition group-open:rotate-180">
+                      ▼
                     </span>
-                  </div>
+                  </summary>
 
-                  <span className="shrink-0 text-slate-400 transition group-open:rotate-180">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      className="h-5 w-5"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.51a.75.75 0 01-1.08 0l-4.25-4.51a.75.75 0 01.02-1.06z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
+                  <div className="border-t border-slate-200 bg-white p-4">
+                    {card.item ? (
+                      <>
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="min-w-0">
+                            <div className="truncate text-base font-black text-slate-950">
+                              {card.item.broker_name}
+                            </div>
+
+                            <div className="mt-1">
+                              <AccountLink item={card.item} />
+                            </div>
+                          </div>
+
+                          {formatRating(card.item.broker_rating) ? (
+                            <span className="shrink-0 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-black text-amber-700">
+                              ★ {formatRating(card.item.broker_rating)}
+                            </span>
+                          ) : null}
+                        </div>
+
+                        <div className="mt-4 grid grid-cols-3 overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
+                          <div className="border-l border-slate-200 px-1.5 py-2.5 text-center">
+                            <div className="text-[8px] font-bold text-slate-500">
+                              السبريد
+                            </div>
+
+                            <div className="mt-1 text-[11px] font-black text-emerald-700">
+                              {card.item.spread || "—"}
+                            </div>
+                          </div>
+
+                          <div className="border-l border-slate-200 px-1.5 py-2.5 text-center">
+                            <div className="text-[8px] font-bold text-slate-500">
+                              العمولة
+                            </div>
+
+                            <div className="mt-1 break-words text-[10px] font-black leading-4 text-slate-950">
+                              {card.item.commission || "—"}
+                            </div>
+                          </div>
+
+                          <div className="px-1.5 py-2.5 text-center">
+                            <div className="text-[8px] font-bold text-slate-500">
+                              الإيداع
+                            </div>
+
+                            <div className="mt-1 text-[11px] font-black text-slate-950">
+                              {card.item.min_deposit || "—"}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="mt-4">
+                          <ActionButtons item={card.item} />
+                        </div>
+                      </>
+                    ) : (
+                      <div className="rounded-2xl bg-slate-50 px-4 py-5 text-center text-sm font-bold text-slate-500">
+                        لا توجد بيانات كافية لهذه الفئة حاليًا
+                      </div>
+                    )}
+                  </div>
+                </details>
+              ))}
+            </div>
+          </>
+        );
+      })()}
+    </div>
+  </div>
+</section>
+
+     {/* SELECTION METHOD */}
+<section
+  id="selection-method"
+  className="scroll-mt-24 pb-7 sm:pb-10 lg:pb-12"
+>
+  <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-8 xl:px-10">
+    <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.05)] sm:rounded-[28px]">
+      <div className="grid lg:grid-cols-[0.78fr_1.22fr]">
+        {/* INTRO */}
+        <div className="border-b border-slate-200 bg-[linear-gradient(145deg,#eef5ff_0%,#ffffff_85%)] px-4 py-5 sm:px-7 sm:py-6 lg:border-b-0 lg:border-l lg:py-8">
+          <span className="inline-flex rounded-full border border-brand-200 bg-white px-3 py-1 text-[10px] font-black text-brand-600 sm:text-[11px]">
+            منهجية بروكر العرب
+          </span>
+
+        <h2 className="mt-3 max-w-[270px] text-balance text-[22px] font-black leading-[1.3] tracking-[-0.01em] text-slate-950 min-[380px]:max-w-none min-[380px]:text-[24px] sm:text-4xl sm:leading-tight">
+  كيف اخترنا هذه الشركات؟
+</h2>
+
+        <p className="mt-2.5 max-w-[290px] text-[12px] leading-[1.9] text-slate-600 min-[380px]:max-w-none sm:mt-3 sm:text-base sm:leading-8">
+  نقارن التكلفة الفعلية لكل حساب، ثم نفصل النتائج حسب النوع لضمان مقارنة
+  عادلة وواضحة.
+</p>
+
+          <div className="mt-4 rounded-[17px] border border-brand-200 bg-white p-3.5 sm:mt-5 sm:p-4">
+            <div className="text-sm font-black text-slate-950">
+              المعادلة الأساسية
+            </div>
+
+            <div className="mt-2 rounded-xl bg-brand-50 px-3 py-2.5 text-center text-[13px] font-black text-brand-700 sm:py-3 sm:text-sm">
+  التكلفة الفعلية = السبريد + العمولة
+</div>
+
+            <p className="mt-2.5 text-[11px] leading-5 text-slate-500 sm:mt-3 sm:text-xs sm:leading-6">
+  نراجع أيضًا نوع الحساب، والإيداع المطلوب، ومدى ملاءمته لطريقة تداولك.
+</p>
+
+            <Link
+              href="/learn-trading/spread"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 inline-flex items-center gap-1 text-xs font-black text-brand-600 transition hover:text-brand-700"
+            >
+              تعرّف أكثر على معنى السبريد
+              <span aria-hidden="true">←</span>
+            </Link>
+          </div>
+         {/* RELATED LINKS - DESKTOP */}
+<div className="mt-4 hidden lg:block">
+  <div className="mb-2 text-[11px] font-black text-slate-950">
+    روابط مفيدة
+  </div>
+
+  <div className="grid grid-cols-3 gap-2">
+    <Link
+      href="/brokers"
+      className="flex min-h-[54px] items-center justify-between gap-2 rounded-[13px] border border-slate-200 bg-white px-3 py-2 transition hover:border-brand-200 hover:bg-brand-50"
+    >
+      <span className="text-[10px] font-black leading-4 text-slate-800">
+        تقييمات الوسطاء
+      </span>
+
+      <span className="shrink-0 text-xs font-black text-brand-500">
+        ←
+      </span>
+    </Link>
+
+    <Link
+      href="/best-brokers"
+      className="flex min-h-[54px] items-center justify-between gap-2 rounded-[13px] border border-slate-200 bg-white px-3 py-2 transition hover:border-brand-200 hover:bg-brand-50"
+    >
+      <span className="text-[10px] font-black leading-4 text-slate-800">
+        أفضل الوسطاء
+      </span>
+
+      <span className="shrink-0 text-xs font-black text-brand-500">
+        ←
+      </span>
+    </Link>
+
+    <Link
+      href="/compare"
+      className="flex min-h-[54px] items-center justify-between gap-2 rounded-[13px] border border-slate-200 bg-white px-3 py-2 transition hover:border-brand-200 hover:bg-brand-50"
+    >
+      <span className="text-[10px] font-black leading-4 text-slate-800">
+        مقارنات الوسطاء
+      </span>
+
+      <span className="shrink-0 text-xs font-black text-brand-500">
+        ←
+      </span>
+    </Link>
+  </div>
+</div>
+        </div>
+
+
+        {/* DESKTOP METHOD */}
+        <div className="hidden p-6 md:block lg:p-7">
+          <div className="grid gap-4 md:grid-cols-2">
+            {[
+              {
+                number: "01",
+                title: "متوسط السبريد",
+                description:
+                  "نقارن متوسط السبريد المتوقع، وليس فقط أقل رقم يبدأ منه الحساب في الظروف المثالية.",
+              },
+              {
+                number: "02",
+                title: "العمولة المنفصلة",
+                description:
+                  "نضيف العمولة إلى المقارنة، لأن السبريد المنخفض قد لا يعني أن التكلفة النهائية أقل.",
+              },
+              {
+                number: "03",
+                title: "نوع الحساب",
+                description:
+                  "نفصل بين Standard وRaw وECN وCent حتى تتم مقارنة الحسابات المتشابهة فقط.",
+              },
+              {
+                number: "04",
+                title: "الحد الأدنى للإيداع",
+                description:
+                  "نراجع سهولة الوصول للحساب، لأن بعض الحسابات تتطلب إيداعًا مرتفعًا.",
+              },
+              {
+                number: "05",
+                title: "أسلوب التداول",
+                description:
+                  "الحساب المناسب للصفقات السريعة قد لا يكون الأفضل للمبتدئ أو للمتداول طويل الأجل.",
+              },
+              {
+                number: "06",
+                title: "وضوح الشروط",
+                description:
+                  "نفضل الحسابات التي تعرض السبريد والعمولة وشروط التنفيذ بصورة واضحة.",
+              },
+            ].map((item) => (
+              <article
+                key={item.number}
+                className="rounded-[20px] border border-slate-200 bg-slate-50/80 p-5 transition hover:border-brand-200 hover:bg-white"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-500 text-xs font-black text-white">
+                    {item.number}
+                  </span>
+
+                  <h3 className="text-base font-black text-slate-950 lg:text-lg">
+                    {item.title}
+                  </h3>
+                </div>
+
+                <p className="mt-3 text-sm leading-7 text-slate-600">
+                  {item.description}
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
+
+       {/* MOBILE METHOD */}
+<div className="p-3.5 md:hidden">
+  <div className="overflow-hidden rounded-[17px] border border-slate-200 bg-white">
+    {[
+      {
+        number: "01",
+        title: "متوسط السبريد",
+        description: "نعتمد المتوسط المتوقع، وليس أقل رقم إعلاني فقط.",
+      },
+      {
+        number: "02",
+        title: "العمولة",
+        description: "نضيف العمولة إلى السبريد لمعرفة التكلفة الحقيقية.",
+      },
+      {
+        number: "03",
+        title: "نوع الحساب",
+        description: "نفصل أنواع الحسابات حتى تكون المقارنة عادلة.",
+      },
+    ].map((item, index) => (
+      <div
+        key={item.number}
+        className={`grid grid-cols-[34px_minmax(0,1fr)] items-center gap-3 px-3.5 py-3 ${
+          index > 0 ? "border-t border-slate-200" : ""
+        }`}
+      >
+        <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-brand-500 text-[9px] font-black text-white">
+          {item.number}
+        </span>
+
+        <div className="min-w-0">
+          <h3 className="text-[12px] font-black text-slate-950">
+            {item.title}
+          </h3>
+
+          <p className="mt-0.5 text-[10px] leading-5 text-slate-500">
+            {item.description}
+          </p>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <details className="group mt-2.5 overflow-hidden rounded-[16px] border border-brand-200 bg-brand-50">
+    <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-[11px] font-black text-brand-600">
+      عوامل إضافية نراجعها
+
+      <span className="transition group-open:rotate-180">
+        ▼
+      </span>
+    </summary>
+
+    <div className="border-t border-brand-200 bg-white px-4 py-3">
+      <p className="text-[11px] leading-6 text-slate-600">
+        الحد الأدنى للإيداع، ووضوح الشروط، وجودة التنفيذ، ومدى ملاءمة
+        الحساب للمبتدئ أو للصفقات المتكررة.
+      </p>
+    </div>
+  </details>
+</div>
+        </div>
+     </div>
+  </div>
+</section>
+
+{/* HOW TO CHOOSE */}
+<section className="pb-7 sm:pb-10 lg:pb-12">
+  <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-8 xl:px-10">
+    <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.05)] sm:rounded-[28px]">
+{/* HEADER */}
+<div className="border-b border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] px-4 py-5 sm:px-7 sm:py-6">
+  <span className="inline-flex rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-[9px] font-black text-brand-600 sm:text-[11px]">
+    دليل الاختيار
+  </span>
+
+ <h2 className="mt-3 max-w-[280px] text-balance text-[22px] font-black leading-[1.3] tracking-[-0.01em] text-slate-950 min-[380px]:max-w-[330px] min-[380px]:text-[24px] sm:max-w-[900px] sm:text-4xl sm:leading-tight">
+  كيف تختار الحساب الأنسب لتداولك؟
+</h2>
+
+<p className="mt-2.5 max-w-[290px] text-[12px] leading-[1.9] text-slate-600 min-[380px]:max-w-[330px] sm:mt-3 sm:max-w-[950px] sm:text-base sm:leading-8">
+  يعتمد الاختيار على خبرتك، وحجم رأس المال، وعدد الصفقات، والتكلفة
+  الفعلية.
+</p>
+</div>
+
+      {/* DESKTOP */}
+      <div className="hidden grid-cols-2 gap-4 p-6 md:grid xl:grid-cols-4 lg:p-7">
+        {[
+          {
+            title: "إذا كنت مبتدئًا",
+            account: "Standard",
+            description:
+              "حساب أبسط غالبًا دون عمولة منفصلة، وتكون تكلفة الصفقة أوضح.",
+          },
+          {
+            title: "إذا كنت تتداول صفقات سريعة",
+            account: "Raw / ECN",
+            description:
+              "السبريد المنخفض مهم مع الصفقات المتكررة، لكن يجب احتساب العمولة.",
+          },
+          {
+            title: "إذا كان رأس مالك صغيرًا",
+            account: "Cent / Micro",
+            description:
+              "يسمح بأحجام تداول صغيرة للتجربة والتعلم وإدارة المخاطر.",
+          },
+          {
+            title: "إذا كان هدفك أقل تكلفة",
+            account: "Total Cost",
+            description:
+              "قارن متوسط السبريد والعمولة معًا، ولا تعتمد على الرقم المعلن وحده.",
+          },
+        ].map((item) => (
+          <article
+            key={item.title}
+            className="flex h-full flex-col rounded-[20px] border border-slate-200 bg-slate-50/80 p-5 transition hover:border-brand-200 hover:bg-white"
+          >
+            <span className="inline-flex w-fit rounded-full border border-brand-200 bg-white px-3 py-1 text-[9px] font-black text-brand-600">
+              {item.account}
+            </span>
+
+            <h3 className="mt-4 text-lg font-black leading-7 text-slate-950">
+              {item.title}
+            </h3>
+
+            <p className="mt-3 flex-1 text-sm leading-7 text-slate-600">
+              {item.description}
+            </p>
+
+            <a
+              href="#account-types"
+              className="mt-5 inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-black text-slate-700 transition hover:border-brand-300 hover:bg-brand-50 hover:text-brand-600"
+            >
+              عرض المقارنة
+            </a>
+          </article>
+        ))}
+      </div>
+
+{/* MOBILE */}
+<div className="p-3.5 md:hidden">
+  <div className="overflow-hidden rounded-[17px] border border-slate-200 bg-white">
+    {[
+      {
+        title: "إذا كنت مبتدئًا",
+        account: "Standard",
+        description: "حساب أبسط غالبًا دون عمولة منفصلة.",
+      },
+      {
+        title: "إذا كنت تتداول صفقات سريعة",
+        account: "Raw / ECN",
+        description: "سبريد منخفض مع ضرورة احتساب العمولة.",
+      },
+      {
+        title: "إذا كان رأس مالك صغيرًا",
+        account: "Cent / Micro",
+        description: "أحجام تداول صغيرة للتجربة وإدارة المخاطر.",
+      },
+      {
+        title: "إذا كان هدفك أقل تكلفة",
+        account: "Total Cost",
+        description: "قارن السبريد والعمولة معًا.",
+      },
+    ].map((item, index) => (
+      <details
+        key={item.title}
+        className={`group ${
+          index > 0 ? "border-t border-slate-200" : ""
+        }`}
+      >
+        <summary className="grid cursor-pointer list-none grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3.5">
+          <div className="min-w-0">
+            <h3 className="text-[12px] font-black leading-5 text-slate-950">
+              {item.title}
+            </h3>
+
+            <span className="mt-1 inline-flex rounded-full bg-brand-50 px-2 py-0.5 text-[8px] font-black text-brand-600">
+              {item.account}
+            </span>
+          </div>
+
+          <span className="text-[10px] text-slate-400 transition group-open:rotate-180">
+            ▼
+          </span>
+        </summary>
+
+        <div className="border-t border-slate-200 bg-slate-50 px-4 py-3">
+          <p className="text-[11px] leading-5 text-slate-600">
+            {item.description}
+          </p>
+
+          <a
+            href="#account-types"
+            className="mt-2 inline-flex text-[10px] font-black text-brand-600"
+          >
+            عرض الحسابات المناسبة ←
+          </a>
+        </div>
+      </details>
+    ))}
+  </div>
+</div>
+
+      {/* SUMMARY */}
+<div className="mx-3.5 mb-3.5 rounded-[17px] border border-brand-200 bg-brand-50 px-4 py-3.5 sm:mx-7 sm:mb-7 sm:px-5 sm:py-4">
+  <div className="grid grid-cols-[30px_minmax(0,1fr)] items-start gap-3">
+    <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-brand-500 text-xs font-black text-white">
+      ✓
+    </span>
+
+    <div>
+      <h3 className="text-[13px] font-black text-slate-950 sm:text-base">
+        الخلاصة
+      </h3>
+
+      <p className="mt-1 text-[11px] leading-6 text-slate-700 sm:text-sm sm:leading-7">
+        Standard للبساطة، وRaw أو ECN للصفقات المتكررة، وCent للتجربة
+        برأس مال صغير. قارن دائمًا التكلفة الكاملة قبل فتح الحساب.
+      </p>
+    </div>
+  </div>
+</div>
+    </div>
+  </div>
+</section>
+
+{/* IMPORTANT NOTICE */}
+<section className="pb-7 sm:pb-10 lg:pb-12">
+  <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-8 xl:px-10">
+    <div className="rounded-[20px] border border-amber-300 bg-amber-50 px-4 py-4 sm:px-6 sm:py-5">
+      <div className="flex items-center gap-3">
+        <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-amber-200 bg-white text-base font-black text-amber-700 shadow-sm">
+          !
+        </span>
+
+        <h2 className="text-[16px] font-black text-amber-950 sm:text-lg">
+          ملاحظة حول بيانات السبريد
+        </h2>
+      </div>
+
+      <p className="mt-3 text-[12px] leading-6 text-amber-900/85 sm:text-sm sm:leading-7">
+        السبريد متغير وقد يرتفع أثناء الأخبار والتقلبات وضعف السيولة.
+        الأرقام المعروضة للمقارنة ولا تضمن بقاء السبريد عند المستوى نفسه.
+      </p>
+
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+        <Link
+          href="/learn-trading/spread"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 text-[11px] font-black text-amber-900 underline decoration-amber-400 underline-offset-4"
+        >
+          اقرأ دليل السبريد
+          <span aria-hidden="true">←</span>
+        </Link>
+
+        <span className="text-[10px] font-bold text-amber-800/80">
+          راجع شروط الوسيط قبل اتخاذ القرار.
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+{/* FAQ */}
+<section
+  id="faq"
+  className="scroll-mt-24 pb-3 sm:pb-8 lg:pb-12"
+>
+  <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-8 xl:px-10">
+    <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.05)] sm:rounded-[28px]">
+      {/* HEADER */}
+      <div className="border-b border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] px-5 py-6 sm:px-7">
+        <span className="inline-flex rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-[10px] font-black text-brand-600 sm:text-[11px]">
+          أسئلة المتداولين
+        </span>
+
+        <h2 className="mt-3 max-w-[280px] text-[24px] font-black leading-[1.3] tracking-[-0.01em] text-slate-950 min-[380px]:max-w-[310px] min-[380px]:text-[26px] sm:max-w-[850px] sm:text-4xl sm:leading-tight">
+  الأسئلة الشائعة حول السبريد
+</h2>
+
+        <p className="mt-3 max-w-[900px] text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
+  إجابات مختصرة على أهم الأسئلة المتعلقة بالسبريد والعمولة وأنواع
+  حسابات التداول.
+</p>
+      </div>
+
+      {(() => {
+        const faqItems = [
+          {
+            question: "ما هو السبريد في الفوركس؟",
+            answer:
+              "السبريد هو الفرق بين سعر الشراء وسعر البيع، ويعد جزءًا أساسيًا من تكلفة فتح الصفقة حتى عندما لا توجد عمولة منفصلة.",
+          },
+          {
+            question: "هل أقل سبريد يعني أن الحساب هو الأرخص؟",
+            answer:
+              "ليس دائمًا. قد يعرض الحساب سبريدًا منخفضًا لكنه يضيف عمولة، لذلك يجب احتساب السبريد والعمولة معًا.",
+          },
+          {
+            question: "ما الفرق بين Standard وRaw؟",
+            answer:
+              "حساب Standard يدمج التكلفة عادةً داخل السبريد، بينما يقدم Raw سبريدًا أقل مقابل عمولة منفصلة.",
+          },
+          {
+            question: "هل حساب ECN أفضل من Standard؟",
+            answer:
+              "يعتمد ذلك على أسلوب التداول. ECN قد يناسب الصفقات المتكررة، بينما Standard أبسط للمبتدئ.",
+          },
+          {
+            question: "ما أفضل حساب للمبتدئين؟",
+            answer:
+              "يكون Standard مناسبًا غالبًا بسبب بساطته ووضوح تكلفته، مع ضرورة مراجعة الإيداع والتنظيم والدعم.",
+          },
+          {
+            question: "هل حساب Cent مناسب للتداول الحقيقي؟",
+            answer:
+              "يمكن استخدامه للتعلم والتجربة بأحجام صغيرة، لكنه لا يقدم دائمًا الشروط نفسها المتاحة في الحسابات القياسية.",
+          },
+          {
+            question: "لماذا يتغير السبريد خلال اليوم؟",
+            answer:
+              "يتغير حسب السيولة والتقلبات ووقت التداول والأخبار الاقتصادية، وقد يتسع أثناء الأحداث المهمة.",
+          },
+          {
+            question: "كيف أختار شركة التداول الأقل تكلفة؟",
+            answer:
+              "قارن متوسط السبريد والعمولة ونوع الحساب وجودة التنفيذ، ثم اختر الحساب الملائم لعدد صفقاتك وحجم تداولك.",
+          },
+        ];
+
+        return (
+          <>
+            {/* DESKTOP FAQ */}
+            <div className="hidden gap-3 p-6 md:grid lg:grid-cols-2 lg:gap-4">
+              {faqItems.map((item) => (
+                <details
+                  key={item.question}
+                  className="group overflow-hidden rounded-[18px] border border-slate-200 bg-slate-50"
+                >
+                  <summary className="flex cursor-pointer list-none items-center gap-3 p-4">
+                    <h3 className="flex-1 text-right text-sm font-black leading-6 text-slate-950">
+                      {item.question}
+                    </h3>
+
+                    <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-xs text-slate-400 transition group-open:rotate-180">
+                      ▼
+                    </span>
+                  </summary>
+
+                  <div className="border-t border-slate-200 bg-white px-4 py-4">
+                    <p className="text-sm leading-7 text-slate-600">
+                      {item.answer}
+                    </p>
+                  </div>
+                </details>
+              ))}
+            </div>
+
+            {/* MOBILE FAQ */}
+           <div className="grid gap-2.5 px-4 pb-3 pt-4 md:hidden">
+              {faqItems.slice(0, 5).map((item) => (
+                <details
+                  key={item.question}
+                  className="group overflow-hidden rounded-[17px] border border-slate-200 bg-slate-50"
+                >
+                  <summary className="flex cursor-pointer list-none items-center gap-3 px-4 py-3.5">
+                    <h3 className="flex-1 text-right text-[13px] font-black leading-6 text-slate-950">
+                      {item.question}
+                    </h3>
+
+                    <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-[10px] text-slate-400 transition group-open:rotate-180">
+                      ▼
+                    </span>
+                  </summary>
+
+                  <div className="border-t border-slate-200 bg-white px-4 py-3">
+                    <p className="text-xs leading-6 text-slate-600">
+                      {item.answer}
+                    </p>
+                  </div>
+                </details>
+              ))}
+
+              <details className="group overflow-hidden rounded-[17px] border border-brand-200 bg-brand-50">
+                <summary className="flex cursor-pointer list-none items-center justify-center gap-2 px-4 py-3.5 text-xs font-black text-brand-600">
+                  عرض المزيد من الأسئلة
+
+                  <span className="transition group-open:rotate-180">
+                    ▼
                   </span>
                 </summary>
 
-                <div className="border-t border-slate-200 bg-white p-4">
-                  {card.item ? (
-                    <>
-                      <div className="flex items-center justify-between gap-3">
-                        <CompactLogo
-                          src={card.item.broker_logo}
-                          alt={card.item.broker_name}
-                        />
+                <div className="grid gap-2.5 border-t border-brand-200 bg-white p-3">
+                  {faqItems.slice(5).map((item) => (
+                    <details
+                      key={item.question}
+                      className="group/item overflow-hidden rounded-[15px] border border-slate-200 bg-slate-50"
+                    >
+                      <summary className="flex cursor-pointer list-none items-center gap-3 px-3.5 py-3">
+                        <h3 className="flex-1 text-right text-[12px] font-black leading-5 text-slate-950">
+                          {item.question}
+                        </h3>
 
-                        <div className="min-w-0 flex-1 text-right">
-                          <div className="truncate text-base font-black text-slate-950">
-                            {card.item.broker_name}
-                          </div>
-                          {card.item.broker_slug && card.item.account_name ? (
-  <Link
-    href={`/brokers/${card.item.broker_slug}/accounts/${accountSlug(card.item.account_name)}`}
-    className="mt-1 inline-flex text-sm font-bold text-brand-600 hover:text-brand-600"
-  >
-    {card.item.account_name}
-  </Link>
-) : (
-  <div className="mt-1 text-sm text-slate-500">—</div>
-)}
-                        </div>
+                        <span className="text-[10px] text-slate-400 transition group-open/item:rotate-180">
+                          ▼
+                        </span>
+                      </summary>
+
+                      <div className="border-t border-slate-200 bg-white px-3.5 py-3">
+                        <p className="text-xs leading-6 text-slate-600">
+                          {item.answer}
+                        </p>
                       </div>
-
-                      <div className="mt-4 overflow-hidden rounded-[18px] border border-slate-200">
-                        <div className="grid grid-cols-3 bg-slate-50 text-center text-[11px] font-extrabold text-slate-500">
-                          <div className="px-3 py-2">العمولة</div>
-                          <div className="border-x border-slate-200 px-3 py-2">السبريد</div>
-                          <div className="px-3 py-2">الوسيط</div>
-                        </div>
-
-                        <div className="grid grid-cols-3 text-center text-sm font-black text-slate-950">
-                          <div className="px-3 py-3">{card.item.commission || "—"}</div>
-                          <div className="border-x border-slate-200 px-3 py-3 text-emerald-700">
-                            {card.item.spread_avg ?? "—"}
-                          </div>
-                          <div className="px-3 py-3">{card.item.broker_name}</div>
-                        </div>
-                      </div>
-
-                      <div className="mt-4 flex gap-2">
-                        {card.item.broker_slug ? (
-                          <Link
-                            href={`/brokers/${card.item.broker_slug}`}
-                            className={`inline-flex items-center justify-center rounded-2xl px-4 py-3 text-sm font-extrabold transition ${
-                              card.item.broker_account_url
-                                ? "min-w-[96px] border border-slate-200 bg-white text-slate-700 hover:border-brand-100 hover:bg-brand-50 hover:text-brand-600"
-                                : "w-full bg-brand-500 text-white hover:bg-brand-600"
-                            }`}
-                          >
-                            التقييم
-                          </Link>
-                        ) : null}
-
-                        {card.item.broker_account_url ? (
-                          <a
-                            href={card.item.broker_account_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex flex-1 items-center justify-center rounded-2xl bg-brand-500 px-4 py-3 text-sm font-extrabold text-white transition hover:bg-brand-600"
-                          >
-                            فتح حساب
-                          </a>
-                        ) : null}
-                      </div>
-                    </>
-                  ) : (
-                    <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-5 text-center text-sm font-bold text-slate-500">
-                      لا توجد بيانات كافية في هذه الفئة حاليًا
-                    </div>
-                  )}
+                    </details>
+                  ))}
                 </div>
               </details>
-            ))}
-          </div>
-        </>
-      );
-    })()}
-  </div>
-</section>
 
-{/* HOW WE CHOSE THESE BROKERS */}
-<section dir="rtl" className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
-  <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.05)]">
-    <div className="p-5 sm:p-7">
-      <div className="w-full text-right">
-  <h2 className="text-3xl font-black text-slate-950 sm:text-4xl">
-    كيف اخترنا هذه الشركات؟
-  </h2>
-  <p className="mt-3 hidden text-base text-slate-600 lg:block whitespace-nowrap">
-    لا نعتمد فقط على أقل رقم تسويقي يعلنه الوسيط، بل ننظر إلى التكلفة الفعلية للحساب وتجربة المستخدم والعوامل التي تؤثر فعلاً على المتداول.
-  </p>
-  <p className="mt-3 text-base leading-8 text-slate-600 lg:hidden">
-    لا نعتمد فقط على أقل رقم تسويقي يعلنه الوسيط، بل ننظر إلى التكلفة الفعلية
-    للحساب وتجربة المستخدم والعوامل التي تؤثر فعلاً على المتداول.
-  </p>
-</div>
-
-      {/* Desktop / Tablet */}
-      <div className="mt-6 hidden gap-4 md:grid md:grid-cols-2 xl:grid-cols-4">
-        {[
-          {
-            title: "متوسط السبريد",
-            desc: "نعتمد على متوسط السبريد الفعلي لكل نوع حساب، وليس فقط أقل رقم يبدأ منه الوسيط في الإعلانات.",
-            icon: "01",
-          },
-          {
-            title: "العمولة",
-            desc: "بعض الحسابات تقدم سبريدًا منخفضًا جدًا لكن تضيف عمولة منفصلة، لذلك نقارن التكلفة الكاملة معًا.",
-            icon: "02",
-          },
-          {
-            title: "نوع الحساب",
-            desc: "نفصل بين Standard وRaw وECN وCent حتى تكون المقارنة عادلة ولا يختلط حساب احترافي بحساب مبتدئين.",
-            icon: "03",
-          },
-          {
-            title: "الحد الأدنى للإيداع",
-            desc: "نهتم أيضًا بمدى واقعية الحساب للمتداول العربي من حيث إمكانية البدء برأس مال صغير أو متوسط.",
-            icon: "04",
-          },
-        ].map((item) => (
-          <div
-            key={item.icon}
-            className="rounded-[24px] border border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] p-5 text-right transition hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(15,23,42,0.06)]"
-          >
-            {/* 🔥 هذا هو الجزء المهم */}
-            <div className="w-full text-right">
-  <div className="inline-flex items-center gap-2 float-right">
-    <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-brand-50 text-sm font-black text-brand-600">
-      {item.icon}
-    </span>
-
-    <h3 className="text-xl font-black text-slate-950">
-      {item.title}
-    </h3>
-  </div>
-</div>
-<div className="clear-both" />
-
-            <p className="mt-4 text-sm leading-7 text-slate-600 text-right">
-              {item.desc}
-            </p>
-          </div>
-        ))}
-      </div>
-
-      {/* Mobile */}
-      <div className="mt-5 space-y-3 md:hidden">
-        {[
-          {
-            title: "متوسط السبريد",
-            desc: "نعتمد على متوسط السبريد الفعلي لكل نوع حساب، وليس فقط أقل رقم يبدأ منه الوسيط في الإعلانات.",
-            icon: "01",
-          },
-          {
-            title: "العمولة",
-            desc: "بعض الحسابات تقدم سبريدًا منخفضًا جدًا لكن تضيف عمولة منفصلة، لذلك نقارن التكلفة الكاملة معًا.",
-            icon: "02",
-          },
-          {
-            title: "نوع الحساب",
-            desc: "نفصل بين Standard وRaw وECN وCent حتى تكون المقارنة عادلة ولا يختلط حساب احترافي بحساب مبتدئين.",
-            icon: "03",
-          },
-          {
-            title: "الحد الأدنى للإيداع",
-            desc: "نهتم أيضًا بمدى واقعية الحساب للمتداول العربي من حيث إمكانية البدء برأس مال صغير أو متوسط.",
-            icon: "04",
-          },
-        ].map((item) => (
-          <details
-            key={item.icon}
-            className="group overflow-hidden rounded-[22px] border border-slate-200 bg-slate-50"
-          >
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 text-right">
-              
-              {/* 🔥 نفس الفكرة هنا */}
-              <div className="w-full text-right">
-  <div className="inline-flex items-center gap-2 float-right">
-    <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-brand-50 text-sm font-black text-brand-600">
-      {item.icon}
-    </span>
-
-    <h3 className="text-lg font-black text-slate-950">
-      {item.title}
-    </h3>
-  </div>
-</div>
-<div className="clear-both" />
-
-              <span className="shrink-0 text-slate-400 transition group-open:rotate-180">
-                ▼
-              </span>
-            </summary>
-
-            <div className="border-t border-slate-200 bg-white px-4 py-4 text-right">
-              <p className="text-sm leading-7 text-slate-600">
-                {item.desc}
-              </p>
+              <Link
+                href="/learn-trading/spread"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-1 inline-flex min-h-11 items-center justify-center rounded-xl border border-brand-200 bg-white px-4 text-xs font-black text-brand-600"
+              >
+                قراءة دليل السبريد الكامل
+              </Link>
             </div>
-          </details>
-        ))}
-      </div>
-
-      {/* Note - desktop only */}
-      <div className="mt-6 hidden md:block rounded-[18px] border border-brand-100 bg-[#f1f6ff] px-5 py-3.5">
-  <div className="flex items-start justify-between gap-4">
-    <div className="text-right">
-      <h3 className="text-base font-black text-slate-950">
-        ملاحظة مهمة
-      </h3>
-          <p className="mt-1 text-sm text-slate-600 whitespace-nowrap">
-            الوسيط الأفضل لمتداول السكالبينج قد لا يكون هو نفسه الأفضل للمبتدئ،
-            لذلك تم بناء هذه الصفحة على مستوى نوع الحساب نفسه حتى تحصل على أفضل مقارنة
-            .
-          </p>
-        </div>
-
-       
-      </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-{/* HOW TO CHOOSE THE RIGHT ACCOUNT */}
-<section className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
-  <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.05)]">
-    <div className="p-5 sm:p-7">
-      <div className="max-w-4xl text-right">
-        <h2 className="text-3xl font-black text-slate-950 sm:text-4xl">
-          كيف تختار الحساب المناسب؟
-        </h2>
-        <p className="mt-3 text-base leading-8 text-slate-600">
-          نوع الحساب المناسب لا يعتمد فقط على أقل سبريد، بل على أسلوب تداولك،
-          حجم رأس المال، وهل تفضّل العمولة المنفصلة أم التكلفة المدمجة داخل السبريد.
-        </p>
-      </div>
-
-      <div className="mt-6 hidden gap-4 md:grid md:grid-cols-2 xl:grid-cols-4 [direction:rtl]">
-        {[
-  {
-    title: "إذا كنت تركز على التكلفة",
-    badge: "Spread + Commission",
-    desc: "لا تنظر إلى السبريد وحده. قارن دائمًا بين متوسط السبريد والعمولة معًا، لأن بعض الحسابات تبدو أرخص لكنها أعلى تكلفة فعليًا.",
-  },
-  {
-    title: "إذا كان رأس المال صغيرًا",
-    badge: "Cent / Micro",
-    desc: "حسابات Cent وMicro مناسبة للتجربة أو لإدارة مخاطرة منخفضة جدًا، لكنها ليست دائمًا الأفضل من حيث الجودة أو التكلفة على المدى الطويل.",
-  },
-  {
-    title: "إذا كنت سكالبير",
-    badge: "Raw / ECN",
-    desc: "متداولو السكالبينج يحتاجون عادةً سبريدًا أقل وتنفيذًا أسرع، لذلك تكون حسابات Raw أو ECN أنسب غالبًا من الحسابات القياسية.",
-  },
-  {
-    title: "إذا كنت مبتدئًا",
-    badge: "Standard",
-    desc: "ابدأ عادةً بحساب Standard إذا كنت تريد تجربة أبسط، بدون تعقيد العمولات المنفصلة، ومع فهم أوضح للتكلفة الإجمالية.",
-  },
-].map((item, index) => (
-          <div
-            key={item.title}
-            className="rounded-[24px] border border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] p-5 text-right transition hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(15,23,42,0.06)]"
-          >
-            <div className="flex items-center justify-between gap-3">
-              
-
-              <h3 className="text-xl font-black text-slate-950">
-                {item.title}
-              </h3>
-            </div>
-
-            <p className="mt-4 text-sm leading-7 text-slate-600">
-              {item.desc}
-            </p>
-          </div>
-        ))}
-      </div>
-
-{/* Mobile */}
-<div className="mt-5 space-y-3 md:hidden">
-  {[
-    {
-      title: "إذا كنت مبتدئًا",
-      desc: "ابدأ عادةً بحساب Standard إذا كنت تريد تجربة أبسط، بدون تعقيد العمولات المنفصلة، ومع فهم أوضح للتكلفة الإجمالية.",
-    },
-    {
-      title: "إذا كنت سكالبير",
-      desc: "متداولو السكالبينج يحتاجون عادةً سبريدًا أقل وتنفيذًا أسرع، لذلك تكون حسابات Raw أو ECN أنسب غالبًا من الحسابات القياسية.",
-    },
-    {
-      title: "إذا كان رأس المال صغيرًا",
-      desc: "حسابات Cent وMicro مناسبة للتجربة أو لإدارة مخاطرة منخفضة جدًا، لكنها ليست دائمًا الأفضل من حيث الجودة أو التكلفة على المدى الطويل.",
-    },
-    {
-      title: "إذا كنت تركز على التكلفة",
-      desc: "لا تنظر إلى السبريد وحده. قارن دائمًا بين متوسط السبريد والعمولة معًا، لأن بعض الحسابات تبدو أرخص لكنها أعلى تكلفة فعليًا.",
-    },
-  ].map((item) => (
-    <details
-      key={item.title}
-      className="group overflow-hidden rounded-[22px] border border-slate-200 bg-slate-50"
-    >
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 text-right">
-        <h3 className="text-lg font-black text-slate-950">
-          {item.title}
-        </h3>
-
-        <span className="shrink-0 text-slate-400 transition group-open:rotate-180">
-          ▼
-        </span>
-      </summary>
-
-      <div className="border-t border-slate-200 bg-white px-4 py-4 text-right">
-        <p className="text-sm leading-7 text-slate-600">
-          {item.desc}
-        </p>
-      </div>
-    </details>
-  ))}
-</div>
-
-      <div className="mt-6 hidden md:block rounded-[22px] border border-emerald-100 bg-emerald-50 px-5 py-4 text-right">
-        <h3 className="text-base font-black text-slate-950">
-          الخلاصة السريعة
-        </h3>
-        <p className="mt-2 text-sm leading-7 text-slate-700">
-          الحساب الأفضل ليس نفسه لكل متداول. المبتدئ قد يستفيد من Standard،
-          بينما السكالبير غالبًا يبحث عن Raw أو ECN، والمتداول برأس مال صغير قد يفضّل Cent.
-          لذلك هذه الصفحة تقارن بين الفئات بدل جمعها في ترتيب واحد مضلل.
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
-
-      {/* FAQ */}
-<section className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
-  <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.05)]">
-    
-    <div className="p-5 sm:p-7">
-      
-      <div className="max-w-3xl text-right">
-        <h2 className="text-3xl font-black text-slate-950 sm:text-4xl">
-          الأسئلة الشائعة حول السبريد
-        </h2>
-        <p className="mt-3 text-base leading-8 text-slate-600">
-          هذه أهم الأسئلة التي يبحث عنها المتداولون حول السبريد، الفرق بين الحسابات،
-          وكيف تختار الوسيط الأقل تكلفة فعليًا.
-        </p>
-      </div>
-
-      <div className="mt-6 space-y-3">
-        {[
-          {
-            q: "ما هو السبريد في الفوركس؟",
-            a: "السبريد هو الفرق بين سعر الشراء وسعر البيع. وهو التكلفة الأساسية التي يدفعها المتداول عند فتح الصفقة، حتى لو لم تكن هناك عمولة منفصلة.",
-          },
-          {
-            q: "هل السبريد المنخفض يعني دائمًا تكلفة أقل؟",
-            a: "ليس دائمًا. بعض الحسابات تقدم سبريد منخفض جدًا لكنها تضيف عمولة منفصلة، لذلك يجب حساب التكلفة الكاملة (السبريد + العمولة) وليس السبريد فقط.",
-          },
-          {
-            q: "ما الفرق بين حساب Standard وRaw وECN؟",
-            a: "حساب Standard يكون السبريد فيه مدمج بدون عمولة غالبًا. أما حسابات Raw وECN فتقدم سبريد منخفض جدًا مع عمولة منفصلة، وتناسب المتداولين المحترفين أو السكالبينج.",
-          },
-          {
-            q: "ما هو أفضل نوع حساب للمبتدئين؟",
-            a: "عادةً حساب Standard هو الأنسب للمبتدئين لأنه أبسط من حيث الفهم ولا يحتوي على عمولات معقدة، مما يسهل حساب التكلفة الإجمالية.",
-          },
-          {
-            q: "هل حساب Cent مناسب للتداول الحقيقي؟",
-            a: "حساب Cent مناسب للتجربة أو رأس المال الصغير جدًا، لكنه ليس الأفضل دائمًا من حيث جودة التنفيذ أو السبريد مقارنة بالحسابات الاحترافية.",
-          },
-          {
-            q: "كيف أختار الوسيط الأقل تكلفة؟",
-            a: "لا تعتمد على السبريد فقط. قارن بين متوسط السبريد، العمولة، نوع الحساب، وجودة التنفيذ، لأن الوسيط الأرخص فعليًا هو من يقدم أقل تكلفة إجمالية وليس أقل رقم تسويقي.",
-          },
-        ].map((item, index) => (
-          <details
-            key={index}
-            className="group overflow-hidden rounded-[22px] border border-slate-200 bg-slate-50"
-          >
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 text-right">
-              
-              <h3 className="text-lg font-black text-slate-950">
-                {item.q}
-              </h3>
-
-              <span className="shrink-0 text-slate-400 transition group-open:rotate-180">
-                ▼
-              </span>
-            </summary>
-
-            <div className="border-t border-slate-200 bg-white px-4 py-4 text-right">
-              <p className="text-sm leading-7 text-slate-600">
-                {item.a}
-              </p>
-            </div>
-          </details>
-        ))}
-      </div>
-
+          </>
+        );
+      })()}
     </div>
   </div>
 </section>
