@@ -46,6 +46,8 @@ export const STATIC_PAGES_EN = [
   "en/compare",
   "en/best-brokers",
   "en/best-brokers/gold",
+  "en/lowest-spread-brokers",
+  "en/learn-trading",
   "en/learn-trading",
   "en/learn-trading/how-to-start-trading-from-zero",
   "en/learn-trading/economic-indicators",

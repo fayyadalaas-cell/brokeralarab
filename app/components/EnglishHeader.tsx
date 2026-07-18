@@ -240,20 +240,27 @@ export default function EnglishHeader({
                 </div>
 
                 <div className="grid gap-2.5">
-                  <Link
-                    href="/en/best-brokers"
-                    className="block rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-left text-[13px] font-extrabold leading-6 text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600"
-                  >
-                    Best Forex Brokers in 2026
-                  </Link>
+  <Link
+    href="/en/best-brokers"
+    className="block rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-left text-[13px] font-extrabold leading-6 text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600"
+  >
+    Best Forex Brokers in 2026
+  </Link>
 
-                  <Link
-                    href="/en/best-brokers/gold"
-                    className="block rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-left text-[13px] font-extrabold leading-6 text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600"
-                  >
-                    Best Gold Brokers
-                  </Link>
-                </div>
+  <Link
+    href="/en/lowest-spread-brokers"
+    className="block rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-left text-[13px] font-extrabold leading-6 text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600"
+  >
+    Best Low Spread Forex Brokers
+  </Link>
+
+  <Link
+    href="/en/best-brokers/gold"
+    className="block rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-left text-[13px] font-extrabold leading-6 text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600"
+  >
+    Best Gold Brokers
+  </Link>
+</div>
               </div>
             </div>
 

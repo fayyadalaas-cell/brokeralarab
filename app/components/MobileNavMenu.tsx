@@ -453,23 +453,31 @@ const comparisonItems = useMemo(() => {
                     onToggle={() => toggleSection("best")}
                   >
                     {isEnglish ? (
-                      <div className="space-y-2">
-                        <Link
-                          href="/en/best-brokers"
-                          onClick={closeMenu}
-                          className={`${mobileCardClass} block`}
-                        >
-                          Best Forex Brokers in 2026
-                        </Link>
+<div className="space-y-2">
+  <Link
+    href="/en/best-brokers"
+    onClick={closeMenu}
+    className={`${mobileCardClass} block`}
+  >
+    Best Forex Brokers in 2026
+  </Link>
 
-                        <Link
-                          href="/en/best-brokers/gold"
-                          onClick={closeMenu}
-                          className={`${mobileCardClass} block`}
-                        >
-                          Best Gold Brokers
-                        </Link>
-                      </div>
+  <Link
+    href="/en/lowest-spread-brokers"
+    onClick={closeMenu}
+    className={`${mobileCardClass} block`}
+  >
+    Best Low Spread Forex Brokers
+  </Link>
+
+  <Link
+    href="/en/best-brokers/gold"
+    onClick={closeMenu}
+    className={`${mobileCardClass} block`}
+  >
+    Best Gold Brokers
+  </Link>
+</div>
                     ) : (
                       <div className="space-y-4">
                         <div>
