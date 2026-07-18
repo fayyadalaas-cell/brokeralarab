@@ -287,12 +287,7 @@ const topBrokers = await getTopBrokers();
       description:
         "Broker AlArab is an independent bilingual broker review and comparison platform helping traders compare forex brokers, broker regulation, trading platforms, account types, trading fees, investor protection, and trading tools in Arabic and English.",
 
-      availableLanguage: [
-        "Arabic",
-        "English"
-      ],
-
-      areaServed: [
+          areaServed: [
         "Saudi Arabia",
         "United Arab Emirates",
         "Kuwait",
