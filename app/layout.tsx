@@ -266,10 +266,16 @@ const topBrokers = await getTopBrokers();
 
       mainEntityOfPage: "https://brokeralarab.com/about",
 
-      logo: {
-        "@type": "ImageObject",
-        url: "https://brokeralarab.com/brokers/BrokerLogo.png",
-      },
+   logo: {
+  "@type": "ImageObject",
+  url: "https://brokeralarab.com/logo/broker-alarab-google-logo.png",
+  contentUrl:
+    "https://brokeralarab.com/logo/broker-alarab-google-logo.png",
+  width: 1024,
+  height: 1024,
+  caption: "Broker Alarab logo",
+  representativeOfPage: true,
+},
 
       email: "info@brokeralarab.com",
 
