@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     locale: "ar_AR",
     images: [
       {
-        url: "https://brokeralarab.com/og-image.png",
+        url: "https://brokeralarab.com/og-image.webp",
         width: 1560,
         height: 377,
         alt: "بروكر العرب",

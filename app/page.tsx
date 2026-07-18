@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     locale: "ar_AR",
     images: [
       {
-        url: "https://brokeralarab.com/og-image.png",
+        url: "https://brokeralarab.com/og-image.webp",
         width: 1560,
         height: 377,
         alt: "بروكر العرب",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     title: "أفضل شركات التداول وتقييم الوسطاء | بروكر العرب",
    description:
   "قارن أفضل شركات التداول لعام 2026 حسب التراخيص، الرسوم، السبريد، أنواع الحسابات، ومنصات التداول. مراجعات مستقلة تساعدك على اختيار الوسيط المناسب بثقة.",
-    images: ["https://brokeralarab.com/og-image.png"],
+    images: ["https://brokeralarab.com/og-image.webp"],
   },
 };
 

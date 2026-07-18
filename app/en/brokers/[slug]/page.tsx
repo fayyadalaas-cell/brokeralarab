@@ -269,7 +269,7 @@ export async function generateMetadata({
   type: "article",
   images: [
   {
-    url: `${siteUrl}/og-image.png`,
+    url: `${siteUrl}/og-image.webp`,
     width: 1560,
     height: 377,
     alt: `Review ${broker.name}`,
@@ -281,7 +281,7 @@ twitter: {
   card: "summary_large_image",
   title,
   description,
-  images: [`${siteUrl}/og-image.png`],
+  images: [`${siteUrl}/og-image.webp`],
   creator: "@brokeralarab",
 },
   };

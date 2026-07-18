@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     images: [
       {
-        url: "https://brokeralarab.com/og-image.png",
+        url: "https://brokeralarab.com/og-image.webp",
         width: 1560,
         height: 377,
         alt: "Broker Alarab broker reviews and comparisons",
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     title: "Best Trading Brokers & Broker Reviews 2026 | Broker Alarab",
     description:
       "Compare regulated trading brokers by fees, spreads, platforms, accounts, deposits, and withdrawals.",
-    images: ["https://brokeralarab.com/og-image.png"],
+    images: ["https://brokeralarab.com/og-image.webp"],
   },
 };
 

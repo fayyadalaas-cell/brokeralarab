@@ -30,7 +30,7 @@ export const metadata = {
 
     images: [
       {
-        url: "https://brokeralarab.com/og-image.png",
+        url: "https://brokeralarab.com/og-image.webp",
         width: 1560,
         height: 377,
         alt: "Forex Expos and Conferences 2026",

@@ -30,7 +30,7 @@ export const metadata = {
 
     images: [
       {
-        url: "https://brokeralarab.com/og-image.png",
+        url: "https://brokeralarab.com/og-image.webp",
         width: 1560,
         height: 377,
         alt: "معارض ومؤتمرات الفوركس 2026",
@@ -46,7 +46,7 @@ export const metadata = {
     description:
       "تابع مواعيد أهم معارض الفوركس والتكنولوجيا المالية وأماكن انعقادها في 2026.",
 
-    images: ["https://brokeralarab.com/og-image.png"],
+    images: ["https://brokeralarab.com/og-image.webp"],
   },
 };
 

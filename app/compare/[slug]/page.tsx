@@ -303,15 +303,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   description:
     "مقارنات تفصيلية بين شركات التداول من حيث الحسابات والرسوم والتراخيص والمنصات.",
   url: `${siteUrl}/compare`,
-  siteName: "Broker Al Arab",
+  siteName: "Broker Alarab",
   locale: "ar_AR",
   type: "website",
   images: [
     {
-      url: `${siteUrl}/og-image.png`,
+      url: `${siteUrl}/og-image.webp`,
       width: 1560,
       height: 377,
-      alt: "Broker Al Arab",
+      alt: "Broker Alarab",
     },
   ],
 },
@@ -321,7 +321,7 @@ twitter: {
   title: "مقارنة شركات التداول | بروكر العرب",
   description:
     "مقارنات تفصيلية بين شركات التداول من حيث الحسابات والرسوم والتراخيص والمنصات.",
-  images: [`${siteUrl}/og-image.png`],
+  images: [`${siteUrl}/og-image.webp`],
 },
     };
   }
@@ -372,15 +372,15 @@ twitter: {
   title,
   description,
   url: `${siteUrl}/compare/${slug}`,
-  siteName: "Broker Al Arab",
+  siteName: "Broker Alarab",
   locale: "ar_AR",
   type: "website",
   images: [
     {
-      url: `${siteUrl}/og-image.png`,
+      url: `${siteUrl}/og-image.webp`,
       width: 1560,
       height: 377,
-      alt: "Broker Al Arab",
+      alt: "Broker Alarab",
     },
   ],
 },
@@ -389,7 +389,7 @@ twitter: {
   card: "summary_large_image",
   title,
   description,
-  images: [`${siteUrl}/og-image.png`],
+  images: [`${siteUrl}/og-image.webp`],
 },
   };
 }

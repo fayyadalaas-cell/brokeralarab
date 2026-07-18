@@ -361,7 +361,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   type: "website",
   images: [
     {
-      url: `${siteUrl}/og-image.png`,
+      url: `${siteUrl}/og-image.webp`,
       width: 1560,
       height: 377,
       alt: "Broker Alarab",
@@ -373,7 +373,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   title: "Broker Comparisons | Broker AlArab",
   description:
     "Detailed broker comparisons covering accounts, fees, regulation, and trading platforms.",
-  images: [`${siteUrl}/og-image.png`],
+  images: [`${siteUrl}/og-image.webp`],
 },
   };
 }
@@ -399,7 +399,7 @@ const rightName = rightBroker?.name_en || rightBroker?.name || rightSlug;
 
  const title = `${leftName} vs ${rightName} | Fees, Platforms & Regulation`;
 const description = `Compare ${leftName} vs ${rightName} by fees, regulation, account types, and trading platforms.`;
-const imageUrl = `${siteUrl}/og-image.png`;
+const imageUrl = `${siteUrl}/og-image.webp`;
 
   
 return {
@@ -697,7 +697,7 @@ const comparisonSchema = {
   },
   primaryImageOfPage: {
     "@type": "ImageObject",
-    url: `${siteUrl}/og-image.png`,
+    url: `${siteUrl}/og-image.webp`,
   },
   description: `Compare ${left.name_en || left.name} vs ${right.name_en || right.name} by fees, regulation, account types, and trading platforms.`,
   about: [
