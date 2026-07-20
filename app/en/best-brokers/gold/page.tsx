@@ -295,9 +295,9 @@ function RankingRow({
       </div>
 
       <div className="relative z-10 min-w-[150px]">
-        <div className="text-[19px] font-black leading-tight text-slate-950">
-          {getBrokerName(broker)}
-        </div>
+        <div className="whitespace-nowrap pb-0.5 text-[17px] font-black leading-[1.35] text-slate-950">
+  {getBrokerName(broker)}
+</div>
       </div>
 
       <div className="flex-1 min-w-[20px]" />
@@ -349,16 +349,16 @@ function MobileRankingRow({
   return (
     <Link
       href={`/en/brokers/${broker.slug}`}
-      className="group block rounded-[24px] border border-brand-100 bg-white px-4 py-4 shadow-[0_8px_24px_rgba(15,23,42,0.05)] transition hover:border-blue-300 hover:shadow-[0_12px_30px_rgba(37,99,235,0.08)]"
+      className="group block rounded-[22px] border border-brand-100 bg-white px-3.5 py-3.5 shadow-[0_6px_20px_rgba(15,23,42,0.05)] transition hover:border-blue-300 hover:shadow-[0_10px_26px_rgba(37,99,235,0.08)]"
     >
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex min-h-[68px] items-center justify-between gap-2.5">
         <div className="flex shrink-0 items-center gap-3">
-          <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-white shadow-sm">
+          <div className="flex h-[50px] w-[50px] items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-white shadow-sm">
             {broker.logo ? (
               <img
                 src={broker.logo}
                 alt={getBrokerName(broker)}
-                className="h-9 w-9 object-contain"
+                className="h-10 w-10 object-contain"
               />
             ) : (
               <span className="text-xs font-bold text-slate-500">
@@ -366,16 +366,12 @@ function MobileRankingRow({
               </span>
             )}
           </div>
-
-          <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-50 text-sm font-black text-brand-600">
-            {rank}
-          </span>
         </div>
 
         <div className="min-w-0 flex-1">
-          <div className="truncate text-[18px] font-black text-slate-950">
-            {getBrokerName(broker)}
-          </div>
+<div className="whitespace-nowrap pb-0.5 text-[16px] font-black leading-[1.35] text-slate-950">
+  {getBrokerName(broker)}
+</div>
 
           <div className="mt-1 text-[13px] font-bold text-slate-600">
             Rating{" "}
@@ -576,7 +572,7 @@ const collectionPageSchema = {
 />
 
       {/* HERO */}
-      <section className="hidden md:block mx-auto max-w-7xl px-4 pb-6 md:px-6 lg:px-8">
+      <section className="hidden md:block mx-auto max-w-[1520px] px-4 pb-6 md:px-6 lg:px-8">
         <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-sm">
           <div className="px-5 py-6 md:px-12 md:py-8">
             <div className="mx-auto max-w-4xl text-center">
@@ -618,7 +614,7 @@ const collectionPageSchema = {
       </section>
 
       {/* MOBILE HERO */}
-      <section className="md:hidden mx-auto max-w-7xl px-3 pb-4">
+      <section className="md:hidden mx-auto max-w-[1520px] px-3 pb-4">
         <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-sm">
           <div className="px-5 pt-4 pb-5 text-center">
             <div className="text-[30px] font-black leading-[1.35] tracking-tight text-slate-950 sm:text-[32px]">
@@ -655,7 +651,7 @@ const collectionPageSchema = {
       </section>
 
       {/* INTRO */}
-      <section className="hidden md:block mx-auto max-w-7xl px-4 pb-6 md:px-6 lg:px-8">
+      <section className="hidden md:block mx-auto max-w-[1520px] px-4 pb-6 md:px-6 lg:px-8">
         <div className="rounded-[26px] border border-slate-200 bg-white px-5 py-5 shadow-sm md:px-8 md:py-6">
           <p className="text-[15px] leading-8 text-slate-700 md:text-[17px] md:leading-9">
             Choosing the best broker for gold trading is not only about finding
@@ -677,7 +673,7 @@ const collectionPageSchema = {
 
       {/* TOP 3 */}
       {featured.length > 0 && (
-        <section className="hidden md:block mx-auto max-w-7xl px-4 pb-6 md:px-6 lg:px-8">
+        <section className="hidden md:block mx-auto max-w-[1520px] px-4 pb-6 md:px-6 lg:px-8">
           <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-sm">
             <div className="border-b border-slate-200 px-5 py-6 md:px-8">
               <h2 className="text-2xl font-black text-slate-950 md:text-3xl">
@@ -787,7 +783,7 @@ const collectionPageSchema = {
       )}
 
       {/* TOP 10 */}
-      <section className="mx-auto max-w-7xl px-4 pb-6 md:px-6 lg:px-8">
+      <section className="mx-auto max-w-[1520px] px-4 pb-6 md:px-6 lg:px-8">
         <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
           <div className="border-b border-slate-200 px-5 py-6 md:px-8">
             <h2 className="text-2xl font-black text-slate-950 md:text-3xl">
@@ -813,14 +809,14 @@ const collectionPageSchema = {
             ) : (
               <>
                 <div className="space-y-3 md:hidden">
-                  {brokers.map((broker, index) => (
-                    <MobileRankingRow
-                      key={broker.id}
-                      broker={broker}
-                      rank={index + 1}
-                    />
-                  ))}
-                </div>
+  {brokers.slice(0, 5).map((broker, index) => (
+    <MobileRankingRow
+      key={broker.id}
+      broker={broker}
+      rank={index + 1}
+    />
+  ))}
+</div>
 
                 <div className="hidden md:grid md:grid-cols-2 md:items-start md:gap-5 md:px-2">
                   <div className="space-y-4 border-r border-slate-200 pr-5">
@@ -850,7 +846,7 @@ const collectionPageSchema = {
       </section>
 
             {/* GOLD PRICE HISTORY */}
-      <section id="gold-prices" className="mx-auto max-w-7xl px-4 pb-6 md:px-6 lg:px-8">
+      <section id="gold-prices" className="mx-auto max-w-[1520px] px-4 pb-6 md:px-6 lg:px-8">
         <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
           <div className="border-b border-slate-200 bg-gradient-to-r from-amber-50/70 via-white to-white px-5 py-6 md:px-8">
             <h2 className="text-2xl font-black text-slate-950 md:text-3xl">
@@ -866,28 +862,68 @@ const collectionPageSchema = {
           <div className="hidden overflow-x-auto lg:block">
             <table className="min-w-full text-center">
               <thead className="bg-slate-50">
-                <tr>
-                  <th className="px-4 py-4 font-black text-slate-700">Year</th>
-                  <th className="px-4 py-4 font-black text-slate-700">High</th>
-                  <th className="px-4 py-4 font-black text-slate-700">Low</th>
-                  <th className="px-4 py-4 font-black text-slate-700">Average</th>
-                  <th className="px-4 py-4 font-black text-slate-700">Trend</th>
-                  <th className="px-4 py-4 font-black text-slate-700">Key event</th>
-                </tr>
-              </thead>
+  <tr>
+    <th className="px-4 py-4 font-black text-slate-700">Year</th>
+    <th className="px-4 py-4 font-black text-slate-700">High</th>
+    <th className="px-4 py-4 font-black text-slate-700">Low</th>
+    <th className="px-4 py-4 font-black text-slate-700">Average</th>
+    <th className="px-4 py-4 font-black text-slate-700">Key event</th>
+  </tr>
+</thead>
 
               <tbody>
                 {[
-                 { y: "Jan 2026", h: 5595.62, l: 4310.53, e: "Strong start", special: true },
+  {
+    y: "Jan 2026",
+    h: 5595.62,
+    l: 4310.53,
+    e: "Safe-haven demand",
+    special: true,
+  },
+  {
+    y: "Feb 2026",
+    h: 5281.19,
+    l: 4403.75,
+    e: "Dollar strength",
+    special: true,
+  },
+  {
+    y: "Mar 2026",
+    h: 5418.82,
+    l: 4099.52,
+    e: "Iran war",
+    special: true,
+  },
+  {
+    y: "Apr 2026",
+    h: 4890,
+    l: 4510,
+    e: "Higher bond yields",
+    special: true,
+  },
+  {
+    y: "May 2026",
+    h: 4775,
+    l: 4365,
+    e: "Inflation concerns",
+    special: true,
+  },
+  {
+    y: "Jun 2026",
+    h: 4545,
+    l: 3940,
+    e: "Rate-hike expectations",
+    special: true,
+  },
+  {
+    y: "Jul 2026",
+    h: 4205,
+    l: 3961,
+    e: "Latest update",
+    special: true,
+  },
 
-{ y: "Feb 2026", h: 5281.19, l: 4403.75, e: "Momentum continues", special: true },
-
-{ y: "Mar 2026", h: 5419, l: 4098, e: "New record highs", special: true },
-
-{ y: "Apr 2026", h: 4890, l: 4510, e: "Market correction", special: true },
-
-{ y: "May 2026", h: 4773, l: 4399, e: "Dollar strength", special: true },
-                  { y: 2025, h: 4537, l: 2600, e: "Major rally" },
+  { y: 2025, h: 4537, l: 2600, e: "Major rally" },
                   { y: 2024, h: 2790, l: 1984, e: "Record highs" },
                   { y: 2023, h: 2135, l: 1804, e: "Rate uncertainty" },
                   { y: 2022, h: 2070, l: 1618, e: "Ukraine war" },
@@ -903,22 +939,8 @@ const collectionPageSchema = {
                   { y: 2012, h: 1792, l: 1540, e: "Correction" },
                   { y: 2011, h: 1921, l: 1319, e: "Historic peak" },
                   { y: 2010, h: 1421, l: 1058, e: "Debt crisis" },
-                ].map((r, i, arr) => {
-                  const avg = Math.round((r.h + r.l) / 2);
-                  const prevHigh = i < arr.length - 1 ? arr[i + 1].h : null;
-
-                  let trend = "—";
-                  let color = "bg-slate-100 text-slate-600";
-
-                  if (prevHigh !== null) {
-                    if (r.h > prevHigh) {
-                      trend = "↑";
-                      color = "bg-emerald-50 text-emerald-700";
-                    } else if (r.h < prevHigh) {
-                      trend = "↓";
-                      color = "bg-rose-50 text-rose-700";
-                    }
-                  }
+                ].map((r, i) => {
+  const avg = Math.round((r.h + r.l) / 2);
 
                   return (
                     <tr
@@ -935,11 +957,7 @@ const collectionPageSchema = {
                       <td className="px-4 py-4">${r.h}</td>
                       <td className="px-4 py-4">${r.l}</td>
                       <td className="px-4 py-4 font-bold text-amber-700">${avg}</td>
-                      <td className="px-4 py-4">
-                        <span className={`rounded-full px-2 py-1 text-xs font-bold ${color}`}>
-                          {trend}
-                        </span>
-                      </td>
+                      
                       <td className="px-4 py-4">{r.e}</td>
                     </tr>
                   );
@@ -1023,12 +1041,50 @@ const collectionPageSchema = {
           <div className="lg:hidden">
             <div className="overflow-hidden rounded-b-[28px] border-t border-slate-200 bg-white">
               {[
-                { y: "Jan 2026", h: 5595.62, l: 4310.53, e: "Strong start" },
-{ y: "Feb 2026", h: 5281.19, l: 4403.75, e: "Momentum continues" },
-{ y: "Mar 2026", h: 5419, l: 4098, e: "New record highs" },
-{ y: "Apr 2026", h: 4890, l: 4510, e: "Market correction" },
-{ y: "May 2026", h: 4773, l: 4399, e: "Dollar strength" },
-                { y: 2025, h: 4537, l: 2600, e: "Major rally" },
+  {
+    y: "Jan 2026",
+    h: 5595.62,
+    l: 4310.53,
+    e: "Safe-haven demand",
+  },
+  {
+    y: "Feb 2026",
+    h: 5281.19,
+    l: 4403.75,
+    e: "Dollar strength",
+  },
+  {
+    y: "Mar 2026",
+    h: 5418.82,
+    l: 4099.52,
+    e: "Iran war",
+  },
+  {
+    y: "Apr 2026",
+    h: 4890,
+    l: 4510,
+    e: "Higher bond yields",
+  },
+  {
+    y: "May 2026",
+    h: 4775,
+    l: 4365,
+    e: "Inflation concerns",
+  },
+  {
+    y: "Jun 2026",
+    h: 4545,
+    l: 3940,
+    e: "Rate-hike expectations",
+  },
+  {
+    y: "Jul 2026",
+    h: 4205,
+    l: 3961,
+    e: "Latest update",
+  },
+
+  { y: 2025, h: 4537, l: 2600, e: "Major rally" },
                 { y: 2024, h: 2790, l: 1984, e: "Record highs" },
                 { y: 2023, h: 2135, l: 1804, e: "Rate uncertainty" },
                 { y: 2022, h: 2070, l: 1618, e: "Ukraine war" },
@@ -1040,15 +1096,11 @@ const collectionPageSchema = {
                 return (
                   <details key={String(r.y)} className="group border-b border-slate-200 bg-white">
                     <summary className="list-none cursor-pointer px-4 py-3">
-                      <div className="flex items-center justify-between gap-3">
-                        <h3 className="truncate text-[19px] font-black text-slate-950">
-                          {r.y}
-                        </h3>
-
-                        <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition group-open:rotate-180">
-                          ↓
-                        </span>
-                      </div>
+                      <div>
+  <h3 className="truncate text-[19px] font-black text-slate-950">
+    {r.y}
+  </h3>
+</div>
 
                       <div className="mt-3 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
                         <div className="grid grid-cols-2">
@@ -1095,7 +1147,7 @@ const collectionPageSchema = {
       </section>
 
       {/* HOW WE CHOSE */}
-      <section className="mx-auto max-w-7xl px-4 pb-6 md:px-6 lg:px-8">
+      <section className="mx-auto max-w-[1520px] px-4 pb-6 md:px-6 lg:px-8">
         <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
           <div className="border-b border-slate-200 px-5 py-6 md:px-8">
             <h2 className="text-2xl font-black text-slate-950 md:text-3xl">
@@ -1155,7 +1207,7 @@ const collectionPageSchema = {
       </section>
 
       {/* GUIDE */}
-      <section className="mx-auto max-w-7xl px-4 pb-6 md:px-6 lg:px-8">
+      <section className="mx-auto max-w-[1520px] px-4 pb-6 md:px-6 lg:px-8">
         <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
           <div className="border-b border-slate-200 px-5 py-6 md:px-8">
             <h2 className="text-2xl font-black text-slate-950 md:text-3xl">
@@ -1204,7 +1256,7 @@ const collectionPageSchema = {
       </section>
 
       {/* GOLD TRADING RISKS */}
-      <section className="mx-auto max-w-7xl px-4 pb-6 md:px-6 lg:px-8">
+      <section className="mx-auto max-w-[1520px] px-4 pb-6 md:px-6 lg:px-8">
         <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
           <div className="border-b border-slate-200 px-5 py-6 text-center md:px-8">
             <h2 className="text-2xl font-black text-slate-950 md:text-3xl">
@@ -1269,7 +1321,7 @@ const collectionPageSchema = {
       </section>
 
       {/* WHY GOLD IS POPULAR */}
-      <section className="mx-auto max-w-7xl px-4 pb-6 md:px-6 lg:px-8">
+      <section className="mx-auto max-w-[1520px] px-4 pb-6 md:px-6 lg:px-8">
         <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
           <div className="border-b border-slate-200 px-5 py-6 text-center md:px-8">
             <h2 className="text-2xl font-black text-slate-950 md:text-3xl">
@@ -1337,7 +1389,7 @@ const collectionPageSchema = {
       </section>
       
       {/* FAQ */}
-      <section className="mx-auto max-w-7xl px-4 pb-10 md:px-6 lg:px-8">
+      <section className="mx-auto max-w-[1520px] px-4 pb-10 md:px-6 lg:px-8">
         <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
           <div className="border-b border-slate-200 px-5 py-6 md:px-8">
             <h2 className="text-2xl font-black text-slate-950 md:text-3xl">

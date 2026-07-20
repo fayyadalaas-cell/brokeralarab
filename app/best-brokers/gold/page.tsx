@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
     url: PAGE_URL,
-    siteName: "Broker Al Arab",
+    siteName: "Broker Alarab",
     locale: "ar_AR",
     type: "website",
     images: [
@@ -296,42 +296,49 @@ function RankingRow({
 
 function MobileRankingRow({
   broker,
-  rank,
 }: {
-  broker: any;
-  rank: number;
+  broker: Broker;
 }) {
   return (
     <Link
       href={`/brokers/${broker.slug}`}
-      className="group block rounded-[24px] border border-brand-100 bg-white px-4 py-4 shadow-[0_8px_24px_rgba(15,23,42,0.05)] transition hover:border-blue-300 hover:shadow-[0_12px_30px_rgba(37,99,235,0.08)]"
+      dir="rtl"
+      className="group block rounded-[22px] border border-brand-100 bg-white px-3.5 py-3.5 shadow-[0_6px_20px_rgba(15,23,42,0.05)] transition hover:border-blue-300 hover:shadow-[0_10px_26px_rgba(37,99,235,0.08)]"
     >
-      <div className="flex items-center justify-between gap-3">
-        {/* Right side: logo + rank */}
+      <div className="flex min-h-[68px] items-center gap-3">
+        {/* الشعار – يمين */}
         <div className="flex shrink-0 items-center">
-  <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-white shadow-sm">
-    <img
-      src={broker.logo}
-      alt={broker.name}
-      className="h-9 w-9 object-contain"
-    />
-  </div>
-</div>
+          <div className="flex h-[50px] w-[50px] items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-white shadow-sm">
+            {broker.logo ? (
+              <img
+                src={broker.logo}
+                alt={broker.name}
+                className="h-10 w-10 object-contain"
+              />
+            ) : (
+              <span className="text-xs font-bold text-slate-500">
+                {broker.name.slice(0, 2)}
+              </span>
+            )}
+          </div>
+        </div>
 
-        {/* Center content */}
+        {/* الاسم والتقييم */}
         <div className="min-w-0 flex-1 text-right">
-  <div className="truncate text-[18px] font-black text-slate-950">
-    {broker.name}
-  </div>
+          <div className="whitespace-nowrap pb-0.5 text-[16px] font-black leading-[1.4] text-slate-950">
+            {broker.name}
+          </div>
 
-  <div className="mt-1 text-right text-[13px] font-bold text-slate-600">
-  <span className="ml-1">تقييم</span>
-  <span className="text-emerald-600">{broker.rating}</span>
-  <span className="text-emerald-500 mr-1">★</span>
-</div>
-</div>
+          <div className="mt-1 text-right text-[13px] font-bold text-slate-600">
+            <span className="ml-1">تقييم</span>
+            <span className="text-emerald-600">
+              {broker.rating?.toFixed(1) ?? "—"}
+            </span>
+            <span className="mr-1 text-emerald-500">★</span>
+          </div>
+        </div>
 
-        {/* Left side: blue arrow */}
+        {/* السهم – يسار */}
         <div className="flex shrink-0 items-center">
           <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-50 text-brand-500 transition group-hover:bg-blue-100 group-hover:text-brand-600">
             <svg
@@ -512,7 +519,7 @@ const collectionPageSchema = {
 />
 
     {/* HERO */}
-<section className="hidden md:block mx-auto max-w-7xl px-4 pb-6 md:px-6 lg:px-8">
+<section className="hidden md:block mx-auto max-w-[1520px] px-4 pb-6 md:px-6 lg:px-8">
   <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-sm">
     <div className="px-5 py-6 md:px-12 md:py-8">
       <div className="mx-auto max-w-4xl text-center">
@@ -554,7 +561,7 @@ const collectionPageSchema = {
 </section>
 
 {/* MOBILE HERO */}
-<section className="md:hidden mx-auto max-w-7xl px-3 pb-4">
+<section className="md:hidden mx-auto max-w-[1520px] px-3 pb-4">
   <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-sm">
     <div className="px-5 pt-4 pb-5 text-center">
       <div className="text-[30px] font-black leading-[1.35] tracking-tight text-slate-950 sm:text-[32px]">
@@ -590,7 +597,7 @@ const collectionPageSchema = {
 </section>
 
 {/* INTRO */}
-<section className="hidden md:block mx-auto max-w-7xl px-4 pb-6 md:px-6 lg:px-8">
+<section className="hidden md:block mx-auto max-w-[1520px] px-4 pb-6 md:px-6 lg:px-8">
   <div className="rounded-[26px] border border-slate-200 bg-white px-5 py-5 shadow-sm md:px-8 md:py-6">
     <p className="text-[15px] leading-8 text-slate-700 md:text-[17px] md:leading-9">
       إذا كنت تبحث عن أفضل منصة لتداول الذهب، فهذه الصفحة تمنحك نظرة واضحة
@@ -612,7 +619,7 @@ const collectionPageSchema = {
 
       {/* TOP 3 */}
 {featured.length > 0 && (
-  <section className="hidden md:block mx-auto max-w-7xl px-4 pb-6 md:px-6 lg:px-8">
+  <section className="hidden md:block mx-auto max-w-[1520px] px-4 pb-6 md:px-6 lg:px-8">
     <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-sm">
       {/* header */}
       <div className="border-b border-slate-200 px-5 py-6 md:px-8">
@@ -654,9 +661,9 @@ const collectionPageSchema = {
 
   {/* middle: name + rating */}
   <div className="flex-1 text-right">
-    <h3 className="truncate text-[24px] font-black leading-none text-slate-950">
-      {broker.name}
-    </h3>
+    <h3 className="truncate pb-1 text-[23px] font-black leading-[1.35] text-slate-950">
+  {broker.name}
+</h3>
 
     <div className="mt-3 inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-sm font-bold text-emerald-700">
       ★ {broker.rating?.toFixed(1) ?? "—"}
@@ -733,7 +740,7 @@ const collectionPageSchema = {
 
 
       {/* TOP 10 */}
-<section className="mx-auto max-w-7xl px-4 pb-6 md:px-6 lg:px-8">
+<section className="mx-auto max-w-[1520px] px-4 pb-6 md:px-6 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
     <div className="border-b border-slate-200 px-5 py-6 md:px-8 text-right">
       <h2 className="text-2xl font-black text-slate-950 md:text-3xl">
@@ -756,13 +763,12 @@ const collectionPageSchema = {
         <>
       {/* Mobile */}
 <div className="space-y-3 md:hidden" dir="rtl">
-  {brokers.map((broker, index) => (
-    <MobileRankingRow
-      key={broker.id}
-      broker={broker}
-      rank={index + 1}
-    />
-  ))}
+{brokers.slice(0, 5).map((broker) => (
+  <MobileRankingRow
+    key={broker.id}
+    broker={broker}
+  />
+))}
 </div>
 
 {/* Desktop */}
@@ -795,7 +801,7 @@ const collectionPageSchema = {
   </div>
 </section>
 
-<section id="gold-prices" className="mx-auto max-w-7xl px-4 pb-6 md:px-6 lg:px-8">
+<section id="gold-prices" className="mx-auto max-w-[1520px] px-4 pb-6 md:px-6 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
     {/* Header */}
     <div className="border-b border-slate-200 bg-gradient-to-r from-amber-50/70 via-white to-white px-5 py-6 text-right md:px-8">
@@ -831,18 +837,63 @@ const collectionPageSchema = {
             <th className="px-4 py-4 font-black text-slate-700">أدنى</th>
             <th className="px-4 py-4 font-black text-slate-700">المتوسط</th>
             <th className="px-4 py-4 font-black text-slate-700">SAR</th>
-            <th className="px-4 py-4 font-black text-slate-700">الاتجاه</th>
             <th className="px-4 py-4 font-black text-slate-700">الحدث</th>
           </tr>
         </thead>
 
         <tbody>
           {[
-            { y: "يناير 2026", h: 5595.62, l: 4310.53, e: "بداية السنة", special: true },
-            { y: "فبراير 2026", h: 5281.19, l: 4403.75, e: "استمرار الزخم", special: true },
-            { y: "مارس 2026", h: 5418.82, l: 4099.52, e: "آخر تحديث", special: true },
+  {
+    y: "يناير 2026",
+    h: 5595.62,
+    l: 4310.53,
+    e: "طلب الملاذ الآمن",
+    special: true,
+  },
+  {
+    y: "فبراير 2026",
+    h: 5281.19,
+    l: 4403.75,
+    e: "قوة الدولار",
+    special: true,
+  },
+  {
+    y: "مارس 2026",
+    h: 5418.82,
+    l: 4099.52,
+    e: "حرب إيران",
+    special: true,
+  },
+  {
+    y: "أبريل 2026",
+    h: 4890,
+    l: 4510,
+    e: "ارتفاع العوائد",
+    special: true,
+  },
+  {
+  y: "مايو 2026",
+  h: 4775,
+  l: 4365,
+  e: "مخاوف التضخم",
+  special: true,
+},
+  {
+    y: "يونيو 2026",
+    h: 4545,
+    l: 3940,
+    e: "توقعات رفع الفائدة",
+    special: true,
+  },
+  {
+    y: "يوليو 2026",
+    h: 4205,
+    l: 3961,
+    e: "آخر تحديث",
+    special: true,
+  },
 
-            { y: 2025, h: 4537, l: 2600, e: "صعود قوي جدًا" },
+  { y: 2025, h: 4537, l: 2600, e: "صعود قوي جدًا" },
             { y: 2024, h: 2790, l: 1984, e: "قمم تاريخية" },
             { y: 2023, h: 2135, l: 1804, e: "رفع الفائدة" },
             { y: 2022, h: 2070, l: 1618, e: "حرب أوكرانيا" },
@@ -859,22 +910,9 @@ const collectionPageSchema = {
             { y: 2011, h: 1921, l: 1319, e: "قمة تاريخية" },
             { y: 2010, h: 1421, l: 1058, e: "أزمة ديون" },
           ].map((r, i, arr) => {
-           const avg = Math.round((r.h + r.l) / 2);
+        const avg = Math.round((r.h + r.l) / 2);
 const sar = Math.round(avg * 3.75);
-const prevHigh = i < arr.length - 1 ? arr[i + 1].h : null;
 
-let trend = "—";
-let color = "bg-slate-100 text-slate-600";
-
-if (prevHigh !== null) {
-  if (r.h > prevHigh) {
-    trend = "⬆";
-    color = "bg-emerald-50 text-emerald-700";
-  } else if (r.h < prevHigh) {
-    trend = "⬇";
-    color = "bg-rose-50 text-rose-700";
-  }
-}
             return (
               <tr
                 key={String(r.y)}
@@ -887,11 +925,6 @@ if (prevHigh !== null) {
                 <td className="px-4 py-4">${r.l}</td>
                 <td className="px-4 py-4 font-bold text-amber-700">${avg}</td>
                 <td className="px-4 py-4 font-bold text-brand-600">{sar} ر.س</td>
-                <td className="px-4 py-4">
-                  <span className={`rounded-full px-2 py-1 text-xs font-bold ${color}`}>
-                    {trend}
-                  </span>
-                </td>
                 <td className="px-4 py-4">{r.e}</td>
               </tr>
             );
@@ -915,7 +948,7 @@ if (prevHigh !== null) {
         <th className="px-4 py-4 font-black text-slate-700">أدنى</th>
         <th className="px-4 py-4 font-black text-slate-700">المتوسط</th>
         <th className="px-4 py-4 font-black text-slate-700">SAR</th>
-        <th className="px-4 py-4 font-black text-slate-700">الاتجاه</th>
+        
         <th className="px-4 py-4 font-black text-slate-700">الحدث</th>
       </tr>
     </thead>
@@ -955,25 +988,8 @@ if (prevHigh !== null) {
               { y: 1981, h: 614, l: 401, e: "تشديد نقدي" },
               { y: 1980, h: 850, l: 481, e: "التضخم" },
             ].map((r, i, arr) => {
-              const avg = Math.round((r.h + r.l) / 2);
+           const avg = Math.round((r.h + r.l) / 2);
 const sar = Math.round(avg * 3.75);
-
-// نقارن الهاي مع السنة الأحدث مباشرة
-// 2009 تقارن مع 2010، وبعدها كل سنة مع اللي فوقها في الجدول
-const prevHigh = i < arr.length - 1 ? arr[i + 1].h : null;
-
-let trend = "—";
-let color = "bg-slate-100 text-slate-600";
-
-if (prevHigh !== null) {
-  if (r.h > prevHigh) {
-    trend = "⬆";
-    color = "bg-emerald-50 text-emerald-700";
-  } else if (r.h < prevHigh) {
-    trend = "⬇";
-    color = "bg-rose-50 text-rose-700";
-  }
-}
 
               return (
                 <tr
@@ -985,11 +1001,6 @@ if (prevHigh !== null) {
                   <td className="px-4 py-4">${r.l}</td>
                   <td className="px-4 py-4 font-bold text-amber-700">${avg}</td>
                   <td className="px-4 py-4 font-bold text-brand-600">{sar} ر.س</td>
-                  <td className="px-4 py-4">
-                    <span className={`rounded-full px-2 py-1 text-xs font-bold ${color}`}>
-                      {trend}
-                    </span>
-                  </td>
                   <td className="px-4 py-4">{r.e}</td>
                 </tr>
               );
@@ -1003,18 +1014,58 @@ if (prevHigh !== null) {
     {/* Mobile */}
 <div className="lg:hidden" dir="rtl">
   <div className="overflow-hidden rounded-b-[28px] border-t border-slate-200 bg-white">
-    {[
-      { y: "يناير 2026", h: 5595.62, l: 4310.53, e: "بداية قوية للسنة", special: true },
+   {[
+  {
+    y: "يناير 2026",
+    h: 5595.62,
+    l: 4310.53,
+    e: "طلب الملاذ الآمن",
+    special: true,
+  },
+  {
+    y: "فبراير 2026",
+    h: 5281.19,
+    l: 4403.75,
+    e: "قوة الدولار",
+    special: true,
+  },
+  {
+    y: "مارس 2026",
+    h: 5418.82,
+    l: 4099.52,
+    e: "حرب إيران",
+    special: true,
+  },
+  {
+    y: "أبريل 2026",
+    h: 4890,
+    l: 4510,
+    e: "ارتفاع العوائد",
+    special: true,
+  },
+  {
+    y: "مايو 2026",
+    h: 4775,
+    l: 4365,
+    e: "مخاوف التضخم",
+    special: true,
+  },
+  {
+    y: "يونيو 2026",
+    h: 4545,
+    l: 3940,
+    e: "توقعات رفع الفائدة",
+    special: true,
+  },
+  {
+    y: "يوليو 2026",
+    h: 4205,
+    l: 3961,
+    e: "آخر تحديث",
+    special: true,
+  },
 
-{ y: "فبراير 2026", h: 5281.19, l: 4403.75, e: "استمرار الزخم الصاعد", special: true },
-
-{ y: "مارس 2026", h: 5419, l: 4098, e: "قمم تاريخية جديدة", special: true },
-
-{ y: "أبريل 2026", h: 4890, l: 4510, e: "تصحيح بعد الارتفاع", special: true },
-
-{ y: "مايو 2026", h: 4773, l: 4399, e: "قوة الدولار الأمريكي", special: true },
-
-      { y: 2025, h: 4537, l: 2600, e: "صعود قوي جدًا" },
+  { y: 2025, h: 4537, l: 2600, e: "صعود قوي جدًا" },
       { y: 2024, h: 2790, l: 1984, e: "قمم تاريخية" },
       { y: 2023, h: 2135, l: 1804, e: "رفع الفائدة" },
       { y: 2022, h: 2070, l: 1618, e: "حرب أوكرانيا" },
@@ -1228,7 +1279,7 @@ if (prevHigh !== null) {
 </section>
 
 {/* HOW WE CHOSE */}
-<section className="mx-auto max-w-7xl px-4 pb-6 md:px-6 lg:px-8">
+<section className="mx-auto max-w-[1520px] px-4 pb-6 md:px-6 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
     <div className="border-b border-slate-200 px-5 py-6 text-right md:px-8">
       <h2 className="text-2xl font-black text-slate-950 md:text-3xl">
@@ -1366,7 +1417,7 @@ if (prevHigh !== null) {
 </section>
 
 {/* EDUCATIONAL GUIDE */}
-<section className="mx-auto max-w-7xl px-4 pb-6 md:px-6 lg:px-8">
+<section className="mx-auto max-w-[1520px] px-4 pb-6 md:px-6 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
     <div className="border-b border-slate-200 px-5 py-6 text-right md:px-8">
       <h2 className="text-2xl font-black text-slate-950 md:text-3xl">
@@ -1506,7 +1557,7 @@ if (prevHigh !== null) {
 </section>
 
 {/* RISKS */}
-<section className="mx-auto max-w-7xl px-4 pb-6 md:px-6 lg:px-8">
+<section className="mx-auto max-w-[1520px] px-4 pb-6 md:px-6 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
     <div className="border-b border-slate-200 px-5 py-6 text-right md:px-8">
       <h2 className="text-2xl font-black text-slate-950 md:text-3xl">
@@ -1569,7 +1620,7 @@ if (prevHigh !== null) {
 </section>
 
 {/* WHY TRADE GOLD */}
-<section className="mx-auto max-w-7xl px-4 pb-6 md:px-6 lg:px-8">
+<section className="mx-auto max-w-[1520px] px-4 pb-6 md:px-6 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
     <div className="border-b border-slate-200 px-5 py-6 text-right md:px-8">
       <h2 className="text-2xl font-black text-slate-950 md:text-3xl">
@@ -1654,7 +1705,7 @@ if (prevHigh !== null) {
 </section>
 
 {/* FAQ */}
-<section className="mx-auto max-w-7xl px-4 pb-10 md:px-6 lg:px-8">
+<section className="mx-auto max-w-[1520px] px-4 pb-10 md:px-6 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
     <div className="border-b border-slate-200 px-5 py-6 text-right md:px-8">
       <h2 className="text-2xl font-black text-slate-950 md:text-3xl">
@@ -1730,7 +1781,7 @@ if (prevHigh !== null) {
 </section>
 
 {/* INTERNAL LINKS */}
-<section className="mx-auto max-w-7xl px-4 pb-4 md:px-6 lg:pb-6">
+<section className="mx-auto max-w-[1520px] px-4 pb-4 md:px-6 lg:pb-6">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
     <div className="border-b border-slate-200 px-5 py-6 text-right md:px-8">
       <h2 className="text-2xl font-black text-slate-950 md:text-3xl">
