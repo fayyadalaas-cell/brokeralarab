@@ -249,8 +249,6 @@ export async function GET(
         referrer: referer,
         user_agent: userAgent,
         country: countryName,
-        country_code: countryCode,
-        country_name: countryName,
         click_location: clickLocation,
         visitor_hash: visitorHash,
 
