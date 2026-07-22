@@ -1412,6 +1412,25 @@ function eventCountdown(start?: string | null, end?: string | null) {
   </div>
 </section>
 
+{/* PEPPERSTONE BANNER */}
+<section className="flex justify-center py-3 sm:py-4">
+  <a
+    href="https://track.pepperstonepartners.com/visit/?bta=44176&nci=5729"
+    target="_blank"
+    rel="nofollow sponsored noopener noreferrer"
+    className="block overflow-hidden rounded-2xl"
+  >
+    <img
+      src="https://pepperstonepartners.ck-cdn.com/tn/serve/?cid=683694"
+      alt="Pepperstone"
+      width={980}
+      height={90}
+      loading="lazy"
+      className="max-w-full h-auto"
+    />
+  </a>
+</section>
+
 {/* ACCOUNT TYPES HOME SECTION */}
 <section className="mx-auto w-full max-w-7xl px-0 py-3 sm:py-4">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)] sm:rounded-[32px]">
