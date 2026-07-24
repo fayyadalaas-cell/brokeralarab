@@ -2754,8 +2754,8 @@ const brokerChecks = [
   </div>
 </div>
 
-           {/* SIDEBAR IMPORTANT LINKS */}
-      <div className="space-y-3 px-3 pb-1">
+          {/* SIDEBAR IMPORTANT LINKS */}
+<div className="space-y-3 px-3 pb-3 pt-3">
 
         {/* LICENSES */}
         <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
@@ -2828,13 +2828,77 @@ const brokerChecks = [
           </div>
 
           <Link
-            href="/licenses"
-            className="flex min-h-[40px] items-center justify-center border-t border-slate-100 bg-emerald-50/50 px-4 text-[10px] font-black text-emerald-700 transition hover:bg-emerald-50"
-          >
-            عرض جميع التراخيص
-            <span className="mr-1.5">←</span>
-          </Link>
-        </div>
+  href="/licenses"
+  className="flex min-h-[40px] items-center justify-center border-t border-slate-100 bg-emerald-50/50 px-4 text-[10px] font-black text-emerald-700 transition hover:bg-emerald-50"
+>
+  عرض جميع التراخيص
+  <span className="mr-1.5">←</span>
+</Link>
+</div>
+
+{/* BROKER HELP CARD */}
+<div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
+  {/* HEADER */}
+  <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-4">
+    <div className="flex items-start gap-3">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[13px] border border-brand-100 bg-white text-[17px] shadow-sm">
+        💬
+      </span>
+
+      <div className="min-w-0 flex-1">
+        <span className="inline-flex rounded-full border border-brand-100 bg-white px-2.5 py-1 text-[8px] font-black text-brand-600 shadow-sm">
+          مساعدة مجانية
+        </span>
+
+        <h3 className="mt-2 text-[15px] font-black leading-6 text-[#07111f]">
+         هل تحتاج مساعدة في اختيار وسيط موثوق؟
+        </h3>
+      </div>
+    </div>
+  </div>
+
+  {/* CONTENT */}
+  <div className="px-4 py-4">
+    <p className="text-[11px] font-medium leading-6 text-slate-700">
+     أخبرنا ببلدك وخبرتك وما تبحث عنه، وسنساعدك في مقارنة الوسطاء الأنسب لاحتياجاتك.
+    </p>
+
+    <div className="mt-3 space-y-2">
+      <div className="flex items-center gap-2 text-[10px] font-semibold text-slate-700">
+        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-50 text-[10px] font-bold text-brand-600">
+          ✓
+        </span>
+        مقارنة الوسطاء حسب بلدك
+      </div>
+
+      <div className="flex items-center gap-2 text-[10px] font-semibold text-slate-700">
+        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-50 text-[10px] font-bold text-brand-600">
+          ✓
+        </span>
+        خيارات مناسبة لمستوى خبرتك
+      </div>
+
+      <div className="flex items-center gap-2 text-[9px] font-bold text-slate-600">
+        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-50 text-[10px] font-bold text-brand-600">
+          ✓
+        </span>
+        مساعدة مجانية بدون التزام
+      </div>
+    </div>
+
+    <Link
+      href="/contact"
+      className="mt-4 flex min-h-[44px] w-full items-center justify-center rounded-[13px] bg-brand-500 px-4 text-[11px] font-black text-white shadow-[0_9px_20px_rgba(37,99,235,0.20)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-600"
+    >
+     تواصل معنا الآن
+      <span className="mr-2 text-[13px]">←</span>
+    </Link>
+
+    <p className="mt-2.5 text-center text-[7px] font-semibold leading-4 text-slate-400">
+      خدمة معلوماتية لمقارنة الوسطاء، وليست استشارة استثمارية.
+    </p>
+  </div>
+</div>
 
 {/* ONEROYAL SPONSORED SIDEBAR AD */}
 <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white p-2 shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
