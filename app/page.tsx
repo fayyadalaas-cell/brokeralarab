@@ -649,7 +649,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
           ))}
         </div>
 
-        <div className="mt-auto flex items-center justify-between rounded-2xl border border-white/10 bg-white/10 px-4 py-3">
+        <div className="mt-4 flex items-center justify-between rounded-2xl border border-white/10 bg-white/10 px-4 py-3">
           <div className="text-right">
            <div className="text-[13px] font-black text-white">
   تقييمات مستقلة وبيانات محدثة
