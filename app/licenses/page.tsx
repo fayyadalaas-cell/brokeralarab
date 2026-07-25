@@ -971,33 +971,42 @@ const licensesItemListSchema = {
 </div>
 
           <div className="grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-4 md:p-5">
-            {regulators.slice(0, 8).map((item) => (
-  <div
-    key={item.code}
-    className="group rounded-[20px] border border-brand-100 bg-white px-4 py-3.5 shadow-sm transition hover:-translate-y-[2px] hover:border-brand-200 hover:shadow-[0_10px_24px_rgba(59,130,246,0.12)] md:rounded-[22px] md:p-4"
-  >
-                <div className="flex items-center justify-between gap-3">
-                 <span className="inline-flex h-9 min-w-12 items-center justify-center rounded-[13px] bg-brand-50 px-3 text-[13px] font-black text-brand-600 md:h-10 md:min-w-14 md:rounded-[14px] md:text-sm">
-  {item.code}
-</span>
+            {regulators.slice(0, 8).map((item) => {
+  const regulatorSlug = item.code.toLowerCase().replace(/\s+/g, "-");
 
-<span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-black text-emerald-700 md:px-3 md:text-[11px]">
-  {item.count} وسيط مرخص
-</span>
-                </div>
+  return (
+    <Link
+      key={item.code}
+      href={`/licenses/${regulatorSlug}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group block rounded-[20px] border border-brand-100 bg-white px-4 py-3.5 shadow-sm transition hover:-translate-y-[2px] hover:border-brand-200 hover:shadow-[0_10px_24px_rgba(59,130,246,0.12)] md:rounded-[22px] md:p-4"
+    >
+      <div className="flex items-center justify-between gap-3">
+        <span className="inline-flex h-9 min-w-12 items-center justify-center rounded-[13px] bg-brand-50 px-3 text-[13px] font-black text-brand-600 md:h-10 md:min-w-14 md:rounded-[14px] md:text-sm">
+          {item.code}
+        </span>
 
-               <h3 className="mt-3 text-[17px] font-black leading-7 text-slate-950 md:mt-4 md:text-[18px]">
-  {item.name}
-</h3>
+        <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-black text-emerald-700 md:px-3 md:text-[11px]">
+          {item.count} وسيط مرخص
+        </span>
+      </div>
 
-               <p className="mt-1.5 line-clamp-2 text-[12px] leading-6 text-slate-600 md:mt-2 md:text-[13px] md:leading-7">
-  {item.description || "جهة رقابية مالية مدرجة ضمن قاعدة بيانات بروكر العرب."}
-</p>
-<div className="mt-3 text-[12px] font-black text-brand-600">
-  عرض الشركات المرخصة ←
-</div>
-              </div>
-            ))}
+      <h3 className="mt-3 text-[17px] font-black leading-7 text-slate-950 transition group-hover:text-brand-600 md:mt-4 md:text-[18px]">
+        {item.name}
+      </h3>
+
+      <p className="mt-1.5 line-clamp-2 text-[12px] leading-6 text-slate-600 md:mt-2 md:text-[13px] md:leading-7">
+        {item.description ||
+          "جهة رقابية مالية مدرجة ضمن قاعدة بيانات بروكر العرب."}
+      </p>
+
+      <div className="mt-3 text-[12px] font-black text-brand-600 transition group-hover:translate-x-1">
+        عرض الشركات المرخصة ←
+      </div>
+    </Link>
+  );
+})}
           </div>
         </div>
       </section>
