@@ -64,6 +64,27 @@ const verificationToolsAr = [
   },
 ];
 
+const accountTypePagesAr = [
+  {
+    title: "أفضل وسطاء حساب السنت",
+    shortLabel: "حساب السنت",
+    href: "/best-brokers/accounts/cent",
+    symbol: "¢",
+  },
+  {
+    title: "أفضل وسطاء الحساب القياسي",
+    shortLabel: "الحساب القياسي",
+    href: "/best-brokers/accounts/standard",
+    symbol: "S",
+  },
+  {
+    title: "أفضل وسطاء حساب Raw Spread",
+    shortLabel: "حساب Raw Spread",
+    href: "/best-brokers/accounts/raw-spread",
+    symbol: "R",
+  },
+];
+
 const mainLinkClass =
   "inline-flex items-center gap-2 whitespace-nowrap rounded-full px-4 py-2.5 text-[14px] font-extrabold text-slate-700 transition hover:bg-slate-100 xl:px-5";
 
@@ -256,77 +277,178 @@ export default function ArabicHeader({
               </div>
             </div>
 
-            {/* BEST BROKERS */}
+                      {/* BEST BROKERS */}
             <div className="group relative">
-              <Link href="/best-brokers" className={mainLinkClass}>
+              <Link
+                href="/best-brokers"
+                className={mainLinkClass}
+              >
                 أفضل الوسطاء
+
                 <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
                   ▼
                 </span>
               </Link>
 
-              <div className={`${dropdownClass} w-[760px] max-w-[calc(100vw-40px)]`}>
-                <div className="grid grid-cols-[1.25fr_0.95fr] gap-6 divide-x divide-slate-200 divide-x-reverse">
-                  <div className="pr-1">
-                    <div className="mb-4 text-sm font-black text-slate-900">
-                      أفضل الوسطاء حسب الدولة
+              <div
+                className={`${dropdownClass} w-[940px] max-w-[calc(100vw-32px)] p-5`}
+              >
+                                <div className="grid grid-cols-[1.35fr_0.85fr_0.85fr] items-stretch gap-5">
+                  {/* =============================================== */}
+                  {/* COUNTRIES */}
+                  {/* =============================================== */}
+                  <div className="flex h-full flex-col border-l border-slate-200 pl-5">
+                    <div className="mb-3 flex min-h-[44px] items-start justify-between gap-3">
+                      <div>
+                        <h3 className="text-[14px] font-black text-slate-950">
+                          أفضل الوسطاء حسب الدولة
+                        </h3>
+
+                        <p className="mt-1 text-[10px] font-semibold text-slate-500">
+                          اختر الوسطاء المتاحين في دولتك
+                        </p>
+                      </div>
+
+                      <span className="shrink-0 rounded-full bg-brand-50 px-2.5 py-1 text-[9px] font-black text-brand-600">
+                        حسب موقعك
+                      </span>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-3.5">
-                      {extendedCountryMenuItems.map((item: any) => (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          className="flex h-[52px] min-w-[120px] items-center gap-3.5 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-[13px] font-extrabold text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600"
-                          title={item.label}
-                        >
-                          <img
-                            src={item.flag}
-                            alt={item.shortLabel}
-                            className="h-[22px] w-[22px] shrink-0 rounded-full object-cover"
-                          />
-                         <span className="flex-1 text-center text-[13px] font-extrabold text-slate-700">
-                            {item.shortLabel}
-                          </span>
-                        </Link>
-                      ))}
+                    <div className="grid grid-cols-3 gap-2.5">
+                      {extendedCountryMenuItems.map(
+                        (item: any) => (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            title={item.label}
+                            className="group/country flex h-[48px] items-center gap-2.5 rounded-[15px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-brand-50"
+                          >
+                            <img
+                              src={item.flag}
+                              alt={item.shortLabel}
+                              className="h-6 w-6 shrink-0 rounded-full border border-white object-cover shadow-sm"
+                            />
+
+                            <span className="min-w-0 flex-1 text-center text-[12px] font-black text-slate-700 transition group-hover/country:text-brand-600">
+                              {item.shortLabel}
+                            </span>
+                          </Link>
+                        ),
+                      )}
                     </div>
 
-                    <Link
-                      href="/best-brokers"
-                      className="mt-3 block rounded-2xl px-3 py-3 text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
-                    >
-                      جميع الدول ←
-                    </Link>
+                    <div className="mt-auto pt-3">
+                      <Link
+                        href="/best-brokers"
+                        className="flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-brand-100 bg-brand-50/60 px-3 text-[12px] font-black text-brand-600 transition hover:border-brand-200 hover:bg-brand-100"
+                      >
+                        عرض جميع الدول
+                        <span className="text-sm">←</span>
+                      </Link>
+                    </div>
                   </div>
 
-                  <div className="pl-6">
-                    <div className="mb-4 text-sm font-black text-slate-900">
-                      أفضل الوسطاء حسب الفئة
+                  {/* =============================================== */}
+                  {/* CATEGORIES */}
+                  {/* =============================================== */}
+                  <div className="flex h-full flex-col border-l border-slate-200 pl-5">
+                    <div className="mb-3 min-h-[44px]">
+                      <h3 className="text-[14px] font-black text-slate-950">
+                        أفضل الوسطاء حسب الفئة
+                      </h3>
+
+                      <p className="mt-1 text-[10px] font-semibold text-slate-500">
+                        تصنيفات شائعة للمتداولين
+                      </p>
                     </div>
 
-                    <div className="grid gap-2.5">
-                      {featuredCategories.map((item: any) => (
-                        <Link
-                          key={item.href + item.label}
-                          href={item.href}
-                          className="block rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-right text-[13px] font-extrabold leading-6 text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600"
-                        >
-                          {item.label}
-                        </Link>
-                      ))}
+                    <div className="space-y-2">
+                      {featuredCategories
+                        .slice(0, 4)
+                        .map((item: any) => (
+                          <Link
+                            key={`${item.href}-${item.label}`}
+                            href={item.href}
+                            className="group/category flex min-h-[48px] items-center justify-between gap-3 rounded-[15px] border border-slate-200 bg-slate-50 px-3.5 py-2.5 transition hover:border-brand-200 hover:bg-brand-50"
+                          >
+                            <span className="min-w-0 text-[12px] font-black leading-5 text-slate-700 transition group-hover/category:text-brand-600">
+                              {item.label}
+                            </span>
+
+                            <span className="shrink-0 text-[12px] font-black text-slate-400 transition group-hover/category:-translate-x-0.5 group-hover/category:text-brand-600">
+                              ←
+                            </span>
+                          </Link>
+                        ))}
                     </div>
 
-                    <Link
-                      href="/best-brokers"
-                      className="mt-3 block rounded-2xl px-3 py-3 text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
-                    >
-                      جميع التصنيفات ←
-                    </Link>
+                    <div className="mt-auto pt-3">
+                      <Link
+                        href="/best-brokers"
+                        className="flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-brand-100 bg-brand-50/60 px-3 text-[12px] font-black text-brand-600 transition hover:border-brand-200 hover:bg-brand-100"
+                      >
+                        جميع التصنيفات
+                        <span className="text-sm">←</span>
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* =============================================== */}
+                  {/* ACCOUNT TYPES */}
+                  {/* =============================================== */}
+                  <div className="flex h-full flex-col">
+                    <div className="mb-3 min-h-[44px]">
+                      <h3 className="text-[14px] font-black text-slate-950">
+                        أفضل الوسطاء حسب الحساب
+                      </h3>
+
+                      <p className="mt-1 text-[10px] font-semibold text-slate-500">
+                        اختر الحساب الأنسب لطريقة تداولك
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      {accountTypePagesAr.map(
+                        (item) => (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            title={item.title}
+                            className="group/account flex min-h-[56px] items-center gap-3 rounded-[15px] border border-slate-200 bg-slate-50 px-3 py-2.5 transition hover:border-brand-200 hover:bg-brand-50"
+                          >
+                            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-[13px] font-black text-brand-600 shadow-sm transition group-hover/account:border-brand-200 group-hover/account:bg-brand-600 group-hover/account:text-white">
+                              {item.symbol}
+                            </span>
+
+                            <div className="min-w-0 flex-1">
+                              <span className="block text-[12px] font-black leading-5 text-slate-800 transition group-hover/account:text-brand-600">
+                                {item.shortLabel}
+                              </span>
+
+                              <span className="mt-0.5 block text-[9px] font-semibold text-slate-500">
+                                مقارنة أفضل الوسطاء
+                              </span>
+                            </div>
+
+                            <span className="shrink-0 text-[12px] font-black text-slate-400 transition group-hover/account:-translate-x-0.5 group-hover/account:text-brand-600">
+                              ←
+                            </span>
+                          </Link>
+                        ),
+                      )}
+                    </div>
+
+                    <div className="mt-auto pt-3">
+                      <div className="flex h-11 w-full items-center justify-center rounded-xl border border-brand-100 bg-brand-50/60 px-3 text-center">
+                        <p className="text-[10px] font-bold leading-5 text-brand-700">
+                          اختر نوع الحساب الأنسب لطريقة تداولك
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
+                </div>
+                </div>
 
             {/* TRADING TOOLS */}
             <div className="group relative">

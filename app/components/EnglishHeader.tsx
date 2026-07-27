@@ -70,6 +70,27 @@ const verificationToolsEn = [
   },
 ];
 
+const accountTypePagesEn = [
+  {
+    title: "Best Cent Account Brokers",
+    shortLabel: "Cent Accounts",
+    href: "/en/best-brokers/accounts/cent",
+    symbol: "¢",
+  },
+  {
+    title: "Best Standard Account Brokers",
+    shortLabel: "Standard Accounts",
+    href: "/en/best-brokers/accounts/standard",
+    symbol: "S",
+  },
+  {
+    title: "Best Raw Spread Brokers",
+    shortLabel: "Raw Spread Accounts",
+    href: "/en/best-brokers/accounts/raw-spread",
+    symbol: "R",
+  },
+];
+
 const mainLinkClass =
   "inline-flex items-center gap-2 whitespace-nowrap rounded-full px-4 py-2.5 text-[14px] font-extrabold text-slate-700 transition hover:bg-slate-100 xl:px-5";
 
@@ -225,42 +246,178 @@ export default function EnglishHeader({
               </div>
             </div>
 
-            {/* BEST BROKERS */}
+                        {/* BEST BROKERS */}
             <div className="group relative">
-              <Link href="/en/best-brokers" className={mainLinkClass}>
+              <Link
+                href="/en/best-brokers"
+                className={mainLinkClass}
+              >
                 Best Brokers
+
                 <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
                   ▼
                 </span>
               </Link>
 
-              <div className={`${dropdownClass} w-[380px]`}>
-                <div className="px-3 pb-3 pt-1 text-xs font-black tracking-wide text-slate-500">
-                  Best Broker Guides
+              <div
+                className={`${dropdownClass} w-[760px] max-w-[calc(100vw-32px)] p-5`}
+              >
+                <div className="grid grid-cols-2 items-stretch gap-5">
+                  {/* =============================================== */}
+                  {/* BROKER GUIDES */}
+                  {/* =============================================== */}
+                  <div className="flex h-full flex-col border-r border-slate-200 pr-5">
+                    <div className="mb-3 min-h-[44px]">
+                      <h3 className="text-[14px] font-black text-slate-950">
+                        Best Broker Guides
+                      </h3>
+
+                      <p className="mt-1 text-[10px] font-semibold text-slate-500">
+                        Popular broker rankings and comparisons
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Link
+                        href="/en/best-brokers"
+                        className="group/guide flex min-h-[54px] items-center justify-between gap-3 rounded-[15px] border border-slate-200 bg-slate-50 px-3.5 py-2.5 transition hover:border-brand-200 hover:bg-brand-50"
+                      >
+                        <div className="min-w-0">
+                          <span className="block text-[12px] font-black leading-5 text-slate-800 transition group-hover/guide:text-brand-600">
+                            Best Forex Brokers in 2026
+                          </span>
+
+                          <span className="mt-0.5 block text-[9px] font-semibold text-slate-500">
+                            Compare leading regulated brokers
+                          </span>
+                        </div>
+
+                        <span className="shrink-0 text-[12px] font-black text-slate-400 transition group-hover/guide:translate-x-0.5 group-hover/guide:text-brand-600">
+                          →
+                        </span>
+                      </Link>
+
+                      <Link
+                        href="/en/lowest-spread-brokers"
+                        className="group/guide flex min-h-[54px] items-center justify-between gap-3 rounded-[15px] border border-slate-200 bg-slate-50 px-3.5 py-2.5 transition hover:border-brand-200 hover:bg-brand-50"
+                      >
+                        <div className="min-w-0">
+                          <span className="block text-[12px] font-black leading-5 text-slate-800 transition group-hover/guide:text-brand-600">
+                            Best Low Spread Forex Brokers
+                          </span>
+
+                          <span className="mt-0.5 block text-[9px] font-semibold text-slate-500">
+                            Compare spreads and all-in trading costs
+                          </span>
+                        </div>
+
+                        <span className="shrink-0 text-[12px] font-black text-slate-400 transition group-hover/guide:translate-x-0.5 group-hover/guide:text-brand-600">
+                          →
+                        </span>
+                      </Link>
+
+                      <Link
+                        href="/en/best-brokers/gold"
+                        className="group/guide flex min-h-[54px] items-center justify-between gap-3 rounded-[15px] border border-slate-200 bg-slate-50 px-3.5 py-2.5 transition hover:border-brand-200 hover:bg-brand-50"
+                      >
+                        <div className="min-w-0">
+                          <span className="block text-[12px] font-black leading-5 text-slate-800 transition group-hover/guide:text-brand-600">
+                            Best Gold Trading Brokers
+                          </span>
+
+                          <span className="mt-0.5 block text-[9px] font-semibold text-slate-500">
+                            Compare brokers for trading gold CFDs
+                          </span>
+                        </div>
+
+                        <span className="shrink-0 text-[12px] font-black text-slate-400 transition group-hover/guide:translate-x-0.5 group-hover/guide:text-brand-600">
+                          →
+                        </span>
+                      </Link>
+
+                      <Link
+                        href="/en/compare"
+                        className="group/guide flex min-h-[54px] items-center justify-between gap-3 rounded-[15px] border border-slate-200 bg-slate-50 px-3.5 py-2.5 transition hover:border-brand-200 hover:bg-brand-50"
+                      >
+                        <div className="min-w-0">
+                          <span className="block text-[12px] font-black leading-5 text-slate-800 transition group-hover/guide:text-brand-600">
+                            Compare Forex Brokers
+                          </span>
+
+                          <span className="mt-0.5 block text-[9px] font-semibold text-slate-500">
+                            Compare fees, platforms and account types
+                          </span>
+                        </div>
+
+                        <span className="shrink-0 text-[12px] font-black text-slate-400 transition group-hover/guide:translate-x-0.5 group-hover/guide:text-brand-600">
+                          →
+                        </span>
+                      </Link>
+                    </div>
+
+                    <div className="mt-auto pt-3">
+                      <Link
+                        href="/en/best-brokers"
+                        className="flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-brand-100 bg-brand-50/60 px-3 text-[12px] font-black text-brand-600 transition hover:border-brand-200 hover:bg-brand-100"
+                      >
+                        View All Broker Rankings
+                        <span className="text-sm">→</span>
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* =============================================== */}
+                  {/* ACCOUNT TYPES */}
+                  {/* =============================================== */}
+                  <div className="flex h-full flex-col">
+                    <div className="mb-3 min-h-[44px]">
+                      <h3 className="text-[14px] font-black text-slate-950">
+                        Best Brokers by Account Type
+                      </h3>
+
+                      <p className="mt-1 text-[10px] font-semibold text-slate-500">
+                        Choose the account that fits your trading style
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      {accountTypePagesEn.map((item) => (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          title={item.title}
+                          className="group/account flex min-h-[62px] items-center gap-3 rounded-[15px] border border-slate-200 bg-slate-50 px-3 py-2.5 transition hover:border-brand-200 hover:bg-brand-50"
+                        >
+                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-[13px] font-black text-brand-600 shadow-sm transition group-hover/account:border-brand-200 group-hover/account:bg-brand-600 group-hover/account:text-white">
+                            {item.symbol}
+                          </span>
+
+                          <div className="min-w-0 flex-1">
+                            <span className="block text-[12px] font-black leading-5 text-slate-800 transition group-hover/account:text-brand-600">
+                              {item.shortLabel}
+                            </span>
+
+                            <span className="mt-0.5 block text-[9px] font-semibold leading-4 text-slate-500">
+                              Compare the best brokers
+                            </span>
+                          </div>
+
+                          <span className="shrink-0 text-[12px] font-black text-slate-400 transition group-hover/account:translate-x-0.5 group-hover/account:text-brand-600">
+                            →
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+
+                    <div className="mt-auto pt-3">
+                      <div className="flex h-11 w-full items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-3 text-center">
+                        <p className="text-[10px] font-bold leading-5 text-slate-600">
+                          Compare account costs before opening a live account
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-
-                <div className="grid gap-2.5">
-  <Link
-    href="/en/best-brokers"
-    className="block rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-left text-[13px] font-extrabold leading-6 text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600"
-  >
-    Best Forex Brokers in 2026
-  </Link>
-
-  <Link
-    href="/en/lowest-spread-brokers"
-    className="block rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-left text-[13px] font-extrabold leading-6 text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600"
-  >
-    Best Low Spread Forex Brokers
-  </Link>
-
-  <Link
-    href="/en/best-brokers/gold"
-    className="block rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-left text-[13px] font-extrabold leading-6 text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600"
-  >
-    Best Gold Brokers
-  </Link>
-</div>
               </div>
             </div>
 

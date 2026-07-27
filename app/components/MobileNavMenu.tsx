@@ -197,6 +197,45 @@ export default function MobileNavMenu({
     },
   ];
 
+    const mobileAccountTypePages = [
+    {
+      title: isEnglish
+        ? "Cent Accounts"
+        : "حساب السنت",
+      description: isEnglish
+        ? "Compare cent and micro account brokers"
+        : "قارن أفضل وسطاء حسابات السنت والمايكرو",
+      href: isEnglish
+        ? "/en/best-brokers/accounts/cent"
+        : "/best-brokers/accounts/cent",
+      symbol: "¢",
+    },
+    {
+      title: isEnglish
+        ? "Standard Accounts"
+        : "الحساب القياسي",
+      description: isEnglish
+        ? "Compare spread-based Standard accounts"
+        : "قارن الحسابات القياسية حسب السبريد والتكاليف",
+      href: isEnglish
+        ? "/en/best-brokers/accounts/standard"
+        : "/best-brokers/accounts/standard",
+      symbol: "S",
+    },
+    {
+      title: isEnglish
+        ? "Raw Spread Accounts"
+        : "حساب Raw Spread",
+      description: isEnglish
+        ? "Compare low-spread commission accounts"
+        : "قارن حسابات السبريد المنخفض والعمولة",
+      href: isEnglish
+        ? "/en/best-brokers/accounts/raw-spread"
+        : "/best-brokers/accounts/raw-spread",
+      symbol: "R",
+    },
+  ];
+
   const mobileTradingTools = [
     { label: isEnglish ? "Risk Calculator" : "حاسبة إدارة المخاطر", href: "/tools/risk-calculator" },
     { label: isEnglish ? "Lot Size Calculator" : "حاسبة حجم اللوت", href: "/tools/lot-size-calculator" },
@@ -447,85 +486,239 @@ const comparisonItems = useMemo(() => {
                     </div>
                   </Section>
 
-                  <Section
+                                   <Section
                     title={text.best}
                     open={openSection === "best"}
                     onToggle={() => toggleSection("best")}
                   >
-                    {isEnglish ? (
-<div className="space-y-2">
-  <Link
-    href="/en/best-brokers"
-    onClick={closeMenu}
-    className={`${mobileCardClass} block`}
-  >
-    Best Forex Brokers in 2026
-  </Link>
+                    <div className="space-y-4">
+                      {/* =========================================== */}
+                                           {/* =========================================== */}
+                      {/* ENGLISH BROKER GUIDES */}
+                      {/* =========================================== */}
+                      {isEnglish ? (
+                        <div>
+                          <div className="mb-2.5 flex items-center justify-between px-1">
+                            <div>
+                              <p className="text-[12px] font-black text-slate-950">
+                                Best Broker Guides
+                              </p>
 
-  <Link
-    href="/en/lowest-spread-brokers"
-    onClick={closeMenu}
-    className={`${mobileCardClass} block`}
-  >
-    Best Low Spread Forex Brokers
-  </Link>
+                              <p className="mt-0.5 text-[9px] font-semibold text-slate-500">
+                                Popular broker rankings
+                              </p>
+                            </div>
 
-  <Link
-    href="/en/best-brokers/gold"
-    onClick={closeMenu}
-    className={`${mobileCardClass} block`}
-  >
-    Best Gold Brokers
-  </Link>
+                            <span className="rounded-full bg-brand-50 px-2 py-1 text-[8px] font-black text-brand-600">
+                              Guides
+                            </span>
+                          </div>
+
+                          <div className="space-y-2">
+                            <Link
+                              href="/en/best-brokers"
+                              onClick={closeMenu}
+                              className="group flex h-[48px] items-center justify-between gap-2.5 rounded-[15px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-white"
+                            >
+                              <span className="min-w-0 flex-1 truncate text-[12px] font-black text-slate-800">
+                                Best Forex Brokers in 2026
+                              </span>
+
+                              <span className="shrink-0 text-[12px] font-black text-brand-600">
+                                →
+                              </span>
+                            </Link>
+
+                            <Link
+                              href="/en/lowest-spread-brokers"
+                              onClick={closeMenu}
+                              className="group flex h-[48px] items-center justify-between gap-2.5 rounded-[15px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-white"
+                            >
+                              <span className="min-w-0 flex-1 truncate text-[12px] font-black text-slate-800">
+                                Best Low Spread Forex Brokers
+                              </span>
+
+                              <span className="shrink-0 text-[12px] font-black text-brand-600">
+                                →
+                              </span>
+                            </Link>
+
+                            <Link
+                              href="/en/best-brokers/gold"
+                              onClick={closeMenu}
+                              className="group flex h-[48px] items-center justify-between gap-2.5 rounded-[15px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-white"
+                            >
+                              <span className="min-w-0 flex-1 truncate text-[12px] font-black text-slate-800">
+                                Best Gold Trading Brokers
+                              </span>
+
+                              <span className="shrink-0 text-[12px] font-black text-brand-600">
+                                →
+                              </span>
+                            </Link>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                        
+                          {/* ======================================= */}
+                          {/* ARABIC COUNTRIES */}
+                          {/* ======================================= */}
+                          <div>
+                            <div className="mb-2.5 flex items-center justify-between px-1">
+                              <div>
+                                <p className="text-[12px] font-black text-slate-950">
+                                  أفضل الوسطاء حسب الدولة
+                                </p>
+
+                                <p className="mt-0.5 text-[9px] font-semibold text-slate-500">
+                                  اختر الوسطاء المتاحين في دولتك
+                                </p>
+                              </div>
+
+                              <span className="rounded-full bg-brand-50 px-2 py-1 text-[8px] font-black text-brand-600">
+                                الدول
+                              </span>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-2">
+                              {mobileCountryMenuItems.map((item) => (
+                                <Link
+                                  key={item.href}
+                                  href={item.href}
+                                  onClick={closeMenu}
+                                  className="flex h-[48px] items-center gap-2.5 rounded-[15px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-white"
+                                >
+                                  <img
+                                    src={item.flag}
+                                    alt={item.shortLabel}
+                                    className="h-5 w-5 shrink-0 rounded-full object-cover"
+                                  />
+
+                                  <span className="min-w-0 flex-1 text-center text-[12px] font-black text-slate-800">
+                                    {item.shortLabel}
+                                  </span>
+                                </Link>
+                              ))}
+                            </div>
+
+                            <Link
+                              href="/best-brokers"
+                              onClick={closeMenu}
+                              className="mt-2.5 flex h-10 items-center justify-center gap-2 rounded-xl border border-brand-100 bg-brand-50/60 text-[11px] font-black text-brand-600"
+                            >
+                              عرض جميع الدول
+                              <span>←</span>
+                            </Link>
+                          </div>
+
+                          {/* ======================================= */}
+                          {/* ARABIC CATEGORIES */}
+                          {/* ======================================= */}
+                          <div className="border-t border-slate-100 pt-4">
+                            <div className="mb-2.5 px-1">
+                              <p className="text-[12px] font-black text-slate-950">
+                                أفضل الوسطاء حسب الفئة
+                              </p>
+
+                              <p className="mt-0.5 text-[9px] font-semibold text-slate-500">
+                                أشهر تصنيفات الوسطاء
+                              </p>
+                            </div>
+
+                            <div className="space-y-2">
+                              {featuredCategories
+                                .slice(0, 4)
+                                .map((item) => (
+                                  <Link
+                                    key={`${item.href}-${item.label}`}
+                                    href={item.href}
+                                    onClick={closeMenu}
+                                    className="flex min-h-[48px] items-center justify-between gap-3 rounded-[15px] border border-slate-200 bg-slate-50 px-3.5 py-2.5 transition hover:border-brand-200 hover:bg-white"
+                                  >
+                                    <span className="min-w-0 text-[12px] font-black leading-5 text-slate-800">
+                                      {item.label}
+                                    </span>
+
+                                    <span className="shrink-0 text-sm font-black text-brand-600">
+                                      ←
+                                    </span>
+                                  </Link>
+                                ))}
+                            </div>
+                          </div>
+                        </>
+                      )}
+
+                      {/* =========================================== */}
+                      {/* ACCOUNT TYPES — BOTH LANGUAGES */}
+                      {/* =========================================== */}
+                      <div className="border-t border-slate-100 pt-4">
+                        <div className="mb-2.5 flex items-center justify-between px-1">
+                          <div>
+                            <p className="text-[12px] font-black text-slate-950">
+                              {isEnglish
+                                ? "Best Brokers by Account Type"
+                                : "أفضل الوسطاء حسب نوع الحساب"}
+                            </p>
+
+                            <p className="mt-0.5 text-[9px] font-semibold text-slate-500">
+                              {isEnglish
+                                ? "Choose the account that fits your strategy"
+                                : "اختر الحساب الأنسب لطريقة تداولك"}
+                            </p>
+                          </div>
+
+                          <span className="rounded-full bg-brand-50 px-2 py-1 text-[8px] font-black text-brand-600">
+                            {isEnglish ? "Accounts" : "الحسابات"}
+                          </span>
+                        </div>
+
+                       <div className="space-y-2">
+  {mobileAccountTypePages.map((item) => (
+    <Link
+      key={item.href}
+      href={item.href}
+      onClick={closeMenu}
+      className="group/account flex h-[48px] items-center gap-2.5 rounded-[15px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-white"
+    >
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-brand-100 bg-white text-[11px] font-black text-brand-600 shadow-sm transition group-hover/account:bg-brand-600 group-hover/account:text-white">
+        {item.symbol}
+      </span>
+
+      <span className="min-w-0 flex-1 truncate text-[12px] font-black text-slate-800">
+        {item.title}
+      </span>
+
+      <span className="shrink-0 text-[12px] font-black text-brand-600">
+        {isEnglish ? "→" : "←"}
+      </span>
+    </Link>
+  ))}
 </div>
-                    ) : (
-                      <div className="space-y-4">
-                        <div>
-                          <div className="mb-2 px-1 text-[13px] font-black text-slate-900">
-                            {text.countries}
-                          </div>
-
-                          <div className="grid grid-cols-2 gap-2">
-                            {mobileCountryMenuItems.map((item) => (
-                              <Link
-                                key={item.href}
-                                href={item.href}
-                                onClick={closeMenu}
-                                className="flex h-[48px] items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 text-[13px] font-extrabold text-slate-800 transition hover:border-blue-300 hover:bg-white"
-                              >
-                                <img
-                                  src={item.flag}
-                                  alt={item.shortLabel}
-                                  className="h-[20px] w-[20px] shrink-0 rounded-full object-cover"
-                                />
-                                <span className="flex-1 text-center">
-                                  {item.shortLabel}
-                                </span>
-                              </Link>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div>
-                          <div className="mb-2 px-1 text-[13px] font-black text-slate-900">
-                            {text.categories}
-                          </div>
-
-                          <div className="grid gap-2">
-                            {featuredCategories.map((item) => (
-                              <Link
-                                key={`${item.href}-${item.label}`}
-                                href={item.href}
-                                onClick={closeMenu}
-                                className={`${mobileCardClass} block text-center`}
-                              >
-                                {item.label}
-                              </Link>
-                            ))}
-                          </div>
-                        </div>
                       </div>
-                    )}
+
+                      {/* =========================================== */}
+                      {/* FINAL LINK */}
+                      {/* =========================================== */}
+                      <Link
+                        href={
+                          isEnglish
+                            ? "/en/best-brokers"
+                            : "/best-brokers"
+                        }
+                        onClick={closeMenu}
+                        className="flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-brand-100 bg-brand-50/60 px-3 text-[12px] font-black text-brand-600 transition hover:bg-brand-100"
+                      >
+                        {isEnglish
+                          ? "View All Broker Rankings"
+                          : "عرض جميع تصنيفات الوسطاء"}
+
+                        <span>
+                          {isEnglish ? "→" : "←"}
+                        </span>
+                      </Link>
+                    </div>
                   </Section>
 
                   <Section
