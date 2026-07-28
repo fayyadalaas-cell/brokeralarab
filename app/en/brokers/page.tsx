@@ -429,56 +429,61 @@ function BrokerCard({
           </div>
 
           {/* LOGO + RATING */}
-          <div className="grid grid-cols-[108px_minmax(0,1fr)] items-center gap-3">
-            {/* LOGO */}
-            <Link
-              href={`/en/brokers/${broker.slug}`}
-              aria-label={`Read the ${brokerName} review`}
-              className="relative flex h-[74px] w-[108px] shrink-0 items-center justify-center overflow-hidden rounded-[14px] border border-slate-200 bg-white shadow-[0_4px_14px_rgba(15,23,42,0.055)]"
-            >
-              {broker.logo ? (
-                <Image
-                  src={broker.logo}
-                  alt={`${brokerName} logo`}
-                  fill
-                  className={`object-contain ${getBrokerLogoClass(
-                    brokerName
-                  )}`}
-                  sizes="108px"
-                />
-              ) : (
-                <span className="text-lg font-black text-slate-600">
-                  {getInitials(brokerName)}
-                </span>
-              )}
-            </Link>
+<div className="flex items-center justify-between gap-3">
+  {/* LOGO — LEFT */}
+  <Link
+    href={`/en/brokers/${broker.slug}`}
+    aria-label={`Read the ${brokerName} review`}
+    className="relative flex h-[74px] w-[108px] shrink-0 items-center justify-center overflow-hidden rounded-[14px] border border-slate-200 bg-white shadow-[0_4px_14px_rgba(15,23,42,0.055)]"
+  >
+    {broker.logo ? (
+      <Image
+        src={broker.logo}
+        alt={`${brokerName} logo`}
+        fill
+        className={`object-contain ${getBrokerLogoClass(brokerName)}`}
+        sizes="108px"
+      />
+    ) : (
+      <span className="text-lg font-black text-slate-600">
+        {getInitials(brokerName)}
+      </span>
+    )}
+  </Link>
 
-            {/* RATING */}
-            <div className="flex min-h-[74px] min-w-0 flex-col justify-center rounded-[14px] border border-slate-100 bg-white/70 px-3 py-2">
-              <span className="text-[9px] font-bold text-slate-500">
-                Overall rating
-              </span>
+  {/* RATING — RIGHT */}
+  <div className="ml-auto flex min-h-[74px] w-[148px] shrink-0 flex-col items-end justify-center rounded-[14px] border border-slate-100 bg-white/70 px-3 py-2 text-right">
+    <span className="text-[9px] font-bold text-slate-500">
+      Overall rating
+    </span>
 
-              <div className="mt-1 flex items-end gap-1" dir="ltr">
-                <span className="text-[25px] font-black leading-none tracking-[-0.04em] text-slate-950">
-                  {formatRating(broker.rating)}
-                </span>
+    <div
+      dir="ltr"
+      className="mt-1 flex w-full items-end justify-end gap-1"
+    >
+      <span className="text-[25px] font-black leading-none tracking-[-0.04em] text-slate-950">
+        {formatRating(broker.rating)}
+      </span>
 
-                <span className="pb-0.5 text-[9px] font-bold text-slate-500">
-                  /5
-                </span>
-              </div>
+      <span className="pb-0.5 text-[9px] font-bold text-slate-500">
+        /5
+      </span>
+    </div>
 
-              <div className="mt-1.5 flex items-center">
-                {renderStars(broker.rating, "text-[13px]")}
-              </div>
+    <div
+      dir="ltr"
+      className="mt-1.5 flex w-full items-center justify-end"
+    >
+      {renderStars(broker.rating, "text-[13px]")}
+    </div>
 
-              <span className="mt-1.5 inline-flex w-fit rounded-full border border-brand-100 bg-brand-50 px-2 py-0.5 text-[8px] font-black text-brand-700">
-                {ratingLabel(broker.rating)}
-              </span>
-            </div>
+    <span className="mt-1.5 inline-flex w-fit rounded-full border border-brand-100 bg-brand-50 px-2 py-0.5 text-[8px] font-black text-brand-700">
+      {ratingLabel(broker.rating)}
+    </span>
+  </div>
+</div>
           </div>
-        </div>
+       
 
         {/* MOBILE INFORMATION PANEL */}
         <div className="mx-3 overflow-hidden rounded-[14px] border border-slate-200 bg-slate-50/35">
