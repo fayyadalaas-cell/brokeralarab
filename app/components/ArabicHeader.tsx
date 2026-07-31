@@ -363,9 +363,13 @@ export default function ArabicHeader({
                     </div>
 
                     <div className="space-y-2">
-                      {featuredCategories
-                        .slice(0, 4)
-                        .map((item: any) => (
+                      {[
+  ...featuredCategories.slice(0, 3),
+  {
+    label: "أفضل وسطاء السكالبينج",
+    href: "/best-brokers/scalping",
+  },
+].map((item: any) => (
                           <Link
                             key={`${item.href}-${item.label}`}
                             href={item.href}
