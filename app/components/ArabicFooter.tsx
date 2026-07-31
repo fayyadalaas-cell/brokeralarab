@@ -79,7 +79,10 @@ export default function ArabicFooter() {
     <div className="mx-auto w-full max-w-[1560px] px-4 sm:px-6 lg:px-8">
         {/* Desktop */}
         <div className="hidden md:block">
-          <div className="grid gap-8 py-10 lg:grid-cols-[1.15fr_0.8fr_0.8fr]">
+          <div
+  dir="rtl"
+  className="grid gap-8 py-10 lg:grid-cols-[1.15fr_0.8fr_0.8fr]"
+>
             <div>
               <Image
                 src="/logo/Asset 2@4x.png"
