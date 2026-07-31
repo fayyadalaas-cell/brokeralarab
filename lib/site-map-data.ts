@@ -50,6 +50,7 @@ export const STATIC_PAGES_EN = [
   "en/compare",
   "en/best-brokers",
   "en/best-brokers/gold",
+  "en/best-brokers/scalping",
   "en/best-brokers/accounts/cent",
   "en/best-brokers/accounts/standard",
   "en/best-brokers/accounts/raw-spread",
