@@ -992,7 +992,7 @@ const showAll = getSearchParam(params.all) === "1";
           </div>
 
           <div className="grid auto-rows-fr gap-3 p-4 sm:grid-cols-2 lg:grid-cols-4 md:p-5">
-{regulators.slice(0, 8).map((item) => {
+{regulators.slice(0, 12).map((item) => {
   const regulatorSlug = item.code
     .toLowerCase()
     .replace(/\s+/g, "-");

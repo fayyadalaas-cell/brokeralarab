@@ -157,15 +157,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     : [];
 
   const regulatorSlugs = [
-    "fca",
-    "asic",
-    "cysec",
-    "dfsa",
-    "fsca",
-    "fsa",
-    "scb",
-    "fsc",
-  ];
+  "fca",
+  "asic",
+  "cysec",
+  "dfsa",
+  "fsca",
+  "fsa",
+  "scb",
+  "fsc",
+  "jsc",
+  "sca",
+  "vfsc",
+  "misa",
+];
 
   const regulatorPages = regulatorSlugs.map((slug) => ({
     url: `${BASE_URL}/licenses/${slug}`,
