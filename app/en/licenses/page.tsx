@@ -66,6 +66,18 @@ type Broker = {
   regulation_short?: string | null;
 };
 
+type Regulator = {
+  id: number;
+  slug: string;
+  code: string;
+  name_ar: string;
+  name_en: string;
+  overview_ar?: string | null;
+  overview_en?: string | null;
+  is_active: boolean;
+  sort_order?: number | null;
+};
+
 async function getData() {
   const supabase = await createClient();
 
@@ -79,10 +91,19 @@ async function getData() {
     .from("brokers")
     .select("id,name,name_en,slug,logo,rating,regulation,regulation_short");
 
+    const { data: regulatorsData } = await supabase
+  .from("regulators")
+  .select(
+    "id,slug,code,name_ar,name_en,overview_ar,overview_en,is_active,sort_order"
+  )
+  .eq("is_active", true)
+  .order("sort_order", { ascending: true });
+
   return {
-    licenses: (licensesData || []) as License[],
-    brokers: (brokersData || []) as Broker[],
-  };
+  licenses: (licensesData || []) as License[],
+  brokers: (brokersData || []) as Broker[],
+  regulatorRows: (regulatorsData || []) as Regulator[],
+};
 }
 
 function BrokerLogo({ broker }: { broker?: Broker }) {
@@ -179,7 +200,7 @@ export default async function LicensesPage({
   searchParams?: Promise<PageSearchParams>;
 }) {
   const params = (await searchParams) || {};
-  const { licenses, brokers } = await getData();
+  const { licenses, brokers, regulatorRows } = await getData();
 
 const qRaw = getSearchParam(params.q);
 const q = qRaw.toLowerCase();
@@ -190,26 +211,32 @@ const showAll = getSearchParam(params.all) === "1";
   const brokerMap = new Map<number, Broker>();
   brokers.forEach((broker) => brokerMap.set(broker.id, broker));
 
-  const regulators = Array.from(
-    new Map(
-      licenses.map((item) => [
-        item.regulator_code,
-        {
-          code: item.regulator_code,
-          name: item.regulator_name_en || item.regulator_name_ar || item.regulator_code,
-          description:
-            item.regulator_description_en ||
-            item.regulator_description_ar ||
-            "A financial regulatory authority listed in the Broker Alarab license database.",
-          count: new Set(
-            licenses
-              .filter((x) => x.regulator_code === item.regulator_code)
-              .map((x) => x.broker_id)
-          ).size,
-        },
-      ])
-    ).values()
-  ).sort((a, b) => b.count - a.count);
+  const regulators = regulatorRows.map((regulator) => {
+  const regulatorLicenses = licenses.filter(
+    (license) =>
+      cleanText(license.regulator_code) === cleanText(regulator.code)
+  );
+
+  const firstLicense = regulatorLicenses[0];
+
+  return {
+    code: regulator.code,
+    slug: regulator.slug,
+    name:
+      regulator.name_en ||
+      regulator.name_ar ||
+      regulator.code,
+    description:
+      firstLicense?.regulator_description_en ||
+      regulator.overview_en ||
+      firstLicense?.regulator_description_ar ||
+      regulator.overview_ar ||
+      "A financial regulatory authority listed in the Broker Alarab license database.",
+    count: new Set(
+      regulatorLicenses.map((license) => license.broker_id)
+    ).size,
+  };
+});
 
   const countries = Array.from(
     new Map(
