@@ -2317,9 +2317,10 @@ const selectedEvents = mediaPartnerEvent
     {/* CLOSE ALL ENGLISH HOME PAGE SECTIONS */}
     </div>
 
-  {/* BROKERS SIDEBAR - DESKTOP ONLY */}
+ {/* BROKERS SIDEBAR - DESKTOP ONLY */}
 <aside className="hidden min-h-full pt-4 xl:block">
   <div className="sticky top-24 overflow-hidden rounded-[30px] border border-slate-200 bg-white pb-3 shadow-[0_16px_45px_rgba(15,23,42,0.07)]">
+
     {/* SIDEBAR HEADER */}
     <div className="border-b border-slate-200 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-5 py-3">
       <div className="flex items-center justify-between gap-3">
@@ -2339,130 +2340,195 @@ const selectedEvents = mediaPartnerEvent
       </div>
 
       <p className="mt-1 text-[10px] font-medium leading-5 text-slate-500">
-        Browse independent reviews of leading forex and CFD brokers.
+        Browse reviews of selected leading trading brokers.
       </p>
     </div>
 
-    {/* BROKER LIST */}
-    <div className="border-b border-slate-200 bg-white px-3 py-2">
-      <div className="space-y-1.5">
-        {sidebarBrokers.map((broker, index) => {
-          const isFeatured = index === 0;
-          const brokerName = broker.name_en || broker.name || "Trading Broker";
+    {/* BROKERS */}
+    <div className="border-b border-slate-200 bg-[#f8fafc] px-3 py-3">
+
+      {/* FEATURED BROKER */}
+      {sidebarBrokers[0] && (
+        <Link
+          href={`/en/brokers/${sidebarBrokers[0].slug}`}
+          target="_blank"
+          rel="sponsored noopener noreferrer"
+          prefetch={false}
+          className="group relative block overflow-hidden rounded-[22px] border border-[#d7e6ff] bg-[linear-gradient(145deg,#ffffff_0%,#eef5ff_100%)] p-3 shadow-[0_10px_24px_rgba(15,23,42,0.08)] transition duration-300 hover:-translate-y-0.5 hover:border-brand-400 hover:shadow-[0_18px_36px_rgba(37,99,235,0.20)]"
+        >
+          {/* TOP ACCENT */}
+          <span className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#f59e0b] via-[#facc15] to-brand-500" />
+
+          {/* BADGE + RATING */}
+          <div className="flex items-center justify-between gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-200 bg-white px-2.5 py-1 text-[8px] font-black text-brand-700 shadow-sm">
+              <span className="h-1.5 w-1.5 rounded-full bg-brand-500" />
+              Featured Partner
+            </span>
+
+            <span
+              dir="ltr"
+              className="inline-flex items-center gap-1.5 text-[#f59e0b]"
+            >
+              <span className="text-[16px] leading-none">★</span>
+
+              <span className="text-[12px] font-black leading-none">
+                {sidebarBrokers[0].rating?.toFixed(2) ?? "—"}
+              </span>
+            </span>
+          </div>
+
+          {/* FEATURED LOGO */}
+          <div className="mt-3 flex min-h-[92px] items-center justify-center rounded-[18px] bg-white px-5 shadow-[0_8px_22px_rgba(15,23,42,0.07)] ring-1 ring-slate-100">
+            {sidebarBrokers[0].logo ? (
+              <img
+                src={sidebarBrokers[0].logo}
+                alt={`${sidebarBrokers[0].name_en || sidebarBrokers[0].name || "Broker"} logo`}
+                loading="lazy"
+                className="max-h-[90px] max-w-[250px] scale-[1.28] object-contain transition duration-300 group-hover:scale-[1.35]"
+              />
+            ) : (
+              <span className="text-[18px] font-black text-slate-800">
+                {sidebarBrokers[0].name_en ||
+                  sidebarBrokers[0].name ||
+                  "Trading Broker"}
+              </span>
+            )}
+          </div>
+
+          {/* FEATURED INFO */}
+          <div className="mt-3 flex items-center justify-between gap-3">
+            <div className="min-w-0 text-left">
+              <h3
+                title={
+                  sidebarBrokers[0].name_en ||
+                  sidebarBrokers[0].name ||
+                  ""
+                }
+                className="truncate text-[15px] font-black text-[#07111f]"
+              >
+                {sidebarBrokers[0].name_en ||
+                  sidebarBrokers[0].name ||
+                  "Trading Broker"}
+              </h3>
+
+              <p className="mt-0.5 text-[9px] font-semibold leading-4 text-slate-500">
+                Review accounts, regulation and trading fees
+              </p>
+            </div>
+
+            <span className="flex min-h-[36px] shrink-0 items-center justify-center rounded-[11px] bg-brand-500 px-3 text-[9px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.22)] transition group-hover:bg-brand-600">
+              View Review
+            </span>
+          </div>
+        </Link>
+      )}
+
+      {/* OTHER BROKERS */}
+      <div className="mt-3 space-y-2">
+        {sidebarBrokers.slice(1).map((broker) => {
+          const brokerName =
+            broker.name_en || broker.name || "Trading Broker";
 
           return (
             <Link
               key={broker.id}
               href={`/en/brokers/${broker.slug}`}
               target="_blank"
-              rel={
-                isFeatured
-                  ? "sponsored noopener noreferrer"
-                  : "noopener noreferrer"
-              }
+              rel="noopener noreferrer"
               prefetch={false}
-              className={`group relative flex min-h-[74px] items-center justify-between gap-2.5 overflow-hidden rounded-[18px] px-2.5 py-2 transition duration-300 ${
-                isFeatured
-                  ? "border border-brand-300 bg-gradient-to-r from-[#eff6ff] via-white to-[#f8fbff] shadow-[0_12px_32px_rgba(37,99,235,0.16)] hover:border-brand-400 hover:shadow-[0_18px_40px_rgba(37,99,235,0.22)]"
-                  : "border border-transparent hover:border-slate-200 hover:bg-slate-50"
-              }`}
+              className="group flex min-h-[84px] items-center gap-3 overflow-hidden rounded-[18px] border border-slate-200 bg-white px-3 py-2.5 shadow-[0_4px_14px_rgba(15,23,42,0.04)] transition duration-300 hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-[0_12px_24px_rgba(15,79,168,0.09)]"
             >
-              {/* FEATURED TOP LINE */}
-              {isFeatured && (
-                <span className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#f59e0b] via-[#facc15] to-brand-500" />
-              )}
-
               {/* LOGO */}
-              <div
-                className={`relative flex h-[42px] w-[102px] shrink-0 items-center justify-center rounded-xl border bg-white px-1.5 transition duration-300 ${
-                  isFeatured
-                    ? "border-brand-200 shadow-[0_8px_22px_rgba(37,99,235,0.14)]"
-                    : "border-slate-200 shadow-[0_4px_14px_rgba(15,23,42,0.05)] group-hover:border-brand-200"
-                }`}
-              >
+              <div className="flex h-[60px] w-[112px] shrink-0 items-center justify-center overflow-visible rounded-[14px] bg-gradient-to-b from-white to-slate-100 transition duration-300 group-hover:bg-brand-50/50">
                 {broker.logo ? (
                   <img
                     src={broker.logo}
                     alt={`${brokerName} logo`}
-                    className={`max-h-[42px] max-w-[100px] object-contain transition duration-300 ${
-                      isFeatured
-                        ? "scale-[1.28] group-hover:scale-[1.36]"
-                        : "scale-[1.18] group-hover:scale-[1.26]"
-                    }`}
                     loading="lazy"
+                    className="h-[54px] w-[108px] scale-[1.35] object-contain transition duration-300 group-hover:scale-[1.42]"
                   />
                 ) : (
-                  <span className="truncate text-xs font-black text-slate-700">
+                  <span className="truncate text-[11px] font-black text-slate-700">
                     {brokerName}
                   </span>
                 )}
               </div>
 
-              {/* BROKER INFO */}
-              <div className="min-w-0 flex-1 overflow-visible text-left">
-                {isFeatured && (
-                  <div className="mb-1.5 flex justify-start">
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-200 bg-brand-50 px-2.5 py-1 text-[9px] font-black leading-none text-brand-700 shadow-sm">
-                      <span className="h-1.5 w-1.5 rounded-full bg-brand-500" />
-                      Featured Partner
-                    </span>
-                  </div>
-                )}
-
-                <div
-                  className={`text-[12px] font-black leading-5 transition ${
-                    isFeatured
-                      ? "text-brand-700"
-                      : "text-slate-950 group-hover:text-brand-600"
-                  }`}
+              {/* INFO */}
+              <div className="min-w-0 flex-1 text-left">
+                <h3
+                  title={brokerName}
+                  className="truncate whitespace-nowrap text-[12px] font-black leading-5 text-[#07111f] transition group-hover:text-brand-600"
                 >
                   {brokerName}
+                </h3>
+
+                <div
+                  dir="ltr"
+                  className="mt-1.5 flex items-center justify-start gap-1.5 text-[#f59e0b]"
+                >
+                  <span className="text-[14px] leading-none">★</span>
+
+                  <span className="text-[11px] font-black leading-none">
+                    {broker.rating?.toFixed(2) ?? "—"}
+                  </span>
                 </div>
 
-                <div className="mt-1 flex items-center justify-start gap-1 text-[10px] font-bold text-[#f59e0b]">
-                  <span>★</span>
-                  <span>{broker.rating?.toFixed(1) ?? "—"}</span>
+                <div className="mt-1.5 text-[9px] font-bold text-brand-600 transition group-hover:text-brand-700">
+                  Full Review
                 </div>
               </div>
 
               {/* ARROW */}
-              <span
-                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[15px] font-black transition duration-300 group-hover:translate-x-1 ${
-                  isFeatured
-                    ? "bg-brand-500 text-white shadow-[0_8px_18px_rgba(37,99,235,0.25)]"
-                    : "bg-brand-50 text-brand-500"
-                }`}
-              >
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-[14px] font-black text-brand-500 shadow-[0_3px_10px_rgba(15,23,42,0.05)] transition duration-300 group-hover:translate-x-1 group-hover:border-brand-500 group-hover:bg-brand-500 group-hover:text-white">
                 →
               </span>
             </Link>
           );
         })}
       </div>
+
+      {/* ALL BROKERS */}
+      <Link
+        href="/en/brokers"
+        className="mt-3 flex h-[46px] w-full items-center justify-center gap-2 rounded-[14px] bg-brand-600 px-4 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-[0_12px_24px_rgba(37,99,235,0.26)]"
+      >
+        <span>View All Trading Brokers</span>
+        <span className="text-[13px]">→</span>
+      </Link>
     </div>
 
     {/* SIDEBAR IMPORTANT LINKS */}
-    <div className="space-y-3 px-3 pb-1">
+    <div className="space-y-3 px-3 pb-3 pt-3">
+
       {/* LICENSES */}
       <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
-        <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3.5">
-          <div className="flex items-center gap-3">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-emerald-200 bg-emerald-50 text-[17px]">
+
+        {/* HEADER */}
+        <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-4">
+          <div className="flex items-start gap-3">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[13px] border border-brand-100 bg-white text-[17px] shadow-sm">
               🛡️
             </span>
 
-            <div className="min-w-0">
-              <h3 className="text-[14px] font-black text-[#07111f]">
+            <div className="min-w-0 flex-1 text-left">
+              <span className="inline-flex rounded-full border border-brand-100 bg-white px-2.5 py-1 text-[8px] font-black text-brand-600 shadow-sm">
+                Regulation Guide
+              </span>
+
+              <h3 className="mt-2.5 text-[15px] font-black leading-6 text-[#07111f]">
                 Broker Regulation
               </h3>
 
-              <p className="mt-0.5 text-[9px] font-semibold leading-4 text-slate-500">
+              <p className="mt-0.5 text-[10px] font-semibold leading-5 text-slate-500">
                 Learn about major global financial regulators.
               </p>
             </div>
           </div>
         </div>
 
+        {/* CONTENT */}
         <div className="divide-y divide-slate-100 px-3">
           {[
             {
@@ -2496,10 +2562,10 @@ const selectedEvents = mediaPartnerEvent
               href={item.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex min-h-[50px] items-center justify-between gap-3 py-2.5"
+              className="group flex min-h-[60px] items-center justify-between gap-3 py-3"
             >
               <div className="flex min-w-0 items-center gap-2.5">
-                <span className="inline-flex h-7 min-w-[45px] shrink-0 items-center justify-center rounded-lg border border-emerald-200 bg-emerald-50 px-2 text-[9px] font-black text-emerald-700">
+                <span className="inline-flex h-7 min-w-[48px] shrink-0 items-center justify-center rounded-lg border border-brand-100 bg-brand-50 px-2 text-[9px] font-black text-brand-700">
                   {item.code}
                 </span>
 
@@ -2508,22 +2574,94 @@ const selectedEvents = mediaPartnerEvent
                 </span>
               </div>
 
-              <span className="shrink-0 text-[14px] font-black text-slate-300 transition group-hover:translate-x-1 group-hover:text-brand-500">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-[12px] font-black text-brand-500 transition group-hover:translate-x-1 group-hover:border-brand-500 group-hover:bg-brand-500 group-hover:text-white">
                 →
               </span>
             </Link>
           ))}
         </div>
 
-        <Link
-          href="/en/licenses"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex min-h-[40px] items-center justify-center border-t border-slate-100 bg-emerald-50/50 px-4 text-[10px] font-black text-emerald-700 transition hover:bg-emerald-50"
-        >
-          View All Regulators
-          <span className="ml-1.5">→</span>
-        </Link>
+        {/* FOOTER */}
+        <div className="border-t border-slate-100 bg-white p-3">
+          <Link
+            href="/en/licenses"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex h-[46px] w-full items-center justify-center gap-2 rounded-[14px] bg-brand-600 px-4 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-[0_12px_24px_rgba(37,99,235,0.26)]"
+          >
+            <span>View All Regulators</span>
+            <span className="text-[13px]">→</span>
+          </Link>
+        </div>
+      </div>
+
+      {/* BROKER HELP CARD */}
+      <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
+
+        {/* HEADER */}
+        <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-4">
+          <div className="flex items-start gap-3">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[13px] border border-brand-100 bg-white text-[17px] shadow-sm">
+              💬
+            </span>
+
+            <div className="min-w-0 flex-1 text-left">
+              <span className="inline-flex rounded-full border border-brand-100 bg-white px-2.5 py-1 text-[8px] font-black text-brand-600 shadow-sm">
+                Free Assistance
+              </span>
+
+              <h3 className="mt-2 text-[15px] font-black leading-6 text-[#07111f]">
+                Free Help Choosing the Right Broker
+              </h3>
+            </div>
+          </div>
+        </div>
+
+        {/* CONTENT */}
+        <div className="px-4 py-4">
+          <p className="text-[12.5px] font-medium leading-6 text-slate-700">
+            Tell us your country, experience and what you need, and we will help
+            you compare brokers suited to your requirements.
+          </p>
+
+          <div className="mt-3 space-y-2">
+            <div className="flex items-center gap-2 text-[12.5px] font-bold leading-6 text-slate-700">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-50 text-[12px] font-bold text-brand-600">
+                ✓
+              </span>
+              Compare brokers available in your country
+            </div>
+
+            <div className="flex items-center gap-2 text-[12.5px] font-bold leading-6 text-slate-700">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-50 text-[12px] font-bold text-brand-600">
+                ✓
+              </span>
+              Options suited to your experience level
+            </div>
+
+            <div className="flex items-center gap-2 text-[12.5px] font-bold leading-6 text-slate-700">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-50 text-[12px] font-bold text-brand-600">
+                ✓
+              </span>
+              Free assistance with no obligation
+            </div>
+          </div>
+
+          <p className="mt-3 px-2 text-center text-[9px] font-semibold leading-5 text-slate-500">
+            Informational broker-comparison support, not investment advice.
+          </p>
+        </div>
+
+        {/* FOOTER */}
+        <div className="border-t border-slate-100 bg-white p-3">
+          <Link
+            href="/en/contact"
+            className="flex h-[46px] w-full items-center justify-center gap-2 rounded-[14px] bg-brand-600 px-4 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-[0_12px_24px_rgba(37,99,235,0.26)]"
+          >
+            <span>Contact Us Now</span>
+            <span className="text-[13px]">→</span>
+          </Link>
+        </div>
       </div>
 
       {/* ONEROYAL SPONSORED SIDEBAR AD */}
@@ -2547,6 +2685,8 @@ const selectedEvents = mediaPartnerEvent
         >
           <img
             src="https://vc.cabinet.oneroyal.com/uploads/public/banners/2024/01/25/b7a653ad68c699083b38e7f823a1a35f.png"
+            width="300"
+            height="250"
             alt="OneRoyal trading account advertisement"
             title="Open a trading account with OneRoyal"
             loading="lazy"
@@ -2557,24 +2697,27 @@ const selectedEvents = mediaPartnerEvent
 
       {/* TRADING TERMS */}
       <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
+
+        {/* HEADER */}
         <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3.5">
           <div className="flex items-center gap-3">
             <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-blue-200 bg-blue-50 text-[17px]">
               📘
             </span>
 
-            <div className="min-w-0">
+            <div className="min-w-0 text-left">
               <h3 className="text-[14px] font-black text-[#07111f]">
                 Essential Trading Terms
               </h3>
 
-              <p className="mt-0.5 text-[9px] font-semibold leading-4 text-slate-500">
+              <p className="mt-1 text-[10px] font-semibold leading-5 text-slate-500">
                 Understand the key concepts before you trade.
               </p>
             </div>
           </div>
         </div>
 
+        {/* CONTENT */}
         <div className="divide-y divide-slate-100 px-3">
           {[
             {
@@ -2600,12 +2743,12 @@ const selectedEvents = mediaPartnerEvent
               rel="noopener noreferrer"
               className="group flex min-h-[56px] items-center justify-between gap-3 py-2.5"
             >
-              <div className="min-w-0">
-                <div className="text-[11px] font-black text-slate-800 transition group-hover:text-brand-600">
+              <div className="min-w-0 text-left">
+                <div className="text-[12px] font-black leading-5 text-slate-800 transition group-hover:text-brand-600">
                   {item.label}
                 </div>
 
-                <div className="mt-0.5 truncate text-[8px] font-semibold text-slate-400">
+                <div className="mt-1 truncate text-[10px] font-semibold leading-4 text-slate-500">
                   {item.desc}
                 </div>
               </div>
@@ -2617,37 +2760,43 @@ const selectedEvents = mediaPartnerEvent
           ))}
         </div>
 
-        <Link
-          href="/en/learn-trading"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex min-h-[40px] items-center justify-center border-t border-slate-100 bg-blue-50/50 px-4 text-[10px] font-black text-brand-600 transition hover:bg-blue-50"
-        >
-          Browse Trading Education
-          <span className="ml-1.5">→</span>
-        </Link>
+        {/* FOOTER */}
+        <div className="border-t border-slate-100 bg-white p-3">
+          <Link
+            href="/en/learn-trading"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex h-[46px] w-full items-center justify-center gap-2 rounded-[14px] bg-brand-600 px-4 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-[0_12px_24px_rgba(37,99,235,0.26)]"
+          >
+            <span>Browse Trading Education</span>
+            <span className="text-[13px]">→</span>
+          </Link>
+        </div>
       </div>
 
       {/* TRADING CALCULATORS */}
       <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
+
+        {/* HEADER */}
         <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3.5">
           <div className="flex items-center gap-3">
             <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-violet-200 bg-violet-50 text-[17px]">
               🧮
             </span>
 
-            <div className="min-w-0">
+            <div className="min-w-0 text-left">
               <h3 className="text-[14px] font-black text-[#07111f]">
                 Trading Calculators
               </h3>
 
-              <p className="mt-0.5 text-[9px] font-semibold leading-4 text-slate-500">
+              <p className="mt-1 text-[10px] font-semibold leading-5 text-slate-500">
                 Practical tools for trade and risk planning.
               </p>
             </div>
           </div>
         </div>
 
+        {/* CONTENT */}
         <div className="grid grid-cols-1 gap-2 p-3">
           {[
             {
@@ -2690,15 +2839,18 @@ const selectedEvents = mediaPartnerEvent
           ))}
         </div>
 
-        <Link
-          href="/en/tools"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex min-h-[40px] items-center justify-center border-t border-slate-100 bg-violet-50/50 px-4 text-[10px] font-black text-violet-700 transition hover:bg-violet-50"
-        >
-          View All Trading Calculators
-          <span className="ml-1.5">→</span>
-        </Link>
+        {/* FOOTER */}
+        <div className="border-t border-slate-100 bg-white p-3">
+          <Link
+            href="/en/tools"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex h-[46px] w-full items-center justify-center gap-2 rounded-[14px] bg-brand-600 px-4 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-[0_12px_24px_rgba(37,99,235,0.26)]"
+          >
+            <span>View All Trading Calculators</span>
+            <span className="text-[13px]">→</span>
+          </Link>
+        </div>
       </div>
     </div>
 
