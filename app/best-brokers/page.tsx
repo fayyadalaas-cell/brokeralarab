@@ -855,7 +855,7 @@ isPartOf: {
                 <span className="hidden h-1 w-1 rounded-full bg-slate-300 sm:block" />
 
                 <Link
-                  href="/how-we-review"
+                   href="/how-we-review-brokers"
                   className="font-black text-brand-600 transition hover:underline"
                 >
                   راجع منهجية التقييم
@@ -2232,12 +2232,14 @@ title: "جهات رقابية",
                   التي تحتاجها.
                 </p>
 
-                <Link
-                  href="/how-we-review"
-                  className="mt-4 inline-flex min-h-11 items-center justify-center rounded-xl bg-brand-500 px-5 text-[13px] font-black text-white shadow-sm transition hover:bg-brand-600"
-                >
-                  اقرأ منهجية التقييم
-                </Link>
+                <div className="mt-4 flex justify-center">
+  <Link
+    href="/how-we-review-brokers"
+    className="inline-flex min-h-11 items-center justify-center rounded-xl bg-brand-500 px-5 text-[13px] font-black text-white shadow-sm transition hover:bg-brand-600"
+  >
+    اقرأ منهجية التقييم
+  </Link>
+</div>
               </div>
 
               {/* MOBILE */}

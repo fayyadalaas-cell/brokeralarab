@@ -2303,7 +2303,7 @@ export default async function BestBrokersPage() {
                 </div>
 
                 <Link
-                  href="/en/how-we-review"
+                  href="/en/how-we-review-brokers"
                   className="mt-5 inline-flex min-h-11 w-fit items-center justify-center rounded-xl bg-brand-500 px-5 text-[13px] font-black text-white shadow-sm transition hover:bg-brand-600"
                 >
                   Read Our Review Methodology
