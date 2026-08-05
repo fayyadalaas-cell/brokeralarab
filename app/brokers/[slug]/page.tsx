@@ -2224,7 +2224,7 @@ const reviewSchema = {
           آخر تحديث
         </div>
         <div className="mt-1 whitespace-nowrap text-sm font-black text-slate-950 md:text-base">
-          يونيو 2026
+          أغسطس 2026
         </div>
       </div>
 

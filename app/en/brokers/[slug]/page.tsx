@@ -2039,7 +2039,7 @@ const reviewSchema = {
           Last Updated
         </div>
         <div className="mt-1 text-sm font-black text-slate-950">
-          June 2026
+          August 2026
         </div>
       </div>
 
