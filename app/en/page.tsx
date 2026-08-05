@@ -554,15 +554,15 @@ function eventCountdown(start?: string | null, end?: string | null) {
           </div>
 
           {/* MAIN HERO */}
-         <div className="relative mx-auto w-full max-w-[1560px] px-4 py-5 sm:px-6 sm:py-8 lg:px-8 lg:py-9">
-  <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_430px] lg:gap-8 xl:grid-cols-[minmax(0,1fr)_470px] xl:gap-12">
-              
-              {/* BROKER LOGOS - DESKTOP ONLY */}
-              <div className="order-2 hidden h-full lg:block">
-                <div className="relative mx-auto h-full max-w-[430px]">
-                  <div className="absolute -inset-6 rounded-[42px] bg-gradient-to-br from-brand-100/70 via-blue-100/20 to-transparent blur-2xl" />
+<div className="relative mx-auto w-full max-w-[1560px] px-4 py-4 sm:px-6 sm:py-5 lg:px-8 lg:pt-4 lg:pb-7">
+  <div className="grid items-center gap-5 lg:grid-cols-[minmax(0,1fr)_430px] lg:gap-6 xl:grid-cols-[minmax(0,1fr)_470px] xl:gap-8">
 
-                  <div className="relative flex h-full flex-col overflow-hidden rounded-[30px] border border-white/10 bg-[linear-gradient(145deg,#0b1f3a_0%,#102f59_58%,#174f8f_100%)] p-5 shadow-[0_28px_75px_rgba(6,25,53,0.28)]">
+    {/* BROKER LOGOS - DESKTOP ONLY */}
+<div className="order-2 hidden self-end pb-2 lg:block">
+  <div className="relative max-w-[430px] lg:translate-x-[52px]">
+    <div className="absolute -inset-6 rounded-[42px] bg-gradient-to-br from-brand-100/70 via-blue-100/20 to-transparent blur-2xl" />
+
+    <div className="relative flex flex-col overflow-hidden rounded-[30px] border border-white/10 bg-[linear-gradient(145deg,#0b1f3a_0%,#102f59_58%,#174f8f_100%)] px-5 pt-5 pb-4 shadow-[0_28px_75px_rgba(6,25,53,0.28)]">
                     <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-4">
                       <div className="text-left">
 <span className="inline-flex rounded-full border border-white/10 bg-white/10 px-3 py-1 text-[10px] font-black text-blue-100">
@@ -605,30 +605,30 @@ function eventCountdown(start?: string | null, end?: string | null) {
                       ))}
                     </div>
 
-                    <div className="mt-auto flex items-center justify-between rounded-2xl border border-white/10 bg-white/10 px-4 py-3">
-                      <div className="text-left">
-                       <div className="text-[12px] font-black text-white">
-  Independent research and regularly updated data
-</div>
+                  <div className="mt-4 flex items-center justify-between rounded-2xl border border-white/10 bg-white/10 px-4 py-2">
+  <div className="min-w-0 text-left">
+    <div className="text-[12px] font-black text-white">
+      Independent Reviews & Updated Data
+    </div>
 
-<div className="mt-1 text-[10px] font-semibold leading-4 text-blue-100/75">
-  Editorial rankings are not determined by advertising payments
-</div>
-                      </div>
+    <div className="mt-1 text-[10px] font-semibold text-blue-100/75">
+      Rankings are not influenced by ads or payments
+    </div>
+  </div>
 
-                      <Link
-                        href="/en/brokers"
-                        className="inline-flex h-9 shrink-0 items-center justify-center rounded-xl bg-white px-4 text-[11px] font-black text-[#123d73] shadow-sm transition hover:bg-blue-50"
-                      >
-                        All Brokers
-                      </Link>
-                    </div>
+  <Link
+    href="/en/brokers"
+    className="ml-3 inline-flex h-9 shrink-0 items-center justify-center rounded-xl bg-white px-4 text-[11px] font-black text-[#123d73] shadow-sm transition hover:bg-blue-50"
+  >
+    All Brokers
+  </Link>
+</div>
                   </div>
                 </div>
               </div>
 
              {/* TEXT */}
-<div className="order-1 text-center lg:pt-3 lg:text-left">
+<div className="order-1 text-center lg:pt-6 lg:text-left">
   <span className="inline-flex items-center gap-1.5 rounded-full border border-white/70 bg-white/85 px-3 py-1.5 text-[10px] font-black text-[#174f9f] shadow-[0_10px_28px_rgba(15,79,168,0.14)] backdrop-blur sm:gap-2 sm:px-4 sm:py-2 sm:text-xs lg:px-5 lg:py-2.5 lg:text-[12px]">
     <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand-50 sm:h-6 sm:w-6">
       ✓
@@ -680,7 +680,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
     </span>
   </div>
 
-  <div className="mt-3 flex flex-col items-stretch justify-center gap-2.5 sm:mt-4 sm:flex-row sm:items-center sm:gap-3 lg:justify-start">
+  <div className="mt-2 flex flex-col items-stretch justify-center gap-2.5 sm:mt-4 sm:flex-row sm:items-center sm:gap-3 lg:justify-start">
     <a
       href="#finder"
       className="inline-flex min-h-[46px] items-center justify-center rounded-2xl bg-brand-500 px-6 text-[13px] font-black text-white shadow-[0_16px_34px_rgba(37,99,235,0.25)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-600 sm:min-h-[50px] sm:px-7 sm:text-[14px]"
@@ -696,7 +696,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
     </Link>
   </div>
 
-  <div className="mt-3 grid grid-cols-2 gap-2.5 sm:mt-4 sm:grid-cols-4 sm:gap-3">
+  <div className="mt-2 grid grid-cols-2 gap-2.5 sm:mt-4 sm:grid-cols-4 sm:gap-3">
     {[
       ["150+", "Brokers studied"],
       ["50+", "Reviews & comparisons"],

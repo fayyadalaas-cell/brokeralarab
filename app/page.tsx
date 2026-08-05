@@ -505,10 +505,10 @@ function eventCountdown(start?: string | null, end?: string | null) {
 </div>
 
           {/* MAIN HERO */}
-         <div className="relative mx-auto w-full max-w-[1560px] px-4 py-5 sm:px-6 sm:py-8 lg:px-8 lg:py-9">
-           <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_430px] lg:gap-8 xl:grid-cols-[minmax(0,1fr)_470px] xl:gap-12">
+         <div className="relative mx-auto w-full max-w-[1560px] px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-7">
+           <div className="grid items-center gap-5 lg:grid-cols-[minmax(0,1fr)_430px] lg:gap-6 xl:grid-cols-[minmax(0,1fr)_470px] xl:gap-8">
   {/* TEXT */}
- <div className="order-1 text-center lg:pt-3 lg:text-right">
+ <div className="order-1 text-center lg:pt-1 lg:text-right">
     <span className="inline-flex items-center gap-1.5 rounded-full border border-white/70 bg-white/85 px-3 py-1.5 text-[10px] font-black text-[#174f9f] shadow-[0_10px_28px_rgba(15,79,168,0.14)] backdrop-blur sm:gap-2 sm:px-4 sm:py-2 sm:text-xs lg:px-5 lg:py-2.5 lg:text-[12px]">
       <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand-50 sm:h-6 sm:w-6">
         ✓
@@ -602,7 +602,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
 
   {/* BROKER LOGOS */}
 <div className="order-2 hidden h-full lg:block">
-    <div className="relative mx-auto h-full max-w-[430px]">
+    <div className="relative h-full max-w-[430px] lg:mr-[52px]">
       <div className="absolute -inset-6 rounded-[42px] bg-gradient-to-br from-brand-100/70 via-blue-100/20 to-transparent blur-2xl" />
 
       <div className="relative flex h-full flex-col overflow-hidden rounded-[30px] border border-white/10 bg-[linear-gradient(145deg,#0b1f3a_0%,#102f59_58%,#174f8f_100%)] p-5 shadow-[0_28px_75px_rgba(6,25,53,0.28)]">
