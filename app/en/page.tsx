@@ -745,85 +745,111 @@ function eventCountdown(start?: string | null, end?: string | null) {
   />
 </section>
 
-   {/* HOW WE RATE - CLEAN TRUST SECTION */}
-<section className="mx-auto w-full max-w-7xl px-0 py-3 sm:py-4">
-  <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
+   {/* HOW WE RATE - COMPACT PREMIUM */}
+<section className="mx-auto w-full max-w-7xl px-0 py-2.5 sm:py-3">
+  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_14px_40px_rgba(15,23,42,0.055)]">
     {(() => {
       const ratingItems = [
-        {
-          num: "01",
-          title: "Regulation & Fund Protection",
-          desc: "We assess regulatory strength, client fund protection and broker transparency.",
-        },
-        {
-          num: "02",
-          title: "Fees & Spreads",
-          desc: "We compare spreads, commissions, swap fees and total trading costs.",
-        },
-        {
-          num: "03",
-          title: "Platforms & Execution",
-          desc: "We assess platform stability, execution speed and ease of use.",
-        },
-        {
-          num: "04",
-          title: "Deposits & Withdrawals",
-          desc: "We review payment methods, processing times, fees and withdrawal speed.",
-        },
-        {
-          num: "05",
-          title: "Swap-Free Accounts",
-          desc: "We review swap-free account conditions, restrictions and related fees.",
-        },
-        {
-          num: "06",
-          title: "Support & User Experience",
-          desc: "We assess customer support, account setup and overall user experience.",
-        },
-      ];
+  {
+    num: "01",
+    title: "Regulation & Fund Protection",
+    mobileTitle: "Regulation & Safety",
+    desc: "We review regulatory strength, legal entities, client fund protection and transparency.",
+  },
+  {
+    num: "02",
+    title: "Trading Costs",
+    mobileTitle: "Trading Costs",
+    desc: "We compare spreads, commissions, swap fees and other costs that may affect traders.",
+  },
+  {
+    num: "03",
+    title: "Platforms & Execution",
+    mobileTitle: "Platforms",
+    desc: "We assess execution speed, platform stability and ease of use across devices.",
+  },
+  {
+    num: "04",
+    title: "Deposits & Withdrawals",
+    mobileTitle: "Payments",
+    desc: "We review payment methods, processing speed, withdrawal reliability and related fees.",
+  },
+  {
+    num: "05",
+    title: "Swap-Free Accounts",
+    mobileTitle: "Swap-Free",
+    desc: "We review swap-free account conditions, restrictions and any related charges.",
+  },
+  {
+    num: "06",
+    title: "Support & User Experience",
+    mobileTitle: "Customer Support",
+    desc: "We assess customer support, account opening and the overall user experience.",
+  },
+];
 
       return (
         <>
-          {/* DESKTOP */}
+          {/* =========================
+              DESKTOP
+          ========================== */}
           <div className="hidden lg:block">
-            <div className="bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-6 py-5">
-              <div>
-                <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
-                  Broker Rating Methodology
-                </span>
+            {/* HEADER */}
+            <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4">
+              <div className="flex items-center justify-between gap-6">
 
-                <h2 className="mt-4 text-[36px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f]">
-                  How We Choose the Best Trading Brokers
-                </h2>
+                {/* TEXT */}
+                <div className="min-w-0 flex-1 text-left">
+                  <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
+                    Broker Rating Methodology
+                  </span>
 
-                <p className="mt-3 max-w-[900px] text-[15px] font-semibold leading-8 text-slate-600">
-                  We evaluate brokers using clear criteria including regulation,
-                  fees, spreads, platforms, execution, deposits, withdrawals,
-                  swap-free accounts and customer support.
-                </p>
+                  <h2 className="mt-3 text-[36px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f]">
+                    How We Rate Trading Brokers
+                  </h2>
+
+                  <p className="mt-2.5 whitespace-nowrap text-[14px] font-semibold leading-7 text-slate-600 xl:text-[15px]">
+                    We review the factors that matter most to traders, from regulation and trading costs
+                    to execution, withdrawals, swap-free accounts and customer support.
+                  </p>
+                </div>
+
+                {/* CTA */}
+                <div className="shrink-0 self-center pr-4 lg:translate-x-[14px]">
+                  <Link
+                    href="/en/how-we-review-brokers"
+                    className="inline-flex h-11 min-w-[180px] items-center justify-center rounded-xl bg-brand-500 px-5 text-[13px] font-black text-white shadow-[0_10px_22px_rgba(37,99,235,0.20)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-600"
+                  >
+                    View Methodology
+                  </Link>
+                </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-4 p-5">
+            {/* DESKTOP CARDS */}
+            <div className="grid grid-cols-3 gap-3 px-5 py-4">
               {ratingItems.map((item) => (
                 <Link
                   key={item.num}
                   href="/en/how-we-review-brokers"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group h-full min-h-[118px] rounded-[22px] border border-slate-200 bg-white p-5 shadow-[0_6px_20px_rgba(15,23,42,0.04)] transition hover:-translate-y-1 hover:border-brand-300 hover:shadow-[0_18px_38px_rgba(15,23,42,0.08)]"
+                  className="group relative min-h-[108px] overflow-hidden rounded-[20px] border border-slate-200 bg-white p-4 transition duration-300 hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-[0_12px_28px_rgba(15,23,42,0.07)]"
                 >
-                  <div className="flex h-full items-start gap-4">
-                    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-50 text-[14px] font-black text-brand-600 ring-1 ring-[#bfdbfe] transition group-hover:bg-brand-500 group-hover:text-white">
+                  {/* TOP ACCENT */}
+                  <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent opacity-70 transition duration-300 group-hover:opacity-100" />
+
+                  <div className="flex h-full items-start gap-3.5 pt-0.5">
+                    {/* NUMBER */}
+                    <span className="flex h-10 min-w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 px-2 text-[11px] font-black text-brand-600 ring-1 ring-[#bfdbfe] transition duration-300 group-hover:bg-brand-500 group-hover:text-white">
                       {item.num}
                     </span>
 
-                    <div>
+                    {/* CONTENT */}
+                    <div className="min-w-0 flex-1">
                       <h3 className="text-[18px] font-black leading-6 text-[#07111f]">
                         {item.title}
                       </h3>
 
-                      <p className="mt-2 min-h-[52px] max-w-[330px] text-[13px] font-semibold leading-6 text-slate-600">
+                      <p className="mt-1 text-[12px] font-medium leading-6 text-slate-600">
                         {item.desc}
                       </p>
                     </div>
@@ -831,68 +857,54 @@ function eventCountdown(start?: string | null, end?: string | null) {
                 </Link>
               ))}
             </div>
-
-            <div className="flex justify-center border-t border-slate-100 px-5 py-5">
-              <Link
-                href="/en/how-we-review-brokers"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex min-h-[48px] min-w-[280px] items-center justify-center rounded-2xl bg-brand-500 px-7 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(37,99,235,0.22)] transition hover:-translate-y-0.5 hover:bg-brand-600"
-              >
-                View Our Full Rating Methodology
-              </Link>
-            </div>
           </div>
 
-          {/* MOBILE */}
+          {/* =========================
+              MOBILE / TABLET
+          ========================== */}
           <div className="lg:hidden">
-            <div className="border-b border-slate-200 bg-gradient-to-b from-[#f8fbff] to-[#eef5ff] px-4 py-4 text-center">
-              <h2 className="mx-auto mt-3 max-w-[300px] text-[24px] font-black leading-[1.2] tracking-[-0.02em] text-[#07111f]">
-                How We Choose the Best Trading Brokers
+            {/* MOBILE HEADER */}
+            <div className="border-b border-slate-100 bg-gradient-to-b from-[#f8fbff] to-[#eef5ff] px-4 py-3.5 text-center">
+              <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[10px] font-black text-brand-500 shadow-sm">
+                Broker Rating Methodology
+              </span>
+
+              <h2 className="mx-auto mt-2.5 max-w-[315px] text-[26px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] sm:max-w-none sm:text-[34px]">
+                How We Rate Trading Brokers
               </h2>
 
-              <p className="mx-auto mt-2 max-w-[300px] text-[12px] font-semibold leading-6 text-slate-600">
-                We review regulation, fees, platforms, withdrawals and account
-                conditions before recommending a broker.
+              <p className="mx-auto mt-1.5 max-w-[430px] text-[11px] font-semibold leading-5 text-slate-600 sm:text-[13px] sm:leading-6">
+                We review regulation, trading costs, platforms, withdrawals,
+                swap-free accounts and customer support.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-2 bg-white p-3.5">
+            {/* MOBILE CARDS */}
+            <div className="grid grid-cols-2 gap-2 bg-white p-3 sm:gap-2.5 sm:p-4">
               {ratingItems.map((item) => (
                 <Link
                   key={item.num}
                   href="/en/how-we-review-brokers"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group rounded-[18px] border border-slate-200 bg-[#fbfdff] px-3.5 py-3 shadow-[0_5px_16px_rgba(15,23,42,0.04)] transition hover:border-brand-200 hover:bg-brand-50/30"
+                  className="group relative flex min-h-[64px] items-center justify-center overflow-hidden rounded-[14px] border border-slate-200 bg-[#fbfdff] px-2.5 py-2 transition duration-300 hover:border-brand-200 hover:bg-brand-50/30"
                 >
-                  <div className="flex items-start gap-3">
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-[11px] font-black text-brand-600 ring-1 ring-[#bfdbfe] transition group-hover:bg-brand-500 group-hover:text-white">
-                      {item.num}
-                    </span>
+                  {/* TOP ACCENT */}
+                  <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent opacity-60" />
 
-                    <div>
-                      <h3 className="text-[14px] font-black leading-5 text-[#07111f]">
-                        {item.title}
-                      </h3>
-
-                      <p className="mt-1 min-h-[40px] text-[11px] font-semibold leading-5 text-slate-600">
-                        {item.desc}
-                      </p>
-                    </div>
-                  </div>
+                  {/* MOBILE TITLE */}
+                  <h3 className="text-center text-[12.5px] font-black leading-5 text-[#07111f] sm:text-[15px]">
+                    {item.mobileTitle}
+                  </h3>
                 </Link>
               ))}
             </div>
 
-            <div className="border-t border-slate-100 bg-white px-4 pb-4 pt-3">
+            {/* MOBILE CTA */}
+            <div className="border-t border-slate-100 bg-white px-3 pb-3 pt-2.5 sm:px-4 sm:pb-4">
               <Link
                 href="/en/how-we-review-brokers"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex h-11 w-full items-center justify-center rounded-2xl bg-brand-500 px-4 text-[12px] font-black text-white shadow-[0_10px_22px_rgba(37,99,235,0.20)]"
+                className="inline-flex h-10 w-full items-center justify-center rounded-xl bg-brand-500 px-4 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.18)] transition duration-300 hover:bg-brand-600 sm:h-11 sm:text-[12px]"
               >
-                View Our Full Rating Methodology
+                View Rating Methodology
               </Link>
             </div>
           </div>
@@ -902,560 +914,696 @@ function eventCountdown(start?: string | null, end?: string | null) {
   </div>
 </section>
 
-{/* TOP COMPARISONS */}
-<section className="mx-auto w-full max-w-7xl px-0 py-3 sm:py-4">
-  <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
-  {/* HEADER */}
-<div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-4 sm:px-6 sm:py-5">
-  <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-    <div className="text-center lg:text-left">
-      <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
-        Broker Comparisons
-      </span>
+{/* TOP COMPARISONS - PREMIUM RESPONSIVE */}
+<section className="mx-auto w-full max-w-7xl px-0 py-2.5 sm:py-3">
+  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_14px_40px_rgba(15,23,42,0.055)]">
 
-      <h2 className="mx-auto mt-3 max-w-[300px] text-[26px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] sm:max-w-none sm:text-[34px] lg:mx-0 lg:text-[36px]">
-        Most Popular Broker Comparisons
-      </h2>
+    {/* =====================================================
+        HEADER
+    ====================================================== */}
+    <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3.5 sm:px-6 lg:py-4">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
 
-      <div className="mx-auto mt-3 max-w-[900px] text-slate-600 lg:mx-0">
-        <p className="text-[13px] font-semibold leading-7 sm:hidden">
-          Compare popular brokers by regulation, fees, accounts and platforms.
-        </p>
-
-        <p className="hidden text-[15px] font-semibold leading-9 sm:block">
-          Explore popular broker comparisons and understand the differences in
-          regulation, account types, fees, spreads and platforms such as MT4
-          and MT5 before choosing the right broker.
-        </p>
-      </div>
-    </div>
-
-    <div className="flex justify-center lg:self-center lg:pr-2">
-      <Link
-        href="/en/compare"
-        className="inline-flex h-11 items-center justify-center rounded-2xl bg-brand-500 px-5 text-[13px] font-black text-white shadow-[0_12px_26px_rgba(37,99,235,0.22)] transition hover:bg-brand-600 sm:h-12 sm:px-6 sm:text-[14px]"
-      >
-        Browse All Comparisons
-      </Link>
-    </div>
-  </div>
-</div>
-
-    {/* MOBILE */}
-<div className="grid gap-3 p-3.5 md:hidden">
-  {topComparisons.map((cmp, index) => (
-    <article
-      key={cmp.id}
-      className="overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-[0_6px_18px_rgba(15,23,42,0.05)]"
-    >
-      <div className="h-1 bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent" />
-
-      <div className="p-3">
-        <div className="mb-3 flex items-center justify-between gap-2">
-          <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-2.5 py-0.5 text-[9px] font-black text-brand-600">
-            Featured Comparison
-          </span>
-
-          <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-slate-100 px-1.5 text-[9px] font-black text-slate-500">
-            #{index + 1}
-          </span>
-        </div>
-
-        <div className="grid grid-cols-[1fr_auto_1fr] items-start gap-2">
-          <div className="flex min-w-0 flex-col items-center text-center">
-            <Link
-              href={`/en/brokers/${
-                cmp.broker_1?.name?.toLowerCase() === "exness"
-                  ? "exness"
-                  : cmp.broker_1?.name?.toLowerCase() === "xm"
-                  ? "xm"
-                  : cmp.broker_1?.name?.toLowerCase() === "vantage"
-                  ? "vantage"
-                  : cmp.broker_1?.name?.toLowerCase() === "equiti"
-                  ? "equiti"
-                  : ""
-              }`}
-              className="flex h-14 w-14 items-center justify-center rounded-[16px] border border-slate-200 bg-slate-50 p-2 transition hover:border-brand-100 hover:bg-brand-50"
-            >
-              {cmp.broker_1?.logo ? (
-                <img
-                  src={cmp.broker_1.logo}
-                  alt={cmp.broker_1.name_en || cmp.broker_1.name || "Broker 1"}
-                  className="h-full w-full object-contain"
-                />
-              ) : (
-                <span className="text-[9px] text-slate-400">Logo</span>
-              )}
-            </Link>
-
-            <Link
-              href={`/en/brokers/${
-                cmp.broker_1?.name?.toLowerCase() === "exness"
-                  ? "exness"
-                  : cmp.broker_1?.name?.toLowerCase() === "xm"
-                  ? "xm"
-                  : cmp.broker_1?.name?.toLowerCase() === "vantage"
-                  ? "vantage"
-                  : cmp.broker_1?.name?.toLowerCase() === "equiti"
-                  ? "equiti"
-                  : ""
-              }`}
-              className="mt-2 flex min-h-[40px] max-w-[92px] items-center justify-center text-[14px] font-black leading-5 text-[#0f172a] transition hover:text-brand-500"
-            >
-              {cmp.broker_1?.name_en || cmp.broker_1?.name || "Broker 1"}
-            </Link>
-
-            <span className="mt-1 text-[11px] font-bold text-[#f59e0b]">
-              ★ {cmp.broker_1?.rating?.toFixed(1) ?? "—"}
-            </span>
-          </div>
-
-          <div className="flex h-14 items-center justify-center">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full border border-brand-100 bg-brand-50 text-[11px] font-extrabold text-brand-500 shadow-sm">
-              VS
-            </div>
-          </div>
-
-          <div className="flex min-w-0 flex-col items-center text-center">
-            <Link
-              href={`/en/brokers/${
-                cmp.broker_2?.name?.toLowerCase() === "exness"
-                  ? "exness"
-                  : cmp.broker_2?.name?.toLowerCase() === "xm"
-                  ? "xm"
-                  : cmp.broker_2?.name?.toLowerCase() === "vantage"
-                  ? "vantage"
-                  : cmp.broker_2?.name?.toLowerCase() === "equiti"
-                  ? "equiti"
-                  : ""
-              }`}
-              className="flex h-14 w-14 items-center justify-center rounded-[16px] border border-slate-200 bg-slate-50 p-2 transition hover:border-brand-100 hover:bg-brand-50"
-            >
-              {cmp.broker_2?.logo ? (
-                <img
-                  src={cmp.broker_2.logo}
-                  alt={cmp.broker_2.name_en || cmp.broker_2.name || "Broker 2"}
-                  className="h-full w-full object-contain"
-                />
-              ) : (
-                <span className="text-[9px] text-slate-400">Logo</span>
-              )}
-            </Link>
-
-            <Link
-              href={`/en/brokers/${
-                cmp.broker_2?.name?.toLowerCase() === "exness"
-                  ? "exness"
-                  : cmp.broker_2?.name?.toLowerCase() === "xm"
-                  ? "xm"
-                  : cmp.broker_2?.name?.toLowerCase() === "vantage"
-                  ? "vantage"
-                  : cmp.broker_2?.name?.toLowerCase() === "equiti"
-                  ? "equiti"
-                  : ""
-              }`}
-              className="mt-2 flex min-h-[40px] max-w-[92px] items-center justify-center text-[14px] font-black leading-5 text-[#0f172a] transition hover:text-brand-500"
-            >
-              {cmp.broker_2?.name_en || cmp.broker_2?.name || "Broker 2"}
-            </Link>
-
-            <span className="mt-1 text-[11px] font-bold text-[#f59e0b]">
-              ★ {cmp.broker_2?.rating?.toFixed(1) ?? "—"}
-            </span>
-          </div>
-        </div>
-
-       <div className="mt-3 grid grid-cols-2 gap-2">
-  <div className="flex min-h-[52px] items-center justify-center rounded-xl bg-brand-50 px-2.5 py-2 text-center text-[10px] font-bold leading-4 text-brand-700">
-    <span>
-      Accounts &amp;
-      <span className="block">Fees</span>
-    </span>
-  </div>
-
-  <div className="flex min-h-[52px] items-center justify-center rounded-xl bg-slate-50 px-2.5 py-2 text-center text-[10px] font-bold leading-4 text-slate-600 ring-1 ring-slate-200">
-    <span>
-      Platforms &amp;
-      <span className="block">Regulation</span>
-    </span>
-  </div>
-</div>
-
-        <div className="mt-3">
-          <Link
-            href={`/en/compare/${cmp.slug}`}
-            className="flex min-h-[44px] w-full items-center justify-center rounded-xl bg-brand-500 px-4 py-2.5 text-[13px] font-black text-white transition hover:bg-brand-600"
-          >
-            View Full Comparison
-          </Link>
-        </div>
-      </div>
-    </article>
-  ))}
-</div>
-
-    {/* DESKTOP / TABLET */}
-<div className="hidden gap-4 p-5 md:grid md:grid-cols-2 xl:grid-cols-3">
-  {topComparisons.map((cmp, index) => (
-    <article
-      key={cmp.id}
-      className="group flex h-full flex-col overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_6px_20px_rgba(15,23,42,0.04)] transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-[0_16px_34px_rgba(15,23,42,0.07)]"
-    >
-      <div className="h-1 bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent" />
-
-      <div className="flex flex-1 flex-col p-5">
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-600">
-            Featured Comparison
-          </span>
-
-          <span className="text-[11px] font-bold text-slate-400">
-            #{index + 1}
-          </span>
-        </div>
-
-        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
-          <div className="flex flex-col items-center text-center">
-            <Link
-              href={`/en/brokers/${
-                cmp.broker_1?.name?.toLowerCase() === "exness"
-                  ? "exness"
-                  : cmp.broker_1?.name?.toLowerCase() === "xm"
-                  ? "xm"
-                  : cmp.broker_1?.name?.toLowerCase() === "vantage"
-                  ? "vantage"
-                  : cmp.broker_1?.name?.toLowerCase() === "equiti"
-                  ? "equiti"
-                  : ""
-              }`}
-              className="flex h-[72px] w-[72px] items-center justify-center rounded-[20px] border border-slate-200 bg-slate-50 p-3 transition hover:border-brand-100 hover:bg-brand-50 lg:h-20 lg:w-20"
-            >
-              {cmp.broker_1?.logo ? (
-                <img
-                  src={cmp.broker_1.logo}
-                  alt={cmp.broker_1.name_en || cmp.broker_1.name || "Broker 1"}
-                  className="h-full w-full object-contain"
-                />
-              ) : (
-                <span className="text-[10px] text-slate-400">Logo</span>
-              )}
-            </Link>
-
-            <Link
-              href={`/en/brokers/${
-                cmp.broker_1?.name?.toLowerCase() === "exness"
-                  ? "exness"
-                  : cmp.broker_1?.name?.toLowerCase() === "xm"
-                  ? "xm"
-                  : cmp.broker_1?.name?.toLowerCase() === "vantage"
-                  ? "vantage"
-                  : cmp.broker_1?.name?.toLowerCase() === "equiti"
-                  ? "equiti"
-                  : ""
-              }`}
-              className="mt-3 text-[17px] font-black leading-none text-[#0f172a] transition hover:text-brand-500 lg:text-[18px]"
-            >
-              {cmp.broker_1?.name_en || cmp.broker_1?.name || "Broker 1"}
-            </Link>
-
-            <span className="mt-1 text-[11px] font-bold text-[#f59e0b]">
-              ★ {cmp.broker_1?.rating?.toFixed(1) ?? "—"}
-            </span>
-          </div>
-
-          <div className="flex items-center justify-center">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full border border-brand-100 bg-brand-50 text-[12px] font-extrabold text-brand-500 shadow-sm">
-              VS
-            </div>
-          </div>
-
-          <div className="flex flex-col items-center text-center">
-            <Link
-              href={`/en/brokers/${
-                cmp.broker_2?.name?.toLowerCase() === "exness"
-                  ? "exness"
-                  : cmp.broker_2?.name?.toLowerCase() === "xm"
-                  ? "xm"
-                  : cmp.broker_2?.name?.toLowerCase() === "vantage"
-                  ? "vantage"
-                  : cmp.broker_2?.name?.toLowerCase() === "equiti"
-                  ? "equiti"
-                  : ""
-              }`}
-              className="flex h-[72px] w-[72px] items-center justify-center rounded-[20px] border border-slate-200 bg-slate-50 p-3 transition hover:border-brand-100 hover:bg-brand-50 lg:h-20 lg:w-20"
-            >
-              {cmp.broker_2?.logo ? (
-                <img
-                  src={cmp.broker_2.logo}
-                  alt={cmp.broker_2.name_en || cmp.broker_2.name || "Broker 2"}
-                  className="h-full w-full object-contain"
-                />
-              ) : (
-                <span className="text-[10px] text-slate-400">Logo</span>
-              )}
-            </Link>
-
-            <Link
-              href={`/en/brokers/${
-                cmp.broker_2?.name?.toLowerCase() === "exness"
-                  ? "exness"
-                  : cmp.broker_2?.name?.toLowerCase() === "xm"
-                  ? "xm"
-                  : cmp.broker_2?.name?.toLowerCase() === "vantage"
-                  ? "vantage"
-                  : cmp.broker_2?.name?.toLowerCase() === "equiti"
-                  ? "equiti"
-                  : ""
-              }`}
-              className="mt-3 text-[17px] font-black leading-none text-[#0f172a] transition hover:text-brand-500 lg:text-[18px]"
-            >
-              {cmp.broker_2?.name_en || cmp.broker_2?.name || "Broker 2"}
-            </Link>
-
-            <span className="mt-1 text-[11px] font-bold text-[#f59e0b]">
-              ★ {cmp.broker_2?.rating?.toFixed(1) ?? "—"}
-            </span>
-          </div>
-        </div>
-
-        <div className="mt-5 grid grid-cols-2 gap-3">
-          <div className="flex min-h-[54px] items-center justify-center rounded-2xl bg-brand-50 px-3 py-3 text-center text-[11px] font-bold leading-5 text-brand-700">
-            Accounts & Fees
-          </div>
-
-          <div className="flex min-h-[54px] items-center justify-center rounded-2xl bg-slate-50 px-3 py-3 text-center text-[11px] font-bold leading-5 text-slate-600 ring-1 ring-slate-200">
-            Platforms & Regulation
-          </div>
-        </div>
-
-        <div className="mt-auto pt-5">
-          <Link
-            href={`/en/compare/${cmp.slug}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex min-h-[48px] w-full items-center justify-center rounded-2xl bg-brand-500 px-4 py-3 text-[15px] font-extrabold text-white transition hover:bg-brand-600"
-          >
-            View Full Comparison
-          </Link>
-        </div>
-      </div>
-    </article>
-  ))}
-</div>
-  </div>
-</section>
-
-{/* COUNTRIES DIRECTORY - ENGLISH FINAL */}
-<section className="mx-auto w-full max-w-7xl px-0 py-3 sm:py-4">
-  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)] sm:rounded-[32px]">
-    {/* HEADER */}
-    <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-5 sm:px-6">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div className="text-center lg:text-left">
+        {/* TEXT */}
+        <div className="min-w-0 flex-1 text-center lg:text-left">
           <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[11px] font-black text-brand-500 shadow-sm sm:text-[12px]">
-            Brokers by Country
+            Broker Comparisons
           </span>
 
-          <h2 className="mx-auto mt-3 max-w-[310px] text-[26px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] sm:max-w-none sm:text-[34px] lg:mx-0 lg:text-[36px]">
-            Best Trading Brokers by Country
+          <h2 className="mx-auto mt-2.5 max-w-[315px] text-[26px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] sm:max-w-none sm:text-[34px] lg:mx-0 lg:text-[36px]">
+            Most Popular Broker Comparisons
           </h2>
 
-          <p className="mx-auto mt-3 max-w-[330px] text-[13px] font-semibold leading-7 text-slate-600 sm:max-w-[900px] sm:text-[15px] sm:leading-8 lg:mx-0">
-            Explore broker options for traders in different countries and
-            compare regulation, account types, platforms, deposits and
-            withdrawals.
+          {/* MOBILE DESCRIPTION */}
+          <p className="mx-auto mt-2 max-w-[300px] text-[12px] font-semibold leading-6 text-slate-600 sm:hidden">
+            Compare leading brokers by regulation, fees, accounts and trading platforms.
+          </p>
+
+          {/* DESKTOP DESCRIPTION */}
+          <p className="mt-2 hidden whitespace-nowrap text-[14px] font-semibold leading-7 text-slate-600 sm:block xl:text-[15px]">
+            Compare popular brokers and see the key differences in regulation, account types, fees, spreads and trading platforms.
           </p>
         </div>
 
-        <Link
-          href="/en/best-brokers"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mx-auto inline-flex h-11 items-center justify-center rounded-2xl bg-brand-500 px-6 text-[13px] font-black text-white shadow-[0_12px_26px_rgba(37,99,235,0.22)] transition hover:-translate-y-0.5 hover:bg-brand-600 sm:h-12 sm:min-w-[190px] sm:text-[14px] lg:mx-0"
-        >
-          View All Brokers
-        </Link>
+        {/* DESKTOP CTA */}
+        <div className="hidden shrink-0 lg:flex lg:self-center lg:pr-4 lg:translate-x-[14px]">
+          <Link
+            href="/en/compare"
+            className="inline-flex h-11 min-w-[180px] items-center justify-center rounded-xl bg-brand-500 px-5 text-[13px] font-black text-white shadow-[0_10px_22px_rgba(37,99,235,0.20)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-600"
+          >
+            Browse Comparisons
+          </Link>
+        </div>
+
+        {/* MOBILE CTA */}
+        <div className="flex justify-center lg:hidden">
+          <Link
+            href="/en/compare"
+            className="inline-flex h-10 items-center justify-center rounded-xl bg-brand-500 px-5 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.18)] transition hover:bg-brand-600"
+          >
+            Browse Comparisons
+          </Link>
+        </div>
       </div>
     </div>
 
-    {/* MOBILE */}
-    <div className="p-3 sm:hidden">
-      <div className="grid grid-cols-2 gap-2.5">
-        {countryPages.map((item) => (
-          <Link
-            key={item.badge}
-            href="/en/best-brokers"
-            target="_blank"
-            rel="noopener noreferrer"
-            title={`View brokers available for traders in ${item.badge}`}
-            className="group flex min-h-[128px] flex-col rounded-[18px] border border-slate-200 bg-white p-3 shadow-[0_4px_14px_rgba(15,23,42,0.04)] transition hover:border-brand-200 hover:bg-[#fbfdff]"
-          >
-            <div className="flex items-start justify-between gap-2">
-<div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white p-[3px] shadow-sm">
-  <img
-    src={item.flag}
-    alt={`${item.badge} flag`}
-    className="h-full w-full rounded-full object-contain"
-    loading="lazy"
-  />
-</div>
 
-              <span className="text-[14px] font-black text-brand-500 transition group-hover:translate-x-1">
-                →
+    {/* =====================================================
+        MOBILE - HORIZONTAL SNAP CAROUSEL
+    ====================================================== */}
+    <div className="md:hidden">
+      <div
+        className="
+          flex snap-x snap-mandatory gap-3
+          overflow-x-auto overscroll-x-contain
+          px-4 pb-4 pt-3
+          [scrollbar-width:none]
+          [&::-webkit-scrollbar]:hidden
+        "
+      >
+        {topComparisons.map((cmp, index) => (
+          <article
+            key={cmp.id}
+            className="
+              relative w-[88%] min-w-[88%] snap-center
+              overflow-hidden rounded-[20px]
+              border border-slate-200 bg-white
+              shadow-[0_8px_22px_rgba(15,23,42,0.055)]
+            "
+          >
+            {/* TOP LINE */}
+            <div className="h-[3px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent" />
+
+            <div className="p-3">
+
+              {/* CARD HEADER */}
+              <div className="mb-2.5 flex items-center justify-between">
+                <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-2.5 py-0.5 text-[9px] font-black text-brand-600">
+                  Featured Comparison
+                </span>
+
+                <span
+                  dir="ltr"
+                  className="flex h-6 min-w-6 items-center justify-center rounded-full bg-slate-100 px-1.5 text-[9px] font-black text-slate-500"
+                >
+                  #{index + 1}
+                </span>
+              </div>
+
+
+              {/* BROKERS */}
+              <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+
+                {/* BROKER 1 */}
+                <div className="flex min-w-0 flex-col items-center text-center">
+                  <Link
+                    href={`/en/brokers/${
+                      cmp.broker_1?.name?.toLowerCase() === "exness"
+                        ? "exness"
+                        : cmp.broker_1?.name?.toLowerCase() === "xm"
+                        ? "xm"
+                        : cmp.broker_1?.name?.toLowerCase() === "vantage"
+                        ? "vantage"
+                        : cmp.broker_1?.name?.toLowerCase() === "equiti"
+                        ? "equiti"
+                        : ""
+                    }`}
+                    className="flex h-[52px] w-[52px] items-center justify-center rounded-[15px] border border-slate-200 bg-slate-50 p-2"
+                  >
+                    {cmp.broker_1?.logo ? (
+                      <img
+                        src={cmp.broker_1.logo}
+                        alt={cmp.broker_1.name_en || cmp.broker_1.name || "Broker 1"}
+                        className="h-full w-full object-contain"
+                      />
+                    ) : (
+                      <span className="text-[9px] text-slate-400">
+                        Logo
+                      </span>
+                    )}
+                  </Link>
+
+                  <Link
+                    href={`/en/brokers/${
+                      cmp.broker_1?.name?.toLowerCase() === "exness"
+                        ? "exness"
+                        : cmp.broker_1?.name?.toLowerCase() === "xm"
+                        ? "xm"
+                        : cmp.broker_1?.name?.toLowerCase() === "vantage"
+                        ? "vantage"
+                        : cmp.broker_1?.name?.toLowerCase() === "equiti"
+                        ? "equiti"
+                        : ""
+                    }`}
+                    className="mt-2 max-w-[100px] truncate text-[14px] font-black leading-5 text-[#0f172a]"
+                  >
+                    {cmp.broker_1?.name_en || cmp.broker_1?.name || "Broker 1"}
+                  </Link>
+
+                  <span className="mt-0.5 text-[10px] font-bold text-[#f59e0b]">
+                    ★ {cmp.broker_1?.rating?.toFixed(1) ?? "—"}
+                  </span>
+                </div>
+
+
+                {/* VS */}
+                <div className="flex items-center justify-center">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full border border-brand-100 bg-brand-50 text-[10px] font-black text-brand-600 shadow-sm">
+                    VS
+                  </div>
+                </div>
+
+
+                {/* BROKER 2 */}
+                <div className="flex min-w-0 flex-col items-center text-center">
+                  <Link
+                    href={`/en/brokers/${
+                      cmp.broker_2?.name?.toLowerCase() === "exness"
+                        ? "exness"
+                        : cmp.broker_2?.name?.toLowerCase() === "xm"
+                        ? "xm"
+                        : cmp.broker_2?.name?.toLowerCase() === "vantage"
+                        ? "vantage"
+                        : cmp.broker_2?.name?.toLowerCase() === "equiti"
+                        ? "equiti"
+                        : ""
+                    }`}
+                    className="flex h-[52px] w-[52px] items-center justify-center rounded-[15px] border border-slate-200 bg-slate-50 p-2"
+                  >
+                    {cmp.broker_2?.logo ? (
+                      <img
+                        src={cmp.broker_2.logo}
+                        alt={cmp.broker_2.name_en || cmp.broker_2.name || "Broker 2"}
+                        className="h-full w-full object-contain"
+                      />
+                    ) : (
+                      <span className="text-[9px] text-slate-400">
+                        Logo
+                      </span>
+                    )}
+                  </Link>
+
+                  <Link
+                    href={`/en/brokers/${
+                      cmp.broker_2?.name?.toLowerCase() === "exness"
+                        ? "exness"
+                        : cmp.broker_2?.name?.toLowerCase() === "xm"
+                        ? "xm"
+                        : cmp.broker_2?.name?.toLowerCase() === "vantage"
+                        ? "vantage"
+                        : cmp.broker_2?.name?.toLowerCase() === "equiti"
+                        ? "equiti"
+                        : ""
+                    }`}
+                    className="mt-2 max-w-[100px] truncate text-[14px] font-black leading-5 text-[#0f172a]"
+                  >
+                    {cmp.broker_2?.name_en || cmp.broker_2?.name || "Broker 2"}
+                  </Link>
+
+                  <span className="mt-0.5 text-[10px] font-bold text-[#f59e0b]">
+                    ★ {cmp.broker_2?.rating?.toFixed(1) ?? "—"}
+                  </span>
+                </div>
+              </div>
+
+
+              {/* FEATURES */}
+              <div className="mt-3 text-center text-[9.5px] font-bold text-slate-500">
+                Accounts
+                <span className="mx-1.5 text-slate-300">•</span>
+                Fees
+                <span className="mx-1.5 text-slate-300">•</span>
+                Platforms
+                <span className="mx-1.5 text-slate-300">•</span>
+                Regulation
+              </div>
+
+
+              {/* CTA */}
+              <div className="mt-3">
+                <Link
+                  href={`/en/compare/${cmp.slug}`}
+                  className="flex h-10 w-full items-center justify-center rounded-xl bg-brand-500 px-4 text-[12px] font-black text-white transition hover:bg-brand-600"
+                >
+                  View Full Comparison
+                </Link>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+
+      {/* SWIPE HINT */}
+      {topComparisons.length > 1 && (
+        <div className="-mt-1 flex items-center justify-center gap-1.5 pb-3">
+          {topComparisons.map((cmp, index) => (
+            <span
+              key={cmp.id}
+              className={
+                index === 0
+                  ? "h-1.5 w-5 rounded-full bg-brand-500"
+                  : "h-1.5 w-1.5 rounded-full bg-slate-300"
+              }
+            />
+          ))}
+        </div>
+      )}
+    </div>
+
+
+    {/* =====================================================
+        DESKTOP / TABLET
+    ====================================================== */}
+    <div className="hidden gap-3 px-4 pb-4 pt-3 md:grid md:grid-cols-2 xl:grid-cols-3 xl:px-5">
+      {topComparisons.map((cmp, index) => (
+        <article
+          key={cmp.id}
+          className="
+            group flex h-full flex-col overflow-hidden
+            rounded-[20px] border border-slate-200 bg-white
+            shadow-[0_5px_18px_rgba(15,23,42,0.04)]
+            transition duration-300
+            hover:-translate-y-0.5
+            hover:border-brand-200
+            hover:shadow-[0_14px_28px_rgba(15,23,42,0.07)]
+          "
+        >
+          {/* TOP LINE */}
+          <div className="h-[3px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent" />
+
+          <div className="flex flex-1 flex-col p-4">
+
+            {/* CARD HEADER */}
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-2.5 py-0.5 text-[10px] font-black text-brand-600">
+                Featured Comparison
+              </span>
+
+              <span
+                dir="ltr"
+                className="text-[10px] font-bold text-slate-400"
+              >
+                #{index + 1}
               </span>
             </div>
 
-            <h3 className="mt-3 text-[14px] font-black leading-5 text-[#07111f]">
-              {item.badge}
-            </h3>
 
-            <p className="mt-1.5 line-clamp-2 min-h-[36px] text-[10px] font-semibold leading-[18px] text-slate-500">
-              {item.shortDesc}
-            </p>
-          </Link>
-        ))}
+            {/* BROKERS */}
+            <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
 
-        <Link
-          href="/en/best-brokers"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group col-span-2 flex min-h-[82px] items-center gap-3 rounded-[18px] border border-dashed border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-4 py-3 shadow-[0_4px_14px_rgba(15,23,42,0.04)] transition hover:border-brand-300 hover:bg-brand-50"
-        >
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-brand-100 bg-white text-[18px] shadow-sm">
-            🌍
+              {/* BROKER 1 */}
+              <div className="flex min-w-0 flex-col items-center text-center">
+                <Link
+                  href={`/en/brokers/${
+                    cmp.broker_1?.name?.toLowerCase() === "exness"
+                      ? "exness"
+                      : cmp.broker_1?.name?.toLowerCase() === "xm"
+                      ? "xm"
+                      : cmp.broker_1?.name?.toLowerCase() === "vantage"
+                      ? "vantage"
+                      : cmp.broker_1?.name?.toLowerCase() === "equiti"
+                      ? "equiti"
+                      : ""
+                  }`}
+                  className="flex h-[64px] w-[64px] items-center justify-center rounded-[17px] border border-slate-200 bg-slate-50 p-2.5 transition hover:border-brand-100 hover:bg-brand-50 xl:h-[68px] xl:w-[68px]"
+                >
+                  {cmp.broker_1?.logo ? (
+                    <img
+                      src={cmp.broker_1.logo}
+                      alt={cmp.broker_1.name_en || cmp.broker_1.name || "Broker 1"}
+                      className="h-full w-full object-contain"
+                    />
+                  ) : (
+                    <span className="text-[9px] text-slate-400">
+                      Logo
+                    </span>
+                  )}
+                </Link>
+
+                <Link
+                  href={`/en/brokers/${
+                    cmp.broker_1?.name?.toLowerCase() === "exness"
+                      ? "exness"
+                      : cmp.broker_1?.name?.toLowerCase() === "xm"
+                      ? "xm"
+                      : cmp.broker_1?.name?.toLowerCase() === "vantage"
+                      ? "vantage"
+                      : cmp.broker_1?.name?.toLowerCase() === "equiti"
+                      ? "equiti"
+                      : ""
+                  }`}
+                  className="mt-2.5 max-w-[120px] truncate text-[16px] font-black leading-none text-[#0f172a] transition hover:text-brand-500"
+                >
+                  {cmp.broker_1?.name_en || cmp.broker_1?.name || "Broker 1"}
+                </Link>
+
+                <span className="mt-1 text-[10px] font-bold text-[#f59e0b]">
+                  ★ {cmp.broker_1?.rating?.toFixed(1) ?? "—"}
+                </span>
+              </div>
+
+
+              {/* VS */}
+              <div className="flex items-center justify-center">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full border border-brand-100 bg-brand-50 text-[11px] font-black text-brand-600 shadow-sm">
+                  VS
+                </div>
+              </div>
+
+
+              {/* BROKER 2 */}
+              <div className="flex min-w-0 flex-col items-center text-center">
+                <Link
+                  href={`/en/brokers/${
+                    cmp.broker_2?.name?.toLowerCase() === "exness"
+                      ? "exness"
+                      : cmp.broker_2?.name?.toLowerCase() === "xm"
+                      ? "xm"
+                      : cmp.broker_2?.name?.toLowerCase() === "vantage"
+                      ? "vantage"
+                      : cmp.broker_2?.name?.toLowerCase() === "equiti"
+                      ? "equiti"
+                      : ""
+                  }`}
+                  className="flex h-[64px] w-[64px] items-center justify-center rounded-[17px] border border-slate-200 bg-slate-50 p-2.5 transition hover:border-brand-100 hover:bg-brand-50 xl:h-[68px] xl:w-[68px]"
+                >
+                  {cmp.broker_2?.logo ? (
+                    <img
+                      src={cmp.broker_2.logo}
+                      alt={cmp.broker_2.name_en || cmp.broker_2.name || "Broker 2"}
+                      className="h-full w-full object-contain"
+                    />
+                  ) : (
+                    <span className="text-[9px] text-slate-400">
+                      Logo
+                    </span>
+                  )}
+                </Link>
+
+                <Link
+                  href={`/en/brokers/${
+                    cmp.broker_2?.name?.toLowerCase() === "exness"
+                      ? "exness"
+                      : cmp.broker_2?.name?.toLowerCase() === "xm"
+                      ? "xm"
+                      : cmp.broker_2?.name?.toLowerCase() === "vantage"
+                      ? "vantage"
+                      : cmp.broker_2?.name?.toLowerCase() === "equiti"
+                      ? "equiti"
+                      : ""
+                  }`}
+                  className="mt-2.5 max-w-[120px] truncate text-[16px] font-black leading-none text-[#0f172a] transition hover:text-brand-500"
+                >
+                  {cmp.broker_2?.name_en || cmp.broker_2?.name || "Broker 2"}
+                </Link>
+
+                <span className="mt-1 text-[10px] font-bold text-[#f59e0b]">
+                  ★ {cmp.broker_2?.rating?.toFixed(1) ?? "—"}
+                </span>
+              </div>
+            </div>
+
+
+            {/* FEATURES */}
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              <div className="flex min-h-[44px] items-center justify-center rounded-xl bg-brand-50 px-2.5 py-2 text-center text-[10px] font-bold leading-4 text-brand-700">
+                Accounts & Fees
+              </div>
+
+              <div className="flex min-h-[44px] items-center justify-center rounded-xl bg-slate-50 px-2.5 py-2 text-center text-[10px] font-bold leading-4 text-slate-600 ring-1 ring-slate-200">
+                Platforms & Regulation
+              </div>
+            </div>
+
+
+            {/* CTA */}
+            <div className="mt-auto pt-3">
+              <Link
+                href={`/en/compare/${cmp.slug}`}
+                className="inline-flex h-11 w-full items-center justify-center rounded-xl bg-brand-500 px-4 text-[13px] font-black text-white transition hover:bg-brand-600"
+              >
+                View Full Comparison
+              </Link>
+            </div>
           </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
 
-          <div className="min-w-0 flex-1 text-left">
-            <h3 className="text-[14px] font-black text-[#07111f]">
-              Explore All Broker Options
-            </h3>
+{/* COUNTRIES DIRECTORY - COMPACT PREMIUM ENGLISH */}
+<section className="mx-auto w-full max-w-7xl px-0 py-2.5 sm:py-3">
+  <div className="overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-[0_12px_34px_rgba(15,23,42,0.045)] sm:rounded-[28px]">
 
-            <p className="mt-1 text-[10px] font-semibold leading-5 text-slate-500">
-              Browse our general ranking of reviewed trading brokers.
-            </p>
-          </div>
+    {/* =====================================================
+        HEADER
+    ====================================================== */}
+    <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3 sm:px-5 lg:px-6">
+      <div className="flex flex-col items-center gap-2.5 lg:flex-row lg:items-center lg:justify-between lg:gap-5">
 
-          <span className="shrink-0 text-[15px] font-black text-brand-500 transition group-hover:translate-x-1">
-            →
+        {/* TEXT */}
+        <div className="min-w-0 flex-1 text-center lg:text-left">
+          <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[10px] font-black text-brand-500 shadow-sm sm:text-[11px] lg:text-[12px]">
+            Brokers by Country
           </span>
-        </Link>
+
+          <h2 className="mx-auto mt-2 max-w-[315px] text-[26px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] sm:max-w-none sm:text-[32px] lg:mx-0 lg:text-[34px]">
+            Best Trading Brokers by Country
+          </h2>
+
+          {/* MOBILE DESCRIPTION */}
+          <p className="mx-auto mt-2 max-w-[305px] text-[11px] font-semibold leading-5 text-slate-600 md:hidden">
+            Choose your country to explore brokers, account options and trading platforms available to you.
+          </p>
+
+          {/* DESKTOP DESCRIPTION */}
+          <p className="mt-1.5 hidden whitespace-nowrap text-[13px] font-semibold leading-6 text-slate-600 md:block lg:text-[14px]">
+            Explore trading brokers by country and compare regulation, accounts, platforms, deposits and withdrawals.
+          </p>
+        </div>
+
+        {/* CTA */}
+        <div className="shrink-0 self-center lg:pr-4 lg:translate-x-[14px]">
+          <Link
+            href="/en/best-brokers"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-10 min-w-[160px] items-center justify-center rounded-xl bg-brand-500 px-4 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-600 sm:h-11 sm:min-w-[180px] sm:px-5 sm:text-[13px]"
+          >
+            View All Brokers
+          </Link>
+        </div>
       </div>
     </div>
 
-    {/* DESKTOP / TABLET */}
-    <div className="hidden p-5 sm:block">
-      <div className="grid gap-3 md:grid-cols-2">
+
+    {/* =====================================================
+        MOBILE
+    ====================================================== */}
+    <div className="p-2 md:hidden">
+      <div className="grid grid-cols-2 gap-1.5">
         {countryPages.map((item) => (
           <Link
             key={item.badge}
             href="/en/best-brokers"
             target="_blank"
             rel="noopener noreferrer"
-            title={`View brokers available for traders in ${item.badge}`}
-            className="group min-h-[92px] rounded-[20px] border border-slate-200 bg-white px-4 py-3.5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-200 hover:bg-[#fcfdff] hover:shadow-[0_12px_28px_rgba(15,23,42,0.05)]"
+            title={`View brokers for traders in ${item.badge}`}
+            className="group flex h-[52px] items-center rounded-[11px] border border-slate-200 bg-white px-2 shadow-[0_2px_7px_rgba(15,23,42,0.03)] transition duration-300 hover:border-brand-200 hover:bg-[#f8fbff]"
           >
-            <div className="flex min-h-[64px] items-center gap-3">
-             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white p-[3px] shadow-sm">
-  <img
-    src={item.flag}
-    alt={`${item.badge} flag`}
-    className="h-full w-full rounded-full object-contain"
-    loading="lazy"
-  />
-</div>
+            <div className="flex w-full items-center justify-between gap-1.5">
 
-              <div className="min-w-0 flex-1 text-left">
+              {/* COUNTRY */}
+              <div className="flex min-w-0 items-center gap-1.5">
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-white shadow-sm">
+                  <img
+                    src={item.flag}
+                    alt={`${item.badge} flag`}
+                    className="h-5 w-5 rounded-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+
+                <h3 className="truncate text-[12px] font-black leading-5 text-[#0f172a]">
+                  {item.badge}
+                </h3>
+              </div>
+
+              {/* ARROW */}
+              <span className="shrink-0 text-[14px] font-black leading-none text-brand-500 transition group-hover:translate-x-[2px]">
+                →
+              </span>
+            </div>
+          </Link>
+        ))}
+
+        {/* EXPLORE MORE */}
+<Link
+  href="/en/best-brokers"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="group col-span-2 flex h-[52px] items-center rounded-[11px] border border-dashed border-[#93c5fd] bg-[linear-gradient(90deg,#eff6ff_0%,#f8fbff_55%,#ffffff_100%)] px-3 shadow-[0_2px_7px_rgba(37,99,235,0.04)] transition duration-300 hover:bg-brand-50"
+>
+          <div className="flex w-full items-center justify-between gap-1.5">
+
+            <div className="flex min-w-0 items-center gap-1.5">
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-brand-100 bg-white text-[13px] shadow-sm">
+                🌍
+              </div>
+
+              <h3 className="truncate text-[12px] font-black leading-5 text-[#0f172a]">
+                More Countries
+              </h3>
+            </div>
+
+            <span className="shrink-0 text-[14px] font-black leading-none text-brand-500 transition group-hover:translate-x-[2px]">
+              →
+            </span>
+          </div>
+        </Link>
+      </div>
+    </div>
+
+
+    {/* =====================================================
+        DESKTOP / TABLET
+    ====================================================== */}
+    <div className="hidden p-3 md:block lg:p-3.5">
+      <div className="grid gap-2.5 md:grid-cols-2 lg:gap-3">
+
+        {countryPages.map((item) => (
+          <Link
+            key={item.badge}
+            href="/en/best-brokers"
+            target="_blank"
+            rel="noopener noreferrer"
+            title={`View brokers for traders in ${item.badge}`}
+            className="group min-h-[68px] rounded-[15px] border border-slate-200 bg-white px-3 py-2 shadow-[0_2px_8px_rgba(15,23,42,0.035)] transition duration-300 hover:-translate-y-0.5 hover:border-brand-300 hover:bg-[#fcfdff] hover:shadow-[0_12px_26px_rgba(37,99,235,0.10)]"
+          >
+            <div className="flex min-h-[52px] items-center gap-2.5">
+
+              {/* FLAG */}
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-[#f8fafc] shadow-sm">
+                <img
+                  src={item.flag}
+                  alt={`${item.badge} flag`}
+                  className="h-6 w-6 rounded-full object-cover"
+                  loading="lazy"
+                />
+              </div>
+
+              {/* CONTENT */}
+              <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <h3 className="truncate text-[15px] font-black text-[#07111f]">
+                  <h3 className="truncate text-[15px] font-black leading-5 text-[#0f172a]">
                     {item.title}
                   </h3>
 
-                  <span className="inline-flex shrink-0 rounded-full border border-brand-100 bg-brand-50 px-2 py-0.5 text-[8px] font-black text-brand-600">
+                  <span className="shrink-0 rounded-full bg-brand-50 px-2 py-0.5 text-[8.5px] font-extrabold text-brand-600">
                     {item.badge}
                   </span>
                 </div>
 
-                <p className="mt-1 truncate text-[11px] font-semibold text-slate-500">
-                  {item.shortDesc}
+                <p className="mt-0.5 line-clamp-1 text-[10.5px] font-medium leading-4 text-slate-500">
+                  {item.shortDesc ?? item.desc}
                 </p>
               </div>
 
-              <div className="flex min-w-[58px] flex-col items-end gap-1">
-                <span className="text-[9px] font-bold text-slate-400">
+              {/* ACTION */}
+              <div className="shrink-0 text-right">
+                <div className="text-[8.5px] font-bold text-slate-400">
                   View brokers
-                </span>
+                </div>
 
-                <span className="text-[16px] font-black text-brand-500 transition group-hover:translate-x-1">
+                <div className="mt-0.5 text-[16px] font-black leading-none text-brand-500 transition duration-300 group-hover:translate-x-[3px]">
                   →
-                </span>
+                </div>
               </div>
             </div>
           </Link>
         ))}
 
-       <Link
+
+        {/* EXPLORE MORE DESKTOP */}
+<Link
   href="/en/best-brokers"
   target="_blank"
   rel="noopener noreferrer"
-  className="group min-h-[92px] rounded-[20px] border border-dashed border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-4 py-3.5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-[0_12px_28px_rgba(37,99,235,0.08)] md:col-span-2 md:mx-auto md:w-[520px]"
+  className="group min-h-[62px] rounded-[15px] border border-dashed border-[#93c5fd] bg-[linear-gradient(90deg,#eff6ff_0%,#f8fbff_50%,#ffffff_100%)] px-4 py-2 shadow-[0_2px_8px_rgba(37,99,235,0.04)] transition duration-300 hover:-translate-y-0.5 hover:border-brand-300 hover:bg-brand-50/40 hover:shadow-[0_10px_24px_rgba(37,99,235,0.07)] md:col-span-2"
 >
-          <div className="flex min-h-[64px] items-center gap-3">
-           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-brand-100 bg-white text-[21px] shadow-sm">
-  🌍
-</div>
+  <div className="flex min-h-[46px] items-center gap-3">
 
-            <div className="min-w-0 flex-1 text-left">
-              <h3 className="text-[15px] font-black text-[#07111f]">
-                Explore More Broker Options
-              </h3>
+    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-brand-100 bg-white text-[15px] shadow-sm">
+      🌍
+    </div>
 
-              <p className="mt-1 text-[11px] font-semibold text-slate-500">
-                Visit the general broker ranking to compare all reviewed
-                companies.
-              </p>
-            </div>
+    <div className="min-w-0 flex-1">
+      <h3 className="text-[14px] font-black leading-5 text-[#0f172a]">
+        Explore More Countries
+      </h3>
 
-            <div className="flex min-w-[58px] flex-col items-end gap-1">
-              <span className="text-[9px] font-bold text-slate-400">
-                View all
-              </span>
+      <p className="mt-0.5 truncate text-[10px] font-medium leading-4 text-slate-500">
+        Browse the full broker directory for additional markets.
+      </p>
+    </div>
 
-              <span className="text-[16px] font-black text-brand-500 transition group-hover:translate-x-1">
-                →
-              </span>
-            </div>
-          </div>
-        </Link>
+    <div className="shrink-0 text-right">
+      <div className="text-[8.5px] font-bold text-brand-500">
+        View all
+      </div>
+
+      <div className="mt-0.5 text-[16px] font-black leading-none text-brand-500 transition duration-300 group-hover:translate-x-[3px]">
+        →
+      </div>
+    </div>
+
+  </div>
+</Link>
+
       </div>
     </div>
   </div>
 </section>
 
-{/* ACCOUNT TYPES HOME SECTION */}
-<section className="mx-auto w-full max-w-7xl px-0 py-3 sm:py-4">
-  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)] sm:rounded-[32px]">
-    {/* HEADER */}
-    <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-4 sm:px-6 sm:py-5">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-        <div className="text-center lg:text-left">
-          <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[11px] font-black text-brand-500 shadow-sm sm:text-[12px]">
+{/* ACCOUNT TYPES HOME SECTION - COMPACT PREMIUM ENGLISH */}
+<section className="mx-auto w-full max-w-7xl px-0 py-2.5 sm:py-3">
+  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_12px_34px_rgba(15,23,42,0.045)]">
+
+    {/* =====================================================
+        HEADER
+    ====================================================== */}
+    <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3.5 sm:px-6 lg:py-4">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
+
+        {/* TEXT */}
+        <div className="min-w-0 flex-1 text-center lg:text-left">
+          <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[10px] font-black text-brand-500 shadow-sm sm:text-[11px] lg:text-[12px]">
             Trading Account Types
           </span>
 
-          <h2 className="mx-auto mt-3 max-w-[300px] text-[24px] font-black leading-[1.18] tracking-[-0.02em] text-[#07111f] sm:max-w-none sm:text-[34px] lg:mx-0 lg:text-[36px]">
+          <h2 className="mx-auto mt-2.5 max-w-[330px] text-[24px] font-black leading-[1.18] tracking-[-0.02em] text-[#07111f] sm:max-w-none sm:text-[34px] lg:mx-0 lg:text-[36px]">
             Choose the Right Account for Your Trading Style
           </h2>
 
-          <p className="mx-auto mt-3 max-w-[760px] text-[13px] font-semibold leading-7 text-slate-600 sm:text-[15px] sm:leading-8 lg:mx-0">
-            Compare Standard, Raw Spread, ECN and Cent account types to find
-            the option that best matches your experience, strategy and trading capital.
+          {/* MOBILE DESCRIPTION */}
+          <p className="mx-auto mt-2 max-w-[305px] text-[11px] font-semibold leading-5 text-slate-600 sm:hidden">
+            Compare popular account types and choose the option that best fits
+            your experience and trading capital.
+          </p>
+
+          {/* DESKTOP DESCRIPTION */}
+          <p className="mt-2 hidden whitespace-nowrap text-[14px] font-semibold leading-6 text-slate-600 sm:block lg:text-[15px]">
+            Compare Standard, Raw Spread, ECN and Cent accounts to find the option that best matches your experience and trading capital.
           </p>
         </div>
 
-        <div className="flex justify-center lg:self-center lg:pr-4">
+        {/* CTA */}
+        <div className="shrink-0 self-center pr-4 lg:translate-x-[14px]">
           <Link
             href="/en/lowest-spread-brokers"
-            className="inline-flex h-11 items-center justify-center rounded-2xl bg-brand-500 px-5 text-[13px] font-black text-white shadow-[0_12px_26px_rgba(37,99,235,0.22)] transition hover:-translate-y-0.5 hover:bg-brand-600 sm:h-12 sm:min-w-[190px] sm:px-6 sm:text-[14px]"
+            className="inline-flex h-11 min-w-[180px] items-center justify-center rounded-xl bg-brand-500 px-5 text-[13px] font-black text-white shadow-[0_10px_22px_rgba(37,99,235,0.20)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-600"
           >
             Compare Account Types
           </Link>
@@ -1463,68 +1611,79 @@ function eventCountdown(start?: string | null, end?: string | null) {
       </div>
     </div>
 
-    {/* MOBILE */}
-    <div className="p-3.5 sm:hidden">
-      <div className="grid gap-3">
+
+    {/* =====================================================
+        MOBILE
+    ====================================================== */}
+    <div className="p-2.5 sm:hidden">
+      <div className="grid gap-2.5">
         {[
           {
             title: "Standard Accounts",
-            suitable: "Suitable for beginners and everyday trading",
-            desc: "Simple accounts with clear pricing and no complex commission structure.",
+            suitable: "For beginners and everyday trading",
+            desc: "Clear pricing with no complex commission structure.",
             badge: "Easy to Start",
           },
           {
             title: "Raw Spread Accounts",
-            suitable: "Suitable for scalping and active trading",
-            desc: "Spreads from 0.0 pips with a separate fixed commission.",
+            suitable: "For scalping and active trading",
+            desc: "Spreads from 0.0 pips with a separate commission.",
             badge: "Lower Spreads",
           },
           {
             title: "ECN Accounts",
-            suitable: "Suitable for experienced traders",
-            desc: "Fast execution and more direct access to market liquidity.",
-            badge: "Professional Execution",
+            suitable: "For experienced traders",
+            desc: "Fast execution and more direct access to liquidity.",
+            badge: "Pro Execution",
           },
           {
             title: "Cent / Micro Accounts",
-            suitable: "Suitable for testing with smaller capital",
-            desc: "Trade smaller positions and test strategies with lower risk.",
+            suitable: "For testing with smaller capital",
+            desc: "Trade smaller positions and test your strategies.",
             badge: "Small Capital",
           },
         ].map((item) => (
           <Link
             key={item.title}
             href="/en/lowest-spread-brokers#account-types"
-            className="group relative overflow-hidden rounded-[20px] border border-slate-200 bg-white px-3.5 py-3 shadow-[0_6px_18px_rgba(15,23,42,0.05)] transition hover:border-brand-200 hover:bg-[#fbfdff]"
+            className="group overflow-hidden rounded-[15px] border border-slate-200 bg-white px-3 py-2.5 shadow-[0_3px_10px_rgba(15,23,42,0.035)] transition duration-300 hover:border-brand-200 hover:bg-[#fbfdff]"
           >
-            <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent" />
-
-            <div className="flex items-start justify-between gap-3">
+            <div className="flex items-center justify-between gap-3">
               <div className="min-w-0 flex-1 text-left">
-                <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-2.5 py-1 text-[9px] font-black text-brand-600">
-                  {item.badge}
-                </span>
 
-                <h3 className="mt-3 text-[16px] font-black leading-6 text-[#07111f]">
+                {/* TOP */}
+                <div className="flex items-center justify-between gap-2">
+                  <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-2.5 py-0.5 text-[9px] font-black text-brand-600">
+                    {item.badge}
+                  </span>
+
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-brand-50 text-[13px] font-black text-brand-500 transition group-hover:bg-brand-500 group-hover:text-white">
+                    →
+                  </span>
+                </div>
+
+                {/* TITLE */}
+                <h3 className="mt-1.5 text-[15px] font-black leading-5 text-[#07111f]">
                   {item.title}
                 </h3>
 
-                <p className="mt-1 text-[12px] font-black leading-5 text-brand-600">
+                {/* SUITABLE */}
+                <p className="mt-1 text-[11px] font-black leading-5 text-brand-600">
                   {item.suitable}
                 </p>
 
-                <p className="mt-1.5 text-[11px] font-semibold leading-5 text-slate-500">
+                {/* DESCRIPTION */}
+                <p className="mt-0.5 text-[10.5px] font-semibold leading-5 text-slate-500">
                   {item.desc}
                 </p>
               </div>
-
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-brand-50 text-[14px] font-black text-brand-500 transition group-hover:bg-brand-500 group-hover:text-white">
-                →
-              </span>
             </div>
 
-            <div className="mt-3 flex items-center justify-between gap-2 border-t border-slate-100 pt-3 text-[10px] font-extrabold leading-5 text-brand-500">
-              <span>Compare brokers offering this account</span>
+            {/* BOTTOM CTA */}
+            <div className="mt-1.5 flex items-center justify-between border-t border-slate-100 pt-1.5 text-[9.5px] font-extrabold text-brand-500">
+              <span>
+                Compare brokers offering this account
+              </span>
 
               <span className="shrink-0 transition group-hover:translate-x-1">
                 →
@@ -1535,27 +1694,30 @@ function eventCountdown(start?: string | null, end?: string | null) {
       </div>
     </div>
 
-    {/* DESKTOP / TABLET */}
-    <div className="hidden p-5 sm:block">
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+
+    {/* =====================================================
+        DESKTOP / TABLET
+    ====================================================== */}
+    <div className="hidden px-4 pb-4 pt-3 sm:block lg:px-5">
+      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         {[
           {
             title: "Standard Accounts",
             suitable: "Suitable for beginners and everyday trading",
-            desc: "Simple accounts with clear trading costs and no complex commission structure.",
+            desc: "Simple accounts with clear pricing and no complex commission structure.",
             badge: "Easy to Start",
           },
           {
             title: "Raw Spread Accounts",
             suitable: "Suitable for scalping and active trading",
-            desc: "Spreads from 0.0 pips with a separate commission for professional execution.",
+            desc: "Spreads from 0.0 pips with a separate commission for active traders.",
             badge: "Lower Spreads",
           },
           {
             title: "ECN Accounts",
             suitable: "Suitable for experienced traders",
             desc: "Fast execution and more direct access to deeper market liquidity.",
-            badge: "Professional Execution",
+            badge: "Pro Execution",
           },
           {
             title: "Cent / Micro Accounts",
@@ -1567,746 +1729,799 @@ function eventCountdown(start?: string | null, end?: string | null) {
           <Link
             key={item.title}
             href="/en/lowest-spread-brokers#account-types"
-            className="group relative flex h-full min-h-[258px] flex-col overflow-hidden rounded-[24px] border border-slate-200 bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.045)] transition duration-300 hover:-translate-y-1 hover:border-brand-400 hover:bg-[#fcfdff] hover:shadow-[0_22px_50px_rgba(15,23,42,0.08)]"
+            className="group flex min-h-[220px] flex-col overflow-hidden rounded-[20px] border border-slate-200 bg-white p-4 shadow-[0_4px_14px_rgba(15,23,42,0.035)] transition duration-300 hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-[0_12px_28px_rgba(37,99,235,0.09)]"
           >
-            <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent opacity-80" />
-
+            {/* TOP */}
             <div className="flex items-center justify-between gap-3">
-              <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-600">
+              <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[10px] font-black text-brand-600">
                 {item.badge}
               </span>
 
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-[#f8fbff] text-[13px] font-black text-brand-500 transition group-hover:bg-brand-500 group-hover:text-white">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-brand-100 bg-[#f8fbff] text-[13px] font-black text-brand-500 transition group-hover:bg-brand-500 group-hover:text-white">
                 →
               </span>
             </div>
 
-            <h3 className="mt-5 text-[18px] font-black leading-6 text-[#07111f]">
+            {/* TITLE */}
+            <h3 className="mt-3 text-[18px] font-black leading-6 text-[#07111f]">
               {item.title}
             </h3>
 
-            <p className="mt-2 min-h-[48px] text-[12px] font-black leading-6 text-brand-600">
+            {/* SUITABLE */}
+            <p className="mt-1.5 min-h-[36px] text-[12px] font-black leading-6 text-brand-600">
               {item.suitable}
             </p>
 
-            <p className="mt-2 min-h-[56px] text-[12px] font-semibold leading-6 text-slate-500">
+            {/* DESCRIPTION */}
+            <p className="mt-1 min-h-[44px] text-[11.5px] font-medium leading-6 text-slate-600">
               {item.desc}
             </p>
 
-            <div className="mt-auto border-t border-slate-100 pt-4">
-              <span className="flex items-center justify-between gap-2 text-[11px] font-black leading-5 text-brand-500">
-                <span>Compare brokers offering this account</span>
+            {/* BOTTOM CTA */}
+            <div className="mt-auto flex items-center justify-between gap-2 border-t border-slate-100 pt-3 text-[10px] font-extrabold leading-5 text-brand-500">
+              <span>
+                Compare brokers offering this account
+              </span>
 
-                <span className="shrink-0 transition group-hover:translate-x-1">
-                  →
-                </span>
+              <span className="shrink-0 transition group-hover:translate-x-1">
+                →
               </span>
             </div>
           </Link>
         ))}
       </div>
     </div>
+
   </div>
 </section>
 
-{/* WHY TRUST BROKER ALARAB */}
-<section className="mx-auto w-full max-w-7xl px-0 py-3 sm:py-4">
-  <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
-    
-    {/* HEADER */}
-    <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4">
+{/* WHY TRUST BROKER ALARAB - COMPACT PREMIUM */}
+<section className="mx-auto w-full max-w-7xl px-0 py-2.5 sm:py-3">
+  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_12px_34px_rgba(15,23,42,0.045)]">
+
+    {/* =====================================================
+        HEADER
+    ====================================================== */}
+    <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3.5 sm:px-6 lg:py-4">
       <div className="text-center lg:text-left">
-        <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
+
+        <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[10px] font-black text-brand-500 shadow-sm sm:text-[11px] lg:text-[12px]">
           Why Broker Alarab?
         </span>
 
-        <h2 className="mt-4 text-[30px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] sm:text-[34px] lg:text-[36px]">
+        <h2 className="mx-auto mt-2.5 max-w-[330px] text-[25px] font-black leading-[1.12] tracking-[-0.02em] text-[#07111f] sm:max-w-none sm:text-[34px] lg:mx-0 lg:text-[36px]">
           Why Do Traders Trust Broker Alarab?
         </h2>
 
-        <p className="mx-auto mt-3 max-w-[900px] text-[14px] font-semibold leading-8 text-slate-600 lg:mx-0 lg:text-[15px] lg:leading-9">
-          We help traders compare brokers using practical data, transparent reviews,
-          broker comparisons, country-specific rankings, and account analysis based on
-          regulation, fees, trading platforms, deposits, withdrawals, and overall
-          trading conditions.
+        {/* MOBILE DESCRIPTION */}
+        <p className="mx-auto mt-2 max-w-[305px] text-[11px] font-semibold leading-5 text-slate-600 sm:hidden">
+          We make broker research easier with clear reviews, practical
+          comparisons and country-based rankings.
         </p>
+
+        {/* DESKTOP DESCRIPTION */}
+        <p className="mt-2 hidden whitespace-nowrap text-[14px] font-semibold leading-6 text-slate-600 sm:block lg:text-[15px]">
+          We help traders choose brokers through clear reviews, practical comparisons, country rankings and focused account analysis.
+        </p>
+
       </div>
     </div>
 
-    {/* MOBILE */}
-    <div className="grid gap-2 p-3 sm:hidden">
+
+    {/* =====================================================
+        MOBILE
+    ====================================================== */}
+    <div className="grid gap-2.5 p-2.5 sm:hidden">
       {[
         {
-          title: "Clear & Structured Reviews",
-          desc: "Every broker has a dedicated page covering accounts, regulation, fees, and platforms.",
+          title: "Clear Broker Reviews",
+          desc: "Key broker information in one organized place.",
         },
         {
           title: "Practical Comparisons",
-          desc: "Side-by-side broker comparisons focused on real differences that matter.",
+          desc: "See the differences that matter before choosing.",
         },
         {
-          title: "Country-Based Rankings",
-          desc: "Broker recommendations tailored to specific countries and trading needs.",
+          title: "Country Rankings",
+          desc: "Broker options organized for different markets.",
         },
         {
-          title: "Faster Broker Selection",
-          desc: "Find suitable brokers quickly through reviews, rankings, and comparisons.",
+          title: "Faster Broker Research",
+          desc: "Find suitable options without browsing endless pages.",
         },
       ].map((item, index) => (
         <div
           key={item.title}
-          className="rounded-[16px] border border-slate-200 bg-[#f8fbff] px-4 py-3.5 shadow-sm"
+          className="rounded-[14px] border border-slate-200 bg-[#fbfdff] px-3 py-2.5 shadow-[0_2px_8px_rgba(15,23,42,0.035)]"
         >
-          <div className="flex items-center gap-3">
-            <span className="flex h-7 w-7 items-center justify-center rounded-full border border-brand-100 bg-white text-[11px] font-black text-brand-600">
+          <div className="flex items-center gap-2.5">
+
+            {/* NUMBER */}
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-brand-100 bg-white text-[10px] font-black text-brand-600">
               {index + 1}
             </span>
 
-            <h3 className="text-[15px] font-black leading-6 text-[#0f172a]">
-              {item.title}
-            </h3>
-          </div>
+            {/* CONTENT */}
+            <div className="min-w-0 flex-1 text-left">
+              <h3 className="text-[14px] font-black leading-5 text-[#0f172a]">
+                {item.title}
+              </h3>
 
-          <p className="mt-1.5 text-[11px] font-semibold leading-5 text-slate-500">
-            {item.desc}
-          </p>
+              <p className="mt-0.5 text-[10.5px] font-semibold leading-5 text-slate-500">
+                {item.desc}
+              </p>
+            </div>
+
+          </div>
         </div>
       ))}
     </div>
 
-    {/* DESKTOP */}
-    <div className="hidden p-5 sm:block">
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+
+    {/* =====================================================
+        DESKTOP / TABLET
+    ====================================================== */}
+    <div className="hidden px-4 pb-4 pt-3 sm:block lg:px-5">
+      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         {[
-          {
-            title: "Clear & Structured Reviews",
-            desc: "Broker review pages covering regulation, accounts, fees, platforms, deposits, and withdrawals in one place.",
-            tag: "Reviews",
-          },
-          {
-            title: "Practical Comparisons",
-            desc: "Compare brokers side-by-side and understand real differences before opening an account.",
-            tag: "Compare",
-          },
-          {
-            title: "Country-Based Rankings",
-            desc: "Broker recommendations organized by country to help traders find suitable options faster.",
-            tag: "Countries",
-          },
-          {
-            title: "Faster Broker Selection",
-            desc: "Well-structured reviews, rankings, and account filters designed to simplify broker research.",
-            tag: "Research",
-          },
-        ].map((item, index) => (
-          <div
-            key={item.title}
-            className="group relative overflow-hidden rounded-[24px] border border-slate-200 bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.045)] transition duration-300 hover:-translate-y-1 hover:border-brand-400 hover:bg-[#fcfdff] hover:shadow-[0_22px_50px_rgba(15,23,42,0.08)]"
-          >
-            <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent opacity-55" />
+  {
+  title: "Clear & Structured Reviews",
+  desc: "Key information on regulation, accounts, fees and platforms in one organized place.",
+},
+{
+  title: "Practical Comparisons",
+  desc: "Compare brokers side-by-side and understand the differences before opening an account.",
+},
+{
+  title: "Country-Based Rankings",
+  desc: "Explore broker options organized by country and find choices for your market.",
+},
+{
+  title: "Faster Broker Selection",
+  desc: "Use reviews, rankings and account guides to find suitable brokers faster.",
+},
+].map((item, index) => (
+  <div
+    key={item.title}
+    className="group relative overflow-hidden rounded-[20px] border border-slate-200 bg-white p-4 shadow-[0_4px_14px_rgba(15,23,42,0.035)] transition duration-300 hover:-translate-y-0.5 hover:border-brand-300 hover:bg-[#fcfdff] hover:shadow-[0_12px_28px_rgba(37,99,235,0.09)]"
+  >
+    {/* TOP ACCENT */}
+    <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent opacity-60 transition duration-300 group-hover:opacity-100" />
 
-            <div className="mb-5 flex items-center justify-between gap-3">
-              <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-black text-brand-500">
-                {item.tag}
-              </span>
+    {/* TITLE + NUMBER */}
+    <div className="flex items-start justify-between gap-3">
+      <h3 className="flex-1 text-[17px] font-black leading-6 tracking-[-0.02em] text-[#07111f]">
+        {item.title}
+      </h3>
 
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-brand-100 bg-[#f8fbff] text-[13px] font-black text-brand-500 transition group-hover:bg-brand-500 group-hover:text-white">
-                {index + 1}
-              </span>
-            </div>
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-[#f8fbff] text-[11px] font-black text-brand-500 transition group-hover:bg-brand-500 group-hover:text-white">
+        {index + 1}
+      </span>
+    </div>
 
-            <h3 className="text-[20px] font-black leading-7 tracking-[-0.02em] text-[#07111f]">
-              {item.title}
-            </h3>
-
-            <p className="mt-3 min-h-[84px] text-[13px] font-medium leading-7 text-slate-600">
-              {item.desc}
-            </p>
-          </div>
-        ))}
+    {/* DESCRIPTION */}
+    <p className="mt-2 text-[11.5px] font-medium leading-6 text-slate-600">
+      {item.desc}
+    </p>
+  </div>
+))}
       </div>
     </div>
 
   </div>
 </section>
 
-{/* FOREX & FINTECH EVENTS - FINAL */}
-<section className="mx-auto w-full max-w-7xl px-0 py-3 sm:py-4">
-  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)] sm:rounded-[32px]">
-    {(() => {
-      const isMediaPartnerEvent = (event: any) =>
-  event.is_media_partner === true;
+{/* FOREX & FINTECH EVENTS - COMPACT PREMIUM */}
+{(() => {
+  /*
+   * Keep the existing event-selection logic:
+   * nearest two regular events + official media partner event
+   */
+  const nearestRegularEvents = eventList
+    .filter((event) => event.is_media_partner !== true)
+    .slice(0, 2);
 
-/*
- * Show the nearest two regular events,
- * then add the nearest official media partner event.
- */
-const nearestRegularEvents = eventList
-  .filter((event) => event.is_media_partner !== true)
-  .slice(0, 2);
+  const mediaPartnerEvent = eventList.find(
+    (event) => event.is_media_partner === true
+  );
 
-const mediaPartnerEvent = eventList.find(
-  (event) => event.is_media_partner === true
-);
+  const selectedEvents = mediaPartnerEvent
+    ? [...nearestRegularEvents, mediaPartnerEvent]
+    : eventList.slice(0, 3);
 
-const selectedEvents = mediaPartnerEvent
-  ? [...nearestRegularEvents, mediaPartnerEvent]
-  : eventList.slice(0, 3);
+  return (
+    <>
+      {/* =====================================================
+          HEADER
+      ====================================================== */}
+      <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3.5 sm:px-6 lg:py-4">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
 
-      return (
-        <>
-          {/* HEADER */}
-          <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-4 sm:px-6 sm:py-5">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-              <div className="min-w-0 flex-1 text-center lg:text-left">
-                <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[11px] font-black text-brand-500 shadow-sm sm:text-[12px]">
-                  Forex & FinTech Events
-                </span>
+          {/* TEXT */}
+          <div className="min-w-0 flex-1 text-center lg:text-left">
+            <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[10px] font-black text-brand-500 shadow-sm sm:text-[11px] lg:text-[12px]">
+              Forex & FinTech Events
+            </span>
 
-                <h2 className="mx-auto mt-3 max-w-[320px] text-[25px] font-black leading-[1.16] tracking-[-0.02em] text-[#07111f] sm:max-w-none sm:text-[34px] lg:mx-0 lg:text-[36px]">
-                  Major Forex and FinTech Events in 2026
-                </h2>
+            <h2 className="mx-auto mt-2.5 max-w-[315px] text-[25px] font-black leading-[1.12] tracking-[-0.02em] text-[#07111f] sm:max-w-none sm:text-[34px] lg:mx-0 lg:text-[36px]">
+              Forex & FinTech Events in 2026
+            </h2>
 
-                <p className="mx-auto mt-3 max-w-[330px] text-[12px] font-semibold leading-6 text-slate-600 sm:max-w-[900px] sm:text-[15px] sm:leading-8 lg:mx-0">
-                  Follow major forex and fintech exhibitions, including events
-                  where Broker Alarab participates as an official media partner.
-                </p>
+            {/* MOBILE DESCRIPTION */}
+            <p className="mx-auto mt-2 max-w-[305px] text-[11px] font-semibold leading-5 text-slate-600 sm:hidden">
+              Follow key forex and fintech events, including exhibitions where
+              Broker Alarab is an official media partner.
+            </p>
+
+            {/* DESKTOP DESCRIPTION */}
+            <p className="mt-2 hidden whitespace-nowrap text-[14px] font-semibold leading-6 text-slate-600 sm:block lg:text-[15px]">
+              Follow key forex and fintech exhibitions, including events where Broker Alarab participates as an official media partner.
+            </p>
+          </div>
+
+          {/* CTA */}
+          <div className="shrink-0 self-center pr-4 lg:translate-x-[14px]">
+            <Link
+              href="/en/events"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-11 min-w-[180px] items-center justify-center rounded-xl bg-brand-500 px-5 text-[13px] font-black text-white shadow-[0_10px_22px_rgba(37,99,235,0.20)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-600"
+            >
+              View All Events
+            </Link>
+          </div>
+        </div>
+      </div>
+
+
+      {/* =====================================================
+          EVENTS
+      ====================================================== */}
+      <div className="grid gap-2.5 p-2.5 md:grid-cols-3 lg:gap-3 lg:p-4">
+        {selectedEvents.map((event) => {
+          const count = eventCountdown(
+            event.start_date,
+            event.end_date
+          );
+
+          const mediaPartner = event.is_media_partner === true;
+
+          const eventTitle = (
+            event.title_en || "Trading Event"
+          )
+            .replace(/\s*2026\s*/gi, " ")
+            .replace(/\s+/g, " ")
+            .trim();
+
+          const eventLocation =
+            event.city_en?.trim() ||
+            event.country_en?.trim() ||
+            "Location to be announced";
+
+          return (
+            <article
+              key={event.id}
+              className="group relative flex h-full flex-col overflow-hidden rounded-[18px] border border-slate-200 bg-white shadow-[0_4px_14px_rgba(15,23,42,0.035)] transition duration-300 hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-[0_12px_28px_rgba(37,99,235,0.08)] sm:rounded-[20px]"
+            >
+              {/* TOP ACCENT */}
+              <div
+                className={`h-[3px] ${
+                  mediaPartner
+                    ? "bg-gradient-to-r from-[#f59e0b] via-[#fbbf24] to-brand-500"
+                    : "bg-gradient-to-r from-brand-600 via-brand-400 to-[#93c5fd]"
+                }`}
+              />
+
+
+              {/* =================================================
+                  EVENT HEADER
+              ================================================= */}
+              <div className="relative border-b border-slate-100 bg-gradient-to-b from-[#f5f9ff] to-white px-3 pb-2.5 pt-2.5 text-center sm:px-4 sm:pb-3 sm:pt-3">
+
+                <div className="flex min-h-[22px] justify-center">
+                  {mediaPartner ? (
+                    <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-[8.5px] font-black text-amber-700 shadow-sm sm:text-[9px]">
+                      <span className="flex h-4 w-4 items-center justify-center rounded-full bg-amber-100 text-[8px]">
+                        ✓
+                      </span>
+
+                      Official Media Partner
+                    </span>
+                  ) : (
+                    <span className="inline-flex rounded-full border border-brand-100 bg-white px-2.5 py-0.5 text-[8.5px] font-black text-brand-500 shadow-sm sm:text-[9px]">
+                      Upcoming Event
+                    </span>
+                  )}
+                </div>
+
+                <h3 className="mt-2 text-[15px] font-black leading-5 text-[#07111f] sm:text-[16px]">
+                  {eventTitle}
+                </h3>
+
+                <div className="mt-0.5 flex items-center justify-center gap-1 text-[10px] font-bold text-slate-500 sm:text-[11px]">
+                  <span className="text-brand-500">
+                    ●
+                  </span>
+
+                  <span>
+                    {eventLocation}
+                  </span>
+                </div>
               </div>
 
-              <Link
-                href="/en/events"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mx-auto inline-flex h-11 items-center justify-center rounded-2xl bg-brand-500 px-6 text-[13px] font-black text-white shadow-[0_12px_26px_rgba(37,99,235,0.22)] transition hover:-translate-y-0.5 hover:bg-brand-600 sm:h-12 sm:min-w-[190px] sm:text-[14px] lg:mx-0"
-              >
-                View All Events
-              </Link>
-            </div>
-          </div>
 
-          {/* EVENTS */}
-          <div className="grid gap-3 p-3 md:grid-cols-3 lg:gap-4 lg:p-5">
-            {selectedEvents.map((event) => {
-              const count = eventCountdown(
-                event.start_date,
-                event.end_date
-              );
+              {/* =================================================
+                  COUNTDOWN
+              ================================================= */}
+              {count.status === "live" ? (
+                <div className="border-b border-emerald-100 bg-emerald-50 px-3 py-2 text-center">
+                  <div className="text-[15px] font-black text-emerald-600 sm:text-[17px]">
+                    Live Now
+                  </div>
 
-              const mediaPartner = isMediaPartnerEvent(event);
+                  <div className="mt-0.5 text-[9px] font-bold text-emerald-700">
+                    The event is currently taking place
+                  </div>
+                </div>
+              ) : (
+                <div className="border-b border-slate-100 bg-[#fbfdff] px-3 py-2">
+                  <div className="flex items-center justify-center gap-2">
 
-              const eventTitle = (
-                event.title_en || "Trading Event"
-              )
-                .replace(/\s*2026\s*/gi, " ")
-                .replace(/\s+/g, " ")
-                .trim();
+                    {/* DAYS */}
+                    <div className="inline-flex min-w-[70px] items-center justify-center gap-1 rounded-xl border border-brand-100 bg-white px-2.5 py-1.5 shadow-sm">
+                      <span
+                        dir="ltr"
+                        className="text-[16px] font-black text-brand-600 sm:text-[18px]"
+                      >
+                        {count.days}
+                      </span>
 
-              const eventLocation =
-                event.city_en?.trim() ||
-                event.country_en?.trim() ||
-                "Location to be announced";
-
-              return (
-                <article
-                  key={event.id}
-                  className="group relative flex h-full flex-col overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-[0_7px_22px_rgba(15,23,42,0.045)] transition duration-300 hover:-translate-y-1 hover:border-brand-200 hover:shadow-[0_20px_44px_rgba(15,23,42,0.08)] sm:rounded-[24px]"
-                >
-                  {/* TOP ACCENT */}
-                  <div
-                    className={`h-[4px] ${
-                      mediaPartner
-                        ? "bg-gradient-to-r from-[#f59e0b] via-[#fbbf24] to-brand-500"
-                        : "bg-gradient-to-r from-brand-600 via-brand-400 to-[#93c5fd]"
-                    }`}
-                  />
-
-                  {/* EVENT HEADER */}
-                  <div className="relative min-h-[104px] border-b border-slate-100 bg-gradient-to-b from-[#f5f9ff] to-white px-4 pb-3 pt-3 text-center sm:min-h-[132px] sm:px-5 sm:pb-5 sm:pt-4">
-                    <div className="flex min-h-[26px] justify-center">
-                      {mediaPartner ? (
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-[9px] font-black text-amber-700 shadow-sm sm:text-[10px]">
-                          <span className="flex h-4 w-4 items-center justify-center rounded-full bg-amber-100 text-[9px]">
-                            ✓
-                          </span>
-                          Official Media Partner
-                        </span>
-                      ) : (
-                        <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[9px] font-black text-brand-500 shadow-sm sm:text-[10px]">
-                          Upcoming Event
-                        </span>
-                      )}
+                      <span className="text-[9px] font-bold text-slate-500">
+                        Days
+                      </span>
                     </div>
 
-                    <h3 className="mt-3 min-h-[24px] text-[16px] font-black leading-6 text-[#07111f] sm:text-[18px]">
-                      {eventTitle}
-                    </h3>
+                    {/* HOURS */}
+                    <div className="inline-flex min-w-[70px] items-center justify-center gap-1 rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 shadow-sm">
+                      <span
+                        dir="ltr"
+                        className="text-[16px] font-black text-slate-700 sm:text-[18px]"
+                      >
+                        {count.hours}
+                      </span>
 
-                    <div className="mt-1 flex items-center justify-center gap-1.5 text-[11px] font-bold text-slate-500 sm:text-[12px]">
-                      <span className="text-brand-500">●</span>
-                      <span>{eventLocation}</span>
+                      <span className="text-[9px] font-bold text-slate-500">
+                        Hours
+                      </span>
                     </div>
                   </div>
 
-                  {/* COUNTDOWN */}
-                  {count.status === "live" ? (
-                    <div className="border-b border-emerald-100 bg-emerald-50 px-4 py-3 text-center">
-                      <div className="text-[17px] font-black text-emerald-600 sm:text-[19px]">
-                        Live Now
-                      </div>
+                  <div className="mt-1 text-center text-[8.5px] font-bold text-slate-400">
+                    Time Remaining
+                  </div>
+                </div>
+              )}
 
-                      <div className="mt-0.5 text-[10px] font-bold text-emerald-700">
-                        The event is currently taking place
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="border-b border-slate-100 bg-[#fbfdff] px-4 py-3">
-                      <div className="flex items-center justify-center gap-3">
-                        <div className="inline-flex min-w-[82px] items-center justify-center gap-1.5 rounded-xl border border-brand-100 bg-white px-3 py-2 shadow-sm">
-                          <span className="text-[18px] font-black text-brand-600 sm:text-[20px]">
-                            {count.days}
-                          </span>
 
-                          <span className="text-[10px] font-bold text-slate-500">
-                            Days
-                          </span>
-                        </div>
+              {/* =================================================
+                  EVENT DETAILS
+              ================================================= */}
+              <div className="flex flex-1 flex-col p-2.5 sm:p-3">
 
-                        <div className="inline-flex min-w-[82px] items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 shadow-sm">
-                          <span className="text-[18px] font-black text-slate-700 sm:text-[20px]">
-                            {count.hours}
-                          </span>
+                <div className="rounded-[13px] border border-slate-100 bg-slate-50/70 px-2.5 py-2 text-center">
 
-                          <span className="text-[10px] font-bold text-slate-500">
-                            Hours
-                          </span>
-                        </div>
-                      </div>
+                  {/* DATE */}
+                  <div className="text-[10px] font-black leading-5 text-slate-800 sm:text-[11px]">
+                    {formatEventDate(
+                      event.start_date,
+                      event.end_date
+                    )}
+                  </div>
 
-                      <div className="mt-2 text-center text-[9px] font-bold text-slate-400">
-                        Time Remaining
-                      </div>
+                  {/* LOCATION */}
+                  <div className="mt-0.5 text-[9px] font-bold leading-4 text-slate-600 sm:text-[10px]">
+                    {event.city_en ||
+                      event.country_en ||
+                      "Location to be announced"}
+
+                    {event.city_en && event.country_en
+                      ? `, ${event.country_en}`
+                      : ""}
+                  </div>
+
+                  {/* VENUE - DESKTOP ONLY */}
+                  {event.venue_en && (
+                    <div className="mt-0.5 hidden text-[9px] font-medium leading-4 text-slate-500 sm:block">
+                      {event.venue_en}
                     </div>
                   )}
+                </div>
 
-                  {/* EVENT DETAILS */}
-                  <div className="flex flex-1 flex-col p-3.5 sm:p-4">
-                    <div className="rounded-[16px] border border-slate-100 bg-slate-50/70 px-3 py-3 text-center">
-                      <div className="text-[11px] font-black leading-5 text-slate-800 sm:text-[12px]">
-                        {formatEventDate(
-                          event.start_date,
-                          event.end_date
-                        )}
-                      </div>
 
-                      <div className="mt-1 text-[10px] font-bold leading-5 text-slate-600 sm:text-[11px]">
-                        {event.city_en ||
-                          event.country_en ||
-                          "Location to be announced"}
+                {/* EVENT CTA */}
+                <Link
+                  href={`/en/events/${event.slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 inline-flex min-h-[38px] w-full items-center justify-center rounded-xl border border-brand-200 bg-brand-50 px-3 text-[11px] font-black text-brand-600 transition duration-300 hover:-translate-y-0.5 hover:border-brand-500 hover:bg-brand-500 hover:text-white sm:min-h-[40px] sm:text-[12px]"
+                >
+                  View Event Details
 
-                        {event.city_en && event.country_en
-                          ? `, ${event.country_en}`
-                          : ""}
-                      </div>
+                  <span className="ml-2 transition group-hover:translate-x-1">
+                    →
+                  </span>
+                </Link>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </>
+  );
+})()}
 
-                      {event.venue_en && (
-                        <div className="mt-0.5 hidden text-[10px] font-medium leading-5 text-slate-500 sm:block">
-                          {event.venue_en}
-                        </div>
-                      )}
-                    </div>
-
-                    <Link
-                      href={`/en/events/${event.slug}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-auto inline-flex min-h-[44px] w-full items-center justify-center rounded-2xl border border-brand-200 bg-brand-50 px-4 text-[12px] font-black text-brand-600 transition hover:-translate-y-0.5 hover:border-brand-500 hover:bg-brand-500 hover:text-white sm:min-h-[46px] sm:text-[13px]"
-                    >
-                      View Event Details
-
-                      <span className="ml-2 transition group-hover:translate-x-1">
-                        →
-                      </span>
-                    </Link>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        </>
-      );
-    })()}
-  </div>
-</section>
-
-{/* FAQ */}
-<section className="mx-auto w-full max-w-7xl px-0 py-3 sm:py-4">
-  <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
-   <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-4 sm:px-6 sm:py-5">
-  <div className="text-center lg:text-left">
-    <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[11px] font-black text-brand-500 shadow-sm sm:text-[12px]">
-      Frequently Asked Questions
-    </span>
-
-    <h2 className="mx-auto mt-3 max-w-[320px] text-[25px] font-black leading-[1.16] tracking-[-0.02em] text-[#07111f] sm:max-w-none sm:text-[34px] lg:mx-0 lg:text-[36px]">
-      Common Questions About Choosing a Trading Broker
-    </h2>
-
-    <p className="mx-auto mt-3 max-w-[880px] text-[12px] font-semibold leading-6 text-slate-600 sm:text-[15px] sm:leading-8 lg:mx-0">
-      Clear answers about broker regulation, spreads, account types,
-      platforms, deposits, withdrawals and broker comparisons.
-    </p>
-  </div>
-</div>
-
+{/* BEST BROKERS BY NEED - DESKTOP + MOBILE TOP RATED */}
+<section className="mx-auto w-full max-w-7xl px-0 py-2.5 sm:py-3">
+  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_12px_34px_rgba(15,23,42,0.045)]">
     {(() => {
-     const faqItems = [
+      /* =====================================================
+          DATA
+      ====================================================== */
+
+      /* DESKTOP */
+      const topFourBrokers = footerFeaturedBrokers.slice(0, 4);
+
+      const categoryLabels = [
   {
-    q: "What is the best trading broker?",
-    a: (
-      <>
-        There is no single broker that suits every trader. Compare regulation,
-        fees, platforms, accounts and payment methods. Start with our{" "}
-        <Link
-          href="/en/brokers"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-black text-brand-600 hover:underline"
-        >
-          broker reviews
-        </Link>{" "}
-        and{" "}
-        <Link
-          href="/en/compare"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-black text-brand-600 hover:underline"
-        >
-          broker comparisons
-        </Link>
-        .
-      </>
-    ),
+    title: "Best for Beginners",
+    desc: "Simple account options and an easier starting experience.",
+    factLabel: "Best For",
+    factValue: "Easy Start",
+    pageHref: "/en/best-brokers",
   },
   {
-    q: "How can I check whether a broker is regulated?",
-    a: (
-      <>
-        Check the regulator and license number on the broker’s website, then
-        verify the information through the regulator’s official register. You
-        can also review our{" "}
-        <Link
-          href="/en/licenses"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-black text-brand-600 hover:underline"
-        >
-          broker regulation guide
-        </Link>
-        .
-      </>
-    ),
+    title: "Best for Low Spreads",
+    desc: "Competitive trading costs for active traders and scalpers.",
+    factLabel: "Key Benefit",
+    factValue: "Lower Costs",
+    pageHref: "/en/lowest-spread-brokers",
   },
   {
-    q: "What is the difference between trading account types?",
-    a: (
-      <>
-        Standard accounts may suit beginners, while Raw Spread and ECN accounts
-        usually offer tighter spreads with separate commissions. Cent accounts
-        may be useful for testing with smaller capital. Review our{" "}
-        <Link
-          href="/en/lowest-spread-brokers#account-types"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-black text-brand-600 hover:underline"
-        >
-          account type comparison
-        </Link>
-        .
-      </>
-    ),
+    title: "Best for Account Options",
+    desc: "Flexible account choices for different trading styles.",
+    factLabel: "Accounts",
+    factValue: "More Choice",
+    pageHref: "/en/brokers",
   },
   {
-    q: "Does a lower spread always mean a better broker?",
-    a: (
-      <>
-        No. You should also consider commissions, swap fees, execution quality,
-        slippage and regulation. Learn more about{" "}
-        <Link
-          href="/en/learn-trading/spread"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-black text-brand-600 hover:underline"
-        >
-          spreads and trading costs
-        </Link>
-        .
-      </>
-    ),
-  },
-  {
-    q: "Can I open a swap-free trading account?",
-    a: (
-      <>
-        Many brokers offer swap-free accounts, but conditions can vary. Some
-        brokers may apply alternative fees or restrictions. Compare{" "}
-        <Link
-          href="/en/best-brokers/islamic"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-black text-brand-600 hover:underline"
-        >
-          swap-free trading brokers
-        </Link>
-        .
-      </>
-    ),
-  },
-  {
-    q: "What should I check before making a deposit?",
-    a: "Verify the license, account conditions, trading costs, withdrawal methods, minimum deposit and customer support before funding a live account.",
+    title: "Best for Platforms",
+    desc: "Multiple trading platforms for everyday and active trading.",
+    factLabel: "Platforms",
+    factValue: "Multiple",
+    pageHref: "/en/brokers",
   },
 ];
 
-      const FAQItem = ({ item, index }: { item: any; index: number }) => (
-        <details className="group overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-[0_6px_20px_rgba(15,23,42,0.04)] transition hover:border-brand-100 hover:bg-[#fcfdff] hover:shadow-[0_14px_32px_rgba(15,23,42,0.05)] open:border-[#93c5fd]">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4">
-            <div className="flex items-center gap-3 text-left">
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-brand-50 text-xs font-black text-brand-600 transition group-open:bg-brand-500 group-open:text-white">
-                {index + 1}
-              </span>
-
-              <span className="text-[15px] font-black leading-7 text-[#07111f] sm:text-[16px]">
-                {item.q}
-              </span>
-            </div>
-
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-[#f8fbff] text-[14px] font-black text-brand-500 transition group-open:rotate-180 group-open:bg-brand-500 group-open:text-white">
-              ▾
-            </span>
-          </summary>
-
-          <div className="border-t border-slate-100 bg-[linear-gradient(180deg,#ffffff_0%,#fcfdff_100%)] px-5 py-4">
-            <div className="max-w-4xl text-[14px] font-medium leading-8 text-slate-600">
-              {item.a}
-            </div>
-          </div>
-        </details>
-      );
+      /* MOBILE - SAME IDEA AS ARABIC VERSION */
+      const mobileTopBrokers = [...footerFeaturedBrokers]
+        .filter(
+          (broker) =>
+            broker &&
+            broker.slug &&
+            (broker.name_en || broker.name) &&
+            broker.logo
+        )
+        .sort(
+          (a, b) =>
+            Number(b.rating || 0) - Number(a.rating || 0)
+        )
+        .slice(0, 10);
 
       return (
         <>
-          {/* MOBILE - KEEP AS IS */}
-          <div className="space-y-3 px-4 py-4 sm:hidden">
-            {faqItems.slice(0, 5).map((item, index) => (
-              <FAQItem key={item.q} item={item} index={index} />
-            ))}
+          {/* =====================================================
+              MOBILE ONLY
+          ====================================================== */}
+          <div className="sm:hidden">
 
-            <details className="group">
-              <summary className="mt-2 flex cursor-pointer list-none items-center justify-center rounded-2xl border border-brand-100 bg-brand-50 px-4 py-3 text-[13px] font-black text-brand-500">
-                Show All Questions
-              </summary>
+            {/* MOBILE HEADER */}
+            <div className="border-b border-slate-100 bg-gradient-to-b from-[#f8fbff] to-[#eef5ff] px-4 pb-3 pt-3.5 text-center">
 
-              <div className="mt-3 space-y-3">
-                {faqItems.slice(5).map((item, index) => (
-                  <FAQItem key={item.q} item={item} index={index + 5} />
-                ))}
-              </div>
-            </details>
-          </div>
+              <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[10px] font-black text-brand-500 shadow-sm">
+                Top Rated Brokers
+              </span>
 
-          {/* DESKTOP - TWO INDEPENDENT COLUMNS */}
-          <div className="hidden p-5 sm:block">
-  <div className="grid grid-cols-2 gap-3">
-    <div className="space-y-3">
-      {faqItems.slice(0, 3).map((item, index) => (
-        <FAQItem key={item.q} item={item} index={index} />
-      ))}
-    </div>
+              <h2 className="mx-auto mt-2 max-w-[310px] text-[24px] font-black leading-[1.12] tracking-[-0.02em] text-[#07111f]">
+                Top Brokers on Broker Alarab
+              </h2>
 
-    <div className="space-y-3">
-      {faqItems.slice(3, 6).map((item, index) => (
-        <FAQItem key={item.q} item={item} index={index + 3} />
-      ))}
-    </div>
-  </div>
-</div>
-        </>
-      );
-    })()}
-  </div>
-</section>
-
-{/* BEST BROKERS BY NEED - TOP 4 FROM SUPABASE */}
-<section className="mx-auto hidden w-full max-w-7xl px-0 pb-0 pt-3 md:block">
-  <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.07)]">
-    {(() => {
-      const categoryLabels = [
-        {
-          title: "Best for Beginners",
-          desc: "Easy platforms and suitable account options for getting started",
-          factLabel: "Suitable for",
-          factValue: "Easier Start",
-          pageHref: "/en/best-brokers/beginners",
-        },
-        {
-          title: "Best for Low Spreads",
-          desc: "Trading costs suitable for scalping and active trading",
-          factLabel: "Main Benefit",
-          factValue: "Lower Costs",
-          pageHref: "/en/best-brokers/low-spread",
-        },
-        {
-          title: "Best for Swap-Free Accounts",
-          desc: "Swap-free account options with clearer trading conditions",
-          factLabel: "Account Type",
-          factValue: "Swap-Free",
-          pageHref: "/en/best-brokers/islamic",
-        },
-        {
-          title: "Best for Trading Platforms",
-          desc: "Multiple platform options for active and daily trading",
-          factLabel: "Platforms",
-          factValue: "More Options",
-          pageHref: "/en/best-brokers/mt4-mt5",
-        },
-      ];
-
-      const topFourBrokers = footerFeaturedBrokers.slice(0, 4);
-
-      return (
-        <>
-          <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-6 py-5">
-            <div className="flex items-center justify-between gap-8">
-              <div className="text-left">
-                <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[11px] font-black text-brand-600 shadow-sm">
-                  Brokers Selected by Trading Need
-                </span>
-
-                <h2 className="mt-3 text-[30px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] lg:text-[36px]">
-                  Best Brokers for Different Trading Needs
-                </h2>
-
-                <p className="mt-2 max-w-[820px] text-[13px] font-semibold leading-7 text-slate-600 lg:text-[14px]">
-                  Explore four highly rated brokers, each presented with a clear
-                  category to help you understand where it may fit best.
-                </p>
-              </div>
+              <p className="mx-auto mt-1.5 max-w-[300px] text-[10.5px] font-semibold leading-5 text-slate-500">
+                Explore our highest-rated brokers and swipe to see more.
+              </p>
 
               <Link
                 href="/en/brokers"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex h-12 min-w-[190px] shrink-0 items-center justify-center rounded-2xl bg-brand-500 px-6 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(37,99,235,0.22)] transition hover:-translate-y-0.5 hover:bg-brand-600"
+                className="mt-2.5 inline-flex h-9 items-center justify-center rounded-xl bg-brand-500 px-5 text-[10.5px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.18)] transition hover:bg-brand-600"
               >
                 View All Brokers
               </Link>
             </div>
-          </div>
 
-          <div className="grid grid-cols-4 gap-4 bg-white p-5">
-            {topFourBrokers.map((broker, index) => {
-              const category = categoryLabels[index];
 
-              return (
+            {/* =====================================================
+                MOBILE HORIZONTAL CAROUSEL
+            ====================================================== */}
+            <div
+              className="
+                flex snap-x snap-mandatory gap-2.5
+                overflow-x-auto overscroll-x-contain
+                px-3 pb-3 pt-3
+                [scrollbar-width:none]
+                [&::-webkit-scrollbar]:hidden
+              "
+            >
+              {mobileTopBrokers.map((broker, index) => (
                 <article
                   key={broker.id}
-                  className="group relative flex min-h-[380px] flex-col overflow-hidden rounded-[24px] border border-slate-200 bg-[#fbfdff] p-4 shadow-[0_6px_20px_rgba(15,23,42,0.045)] transition duration-300 hover:-translate-y-1 hover:border-brand-200 hover:bg-white hover:shadow-[0_18px_38px_rgba(15,23,42,0.09)]"
+                  className="
+                    group relative
+                    w-[145px] min-w-[145px]
+                    snap-start
+                    overflow-hidden
+                    rounded-[16px]
+                    border border-slate-200
+                    bg-white
+                    px-3 pb-3 pt-3
+                    shadow-[0_4px_14px_rgba(15,23,42,0.04)]
+                  "
                 >
-                  <div className="absolute inset-x-0 top-0 h-[4px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent" />
+                  {/* TOP LINE */}
+                  <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent" />
 
-                  <div className="flex items-start justify-between gap-3 pt-1">
-                    <span className="inline-flex min-h-[30px] items-center rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[10px] font-black leading-4 text-brand-600">
-                      {category.title}
+
+                  {/* RANK + RATING */}
+                  <div className="flex items-center justify-between">
+
+                    <span className="rounded-full bg-brand-50 px-2 py-0.5 text-[8px] font-black text-brand-600">
+                      #{index + 1}
                     </span>
 
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-[10px] font-black text-brand-600 shadow-sm">
-                      {String(index + 1).padStart(2, "0")}
+                    <span
+                      dir="ltr"
+                      className="text-[10px] font-black text-[#f59e0b]"
+                    >
+                      ★ {broker.rating?.toFixed(1) ?? "—"}
                     </span>
                   </div>
 
-                  <p className="mt-3 min-h-[42px] text-[11px] font-semibold leading-5 text-slate-500">
-                    {category.desc}
-                  </p>
 
+                  {/* LOGO */}
                   <Link
                     href={`/en/brokers/${broker.slug}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mx-auto mt-3 flex h-[78px] w-[104px] items-center justify-center rounded-[20px] border border-slate-200 bg-white p-2 shadow-[0_8px_22px_rgba(15,23,42,0.06)] transition group-hover:border-brand-100"
+                    className="mx-auto mt-2.5 flex h-[58px] w-[78px] items-center justify-center rounded-[14px] border border-slate-200 bg-[#fbfdff] p-2 shadow-sm transition duration-300 group-hover:border-brand-100"
                   >
                     <img
                       src={broker.logo || ""}
-                      alt={`${broker.name_en || broker.name} logo`}
-                      className="max-h-[68px] max-w-[95%] object-contain transition duration-300 group-hover:scale-105"
+                      alt={`${broker.name_en || broker.name || "Broker"} logo`}
+                      className="max-h-[48px] max-w-[95%] object-contain transition duration-300 group-hover:scale-105"
                     />
                   </Link>
 
+
+                  {/* NAME */}
                   <Link
                     href={`/en/brokers/${broker.slug}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-3 block truncate text-center text-[18px] font-black text-slate-950 transition hover:text-brand-500"
+                    className="mt-2 block truncate text-center text-[13px] font-black text-[#07111f] transition hover:text-brand-500"
                   >
                     {broker.name_en || broker.name}
                   </Link>
 
-                  <div className="mt-1 text-center text-[10px] font-bold text-slate-500">
+
+                  {/* SUBTITLE */}
+                  <div className="mt-0.5 text-center text-[8.5px] font-bold text-slate-400">
                     Broker Alarab Rating
                   </div>
 
-                  <div className="mt-3 grid grid-cols-2 gap-2">
-                    <div className="rounded-xl border border-slate-200 bg-white px-2 py-2.5 text-center">
-                      <div className="text-[9px] font-bold text-slate-400">
-                        Rating
-                      </div>
 
-                      <div className="mt-1 text-[15px] font-black text-brand-600">
-                        ★ {broker.rating?.toFixed(1) ?? "—"}
-                      </div>
-                    </div>
-
-                    <div className="rounded-xl border border-slate-200 bg-white px-2 py-2.5 text-center">
-                      <div className="text-[9px] font-bold text-slate-400">
-                        {category.factLabel}
-                      </div>
-
-                      <div className="mt-1 text-[11px] font-black text-slate-800">
-                        {category.factValue}
-                      </div>
-                    </div>
-                  </div>
-
+                  {/* REVIEW CTA */}
                   <Link
-                    href={category.pageHref}
+                    href={`/en/brokers/${broker.slug}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-3 inline-flex min-h-[40px] items-center justify-center rounded-xl border border-brand-100 bg-brand-50 px-3 text-[10px] font-black text-brand-600 transition hover:bg-brand-100"
+                    className="mt-2.5 flex h-8 w-full items-center justify-center rounded-lg bg-brand-500 px-2 text-[10px] font-black text-white transition hover:bg-brand-600"
                   >
-                    Explore This Category
+                    View Review
                   </Link>
+                </article>
+              ))}
+            </div>
 
-                  <div className="mt-auto grid grid-cols-2 gap-2 border-t border-slate-100 pt-4">
+
+            {/* MOBILE SWIPE HINT */}
+            {mobileTopBrokers.length > 2 && (
+              <div className="-mt-2 flex items-center justify-center gap-1.5 pb-1">
+                <span className="h-1.5 w-5 rounded-full bg-brand-500" />
+                <span className="h-1.5 w-1.5 rounded-full bg-slate-300" />
+                <span className="h-1.5 w-1.5 rounded-full bg-slate-300" />
+              </div>
+            )}
+          </div>
+
+
+          {/* =====================================================
+              DESKTOP / TABLET
+              CURRENT DESIGN KEPT
+          ====================================================== */}
+          <div className="hidden sm:block">
+
+            {/* HEADER */}
+            <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-6 py-5">
+              <div className="flex items-center justify-between gap-8">
+
+                <div className="text-left">
+                  <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[11px] font-black text-brand-600 shadow-sm">
+                    Brokers Selected by Trading Need
+                  </span>
+
+                  <h2 className="mt-3 text-[30px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] lg:text-[36px]">
+                    Best Brokers for Different Trading Needs
+                  </h2>
+
+                  <p className="mt-2 max-w-[820px] text-[13px] font-semibold leading-7 text-slate-600 lg:text-[14px]">
+                    Explore four highly rated brokers, each presented with a clear
+                    category to help you understand where it may fit best.
+                  </p>
+                </div>
+
+                <Link
+                  href="/en/brokers"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex h-12 min-w-[190px] shrink-0 items-center justify-center rounded-2xl bg-brand-500 px-6 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(37,99,235,0.22)] transition hover:-translate-y-0.5 hover:bg-brand-600"
+                >
+                  View All Brokers
+                </Link>
+              </div>
+            </div>
+
+
+            {/* DESKTOP CARDS */}
+            <div className="grid grid-cols-4 gap-4 bg-white p-5">
+              {topFourBrokers.map((broker, index) => {
+                const category = categoryLabels[index];
+
+                return (
+                  <article
+                    key={broker.id}
+                    className="group relative flex min-h-[380px] flex-col overflow-hidden rounded-[24px] border border-slate-200 bg-[#fbfdff] p-4 shadow-[0_6px_20px_rgba(15,23,42,0.045)] transition duration-300 hover:-translate-y-1 hover:border-brand-200 hover:bg-white hover:shadow-[0_18px_38px_rgba(15,23,42,0.09)]"
+                  >
+                    {/* TOP ACCENT */}
+                    <div className="absolute inset-x-0 top-0 h-[4px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent" />
+
+
+                    {/* CATEGORY + NUMBER */}
+                    <div className="flex items-start justify-between gap-3 pt-1">
+
+                      <span className="inline-flex min-h-[30px] items-center rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[10px] font-black leading-4 text-brand-600">
+                        {category.title}
+                      </span>
+
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-[10px] font-black text-brand-600 shadow-sm">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                    </div>
+
+
+                    {/* CATEGORY DESCRIPTION */}
+                    <p className="mt-3 min-h-[42px] text-[11px] font-semibold leading-5 text-slate-500">
+                      {category.desc}
+                    </p>
+
+
+                    {/* BROKER LOGO */}
                     <Link
                       href={`/en/brokers/${broker.slug}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-[11px] font-black text-slate-700 transition hover:bg-slate-50"
+                      className="mx-auto mt-3 flex h-[78px] w-[104px] items-center justify-center rounded-[20px] border border-slate-200 bg-white p-2 shadow-[0_8px_22px_rgba(15,23,42,0.06)] transition group-hover:border-brand-100"
                     >
-                      Read Review
+                      <img
+                        src={broker.logo || ""}
+                        alt={`${broker.name_en || broker.name} logo`}
+                        className="max-h-[68px] max-w-[95%] object-contain transition duration-300 group-hover:scale-105"
+                      />
                     </Link>
 
-                    <a
-                      href={broker.real_account_url || `/en/brokers/${broker.slug}`}
+
+                    {/* BROKER NAME */}
+                    <Link
+                      href={`/en/brokers/${broker.slug}`}
                       target="_blank"
-                      rel="nofollow sponsored noopener noreferrer"
-                      className="inline-flex h-10 items-center justify-center rounded-xl bg-brand-500 text-[11px] font-black text-white transition hover:bg-brand-600"
+                      rel="noopener noreferrer"
+                      className="mt-3 block truncate text-center text-[18px] font-black text-slate-950 transition hover:text-brand-500"
                     >
-                      Open Account
-                    </a>
-                  </div>
-                </article>
-              );
-            })}
+                      {broker.name_en || broker.name}
+                    </Link>
+
+
+                    <div className="mt-1 text-center text-[10px] font-bold text-slate-500">
+                      Broker Alarab Rating
+                    </div>
+
+
+                    {/* FACTS */}
+                    <div className="mt-3 grid grid-cols-2 gap-2">
+
+                      {/* RATING */}
+                      <div className="rounded-xl border border-slate-200 bg-white px-2 py-2.5 text-center">
+                        <div className="text-[9px] font-bold text-slate-400">
+                          Rating
+                        </div>
+
+                        <div className="mt-1 text-[15px] font-black text-brand-600">
+                          ★ {broker.rating?.toFixed(1) ?? "—"}
+                        </div>
+                      </div>
+
+
+                      {/* CATEGORY FACT */}
+                      <div className="rounded-xl border border-slate-200 bg-white px-2 py-2.5 text-center">
+                        <div className="text-[9px] font-bold text-slate-400">
+                          {category.factLabel}
+                        </div>
+
+                        <div className="mt-1 text-[11px] font-black text-slate-800">
+                          {category.factValue}
+                        </div>
+                      </div>
+                    </div>
+
+
+                    {/* CATEGORY CTA */}
+                    <Link
+                      href={category.pageHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-3 inline-flex min-h-[40px] items-center justify-center rounded-xl border border-brand-100 bg-brand-50 px-3 text-[10px] font-black text-brand-600 transition hover:bg-brand-100"
+                    >
+                      Explore This Category
+                    </Link>
+
+
+                    {/* ACTIONS */}
+                    <div className="mt-auto grid grid-cols-2 gap-2 border-t border-slate-100 pt-4">
+
+                      <Link
+                        href={`/en/brokers/${broker.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-[11px] font-black text-slate-700 transition hover:bg-slate-50"
+                      >
+                        Read Review
+                      </Link>
+
+                      <a
+                        href={
+                          broker.real_account_url ||
+                          `/en/brokers/${broker.slug}`
+                        }
+                        target="_blank"
+                        rel="nofollow sponsored noopener noreferrer"
+                        className="inline-flex h-10 items-center justify-center rounded-xl bg-brand-500 text-[11px] font-black text-white transition hover:bg-brand-600"
+                      >
+                        Open Account
+                      </a>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
           </div>
         </>
       );
