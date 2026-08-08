@@ -156,7 +156,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }))
     : [];
 
-  const regulatorSlugs = [
+ const regulatorSlugs = [
   "fca",
   "asic",
   "cysec",
@@ -169,6 +169,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   "sca",
   "vfsc",
   "misa",
+  "bacen",
+  "cvm",
+  "cmvm",
+  "cima",
 ];
 
   const regulatorPages = regulatorSlugs.map((slug) => ({
