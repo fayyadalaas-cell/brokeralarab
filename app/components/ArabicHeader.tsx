@@ -454,6 +454,71 @@ export default function ArabicHeader({
                 </div>
                 </div>
 
+                            {/* LICENSES */}
+            <div className="group relative">
+              <Link href="/licenses" className={mainLinkClass}>
+                التراخيص
+                <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
+                  ▼
+                </span>
+              </Link>
+
+              <div className={`${dropdownClass} w-[460px]`}>
+                <div className="px-3 pb-3 pt-1 text-xs font-black tracking-wide text-slate-500">
+                  أهم التراخيص والجهات الرقابية
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+  { code: "FCA", title: "ترخيص FCA - بريطانيا", href: "/licenses/fca" },
+  { code: "ASIC", title: "ترخيص ASIC - أستراليا", href: "/licenses/asic" },
+  { code: "CySEC", title: "ترخيص CySEC - قبرص", href: "/licenses/cysec" },
+  { code: "DFSA", title: "ترخيص DFSA - دبي", href: "/licenses/dfsa" },
+  { code: "FSCA", title: "ترخيص FSCA - جنوب أفريقيا", href: "/licenses/fsca" },
+  { code: "SCA", title: "ترخيص SCA - الإمارات", href: "/licenses/sca" },
+  { code: "FSA", title: "ترخيص FSA - سيشل", href: "/licenses/fsa" },
+  { code: "CIMA", title: "ترخيص CIMA - جزر كايمان", href: "/licenses/cima" },
+].map((regulator) => (
+                    <Link
+                      key={regulator.href}
+                      href={regulator.href}
+                      className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-[13px] font-extrabold text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600"
+                    >
+                      {regulator.title}
+                    </Link>
+                  ))}
+                </div>
+
+                <div className="my-4 h-px bg-slate-200" />
+
+                <Link
+                  href="/licenses"
+                  className={`${menuCardClass} flex items-center justify-between gap-4 text-right`}
+                >
+                  <div className="min-w-0 flex-1 text-right">
+                    <div className="text-[13px] font-extrabold text-slate-800">
+                      التحقق من تراخيص الوسطاء
+                    </div>
+
+                    <div className="mt-1 text-[10px] font-semibold leading-5 text-slate-500">
+                      ابحث باسم الشركة أو رقم الترخيص وتحقق من الجهة الرقابية
+                    </div>
+                  </div>
+
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-lg font-black text-brand-600 shadow-sm">
+                    ←
+                  </span>
+                </Link>
+
+                <Link
+                  href="/licenses"
+                  className="mt-1 block rounded-2xl px-3 py-3 text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
+                >
+                  جميع التراخيص والجهات الرقابية ←
+                </Link>
+              </div>
+            </div>
+
             {/* TRADING TOOLS */}
             <div className="group relative">
               <Link href="/tools" className={mainLinkClass}>
@@ -463,57 +528,30 @@ export default function ArabicHeader({
                 </span>
               </Link>
 
-           <div className="invisible absolute right-0 top-full z-50 mt-3 w-[460px] translate-y-2 rounded-[28px] border border-slate-200 bg-white p-4 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.14)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
-  <div className="px-3 pb-3 pt-1 text-xs font-black tracking-wide text-slate-500">
-    حاسبات وأدوات للمتداولين
-  </div>
+              <div className={`${dropdownClass} w-[460px]`}>
+                <div className="px-3 pb-3 pt-1 text-xs font-black tracking-wide text-slate-500">
+                  حاسبات وأدوات للمتداولين
+                </div>
 
-  <div className="grid grid-cols-2 gap-2">
-    {tradingToolsAr.map((tool) => (
-      <Link
-        key={tool.href}
-        href={tool.href}
-        className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-[13px] font-extrabold text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600"
-      >
-        {tool.title}
-      </Link>
-    ))}
-  </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {tradingToolsAr.map((tool) => (
+                    <Link
+                      key={tool.href}
+                      href={tool.href}
+                      className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-[13px] font-extrabold text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600"
+                    >
+                      {tool.title}
+                    </Link>
+                  ))}
+                </div>
 
-  <div className="my-4 h-px bg-slate-200" />
-
-  <div className="px-3 pb-2 text-xs font-black tracking-wide text-slate-500">
-    أدوات التحقق
-  </div>
-
-  {verificationToolsAr.map((tool) => (
-    <Link
-      key={tool.href}
-      href={tool.href}
-      className="group/license flex items-center justify-between gap-4 rounded-[22px] border border-brand-100 bg-gradient-to-l from-brand-50 via-white to-slate-50 p-4 transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-[0_12px_30px_rgba(59,130,246,0.14)]"
-    >
-      <div className="text-right">
-        <div className="text-[15px] font-black text-slate-950 transition group-hover/license:text-brand-600">
-          {tool.title}
-        </div>
-        <div className="mt-1 text-[12px] font-bold leading-6 text-slate-500">
-          {tool.desc}
-        </div>
-      </div>
-
-      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-brand-100 bg-white text-lg font-black text-brand-600 shadow-sm transition group-hover/license:bg-brand-500 group-hover/license:text-white">
-  ←
-</span>
-    </Link>
-  ))}
-
-  <Link
-    href="/tools"
-    className="mt-3 block rounded-2xl px-3 py-3 text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
-  >
-    عرض جميع أدوات التداول ←
-  </Link>
-</div>
+                <Link
+                  href="/tools"
+                  className="mt-3 block rounded-2xl px-3 py-3 text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
+                >
+                  عرض جميع أدوات التداول ←
+                </Link>
+              </div>
             </div>
 
         {/* LEARN TRADING */}

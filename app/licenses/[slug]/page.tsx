@@ -432,7 +432,7 @@ const regulatorSchema = {
   dangerouslySetInnerHTML={{ __html: JSON.stringify(regulatorSchema) }}
 />
 
-      <section className="mx-auto max-w-7xl px-2.5 pb-4 md:px-6 lg:px-8">
+      <section className="mx-auto max-w-[1520px] px-2.5 pb-4 md:px-6 lg:px-8">
   <div className="overflow-hidden rounded-[24px] border border-brand-100 bg-gradient-to-l from-brand-50 via-white to-slate-50 shadow-sm md:rounded-[30px]">
     <div className="px-4 py-6 text-center md:px-12 md:py-8">
             <div className="mx-auto mb-4 inline-flex rounded-full border border-brand-100 bg-white px-4 py-2 text-[12px] font-black text-brand-600 shadow-sm">
@@ -511,7 +511,7 @@ const regulatorSchema = {
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-7xl gap-5 px-3 pb-6 md:px-6 lg:grid-cols-12 lg:px-8">
+      <section className="mx-auto grid max-w-[1520px] gap-5 px-3 pb-6 md:px-6 lg:grid-cols-12 lg:px-8">
         <article className="order-2 lg:order-1 lg:col-span-8">
           <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
             <SectionTitle
@@ -668,7 +668,7 @@ const regulatorSchema = {
 
       <section
         id="regulated-brokers"
-        className="mx-auto max-w-7xl px-3 pb-6 md:px-6 lg:px-8"
+        className="mx-auto max-w-[1520px] px-3 pb-6 md:px-6 lg:px-8"
       >
         <div className="overflow-hidden rounded-[28px] border border-brand-100 bg-white shadow-sm">
           <SectionTitle
@@ -955,7 +955,7 @@ const regulatorSchema = {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-3 pb-6 md:px-6 lg:px-8">
+      <section className="mx-auto max-w-[1520px] px-3 pb-6 md:px-6 lg:px-8">
         <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
           <SectionTitle title={`كيف تتحقق من ترخيص ${regulator.short_name}؟`} />
         
@@ -1045,7 +1045,7 @@ const regulatorSchema = {
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-7xl gap-5 px-3 pb-6 md:px-6 lg:grid-cols-2 lg:px-8">
+      <section className="mx-auto grid max-w-[1520px] gap-5 px-3 pb-6 md:px-6 lg:grid-cols-2 lg:px-8">
         <div className="overflow-hidden rounded-[28px] border border-brand-100 bg-white shadow-sm">
           <SectionTitle title={`مزايا ترخيص ${regulator.short_name}`} />
           <div className="p-5 text-right md:p-7">
@@ -1069,7 +1069,7 @@ const regulatorSchema = {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-3 pb-6 md:px-6 lg:px-8">
+      <section className="mx-auto max-w-[1520px] px-3 pb-6 md:px-6 lg:px-8">
         <div className="overflow-hidden rounded-[28px] border border-brand-100 bg-gradient-to-l from-brand-50 to-white shadow-sm">
           <div className="p-5 text-right md:p-8">
             <h2 className="text-2xl font-black text-slate-950 md:text-3xl">
@@ -1087,7 +1087,7 @@ const regulatorSchema = {
         </div>
       </section>
       
-            <section className="mx-auto max-w-7xl px-3 pb-6 md:px-6 lg:px-8">
+            <section className="mx-auto max-w-[1520px] px-3 pb-6 md:px-6 lg:px-8">
         <div className="overflow-hidden rounded-[28px] border border-brand-100 bg-white shadow-sm">
           <SectionTitle
             title="مقارنة سريعة بين أهم التراخيص"
@@ -1163,7 +1163,7 @@ const regulatorSchema = {
       </section>
       
       {faqItems.length > 0 && (
-        <section className="mx-auto max-w-7xl px-3 pb-6 md:px-6 lg:px-8">
+        <section className="mx-auto max-w-[1520px] px-3 pb-6 md:px-6 lg:px-8">
           <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
             <SectionTitle title={`أسئلة شائعة حول ترخيص ${regulator.short_name}`} />
 
@@ -1201,7 +1201,7 @@ const regulatorSchema = {
         </section>
       )}
 
-      <section className="mx-auto max-w-7xl px-3 pb-6 md:px-6 lg:px-8">
+      <section className="mx-auto max-w-[1520px] px-3 pb-6 md:px-6 lg:px-8">
         <div className="overflow-hidden rounded-[28px] border border-brand-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] shadow-sm">
           <SectionTitle title="تراخيص رقابية أخرى" />
 

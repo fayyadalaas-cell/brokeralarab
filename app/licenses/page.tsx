@@ -490,7 +490,7 @@ const licensesItemListSchema = {
   }}
 />
 
-      <section className="mx-auto max-w-7xl px-3 pb-5 md:px-6 lg:px-8">
+      <section className="mx-auto max-w-[1520px] px-3 pb-5 md:px-6 lg:px-8">
         <div className="overflow-hidden rounded-[30px] border border-brand-100 bg-gradient-to-l from-brand-50 via-white to-slate-50 shadow-sm">
           <div className="px-5 py-8 text-center md:px-12 md:py-8">
             <div className="mx-auto mb-4 inline-flex rounded-full border border-brand-100 bg-white px-4 py-2 text-[12px] font-black text-brand-600 shadow-sm">
@@ -549,7 +549,7 @@ const licensesItemListSchema = {
 
       <section
   id="license-search"
-  className="mx-auto max-w-7xl px-3 pb-6 md:px-6 lg:px-8"
+  className="mx-auto max-w-[1520px] px-3 pb-6 md:px-6 lg:px-8"
 >
         <div className="overflow-hidden rounded-[28px] border border-brand-100 bg-white shadow-sm">
           <div className="border-b border-slate-200 px-5 py-5 text-right md:px-8">
@@ -768,13 +768,22 @@ const licensesItemListSchema = {
                             {group.licenses.map((item) => (
                             <tr key={item.id} className="transition hover:bg-slate-50">
   <td className="px-5 py-3">
-  <div className="text-sm font-black text-slate-950">
+  <Link
+  href={`/licenses/${regulatorRows.find(
+    (r) => r.code === item.regulator_code
+  )?.slug || item.regulator_code.toLowerCase()}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="block transition hover:text-brand-600"
+>
+  <div className="text-sm font-black text-slate-950 hover:underline">
     {item.regulator_code}
   </div>
 
-  <div className="mt-1 text-[12px] font-bold leading-5 text-slate-500">
+  <div className="mt-1 text-[12px] font-bold leading-5 text-slate-500 hover:text-brand-600">
     {item.regulator_name_ar}
   </div>
+</Link>
 
   <div className="mt-1 inline-flex rounded-full bg-slate-50 px-2.5 py-1 text-[11px] font-black text-slate-600">
     رقم الترخيص: {item.license_number || "غير متوفر"}
@@ -981,7 +990,7 @@ const licensesItemListSchema = {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-3 pb-6 md:px-6 lg:px-8">
+      <section className="mx-auto max-w-[1520px] px-3 pb-6 md:px-6 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-brand-100 bg-gradient-to-l from-white via-brand-50/40 to-white shadow-sm">
           <div className="border-b border-slate-200 px-5 py-6 text-right md:px-8">
   <div className="mb-4 h-1.5 w-20 rounded-full bg-brand-500"></div>
@@ -1034,7 +1043,7 @@ const licensesItemListSchema = {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-3 pb-6 md:px-6 lg:px-8">
+      <section className="mx-auto max-w-[1520px] px-3 pb-6 md:px-6 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
     <div className="border-b border-slate-200 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-5 py-6 text-right md:px-8">
       <div className="mb-4 h-1.5 w-20 rounded-full bg-brand-500"></div>
@@ -1190,7 +1199,7 @@ const licensesItemListSchema = {
   </div>
 </section>
 
-     <section className="mx-auto max-w-7xl px-3 pb-6 md:px-6 lg:px-8">
+     <section className="mx-auto max-w-[1520px] px-3 pb-6 md:px-6 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
     <div className="border-b border-slate-200 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-5 py-6 text-right md:px-8">
       <div className="mb-4 h-1.5 w-16 rounded-full bg-brand-500"></div>
@@ -1232,7 +1241,7 @@ const licensesItemListSchema = {
   </div>
 </section>
 
-<section className="mx-auto max-w-7xl px-3 pb-6 md:px-6 lg:px-8">
+<section className="mx-auto max-w-[1520px] px-3 pb-6 md:px-6 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-brand-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] shadow-sm">
    <div className="border-b border-slate-200 px-5 py-5 text-right md:px-8 md:py-6">
       <div className="mb-4 h-1.5 w-20 rounded-full bg-brand-500"></div>
@@ -1297,7 +1306,7 @@ const licensesItemListSchema = {
   </div>
 </section>
 
-    <section className="mx-auto max-w-7xl px-3 pb-3 md:px-6 lg:px-8">
+    <section className="mx-auto max-w-[1520px] px-3 pb-3 md:px-6 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
     <div className="border-b border-slate-200 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-5 py-6 text-right md:px-8">
       <div className="mb-4 h-1.5 w-20 rounded-full bg-brand-500"></div>

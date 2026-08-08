@@ -421,6 +421,95 @@ export default function EnglishHeader({
               </div>
             </div>
 
+                        {/* LICENSES */}
+            <div className="group relative">
+              <Link href="/en/licenses" className={mainLinkClass}>
+                Licenses
+                <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
+                  ▼
+                </span>
+              </Link>
+
+              <div className={`${dropdownClass} w-[460px]`}>
+                <div className="px-3 pb-3 pt-1 text-xs font-black tracking-wide text-slate-500">
+                  Major Financial Regulators
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    {
+                      title: "FCA License - United Kingdom",
+                      href: "/en/licenses/fca",
+                    },
+                    {
+                      title: "ASIC License - Australia",
+                      href: "/en/licenses/asic",
+                    },
+                    {
+                      title: "CySEC License - Cyprus",
+                      href: "/en/licenses/cysec",
+                    },
+                    {
+                      title: "DFSA License - Dubai",
+                      href: "/en/licenses/dfsa",
+                    },
+                    {
+                      title: "FSCA License - South Africa",
+                      href: "/en/licenses/fsca",
+                    },
+                    {
+                      title: "SCA License - UAE",
+                      href: "/en/licenses/sca",
+                    },
+                    {
+                      title: "FSA License - Seychelles",
+                      href: "/en/licenses/fsa",
+                    },
+                    {
+                      title: "CIMA License - Cayman Islands",
+                      href: "/en/licenses/cima",
+                    },
+                  ].map((regulator) => (
+                    <Link
+                      key={regulator.href}
+                      href={regulator.href}
+                      className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-[13px] font-extrabold text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600"
+                    >
+                      {regulator.title}
+                    </Link>
+                  ))}
+                </div>
+
+                <div className="my-4 h-px bg-slate-200" />
+
+                <Link
+                  href="/en/licenses"
+                  className={`${menuCardClass} flex items-center justify-between gap-4`}
+                >
+                  <div className="min-w-0 flex-1 text-left">
+                    <div className="text-[13px] font-extrabold text-slate-800">
+                      Verify a Broker License
+                    </div>
+
+                    <div className="mt-1 text-[10px] font-semibold leading-5 text-slate-500">
+                      Search by broker name or license number and verify the regulator
+                    </div>
+                  </div>
+
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-lg font-black text-brand-600 shadow-sm">
+                    →
+                  </span>
+                </Link>
+
+                <Link
+                  href="/en/licenses"
+                  className="mt-1 block rounded-2xl px-3 py-3 text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
+                >
+                  View All Licenses & Regulators →
+                </Link>
+              </div>
+            </div>
+
             {/* TRADING TOOLS */}
             <div className="group relative">
               <Link href="/en/tools" className={mainLinkClass}>
@@ -447,45 +536,11 @@ export default function EnglishHeader({
                   ))}
                 </div>
 
-                <div className="my-4 h-px bg-slate-200" />
-
-                <div className="px-3 pb-2 text-xs font-black tracking-wide text-slate-500">
-                  Broker Verification Tools
-                </div>
-
-                {verificationToolsEn.map((tool) => (
-                  <Link
-                    key={tool.href}
-                    href={tool.href}
-                    className="group/license flex items-center justify-between gap-4 rounded-[22px] border border-brand-100 bg-gradient-to-r from-brand-50 via-white to-slate-50 px-4 py-3.5 transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-[0_12px_30px_rgba(59,130,246,0.14)]"
-                  >
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-600 text-base font-black text-white shadow-md transition group-hover/license:scale-105">
-                      →
-                    </span>
-
-                    <div className="min-w-0 flex-1 text-left">
-                      <div className="flex items-center gap-2">
-                        <div className="text-[15px] font-black text-slate-950 transition group-hover/license:text-brand-600">
-                          {tool.title}
-                        </div>
-
-                        <span className="inline-flex items-center rounded-full bg-brand-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-brand-700">
-                          New
-                        </span>
-                      </div>
-
-                      <div className="mt-1 text-[12px] font-bold leading-6 text-slate-500">
-                        {tool.desc}
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-
                 <Link
                   href="/en/tools"
                   className="mt-3 block rounded-2xl px-3 py-3 text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
                 >
-                  View All Tools →
+                  View All Trading Tools →
                 </Link>
               </div>
             </div>

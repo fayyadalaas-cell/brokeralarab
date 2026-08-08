@@ -308,12 +308,16 @@ const comparisonItems = useMemo(() => {
     best: isEnglish ? "Best Brokers" : "أفضل الوسطاء",
     countries: isEnglish ? "By Country" : "حسب الدولة",
     categories: isEnglish ? "By Category" : "حسب الفئة",
-    tools: isEnglish ? "Tools" : "الأدوات",
-    license: isEnglish ? "Verify Broker License" : "التحقق من تراخيص الوسطاء",
-    licenseDesc: isEnglish
-      ? "Search by broker name or license number."
-      : "ابحث باسم الشركة أو رقم الترخيص.",
-    allTools: isEnglish ? "View All Tools" : "عرض جميع الأدوات",
+    licenses: isEnglish ? "Licenses" : "التراخيص",
+license: isEnglish ? "Verify Broker License" : "التحقق من تراخيص الوسطاء",
+licenseDesc: isEnglish
+  ? "Search by broker name or license number."
+  : "ابحث باسم الشركة أو رقم الترخيص.",
+allLicenses: isEnglish
+  ? "View All Licenses & Regulators"
+  : "جميع التراخيص والجهات الرقابية",
+tools: isEnglish ? "Tools" : "الأدوات",
+allTools: isEnglish ? "View All Tools" : "عرض جميع الأدوات",
     learn: isEnglish ? "Learn Trading" : "تعلم التداول",
     about: isEnglish ? "About" : "عن الموقع",
   };
@@ -739,36 +743,128 @@ const comparisonItems = useMemo(() => {
                     </div>
                   </Section>
 
+                                   {/* LICENSES */}
+                  <Section
+                    title={text.licenses}
+                    open={openSection === "licenses"}
+                    onToggle={() => toggleSection("licenses")}
+                  >
+                    <div className="space-y-3">
+                     <div className="grid gap-2">
+  {[
+    {
+      title: isEnglish
+        ? "FCA License - United Kingdom"
+        : "ترخيص FCA - بريطانيا",
+      href: "/licenses/fca",
+    },
+    {
+      title: isEnglish
+        ? "ASIC License - Australia"
+        : "ترخيص ASIC - أستراليا",
+      href: "/licenses/asic",
+    },
+    {
+      title: isEnglish
+        ? "CySEC License - Cyprus"
+        : "ترخيص CySEC - قبرص",
+      href: "/licenses/cysec",
+    },
+    {
+      title: isEnglish
+        ? "FSCA License - South Africa"
+        : "ترخيص FSCA - جنوب أفريقيا",
+      href: "/licenses/fsca",
+    },
+    {
+      title: isEnglish
+        ? "DFSA License - Dubai"
+        : "ترخيص DFSA - دبي",
+      href: "/licenses/dfsa",
+    },
+  ].map((regulator) => (
+    <Link
+      key={regulator.href}
+      href={withLangHref(regulator.href, isEnglish)}
+      onClick={closeMenu}
+      className="flex h-[46px] items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 text-[13px] font-extrabold text-slate-800 transition hover:border-blue-300 hover:bg-white"
+    >
+      <span>{regulator.title}</span>
+
+      <span className="shrink-0 text-brand-600">
+        {isEnglish ? "→" : "←"}
+      </span>
+    </Link>
+  ))}
+</div>
+
+                      <div className="h-px bg-slate-200" />
+
+                      <Link
+  href={withLangHref("/licenses", isEnglish)}
+  onClick={closeMenu}
+  className="group block rounded-2xl border border-brand-100 bg-gradient-to-r from-brand-50 via-white to-slate-50 px-3 py-3 transition hover:border-brand-200 hover:shadow-sm"
+>
+  <div
+    className={`grid items-center gap-3 ${
+      isEnglish
+        ? "grid-cols-[minmax(0,1fr)_40px]"
+        : "grid-cols-[40px_minmax(0,1fr)]"
+    }`}
+  >
+    {isEnglish ? (
+      <>
+        <div className="min-w-0 text-left">
+          <div className="text-[13px] font-black leading-5 text-slate-950 transition group-hover:text-brand-600">
+            {text.license}
+          </div>
+
+          <div className="mt-1 text-[10px] font-bold leading-4 text-slate-500">
+            {text.licenseDesc}
+          </div>
+        </div>
+
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-base font-black text-brand-600 shadow-sm transition group-hover:bg-brand-500 group-hover:text-white">
+          →
+        </span>
+      </>
+    ) : (
+      <>
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-base font-black text-brand-600 shadow-sm transition group-hover:bg-brand-500 group-hover:text-white">
+          ←
+        </span>
+
+        <div className="min-w-0 text-right">
+          <div className="text-[13px] font-black leading-5 text-slate-950 transition group-hover:text-brand-600">
+            {text.license}
+          </div>
+
+          <div className="mt-1 text-[10px] font-bold leading-4 text-slate-500">
+            {text.licenseDesc}
+          </div>
+        </div>
+      </>
+    )}
+  </div>
+</Link>
+
+                      <Link
+                        href={withLangHref("/licenses", isEnglish)}
+                        onClick={closeMenu}
+                        className="block rounded-2xl border border-slate-200 bg-white px-3 py-3 text-center text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
+                      >
+                        {text.allLicenses}
+                      </Link>
+                    </div>
+                  </Section>
+
+                  {/* TOOLS */}
                   <Section
                     title={text.tools}
                     open={openSection === "tools"}
                     onToggle={() => toggleSection("tools")}
                   >
                     <div className="grid gap-3">
-                      <Link
-                        href={withLangHref("/licenses", isEnglish)}
-                        onClick={closeMenu}
-                        className="group rounded-[22px] border border-brand-100 bg-gradient-to-r from-brand-50 via-white to-slate-50 p-4 transition hover:border-brand-200 hover:shadow-sm"
-                      >
-                        <div className="flex items-center justify-between gap-4">
-                          <div className="min-w-0 flex-1">
-                            <div className="text-[14px] font-black leading-5 text-slate-950 group-hover:text-brand-600">
-                              {text.license}
-                            </div>
-
-                            <div className="mt-1 text-[11.5px] font-bold leading-5 text-slate-500">
-                              {text.licenseDesc}
-                            </div>
-                          </div>
-
-                          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-brand-100 bg-white text-base font-black text-brand-600 shadow-sm transition group-hover:bg-brand-500 group-hover:text-white">
-                            {isEnglish ? "→" : "←"}
-                          </span>
-                        </div>
-                      </Link>
-
-                      <div className="h-px bg-slate-200" />
-
                       <div className="grid gap-2">
                         {mobileTradingTools.slice(0, 5).map((tool) => (
                           <Link
@@ -778,7 +874,9 @@ const comparisonItems = useMemo(() => {
                             className="flex h-[46px] items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 text-[13px] font-extrabold text-slate-800 transition hover:border-blue-300 hover:bg-white"
                           >
                             <span>{tool.label}</span>
-                            <span className="text-brand-600">{isEnglish ? "→" : "←"}</span>
+                            <span className="text-brand-600">
+                              {isEnglish ? "→" : "←"}
+                            </span>
                           </Link>
                         ))}
                       </div>

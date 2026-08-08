@@ -216,6 +216,22 @@ function formatDate(value?: string | null) {
   }
 }
 
+function licenseNumberText(value?: string | null) {
+  const normalized = (value || "").trim().toLowerCase();
+
+  if (
+    !normalized ||
+    normalized === "غير محدد" ||
+    normalized === "غير متوفر" ||
+    normalized === "not specified" ||
+    normalized === "not available"
+  ) {
+    return "Not available";
+  }
+
+  return value;
+}
+
 function TextContent({ text }: { text?: string | null }) {
   const items = paragraphs(text);
 
@@ -445,7 +461,7 @@ export default async function LicenseSlugPage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(regulatorSchema) }}
       />
 
-      <section className="mx-auto max-w-7xl px-2.5 pb-4 md:px-6 lg:px-8">
+      <section className="mx-auto max-w-[1520px] px-2.5 pb-4 md:px-6 lg:px-8">
         <div className="overflow-hidden rounded-[24px] border border-brand-100 bg-gradient-to-r from-brand-50 via-white to-slate-50 shadow-sm md:rounded-[30px]">
           <div className="px-4 py-6 text-center md:px-12 md:py-8">
             <div className="mx-auto mb-4 inline-flex rounded-full border border-brand-100 bg-white px-4 py-2 text-[12px] font-black text-brand-600 shadow-sm">
@@ -531,7 +547,7 @@ export default async function LicenseSlugPage({ params }: PageProps) {
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-7xl gap-5 px-3 pb-6 md:px-6 lg:grid-cols-12 lg:px-8">
+      <section className="mx-auto grid max-w-[1520px] gap-5 px-3 pb-6 md:px-6 lg:grid-cols-12 lg:px-8">
         <article className="order-2 lg:order-1 lg:col-span-8">
           <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
             <SectionTitle
@@ -696,7 +712,7 @@ export default async function LicenseSlugPage({ params }: PageProps) {
 
       <section
         id="regulated-brokers"
-        className="mx-auto max-w-7xl px-3 pb-6 md:px-6 lg:px-8"
+        className="mx-auto max-w-[1520px] px-3 pb-6 md:px-6 lg:px-8"
       >
         <div className="overflow-hidden rounded-[28px] border border-brand-100 bg-white shadow-sm">
           <SectionTitle
@@ -873,7 +889,7 @@ export default async function LicenseSlugPage({ params }: PageProps) {
                             >
                               <td className="px-5 py-4">
                                 <div className="inline-flex rounded-full bg-slate-50 px-3 py-1.5 text-xs font-black text-slate-700">
-                                  {item.license_number || "Not available"}
+                                  {licenseNumberText(item.license_number)}
                                 </div>
                               </td>
 
@@ -929,7 +945,7 @@ export default async function LicenseSlugPage({ params }: PageProps) {
                                 License number
                               </div>
                               <div className="mt-0.5 truncate text-[12px] font-black text-slate-950">
-                                {item.license_number || "-"}
+                                {licenseNumberText(item.license_number)}
                               </div>
                             </div>
 
@@ -993,7 +1009,7 @@ export default async function LicenseSlugPage({ params }: PageProps) {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-3 pb-6 md:px-6 lg:px-8">
+      <section className="mx-auto max-w-[1520px] px-3 pb-6 md:px-6 lg:px-8">
         <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
           <SectionTitle title={`How to verify a ${regulator.short_name} license?`} />
 
@@ -1084,7 +1100,7 @@ export default async function LicenseSlugPage({ params }: PageProps) {
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-7xl gap-5 px-3 pb-6 md:px-6 lg:grid-cols-2 lg:px-8">
+      <section className="mx-auto grid max-w-[1520px] gap-5 px-3 pb-6 md:px-6 lg:grid-cols-2 lg:px-8">
         <div className="overflow-hidden rounded-[28px] border border-brand-100 bg-white shadow-sm">
           <SectionTitle title={`${regulator.short_name} license advantages`} />
           <div className="p-5 text-left md:p-7">
@@ -1108,7 +1124,7 @@ export default async function LicenseSlugPage({ params }: PageProps) {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-3 pb-6 md:px-6 lg:px-8">
+      <section className="mx-auto max-w-[1520px] px-3 pb-6 md:px-6 lg:px-8">
         <div className="overflow-hidden rounded-[28px] border border-brand-100 bg-gradient-to-r from-brand-50 to-white shadow-sm">
           <div className="p-5 text-left md:p-8">
             <h2 className="text-2xl font-black text-slate-950 md:text-3xl">
@@ -1126,7 +1142,7 @@ export default async function LicenseSlugPage({ params }: PageProps) {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-3 pb-6 md:px-6 lg:px-8">
+      <section className="mx-auto max-w-[1520px] px-3 pb-6 md:px-6 lg:px-8">
         <div className="overflow-hidden rounded-[28px] border border-brand-100 bg-white shadow-sm">
           <SectionTitle
             title="Quick comparison between major licenses"
@@ -1202,7 +1218,7 @@ export default async function LicenseSlugPage({ params }: PageProps) {
       </section>
 
       {faqItems.length > 0 && (
-        <section className="mx-auto max-w-7xl px-3 pb-6 md:px-6 lg:px-8">
+        <section className="mx-auto max-w-[1520px] px-3 pb-6 md:px-6 lg:px-8">
           <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
             <SectionTitle
               title={`Frequently asked questions about the ${regulator.short_name} license`}
@@ -1242,7 +1258,7 @@ export default async function LicenseSlugPage({ params }: PageProps) {
         </section>
       )}
 
-      <section className="mx-auto max-w-7xl px-3 pb-6 md:px-6 lg:px-8">
+      <section className="mx-auto max-w-[1520px] px-3 pb-6 md:px-6 lg:px-8">
         <div className="overflow-hidden rounded-[28px] border border-brand-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] shadow-sm">
           <SectionTitle title="Other regulatory licenses" />
 
