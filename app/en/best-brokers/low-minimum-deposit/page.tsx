@@ -83,6 +83,7 @@ type BrokerAccountRow = {
   account_name: string | null;
   spread: string | null;
   commission: string | null;
+  commission_en: string | null;
   min_deposit: string | null;
   execution_type: string | null;
   best_for: string | null;
@@ -579,22 +580,23 @@ export default async function LowMinimumDepositBrokersPage() {
   } = await supabase
     .from("broker_accounts")
     .select(`
-      id,
-      broker_id,
-      account_name,
-      spread,
-      commission,
-      min_deposit,
-      execution_type,
-      best_for,
-      sort_order,
-      spread_avg,
-      spread_min,
-      commission_value,
-      account_type,
-      is_islamic_available,
-      islamic_conditions
-    `)
+  id,
+  broker_id,
+  account_name,
+  spread,
+  commission,
+  commission_en,
+  min_deposit,
+  execution_type,
+  best_for,
+  sort_order,
+  spread_avg,
+  spread_min,
+  commission_value,
+  account_type,
+  is_islamic_available,
+  islamic_conditions
+`)
     .order("broker_id", {
       ascending: true,
     })
@@ -1825,7 +1827,7 @@ export default async function LowMinimumDepositBrokersPage() {
                             </td>
 
                             <td className="px-4 py-3 text-center text-xs font-extrabold text-slate-800">
-                              {item.commission || "—"}
+                              {item.commission_en || item.commission || "—"}
                             </td>
 
                             <td className="px-4 py-3">
@@ -1934,7 +1936,7 @@ export default async function LowMinimumDepositBrokersPage() {
                             </div>
 
                             <div className="mt-1 break-words text-[10px] font-black leading-5 text-slate-900">
-                              {item.commission || "—"}
+                              {item.commission_en || item.commission || "—"}
                             </div>
                           </div>
                         </div>
@@ -2046,7 +2048,7 @@ export default async function LowMinimumDepositBrokersPage() {
                                   </div>
 
                                   <div className="mt-0.5 break-words text-[9px] font-black leading-4 text-slate-900">
-                                    {item.commission || "—"}
+                                    {item.commission_en || item.commission || "—"}
                                   </div>
                                 </div>
                               </div>
