@@ -365,6 +365,12 @@ export default function ArabicHeader({
                     <div className="space-y-2">
                       {[
   ...featuredCategories.slice(0, 3),
+
+  {
+  label: "وسطاء الفوركس بأقل إيداع",
+  href: "/best-brokers/low-minimum-deposit",
+},
+
   {
     label: "أفضل وسطاء السكالبينج",
     href: "/best-brokers/scalping",

@@ -561,6 +561,20 @@ allTools: isEnglish ? "View All Tools" : "عرض جميع الأدوات",
                               </span>
                             </Link>
 
+<Link
+  href="/en/best-brokers/low-minimum-deposit"
+  onClick={closeMenu}
+  className="group flex h-[48px] items-center justify-between gap-2.5 rounded-[15px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-white"
+>
+  <span className="min-w-0 flex-1 truncate text-[12px] font-black text-slate-800">
+    Low Minimum Deposit Brokers
+  </span>
+
+  <span className="shrink-0 text-[12px] font-black text-brand-600">
+    →
+  </span>
+</Link>
+
                             <Link
   href="/en/best-brokers/scalping"
   onClick={closeMenu}
@@ -647,6 +661,12 @@ allTools: isEnglish ? "View All Tools" : "عرض جميع الأدوات",
                             <div className="space-y-2">
                               {[
   ...featuredCategories.slice(0, 3),
+
+  {
+    label: "وسطاء الفوركس بأقل إيداع",
+    href: "/best-brokers/low-minimum-deposit",
+  },
+
   {
     label: "أفضل وسطاء السكالبينج",
     href: "/best-brokers/scalping",

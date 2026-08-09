@@ -335,6 +335,25 @@ export default function EnglishHeader({
                         </span>
                       </Link>
 
+<Link
+  href="/en/best-brokers/low-minimum-deposit"
+  className="group/guide flex min-h-[54px] items-center justify-between gap-3 rounded-[15px] border border-slate-200 bg-slate-50 px-3.5 py-2.5 transition hover:border-brand-200 hover:bg-brand-50"
+>
+  <div className="min-w-0">
+    <span className="block text-[12px] font-black leading-5 text-slate-800 transition group-hover/guide:text-brand-600">
+      Low Minimum Deposit Brokers
+    </span>
+
+    <span className="mt-0.5 block text-[9px] font-semibold text-slate-500">
+      Compare forex brokers with low deposits
+    </span>
+  </div>
+
+  <span className="shrink-0 text-[12px] font-black text-slate-400 transition group-hover/guide:translate-x-0.5 group-hover/guide:text-brand-600">
+    →
+  </span>
+</Link>
+
                       <Link
   href="/en/best-brokers/scalping"
   className="group/guide flex min-h-[54px] items-center justify-between gap-3 rounded-[15px] border border-slate-200 bg-slate-50 px-3.5 py-2.5 transition hover:border-brand-200 hover:bg-brand-50"
