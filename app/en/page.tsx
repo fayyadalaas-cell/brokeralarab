@@ -2595,36 +2595,86 @@ function eventCountdown(start?: string | null, end?: string | null) {
 
  {/* BROKERS SIDEBAR - DESKTOP ONLY */}
 <aside className="hidden min-h-full pt-4 xl:block">
+
   <div className="sticky top-24 overflow-hidden rounded-[30px] border border-slate-200 bg-white pb-3 shadow-[0_16px_45px_rgba(15,23,42,0.07)]">
 
-    {/* SIDEBAR HEADER */}
-    <div className="border-b border-slate-200 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-5 py-3">
-      <div className="flex items-center justify-between gap-3">
-        <div className="text-left">
-          <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[10px] font-black text-brand-600 shadow-sm">
+    {/* =====================================================
+        SIDEBAR HEADER
+    ====================================================== */}
+    <div className="border-b border-slate-200 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3.5">
+
+      <div className="flex items-center gap-3">
+
+        {/* BROKER RADAR ICON */}
+        <div className="relative flex h-12 w-12 shrink-0 items-center justify-center">
+
+          <div className="absolute inset-0 rounded-full bg-[#0a1d36] shadow-[0_6px_16px_rgba(15,23,42,0.22)]" />
+
+          <div className="absolute inset-[3px] rounded-full border border-blue-400/50" />
+
+          <div className="absolute inset-[7px] rounded-full bg-[#102a4c]" />
+
+          {/* RADAR RINGS */}
+          <div className="absolute inset-[11px] rounded-full border border-blue-300/25" />
+
+          <div className="absolute inset-[16px] rounded-full border border-blue-300/25" />
+
+          {/* RADAR AXIS */}
+          <span className="absolute left-1/2 top-[8px] h-[32px] w-px -translate-x-1/2 bg-white/10" />
+
+          <span className="absolute left-[8px] top-1/2 h-px w-[32px] -translate-y-1/2 bg-white/10" />
+
+          {/* RADAR SWEEP */}
+          <span className="absolute right-[7px] top-[7px] h-[18px] w-[18px] rounded-tr-full border-r-[3px] border-t-[3px] border-blue-400" />
+
+          {/* VERIFIED CENTER */}
+          <div className="relative z-10 flex h-[22px] w-[22px] items-center justify-center rounded-full border border-white/10 bg-[#07182d] shadow-[0_2px_8px_rgba(0,0,0,0.24)]">
+
+            <span className="text-[11px] font-black text-white">
+              ✓
+            </span>
+
+          </div>
+
+          {/* BROKER DOTS */}
+          <span className="absolute right-[8px] top-[19px] h-[4px] w-[4px] rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(34,211,238,0.65)]" />
+
+          <span className="absolute bottom-[9px] left-[11px] h-[4px] w-[4px] rounded-full bg-blue-400 shadow-[0_0_6px_rgba(96,165,250,0.65)]" />
+
+          <span className="absolute bottom-[8px] right-[11px] h-[4px] w-[4px] rounded-full bg-amber-400 shadow-[0_0_6px_rgba(251,191,36,0.65)]" />
+
+        </div>
+
+        {/* HEADER TEXT */}
+        <div className="min-w-0 text-left">
+
+          <span className="inline-flex rounded-full border border-brand-100 bg-white px-2.5 py-1 text-[8px] font-black text-brand-600 shadow-sm">
             Featured Brokers
           </span>
 
-          <h2 className="mt-2 text-[18px] font-black text-[#07111f]">
+          <h2 className="mt-1.5 text-[16px] font-black leading-6 text-[#07111f]">
             Best Trading Brokers
           </h2>
+
+          <p className="mt-0.5 text-[8.5px] font-semibold leading-4 text-slate-500">
+            Browse reviews of selected leading trading brokers.
+          </p>
+
         </div>
 
-        <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-brand-100 bg-white text-lg shadow-sm">
-          🔥
-        </span>
       </div>
 
-      <p className="mt-1 text-[10px] font-medium leading-5 text-slate-500">
-        Browse reviews of selected leading trading brokers.
-      </p>
     </div>
 
-    {/* BROKERS */}
+
+    {/* =====================================================
+        BROKERS
+    ====================================================== */}
     <div className="border-b border-slate-200 bg-[#f8fafc] px-3 py-3">
 
       {/* FEATURED BROKER */}
       {sidebarBrokers[0] && (
+
         <Link
           href={`/en/brokers/${sidebarBrokers[0].slug}`}
           target="_blank"
@@ -2632,49 +2682,73 @@ function eventCountdown(start?: string | null, end?: string | null) {
           prefetch={false}
           className="group relative block overflow-hidden rounded-[22px] border border-[#d7e6ff] bg-[linear-gradient(145deg,#ffffff_0%,#eef5ff_100%)] p-3 shadow-[0_10px_24px_rgba(15,23,42,0.08)] transition duration-300 hover:-translate-y-0.5 hover:border-brand-400 hover:shadow-[0_18px_36px_rgba(37,99,235,0.20)]"
         >
+
           {/* TOP ACCENT */}
           <span className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#f59e0b] via-[#facc15] to-brand-500" />
 
           {/* BADGE + RATING */}
           <div className="flex items-center justify-between gap-2">
+
             <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-200 bg-white px-2.5 py-1 text-[8px] font-black text-brand-700 shadow-sm">
+
               <span className="h-1.5 w-1.5 rounded-full bg-brand-500" />
+
               Featured Partner
+
             </span>
 
             <span
               dir="ltr"
               className="inline-flex items-center gap-1.5 text-[#f59e0b]"
             >
-              <span className="text-[16px] leading-none">★</span>
+
+              <span className="text-[16px] leading-none">
+                ★
+              </span>
 
               <span className="text-[12px] font-black leading-none">
                 {sidebarBrokers[0].rating?.toFixed(2) ?? "—"}
               </span>
+
             </span>
+
           </div>
 
           {/* FEATURED LOGO */}
           <div className="mt-3 flex min-h-[92px] items-center justify-center rounded-[18px] bg-white px-5 shadow-[0_8px_22px_rgba(15,23,42,0.07)] ring-1 ring-slate-100">
+
             {sidebarBrokers[0].logo ? (
+
               <img
                 src={sidebarBrokers[0].logo}
-                alt={`${sidebarBrokers[0].name_en || sidebarBrokers[0].name || "Broker"} logo`}
+                alt={`${
+                  sidebarBrokers[0].name_en ||
+                  sidebarBrokers[0].name ||
+                  "Broker"
+                } logo`}
                 loading="lazy"
                 className="max-h-[90px] max-w-[250px] scale-[1.28] object-contain transition duration-300 group-hover:scale-[1.35]"
               />
+
             ) : (
+
               <span className="text-[18px] font-black text-slate-800">
+
                 {sidebarBrokers[0].name_en ||
                   sidebarBrokers[0].name ||
                   "Trading Broker"}
+
               </span>
+
             )}
+
           </div>
 
           {/* FEATURED INFO */}
           <div className="mt-3 flex items-center justify-between gap-3">
+
             <div className="min-w-0 text-left">
+
               <h3
                 title={
                   sidebarBrokers[0].name_en ||
@@ -2683,30 +2757,42 @@ function eventCountdown(start?: string | null, end?: string | null) {
                 }
                 className="truncate text-[15px] font-black text-[#07111f]"
               >
+
                 {sidebarBrokers[0].name_en ||
                   sidebarBrokers[0].name ||
                   "Trading Broker"}
+
               </h3>
 
               <p className="mt-0.5 text-[9px] font-semibold leading-4 text-slate-500">
                 Review accounts, regulation and trading fees
               </p>
+
             </div>
 
             <span className="flex min-h-[36px] shrink-0 items-center justify-center rounded-[11px] bg-brand-500 px-3 text-[9px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.22)] transition group-hover:bg-brand-600">
               View Review
             </span>
+
           </div>
+
         </Link>
+
       )}
+
 
       {/* OTHER BROKERS */}
       <div className="mt-3 space-y-2">
+
         {sidebarBrokers.slice(1).map((broker) => {
+
           const brokerName =
-            broker.name_en || broker.name || "Trading Broker";
+            broker.name_en ||
+            broker.name ||
+            "Trading Broker";
 
           return (
+
             <Link
               key={broker.id}
               href={`/en/brokers/${broker.slug}`}
@@ -2715,24 +2801,32 @@ function eventCountdown(start?: string | null, end?: string | null) {
               prefetch={false}
               className="group flex min-h-[84px] items-center gap-3 overflow-hidden rounded-[18px] border border-slate-200 bg-white px-3 py-2.5 shadow-[0_4px_14px_rgba(15,23,42,0.04)] transition duration-300 hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-[0_12px_24px_rgba(15,79,168,0.09)]"
             >
+
               {/* LOGO */}
               <div className="flex h-[60px] w-[112px] shrink-0 items-center justify-center overflow-visible rounded-[14px] bg-gradient-to-b from-white to-slate-100 transition duration-300 group-hover:bg-brand-50/50">
+
                 {broker.logo ? (
+
                   <img
                     src={broker.logo}
                     alt={`${brokerName} logo`}
                     loading="lazy"
                     className="h-[54px] w-[108px] scale-[1.35] object-contain transition duration-300 group-hover:scale-[1.42]"
                   />
+
                 ) : (
+
                   <span className="truncate text-[11px] font-black text-slate-700">
                     {brokerName}
                   </span>
+
                 )}
+
               </div>
 
               {/* INFO */}
               <div className="min-w-0 flex-1 text-left">
+
                 <h3
                   title={brokerName}
                   className="truncate whitespace-nowrap text-[12px] font-black leading-5 text-[#07111f] transition group-hover:text-brand-600"
@@ -2744,71 +2838,128 @@ function eventCountdown(start?: string | null, end?: string | null) {
                   dir="ltr"
                   className="mt-1.5 flex items-center justify-start gap-1.5 text-[#f59e0b]"
                 >
-                  <span className="text-[14px] leading-none">★</span>
+
+                  <span className="text-[14px] leading-none">
+                    ★
+                  </span>
 
                   <span className="text-[11px] font-black leading-none">
                     {broker.rating?.toFixed(2) ?? "—"}
                   </span>
+
                 </div>
 
                 <div className="mt-1.5 text-[9px] font-bold text-brand-600 transition group-hover:text-brand-700">
                   Full Review
                 </div>
+
               </div>
 
               {/* ARROW */}
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-[14px] font-black text-brand-500 shadow-[0_3px_10px_rgba(15,23,42,0.05)] transition duration-300 group-hover:translate-x-1 group-hover:border-brand-500 group-hover:bg-brand-500 group-hover:text-white">
                 →
               </span>
+
             </Link>
+
           );
+
         })}
+
       </div>
+
 
       {/* ALL BROKERS */}
       <Link
         href="/en/brokers"
         className="mt-3 flex h-[46px] w-full items-center justify-center gap-2 rounded-[14px] bg-brand-600 px-4 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-[0_12px_24px_rgba(37,99,235,0.26)]"
       >
-        <span>View All Trading Brokers</span>
-        <span className="text-[13px]">→</span>
+
+        <span>
+          View All Trading Brokers
+        </span>
+
+        <span className="text-[13px]">
+          →
+        </span>
+
       </Link>
+
     </div>
 
-    {/* SIDEBAR IMPORTANT LINKS */}
-<div className="space-y-3 px-3 pb-3 pt-3">
 
-  {/* LIVE MARKET HOURS */}
-  <MarketHoursSidebarEn />
+    {/* =====================================================
+        SIDEBAR IMPORTANT LINKS
+    ====================================================== */}
+    <div className="space-y-3 px-3 pb-3 pt-3">
 
-  {/* LICENSES */}
-  <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
+
+      {/* =====================================================
+          LIVE MARKET HOURS
+      ====================================================== */}
+      <MarketHoursSidebarEn />
+
+
+      {/* =====================================================
+          LICENSES
+      ====================================================== */}
+      <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
 
         {/* HEADER */}
-        <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-4">
-          <div className="flex items-start gap-3">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[13px] border border-brand-100 bg-white text-[17px] shadow-sm">
-              🛡️
-            </span>
+        <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3.5">
 
+          <div className="flex items-center gap-3">
+
+            {/* LICENSE ICON */}
+            <div className="relative flex h-12 w-12 shrink-0 items-center justify-center">
+
+              <div className="absolute inset-0 rounded-full bg-[#0a1d36] shadow-[0_6px_16px_rgba(15,23,42,0.22)]" />
+
+              <div className="absolute inset-[3px] rounded-full border border-blue-400/50" />
+
+              <div className="absolute inset-[7px] rounded-full bg-[#102a4c]" />
+
+              {/* SHIELD */}
+              <div className="relative z-10 flex h-[26px] w-[22px] items-center justify-center rounded-b-[12px] rounded-t-[7px] border border-blue-300/50 bg-[#07182d]">
+
+                <span className="text-[12px] font-black text-white">
+                  ✓
+                </span>
+
+              </div>
+
+              {/* ACCENTS */}
+              <span className="absolute right-[6px] top-[8px] h-[12px] w-[12px] rounded-tr-full border-r-[3px] border-t-[3px] border-blue-400" />
+
+              <span className="absolute bottom-[7px] left-[8px] h-[4px] w-[4px] rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(34,211,238,0.65)]" />
+
+            </div>
+
+            {/* TEXT */}
             <div className="min-w-0 flex-1 text-left">
+
               <span className="inline-flex rounded-full border border-brand-100 bg-white px-2.5 py-1 text-[8px] font-black text-brand-600 shadow-sm">
                 Regulation Guide
               </span>
 
-              <h3 className="mt-2.5 text-[15px] font-black leading-6 text-[#07111f]">
+              <h3 className="mt-1.5 text-[15px] font-black leading-6 text-[#07111f]">
                 Broker Regulation
               </h3>
 
-              <p className="mt-0.5 text-[10px] font-semibold leading-5 text-slate-500">
+              <p className="mt-0.5 text-[9px] font-semibold leading-4 text-slate-500">
                 Learn about major global financial regulators.
               </p>
+
             </div>
+
           </div>
+
         </div>
+
 
         {/* CONTENT */}
         <div className="divide-y divide-slate-100 px-3">
+
           {[
             {
               code: "FCA",
@@ -2836,6 +2987,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
               href: "/en/licenses/fsca",
             },
           ].map((item) => (
+
             <Link
               key={item.href}
               href={item.href}
@@ -2843,7 +2995,9 @@ function eventCountdown(start?: string | null, end?: string | null) {
               rel="noopener noreferrer"
               className="group flex min-h-[60px] items-center justify-between gap-3 py-3"
             >
+
               <div className="flex min-w-0 items-center gap-2.5">
+
                 <span className="inline-flex h-7 min-w-[48px] shrink-0 items-center justify-center rounded-lg border border-brand-100 bg-brand-50 px-2 text-[9px] font-black text-brand-700">
                   {item.code}
                 </span>
@@ -2851,101 +3005,184 @@ function eventCountdown(start?: string | null, end?: string | null) {
                 <span className="truncate text-[11px] font-black text-slate-700 transition group-hover:text-brand-600">
                   {item.title}
                 </span>
+
               </div>
 
               <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-[12px] font-black text-brand-500 transition group-hover:translate-x-1 group-hover:border-brand-500 group-hover:bg-brand-500 group-hover:text-white">
                 →
               </span>
+
             </Link>
+
           ))}
+
         </div>
+
 
         {/* FOOTER */}
         <div className="border-t border-slate-100 bg-white p-3">
+
           <Link
             href="/en/licenses"
             target="_blank"
             rel="noopener noreferrer"
             className="flex h-[46px] w-full items-center justify-center gap-2 rounded-[14px] bg-brand-600 px-4 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-[0_12px_24px_rgba(37,99,235,0.26)]"
           >
-            <span>View All Regulators</span>
-            <span className="text-[13px]">→</span>
+
+            <span>
+              View All Regulators
+            </span>
+
+            <span className="text-[13px]">
+              →
+            </span>
+
           </Link>
+
         </div>
+
       </div>
 
-      {/* BROKER HELP CARD */}
+
+      {/* =====================================================
+          BROKER HELP CARD
+      ====================================================== */}
       <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
 
         {/* HEADER */}
-        <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-4">
-          <div className="flex items-start gap-3">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[13px] border border-brand-100 bg-white text-[17px] shadow-sm">
-              💬
-            </span>
+        <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3.5">
 
+          <div className="flex items-center gap-3">
+
+            {/* HELP ICON */}
+            <div className="relative flex h-12 w-12 shrink-0 items-center justify-center">
+
+              <div className="absolute inset-0 rounded-full bg-[#0a1d36] shadow-[0_6px_16px_rgba(15,23,42,0.22)]" />
+
+              <div className="absolute inset-[3px] rounded-full border border-blue-400/50" />
+
+              <div className="absolute inset-[7px] rounded-full bg-[#102a4c]" />
+
+              {/* CHAT BUBBLE */}
+              <div className="relative z-10 flex h-[23px] w-[27px] items-center justify-center rounded-[9px] border border-blue-300/40 bg-[#07182d]">
+
+                <div className="flex items-center gap-[3px]">
+
+                  <span className="h-[3px] w-[3px] rounded-full bg-cyan-300" />
+
+                  <span className="h-[3px] w-[3px] rounded-full bg-blue-300" />
+
+                  <span className="h-[3px] w-[3px] rounded-full bg-white/80" />
+
+                </div>
+
+                <span className="absolute -bottom-[4px] left-[5px] h-[7px] w-[7px] rotate-45 border-b border-l border-blue-300/40 bg-[#07182d]" />
+
+              </div>
+
+              <span className="absolute right-[6px] top-[7px] h-[11px] w-[11px] rounded-tr-full border-r-[3px] border-t-[3px] border-cyan-400" />
+
+              <span className="absolute bottom-[7px] left-[8px] h-[4px] w-[4px] rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.6)]" />
+
+            </div>
+
+            {/* TEXT */}
             <div className="min-w-0 flex-1 text-left">
+
               <span className="inline-flex rounded-full border border-brand-100 bg-white px-2.5 py-1 text-[8px] font-black text-brand-600 shadow-sm">
                 Free Assistance
               </span>
 
-              <h3 className="mt-2 text-[15px] font-black leading-6 text-[#07111f]">
+              <h3 className="mt-1.5 text-[15px] font-black leading-6 text-[#07111f]">
                 Free Help Choosing the Right Broker
               </h3>
+
             </div>
+
           </div>
+
         </div>
+
 
         {/* CONTENT */}
         <div className="px-4 py-4">
+
           <p className="text-[12.5px] font-medium leading-6 text-slate-700">
             Tell us your country, experience and what you need, and we will help
             you compare brokers suited to your requirements.
           </p>
 
           <div className="mt-3 space-y-2">
+
             <div className="flex items-center gap-2 text-[12.5px] font-bold leading-6 text-slate-700">
+
               <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-50 text-[12px] font-bold text-brand-600">
                 ✓
               </span>
+
               Compare brokers available in your country
+
             </div>
 
             <div className="flex items-center gap-2 text-[12.5px] font-bold leading-6 text-slate-700">
+
               <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-50 text-[12px] font-bold text-brand-600">
                 ✓
               </span>
+
               Options suited to your experience level
+
             </div>
 
             <div className="flex items-center gap-2 text-[12.5px] font-bold leading-6 text-slate-700">
+
               <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-50 text-[12px] font-bold text-brand-600">
                 ✓
               </span>
+
               Free assistance with no obligation
+
             </div>
+
           </div>
 
           <p className="mt-3 px-2 text-center text-[9px] font-semibold leading-5 text-slate-500">
             Informational broker-comparison support, not investment advice.
           </p>
+
         </div>
+
 
         {/* FOOTER */}
         <div className="border-t border-slate-100 bg-white p-3">
+
           <Link
             href="/en/contact"
             className="flex h-[46px] w-full items-center justify-center gap-2 rounded-[14px] bg-brand-600 px-4 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-[0_12px_24px_rgba(37,99,235,0.26)]"
           >
-            <span>Contact Us Now</span>
-            <span className="text-[13px]">→</span>
+
+            <span>
+              Contact Us Now
+            </span>
+
+            <span className="text-[13px]">
+              →
+            </span>
+
           </Link>
+
         </div>
+
       </div>
 
-      {/* ONEROYAL SPONSORED SIDEBAR AD */}
+
+      {/* =====================================================
+          ONEROYAL SPONSORED SIDEBAR AD
+      ====================================================== */}
       <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white p-2 shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
+
         <div className="mb-2 flex items-center justify-between px-1">
+
           <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[8px] font-black text-slate-500">
             Advertisement
           </span>
@@ -2953,6 +3190,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
           <span className="text-[10px] font-bold text-slate-600">
             OneRoyal
           </span>
+
         </div>
 
         <a
@@ -2962,6 +3200,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
           aria-label="Open a trading account with OneRoyal"
           className="group block overflow-hidden rounded-[16px] bg-white"
         >
+
           <img
             src="https://vc.cabinet.oneroyal.com/uploads/public/banners/2024/01/25/b7a653ad68c699083b38e7f823a1a35f.png"
             width="300"
@@ -2971,33 +3210,92 @@ function eventCountdown(start?: string | null, end?: string | null) {
             loading="lazy"
             className="mx-auto block h-auto w-full max-w-[300px] object-contain transition duration-300 group-hover:scale-[1.02]"
           />
+
         </a>
+
       </div>
 
-      {/* TRADING TERMS */}
+
+      {/* =====================================================
+          TRADING TERMS
+      ====================================================== */}
       <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
 
         {/* HEADER */}
         <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3.5">
-          <div className="flex items-center gap-3">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-blue-200 bg-blue-50 text-[17px]">
-              📘
-            </span>
 
+          <div className="flex items-center gap-3">
+
+            {/* LEARNING ICON */}
+            <div className="relative flex h-12 w-12 shrink-0 items-center justify-center">
+
+              <div className="absolute inset-0 rounded-full bg-[#0a1d36] shadow-[0_6px_16px_rgba(15,23,42,0.22)]" />
+
+              <div className="absolute inset-[3px] rounded-full border border-blue-400/50" />
+
+              <div className="absolute inset-[7px] rounded-full bg-[#102a4c]" />
+
+              {/* OPEN BOOK */}
+              <div className="relative z-10 flex h-[25px] w-[31px]">
+
+                {/* LEFT PAGE */}
+                <div className="relative h-full w-1/2 rounded-l-[6px] border border-blue-300/45 bg-[#07182d]">
+
+                  <span
+                    dir="ltr"
+                    className="absolute left-[3px] top-[5px] text-[6px] font-black leading-none tracking-[-0.03em] text-blue-300"
+                  >
+                    ABC
+                  </span>
+
+                  <span className="absolute left-[3px] top-[13px] h-[2px] w-[8px] rounded-full bg-white/55" />
+
+                  <span className="absolute left-[3px] top-[18px] h-[2px] w-[6px] rounded-full bg-white/30" />
+
+                </div>
+
+                {/* RIGHT PAGE */}
+                <div className="relative h-full w-1/2 rounded-r-[6px] border border-l-0 border-blue-300/45 bg-[#07182d]">
+
+                  <span className="absolute right-[3px] top-[5px] h-[2px] w-[8px] rounded-full bg-cyan-300" />
+
+                  <span className="absolute right-[3px] top-[10px] h-[2px] w-[7px] rounded-full bg-white/60" />
+
+                  <span className="absolute right-[3px] top-[15px] h-[2px] w-[6px] rounded-full bg-white/35" />
+
+                </div>
+
+                {/* CENTER FOLD */}
+                <span className="absolute left-1/2 top-[2px] h-[21px] w-px -translate-x-1/2 bg-blue-300/25" />
+
+              </div>
+
+              {/* ACCENT */}
+              <span className="absolute bottom-[7px] left-[8px] h-[4px] w-[4px] rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(34,211,238,0.65)]" />
+
+            </div>
+
+            {/* TEXT */}
             <div className="min-w-0 text-left">
+
               <h3 className="text-[14px] font-black text-[#07111f]">
                 Essential Trading Terms
               </h3>
 
-              <p className="mt-1 text-[10px] font-semibold leading-5 text-slate-500">
+              <p className="mt-0.5 text-[9px] font-semibold leading-4 text-slate-500">
                 Understand the key concepts before you trade.
               </p>
+
             </div>
+
           </div>
+
         </div>
+
 
         {/* CONTENT */}
         <div className="divide-y divide-slate-100 px-3">
+
           {[
             {
               label: "Spread",
@@ -3015,6 +3313,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
               href: "/en/learn-trading/margin",
             },
           ].map((item) => (
+
             <Link
               key={item.href}
               href={item.href}
@@ -3022,7 +3321,9 @@ function eventCountdown(start?: string | null, end?: string | null) {
               rel="noopener noreferrer"
               className="group flex min-h-[56px] items-center justify-between gap-3 py-2.5"
             >
+
               <div className="min-w-0 text-left">
+
                 <div className="text-[12px] font-black leading-5 text-slate-800 transition group-hover:text-brand-600">
                   {item.label}
                 </div>
@@ -3030,53 +3331,128 @@ function eventCountdown(start?: string | null, end?: string | null) {
                 <div className="mt-1 truncate text-[10px] font-semibold leading-4 text-slate-500">
                   {item.desc}
                 </div>
+
               </div>
 
               <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-[12px] font-black text-brand-500 transition group-hover:bg-brand-500 group-hover:text-white">
                 →
               </span>
+
             </Link>
+
           ))}
+
         </div>
+
 
         {/* FOOTER */}
         <div className="border-t border-slate-100 bg-white p-3">
+
           <Link
             href="/en/learn-trading"
             target="_blank"
             rel="noopener noreferrer"
             className="flex h-[46px] w-full items-center justify-center gap-2 rounded-[14px] bg-brand-600 px-4 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-[0_12px_24px_rgba(37,99,235,0.26)]"
           >
-            <span>Browse Trading Education</span>
-            <span className="text-[13px]">→</span>
+
+            <span>
+              Browse Trading Education
+            </span>
+
+            <span className="text-[13px]">
+              →
+            </span>
+
           </Link>
+
         </div>
+
       </div>
 
-      {/* TRADING CALCULATORS */}
+
+      {/* =====================================================
+          TRADING CALCULATORS
+      ====================================================== */}
       <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
 
         {/* HEADER */}
         <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3.5">
-          <div className="flex items-center gap-3">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-violet-200 bg-violet-50 text-[17px]">
-              🧮
-            </span>
 
+          <div className="flex items-center gap-3">
+
+            {/* CALCULATOR ICON */}
+            <div className="relative flex h-12 w-12 shrink-0 items-center justify-center">
+
+              <div className="absolute inset-0 rounded-full bg-[#0a1d36] shadow-[0_6px_16px_rgba(15,23,42,0.22)]" />
+
+              <div className="absolute inset-[3px] rounded-full border border-blue-400/50" />
+
+              <div className="absolute inset-[7px] rounded-full bg-[#102a4c]" />
+
+              {/* CALCULATOR */}
+              <div className="relative z-10 flex h-[30px] w-[25px] flex-col rounded-[6px] border border-blue-300/45 bg-[#07182d] p-[3px]">
+
+                {/* DISPLAY */}
+                <div className="flex h-[7px] items-center justify-end rounded-[2px] bg-blue-300/20 px-[2px]">
+
+                  <span
+                    dir="ltr"
+                    className="text-[5px] font-black leading-none text-cyan-300"
+                  >
+                    123
+                  </span>
+
+                </div>
+
+                {/* BUTTONS */}
+                <div className="mt-[3px] grid flex-1 grid-cols-2 gap-[2px]">
+
+                  <span className="flex items-center justify-center rounded-[2px] bg-white/10 text-[7px] font-black leading-none text-white">
+                    +
+                  </span>
+
+                  <span className="flex items-center justify-center rounded-[2px] bg-white/10 text-[8px] font-black leading-none text-white">
+                    −
+                  </span>
+
+                  <span className="flex items-center justify-center rounded-[2px] bg-white/10 text-[7px] font-black leading-none text-blue-300">
+                    ×
+                  </span>
+
+                  <span className="flex items-center justify-center rounded-[2px] bg-white/10 text-[7px] font-black leading-none text-cyan-300">
+                    ÷
+                  </span>
+
+                </div>
+
+              </div>
+
+              {/* ACCENT */}
+              <span className="absolute bottom-[7px] left-[8px] h-[4px] w-[4px] rounded-full bg-violet-400 shadow-[0_0_6px_rgba(167,139,250,0.65)]" />
+
+            </div>
+
+            {/* TEXT */}
             <div className="min-w-0 text-left">
+
               <h3 className="text-[14px] font-black text-[#07111f]">
                 Trading Calculators
               </h3>
 
-              <p className="mt-1 text-[10px] font-semibold leading-5 text-slate-500">
+              <p className="mt-0.5 text-[9px] font-semibold leading-4 text-slate-500">
                 Practical tools for trade and risk planning.
               </p>
+
             </div>
+
           </div>
+
         </div>
+
 
         {/* CONTENT */}
         <div className="grid grid-cols-1 gap-2 p-3">
+
           {[
             {
               title: "Risk Calculator",
@@ -3094,6 +3470,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
               href: "/en/tools/margin-calculator",
             },
           ].map((item) => (
+
             <Link
               key={item.href}
               href={item.href}
@@ -3101,7 +3478,9 @@ function eventCountdown(start?: string | null, end?: string | null) {
               rel="noopener noreferrer"
               className="group flex min-h-[48px] items-center justify-between gap-3 rounded-[14px] border border-slate-200 bg-[#fbfdff] px-3 py-2 transition hover:border-violet-200 hover:bg-violet-50/40"
             >
+
               <div className="flex min-w-0 items-center gap-2.5">
+
                 <span className="inline-flex h-7 min-w-[48px] shrink-0 items-center justify-center rounded-lg bg-violet-50 px-2 text-[8px] font-black text-violet-700">
                   {item.short}
                 </span>
@@ -3109,28 +3488,44 @@ function eventCountdown(start?: string | null, end?: string | null) {
                 <span className="truncate text-[10px] font-black text-slate-700 transition group-hover:text-violet-700">
                   {item.title}
                 </span>
+
               </div>
 
               <span className="shrink-0 text-[13px] font-black text-slate-300 transition group-hover:translate-x-1 group-hover:text-violet-600">
                 →
               </span>
+
             </Link>
+
           ))}
+
         </div>
+
 
         {/* FOOTER */}
         <div className="border-t border-slate-100 bg-white p-3">
+
           <Link
             href="/en/tools"
             target="_blank"
             rel="noopener noreferrer"
             className="flex h-[46px] w-full items-center justify-center gap-2 rounded-[14px] bg-brand-600 px-4 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-[0_12px_24px_rgba(37,99,235,0.26)]"
           >
-            <span>View All Trading Calculators</span>
-            <span className="text-[13px]">→</span>
+
+            <span>
+              View All Trading Calculators
+            </span>
+
+            <span className="text-[13px]">
+              →
+            </span>
+
           </Link>
-        </div>
+
+                </div>
+
       </div>
+
     </div>
 
     {/* MULTIBANK SPONSORED SIDEBAR AD */}

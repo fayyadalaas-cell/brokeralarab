@@ -2614,27 +2614,73 @@ function eventCountdown(start?: string | null, end?: string | null) {
   <div className="sticky top-24 overflow-hidden rounded-[30px] border border-slate-200 bg-white pb-3 shadow-[0_16px_45px_rgba(15,23,42,0.07)]">
 
       {/* SIDEBAR HEADER */}
-      <div className="border-b border-slate-200 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-5 py-3">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[10px] font-black text-brand-600 shadow-sm">
-              شركات مختارة
-            </span>
+<div className="border-b border-slate-200 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3.5">
 
-            <h2 className="mt-2 text-[18px] font-black text-[#07111f]">
-  أفضل وسطاء التداول
-</h2>
-          </div>
+  <div className="flex items-center gap-3">
 
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-brand-100 bg-white text-lg shadow-sm">
-            🔥
-          </span>
-        </div>
+    {/* BROKER RADAR ICON */}
+    <div className="relative flex h-12 w-12 shrink-0 items-center justify-center">
 
-        <p className="mt-1 text-[10px] font-medium leading-5 text-slate-500">
-          تصفح تقييمات مجموعة من أبرز شركات التداول.
-        </p>
+      {/* DARK OUTER SHELL */}
+      <div className="absolute inset-0 rounded-full bg-[#0a1d36] shadow-[0_6px_16px_rgba(15,23,42,0.22)]" />
+
+      {/* OUTER BLUE RING */}
+      <div className="absolute inset-[3px] rounded-full border border-blue-400/50" />
+
+      {/* INNER FACE */}
+      <div className="absolute inset-[7px] rounded-full bg-[#102a4c]" />
+
+      {/* RADAR RINGS */}
+      <div className="absolute inset-[11px] rounded-full border border-blue-300/25" />
+
+      <div className="absolute inset-[16px] rounded-full border border-blue-300/25" />
+
+      {/* CROSS AXIS */}
+      <span className="absolute left-1/2 top-[8px] h-[32px] w-px -translate-x-1/2 bg-white/10" />
+
+      <span className="absolute left-[8px] top-1/2 h-px w-[32px] -translate-y-1/2 bg-white/10" />
+
+      {/* RADAR SWEEP */}
+      <span className="absolute right-[7px] top-[7px] h-[18px] w-[18px] rounded-tr-full border-r-[3px] border-t-[3px] border-blue-400" />
+
+      {/* VERIFIED CENTER */}
+      <div className="relative z-10 flex h-[22px] w-[22px] items-center justify-center rounded-full border border-white/10 bg-[#07182d] shadow-[0_2px_8px_rgba(0,0,0,0.24)]">
+
+        <span className="text-[11px] font-black text-white">
+          ✓
+        </span>
+
       </div>
+
+      {/* BROKER DOTS */}
+      <span className="absolute right-[8px] top-[19px] h-[4px] w-[4px] rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(34,211,238,0.65)]" />
+
+      <span className="absolute bottom-[9px] left-[11px] h-[4px] w-[4px] rounded-full bg-blue-400 shadow-[0_0_6px_rgba(96,165,250,0.65)]" />
+
+      <span className="absolute bottom-[8px] right-[11px] h-[4px] w-[4px] rounded-full bg-amber-400 shadow-[0_0_6px_rgba(251,191,36,0.65)]" />
+
+    </div>
+
+    {/* HEADER TEXT */}
+    <div className="min-w-0">
+
+      <span className="inline-flex rounded-full border border-brand-100 bg-white px-2.5 py-1 text-[8px] font-black text-brand-600 shadow-sm">
+        شركات مختارة
+      </span>
+
+      <h2 className="mt-1.5 text-[16px] font-black leading-6 text-[#07111f]">
+        أفضل وسطاء التداول
+      </h2>
+
+      <p className="mt-0.5 text-[8.5px] font-semibold leading-4 text-slate-500">
+        تصفح تقييمات مجموعة من أبرز شركات التداول.
+      </p>
+
+    </div>
+
+  </div>
+
+</div>
 
     {/* BROKERS */}
 <div className="border-b border-slate-200 bg-[#f8fafc] px-3 py-3">
@@ -2792,10 +2838,30 @@ function eventCountdown(start?: string | null, end?: string | null) {
 
   {/* HEADER */}
   <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-4">
-    <div className="flex items-start gap-3">
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[13px] border border-brand-100 bg-white text-[17px] shadow-sm">
-        🛡️
-      </span>
+    <div className="flex items-center gap-3">
+      {/* LICENSES ICON */}
+<div className="relative flex h-12 w-12 shrink-0 items-center justify-center">
+
+  <div className="absolute inset-0 rounded-full bg-[#0a1d36] shadow-[0_6px_16px_rgba(15,23,42,0.22)]" />
+
+  <div className="absolute inset-[3px] rounded-full border border-blue-400/50" />
+
+  <div className="absolute inset-[7px] rounded-full bg-[#102a4c]" />
+
+  {/* SHIELD */}
+  <div className="relative z-10 flex h-[25px] w-[21px] items-center justify-center rounded-b-[11px] rounded-t-[7px] border border-blue-300/50 bg-[#07182d]">
+
+    <span className="text-[11px] font-black text-white">
+      ✓
+    </span>
+
+  </div>
+
+  <span className="absolute right-[6px] top-[8px] h-[12px] w-[12px] rounded-tr-full border-r-[3px] border-t-[3px] border-blue-400" />
+
+  <span className="absolute bottom-[7px] left-[8px] h-[4px] w-[4px] rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(34,211,238,0.65)]" />
+
+</div>
 
       <div className="min-w-0 flex-1">
         <span className="inline-flex rounded-full border border-brand-100 bg-white px-2.5 py-1 text-[8px] font-black text-brand-600 shadow-sm">
@@ -2880,10 +2946,38 @@ function eventCountdown(start?: string | null, end?: string | null) {
 <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
   {/* HEADER */}
   <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-4">
-    <div className="flex items-start gap-3">
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[13px] border border-brand-100 bg-white text-[17px] shadow-sm">
-        💬
-      </span>
+    <div className="flex items-center gap-3">
+      {/* HELP ICON */}
+<div className="relative flex h-12 w-12 shrink-0 items-center justify-center">
+
+  <div className="absolute inset-0 rounded-full bg-[#0a1d36] shadow-[0_6px_16px_rgba(15,23,42,0.22)]" />
+
+  <div className="absolute inset-[3px] rounded-full border border-blue-400/50" />
+
+  <div className="absolute inset-[7px] rounded-full bg-[#102a4c]" />
+
+  {/* CHAT BUBBLE */}
+  <div className="relative z-10 flex h-[23px] w-[27px] items-center justify-center rounded-[9px] border border-blue-300/40 bg-[#07182d]">
+
+    <div className="flex items-center gap-[3px]">
+
+      <span className="h-[3px] w-[3px] rounded-full bg-cyan-300" />
+
+      <span className="h-[3px] w-[3px] rounded-full bg-blue-300" />
+
+      <span className="h-[3px] w-[3px] rounded-full bg-white/80" />
+
+    </div>
+
+    <span className="absolute -bottom-[4px] right-[5px] h-[7px] w-[7px] rotate-45 border-b border-r border-blue-300/40 bg-[#07182d]" />
+
+  </div>
+
+  <span className="absolute right-[6px] top-[7px] h-[11px] w-[11px] rounded-tr-full border-r-[3px] border-t-[3px] border-cyan-400" />
+
+  <span className="absolute bottom-[7px] left-[8px] h-[4px] w-[4px] rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.6)]" />
+
+</div>
 
       <div className="min-w-0 flex-1">
         <span className="inline-flex rounded-full border border-brand-100 bg-white px-2.5 py-1 text-[8px] font-black text-brand-600 shadow-sm">
@@ -2975,149 +3069,291 @@ function eventCountdown(start?: string | null, end?: string | null) {
   </div>
 
         {/* FOREX TERMS */}
-        <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
-          <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3.5">
-            <div className="flex items-center gap-3">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-blue-200 bg-blue-50 text-[17px]">
-                📘
-              </span>
+<div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
 
-              <div className="min-w-0">
-                <h3 className="text-[14px] font-black text-[#07111f]">
-                  مصطلحات تداول مهمة
-                </h3>
+  {/* HEADER */}
+  <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3.5">
 
-                <p className="mt-0.5 text-[9px] font-semibold leading-4 text-slate-500">
-                  ابدأ بفهم أهم مفاهيم سوق الفوركس.
-                </p>
-              </div>
-            </div>
+    <div className="flex items-center gap-3">
+
+      {/* LEARNING ICON */}
+      <div className="relative flex h-12 w-12 shrink-0 items-center justify-center">
+
+        {/* OUTER SHELL */}
+        <div className="absolute inset-0 rounded-full bg-[#0a1d36] shadow-[0_6px_16px_rgba(15,23,42,0.22)]" />
+
+        {/* OUTER RING */}
+        <div className="absolute inset-[3px] rounded-full border border-blue-400/50" />
+
+        {/* INNER FACE */}
+        <div className="absolute inset-[7px] rounded-full bg-[#102a4c]" />
+
+        {/* OPEN BOOK */}
+        <div className="relative z-10 flex h-[25px] w-[31px]">
+
+          {/* RIGHT PAGE */}
+          <div className="relative h-full w-1/2 rounded-r-[6px] border border-blue-300/45 bg-[#07182d]">
+
+            <span className="absolute right-[3px] top-[5px] h-[2px] w-[8px] rounded-full bg-cyan-300" />
+
+            <span className="absolute right-[3px] top-[10px] h-[2px] w-[7px] rounded-full bg-white/60" />
+
+            <span className="absolute right-[3px] top-[15px] h-[2px] w-[6px] rounded-full bg-white/35" />
+
           </div>
 
-          <div className="divide-y divide-slate-100 px-3">
-          {[
-  {
-    label: "السبريد",
-    desc: "تكلفة الفرق بين سعري البيع والشراء",
-    href: "/learn-trading/spread",
-  },
-  {
-    label: "الرافعة المالية",
-    desc: "كيفية التحكم بصفقات أكبر من رأس المال",
-    href: "/learn-trading/leverage",
-  },
-  {
-    label: "الهامش",
-    desc: "المبلغ المطلوب لفتح الصفقة",
-    href: "/learn-trading/margin",
-  },
-].map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="group flex min-h-[56px] items-center justify-between gap-3 py-2.5"
-              >
-                <div className="min-w-0">
-                  <div className="text-[12px] font-black leading-5 text-slate-800 transition group-hover:text-brand-600">
-                    {item.label}
-                  </div>
+          {/* LEFT PAGE */}
+          <div className="relative h-full w-1/2 rounded-l-[6px] border border-r-0 border-blue-300/45 bg-[#07182d]">
 
-                  <div className="mt-1 truncate text-[10px] font-semibold leading-4 text-slate-500">
-                    {item.desc}
-                  </div>
-                </div>
+            <span
+              dir="ltr"
+              className="absolute left-[3px] top-[5px] text-[6px] font-black leading-none tracking-[-0.03em] text-blue-300"
+            >
+              ABC
+            </span>
 
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-[12px] font-black text-brand-500 transition group-hover:bg-brand-500 group-hover:text-white">
-                  ←
-                </span>
-              </Link>
-            ))}
+            <span className="absolute left-[3px] top-[13px] h-[2px] w-[8px] rounded-full bg-white/55" />
+
+            <span className="absolute left-[3px] top-[18px] h-[2px] w-[6px] rounded-full bg-white/30" />
+
           </div>
 
-          <div className="border-t border-slate-100 bg-white p-3">
-  <Link
-    href="/learn-trading"
-    className="flex h-[46px] w-full items-center justify-center gap-2 rounded-[14px] bg-brand-600 px-4 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-[0_12px_24px_rgba(37,99,235,0.26)]"
-  >
-    <span>تصفح مركز تعلم التداول</span>
-    <span className="text-[13px]">←</span>
-  </Link>
-</div>
+          {/* CENTER FOLD */}
+          <span className="absolute left-1/2 top-[2px] h-[21px] w-px -translate-x-1/2 bg-blue-300/25" />
+
         </div>
 
-
-        {/* TRADING CALCULATORS */}
-        <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
-          <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3.5">
-            <div className="flex items-center gap-3">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-violet-200 bg-violet-50 text-[17px]">
-                🧮
-              </span>
-
-              <div className="min-w-0">
-                <h3 className="text-[14px] font-black text-[#07111f]">
-                  حاسبات التداول
-                </h3>
-
-                <p className="mt-0.5 text-[9px] font-semibold leading-4 text-slate-500">
-                  أدوات عملية تساعدك على حساب الصفقة.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 gap-2 p-3">
-           {[
-  {
-    title: "حاسبة إدارة المخاطر",
-    short: "المخاطر",
-    href: "/tools/risk-calculator",
-  },
-  {
-    title: "حاسبة قيمة النقطة",
-    short: "النقطة",
-    href: "/tools/pip-calculator",
-  },
-  {
-    title: "حاسبة الهامش",
-    short: "الهامش",
-    href: "/tools/margin-calculator",
-  },
-].map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="group flex min-h-[48px] items-center justify-between gap-3 rounded-[14px] border border-slate-200 bg-[#fbfdff] px-3 py-2 transition hover:border-violet-200 hover:bg-violet-50/40"
-              >
-                <div className="flex min-w-0 items-center gap-2.5">
-                  <span className="inline-flex h-7 min-w-[48px] shrink-0 items-center justify-center rounded-lg bg-violet-50 px-2 text-[8px] font-black text-violet-700">
-                    {item.short}
-                  </span>
-
-                  <span className="truncate text-[10px] font-black text-slate-700 transition group-hover:text-violet-700">
-                    {item.title}
-                  </span>
-                </div>
-
-                <span className="shrink-0 text-[13px] font-black text-slate-300 transition group-hover:-translate-x-1 group-hover:text-violet-600">
-                  ←
-                </span>
-              </Link>
-            ))}
-          </div>
-
-          <div className="border-t border-slate-100 bg-white p-3">
-  <Link
-    href="/tools"
-    className="flex h-[46px] w-full items-center justify-center gap-2 rounded-[14px] bg-brand-600 px-4 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-[0_12px_24px_rgba(37,99,235,0.26)]"
-  >
-    <span>عرض جميع حاسبات التداول</span>
-    <span className="text-[13px]">←</span>
-  </Link>
-</div>
-        </div>
+        {/* ACCENT */}
+        <span className="absolute bottom-[7px] left-[8px] h-[4px] w-[4px] rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(34,211,238,0.65)]" />
 
       </div>
+
+      {/* TEXT */}
+      <div className="min-w-0">
+
+        <h3 className="text-[14px] font-black text-[#07111f]">
+          مصطلحات تداول مهمة
+        </h3>
+
+        <p className="mt-0.5 text-[9px] font-semibold leading-4 text-slate-500">
+          ابدأ بفهم أهم مفاهيم سوق الفوركس.
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  {/* CONTENT */}
+  <div className="divide-y divide-slate-100 px-3">
+
+    {[
+      {
+        label: "السبريد",
+        desc: "تكلفة الفرق بين سعري البيع والشراء",
+        href: "/learn-trading/spread",
+      },
+      {
+        label: "الرافعة المالية",
+        desc: "كيفية التحكم بصفقات أكبر من رأس المال",
+        href: "/learn-trading/leverage",
+      },
+      {
+        label: "الهامش",
+        desc: "المبلغ المطلوب لفتح الصفقة",
+        href: "/learn-trading/margin",
+      },
+    ].map((item) => (
+
+      <Link
+        key={item.href}
+        href={item.href}
+        className="group flex min-h-[56px] items-center justify-between gap-3 py-2.5"
+      >
+
+        <div className="min-w-0">
+
+          <div className="text-[12px] font-black leading-5 text-slate-800 transition group-hover:text-brand-600">
+            {item.label}
+          </div>
+
+          <div className="mt-1 truncate text-[10px] font-semibold leading-4 text-slate-500">
+            {item.desc}
+          </div>
+
+        </div>
+
+        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-[12px] font-black text-brand-500 transition group-hover:bg-brand-500 group-hover:text-white">
+          ←
+        </span>
+
+      </Link>
+
+    ))}
+
+  </div>
+
+  {/* CTA */}
+  <div className="border-t border-slate-100 bg-white p-3">
+
+    <Link
+      href="/learn-trading"
+      className="flex h-[46px] w-full items-center justify-center gap-2 rounded-[14px] bg-brand-600 px-4 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-[0_12px_24px_rgba(37,99,235,0.26)]"
+    >
+      <span>تصفح مركز تعلم التداول</span>
+      <span className="text-[13px]">←</span>
+    </Link>
+
+  </div>
+
+</div>
+
+
+{/* TRADING CALCULATORS */}
+<div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
+
+  {/* HEADER */}
+  <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3.5">
+
+    <div className="flex items-center gap-3">
+
+      {/* CALCULATOR ICON */}
+      <div className="relative flex h-12 w-12 shrink-0 items-center justify-center">
+
+        {/* OUTER SHELL */}
+        <div className="absolute inset-0 rounded-full bg-[#0a1d36] shadow-[0_6px_16px_rgba(15,23,42,0.22)]" />
+
+        {/* OUTER RING */}
+        <div className="absolute inset-[3px] rounded-full border border-blue-400/50" />
+
+        {/* INNER FACE */}
+        <div className="absolute inset-[7px] rounded-full bg-[#102a4c]" />
+
+        {/* CALCULATOR BODY */}
+        <div className="relative z-10 flex h-[30px] w-[25px] flex-col rounded-[6px] border border-blue-300/45 bg-[#07182d] p-[3px]">
+
+          {/* DISPLAY */}
+          <div className="flex h-[7px] items-center justify-end rounded-[2px] bg-blue-300/20 px-[2px]">
+
+            <span
+              dir="ltr"
+              className="text-[5px] font-black leading-none text-cyan-300"
+            >
+              123
+            </span>
+
+          </div>
+
+          {/* BUTTONS */}
+          <div className="mt-[3px] grid flex-1 grid-cols-2 gap-[2px]">
+
+            <span className="flex items-center justify-center rounded-[2px] bg-white/10 text-[7px] font-black leading-none text-white">
+              +
+            </span>
+
+            <span className="flex items-center justify-center rounded-[2px] bg-white/10 text-[8px] font-black leading-none text-white">
+              −
+            </span>
+
+            <span className="flex items-center justify-center rounded-[2px] bg-white/10 text-[7px] font-black leading-none text-blue-300">
+              ×
+            </span>
+
+            <span className="flex items-center justify-center rounded-[2px] bg-white/10 text-[7px] font-black leading-none text-cyan-300">
+              ÷
+            </span>
+
+          </div>
+
+        </div>
+
+        {/* ACCENT */}
+        <span className="absolute bottom-[7px] left-[8px] h-[4px] w-[4px] rounded-full bg-violet-400 shadow-[0_0_6px_rgba(167,139,250,0.65)]" />
+
+      </div>
+
+      {/* TEXT */}
+      <div className="min-w-0">
+
+        <h3 className="text-[14px] font-black text-[#07111f]">
+          حاسبات التداول
+        </h3>
+
+        <p className="mt-0.5 text-[9px] font-semibold leading-4 text-slate-500">
+          أدوات عملية تساعدك على حساب الصفقة.
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  {/* CONTENT */}
+  <div className="grid grid-cols-1 gap-2 p-3">
+
+    {[
+      {
+        title: "حاسبة إدارة المخاطر",
+        short: "المخاطر",
+        href: "/tools/risk-calculator",
+      },
+      {
+        title: "حاسبة قيمة النقطة",
+        short: "النقطة",
+        href: "/tools/pip-calculator",
+      },
+      {
+        title: "حاسبة الهامش",
+        short: "الهامش",
+        href: "/tools/margin-calculator",
+      },
+    ].map((item) => (
+
+      <Link
+        key={item.href}
+        href={item.href}
+        className="group flex min-h-[48px] items-center justify-between gap-3 rounded-[14px] border border-slate-200 bg-[#fbfdff] px-3 py-2 transition hover:border-violet-200 hover:bg-violet-50/40"
+      >
+
+        <div className="flex min-w-0 items-center gap-2.5">
+
+          <span className="inline-flex h-7 min-w-[48px] shrink-0 items-center justify-center rounded-lg bg-violet-50 px-2 text-[8px] font-black text-violet-700">
+            {item.short}
+          </span>
+
+          <span className="truncate text-[10px] font-black text-slate-700 transition group-hover:text-violet-700">
+            {item.title}
+          </span>
+
+        </div>
+
+        <span className="shrink-0 text-[13px] font-black text-slate-300 transition group-hover:-translate-x-1 group-hover:text-violet-600">
+          ←
+        </span>
+
+      </Link>
+
+    ))}
+
+  </div>
+
+  {/* CTA */}
+  <div className="border-t border-slate-100 bg-white p-3">
+
+    <Link
+      href="/tools"
+      className="flex h-[46px] w-full items-center justify-center gap-2 rounded-[14px] bg-brand-600 px-4 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-[0_12px_24px_rgba(37,99,235,0.26)]"
+    >
+      <span>عرض جميع حاسبات التداول</span>
+      <span className="text-[13px]">←</span>
+    </Link>
+
+  </div>
+
+</div>
+</div>
 
       {/* MULTIBANK SPONSORED SIDEBAR AD */}
 <div className="px-3 pt-3">
