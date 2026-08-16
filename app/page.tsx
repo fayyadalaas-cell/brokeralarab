@@ -1640,8 +1640,38 @@ function eventCountdown(start?: string | null, end?: string | null) {
       </div>
     </div>
 
-  </div>
+    </div>
 </section>
+
+{/* PEPPERSTONE PREMIUM BANNER */}
+<div className="mx-auto -my-1 flex w-full max-w-7xl justify-center sm:-my-1.5 sm:py-0">
+  <a
+    href="https://track.pepperstonepartners.com/visit/?bta=44176&nci=6687"
+    target="_blank"
+    rel="sponsored noopener noreferrer"
+    aria-label="زيارة Pepperstone"
+    className="
+      group block w-full max-w-[900px]
+      overflow-hidden rounded-[14px]
+      border border-slate-200/80
+      bg-white p-[5px]
+      shadow-[0_8px_24px_rgba(15,23,42,0.075)]
+      transition duration-300
+      hover:-translate-y-[1px]
+      hover:border-slate-300
+      hover:shadow-[0_12px_30px_rgba(15,23,42,0.10)]
+      sm:max-w-[820px]
+    "
+  >
+    <img
+      src="https://pepperstonepartners.ck-cdn.com/tn/serve/?cid=687946"
+      width="728"
+      height="90"
+      alt="Pepperstone"
+      className="block h-auto w-full rounded-[10px] object-contain sm:h-[82px] sm:object-cover"
+    />
+  </a>
+</div>
 
 {/* ACCOUNT TYPES HOME SECTION */}
 <section className="mx-auto w-full max-w-7xl px-0 py-2.5 sm:py-3">
