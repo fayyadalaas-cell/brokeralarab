@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import BrokerFinderEN from "@/app/components/BrokerFinderEN";
+import MarketHoursSidebarEn from "@/app/components/MarketHoursSidebarEn";
 
 export const metadata: Metadata = {
   title: {
@@ -2775,10 +2776,13 @@ function eventCountdown(start?: string | null, end?: string | null) {
     </div>
 
     {/* SIDEBAR IMPORTANT LINKS */}
-    <div className="space-y-3 px-3 pb-3 pt-3">
+<div className="space-y-3 px-3 pb-3 pt-3">
 
-      {/* LICENSES */}
-      <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
+  {/* LIVE MARKET HOURS */}
+  <MarketHoursSidebarEn />
+
+  {/* LICENSES */}
+  <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
 
         {/* HEADER */}
         <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-4">

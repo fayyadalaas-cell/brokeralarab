@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import BrokerFinder from "@/app/components/BrokerFinder";
+import MarketHoursSidebar from "@/app/components/MarketHoursSidebar";
 
 export const metadata: Metadata = {
   title: "أفضل شركات التداول وتقييم الوسطاء | بروكر العرب",
@@ -2770,20 +2771,24 @@ function eventCountdown(start?: string | null, end?: string | null) {
 </div>
 
   {/* ALL BROKERS */}
-  <Link
+<Link
   href="/brokers"
   className="mt-3 flex h-[46px] w-full items-center justify-center gap-2 rounded-[14px] bg-brand-600 px-4 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-[0_12px_24px_rgba(37,99,235,0.26)]"
 >
   <span>عرض جميع شركات التداول</span>
   <span className="text-[13px]">←</span>
 </Link>
+
 </div>
 
-          {/* SIDEBAR IMPORTANT LINKS */}
+{/* SIDEBAR IMPORTANT LINKS */}
 <div className="space-y-3 px-3 pb-3 pt-3">
 
-        {/* LICENSES */}
-<div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
+  {/* LIVE MARKET HOURS */}
+  <MarketHoursSidebar />
+
+  {/* LICENSES */}
+  <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
 
   {/* HEADER */}
   <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-4">

@@ -11,6 +11,7 @@ export const TOOL_SLUGS = [
   "compound-calculator",
   "fibonacci-calculator",
   "pivot-point-calculator",
+  "market-hours",
 ];
 
 export const STATIC_PAGES = [
