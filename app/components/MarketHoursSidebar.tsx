@@ -295,6 +295,190 @@ function getUTCOffset(date: Date, timezone: string) {
   }
 }
 
+function FlagIcon({
+  country,
+  className = "",
+}: {
+  country: "US" | "GB" | "JP" | "AU";
+  className?: string;
+}) {
+  if (country === "US") {
+    return (
+      <svg
+        viewBox="0 0 60 40"
+        className={className}
+        aria-label="United States"
+      >
+        <clipPath id="us-clip">
+          <rect width="60" height="40" rx="4" />
+        </clipPath>
+
+        <g clipPath="url(#us-clip)">
+          <rect width="60" height="40" fill="#fff" />
+
+          {[0, 6.15, 12.3, 18.45, 24.6, 30.75, 36.9].map(
+            (y) => (
+              <rect
+                key={y}
+                y={y}
+                width="60"
+                height="3.08"
+                fill="#B22234"
+              />
+            )
+          )}
+
+          <rect
+            width="26"
+            height="21.5"
+            fill="#3C3B6E"
+          />
+
+          {[
+            [4, 4],
+            [9, 4],
+            [14, 4],
+            [19, 4],
+            [24, 4],
+            [6.5, 8],
+            [11.5, 8],
+            [16.5, 8],
+            [21.5, 8],
+            [4, 12],
+            [9, 12],
+            [14, 12],
+            [19, 12],
+            [24, 12],
+            [6.5, 16],
+            [11.5, 16],
+            [16.5, 16],
+            [21.5, 16],
+          ].map(([cx, cy], index) => (
+            <circle
+              key={index}
+              cx={cx}
+              cy={cy}
+              r="0.9"
+              fill="#fff"
+            />
+          ))}
+        </g>
+      </svg>
+    );
+  }
+
+  if (country === "GB") {
+    return (
+      <svg
+        viewBox="0 0 60 40"
+        className={className}
+        aria-label="United Kingdom"
+      >
+        <clipPath id="gb-clip">
+          <rect width="60" height="40" rx="4" />
+        </clipPath>
+
+        <g clipPath="url(#gb-clip)">
+          <rect width="60" height="40" fill="#012169" />
+
+          <path
+            d="M0 0L60 40M60 0L0 40"
+            stroke="#fff"
+            strokeWidth="8"
+          />
+
+          <path
+            d="M0 0L60 40M60 0L0 40"
+            stroke="#C8102E"
+            strokeWidth="4"
+          />
+
+          <path
+            d="M30 0V40M0 20H60"
+            stroke="#fff"
+            strokeWidth="12"
+          />
+
+          <path
+            d="M30 0V40M0 20H60"
+            stroke="#C8102E"
+            strokeWidth="7"
+          />
+        </g>
+      </svg>
+    );
+  }
+
+  if (country === "JP") {
+    return (
+      <svg
+        viewBox="0 0 60 40"
+        className={className}
+        aria-label="Japan"
+      >
+        <rect
+          width="60"
+          height="40"
+          rx="4"
+          fill="#fff"
+        />
+
+        <circle
+          cx="30"
+          cy="20"
+          r="10"
+          fill="#BC002D"
+        />
+      </svg>
+    );
+  }
+
+  return (
+    <svg
+      viewBox="0 0 60 40"
+      className={className}
+      aria-label="Australia"
+    >
+      <clipPath id="au-clip">
+        <rect width="60" height="40" rx="4" />
+      </clipPath>
+
+      <g clipPath="url(#au-clip)">
+        <rect width="60" height="40" fill="#012169" />
+
+        <g transform="scale(.5)">
+          <path
+            d="M0 0L60 40M60 0L0 40"
+            stroke="#fff"
+            strokeWidth="8"
+          />
+          <path
+            d="M0 0L60 40M60 0L0 40"
+            stroke="#C8102E"
+            strokeWidth="4"
+          />
+          <path
+            d="M30 0V40M0 20H60"
+            stroke="#fff"
+            strokeWidth="12"
+          />
+          <path
+            d="M30 0V40M0 20H60"
+            stroke="#C8102E"
+            strokeWidth="7"
+          />
+        </g>
+
+        <circle cx="43" cy="10" r="2" fill="#fff" />
+        <circle cx="49" cy="19" r="1.7" fill="#fff" />
+        <circle cx="40" cy="27" r="1.7" fill="#fff" />
+        <circle cx="53" cy="29" r="1.4" fill="#fff" />
+        <circle cx="31" cy="31" r="2.2" fill="#fff" />
+      </g>
+    </svg>
+  );
+}
+
 export default function MarketHoursSidebar() {
   const [now, setNow] = useState<Date | null>(null);
   const [timezone, setTimezone] = useState("");
@@ -355,7 +539,7 @@ export default function MarketHoursSidebar() {
       "
     >
       {/* HEADER */}
-      <div className="border-b border-slate-100 bg-[linear-gradient(135deg,#f8fbff_0%,#eef5ff_100%)] px-4 py-3.5">
+      <div className="border-b border-slate-100 bg-[linear-gradient(135deg,#f8fbff_0%,#eef5ff_100%)] px-4 pb-3 pt-3">
 
         <div className="flex items-center justify-between gap-3">
 
@@ -422,7 +606,7 @@ export default function MarketHoursSidebar() {
         </div>
 
         {/* TIME */}
-        <div className="mt-3 flex items-center justify-between rounded-[14px] border border-brand-100 bg-white px-3 py-2.5 shadow-sm">
+        <div className="mt-2.5 flex items-center justify-between rounded-[13px] border border-brand-100 bg-white px-3 py-2 shadow-[0_3px_10px_rgba(15,23,42,0.05)]">
 
           <div className="text-right">
 
@@ -466,223 +650,281 @@ export default function MarketHoursSidebar() {
       ) : (
         <>
           {/* FEATURED MARKET */}
-          {featuredMarket && (
-            <div className="border-b border-slate-100 px-3 py-3">
+{featuredMarket && (
+  <div className="px-3 pb-2 pt-3">
+    <div
+      className={`
+        relative overflow-hidden rounded-[18px] border
+        px-3.5 py-3.5
+        ${
+          featuredMarket.isOpen
+            ? "border-emerald-200 bg-[linear-gradient(135deg,#ffffff_0%,#f1fcf7_100%)] shadow-[0_6px_18px_rgba(16,185,129,0.07)]"
+            : "border-slate-200 bg-white"
+        }
+      `}
+    >
+      {featuredMarket.isOpen && (
+        <div className="absolute inset-y-0 right-0 w-[3px] bg-emerald-400" />
+      )}
 
-              <div
-                className={`
-                  overflow-hidden rounded-[16px] border px-3 py-3
-                  ${
-                    featuredMarket.isOpen
-                      ? "border-emerald-200 bg-emerald-50/60"
-                      : "border-slate-200 bg-[#fbfdff]"
-                  }
-                `}
-              >
+      <div className="flex items-center justify-between gap-3">
 
-                <div className="flex items-center justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-2.5">
 
-                  <div className="flex min-w-0 items-center gap-2.5">
-
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[11px] border border-slate-200 bg-white text-[17px]">
-                      {featuredMarket.market.flag}
-                    </span>
-
-                    <div className="min-w-0">
-
-                      <div className="truncate text-[12.5px] font-black text-[#07111f]">
-                        {featuredMarket.market.name}
-                      </div>
-
-                      <div
-  dir="ltr"
-  className="mt-0.5 text-right text-[8px] font-bold text-slate-600"
->
-  {featuredMarket.market.shortName}
-</div>
-
-                    </div>
-
-                  </div>
-
-                  <div className="shrink-0 text-left">
-
-                    <div
-                      className={`inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-[8px] font-black ${
-                        featuredMarket.isOpen
-                          ? "bg-emerald-100 text-emerald-700"
-                          : "bg-slate-100 text-slate-500"
-                      }`}
-                    >
-
-                      <span
-                        className={`h-1.5 w-1.5 rounded-full ${
-                          featuredMarket.isOpen
-                            ? "bg-emerald-500"
-                            : "bg-slate-400"
-                        }`}
-                      />
-
-                      {featuredMarket.isOpen
-                        ? "مفتوح الآن"
-                        : "مغلق"}
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-                <div className="mt-2.5 flex items-center gap-1.5 border-t border-slate-200/70 pt-2.5">
-
-  <span className="shrink-0 text-[9px] font-bold text-slate-500">
-    {featuredMarket.nextChangeType === "close"
-      ? "يغلق بعد"
-      : "يفتح بعد"}
-  </span>
-
-  <span
-    className={`whitespace-nowrap text-[14px] font-black ${
-      featuredMarket.isOpen
-        ? "text-emerald-700"
-        : "text-brand-600"
-    }`}
-  >
-    {formatCountdown(
-      featuredMarket.nextChangeMinutes
-    )}
-  </span>
-
-</div>
-
-              </div>
-
-            </div>
-          )}
-
-          {/* MARKET LIST */}
-<div className="px-3 py-2">
-
-  {marketStates
-    .filter(
-      (item) =>
-        item.market.id !== featuredMarket?.market.id
-    )
-    .map((item) => (
-
-      <div
-        key={item.market.id}
-        className="border-b border-slate-100 py-2.5 last:border-b-0"
-      >
-
-        {/* TOP ROW */}
-        <div className="flex items-center justify-between gap-3">
-
-          {/* MARKET */}
-          <div className="flex min-w-0 items-center gap-2.5">
-
-            <span
-              dir="ltr"
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[9px] border border-slate-200 bg-slate-50 text-[8px] font-black text-slate-600"
-            >
-              {item.market.code}
-            </span>
-
-            <div className="min-w-0">
-
-              <div className="truncate text-[10.5px] font-black text-slate-800">
-                {item.market.name}
-              </div>
-
-              <div
-                dir="ltr"
-                className="mt-0.5 truncate text-right text-[7.5px] font-bold text-slate-500"
-              >
-                {item.market.shortName}
-              </div>
-
-            </div>
-
+          <div className="flex h-[34px] w-[34px] shrink-0 items-center justify-center overflow-hidden rounded-full border-[2px] border-white bg-slate-100 shadow-[0_2px_8px_rgba(15,23,42,0.14)] ring-1 ring-slate-200">
+            <FlagIcon
+              country={
+                featuredMarket.market.code as
+                  | "US"
+                  | "GB"
+                  | "JP"
+                  | "AU"
+              }
+              className="h-full w-full scale-[1.42]"
+            />
           </div>
 
-          {/* STATUS */}
-          <div
-            className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 text-[8.5px] font-black ${
-              item.isOpen
-                ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-                : "border-slate-200 bg-slate-100 text-slate-600"
-            }`}
-          >
-            <span
-              className={`h-1.5 w-1.5 rounded-full ${
-                item.isOpen
-                  ? "bg-emerald-500"
-                  : "bg-slate-400"
-              }`}
-            />
+          <div className="min-w-0">
+            <div className="whitespace-nowrap text-[13px] font-black leading-tight text-[#0b172a]">
+              {featuredMarket.market.name}
+            </div>
 
-            {item.isOpen ? "مفتوح" : "مغلق"}
+            <div
+              dir="ltr"
+              className="mt-0.5 text-right text-[7px] font-bold text-slate-400"
+            >
+              {featuredMarket.market.shortName}
+            </div>
           </div>
 
         </div>
 
-        {/* COUNTDOWN ROW */}
-        <div className="mt-2 flex items-center gap-1.5 rounded-[9px] bg-slate-50 px-2.5 py-2">
+        <div
+          className={`
+            inline-flex shrink-0 items-center gap-1.5
+            rounded-full px-2.5 py-1.5
+            text-[7.5px] font-black
+            ${
+              featuredMarket.isOpen
+                ? "bg-emerald-100 text-emerald-700"
+                : "bg-slate-100 text-slate-500"
+            }
+          `}
+        >
+          <span
+            className={`h-1.5 w-1.5 rounded-full ${
+              featuredMarket.isOpen
+                ? "bg-emerald-500 shadow-[0_0_0_3px_rgba(16,185,129,0.10)]"
+                : "bg-slate-400"
+            }`}
+          />
 
-          <span className="shrink-0 text-[9px] font-bold text-slate-500">
-            {item.nextChangeType === "close"
+          {featuredMarket.isOpen
+            ? "مفتوح الآن"
+            : "مغلق"}
+        </div>
+
+      </div>
+
+      <div className="mt-3 border-t border-emerald-100/70 pt-2.5">
+        <div className="flex items-center justify-between gap-3">
+
+          <span className="text-[8px] font-bold text-slate-400">
+            {featuredMarket.nextChangeType === "close"
               ? "يغلق بعد"
               : "يفتح بعد"}
           </span>
 
           <span
-            className={`whitespace-nowrap text-[11px] font-black ${
-              item.isOpen
+            className={`whitespace-nowrap text-[14px] font-black tracking-[-0.02em] ${
+              featuredMarket.isOpen
                 ? "text-emerald-700"
-                : "text-slate-800"
+                : "text-brand-600"
             }`}
           >
-            {formatCountdown(item.nextChangeMinutes)}
+            {formatCountdown(
+              featuredMarket.nextChangeMinutes
+            )}
           </span>
 
+        </div>
+      </div>
+
+    </div>
+  </div>
+)}
+
+{/* OTHER MARKETS */}
+<div className="px-3 pb-2.5 pt-1">
+  <div className="overflow-hidden rounded-[16px] border border-slate-100 bg-[#fbfcfe]">
+
+    {marketStates
+      .filter(
+        (item) =>
+          item.market.id !==
+          featuredMarket?.market.id
+      )
+      .map((item, index, array) => (
+        <div
+          key={item.market.id}
+          className={`
+            px-3 py-2.5
+            ${
+              index !== array.length - 1
+                ? "border-b border-slate-100"
+                : ""
+            }
+            ${
+              item.isOpen
+                ? "bg-emerald-50/40"
+                : ""
+            }
+          `}
+        >
+          {/* TOP ROW */}
+          <div className="flex items-center justify-between gap-3">
+
+            {/* MARKET */}
+            <div className="flex min-w-0 items-center gap-2.5">
+
+              {/* ROUND FLAG */}
+              <div className="flex h-[28px] w-[28px] shrink-0 items-center justify-center overflow-hidden rounded-full border-[2px] border-white bg-slate-100 shadow-[0_1px_5px_rgba(15,23,42,0.12)] ring-1 ring-slate-200">
+                <FlagIcon
+                  country={
+                    item.market.code as
+                      | "US"
+                      | "GB"
+                      | "JP"
+                      | "AU"
+                  }
+                  className="h-full w-full scale-[1.4]"
+                />
+              </div>
+
+              <div className="min-w-0">
+                <div className="truncate text-[10.5px] font-black text-slate-800">
+                  {item.market.name}
+                </div>
+
+                <div
+                  dir="ltr"
+                  className="mt-[1px] truncate text-right text-[6.5px] font-semibold text-slate-400"
+                >
+                  {item.market.shortName}
+                </div>
+              </div>
+
+            </div>
+
+            {/* STATUS */}
+            <div
+              className={`
+                inline-flex shrink-0 items-center gap-1.5
+                rounded-full px-2 py-1
+                text-[7px] font-black
+                ${
+                  item.isOpen
+                    ? "bg-emerald-100 text-emerald-700"
+                    : "bg-slate-100 text-slate-500"
+                }
+              `}
+            >
+              <span
+                className={`h-1.5 w-1.5 rounded-full ${
+                  item.isOpen
+                    ? "bg-emerald-500"
+                    : "bg-slate-400"
+                }`}
+              />
+
+              {item.isOpen
+                ? "مفتوح"
+                : "مغلق"}
+            </div>
+
+          </div>
+
+          {/* COUNTDOWN */}
+          <div className="mt-2 flex items-center justify-between pr-[38px]">
+
+            <span className="text-[7px] font-bold text-slate-400">
+              {item.nextChangeType === "close"
+                ? "يغلق بعد"
+                : "يفتح بعد"}
+            </span>
+
+            <span
+              className={`whitespace-nowrap text-[9.5px] font-black ${
+                item.isOpen
+                  ? "text-emerald-700"
+                  : "text-slate-700"
+              }`}
+            >
+              {formatCountdown(
+                item.nextChangeMinutes
+              )}
+            </span>
+
+          </div>
+
+        </div>
+      ))}
+
+  </div>
+</div>
+
+
+{/* NEXT MARKET */}
+{nextMarket && (
+  <div className="border-t border-slate-100 bg-[#fbfdff] px-3 py-2.5">
+
+    <div className="flex items-center justify-between gap-3 rounded-[11px] bg-brand-50/45 px-2.5 py-2">
+
+      <div className="flex min-w-0 items-center gap-2.5">
+
+        <div className="flex h-[25px] w-[25px] shrink-0 items-center justify-center overflow-hidden rounded-full border-[2px] border-white bg-slate-100 shadow-sm ring-1 ring-slate-200">
+          <FlagIcon
+            country={
+              nextMarket.market.code as
+                | "US"
+                | "GB"
+                | "JP"
+                | "AU"
+            }
+            className="h-full w-full scale-[1.4]"
+          />
+        </div>
+
+        <div>
+          <div className="text-[6.75px] font-bold text-brand-500">
+            السوق التالي
+          </div>
+
+          <div className="mt-[1px] text-[9.25px] font-black text-slate-700">
+            {nextMarket.market.name}
+          </div>
         </div>
 
       </div>
 
-    ))}
+      <div className="shrink-0 text-left">
 
-</div>
+        <div className="text-[6.75px] font-bold text-slate-400">
+          يفتح بعد
+        </div>
 
-          {/* NEXT MARKET */}
-          {nextMarket && (
-            <div className="border-t border-slate-100 bg-[#fbfdff] px-3 py-2.5">
-
-              <div className="flex items-center justify-between rounded-[12px] border border-brand-200 bg-brand-50 px-3 py-2.5">
-
-                <span className="text-[8px] font-bold text-slate-500">
-                  السوق التالي
-                </span>
-
-                <div className="flex items-center gap-1.5 text-[8.5px] font-black text-brand-700">
-
-                  <span>
-                    {nextMarket.market.flag}
-                  </span>
-
-                  <span>
-                    {nextMarket.market.name}
-                  </span>
-
-                  <span className="text-[9px] font-black text-brand-700">
-                    بعد {formatCountdown(nextMarket.nextChangeMinutes)}
-                  </span>
-
-                </div>
-
-              </div>
-
-            </div>
+        <div className="mt-[1px] whitespace-nowrap text-[9.25px] font-black text-brand-600">
+          {formatCountdown(
+            nextMarket.nextChangeMinutes
           )}
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+)}
 
           {/* CTA */}
           <div className="border-t border-slate-100 bg-white p-3">
