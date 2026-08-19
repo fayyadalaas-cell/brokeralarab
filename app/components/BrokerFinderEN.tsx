@@ -664,8 +664,8 @@ if ((a.countryPriority ?? 999) !== (b.countryPriority ?? 999)) {
 
                     <div className="shrink-0 rounded-[24px] border border-brand-100 bg-brand-50 px-4 py-3 text-center">
                       <div className="text-2xl font-black text-brand-600">
-                        {broker.countryRating?.toFixed(1) ??
-                          broker.rating?.toFixed(1) ??
+                        {broker.countryRating?.toFixed(2) ??
+                          broker.rating?.toFixed(2) ??
                           "—"}
                       </div>
                       <div className="text-[10px] font-bold text-slate-500">
@@ -1011,8 +1011,8 @@ if ((a.countryPriority ?? 999) !== (b.countryPriority ?? 999)) {
             {/* RATING */}
             <div className="flex h-[58px] w-[55px] flex-col items-center justify-center rounded-[16px] border border-brand-100 bg-brand-50 text-center">
               <div className="text-[18px] font-black leading-none text-brand-600">
-                {broker.countryRating?.toFixed(1) ??
-                  broker.rating?.toFixed(1) ??
+                {broker.countryRating?.toFixed(2) ??
+                  broker.rating?.toFixed(2) ??
                   "—"}
               </div>
 

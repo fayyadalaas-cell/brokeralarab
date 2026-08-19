@@ -581,7 +581,7 @@ className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm
 
                     <div className="shrink-0 rounded-[24px] border border-brand-100 bg-brand-50 px-4 py-3 text-center">
                       <div className="text-2xl font-black text-brand-600">
-                        {rating?.toFixed(1) ?? "—"}
+                        {rating?.toFixed(2) ?? "—"}
                       </div>
                       <div className="text-[10px] font-bold text-slate-500">من 5</div>
                     </div>
@@ -879,7 +879,7 @@ className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm
     {/* RATING */}
     <div className="shrink-0 rounded-[13px] border border-brand-100 bg-brand-50 px-1.5 py-2 text-center">
       <div className="text-[16px] font-black leading-none text-brand-600">
-        {rating?.toFixed(1) ?? "—"}
+        {rating?.toFixed(2) ?? "—"}
       </div>
 
       <div className="mt-1 text-[8px] font-bold text-slate-500">
