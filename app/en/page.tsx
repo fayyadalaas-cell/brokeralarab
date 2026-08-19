@@ -533,7 +533,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
         name: broker.name_en || broker.name || "Trading Broker",
         slug: broker.slug || "",
         rating: broker.rating
-          ? Number(broker.rating).toFixed(1)
+          ? Number(broker.rating).toFixed(2)
           : "—",
         logo: broker.logo || null,
       }));
@@ -1092,7 +1092,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
                   </Link>
 
                   <span className="mt-0.5 text-[10px] font-bold text-[#f59e0b]">
-                    ★ {cmp.broker_1?.rating?.toFixed(1) ?? "—"}
+                    ★ {cmp.broker_1?.rating?.toFixed(2) ?? "—"}
                   </span>
                 </div>
 
@@ -1152,7 +1152,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
                   </Link>
 
                   <span className="mt-0.5 text-[10px] font-bold text-[#f59e0b]">
-                    ★ {cmp.broker_2?.rating?.toFixed(1) ?? "—"}
+                    ★ {cmp.broker_2?.rating?.toFixed(2) ?? "—"}
                   </span>
                 </div>
               </div>
@@ -1290,7 +1290,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
                 </Link>
 
                 <span className="mt-1 text-[10px] font-bold text-[#f59e0b]">
-                  ★ {cmp.broker_1?.rating?.toFixed(1) ?? "—"}
+                  ★ {cmp.broker_1?.rating?.toFixed(2) ?? "—"}
                 </span>
               </div>
 
@@ -1350,7 +1350,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
                 </Link>
 
                 <span className="mt-1 text-[10px] font-bold text-[#f59e0b]">
-                  ★ {cmp.broker_2?.rating?.toFixed(1) ?? "—"}
+                  ★ {cmp.broker_2?.rating?.toFixed(2) ?? "—"}
                 </span>
               </div>
             </div>
@@ -2353,7 +2353,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
                       dir="ltr"
                       className="text-[10px] font-black text-[#f59e0b]"
                     >
-                      ★ {broker.rating?.toFixed(1) ?? "—"}
+                      ★ {broker.rating?.toFixed(2) ?? "—"}
                     </span>
                   </div>
 
@@ -2526,7 +2526,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
                         </div>
 
                         <div className="mt-1 text-[15px] font-black text-brand-600">
-                          ★ {broker.rating?.toFixed(1) ?? "—"}
+                          ★ {broker.rating?.toFixed(2) ?? "—"}
                         </div>
                       </div>
 

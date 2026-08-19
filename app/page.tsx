@@ -485,7 +485,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
         name: broker.name || "شركة تداول",
         slug: broker.slug || "",
         rating: broker.rating
-          ? Number(broker.rating).toFixed(1)
+          ? Number(broker.rating).toFixed(2)
           : "—",
         logo: broker.logo || null,
         minDeposit: money(broker.min_deposit),
@@ -1062,11 +1062,11 @@ function eventCountdown(start?: string | null, end?: string | null) {
                     aria-label={`تقييم ${
                       cmp.broker_1?.name || "الوسيط الأول"
                     } ${
-                      cmp.broker_1?.rating?.toFixed(1) ?? "غير متوفر"
+                      cmp.broker_1?.rating?.toFixed(2) ?? "غير متوفر"
                     } من 5`}
                     className="mt-0.5 text-[10px] font-bold text-[#f59e0b]"
                   >
-                    ★ {cmp.broker_1?.rating?.toFixed(1) ?? "—"}
+                    ★ {cmp.broker_1?.rating?.toFixed(2) ?? "—"}
                   </span>
                 </div>
 
@@ -1129,11 +1129,11 @@ function eventCountdown(start?: string | null, end?: string | null) {
                     aria-label={`تقييم ${
                       cmp.broker_2?.name || "الوسيط الثاني"
                     } ${
-                      cmp.broker_2?.rating?.toFixed(1) ?? "غير متوفر"
+                      cmp.broker_2?.rating?.toFixed(2) ?? "غير متوفر"
                     } من 5`}
                     className="mt-0.5 text-[10px] font-bold text-[#f59e0b]"
                   >
-                    ★ {cmp.broker_2?.rating?.toFixed(1) ?? "—"}
+                    ★ {cmp.broker_2?.rating?.toFixed(2) ?? "—"}
                   </span>
                 </div>
               </div>
@@ -1274,11 +1274,11 @@ function eventCountdown(start?: string | null, end?: string | null) {
                   aria-label={`تقييم ${
                     cmp.broker_1?.name || "الوسيط الأول"
                   } ${
-                    cmp.broker_1?.rating?.toFixed(1) ?? "غير متوفر"
+                    cmp.broker_1?.rating?.toFixed(2) ?? "غير متوفر"
                   } من 5`}
                   className="mt-1 text-[10px] font-bold text-[#f59e0b]"
                 >
-                  ★ {cmp.broker_1?.rating?.toFixed(1) ?? "—"}
+                  ★ {cmp.broker_1?.rating?.toFixed(2) ?? "—"}
                 </span>
               </div>
 
@@ -1341,11 +1341,11 @@ function eventCountdown(start?: string | null, end?: string | null) {
                   aria-label={`تقييم ${
                     cmp.broker_2?.name || "الوسيط الثاني"
                   } ${
-                    cmp.broker_2?.rating?.toFixed(1) ?? "غير متوفر"
+                    cmp.broker_2?.rating?.toFixed(2) ?? "غير متوفر"
                   } من 5`}
                   className="mt-1 text-[10px] font-bold text-[#f59e0b]"
                 >
-                  ★ {cmp.broker_2?.rating?.toFixed(1) ?? "—"}
+                  ★ {cmp.broker_2?.rating?.toFixed(2) ?? "—"}
                 </span>
               </div>
             </div>
@@ -2385,7 +2385,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
                       dir="ltr"
                       className="text-[10px] font-black text-[#f59e0b]"
                     >
-                      ★ {broker.rating?.toFixed(1) ?? "—"}
+                      ★ {broker.rating?.toFixed(2) ?? "—"}
                     </span>
                   </div>
 
@@ -2540,7 +2540,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
                           dir="ltr"
                           className="mt-1 text-[17px] font-black text-brand-600"
                         >
-                          {broker.rating?.toFixed(1) ?? "—"}
+                          {broker.rating?.toFixed(2) ?? "—"}
 
                           <span className="mr-0.5 text-[9px] text-slate-400">
                             /5
