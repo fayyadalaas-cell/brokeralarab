@@ -138,84 +138,111 @@ function shortPlatforms(value: string | null) {
 function getCountryPages() {
   return [
     {
-      title: "Best Trading Brokers in the UK",
-      href: "/best-brokers",
-      desc: "Compare trusted forex and CFD brokers for UK traders.",
-      shortDesc: "Best brokers in the UK",
+      title: "Best Forex Brokers in the UK",
+      href: "/en/best-brokers/united-kingdom",
+      desc: "Compare forex brokers available to traders in the United Kingdom.",
+      shortDesc: "Forex brokers for UK traders",
       flag: "https://hatscripts.github.io/circle-flags/flags/gb.svg",
       badge: "United Kingdom",
     },
+
     {
-      title: "Best Trading Brokers in Australia",
-      href: "/best-brokers",
-      desc: "Compare regulated brokers available in Australia.",
-      shortDesc: "Best brokers in Australia",
+      title: "Best Forex Brokers in Australia",
+      href: "/en/best-brokers/australia",
+      desc: "Compare forex brokers available to traders in Australia.",
+      shortDesc: "Forex brokers for Australian traders",
       flag: "https://hatscripts.github.io/circle-flags/flags/au.svg",
       badge: "Australia",
     },
+
     {
-      title: "Best Trading Brokers in South Africa",
-      href: "/best-brokers",
-      desc: "Popular forex brokers for South African traders.",
-      shortDesc: "Best brokers in South Africa",
+      title: "Best Forex Brokers in South Africa",
+      href: "/en/best-brokers/south-africa",
+      desc: "Compare forex brokers available to traders in South Africa.",
+      shortDesc: "Forex brokers for South African traders",
       flag: "https://hatscripts.github.io/circle-flags/flags/za.svg",
       badge: "South Africa",
     },
+
     {
-      title: "Best Trading Brokers in Singapore",
-      href: "/best-brokers",
-      desc: "Compare global brokers available in Singapore.",
-      shortDesc: "Best brokers in Singapore",
+      title: "Best Forex Brokers in Singapore",
+      href: "/en/best-brokers/singapore",
+      desc: "Compare forex brokers available to traders in Singapore.",
+      shortDesc: "Forex brokers for Singapore traders",
       flag: "https://hatscripts.github.io/circle-flags/flags/sg.svg",
       badge: "Singapore",
     },
+
     {
-      title: "Best Trading Brokers in Malaysia",
-      href: "/best-brokers",
-      desc: "Review brokers with strong account options.",
-      shortDesc: "Best brokers in Malaysia",
+      title: "Best Forex Brokers in Malaysia",
+      href: "/en/best-brokers/malaysia",
+      desc: "Compare forex brokers available to traders in Malaysia.",
+      shortDesc: "Forex brokers for Malaysian traders",
       flag: "https://hatscripts.github.io/circle-flags/flags/my.svg",
       badge: "Malaysia",
     },
+
     {
-      title: "Best Trading Brokers in India",
-      href: "/best-brokers",
-      desc: "Compare brokers suitable for Indian traders.",
-      shortDesc: "Best brokers in India",
-      flag: "https://hatscripts.github.io/circle-flags/flags/in.svg",
-      badge: "India",
-    },
+  title: "Best Forex Brokers in Ghana",
+  href: "/en/best-brokers/ghana",
+  desc: "Compare forex brokers available to traders in Ghana.",
+  shortDesc: "Forex brokers for Ghanaian traders",
+  flag: "https://hatscripts.github.io/circle-flags/flags/gh.svg",
+  badge: "Ghana",
+},
+
     {
-      title: "Best Trading Brokers in Nigeria",
-      href: "/best-brokers",
-      desc: "Find brokers with flexible deposit options.",
-      shortDesc: "Best brokers in Nigeria",
+      title: "Best Forex Brokers in Nigeria",
+      href: "/en/best-brokers/nigeria",
+      desc: "Compare forex brokers available to traders in Nigeria.",
+      shortDesc: "Forex brokers for Nigerian traders",
       flag: "https://hatscripts.github.io/circle-flags/flags/ng.svg",
       badge: "Nigeria",
     },
+
     {
-      title: "Best Trading Brokers in Thailand",
-      href: "/best-brokers",
-      desc: "Trusted brokers for Thai forex traders.",
-      shortDesc: "Best brokers in Thailand",
+      title: "Best Forex Brokers in Thailand",
+      href: "/en/best-brokers/thailand",
+      desc: "Compare forex brokers available to traders in Thailand.",
+      shortDesc: "Forex brokers for Thai traders",
       flag: "https://hatscripts.github.io/circle-flags/flags/th.svg",
       badge: "Thailand",
     },
+
     {
-      title: "Best Trading Brokers in the Philippines",
-      href: "/best-brokers",
-      desc: "Compare brokers and trading platforms.",
-      shortDesc: "Best brokers in the Philippines",
+      title: "Best Forex Brokers in the Philippines",
+      href: "/en/best-brokers/philippines",
+      desc: "Compare forex brokers available to traders in the Philippines.",
+      shortDesc: "Forex brokers for Filipino traders",
       flag: "https://hatscripts.github.io/circle-flags/flags/ph.svg",
       badge: "Philippines",
     },
+
     {
-      title: "Best Trading Brokers in Kenya",
-      href: "/best-brokers",
-      desc: "Review brokers suitable for Kenyan traders.",
-      shortDesc: "Best brokers in Kenya",
+      title: "Best Forex Brokers in Kenya",
+      href: "/en/best-brokers/kenya",
+      desc: "Compare forex brokers available to traders in Kenya.",
+      shortDesc: "Forex brokers for Kenyan traders",
       flag: "https://hatscripts.github.io/circle-flags/flags/ke.svg",
       badge: "Kenya",
+    },
+
+    {
+      title: "Best Forex Brokers in Vietnam",
+      href: "/en/best-brokers/vietnam",
+      desc: "Compare forex brokers available to traders in Vietnam.",
+      shortDesc: "Forex brokers for Vietnamese traders",
+      flag: "https://hatscripts.github.io/circle-flags/flags/vn.svg",
+      badge: "Vietnam",
+    },
+
+    {
+      title: "Best Forex Brokers in Indonesia",
+      href: "/en/best-brokers/indonesia",
+      desc: "Compare forex brokers available to traders in Indonesia.",
+      shortDesc: "Forex brokers for Indonesian traders",
+      flag: "https://hatscripts.github.io/circle-flags/flags/id.svg",
+      badge: "Indonesia",
     },
   ];
 }
@@ -1384,218 +1411,299 @@ function eventCountdown(start?: string | null, end?: string | null) {
   </div>
 </section>
 
-{/* COUNTRIES DIRECTORY - COMPACT PREMIUM ENGLISH */}
+{/* =========================================================
+    COUNTRIES DIRECTORY - SAME STYLE AS ARABIC
+========================================================= */}
 <section className="mx-auto w-full max-w-7xl px-0 py-2.5 sm:py-3">
+
   <div className="overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-[0_12px_34px_rgba(15,23,42,0.045)] sm:rounded-[28px]">
 
     {/* =====================================================
         HEADER
     ====================================================== */}
     <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3 sm:px-5 lg:px-6">
+
       <div className="flex flex-col items-center gap-2.5 lg:flex-row lg:items-center lg:justify-between lg:gap-5">
 
         {/* TEXT */}
         <div className="min-w-0 flex-1 text-center lg:text-left">
+
           <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[10px] font-black text-brand-500 shadow-sm sm:text-[11px] lg:text-[12px]">
             Brokers by Country
           </span>
 
-          <h2 className="mx-auto mt-2 max-w-[315px] text-[26px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] sm:max-w-none sm:text-[32px] lg:mx-0 lg:text-[34px]">
-            Best Trading Brokers by Country
+
+          <h2 className="mx-auto mt-2 max-w-[310px] text-[26px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] sm:max-w-none sm:text-[32px] lg:mx-0 lg:text-[34px]">
+            Best Forex Brokers by Country
           </h2>
+
 
           {/* MOBILE DESCRIPTION */}
           <p className="mx-auto mt-2 max-w-[305px] text-[11px] font-semibold leading-5 text-slate-600 md:hidden">
-            Choose your country to explore brokers, account options and trading platforms available to you.
+            Choose your country to find suitable forex brokers based on
+            regulation, trading accounts and payment methods.
           </p>
 
+
           {/* DESKTOP DESCRIPTION */}
-          <p className="mt-1.5 hidden whitespace-nowrap text-[13px] font-semibold leading-6 text-slate-600 md:block lg:text-[14px]">
-            Explore trading brokers by country and compare regulation, accounts, platforms, deposits and withdrawals.
+          <p className="mt-1.5 hidden max-w-[900px] text-[13px] font-semibold leading-6 text-slate-600 md:block lg:text-[14px]">
+            Explore the best forex brokers by country and compare regulation,
+            trading accounts, spreads, deposit and withdrawal methods, and
+            local availability.
           </p>
+
         </div>
+
 
         {/* CTA */}
         <div className="shrink-0 self-center lg:pr-4 lg:translate-x-[14px]">
+
           <Link
             href="/en/best-brokers"
-            target="_blank"
-            rel="noopener noreferrer"
             className="inline-flex h-10 min-w-[160px] items-center justify-center rounded-xl bg-brand-500 px-4 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-600 sm:h-11 sm:min-w-[180px] sm:px-5 sm:text-[13px]"
           >
-            View All Brokers
+            View All Countries
           </Link>
+
         </div>
+
       </div>
+
     </div>
 
 
     {/* =====================================================
         MOBILE
+        EXACT COMPACT STYLE OF ARABIC
     ====================================================== */}
     <div className="p-2 md:hidden">
+
       <div className="grid grid-cols-2 gap-1.5">
+
         {countryPages.map((item) => (
+
           <Link
-            key={item.badge}
-            href="/en/best-brokers"
-            target="_blank"
-            rel="noopener noreferrer"
-            title={`View brokers for traders in ${item.badge}`}
+            key={item.href}
+            href={item.href}
+            title={item.title}
             className="group flex h-[52px] items-center rounded-[11px] border border-slate-200 bg-white px-2 shadow-[0_2px_7px_rgba(15,23,42,0.03)] transition duration-300 hover:border-brand-200 hover:bg-[#f8fbff]"
           >
+
             <div className="flex w-full items-center justify-between gap-1.5">
 
               {/* COUNTRY */}
               <div className="flex min-w-0 items-center gap-1.5">
+
+                {/* FLAG */}
                 <div className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-white shadow-sm">
+
                   <img
                     src={item.flag}
                     alt={`${item.badge} flag`}
                     className="h-5 w-5 rounded-full object-cover"
                     loading="lazy"
                   />
+
                 </div>
 
-                <h3 className="truncate text-[12px] font-black leading-5 text-[#0f172a]">
+
+                {/* COUNTRY NAME */}
+                <h3 className="truncate text-[13px] font-black leading-5 text-[#0f172a]">
                   {item.badge}
                 </h3>
+
               </div>
+
 
               {/* ARROW */}
               <span className="shrink-0 text-[14px] font-black leading-none text-brand-500 transition group-hover:translate-x-[2px]">
                 →
               </span>
+
             </div>
+
           </Link>
+
         ))}
 
-        {/* EXPLORE MORE */}
-<Link
-  href="/en/best-brokers"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="group col-span-2 flex h-[52px] items-center rounded-[11px] border border-dashed border-[#93c5fd] bg-[linear-gradient(90deg,#eff6ff_0%,#f8fbff_55%,#ffffff_100%)] px-3 shadow-[0_2px_7px_rgba(37,99,235,0.04)] transition duration-300 hover:bg-brand-50"
->
+      </div>
+
+
+      {/* =================================================
+          ALL OTHER COUNTRIES - CENTERED
+      ================================================= */}
+      <div className="mt-1.5 flex justify-center">
+
+        <Link
+          href="/en/best-brokers"
+          className="group flex h-[52px] w-[calc(50%-3px)] min-w-[145px] items-center rounded-[11px] border border-dashed border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-2 shadow-[0_2px_7px_rgba(37,99,235,0.04)] transition duration-300 hover:bg-brand-50"
+        >
+
           <div className="flex w-full items-center justify-between gap-1.5">
 
             <div className="flex min-w-0 items-center gap-1.5">
+
               <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-brand-100 bg-white text-[13px] shadow-sm">
                 🌍
               </div>
 
+
               <h3 className="truncate text-[12px] font-black leading-5 text-[#0f172a]">
-                More Countries
+                Other Countries
               </h3>
+
             </div>
+
 
             <span className="shrink-0 text-[14px] font-black leading-none text-brand-500 transition group-hover:translate-x-[2px]">
               →
             </span>
+
           </div>
+
         </Link>
+
       </div>
+
     </div>
 
 
     {/* =====================================================
         DESKTOP / TABLET
+        SAME STYLE AS ARABIC
     ====================================================== */}
     <div className="hidden p-3 md:block lg:p-3.5">
+
       <div className="grid gap-2.5 md:grid-cols-2 lg:gap-3">
 
         {countryPages.map((item) => (
+
           <Link
-            key={item.badge}
-            href="/en/best-brokers"
-            target="_blank"
-            rel="noopener noreferrer"
-            title={`View brokers for traders in ${item.badge}`}
+            key={item.href}
+            href={item.href}
+            title={item.title}
             className="group min-h-[68px] rounded-[15px] border border-slate-200 bg-white px-3 py-2 shadow-[0_2px_8px_rgba(15,23,42,0.035)] transition duration-300 hover:-translate-y-0.5 hover:border-brand-300 hover:bg-[#fcfdff] hover:shadow-[0_12px_26px_rgba(37,99,235,0.10)]"
           >
+
             <div className="flex min-h-[52px] items-center gap-2.5">
 
               {/* FLAG */}
               <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-[#f8fafc] shadow-sm">
+
                 <img
                   src={item.flag}
                   alt={`${item.badge} flag`}
                   className="h-6 w-6 rounded-full object-cover"
                   loading="lazy"
                 />
+
               </div>
+
 
               {/* CONTENT */}
               <div className="min-w-0 flex-1">
+
                 <div className="flex items-center gap-2">
-                  <h3 className="truncate text-[15px] font-black leading-5 text-[#0f172a]">
+
+                  <h3 className="truncate text-[16px] font-black leading-5 text-[#0f172a]">
                     {item.title}
                   </h3>
 
-                  <span className="shrink-0 rounded-full bg-brand-50 px-2 py-0.5 text-[8.5px] font-extrabold text-brand-600">
+
+                  <span className="shrink-0 rounded-full bg-brand-50 px-2 py-0.5 text-[9px] font-extrabold text-brand-600">
                     {item.badge}
                   </span>
+
                 </div>
 
-                <p className="mt-0.5 line-clamp-1 text-[10.5px] font-medium leading-4 text-slate-500">
+
+                <p className="mt-0.5 line-clamp-1 text-[11px] font-medium leading-4 text-slate-500">
                   {item.shortDesc ?? item.desc}
                 </p>
+
               </div>
+
 
               {/* ACTION */}
               <div className="shrink-0 text-right">
-                <div className="text-[8.5px] font-bold text-slate-400">
-                  View brokers
+
+                <div className="text-[9px] font-bold text-slate-400">
+                  Open page
                 </div>
+
 
                 <div className="mt-0.5 text-[16px] font-black leading-none text-brand-500 transition duration-300 group-hover:translate-x-[3px]">
                   →
                 </div>
+
               </div>
+
             </div>
+
           </Link>
+
         ))}
 
-
-        {/* EXPLORE MORE DESKTOP */}
-<Link
-  href="/en/best-brokers"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="group min-h-[62px] rounded-[15px] border border-dashed border-[#93c5fd] bg-[linear-gradient(90deg,#eff6ff_0%,#f8fbff_50%,#ffffff_100%)] px-4 py-2 shadow-[0_2px_8px_rgba(37,99,235,0.04)] transition duration-300 hover:-translate-y-0.5 hover:border-brand-300 hover:bg-brand-50/40 hover:shadow-[0_10px_24px_rgba(37,99,235,0.07)] md:col-span-2"
->
-  <div className="flex min-h-[46px] items-center gap-3">
-
-    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-brand-100 bg-white text-[15px] shadow-sm">
-      🌍
-    </div>
-
-    <div className="min-w-0 flex-1">
-      <h3 className="text-[14px] font-black leading-5 text-[#0f172a]">
-        Explore More Countries
-      </h3>
-
-      <p className="mt-0.5 truncate text-[10px] font-medium leading-4 text-slate-500">
-        Browse the full broker directory for additional markets.
-      </p>
-    </div>
-
-    <div className="shrink-0 text-right">
-      <div className="text-[8.5px] font-bold text-brand-500">
-        View all
       </div>
 
-      <div className="mt-0.5 text-[16px] font-black leading-none text-brand-500 transition duration-300 group-hover:translate-x-[3px]">
-        →
+
+      {/* =================================================
+          ALL OTHER COUNTRIES DESKTOP - CENTERED
+      ================================================= */}
+      <div className="mt-2.5 flex justify-center">
+
+        <Link
+          href="/en/best-brokers"
+          className="group min-h-[70px] w-full max-w-[610px] rounded-[16px] border border-dashed border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-3 py-2 shadow-[0_2px_8px_rgba(37,99,235,0.04)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-50/40 hover:shadow-[0_10px_24px_rgba(37,99,235,0.07)]"
+        >
+
+          <div className="flex min-h-[52px] items-center gap-2.5">
+
+            {/* ICON */}
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-brand-100 bg-white text-[16px] shadow-sm">
+              🌍
+            </div>
+
+
+            {/* CONTENT */}
+            <div className="min-w-0 flex-1">
+
+              <h3 className="text-[15px] font-black leading-5 text-[#0f172a]">
+                All Other Countries
+              </h3>
+
+
+              <p className="mt-0.5 truncate text-[11px] font-medium leading-4 text-slate-500">
+                Browse all available country-specific forex broker rankings
+              </p>
+
+            </div>
+
+
+            {/* ACTION */}
+            <div className="shrink-0 text-right">
+
+              <div className="text-[9px] font-bold text-brand-500">
+                View all
+              </div>
+
+
+              <div className="mt-0.5 text-[16px] font-black leading-none text-brand-500 transition duration-300 group-hover:translate-x-[3px]">
+                →
+              </div>
+
+            </div>
+
+          </div>
+
+        </Link>
+
       </div>
+
     </div>
 
   </div>
-</Link>
 
-      </div>
-    </div>
-    </div>
 </section>
 
 {/* PEPPERSTONE PREMIUM BANNER */}

@@ -175,27 +175,108 @@ export default function MobileNavMenu({
   const pathname = usePathname();
   const isEnglish = pathname.startsWith("/en");
 
-  const mobileCountryMenuItems = [
-    ...countryMenuItems,
+  const mobileCountryMenuItems = isEnglish
+  ? [
+      {
+        label: "Best Forex Brokers in Vietnam",
+        shortLabel: "Vietnam",
+        href: "/en/best-brokers/vietnam",
+        flag: "https://flagcdn.com/w80/vn.png",
+      },
+      {
+        label: "Best Forex Brokers in Indonesia",
+        shortLabel: "Indonesia",
+        href: "/en/best-brokers/indonesia",
+        flag: "https://flagcdn.com/w80/id.png",
+      },
+      {
+        label: "Best Forex Brokers in Malaysia",
+        shortLabel: "Malaysia",
+        href: "/en/best-brokers/malaysia",
+        flag: "https://flagcdn.com/w80/my.png",
+      },
+      {
+        label: "Best Forex Brokers in the United Kingdom",
+        shortLabel: "UK",
+        href: "/en/best-brokers/united-kingdom",
+        flag: "https://flagcdn.com/w80/gb.png",
+      },
+      {
+        label: "Best Forex Brokers in Australia",
+        shortLabel: "Australia",
+        href: "/en/best-brokers/australia",
+        flag: "https://flagcdn.com/w80/au.png",
+      },
+      {
+        label: "Best Forex Brokers in South Africa",
+        shortLabel: "South Africa",
+        href: "/en/best-brokers/south-africa",
+        flag: "https://flagcdn.com/w80/za.png",
+      },
+      {
+        label: "Best Forex Brokers in Singapore",
+        shortLabel: "Singapore",
+        href: "/en/best-brokers/singapore",
+        flag: "https://flagcdn.com/w80/sg.png",
+      },
     {
-      label: "أفضل شركات التداول في العراق",
-      shortLabel: "العراق",
-      href: "/best-brokers/iraq",
-      flag: "https://flagcdn.com/w80/iq.png",
-    },
-    {
-      label: "أفضل شركات التداول في ليبيا",
-      shortLabel: "ليبيا",
-      href: "/best-brokers/libya",
-      flag: "https://flagcdn.com/w80/ly.png",
-    },
-    {
-      label: "أفضل شركات التداول في سوريا",
-      shortLabel: "سوريا",
-      href: "/best-brokers/syria",
-      flag: "https://flagcdn.com/w80/sy.png",
-    },
-  ];
+  label: "Best Forex Brokers in Ghana",
+  shortLabel: "Ghana",
+  href: "/en/best-brokers/ghana",
+  flag: "https://flagcdn.com/w80/gh.png",
+},
+      {
+        label: "Best Forex Brokers in Nigeria",
+        shortLabel: "Nigeria",
+        href: "/en/best-brokers/nigeria",
+        flag: "https://flagcdn.com/w80/ng.png",
+      },
+      {
+        label: "Best Forex Brokers in Thailand",
+        shortLabel: "Thailand",
+        href: "/en/best-brokers/thailand",
+        flag: "https://flagcdn.com/w80/th.png",
+      },
+      {
+        label: "Best Forex Brokers in the Philippines",
+        shortLabel: "Philippines",
+        href: "/en/best-brokers/philippines",
+        flag: "https://flagcdn.com/w80/ph.png",
+      },
+      {
+        label: "Best Forex Brokers in Kenya",
+        shortLabel: "Kenya",
+        href: "/en/best-brokers/kenya",
+        flag: "https://flagcdn.com/w80/ke.png",
+      },
+    ]
+  : [
+      ...countryMenuItems,
+      {
+        label: "أفضل شركات التداول في العراق",
+        shortLabel: "العراق",
+        href: "/best-brokers/iraq",
+        flag: "https://flagcdn.com/w80/iq.png",
+      },
+      {
+        label: "أفضل شركات التداول في ليبيا",
+        shortLabel: "ليبيا",
+        href: "/best-brokers/libya",
+        flag: "https://flagcdn.com/w80/ly.png",
+      },
+      {
+        label: "أفضل شركات التداول في سوريا",
+        shortLabel: "سوريا",
+        href: "/best-brokers/syria",
+        flag: "https://flagcdn.com/w80/sy.png",
+      },
+      {
+        label: "أفضل شركات التداول في اليمن",
+        shortLabel: "اليمن",
+        href: "/best-brokers/yemen",
+        flag: "https://flagcdn.com/w80/ye.png",
+      },
+    ];
 
     const mobileAccountTypePages = [
     {
@@ -490,278 +571,220 @@ allTools: isEnglish ? "View All Tools" : "عرض جميع الأدوات",
                     </div>
                   </Section>
 
-                                   <Section
-                    title={text.best}
-                    open={openSection === "best"}
-                    onToggle={() => toggleSection("best")}
-                  >
-                    <div className="space-y-4">
-                      {/* =========================================== */}
-                                           {/* =========================================== */}
-                      {/* ENGLISH BROKER GUIDES */}
-                      {/* =========================================== */}
-                      {isEnglish ? (
-                        <div>
-                          <div className="mb-2.5 flex items-center justify-between px-1">
-                            <div>
-                              <p className="text-[12px] font-black text-slate-950">
-                                Best Broker Guides
-                              </p>
-
-                              <p className="mt-0.5 text-[9px] font-semibold text-slate-500">
-                                Popular broker rankings
-                              </p>
-                            </div>
-
-                            <span className="rounded-full bg-brand-50 px-2 py-1 text-[8px] font-black text-brand-600">
-                              Guides
-                            </span>
-                          </div>
-
-                          <div className="space-y-2">
-                            <Link
-                              href="/en/best-brokers"
-                              onClick={closeMenu}
-                              className="group flex h-[48px] items-center justify-between gap-2.5 rounded-[15px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-white"
-                            >
-                              <span className="min-w-0 flex-1 truncate text-[12px] font-black text-slate-800">
-                                Best Forex Brokers in 2026
-                              </span>
-
-                              <span className="shrink-0 text-[12px] font-black text-brand-600">
-                                →
-                              </span>
-                            </Link>
-
-                            <Link
-                              href="/en/lowest-spread-brokers"
-                              onClick={closeMenu}
-                              className="group flex h-[48px] items-center justify-between gap-2.5 rounded-[15px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-white"
-                            >
-                              <span className="min-w-0 flex-1 truncate text-[12px] font-black text-slate-800">
-                                Best Low Spread Forex Brokers
-                              </span>
-
-                              <span className="shrink-0 text-[12px] font-black text-brand-600">
-                                →
-                              </span>
-                            </Link>
-
-                            <Link
-                              href="/en/best-brokers/gold"
-                              onClick={closeMenu}
-                              className="group flex h-[48px] items-center justify-between gap-2.5 rounded-[15px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-white"
-                            >
-                              <span className="min-w-0 flex-1 truncate text-[12px] font-black text-slate-800">
-                                Best Gold Trading Brokers
-                              </span>
-
-                              <span className="shrink-0 text-[12px] font-black text-brand-600">
-                                →
-                              </span>
-                            </Link>
-
-<Link
-  href="/en/best-brokers/low-minimum-deposit"
-  onClick={closeMenu}
-  className="group flex h-[48px] items-center justify-between gap-2.5 rounded-[15px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-white"
+                     <Section
+  title={text.best}
+  open={openSection === "best"}
+  onToggle={() => toggleSection("best")}
 >
-  <span className="min-w-0 flex-1 truncate text-[12px] font-black text-slate-800">
-    Low Minimum Deposit Brokers
-  </span>
+  <div className="space-y-4">
 
-  <span className="shrink-0 text-[12px] font-black text-brand-600">
-    →
-  </span>
-</Link>
+    {/* =====================================================
+        COUNTRIES
+    ====================================================== */}
+    <div>
+      <div className="mb-2.5 flex items-center justify-between px-1">
+        <div>
+          <p className="text-[12px] font-black text-slate-950">
+            {isEnglish
+              ? "Best Brokers by Country"
+              : "أفضل الوسطاء حسب الدولة"}
+          </p>
 
-                            <Link
-  href="/en/best-brokers/scalping"
-  onClick={closeMenu}
-  className="group flex h-[48px] items-center justify-between gap-2.5 rounded-[15px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-white"
->
-  <span className="min-w-0 flex-1 truncate text-[12px] font-black text-slate-800">
-    Best Scalping Brokers
-  </span>
+          <p className="mt-0.5 text-[9px] font-semibold text-slate-500">
+            {isEnglish
+              ? "Find brokers available in your country"
+              : "اختر الوسطاء المتاحين في دولتك"}
+          </p>
+        </div>
 
-  <span className="shrink-0 text-[12px] font-black text-brand-600">
-    →
-  </span>
-</Link>
-                          </div>
-                        </div>
-                      ) : (
-                        <>
-                        
-                          {/* ======================================= */}
-                          {/* ARABIC COUNTRIES */}
-                          {/* ======================================= */}
-                          <div>
-                            <div className="mb-2.5 flex items-center justify-between px-1">
-                              <div>
-                                <p className="text-[12px] font-black text-slate-950">
-                                  أفضل الوسطاء حسب الدولة
-                                </p>
+        <span className="rounded-full bg-brand-50 px-2 py-1 text-[8px] font-black text-brand-600">
+          {isEnglish ? "Countries" : "الدول"}
+        </span>
+      </div>
 
-                                <p className="mt-0.5 text-[9px] font-semibold text-slate-500">
-                                  اختر الوسطاء المتاحين في دولتك
-                                </p>
-                              </div>
+      <div className="grid grid-cols-2 gap-2">
+        {mobileCountryMenuItems.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            onClick={closeMenu}
+            title={item.label}
+            className="group flex h-[48px] items-center gap-2 rounded-[14px] border border-slate-200 bg-slate-50 px-2.5 transition hover:border-brand-200 hover:bg-white"
+          >
+            <img
+              src={item.flag}
+              alt={item.shortLabel}
+              className="h-5 w-5 shrink-0 rounded-full object-cover shadow-sm"
+            />
 
-                              <span className="rounded-full bg-brand-50 px-2 py-1 text-[8px] font-black text-brand-600">
-                                الدول
-                              </span>
-                            </div>
+            <span className="min-w-0 flex-1 truncate text-center text-[11px] font-black leading-4 text-slate-800 group-hover:text-brand-600">
+              {item.shortLabel}
+            </span>
+          </Link>
+        ))}
+      </div>
 
-                            <div className="grid grid-cols-2 gap-2">
-                              {mobileCountryMenuItems.map((item) => (
-                                <Link
-                                  key={item.href}
-                                  href={item.href}
-                                  onClick={closeMenu}
-                                  className="flex h-[48px] items-center gap-2.5 rounded-[15px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-white"
-                                >
-                                  <img
-                                    src={item.flag}
-                                    alt={item.shortLabel}
-                                    className="h-5 w-5 shrink-0 rounded-full object-cover"
-                                  />
+      <Link
+        href={isEnglish ? "/en/best-brokers" : "/best-brokers"}
+        onClick={closeMenu}
+        className="mt-2.5 flex h-10 items-center justify-center gap-2 rounded-xl border border-brand-100 bg-brand-50/60 text-[11px] font-black text-brand-600 transition hover:bg-brand-100"
+      >
+        {isEnglish ? "View All Countries" : "عرض جميع الدول"}
 
-                                  <span className="min-w-0 flex-1 text-center text-[12px] font-black text-slate-800">
-                                    {item.shortLabel}
-                                  </span>
-                                </Link>
-                              ))}
-                            </div>
+        <span>
+          {isEnglish ? "→" : "←"}
+        </span>
+      </Link>
+    </div>
 
-                            <Link
-                              href="/best-brokers"
-                              onClick={closeMenu}
-                              className="mt-2.5 flex h-10 items-center justify-center gap-2 rounded-xl border border-brand-100 bg-brand-50/60 text-[11px] font-black text-brand-600"
-                            >
-                              عرض جميع الدول
-                              <span>←</span>
-                            </Link>
-                          </div>
 
-                          {/* ======================================= */}
-                          {/* ARABIC CATEGORIES */}
-                          {/* ======================================= */}
-                          <div className="border-t border-slate-100 pt-4">
-                            <div className="mb-2.5 px-1">
-                              <p className="text-[12px] font-black text-slate-950">
-                                أفضل الوسطاء حسب الفئة
-                              </p>
+    {/* =====================================================
+        CATEGORIES
+    ====================================================== */}
+    <div className="border-t border-slate-100 pt-4">
+      <div className="mb-2.5 flex items-center justify-between px-1">
+        <div>
+          <p className="text-[12px] font-black text-slate-950">
+            {isEnglish
+              ? "Best Brokers by Category"
+              : "أفضل الوسطاء حسب الفئة"}
+          </p>
 
-                              <p className="mt-0.5 text-[9px] font-semibold text-slate-500">
-                                أشهر تصنيفات الوسطاء
-                              </p>
-                            </div>
+          <p className="mt-0.5 text-[9px] font-semibold text-slate-500">
+            {isEnglish
+              ? "Popular forex broker rankings"
+              : "أشهر تصنيفات الوسطاء"}
+          </p>
+        </div>
 
-                            <div className="space-y-2">
-                              {[
-  ...featuredCategories.slice(0, 3),
+        <span className="rounded-full bg-brand-50 px-2 py-1 text-[8px] font-black text-brand-600">
+          {isEnglish ? "Categories" : "الفئات"}
+        </span>
+      </div>
 
-  {
-    label: "وسطاء الفوركس بأقل إيداع",
-    href: "/best-brokers/low-minimum-deposit",
-  },
+      <div className="space-y-2">
+        {(isEnglish
+          ? [
+              {
+                label: "Best Forex Brokers in 2026",
+                href: "/en/best-brokers",
+              },
+              {
+                label: "Best Low Spread Forex Brokers",
+                href: "/en/lowest-spread-brokers",
+              },
+              {
+                label: "Best Gold Trading Brokers",
+                href: "/en/best-brokers/gold",
+              },
+              {
+                label: "Low Minimum Deposit Brokers",
+                href: "/en/best-brokers/low-minimum-deposit",
+              },
+              {
+                label: "Best Scalping Brokers",
+                href: "/en/best-brokers/scalping",
+              },
+            ]
+          : [
+              ...featuredCategories.slice(0, 3),
+              {
+                label: "وسطاء الفوركس بأقل إيداع",
+                href: "/best-brokers/low-minimum-deposit",
+              },
+              {
+                label: "أفضل وسطاء السكالبينج",
+                href: "/best-brokers/scalping",
+              },
+            ]
+        ).map((item) => (
+          <Link
+            key={`${item.href}-${item.label}`}
+            href={item.href}
+            onClick={closeMenu}
+            className="group flex min-h-[48px] items-center justify-between gap-3 rounded-[15px] border border-slate-200 bg-slate-50 px-3.5 py-2.5 transition hover:border-brand-200 hover:bg-white"
+          >
+            <span className="min-w-0 text-[12px] font-black leading-5 text-slate-800 group-hover:text-brand-600">
+              {item.label}
+            </span>
 
-  {
-    label: "أفضل وسطاء السكالبينج",
-    href: "/best-brokers/scalping",
-  },
-].map((item) => (
-                                  <Link
-                                    key={`${item.href}-${item.label}`}
-                                    href={item.href}
-                                    onClick={closeMenu}
-                                    className="flex min-h-[48px] items-center justify-between gap-3 rounded-[15px] border border-slate-200 bg-slate-50 px-3.5 py-2.5 transition hover:border-brand-200 hover:bg-white"
-                                  >
-                                    <span className="min-w-0 text-[12px] font-black leading-5 text-slate-800">
-                                      {item.label}
-                                    </span>
+            <span className="shrink-0 text-[12px] font-black text-brand-600">
+              {isEnglish ? "→" : "←"}
+            </span>
+          </Link>
+        ))}
+      </div>
+    </div>
 
-                                    <span className="shrink-0 text-sm font-black text-brand-600">
-                                      ←
-                                    </span>
-                                  </Link>
-                                ))}
-                            </div>
-                          </div>
-                        </>
-                      )}
 
-                      {/* =========================================== */}
-                      {/* ACCOUNT TYPES — BOTH LANGUAGES */}
-                      {/* =========================================== */}
-                      <div className="border-t border-slate-100 pt-4">
-                        <div className="mb-2.5 flex items-center justify-between px-1">
-                          <div>
-                            <p className="text-[12px] font-black text-slate-950">
-                              {isEnglish
-                                ? "Best Brokers by Account Type"
-                                : "أفضل الوسطاء حسب نوع الحساب"}
-                            </p>
+    {/* =====================================================
+        ACCOUNT TYPES
+    ====================================================== */}
+    <div className="border-t border-slate-100 pt-4">
+      <div className="mb-2.5 flex items-center justify-between px-1">
+        <div>
+          <p className="text-[12px] font-black text-slate-950">
+            {isEnglish
+              ? "Best Brokers by Account Type"
+              : "أفضل الوسطاء حسب نوع الحساب"}
+          </p>
 
-                            <p className="mt-0.5 text-[9px] font-semibold text-slate-500">
-                              {isEnglish
-                                ? "Choose the account that fits your strategy"
-                                : "اختر الحساب الأنسب لطريقة تداولك"}
-                            </p>
-                          </div>
+          <p className="mt-0.5 text-[9px] font-semibold text-slate-500">
+            {isEnglish
+              ? "Choose the account that fits your strategy"
+              : "اختر الحساب الأنسب لطريقة تداولك"}
+          </p>
+        </div>
 
-                          <span className="rounded-full bg-brand-50 px-2 py-1 text-[8px] font-black text-brand-600">
-                            {isEnglish ? "Accounts" : "الحسابات"}
-                          </span>
-                        </div>
+        <span className="rounded-full bg-brand-50 px-2 py-1 text-[8px] font-black text-brand-600">
+          {isEnglish ? "Accounts" : "الحسابات"}
+        </span>
+      </div>
 
-                       <div className="space-y-2">
-  {mobileAccountTypePages.map((item) => (
+      <div className="space-y-2">
+        {mobileAccountTypePages.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            onClick={closeMenu}
+            className="group/account flex h-[48px] items-center gap-2.5 rounded-[15px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-white"
+          >
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-brand-100 bg-white text-[11px] font-black text-brand-600 shadow-sm transition group-hover/account:bg-brand-600 group-hover/account:text-white">
+              {item.symbol}
+            </span>
+
+            <span className="min-w-0 flex-1 truncate text-[12px] font-black text-slate-800">
+              {item.title}
+            </span>
+
+            <span className="shrink-0 text-[12px] font-black text-brand-600">
+              {isEnglish ? "→" : "←"}
+            </span>
+          </Link>
+        ))}
+      </div>
+    </div>
+
+
+    {/* =====================================================
+        FINAL LINK
+    ====================================================== */}
     <Link
-      key={item.href}
-      href={item.href}
+      href={isEnglish ? "/en/best-brokers" : "/best-brokers"}
       onClick={closeMenu}
-      className="group/account flex h-[48px] items-center gap-2.5 rounded-[15px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-white"
+      className="flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-brand-100 bg-brand-50/60 px-3 text-[12px] font-black text-brand-600 transition hover:bg-brand-100"
     >
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-brand-100 bg-white text-[11px] font-black text-brand-600 shadow-sm transition group-hover/account:bg-brand-600 group-hover/account:text-white">
-        {item.symbol}
-      </span>
+      {isEnglish
+        ? "View All Broker Rankings"
+        : "عرض جميع تصنيفات الوسطاء"}
 
-      <span className="min-w-0 flex-1 truncate text-[12px] font-black text-slate-800">
-        {item.title}
-      </span>
-
-      <span className="shrink-0 text-[12px] font-black text-brand-600">
+      <span>
         {isEnglish ? "→" : "←"}
       </span>
     </Link>
-  ))}
-</div>
-                      </div>
 
-                      {/* =========================================== */}
-                      {/* FINAL LINK */}
-                      {/* =========================================== */}
-                      <Link
-                        href={
-                          isEnglish
-                            ? "/en/best-brokers"
-                            : "/best-brokers"
-                        }
-                        onClick={closeMenu}
-                        className="flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-brand-100 bg-brand-50/60 px-3 text-[12px] font-black text-brand-600 transition hover:bg-brand-100"
-                      >
-                        {isEnglish
-                          ? "View All Broker Rankings"
-                          : "عرض جميع تصنيفات الوسطاء"}
-
-                        <span>
-                          {isEnglish ? "→" : "←"}
-                        </span>
-                      </Link>
-                    </div>
-                  </Section>
+  </div>
+</Section>
 
                                    {/* LICENSES */}
                   <Section

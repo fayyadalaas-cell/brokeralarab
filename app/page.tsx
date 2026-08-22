@@ -1379,40 +1379,51 @@ function eventCountdown(start?: string | null, end?: string | null) {
   </div>
 </section>
 
-{/* COUNTRIES DIRECTORY - COMPACT PREMIUM */}
+{/* =========================================================
+    COUNTRIES DIRECTORY - COMPACT PREMIUM
+========================================================= */}
 <section className="mx-auto w-full max-w-7xl px-0 py-2.5 sm:py-3">
+
   <div className="overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-[0_12px_34px_rgba(15,23,42,0.045)] sm:rounded-[28px]">
 
     {/* =====================================================
         HEADER
     ====================================================== */}
     <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3 sm:px-5 lg:px-6">
+
       <div className="flex flex-col items-center gap-2.5 lg:flex-row lg:items-center lg:justify-between lg:gap-5">
 
         {/* TEXT */}
         <div className="min-w-0 flex-1 text-center lg:text-right">
+
           <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[10px] font-black text-brand-500 shadow-sm sm:text-[11px] lg:text-[12px]">
             حسب الدولة
           </span>
 
+
           <h2 className="mx-auto mt-2 max-w-[310px] text-[26px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] sm:max-w-none sm:text-[32px] lg:mx-0 lg:text-[34px]">
             أفضل شركات التداول حسب الدولة
           </h2>
+
 
           {/* MOBILE DESCRIPTION */}
           <p className="mx-auto mt-2 max-w-[305px] text-[11px] font-semibold leading-5 text-slate-600 md:hidden">
             اختر بلدك للوصول إلى الوسطاء المناسبين من حيث التراخيص والحسابات وطرق الدفع.
           </p>
 
+
           {/* DESKTOP DESCRIPTION */}
           <p className="mt-1.5 hidden max-w-[900px] text-[13px] font-semibold leading-6 text-slate-600 md:block lg:text-[14px]">
             استعرض أفضل شركات التداول حسب الدولة، وقارن الوسطاء من حيث التراخيص،
             الحساب الإسلامي، وسائل الإيداع والسحب، وسهولة فتح الحساب.
           </p>
+
         </div>
+
 
         {/* CTA */}
         <div className="shrink-0 self-center lg:pl-4 lg:-translate-x-[14px]">
+
           <Link
             href="/best-brokers"
             target="_blank"
@@ -1421,108 +1432,162 @@ function eventCountdown(start?: string | null, end?: string | null) {
           >
             عرض جميع الدول
           </Link>
+
         </div>
+
       </div>
+
     </div>
 
 
     {/* =====================================================
-    MOBILE
-====================================================== */}
-<div className="p-2 md:hidden">
-  <div className="grid grid-cols-2 gap-1.5">
-    {[
-      ...countryPages,
-      {
-        title: "أفضل شركات التداول في العراق",
-        href: "/best-brokers/iraq",
-        desc: "أفضل الخيارات في العراق",
-        shortDesc: "طرق دفع ودعم مناسب للمتداول العراقي",
-        flag: "https://flagcdn.com/w80/iq.png",
-        badge: "العراق",
-      },
-      {
-        title: "أفضل شركات التداول في ليبيا",
-        href: "/best-brokers/libya",
-        desc: "أفضل الخيارات في ليبيا",
-        shortDesc: "خيارات بإيداع مناسب ودعم عربي",
-        flag: "https://flagcdn.com/w80/ly.png",
-        badge: "ليبيا",
-      },
-      {
-        title: "أفضل شركات التداول في سوريا",
-        href: "/best-brokers/syria",
-        desc: "أفضل الخيارات في سوريا",
-        shortDesc: "وسطاء متاحون مع خيارات حساب مرنة",
-        flag: "https://flagcdn.com/w80/sy.png",
-        badge: "سوريا",
-      },
-    ].map((item) => (
-      <Link
-        key={item.href}
-        href={item.href}
-        target="_blank"
-        rel="noopener noreferrer"
-        title={`أفضل شركات التداول في ${item.badge}`}
-        className="group flex h-[52px] items-center rounded-[11px] border border-slate-200 bg-white px-2 shadow-[0_2px_7px_rgba(15,23,42,0.03)] transition duration-300 hover:border-brand-200 hover:bg-[#f8fbff]"
-      >
-        <div className="flex w-full items-center justify-between gap-1.5">
-          <div className="flex min-w-0 items-center gap-1.5">
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-white shadow-sm">
-              <img
-                src={item.flag}
-                alt={item.badge}
-                className="h-5 w-5 rounded-full object-cover"
-              />
+        MOBILE
+        12 COUNTRIES + CENTERED OTHER COUNTRIES
+    ====================================================== */}
+    <div className="p-2 md:hidden">
+
+      <div className="grid grid-cols-2 gap-1.5">
+
+        {[
+          ...countryPages,
+
+          {
+            title: "أفضل شركات التداول في العراق",
+            href: "/best-brokers/iraq",
+            desc: "أفضل الخيارات في العراق",
+            shortDesc: "طرق دفع ودعم مناسب للمتداول العراقي",
+            flag: "https://flagcdn.com/w80/iq.png",
+            badge: "العراق",
+          },
+
+          {
+            title: "أفضل شركات التداول في ليبيا",
+            href: "/best-brokers/libya",
+            desc: "أفضل الخيارات في ليبيا",
+            shortDesc: "خيارات بإيداع مناسب ودعم عربي",
+            flag: "https://flagcdn.com/w80/ly.png",
+            badge: "ليبيا",
+          },
+
+          {
+            title: "أفضل شركات التداول في سوريا",
+            href: "/best-brokers/syria",
+            desc: "أفضل الخيارات في سوريا",
+            shortDesc: "وسطاء متاحون مع خيارات حساب مرنة",
+            flag: "https://flagcdn.com/w80/sy.png",
+            badge: "سوريا",
+          },
+
+          {
+            title: "أفضل شركات التداول في اليمن",
+            href: "/best-brokers/yemen",
+            desc: "أفضل الخيارات المتاحة للمتداولين في اليمن",
+            shortDesc: "وسطاء متاحون وخيارات حساب مناسبة",
+            flag: "https://flagcdn.com/w80/ye.png",
+            badge: "اليمن",
+          },
+
+        ].map((item) => (
+
+          <Link
+            key={item.href}
+            href={item.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={`أفضل شركات التداول في ${item.badge}`}
+            className="group flex h-[52px] items-center rounded-[11px] border border-slate-200 bg-white px-2 shadow-[0_2px_7px_rgba(15,23,42,0.03)] transition duration-300 hover:border-brand-200 hover:bg-[#f8fbff]"
+          >
+
+            <div className="flex w-full items-center justify-between gap-1.5">
+
+              <div className="flex min-w-0 items-center gap-1.5">
+
+                {/* FLAG */}
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-white shadow-sm">
+
+                  <img
+                    src={item.flag}
+                    alt={item.badge}
+                    className="h-5 w-5 rounded-full object-cover"
+                  />
+
+                </div>
+
+
+                {/* COUNTRY NAME */}
+                <h3 className="truncate text-[13px] font-black leading-5 text-[#0f172a]">
+                  {item.badge}
+                </h3>
+
+              </div>
+
+
+              {/* ARROW */}
+              <span className="shrink-0 text-[14px] font-black leading-none text-brand-500 transition group-hover:-translate-x-[2px]">
+                ←
+              </span>
+
             </div>
 
-            <h3 className="truncate text-[13px] font-black leading-5 text-[#0f172a]">
-              {item.badge}
-            </h3>
-          </div>
+          </Link>
 
-          <span className="shrink-0 text-[14px] font-black leading-none text-brand-500 transition group-hover:-translate-x-[2px]">
-            ←
-          </span>
-        </div>
-      </Link>
-    ))}
+        ))}
 
-    {/* OTHER COUNTRIES */}
-    <Link
-      href="/best-brokers"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group flex h-[52px] items-center rounded-[11px] border border-dashed border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-2 shadow-[0_2px_7px_rgba(37,99,235,0.04)] transition duration-300 hover:bg-brand-50"
-    >
-      <div className="flex w-full items-center justify-between gap-1.5">
-        <div className="flex min-w-0 items-center gap-1.5">
-          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-brand-100 bg-white text-[13px] shadow-sm">
-            🌍
-          </div>
-
-          <h3 className="truncate text-[13px] font-black leading-5 text-[#0f172a]">
-            دول أخرى
-          </h3>
-        </div>
-
-        <span className="shrink-0 text-[14px] font-black leading-none text-brand-500 transition group-hover:-translate-x-[2px]">
-          ←
-        </span>
       </div>
-    </Link>
-  </div>
-</div>
+
+
+      {/* =================================================
+          OTHER COUNTRIES - MOBILE CENTERED
+      ================================================= */}
+      <div className="mt-1.5 flex justify-center">
+
+        <Link
+          href="/best-brokers"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group flex h-[52px] w-[calc(50%-3px)] min-w-[145px] items-center rounded-[11px] border border-dashed border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-2 shadow-[0_2px_7px_rgba(37,99,235,0.04)] transition duration-300 hover:bg-brand-50"
+        >
+
+          <div className="flex w-full items-center justify-between gap-1.5">
+
+            <div className="flex min-w-0 items-center gap-1.5">
+
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-brand-100 bg-white text-[13px] shadow-sm">
+                🌍
+              </div>
+
+
+              <h3 className="truncate text-[13px] font-black leading-5 text-[#0f172a]">
+                دول أخرى
+              </h3>
+
+            </div>
+
+
+            <span className="shrink-0 text-[14px] font-black leading-none text-brand-500 transition group-hover:-translate-x-[2px]">
+              ←
+            </span>
+
+          </div>
+
+        </Link>
+
+      </div>
+
+    </div>
 
 
     {/* =====================================================
         DESKTOP / TABLET
+        12 COUNTRIES
     ====================================================== */}
     <div className="hidden p-3 md:block lg:p-3.5">
+
       <div className="grid gap-2.5 md:grid-cols-2 lg:gap-3">
 
         {[
           ...countryPages,
+
           {
             title: "أفضل شركات التداول في العراق",
             href: "/best-brokers/iraq",
@@ -1531,6 +1596,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
             flag: "https://flagcdn.com/w80/iq.png",
             badge: "العراق",
           },
+
           {
             title: "أفضل شركات التداول في ليبيا",
             href: "/best-brokers/libya",
@@ -1539,6 +1605,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
             flag: "https://flagcdn.com/w80/ly.png",
             badge: "ليبيا",
           },
+
           {
             title: "أفضل شركات التداول في سوريا",
             href: "/best-brokers/syria",
@@ -1547,7 +1614,18 @@ function eventCountdown(start?: string | null, end?: string | null) {
             flag: "https://flagcdn.com/w80/sy.png",
             badge: "سوريا",
           },
+
+          {
+            title: "أفضل شركات التداول في اليمن",
+            href: "/best-brokers/yemen",
+            desc: "أفضل الخيارات في اليمن",
+            shortDesc: "وسطاء مناسبون للمتداول اليمني",
+            flag: "https://flagcdn.com/w80/ye.png",
+            badge: "اليمن",
+          },
+
         ].map((item) => (
+
           <Link
             key={item.href}
             href={item.href}
@@ -1556,24 +1634,30 @@ function eventCountdown(start?: string | null, end?: string | null) {
             title={`أفضل شركات التداول في ${item.badge}`}
             className="group min-h-[68px] rounded-[15px] border border-slate-200 bg-white px-3 py-2 shadow-[0_2px_8px_rgba(15,23,42,0.035)] transition duration-300 hover:-translate-y-0.5 hover:border-brand-300 hover:bg-[#fcfdff] hover:shadow-[0_12px_26px_rgba(37,99,235,0.10)]"
           >
+
             <div className="flex min-h-[52px] items-center gap-2.5">
 
               {/* FLAG */}
               <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-[#f8fafc] shadow-sm">
+
                 <img
                   src={item.flag}
                   alt={item.badge}
                   className="h-6 w-6 rounded-full object-cover"
                 />
+
               </div>
+
 
               {/* CONTENT */}
               <div className="min-w-0 flex-1">
+
                 <div className="flex items-center gap-2">
 
                   <h3 className="truncate text-[16px] font-black leading-5 text-[#0f172a]">
                     {item.title}
                   </h3>
+
 
                   <span className="shrink-0 rounded-full bg-brand-50 px-2 py-0.5 text-[9px] font-extrabold text-brand-600">
                     {item.badge}
@@ -1581,67 +1665,96 @@ function eventCountdown(start?: string | null, end?: string | null) {
 
                 </div>
 
+
                 <p className="mt-0.5 line-clamp-1 text-[11px] font-medium leading-4 text-slate-500">
                   {item.shortDesc ?? item.desc}
                 </p>
+
               </div>
+
 
               {/* ACTION */}
               <div className="shrink-0 text-left">
+
                 <div className="text-[9px] font-bold text-slate-400">
                   افتح الصفحة
                 </div>
 
+
                 <div className="mt-0.5 text-[16px] font-black leading-none text-brand-500 transition duration-300 group-hover:translate-x-[-3px]">
                   ←
                 </div>
+
               </div>
 
             </div>
+
           </Link>
+
         ))}
 
+      </div>
 
-        {/* OTHER COUNTRIES DESKTOP */}
+
+      {/* =================================================
+          OTHER COUNTRIES - DESKTOP CENTERED
+      ================================================= */}
+      <div className="mt-2.5 flex justify-center">
+
         <Link
           href="/best-brokers"
           target="_blank"
           rel="noopener noreferrer"
-          className="group min-h-[70px] rounded-[16px] border border-dashed border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-3 py-2 shadow-[0_2px_8px_rgba(37,99,235,0.04)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-50/40 hover:shadow-[0_10px_24px_rgba(37,99,235,0.07)]"
+          className="group min-h-[70px] w-full max-w-[610px] rounded-[16px] border border-dashed border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-3 py-2 shadow-[0_2px_8px_rgba(37,99,235,0.04)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-50/40 hover:shadow-[0_10px_24px_rgba(37,99,235,0.07)]"
         >
+
           <div className="flex min-h-[52px] items-center gap-2.5">
 
+            {/* ICON */}
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-brand-100 bg-white text-[16px] shadow-sm">
               🌍
             </div>
 
+
+            {/* CONTENT */}
             <div className="min-w-0 flex-1">
+
               <h3 className="text-[15px] font-black leading-5 text-[#0f172a]">
                 كل الدول الأخرى
               </h3>
 
+
               <p className="mt-0.5 truncate text-[11px] font-medium leading-4 text-slate-500">
                 اختر من الصفحة العامة إذا لم تجد بلدك ضمن القائمة
               </p>
+
             </div>
 
+
+            {/* ACTION */}
             <div className="shrink-0 text-left">
+
               <div className="text-[9px] font-bold text-brand-500">
                 تصفح الكل
               </div>
 
+
               <div className="mt-0.5 text-[16px] font-black leading-none text-brand-500 transition duration-300 group-hover:translate-x-[-3px]">
                 ←
               </div>
+
             </div>
 
           </div>
+
         </Link>
 
       </div>
-    </div>
 
     </div>
+
+  </div>
+
 </section>
 
 {/* PEPPERSTONE PREMIUM BANNER */}

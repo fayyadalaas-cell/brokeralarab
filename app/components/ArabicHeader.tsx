@@ -106,26 +106,36 @@ export default function ArabicHeader({
   wide = false,
 }: any) {
   const extendedCountryMenuItems = [
-    ...countryMenuItems,
-    {
-      label: "أفضل شركات التداول في العراق",
-      shortLabel: "العراق",
-      href: "/best-brokers/iraq",
-      flag: "https://flagcdn.com/w80/iq.png",
-    },
-    {
-      label: "أفضل شركات التداول في ليبيا",
-      shortLabel: "ليبيا",
-      href: "/best-brokers/libya",
-      flag: "https://flagcdn.com/w80/ly.png",
-    },
-    {
-      label: "أفضل شركات التداول في سوريا",
-      shortLabel: "سوريا",
-      href: "/best-brokers/syria",
-      flag: "https://flagcdn.com/w80/sy.png",
-    },
-  ];
+  ...countryMenuItems,
+
+  {
+    label: "أفضل شركات التداول في العراق",
+    shortLabel: "العراق",
+    href: "/best-brokers/iraq",
+    flag: "https://flagcdn.com/w80/iq.png",
+  },
+
+  {
+    label: "أفضل شركات التداول في ليبيا",
+    shortLabel: "ليبيا",
+    href: "/best-brokers/libya",
+    flag: "https://flagcdn.com/w80/ly.png",
+  },
+
+  {
+    label: "أفضل شركات التداول في سوريا",
+    shortLabel: "سوريا",
+    href: "/best-brokers/syria",
+    flag: "https://flagcdn.com/w80/sy.png",
+  },
+
+  {
+    label: "أفضل شركات التداول في اليمن",
+    shortLabel: "اليمن",
+    href: "/best-brokers/yemen",
+    flag: "https://flagcdn.com/w80/ye.png",
+  },
+];
 
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200/90 bg-white/95 backdrop-blur-md">
