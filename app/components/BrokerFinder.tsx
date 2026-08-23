@@ -203,145 +203,204 @@ export default function BrokerFinder({ brokers, countryRankings = [] }: Props) {
   const canSearch = country !== "" && deposit !== "" && experience !== "" && platform !== "";
 
   const results = useMemo(() => {
-    const hasActiveFilters = hasSearched && canSearch;
+  const hasActiveFilters = hasSearched && canSearch;
 
-    const scored = brokers.map((broker) => {
-      let score = 0;
+  const rankedBrokerIds = new Set(
+    countryRankings
+      .filter((row) => row.country_slug === country)
+      .map((row) => row.broker_id)
+  );
 
-      const reg = normalize(broker.regulation);
-      const bestFor = normalize(broker.best_for);
-      const platforms = normalize(broker.platforms);
-      const hasIslamicAccount =
-        normalize(broker.islamic_account).includes("yes") ||
-        normalize(broker.islamic_account).includes("متوفر");
+  const scored = brokers.map((broker) => {
+    let score = 0;
 
-     const activeCountry = hasActiveFilters ? country : "";
+    const bestFor = normalize(broker.best_for);
+    const platforms = normalize(broker.platforms);
 
-const countryRanking = hasActiveFilters
-  ? countryRankings.find(
-      (row) =>
-        row.country_slug === activeCountry &&
-        row.broker_id === broker.id
-    )
-  : undefined;
+    const hasIslamicAccount =
+      normalize(broker.islamic_account).includes("yes") ||
+      normalize(broker.islamic_account).includes("متوفر");
 
-const oldPriority = hasActiveFilters
-  ? getOldCountryPriority(broker, activeCountry)
-  : 3;
+    const countryRanking = hasActiveFilters
+      ? countryRankings.find(
+          (row) =>
+            row.country_slug === country &&
+            row.broker_id === broker.id
+        )
+      : undefined;
 
-const countryPriority = hasActiveFilters
-  ? countryRanking?.rank_position ?? oldPriority
-  : 3;
+    // =====================================================
+    // COUNTRY RANKING
+    // نفس ترتيب صفحات الدول
+    // =====================================================
 
-      score += (broker.rating || 0) * 5;
+    const hasCountryRanking = Boolean(countryRanking);
 
-      if (countryRanking) {
-        score += 30;
-        score += Math.max(0, 12 - countryRanking.rank_position);
-        score += (countryRanking.country_rating || broker.rating || 0) * 4;
-      } else {
-        score += priorityScore(oldPriority);
+    const countryPriority = countryRanking?.rank_position ?? 999;
+
+    // =====================================================
+    // GENERAL SCORE
+    // يستخدم فقط للمفاضلة الثانوية
+    // =====================================================
+
+    score += (broker.rating || 0) * 5;
+
+    // =====================================================
+    // USER FILTERS
+    // =====================================================
+
+    if (hasActiveFilters) {
+      const maxDeposit = depositValue(deposit as DepositRange);
+
+      if (
+        broker.min_deposit !== null &&
+        broker.min_deposit <= maxDeposit
+      ) {
+        score += 5;
       }
 
-      if (hasActiveFilters) {
-        const maxDeposit = depositValue(deposit as DepositRange);
+      if (platform === "mt4" && platforms.includes("mt4")) {
+        score += 3;
+      }
 
-        if (broker.min_deposit !== null && broker.min_deposit <= maxDeposit) score += 4;
+      if (platform === "mt5" && platforms.includes("mt5")) {
+        score += 3;
+      }
 
-        if (platform === "mt4" && platforms.includes("mt4")) score += 2;
-        if (platform === "mt5" && platforms.includes("mt5")) score += 2;
-        if (platform === "any") score += 1;
+      if (platform === "any") {
+        score += 1;
+      }
 
-        if (islamic === "yes" && hasIslamicAccount) score += 3;
-        if (islamic === "no") score += 1;
+      if (islamic === "yes" && hasIslamicAccount) {
+        score += 4;
+      }
 
-        if (experience === "beginner") {
-          if (
-            bestFor.includes("مبتدئ") ||
-            bestFor.includes("المبتدئين") ||
-            (broker.min_deposit ?? 999999) <= 50
-          ) {
-            score += 3;
-          }
-        }
+      if (islamic === "no") {
+        score += 1;
+      }
 
-        if (experience === "intermediate") {
-          if (
-            bestFor.includes("النشط") ||
-            bestFor.includes("متداول") ||
-            bestFor.includes("اليومي")
-          ) {
-            score += 2;
-          }
-        }
+      const rankingBestFor = normalize(
+        countryRanking?.best_for || broker.best_for
+      );
 
-        if (experience === "pro") {
-          if (
-            bestFor.includes("المحترفين") ||
-            bestFor.includes("احترافي") ||
-            bestFor.includes("سكالب")
-          ) {
-            score += 3;
-          }
-        }
-
+      if (experience === "beginner") {
         if (
-          [
-            "sa",
-            "saudi-arabia",
-            "ae",
-            "uae",
-            "kw",
-            "kuwait",
-            "qa",
-            "qatar",
-            "bh",
-            "bahrain",
-            "om",
-            "oman",
-            "eg",
-            "egypt",
-            "jo",
-            "jordan",
-            "iraq",
-            "libya",
-            "syria",
-          ].includes(country)
+          rankingBestFor.includes("مبتدئ") ||
+          rankingBestFor.includes("المبتدئين") ||
+          rankingBestFor.includes("beginner") ||
+          (broker.min_deposit ?? 999999) <= 50
         ) {
-          if (
-            reg.includes("cysec") ||
-            reg.includes("fca") ||
-            reg.includes("asic") ||
-            reg.includes("fsa") ||
-            reg.includes("fsc")
-          ) {
-            score += 2;
-          }
+          score += 4;
         }
       }
 
-      return {
-        ...broker,
-        score,
-        countryPriority,
-        countryRating: countryRanking?.country_rating ?? broker.rating,
-        countryBestFor: countryRanking?.best_for ?? broker.best_for,
-        countryLocalNote: countryRanking?.local_note ?? null,
-      };
-    });
-
-    return scored
-      .sort((a, b) => {
-        if ((a.countryPriority ?? 999) !== (b.countryPriority ?? 999)) {
-          return (a.countryPriority ?? 999) - (b.countryPriority ?? 999);
+      if (experience === "intermediate") {
+        if (
+          rankingBestFor.includes("النشط") ||
+          rankingBestFor.includes("متداول") ||
+          rankingBestFor.includes("اليومي") ||
+          rankingBestFor.includes("active") ||
+          rankingBestFor.includes("general")
+        ) {
+          score += 3;
         }
+      }
 
-        if (b.score !== a.score) return b.score - a.score;
+      if (experience === "pro") {
+        if (
+          rankingBestFor.includes("المحترفين") ||
+          rankingBestFor.includes("احترافي") ||
+          rankingBestFor.includes("سكالب") ||
+          rankingBestFor.includes("professional") ||
+          rankingBestFor.includes("scalping")
+        ) {
+          score += 4;
+        }
+      }
+    }
 
+    return {
+      ...broker,
+
+      score,
+
+      hasCountryRanking,
+
+      countryPriority,
+
+      countryRating:
+        countryRanking?.country_rating ??
+        broker.rating,
+
+      countryBestFor:
+        countryRanking?.best_for ??
+        broker.best_for,
+
+      countryLocalNote:
+        countryRanking?.local_note ??
+        null,
+    };
+  });
+
+  return scored
+    .sort((a, b) => {
+      // ===================================================
+      // 1. قبل البحث:
+      // اعرض الأعلى تقييمًا بشكل طبيعي
+      // ===================================================
+
+      if (!hasActiveFilters) {
         return (b.rating || 0) - (a.rating || 0);
-      })
-      .slice(0, 3);
-  }, [brokers, countryRankings, country, deposit, experience, islamic, platform, hasSearched, canSearch]);
+      }
+
+      // ===================================================
+      // 2. بعد اختيار الدولة:
+      // الشركات الموجودة في country_broker_rankings أولًا
+      // ===================================================
+
+      if (a.hasCountryRanking !== b.hasCountryRanking) {
+        return a.hasCountryRanking ? -1 : 1;
+      }
+
+      // ===================================================
+      // 3. ترتيب الدولة هو العامل الأساسي
+      // rank 1 ثم rank 2 ثم rank 3...
+      // ===================================================
+
+      if (
+        a.hasCountryRanking &&
+        b.hasCountryRanking &&
+        a.countryPriority !== b.countryPriority
+      ) {
+        return a.countryPriority - b.countryPriority;
+      }
+
+      // ===================================================
+      // 4. الفلاتر للمفاضلة الثانوية فقط
+      // ===================================================
+
+      if (b.score !== a.score) {
+        return b.score - a.score;
+      }
+
+      // ===================================================
+      // 5. التقييم العام آخر عامل
+      // ===================================================
+
+      return (b.rating || 0) - (a.rating || 0);
+    })
+    .slice(0, 3);
+}, [
+  brokers,
+  countryRankings,
+  country,
+  deposit,
+  experience,
+  islamic,
+  platform,
+  hasSearched,
+  canSearch,
+]);
 
  function handleSearch() {
   if (!canSearch) return;
@@ -402,6 +461,7 @@ const countryPriority = hasActiveFilters
                   <option value="iraq">العراق</option>
                   <option value="libya">ليبيا</option>
                   <option value="syria">سوريا</option>
+                  <option value="yemen">اليمن</option>
                   <option value="other">دول أخرى</option>
                 </select>
               </div>
@@ -716,6 +776,7 @@ className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm
                   <option value="iraq">العراق</option>
                   <option value="libya">ليبيا</option>
                   <option value="syria">سوريا</option>
+                  <option value="yemen">اليمن</option>
                   <option value="other">دول أخرى</option>
                 </select>
 

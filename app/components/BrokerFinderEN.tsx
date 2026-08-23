@@ -124,72 +124,7 @@ function getBrokerInitials(name: string | null | undefined) {
   return cleanText(name, "Broker").slice(0, 2).toUpperCase();
 }
 
-function getOldCountryPriority(broker: Broker, country: string) {
-  switch (country) {
-    case "uk":
-    case "united-kingdom":
-      return broker.priority_uk ?? 3;
-    case "au":
-    case "australia":
-      return broker.priority_australia ?? 3;
-    case "za":
-    case "south-africa":
-      return broker.priority_south_africa ?? 3;
-    case "sg":
-    case "singapore":
-      return broker.priority_singapore ?? 3;
-    case "my":
-    case "malaysia":
-      return broker.priority_malaysia ?? 3;
-    case "in":
-    case "india":
-      return broker.priority_india ?? 3;
-    case "ng":
-    case "nigeria":
-      return broker.priority_nigeria ?? 3;
-    case "th":
-    case "thailand":
-      return broker.priority_thailand ?? 3;
-    case "ph":
-    case "philippines":
-      return broker.priority_philippines ?? 3;
-    case "ke":
-    case "kenya":
-      return broker.priority_kenya ?? 3;
-    default:
-      return 3;
-  }
-}
 
-function getCountryAliases(country: string) {
-  const aliases: Record<string, string[]> = {
-    uk: ["uk", "united-kingdom"],
-    au: ["au", "australia"],
-    za: ["za", "south-africa"],
-    sg: ["sg", "singapore"],
-    my: ["my", "malaysia"],
-    in: ["in", "india"],
-    ng: ["ng", "nigeria"],
-    th: ["th", "thailand"],
-    ph: ["ph", "philippines"],
-    ke: ["ke", "kenya"],
-  };
-
-  return aliases[country] || [country];
-}
-
-function priorityScore(priority: number | null | undefined) {
-  switch (priority) {
-    case 1:
-      return 8;
-    case 2:
-      return 4;
-    case 3:
-      return 1;
-    default:
-      return 0;
-  }
-}
 
 function getRecommendationLabel(
   broker: Broker & {
@@ -248,150 +183,256 @@ export default function BrokerFinder({ brokers, countryRankings = [] }: Props) {
     (country !== "" && deposit !== "" && experience !== "" && platform !== "");
 
   const results = useMemo(() => {
-    const hasActiveFilters = hasSearched && canSearch;
+  const hasActiveFilters =
+    hasSearched && canSearch;
 
-    const scored = brokers.map((broker) => {
-      let score = 0;
+  const scored = brokers.map((broker) => {
+    let score = 0;
 
-      const reg = normalize(broker.regulation);
-      const bestFor = normalize(brokerBestFor(broker));
-      const platforms = normalize(broker.platforms);
+    const platforms = normalize(
+      broker.platforms
+    );
 
-      const hasIslamicAccount =
-        normalize(broker.islamic_account).includes("yes") ||
-        normalize(broker.islamic_account).includes("available");
+    const hasIslamicAccount =
+      normalize(
+        broker.islamic_account
+      ).includes("yes") ||
+      normalize(
+        broker.islamic_account
+      ).includes("available");
 
-      const activeCountry = hasActiveFilters ? country : "";
-      const activeAliases = getCountryAliases(activeCountry);
+    /* =====================================================
+       COUNTRY RANKING
+       Uses country_broker_rankings directly
+    ===================================================== */
 
-      const countryRanking = hasActiveFilters
+    const countryRanking =
+      hasActiveFilters &&
+      country !== "other"
         ? countryRankings.find(
             (row) =>
-              activeAliases.includes(row.country_slug) &&
-              row.broker_id === broker.id,
+              row.country_slug === country &&
+              row.broker_id === broker.id
           )
         : undefined;
 
-      const oldPriority = hasActiveFilters
-        ? getOldCountryPriority(broker, activeCountry)
-        : 3;
+    const hasCountryRanking =
+      Boolean(countryRanking);
 
-      const countryPriority = hasActiveFilters
-        ? (countryRanking?.rank_position ?? oldPriority)
-        : 3;
+    const countryPriority =
+      countryRanking?.rank_position ??
+      999;
 
-      score += (broker.rating || 0) * 5;
+    /* =====================================================
+       SECONDARY MATCH SCORE
+    ===================================================== */
 
-      if (countryRanking) {
-  score += 22;
-  score += Math.max(0, 8 - countryRanking.rank_position);
-  score += (countryRanking.country_rating || broker.rating || 0) * 5;
-} else {
-        score += priorityScore(oldPriority);
+    score +=
+      (broker.rating || 0) * 5;
+
+    if (hasActiveFilters) {
+      const maxDeposit =
+        depositValue(
+          deposit as DepositRange
+        );
+
+      if (
+        broker.min_deposit !== null &&
+        broker.min_deposit <= maxDeposit
+      ) {
+        score += 5;
       }
 
-      if (hasActiveFilters) {
-        const maxDeposit = depositValue(deposit as DepositRange);
+      if (
+        platform === "mt4" &&
+        platforms.includes("mt4")
+      ) {
+        score += 3;
+      }
 
-        if (broker.min_deposit !== null && broker.min_deposit <= maxDeposit) {
+      if (
+        platform === "mt5" &&
+        platforms.includes("mt5")
+      ) {
+        score += 3;
+      }
+
+      if (platform === "any") {
+        score += 1;
+      }
+
+      if (
+        islamic === "yes" &&
+        hasIslamicAccount
+      ) {
+        score += 4;
+      }
+
+      if (islamic === "no") {
+        score += 1;
+      }
+
+      const rankingBestFor =
+        normalize(
+          countryRanking?.best_for ||
+          broker.best_for_en ||
+          broker.best_for
+        );
+
+      if (
+        experience === "beginner"
+      ) {
+        if (
+          rankingBestFor.includes(
+            "beginner"
+          ) ||
+          rankingBestFor.includes(
+            "new trader"
+          ) ||
+          rankingBestFor.includes(
+            "easy"
+          ) ||
+          (broker.min_deposit ??
+            999999) <= 50
+        ) {
           score += 4;
         }
+      }
 
-        if (platform === "mt4" && platforms.includes("mt4")) score += 2;
-        if (platform === "mt5" && platforms.includes("mt5")) score += 2;
-        if (platform === "any") score += 1;
-
-        if (islamic === "yes" && hasIslamicAccount) score += 3;
-        if (islamic === "no") score += 1;
-
-        if (experience === "beginner") {
-          if (
-            bestFor.includes("beginner") ||
-            bestFor.includes("new trader") ||
-            bestFor.includes("easy") ||
-            (broker.min_deposit ?? 999999) <= 50
-          ) {
-            score += 3;
-          }
-        }
-
-        if (experience === "intermediate") {
-          if (
-            bestFor.includes("active") ||
-            bestFor.includes("trader") ||
-            bestFor.includes("day")
-          ) {
-            score += 2;
-          }
-        }
-
-        if (experience === "pro") {
-          if (
-            bestFor.includes("professional") ||
-            bestFor.includes("pro") ||
-            bestFor.includes("scalp")
-          ) {
-            score += 3;
-          }
-        }
-
+      if (
+        experience ===
+        "intermediate"
+      ) {
         if (
-          ["uk", "au", "za", "sg", "my", "in", "ng", "th", "ph", "ke"].includes(
-            country,
+          rankingBestFor.includes(
+            "active"
+          ) ||
+          rankingBestFor.includes(
+            "general"
+          ) ||
+          rankingBestFor.includes(
+            "trader"
+          ) ||
+          rankingBestFor.includes(
+            "day"
           )
         ) {
-          if (
-            reg.includes("fca") ||
-            reg.includes("asic") ||
-            reg.includes("cysec") ||
-            reg.includes("fsca") ||
-            reg.includes("fsa") ||
-            reg.includes("fsc")
-          ) {
-            score += 2;
-          }
+          score += 3;
         }
       }
 
-      return {
-        ...broker,
-        score,
-        countryPriority,
-        countryRating: countryRanking?.country_rating ?? broker.rating,
-        countryBestFor:
-          countryRanking?.best_for ?? broker.best_for_en ?? broker.best_for,
-        countryLocalNote: countryRanking?.local_note ?? null,
-      };
-    });
-
-    return scored
-  .sort((a, b) => {
-    if (!hasActiveFilters) {
-      return (b.rating || 0) - (a.rating || 0);
+      if (experience === "pro") {
+        if (
+          rankingBestFor.includes(
+            "professional"
+          ) ||
+          rankingBestFor.includes(
+            "pro"
+          ) ||
+          rankingBestFor.includes(
+            "scalp"
+          )
+        ) {
+          score += 4;
+        }
+      }
     }
 
-   if (b.score !== a.score) {
-  return b.score - a.score;
-}
+    return {
+      ...broker,
 
-if ((a.countryPriority ?? 999) !== (b.countryPriority ?? 999)) {
-  return (a.countryPriority ?? 999) - (b.countryPriority ?? 999);
-}
+      score,
 
-    return (b.rating || 0) - (a.rating || 0);
-  })
-  .slice(0, 3);
-  }, [
-    brokers,
-    countryRankings,
-    country,
-    deposit,
-    experience,
-    islamic,
-    platform,
-    hasSearched,
-    canSearch,
-  ]);
+      hasCountryRanking,
+
+      countryPriority,
+
+      countryRating:
+        countryRanking?.country_rating ??
+        broker.rating,
+
+      countryBestFor:
+        countryRanking?.best_for ??
+        broker.best_for_en ??
+        broker.best_for,
+
+      countryLocalNote:
+        countryRanking?.local_note ??
+        null,
+    };
+  });
+
+  return scored
+    .sort((a, b) => {
+      /* ===============================================
+         BEFORE SEARCH
+      =============================================== */
+
+      if (!hasActiveFilters) {
+        return (
+          (b.rating || 0) -
+          (a.rating || 0)
+        );
+      }
+
+      /* ===============================================
+         COUNTRY-RANKED BROKERS FIRST
+      =============================================== */
+
+      if (
+        a.hasCountryRanking !==
+        b.hasCountryRanking
+      ) {
+        return a.hasCountryRanking
+          ? -1
+          : 1;
+      }
+
+      /* ===============================================
+         COUNTRY RANK POSITION IS PRIMARY
+      =============================================== */
+
+      if (
+        a.hasCountryRanking &&
+        b.hasCountryRanking &&
+        a.countryPriority !==
+          b.countryPriority
+      ) {
+        return (
+          a.countryPriority -
+          b.countryPriority
+        );
+      }
+
+      /* ===============================================
+         FILTER MATCH SECONDARY
+      =============================================== */
+
+      if (b.score !== a.score) {
+        return b.score - a.score;
+      }
+
+      /* ===============================================
+         GENERAL RATING LAST
+      =============================================== */
+
+      return (
+        (b.rating || 0) -
+        (a.rating || 0)
+      );
+    })
+    .slice(0, 3);
+}, [
+  brokers,
+  countryRankings,
+  country,
+  deposit,
+  experience,
+  islamic,
+  platform,
+  hasSearched,
+  canSearch,
+]);
 
   function handleSearch() {
     if (country === "other") {
@@ -453,18 +494,61 @@ if ((a.countryPriority ?? 999) !== (b.countryPriority ?? 999)) {
                   }}
                   className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
                 >
-                  <option value="">Select Country</option>
-                  <option value="uk">United Kingdom</option>
-                  <option value="au">Australia</option>
-                  <option value="za">South Africa</option>
-                  <option value="sg">Singapore</option>
-                  <option value="my">Malaysia</option>
-                  <option value="in">India</option>
-                  <option value="ng">Nigeria</option>
-                  <option value="th">Thailand</option>
-                  <option value="ph">Philippines</option>
-                  <option value="ke">Kenya</option>
-                  <option value="other">All Other Countries</option>
+                  <option value="">
+  Select Country
+</option>
+
+<option value="united-kingdom">
+  United Kingdom
+</option>
+
+<option value="australia">
+  Australia
+</option>
+
+<option value="south-africa">
+  South Africa
+</option>
+
+<option value="singapore">
+  Singapore
+</option>
+
+<option value="malaysia">
+  Malaysia
+</option>
+
+<option value="ghana">
+  Ghana
+</option>
+
+<option value="nigeria">
+  Nigeria
+</option>
+
+<option value="thailand">
+  Thailand
+</option>
+
+<option value="philippines">
+  Philippines
+</option>
+
+<option value="kenya">
+  Kenya
+</option>
+
+<option value="indonesia">
+  Indonesia
+</option>
+
+<option value="vietnam">
+  Vietnam
+</option>
+
+<option value="other">
+  All Other Countries
+</option>
                 </select>
               </div>
               <div>
@@ -820,18 +904,61 @@ if ((a.countryPriority ?? 999) !== (b.countryPriority ?? 999)) {
                   }}
                   className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100"
                 >
-                  <option value="">Select Country</option>
-                  <option value="uk">United Kingdom</option>
-                  <option value="au">Australia</option>
-                  <option value="za">South Africa</option>
-                  <option value="sg">Singapore</option>
-                  <option value="my">Malaysia</option>
-                  <option value="in">India</option>
-                  <option value="ng">Nigeria</option>
-                  <option value="th">Thailand</option>
-                  <option value="ph">Philippines</option>
-                  <option value="ke">Kenya</option>
-                  <option value="other">All Other Countries</option>
+                  <option value="">
+  Select Country
+</option>
+
+<option value="united-kingdom">
+  United Kingdom
+</option>
+
+<option value="australia">
+  Australia
+</option>
+
+<option value="south-africa">
+  South Africa
+</option>
+
+<option value="singapore">
+  Singapore
+</option>
+
+<option value="malaysia">
+  Malaysia
+</option>
+
+<option value="ghana">
+  Ghana
+</option>
+
+<option value="nigeria">
+  Nigeria
+</option>
+
+<option value="thailand">
+  Thailand
+</option>
+
+<option value="philippines">
+  Philippines
+</option>
+
+<option value="kenya">
+  Kenya
+</option>
+
+<option value="indonesia">
+  Indonesia
+</option>
+
+<option value="vietnam">
+  Vietnam
+</option>
+
+<option value="other">
+  All Other Countries
+</option>
                 </select>
 
                 <select
