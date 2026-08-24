@@ -78,7 +78,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       publication_status
     )
   `)
-  .eq("publication_status", "published")
   .eq("brokers.publication_status", "published");
 
   const accountPages: MetadataRoute.Sitemap = [];

@@ -103,28 +103,14 @@ export async function generateMetadata({
     };
   }
 
-  const { broker, hasValidPreview } = access;
+  const { broker } = access;
 
   const supabase = await createClient();
 
-  let accountsQuery = supabase
-    .from("broker_accounts")
-    .select("*")
-    .eq("broker_id", broker.id);
-
-  if (hasValidPreview) {
-    accountsQuery = accountsQuery.in("publication_status", [
-      "published",
-      "draft",
-    ]);
-  } else {
-    accountsQuery = accountsQuery.eq(
-      "publication_status",
-      "published"
-    );
-  }
-
-  const { data: accounts } = await accountsQuery;
+  const { data: accounts } = await supabase
+  .from("broker_accounts")
+  .select("*")
+  .eq("broker_id", broker.id);
 
   const current = accounts?.find(
     (a) => slugify(a.account_name) === account
@@ -147,9 +133,8 @@ export async function generateMetadata({
   const description =
     `شرح حساب ${current.account_name} في ${broker.name}: السبريد، العمولة، أقل إيداع، نوع التنفيذ، وهل يناسب هذا الحساب أسلوب تداولك.`;
 
-  const isPreview =
-    broker.publication_status !== "published" ||
-    current.publication_status !== "published";
+const isPreview =
+  broker.publication_status !== "published";
 
   return {
     title: {
@@ -190,29 +175,15 @@ export default async function BrokerAccountPage({
     notFound();
   }
 
-  const { broker, hasValidPreview } = access;
+  const { broker } = access;
 
   const supabase = await createClient();
 
-  let accountsQuery = supabase
-    .from("broker_accounts")
-    .select("*")
-    .eq("broker_id", broker.id)
-    .order("sort_order", { ascending: true });
-
-  if (hasValidPreview) {
-    accountsQuery = accountsQuery.in("publication_status", [
-      "published",
-      "draft",
-    ]);
-  } else {
-    accountsQuery = accountsQuery.eq(
-      "publication_status",
-      "published"
-    );
-  }
-
-  const { data: accounts } = await accountsQuery;
+  const { data: accounts } = await supabase
+  .from("broker_accounts")
+  .select("*")
+  .eq("broker_id", broker.id)
+  .order("sort_order", { ascending: true });
 
   if (!accounts?.length) {
     notFound();
