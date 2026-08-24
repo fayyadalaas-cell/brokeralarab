@@ -10,6 +10,10 @@ type Broker = {
   best_for_en: string | null;
   intro_en: string | null;
   slug: string | null;
+  publication_status: "draft" | "published" | "unpublished";
+  preview_enabled: boolean;
+  preview_token: string | null;
+  published_at: string | null;
   rating: number | null;
   min_deposit: number | null;
   platforms: string | null;
@@ -174,9 +178,8 @@ async function getBroker(slug: string): Promise<Broker | null> {
     .from("brokers")
     .select("*")
     .eq("slug", slug)
+    .eq("publication_status", "published")
     .maybeSingle();
-
-  
 
   if (error) {
     return null;
@@ -189,10 +192,11 @@ async function getRelatedBrokers(currentSlug: string): Promise<RelatedBroker[]> 
   const supabase = await createClient();
 
   const { data, error } = await supabase
-  .from("brokers")
-  .select("id, name, name_en, slug, rating, logo")
-  .neq("slug", currentSlug)
-  .limit(3);
+    .from("brokers")
+    .select("id, name, name_en, slug, rating, logo")
+    .eq("publication_status", "published")
+    .neq("slug", currentSlug)
+    .limit(3);
 
   if (error || !data) return [];
   return data as RelatedBroker[];

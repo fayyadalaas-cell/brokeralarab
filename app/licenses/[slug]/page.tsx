@@ -99,12 +99,13 @@ async function getPageData(slug: string) {
 
   const brokerIds = Array.from(new Set(licenses.map((item) => item.broker_id)));
 
-  const { data: brokersData } = brokerIds.length
-    ? await supabase
-        .from("brokers")
-        .select("id,name,name_en,slug,logo,rating,real_account_url")
-        .in("id", brokerIds)
-    : { data: [] };
+ const { data: brokersData } = brokerIds.length
+  ? await supabase
+      .from("brokers")
+      .select("id,name,name_en,slug,logo,rating,real_account_url")
+      .in("id", brokerIds)
+      .eq("publication_status", "published")
+  : { data: [] };
 
   return {
     regulator,
@@ -282,7 +283,9 @@ export default async function LicenseSlugPage({ params }: PageProps) {
 
   const brokerGroups = Array.from(
     new Map(
-      licenses.map((license) => [
+      licenses
+  .filter((license) => brokerMap.has(license.broker_id))
+  .map((license) => [
         license.broker_id,
         {
           broker: brokerMap.get(license.broker_id),

@@ -122,12 +122,13 @@ function renderStars(
 export default async function ComparePage() {
   const supabase = await createClient();
 
-  const { data } = await supabase
-    .from("brokers")
-    .select(
-      "id,name,name_en,slug,rating,min_deposit,best_for,best_for_en,regulation,platforms,islamic_account,logo"
-    )
-    .order("rating", { ascending: false });
+ const { data } = await supabase
+  .from("brokers")
+  .select(
+    "id,name,name_en,slug,rating,min_deposit,best_for,best_for_en,regulation,platforms,islamic_account,logo"
+  )
+  .eq("publication_status", "published")
+  .order("rating", { ascending: false });
 
   const brokers = ((data ?? []) as Broker[]).filter((b) => b.name && b.slug);
 

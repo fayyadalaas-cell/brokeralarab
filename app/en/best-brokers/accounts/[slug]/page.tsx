@@ -654,7 +654,8 @@ async function getRankedAccounts(
       regulation_short,
       min_deposit
     `)
-    .in("id", brokerIds);
+.in("id", brokerIds)
+.eq("publication_status", "published");
 
   if (
     brokersError ||

@@ -637,13 +637,14 @@ export default async function LowMinimumDepositBrokersPage() {
       )
     );
 
-  const {
-    data: brokersData,
-    error: brokersError,
-  } = await supabase
-    .from("brokers")
-    .select("*")
-    .in("id", brokerIds);
+const {
+  data: brokersData,
+  error: brokersError,
+} = await supabase
+  .from("brokers")
+  .select("*")
+  .in("id", brokerIds)
+  .eq("publication_status", "published");
 
   if (brokersError) {
     return (

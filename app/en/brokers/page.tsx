@@ -1071,11 +1071,12 @@ export default async function BrokersPage({
   const supabase = await createClient();
 
   const { data, error } = await supabase
-    .from("brokers")
-    .select(
-      "id,name,name_en,slug,rating,min_deposit,best_for,best_for_en,regulation,platforms,max_leverage,logo,real_account_url,demo_account_url"
-    )
-    .order("rating", { ascending: false });
+  .from("brokers")
+  .select(
+    "id,name,name_en,slug,rating,min_deposit,best_for,best_for_en,regulation,platforms,max_leverage,logo,real_account_url,demo_account_url"
+  )
+  .eq("publication_status", "published")
+  .order("rating", { ascending: false });
 
   const brokers = (data as Broker[] | null) ?? [];
 

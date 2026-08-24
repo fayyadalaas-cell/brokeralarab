@@ -87,8 +87,9 @@ async function getData() {
     .order("regulator_code", { ascending: true });
 
   const { data: brokersData } = await supabase
-    .from("brokers")
-    .select("id,name,name_en,slug,logo,rating,regulation,regulation_short");
+  .from("brokers")
+  .select("id,name,name_en,slug,logo,rating,regulation,regulation_short")
+  .eq("publication_status", "published");
 
     const { data: regulatorsData } = await supabase
   .from("regulators")
@@ -204,8 +205,12 @@ const showAll = getSearchParam(params.all) === "1";
   const brokerMap = new Map<number, Broker>();
   brokers.forEach((broker) => brokerMap.set(broker.id, broker));
 
+  const publishedLicenses = licenses.filter((license) =>
+  brokerMap.has(license.broker_id)
+);
+
 const regulators = regulatorRows.map((regulator) => {
-  const regulatorLicenses = licenses.filter(
+  const regulatorLicenses = publishedLicenses.filter(
     (license) =>
       cleanText(license.regulator_code) === cleanText(regulator.code)
   );
@@ -228,12 +233,14 @@ const regulators = regulatorRows.map((regulator) => {
 
   const countries = Array.from(
     new Map(
-      licenses.map((item) => [
+      publishedLicenses.map((item) => [
         item.country_code,
         {
           code: item.country_code,
           name: item.country_ar,
-          count: licenses.filter((x) => x.country_code === item.country_code).length,
+          count: publishedLicenses.filter(
+  (x) => x.country_code === item.country_code
+).length,
         },
       ])
     ).values()
@@ -259,7 +266,7 @@ const regulators = regulatorRows.map((regulator) => {
       }
     });
 
-    licenses.forEach((license) => {
+    publishedLicenses.forEach((license) => {
       const licenseText = [
         license.license_number,
         license.entity_name_ar,
@@ -280,7 +287,7 @@ const regulators = regulatorRows.map((regulator) => {
     });
   }
 
-  const filteredLicenses = licenses.filter((item) => {
+  const filteredLicenses = publishedLicenses.filter((item) => {
     if (selectedRegulator && cleanText(item.regulator_code) !== cleanText(selectedRegulator)) {
       return false;
     }
@@ -298,7 +305,9 @@ const regulators = regulatorRows.map((regulator) => {
 
   const groupedByBroker = Array.from(
   new Map(
-    filteredLicenses.map((license) => [
+    filteredLicenses
+      .filter((license) => brokerMap.has(license.broker_id))
+      .map((license) => [
       license.broker_id,
       {
         broker: brokerMap.get(license.broker_id),
@@ -318,7 +327,9 @@ const regulators = regulatorRows.map((regulator) => {
 });
 
   const visibleGroups = showAll ? groupedByBroker : groupedByBroker.slice(0, 12);
-  const uniqueBrokersCount = new Set(licenses.map((x) => x.broker_id)).size;
+  const uniqueBrokersCount = new Set(
+  publishedLicenses.map((x) => x.broker_id)
+).size;
 
 const showAllUrl =
   "/licenses?" +
@@ -510,7 +521,7 @@ const licensesItemListSchema = {
   <div className="grid grid-cols-3 gap-3">
     <div className="rounded-[18px] border border-brand-100 bg-white px-3 py-4 shadow-sm">
       <div className="text-2xl font-black text-brand-600">
-        {licenses.length}
+        {publishedLicenses.length}
       </div>
       <div className="mt-1 text-[11px] font-black text-slate-500">
         ترخيص

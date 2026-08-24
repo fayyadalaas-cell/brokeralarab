@@ -329,9 +329,10 @@ twitter: {
   const supabase = await createClient();
 
   const { data } = await supabase
-    .from("brokers")
-    .select("name, slug")
-    .in("slug", [leftSlug, rightSlug]);
+  .from("brokers")
+  .select("name, slug")
+  .eq("publication_status", "published")
+  .in("slug", [leftSlug, rightSlug]);
 
   const brokers = (data ?? []) as { name: string | null; slug: string | null }[];
 
@@ -567,9 +568,10 @@ export default async function ComparePage({ params }: PageProps) {
   const supabase = await createClient();
 
   const { data: brokersData } = await supabase
-    .from("brokers")
-    .select("*")
-    .in("slug", [leftSlug, rightSlug]);
+  .from("brokers")
+  .select("*")
+  .eq("publication_status", "published")
+  .in("slug", [leftSlug, rightSlug]);
 
   const brokers = (brokersData ?? []) as Broker[];
 

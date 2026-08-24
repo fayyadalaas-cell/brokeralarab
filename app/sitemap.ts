@@ -32,8 +32,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
   const { data: brokers } = await supabase
-    .from("brokers")
-    .select("id, slug");
+  .from("brokers")
+  .select("id, slug")
+  .eq("publication_status", "published");
 
   const brokerSlugs =
     brokers?.map((b) => b.slug).filter((slug): slug is string => Boolean(slug)) || [];
@@ -49,9 +50,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   const { data: openAccountGuides } = await supabase
-    .from("broker_open_account_guides")
-    .select("slug")
-    .eq("is_active", true);
+  .from("broker_open_account_guides")
+  .select(`
+    slug,
+    brokers!inner(
+      publication_status
+    )
+  `)
+  .eq("is_active", true)
+  .eq("brokers.publication_status", "published");
 
   const openAccountPages =
     openAccountGuides
@@ -63,8 +70,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       })) || [];
 
   const { data: accounts } = await supabase
-    .from("broker_accounts")
-    .select("account_name, brokers(slug)");
+  .from("broker_accounts")
+  .select(`
+    account_name,
+    brokers!inner(
+      slug,
+      publication_status
+    )
+  `)
+  .eq("publication_status", "published")
+  .eq("brokers.publication_status", "published");
 
   const accountPages: MetadataRoute.Sitemap = [];
   const accountPagesEN: MetadataRoute.Sitemap = [];
@@ -87,25 +102,32 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   });
 
   const { data: countryPagesData } = await supabase
-    .from("country_pages")
-    .select("slug");
+  .from("country_pages")
+  .select("slug, ar_enabled, en_enabled");
 
-  const countrySlugs =
-    countryPagesData
-      ?.map((c) => c.slug)
-      .filter((slug): slug is string => Boolean(slug)) || [];
+const countryPages: MetadataRoute.Sitemap =
+  countryPagesData
+    ?.filter(
+      (country) =>
+        Boolean(country.slug) &&
+        country.ar_enabled === true
+    )
+    .map((country) => ({
+      url: `${BASE_URL}/best-brokers/${country.slug}`,
+      lastModified: now,
+    })) || [];
 
-  const countryPages = countrySlugs.map((slug) => ({
-    url: `${BASE_URL}/best-brokers/${slug}`,
-    lastModified: now,
-  }));
-
-  const countryPagesEN = ENABLE_EN_COUNTRY_PAGES
-    ? countrySlugs.map((slug) => ({
-        url: `${BASE_URL}/en/best-brokers/${slug}`,
-        lastModified: now,
-      }))
-    : [];
+const countryPagesEN: MetadataRoute.Sitemap =
+  countryPagesData
+    ?.filter(
+      (country) =>
+        Boolean(country.slug) &&
+        country.en_enabled === true
+    )
+    .map((country) => ({
+      url: `${BASE_URL}/en/best-brokers/${country.slug}`,
+      lastModified: now,
+    })) || [];
 
   const comparePages: MetadataRoute.Sitemap = [];
   const comparePagesEN: MetadataRoute.Sitemap = [];

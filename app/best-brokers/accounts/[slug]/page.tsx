@@ -554,24 +554,25 @@ async function getRankedAccounts(page: AccountPageContent) {
     return [];
   }
 
-  const { data: brokerRows, error: brokersError } = await supabase
-    .from("brokers")
-    .select(`
-      id,
-      name,
-      slug,
-      logo,
-      rating,
-      score_safety,
-      score_fees,
-      score_platforms,
-      score_deposit,
-      score_support,
-      regulation,
-      regulation_short,
-      min_deposit
-    `)
-    .in("id", brokerIds);
+const { data: brokerRows, error: brokersError } = await supabase
+  .from("brokers")
+  .select(`
+    id,
+    name,
+    slug,
+    logo,
+    rating,
+    score_safety,
+    score_fees,
+    score_platforms,
+    score_deposit,
+    score_support,
+    regulation,
+    regulation_short,
+    min_deposit
+  `)
+  .in("id", brokerIds)
+  .eq("publication_status", "published");
 
   if (brokersError || !brokerRows?.length) {
     return [];

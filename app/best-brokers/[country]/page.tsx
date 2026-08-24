@@ -642,11 +642,12 @@ async function getBrokerAccounts(brokerIds: number[]) {
 
   const supabase = await createClient();
   const { data } = await supabase
-    .from("broker_accounts")
-    .select("*")
-    .in("broker_id", brokerIds)
-    .order("broker_id", { ascending: true })
-    .order("sort_order", { ascending: true });
+  .from("broker_accounts")
+  .select("*")
+  .in("broker_id", brokerIds)
+  .eq("publication_status", "published")
+  .order("broker_id", { ascending: true })
+  .order("sort_order", { ascending: true });
 
   return (data || []) as BrokerAccount[];
 }

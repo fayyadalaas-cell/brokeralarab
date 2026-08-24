@@ -79,7 +79,8 @@ async function getTopGoldBrokers(): Promise<Broker[]> {
     .select(
   "id, name, slug, logo, rating, min_deposit, max_leverage, islamic_account, real_account_url, arabic_support, regulation, founded_year, headquarters"
 )
-    .not("rating", "is", null)
+.eq("publication_status", "published")    
+.not("rating", "is", null)
     .order("rating", { ascending: false })
     .limit(10);
 

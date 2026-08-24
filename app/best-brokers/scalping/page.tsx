@@ -734,7 +734,7 @@ export default async function ScalpingBrokersPage() {
       min_deposit_en,
       best_for_en,
       is_best_for_scalping,
-      broker:brokers!broker_accounts_broker_id_fkey (
+      broker:brokers!inner!broker_accounts_broker_id_fkey (
         id,
         name,
         slug,
@@ -751,7 +751,8 @@ export default async function ScalpingBrokersPage() {
         demo_account_url
       )
     `)
-    .eq("is_best_for_scalping", true);
+    .eq("is_best_for_scalping", true)
+    .eq("broker.publication_status", "published");
 
   if (error) {
     console.error("Scalping brokers query error:", error);

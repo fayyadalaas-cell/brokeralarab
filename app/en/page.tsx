@@ -277,18 +277,22 @@ type Comparison = {
   slug: string | null;
   title: string | null;
   views_count: number | null;
-broker_1: {
-  name: string | null;
-  name_en: string | null;
-  logo: string | null;
-  rating: number | null;
-} | null;
-broker_2: {
-  name: string | null;
-  name_en: string | null;
-  logo: string | null;
-  rating: number | null;
-} | null;
+
+  broker_1: {
+    name: string | null;
+    name_en: string | null;
+    logo: string | null;
+    rating: number | null;
+    publication_status: string | null;
+  } | null;
+
+  broker_2: {
+    name: string | null;
+    name_en: string | null;
+    logo: string | null;
+    rating: number | null;
+    publication_status: string | null;
+  } | null;
 };
 
 export const revalidate = 3600;
@@ -307,52 +311,55 @@ export default async function HomePage() {
   { data: homeEvents },
 ] = await Promise.all([
     supabase
-      .from("brokers")
-      .select(`
-        id,
-        name,
-        name_en,
-        slug,
-        rating,
-        min_deposit,
-        platforms,
-        regulation,
-        regulation_short,
-        best_for,
-        best_for_en,
-        logo,
-        islamic_account,
-        arabic_support,
-        real_account_url
-      `)
-      .order("rating", { ascending: false }),
+  .from("brokers")
+  .select(`
+    id,
+    name,
+    name_en,
+    slug,
+    rating,
+    min_deposit,
+    platforms,
+    regulation,
+    regulation_short,
+    best_for,
+    best_for_en,
+    logo,
+    islamic_account,
+    arabic_support,
+    real_account_url
+  `)
+  .eq("publication_status", "published")
+  .order("rating", { ascending: false }),
 
     supabase
-      .from("comparisons")
-      .select(`
-        id,
-        slug,
-        title,
-        views_count,
-        broker_1:broker_1_id (
-          name,
-          name_en,
-          logo,
-          rating
-        ),
-        broker_2:broker_2_id (
-          name,
-          name_en,
-          logo,
-          rating
-        )
-      `)
-      .not("slug", "is", null)
-      .not("title", "is", null)
-      .order("views_count", { ascending: false })
-      .limit(3),
+  .from("comparisons")
+  .select(`
+    id,
+    slug,
+    title,
+    views_count,
+    broker_1:broker_1_id (
+      name,
+      name_en,
+      logo,
+      rating,
+      publication_status
+    ),
+    broker_2:broker_2_id (
+      name,
+      name_en,
+      logo,
+      rating,
+      publication_status
+    )
+  `)
+  .not("slug", "is", null)
+  .not("title", "is", null)
+  .order("views_count", { ascending: false })
+  .limit(3),
 
-      supabase
+     supabase
   .from("country_broker_rankings")
   .select(`
     broker_id,
@@ -362,8 +369,12 @@ export default async function HomePage() {
     local_note,
     country_pages (
       slug
+    ),
+    broker:brokers!inner (
+      publication_status
     )
-  `),
+  `)
+  .eq("broker.publication_status", "published"),
 
     supabase
   .from("events")
@@ -427,10 +438,22 @@ export default async function HomePage() {
     slug: item.slug,
     title: item.title,
     views_count: item.views_count,
-    broker_1: Array.isArray(item.broker_1) ? item.broker_1[0] ?? null : item.broker_1 ?? null,
-    broker_2: Array.isArray(item.broker_2) ? item.broker_2[0] ?? null : item.broker_2 ?? null,
+    broker_1: Array.isArray(item.broker_1)
+      ? item.broker_1[0] ?? null
+      : item.broker_1 ?? null,
+    broker_2: Array.isArray(item.broker_2)
+      ? item.broker_2[0] ?? null
+      : item.broker_2 ?? null,
   }))
-  .filter((item) => item.slug && item.title && item.broker_1 && item.broker_2);
+  .filter(
+    (item) =>
+      item.slug &&
+      item.title &&
+      item.broker_1 &&
+      item.broker_2 &&
+      item.broker_1.publication_status === "published" &&
+      item.broker_2.publication_status === "published"
+  );
 const featured = brokers[0] ?? null;
 
 const countryPages = getCountryPages();

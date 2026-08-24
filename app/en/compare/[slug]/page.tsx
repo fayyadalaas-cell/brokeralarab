@@ -383,6 +383,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 const { data } = await supabase
   .from("brokers")
   .select("name, name_en, slug")
+  .eq("publication_status", "published")
   .in("slug", [leftSlug, rightSlug]);
 
 const brokers = (data ?? []) as {
@@ -599,10 +600,11 @@ export default async function ComparePage({ params }: PageProps) {
 
   const supabase = await createClient();
 
-  const { data: brokersData } = await supabase
-    .from("brokers")
-    .select("*")
-    .in("slug", [leftSlug, rightSlug]);
+const { data: brokersData } = await supabase
+  .from("brokers")
+  .select("*")
+  .eq("publication_status", "published")
+  .in("slug", [leftSlug, rightSlug]);
 
   const brokers = (brokersData ?? []) as Broker[];
 

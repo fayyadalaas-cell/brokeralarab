@@ -1140,11 +1140,12 @@ async function getBrokerAccounts(
       .from("broker_accounts")
       .select("*")
       .in(
-        "broker_id",
-        brokerIds,
-      )
-      .order(
-        "broker_id",
+  "broker_id",
+  brokerIds,
+)
+.eq("publication_status", "published")
+.order(
+  "broker_id",
         {
           ascending: true,
         },
