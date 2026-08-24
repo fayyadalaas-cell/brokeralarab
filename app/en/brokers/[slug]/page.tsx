@@ -171,21 +171,44 @@ function accountSlug(value: string | null) {
     .replace(/[^\w-]/g, "");
 }
 
-async function getBroker(slug: string): Promise<Broker | null> {
+function withPreview(path: string, previewToken?: string) {
+  if (!previewToken) return path;
+
+  return `${path}?preview=${encodeURIComponent(previewToken)}`;
+}
+
+async function getBroker(
+  slug: string,
+  previewToken?: string
+): Promise<Broker | null> {
   const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("brokers")
     .select("*")
     .eq("slug", slug)
-    .eq("publication_status", "published")
     .maybeSingle();
 
-  if (error) {
+  if (error || !data) {
     return null;
   }
 
-  return data as Broker | null;
+  const broker = data as Broker;
+
+  if (broker.publication_status === "published") {
+    return broker;
+  }
+
+  const validPreview =
+    broker.preview_enabled === true &&
+    Boolean(previewToken) &&
+    broker.preview_token === previewToken;
+
+  if (validPreview) {
+    return broker;
+  }
+
+  return null;
 }
 
 async function getRelatedBrokers(currentSlug: string): Promise<RelatedBroker[]> {
@@ -232,62 +255,93 @@ async function getBrokerLicenses(brokerId: number): Promise<BrokerLicense[]> {
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams?: Promise<{ preview?: string | string[] }>;
 }) {
   const { slug } = await params;
-  const broker = await getBroker(slug);
+  const query = (await searchParams) || {};
+
+  const previewToken = Array.isArray(query.preview)
+    ? query.preview[0]
+    : query.preview;
+
+  const broker = await getBroker(slug, previewToken);
   const siteUrl = "https://brokeralarab.com";
 
   if (!broker) {
     return {
       title: "Broker Review",
-      description: "مراجعة شركات التداول",
+      description: "Forex broker reviews and comparisons",
+      robots: {
+        index: false,
+        follow: false,
+      },
     };
   }
 
-  const title = broker.meta_title_en || broker.meta_title || `${broker.name} Review 2026 | Broker AlArab`;
+  const title =
+    broker.meta_title_en ||
+    broker.meta_title ||
+    `${broker.name_en || broker.name} Review 2026 | Broker AlArab`;
+
   const description =
-  broker.meta_description_en ||
-  broker.meta_descr ||
-  `Full review of ${broker.name} including fees, platforms, regulation, and account types.`;
+    broker.meta_description_en ||
+    broker.meta_descr ||
+    `Full review of ${broker.name_en || broker.name} including fees, platforms, regulation, and account types.`;
+
+  const isPreview = broker.publication_status !== "published";
 
   return {
     metadataBase: new URL(siteUrl),
+
     title,
     description,
-    alternates: {
-  canonical: `${siteUrl}/en/brokers/${broker.slug}`,
-  languages: {
-    ar: `${siteUrl}/brokers/${broker.slug}`,
-    en: `${siteUrl}/en/brokers/${broker.slug}`,
-    "x-default": `${siteUrl}/en/brokers/${broker.slug}`,
-  },
-},
-    openGraph: {
-  title,
-  description,
-  url: `${siteUrl}/en/brokers/${broker.slug}`,
-  siteName: "Broker Alarab",
-  locale: "en_US",
-  type: "article",
-  images: [
-  {
-    url: `${siteUrl}/og-image.webp`,
-    width: 1560,
-    height: 377,
-    alt: `Review ${broker.name}`,
-  },
-],
-},
 
-twitter: {
-  card: "summary_large_image",
-  title,
-  description,
-  images: [`${siteUrl}/og-image.webp`],
-  creator: "@brokeralarab",
-},
+    robots: isPreview
+      ? {
+          index: false,
+          follow: false,
+        }
+      : {
+          index: true,
+          follow: true,
+        },
+
+    alternates: {
+      canonical: `${siteUrl}/en/brokers/${broker.slug}`,
+      languages: {
+        ar: `${siteUrl}/brokers/${broker.slug}`,
+        en: `${siteUrl}/en/brokers/${broker.slug}`,
+        "x-default": `${siteUrl}/en/brokers/${broker.slug}`,
+      },
+    },
+
+    openGraph: {
+      title,
+      description,
+      url: `${siteUrl}/en/brokers/${broker.slug}`,
+      siteName: "Broker Alarab",
+      locale: "en_US",
+      type: "article",
+      images: [
+        {
+          url: `${siteUrl}/og-image.webp`,
+          width: 1560,
+          height: 377,
+          alt: `Review ${broker.name_en || broker.name}`,
+        },
+      ],
+    },
+
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [`${siteUrl}/og-image.webp`],
+      creator: "@brokeralarab",
+    },
   };
 }
 
@@ -875,9 +929,11 @@ function MiniInfoCard({
 function MobileAccountAccordion({
   accounts,
   brokerSlug,
+  previewToken,
 }: {
   accounts: BrokerAccount[];
   brokerSlug: string;
+  previewToken?: string;
 }) {
   if (!accounts.length) {
     return (
@@ -897,7 +953,10 @@ function MobileAccountAccordion({
           <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4 text-left">
             <div className="min-w-0">
               <Link
-  href={`/en/brokers/${brokerSlug}/accounts/${accountSlug(acc.account_name)}`}
+  href={withPreview(
+  `/en/brokers/${brokerSlug}/accounts/${accountSlug(acc.account_name)}`,
+  previewToken
+)}
   className="text-base font-black text-brand-600 hover:text-brand-600"
 >
   {acc.account_name || "-"}
@@ -1441,11 +1500,19 @@ function BrokerLicensesSection({
 
 export default async function BrokerPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams?: Promise<{ preview?: string | string[] }>;
 }) {
   const { slug } = await params;
-  const broker = await getBroker(slug);
+  const query = (await searchParams) || {};
+
+  const previewToken = Array.isArray(query.preview)
+    ? query.preview[0]
+    : query.preview;
+
+  const broker = await getBroker(slug, previewToken);
 
   if (!broker) {
     return (
@@ -2318,9 +2385,10 @@ const reviewSchema = {
 
  
 
-        <MobileAccountAccordion
+       <MobileAccountAccordion
   accounts={accountsData}
   brokerSlug={broker.slug || ""}
+  previewToken={previewToken}
 />
 
         <div className="mt-5 rounded-[22px] border border-brand-100 bg-brand-50 p-4 shadow-sm">
@@ -2468,7 +2536,10 @@ const reviewSchema = {
                   >
                     <td className="p-4">
                      <Link
-  href={`/en/brokers/${broker.slug}/accounts/${accountSlug(acc.account_name)}`}
+  href={withPreview(
+  `/en/brokers/${broker.slug}/accounts/${accountSlug(acc.account_name)}`,
+  previewToken
+)}
   className="inline-flex items-center gap-2 rounded-full border border-brand-100 bg-brand-50 px-3 py-1.5 transition hover:bg-brand-500 hover:text-white"
 >
   <span className="h-2 w-2 rounded-full bg-brand-500" />

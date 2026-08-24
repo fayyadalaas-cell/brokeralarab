@@ -8,6 +8,9 @@ type PageProps = {
     slug: string;
     account: string;
   }>;
+  searchParams?: Promise<{
+    preview?: string | string[];
+  }>;
 };
 
 function slugify(value: string | null) {
@@ -37,37 +40,145 @@ function accountBestFor(account: any) {
   return account.best_for_en || account.best_for || "General traders";
 }
 
-export async function generateMetadata({ params }: PageProps) {
-  const { slug, account } = await params;
+function getPreviewToken(
+  query: { preview?: string | string[] } | undefined
+) {
+  if (!query) return undefined;
+
+  return Array.isArray(query.preview)
+    ? query.preview[0]
+    : query.preview;
+}
+
+function withPreview(path: string, previewToken?: string) {
+  if (!previewToken) return path;
+
+  return `${path}?preview=${encodeURIComponent(previewToken)}`;
+}
+
+async function getBrokerAccess(
+  slug: string,
+  previewToken?: string
+) {
   const supabase = await createClient();
 
-  const { data: broker } = await supabase
+  const { data: broker, error } = await supabase
     .from("brokers")
-    .select("id,name,name_en,slug")
+    .select("*")
     .eq("slug", slug)
-    .single();
+    .maybeSingle();
 
-  if (!broker) return {};
+  if (error || !broker) {
+    return null;
+  }
 
-  const { data: accounts } = await supabase
+  const hasValidPreview =
+    broker.preview_enabled === true &&
+    Boolean(previewToken) &&
+    broker.preview_token === previewToken;
+
+  const canAccess =
+    broker.publication_status === "published" ||
+    hasValidPreview;
+
+  if (!canAccess) {
+    return null;
+  }
+
+  return {
+    broker,
+    hasValidPreview,
+  };
+}
+
+export async function generateMetadata({
+  params,
+  searchParams,
+}: PageProps) {
+  const { slug, account } = await params;
+  const query = (await searchParams) || {};
+  const previewToken = getPreviewToken(query);
+
+  const access = await getBrokerAccess(slug, previewToken);
+
+  if (!access) {
+    return {
+      title: "Broker Account Review",
+      description: "Forex broker account review.",
+      robots: {
+        index: false,
+        follow: false,
+      },
+    };
+  }
+
+  const { broker, hasValidPreview } = access;
+
+  const supabase = await createClient();
+
+  let accountsQuery = supabase
     .from("broker_accounts")
-    .select("account_name,spread,commission,commission_en,min_deposit,min_deposit_en,best_for_en")
+    .select("*")
     .eq("broker_id", broker.id);
 
-  const current = accounts?.find((a) => slugify(a.account_name) === account);
-  if (!current) return {};
+  if (hasValidPreview) {
+    accountsQuery = accountsQuery.in("publication_status", [
+      "published",
+      "draft",
+    ]);
+  } else {
+    accountsQuery = accountsQuery.eq(
+      "publication_status",
+      "published"
+    );
+  }
+
+  const { data: accounts } = await accountsQuery;
+
+  const current = accounts?.find(
+    (a) => slugify(a.account_name) === account
+  );
+
+  if (!current) {
+    return {
+      title: "Broker Account Review",
+      description: "Forex broker account review.",
+      robots: {
+        index: false,
+        follow: false,
+      },
+    };
+  }
 
   const brokerName = broker.name_en || broker.name;
 
-const title = `${brokerName} ${current.account_name} Account Review: Spreads, Fees & Minimum Deposit`;
+  const title =
+    `${brokerName} ${current.account_name} Account Review: Spreads, Fees & Minimum Deposit`;
 
-const description = `${brokerName} ${current.account_name} account review covering spreads, fees, minimum deposit and trading costs.`;
+  const description =
+    `${brokerName} ${current.account_name} account review covering spreads, fees, minimum deposit and trading costs.`;
 
-return {
-  title: {
-    absolute: title,
-  },
-  description,
+  const isPreview =
+    broker.publication_status !== "published" ||
+    current.publication_status !== "published";
+
+  return {
+    title: {
+      absolute: title,
+    },
+
+    description,
+
+    robots: isPreview
+      ? {
+          index: false,
+          follow: false,
+        }
+      : {
+          index: true,
+          follow: true,
+        },
+
     alternates: {
       canonical: `/en/brokers/${broker.slug}/accounts/${slugify(
         current.account_name
@@ -76,46 +187,55 @@ return {
   };
 }
 
-export default async function BrokerAccountPage({ params }: PageProps) {
+export default async function BrokerAccountPage({
+  params,
+  searchParams,
+}: PageProps) {
   const { slug, account } = await params;
+  const query = (await searchParams) || {};
+  const previewToken = getPreviewToken(query);
+
+  const access = await getBrokerAccess(slug, previewToken);
+
+  if (!access) {
+    notFound();
+  }
+
+  const { broker, hasValidPreview } = access;
+
   const supabase = await createClient();
 
-  const { data: broker } = await supabase
-    .from("brokers")
-    .select(`
-      id,
-      name,
-      name_en,
-      slug,
-      logo,
-      rating,
-      platforms,
-      regulation_short,
-      real_account_url,
-      demo_account_url,
-      final_verdict_en,
-      broker_positioning_en,
-      score_safety,
-      score_fees,
-      score_platforms,
-      score_deposit,
-      score_support
-    `)
-    .eq("slug", slug)
-    .single();
-
-  if (!broker) notFound();
-
-  const { data: accounts } = await supabase
+  let accountsQuery = supabase
     .from("broker_accounts")
     .select("*")
     .eq("broker_id", broker.id)
     .order("sort_order", { ascending: true });
 
-  if (!accounts?.length) notFound();
+  if (hasValidPreview) {
+    accountsQuery = accountsQuery.in("publication_status", [
+      "published",
+      "draft",
+    ]);
+  } else {
+    accountsQuery = accountsQuery.eq(
+      "publication_status",
+      "published"
+    );
+  }
 
-  const current = accounts.find((a) => slugify(a.account_name) === account);
-  if (!current) notFound();
+  const { data: accounts } = await accountsQuery;
+
+  if (!accounts?.length) {
+    notFound();
+  }
+
+  const current = accounts.find(
+    (a) => slugify(a.account_name) === account
+  );
+
+  if (!current) {
+    notFound();
+  }
 
   const brokerName = broker.name_en || broker.name;
   const currentCommission = current.commission_en || current.commission;
@@ -148,7 +268,13 @@ export default async function BrokerAccountPage({ params }: PageProps) {
             Home
           </Link>
           <span className="mx-2">/</span>
-          <Link href={`/en/brokers/${broker.slug}`} className="hover:text-brand-600">
+          <Link
+  href={withPreview(
+    `/en/brokers/${broker.slug}`,
+    previewToken
+  )}
+  className="hover:text-brand-600"
+>
             {brokerName} Review
           </Link>
           <span className="mx-2">/</span>
@@ -214,7 +340,10 @@ export default async function BrokerAccountPage({ params }: PageProps) {
             )}
 
             <Link
-              href={`/en/brokers/${broker.slug}`}
+              href={withPreview(
+  `/en/brokers/${broker.slug}`,
+  previewToken
+)}
               className="flex min-h-[48px] items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 text-base font-black text-slate-900 hover:bg-slate-50"
             >
               Back to {brokerName} Review
@@ -311,7 +440,10 @@ export default async function BrokerAccountPage({ params }: PageProps) {
               )}
 
               <Link
-                href={`/en/brokers/${broker.slug}`}
+               href={withPreview(
+  `/en/brokers/${broker.slug}`,
+  previewToken
+)}
                 className="rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-black text-slate-800 hover:bg-slate-50"
               >
                 Back to {brokerName} Review
@@ -513,10 +645,13 @@ export default async function BrokerAccountPage({ params }: PageProps) {
 
               return (
                 <Link
-                  key={item.id}
-                  href={`/en/brokers/${broker.slug}/accounts/${slugify(
-                    item.account_name
-                  )}`}
+  key={item.id}
+  href={withPreview(
+    `/en/brokers/${broker.slug}/accounts/${slugify(
+      item.account_name
+    )}`,
+    previewToken
+  )}
                   className={`rounded-2xl border p-4 transition ${
                     active
                       ? "border-blue-300 bg-brand-50 shadow-sm"
@@ -608,9 +743,12 @@ export default async function BrokerAccountPage({ params }: PageProps) {
                     <tr key={item.id} className={active ? "bg-brand-50" : "bg-white"}>
                       <td className="p-4">
                         <Link
-                          href={`/en/brokers/${broker.slug}/accounts/${slugify(
-                            item.account_name
-                          )}`}
+  href={withPreview(
+    `/en/brokers/${broker.slug}/accounts/${slugify(
+      item.account_name
+    )}`,
+    previewToken
+  )}
                           className={`inline-flex rounded-full px-3 py-1 text-xs font-black ${
                             active
                               ? "bg-brand-500 text-white"

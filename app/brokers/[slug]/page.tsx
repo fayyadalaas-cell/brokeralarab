@@ -202,21 +202,44 @@ function accountSlug(value: string | null) {
     .replace(/[^\w-]/g, "");
 }
 
-async function getBroker(slug: string): Promise<Broker | null> {
+function withPreview(path: string, previewToken?: string) {
+  if (!previewToken) return path;
+
+  return `${path}?preview=${encodeURIComponent(previewToken)}`;
+}
+
+async function getBroker(
+  slug: string,
+  previewToken?: string
+): Promise<Broker | null> {
   const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("brokers")
     .select("*")
     .eq("slug", slug)
-    .eq("publication_status", "published")
     .maybeSingle();
 
-  if (error) {
+  if (error || !data) {
     return null;
   }
 
-  return data as Broker | null;
+  const broker = data as Broker;
+
+  if (broker.publication_status === "published") {
+    return broker;
+  }
+
+  const validPreview =
+    broker.preview_enabled === true &&
+    Boolean(previewToken) &&
+    broker.preview_token === previewToken;
+
+  if (validPreview) {
+    return broker;
+  }
+
+  return null;
 }
 
 async function getRelatedBrokers(currentSlug: string): Promise<RelatedBroker[]> {
@@ -282,19 +305,31 @@ async function getOpenAccountGuide(slug: string) {
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams?: Promise<{ preview?: string | string[] }>;
 }) {
   const { slug } = await params;
-  const broker = await getBroker(slug);
+  const query = (await searchParams) || {};
+
+  const previewToken = Array.isArray(query.preview)
+    ? query.preview[0]
+    : query.preview;
+
+  const broker = await getBroker(slug, previewToken);
   const siteUrl = "https://brokeralarab.com";
 
-  if (!broker) {
-    return {
-      title: "مراجعة شركات التداول",
-      description: "أفضل تقييمات شركات التداول في العالم العربي",
-    };
-  }
+ if (!broker) {
+  return {
+    title: "مراجعة شركات التداول",
+    description: "أفضل تقييمات شركات التداول في العالم العربي",
+    robots: {
+      index: false,
+      follow: false,
+    },
+  };
+}
 
   const title =
     broker.meta_title ||
@@ -304,11 +339,23 @@ export async function generateMetadata({
     broker.meta_descr ||
     `مراجعة شاملة لشركة ${broker.name} تشمل الرسوم، المنصات، التراخيص، أنواع الحسابات، وطرق الإيداع والسحب بالتفصيل.`;
 
+    const isPreview = broker.publication_status !== "published";
+
   return {
     metadataBase: new URL(siteUrl),
 
     title,
     description,
+
+    robots: isPreview
+  ? {
+      index: false,
+      follow: false,
+    }
+  : {
+      index: true,
+      follow: true,
+    },
 
     alternates: {
   canonical: `${siteUrl}/brokers/${broker.slug}`,
@@ -1555,11 +1602,19 @@ dir="rtl"
 
 export default async function BrokerPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams?: Promise<{ preview?: string | string[] }>;
 }) {
   const { slug } = await params;
-  const broker = await getBroker(slug);
+  const query = (await searchParams) || {};
+
+  const previewToken = Array.isArray(query.preview)
+    ? query.preview[0]
+    : query.preview;
+
+  const broker = await getBroker(slug, previewToken);
 
   if (!broker) {
     return (
@@ -2645,7 +2700,10 @@ const reviewSchema = {
         <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
           <div className="min-w-0 flex-1 text-right">
             <Link
-  href={`/brokers/${broker.slug}/accounts/${accountSlug(acc.account_name)}`}
+  href={withPreview(
+  `/brokers/${broker.slug}/accounts/${accountSlug(acc.account_name)}`,
+  previewToken
+)}
   className="text-[16px] font-black text-brand-600 hover:text-brand-600"
 >
   {acc.account_name || "-"}
@@ -2752,7 +2810,10 @@ const reviewSchema = {
               >
                 <td className="p-4">
                   <Link
-  href={`/brokers/${broker.slug}/accounts/${accountSlug(acc.account_name)}`}
+  href={withPreview(
+  `/brokers/${broker.slug}/accounts/${accountSlug(acc.account_name)}`,
+  previewToken
+)}
   className="inline-flex items-center gap-2 rounded-full border border-brand-100 bg-brand-50 px-3 py-1.5 transition hover:bg-brand-500 hover:text-white"
 >
   <span className="h-2 w-2 rounded-full bg-brand-500" />
