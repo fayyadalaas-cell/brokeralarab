@@ -2869,7 +2869,77 @@ const reviewSchema = {
 </div>
 </SectionCard>
 
-    <SectionCard title="الإيداع والسحب">
+{/* الرسوم وتكاليف التداول */}
+<SectionCard
+  title="الرسوم وتكاليف التداول"
+  subtitle={`نظرة واضحة على السبريد والعمولات وأهم تكاليف التداول المحتملة لدى ${broker.name}.`}
+  id="fees"
+>
+  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
+    <div className="grid md:grid-cols-[210px_minmax(0,1fr)]">
+
+      {/* ملخص التسعير */}
+      <div className="border-b border-slate-200 bg-slate-50 p-5 text-right md:border-b-0 md:border-l md:p-6">
+        <div className="text-xs font-black uppercase tracking-[0.12em] text-brand-600">
+          ملخص التسعير
+        </div>
+
+        <div className="mt-5 space-y-3">
+          <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+            <div className="text-xs font-bold text-slate-500">
+              أقل سبريد
+            </div>
+
+            <div className="mt-1 text-lg font-black text-slate-950">
+              {lowestSpread?.spread || broker.spreads || "-"}
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+            <div className="text-xs font-bold text-slate-500">
+              هيكل العمولات
+            </div>
+
+            <div className="mt-1 text-sm font-black leading-6 text-slate-950">
+              {commissionAccounts.length
+                ? `${commissionAccounts.length} حسابات بعمولة`
+                : "تتوفر حسابات بدون عمولة"}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* شرح الرسوم */}
+      <div className="p-5 text-right md:p-6">
+        <div className="text-xl font-black text-slate-950">
+          شرح رسوم التداول
+        </div>
+
+        <p className="mt-3 text-[15px] leading-8 text-slate-700">
+          {broker.fees ||
+            `تختلف تكاليف التداول لدى ${broker.name} بحسب نوع الحساب المختار، وقيمة السبريد، وهيكل العمولات، والأداة المالية التي يتم تداولها.`}
+        </p>
+
+        <div className="mt-5 flex flex-wrap justify-start gap-2">
+          <span className="rounded-full border border-brand-100 bg-brand-50 px-3 py-1.5 text-xs font-bold text-brand-700">
+            السبريد
+          </span>
+
+          <span className="rounded-full border border-brand-100 bg-brand-50 px-3 py-1.5 text-xs font-bold text-brand-700">
+            العمولات
+          </span>
+
+          <span className="rounded-full border border-brand-100 bg-brand-50 px-3 py-1.5 text-xs font-bold text-brand-700">
+            تكاليف التداول
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</SectionCard>
+
+<SectionCard title="الإيداع والسحب">
   <div className="space-y-5 md:space-y-6">
 
    {/* Mobile */}

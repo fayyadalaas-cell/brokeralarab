@@ -2684,6 +2684,73 @@ const reviewSchema = {
   </div>
 </SectionCard>
 
+<SectionCard
+  title="Fees & Trading Costs"
+  subtitle={`A clear overview of ${broker.name_en || broker.name}’s spreads, commissions, and other potential trading costs.`}
+  id="fees"
+>
+  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
+    <div className="grid md:grid-cols-[210px_minmax(0,1fr)]">
+
+      <div className="border-b border-slate-200 bg-slate-50 p-5 md:border-b-0 md:border-r md:p-6">
+        <div className="text-xs font-black uppercase tracking-[0.12em] text-brand-600">
+          Pricing Overview
+        </div>
+
+        <div className="mt-5 space-y-3">
+          <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+            <div className="text-xs font-bold text-slate-500">
+              Lowest Spread
+            </div>
+
+            <div className="mt-1 text-lg font-black text-slate-950">
+              {lowestSpread?.spread || broker.spreads_en || broker.spreads || "-"}
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+            <div className="text-xs font-bold text-slate-500">
+              Account Pricing
+            </div>
+
+            <div className="mt-1 text-sm font-black text-slate-950">
+              {commissionAccounts.length
+                ? `${commissionAccounts.length} commission-based accounts`
+                : "Commission-free pricing available"}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="p-5 md:p-6">
+        <div className="text-xl font-black text-slate-950">
+          Trading Fees Explained
+        </div>
+
+        <p className="mt-3 text-[15px] leading-8 text-slate-700">
+          {broker.fees_en ||
+            broker.fees ||
+            `Trading costs at ${broker.name_en || broker.name} depend on the selected account type, spread, commission structure, and traded instrument.`}
+        </p>
+
+        <div className="mt-5 flex flex-wrap gap-2">
+          <span className="rounded-full border border-brand-100 bg-brand-50 px-3 py-1.5 text-xs font-bold text-brand-700">
+            Spreads
+          </span>
+
+          <span className="rounded-full border border-brand-100 bg-brand-50 px-3 py-1.5 text-xs font-bold text-brand-700">
+            Commissions
+          </span>
+
+          <span className="rounded-full border border-brand-100 bg-brand-50 px-3 py-1.5 text-xs font-bold text-brand-700">
+            Trading Costs
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</SectionCard>
 
       <SectionCard title="Deposits & Withdrawals">
   <div className="space-y-5 md:space-y-6">
