@@ -1816,8 +1816,8 @@ function eventCountdown(start?: string | null, end?: string | null) {
           </span>
 
           <h2 className="mx-auto mt-2.5 max-w-[335px] text-[24px] font-black leading-[1.32] tracking-[-0.02em] text-[#07111f] sm:max-w-none sm:text-[34px] lg:mx-0 lg:text-[36px]">
-  اختر نوع الحساب المناسب لأسلوب تداولك
-</h2>
+            اختر نوع الحساب المناسب لأسلوب تداولك
+          </h2>
 
           {/* MOBILE DESCRIPTION */}
           <p className="mx-auto mt-2 max-w-[305px] text-[11px] font-semibold leading-5 text-slate-600 sm:hidden">
@@ -1830,7 +1830,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
           </p>
         </div>
 
-        {/* CTA - SAME STANDARD AS OTHER SECTIONS */}
+        {/* CTA */}
         <div className="shrink-0 self-center pl-4 lg:-translate-x-[14px]">
           <Link
             href="/lowest-spread-brokers"
@@ -1839,9 +1839,9 @@ function eventCountdown(start?: string | null, end?: string | null) {
             قارن أنواع الحسابات
           </Link>
         </div>
+
       </div>
     </div>
-
 
     {/* =====================================================
         MOBILE
@@ -1854,33 +1854,40 @@ function eventCountdown(start?: string | null, end?: string | null) {
             suitable: "للمبتدئين والتداول اليومي",
             desc: "رسوم واضحة وبدون تعقيد كبير.",
             badge: "سهولة البدء",
+            href: "/best-brokers/accounts/standard",
           },
           {
             title: "حسابات Raw Spread",
             suitable: "للسكالبينج والمتداول النشط",
             desc: "سبريد يبدأ من 0.0 نقطة مع عمولة ثابتة.",
             badge: "أقل سبريد",
+            href: "/best-brokers/accounts/raw-spread",
           },
           {
             title: "حسابات ECN",
             suitable: "للمتداولين المحترفين",
             desc: "تنفيذ سريع ووصول مباشر للسيولة.",
             badge: "تنفيذ احترافي",
+            href: "/lowest-spread-brokers",
           },
           {
             title: "حسابات Cent / Micro",
             suitable: "للتجربة برأس مال صغير",
             desc: "أحجام تداول صغيرة لاختبار استراتيجيتك.",
             badge: "رأس مال صغير",
+            href: "/best-brokers/accounts/cent",
           },
         ].map((item) => (
           <Link
             key={item.title}
-            href="/lowest-spread-brokers"
+            href={item.href}
+            target="_blank"
+            rel="noopener noreferrer"
             className="group overflow-hidden rounded-[15px] border border-slate-200 bg-white px-3 py-2.5 shadow-[0_3px_10px_rgba(15,23,42,0.035)] transition duration-300 hover:border-brand-200 hover:bg-[#fbfdff]"
           >
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0 flex-1 text-right">
+
                 <div className="flex items-center justify-between gap-2">
                   <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-2.5 py-0.5 text-[9px] font-black text-brand-600">
                     {item.badge}
@@ -1902,6 +1909,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
                 <p className="mt-0.5 text-[10.5px] font-semibold leading-5 text-slate-500">
                   {item.desc}
                 </p>
+
               </div>
             </div>
 
@@ -1919,7 +1927,6 @@ function eventCountdown(start?: string | null, end?: string | null) {
       </div>
     </div>
 
-
     {/* =====================================================
         DESKTOP / TABLET
     ====================================================== */}
@@ -1931,31 +1938,38 @@ function eventCountdown(start?: string | null, end?: string | null) {
             suitable: "مناسبة للمبتدئين والتداول اليومي",
             desc: "حسابات سهلة بتكلفة واضحة وبدون تعقيد في العمولات.",
             badge: "سهولة البدء",
+            href: "/best-brokers/accounts/standard",
           },
           {
             title: "حسابات Raw Spread",
             suitable: "مناسبة للسكالبينج والمتداول النشط",
             desc: "سبريد يبدأ من 0.0 نقطة مع عمولة ثابتة لتنفيذ احترافي.",
             badge: "أقل سبريد",
+            href: "/best-brokers/accounts/raw-spread",
           },
           {
             title: "حسابات ECN",
             suitable: "مناسبة للمتداولين المحترفين",
             desc: "تنفيذ سريع ووصول مباشر للسيولة مع تسعير أكثر تنافسية.",
             badge: "تنفيذ احترافي",
+            href: "/lowest-spread-brokers",
           },
           {
             title: "حسابات Cent / Micro",
             suitable: "مناسبة للتجربة برأس مال صغير",
             desc: "أحجام تداول صغيرة لاختبار الاستراتيجيات وتقليل المخاطر.",
             badge: "رأس مال صغير",
+            href: "/best-brokers/accounts/cent",
           },
         ].map((item) => (
           <Link
             key={item.title}
-            href="/lowest-spread-brokers"
+            href={item.href}
+            target="_blank"
+            rel="noopener noreferrer"
             className="group flex min-h-[220px] flex-col overflow-hidden rounded-[20px] border border-slate-200 bg-white p-4 shadow-[0_4px_14px_rgba(15,23,42,0.035)] transition duration-300 hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-[0_12px_28px_rgba(37,99,235,0.09)]"
           >
+
             {/* TOP */}
             <div className="flex items-center justify-between gap-3">
               <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[10px] font-black text-brand-600">
@@ -1992,6 +2006,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
                 ←
               </span>
             </div>
+
           </Link>
         ))}
       </div>

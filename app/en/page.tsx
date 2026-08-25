@@ -1800,9 +1800,9 @@ function eventCountdown(start?: string | null, end?: string | null) {
             Compare Account Types
           </Link>
         </div>
+
       </div>
     </div>
-
 
     {/* =====================================================
         MOBILE
@@ -1815,29 +1815,35 @@ function eventCountdown(start?: string | null, end?: string | null) {
             suitable: "For beginners and everyday trading",
             desc: "Clear pricing with no complex commission structure.",
             badge: "Easy to Start",
+            href: "/en/best-brokers/accounts/standard",
           },
           {
             title: "Raw Spread Accounts",
             suitable: "For scalping and active trading",
             desc: "Spreads from 0.0 pips with a separate commission.",
             badge: "Lower Spreads",
+            href: "/en/best-brokers/accounts/raw-spread",
           },
           {
             title: "ECN Accounts",
             suitable: "For experienced traders",
             desc: "Fast execution and more direct access to liquidity.",
             badge: "Pro Execution",
+            href: "/en/lowest-spread-brokers#account-types",
           },
           {
             title: "Cent / Micro Accounts",
             suitable: "For testing with smaller capital",
             desc: "Trade smaller positions and test your strategies.",
             badge: "Small Capital",
+            href: "/en/best-brokers/accounts/cent",
           },
         ].map((item) => (
           <Link
             key={item.title}
-            href="/en/lowest-spread-brokers#account-types"
+            href={item.href}
+            target="_blank"
+            rel="noopener noreferrer"
             className="group overflow-hidden rounded-[15px] border border-slate-200 bg-white px-3 py-2.5 shadow-[0_3px_10px_rgba(15,23,42,0.035)] transition duration-300 hover:border-brand-200 hover:bg-[#fbfdff]"
           >
             <div className="flex items-center justify-between gap-3">
@@ -1868,6 +1874,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
                 <p className="mt-0.5 text-[10.5px] font-semibold leading-5 text-slate-500">
                   {item.desc}
                 </p>
+
               </div>
             </div>
 
@@ -1886,7 +1893,6 @@ function eventCountdown(start?: string | null, end?: string | null) {
       </div>
     </div>
 
-
     {/* =====================================================
         DESKTOP / TABLET
     ====================================================== */}
@@ -1898,31 +1904,38 @@ function eventCountdown(start?: string | null, end?: string | null) {
             suitable: "Suitable for beginners and everyday trading",
             desc: "Simple accounts with clear pricing and no complex commission structure.",
             badge: "Easy to Start",
+            href: "/en/best-brokers/accounts/standard",
           },
           {
             title: "Raw Spread Accounts",
             suitable: "Suitable for scalping and active trading",
             desc: "Spreads from 0.0 pips with a separate commission for active traders.",
             badge: "Lower Spreads",
+            href: "/en/best-brokers/accounts/raw-spread",
           },
           {
             title: "ECN Accounts",
             suitable: "Suitable for experienced traders",
             desc: "Fast execution and more direct access to deeper market liquidity.",
             badge: "Pro Execution",
+            href: "/en/lowest-spread-brokers#account-types",
           },
           {
             title: "Cent / Micro Accounts",
             suitable: "Suitable for testing with smaller capital",
             desc: "Trade smaller position sizes and test strategies with lower capital.",
             badge: "Small Capital",
+            href: "/en/best-brokers/accounts/cent",
           },
         ].map((item) => (
           <Link
             key={item.title}
-            href="/en/lowest-spread-brokers#account-types"
+            href={item.href}
+            target="_blank"
+            rel="noopener noreferrer"
             className="group flex min-h-[220px] flex-col overflow-hidden rounded-[20px] border border-slate-200 bg-white p-4 shadow-[0_4px_14px_rgba(15,23,42,0.035)] transition duration-300 hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-[0_12px_28px_rgba(37,99,235,0.09)]"
           >
+
             {/* TOP */}
             <div className="flex items-center justify-between gap-3">
               <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[10px] font-black text-brand-600">
@@ -1959,6 +1972,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
                 →
               </span>
             </div>
+
           </Link>
         ))}
       </div>
