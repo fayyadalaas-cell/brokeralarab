@@ -178,7 +178,7 @@ async function getTopBrokers(): Promise<BrokerMenuItem[]> {
   }
 
   const query =
-    "select=name,name_en,slug,rating&slug=not.is.null&order=rating.desc&limit=5";
+  "select=name,name_en,slug,rating&slug=not.is.null&publication_status=eq.published&order=rating.desc&limit=5";
 
   const response = await fetch(
     `${supabaseUrl}/rest/v1/brokers?${query}`,
