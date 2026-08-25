@@ -2336,7 +2336,98 @@ const reviewSchema = {
 
 </div>
 
+{/* Desktop */}
+<div className="hidden gap-6 md:grid md:grid-cols-2 lg:gap-8">
+  <section className="rounded-[28px] border border-slate-200 bg-white text-left shadow-sm">
+    <div className="border-b border-slate-200 px-6 py-5">
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h2 className="text-2xl font-extrabold text-slate-950">
+            Main Advantages
+          </h2>
 
+          <p className="mt-2 text-sm leading-7 text-slate-600">
+            The main strengths that may make {broker.name_en || broker.name} suitable for certain traders.
+          </p>
+        </div>
+
+        <div className="inline-flex h-10 min-w-[40px] items-center justify-center rounded-full bg-emerald-50 px-3 text-sm font-black text-emerald-700">
+          {pros.length}
+        </div>
+      </div>
+    </div>
+
+    <div className="p-6 lg:min-h-[264px]">
+      {pros.length ? (
+        <div className="space-y-3">
+          {pros.map((item, i) => (
+            <div
+              key={i}
+              className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 transition duration-200 hover:border-emerald-200 hover:bg-white hover:shadow-sm"
+            >
+              <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-sm font-black text-emerald-700">
+                ✓
+              </div>
+
+              <div className="min-w-0">
+                <p className="text-[15px] leading-7 text-slate-700">
+                  {item}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="text-slate-500">No data available.</p>
+      )}
+    </div>
+  </section>
+
+  <section className="rounded-[28px] border border-slate-200 bg-white text-left shadow-sm">
+    <div className="border-b border-slate-200 px-6 py-5">
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h2 className="text-2xl font-extrabold text-slate-950">
+            Main Disadvantages
+          </h2>
+
+          <p className="mt-2 text-sm leading-7 text-slate-600">
+            The main points to consider before opening an account with {broker.name_en || broker.name}.
+          </p>
+        </div>
+
+        <div className="inline-flex h-10 min-w-[40px] items-center justify-center rounded-full bg-rose-50 px-3 text-sm font-black text-rose-700">
+          {cons.length}
+        </div>
+      </div>
+    </div>
+
+    <div className="p-6 lg:min-h-[264px]">
+      {cons.length ? (
+        <div className="space-y-3">
+          {cons.map((item, i) => (
+            <div
+              key={i}
+              className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 transition duration-200 hover:border-rose-200 hover:bg-white hover:shadow-sm"
+            >
+              <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-rose-100 text-sm font-black text-rose-700">
+                –
+              </div>
+
+              <div className="min-w-0">
+                <p className="text-[15px] leading-7 text-slate-700">
+                  {item}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="text-slate-500">No data available.</p>
+      )}
+    </div>
+  </section>
+</div>
 
 <SectionCard
   title="Account Types"
