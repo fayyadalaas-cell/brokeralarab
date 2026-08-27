@@ -448,7 +448,7 @@ function calculateOverallScore(broker: Broker) {
   if (!scores.length) return broker.rating ?? null;
 
   const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
-  return Number(avg.toFixed(1));
+  return Number(avg.toFixed(2));
 }
 
 function getVerdictTone(score: number | null) {

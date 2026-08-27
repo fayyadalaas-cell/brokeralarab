@@ -148,7 +148,7 @@ function ratingValue(value: number | string | null | undefined) {
 
 function ratingLabel(value: number | string | null | undefined) {
   const rating = ratingValue(value);
-  return rating > 0 ? rating.toFixed(1) : "—";
+  return rating > 0 ? rating.toFixed(2) : "—";
 }
 
 function formatDeposit(value: number | null | undefined) {

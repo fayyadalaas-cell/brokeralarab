@@ -138,7 +138,7 @@ function ratingLabel(
   value: number | string | null | undefined
 ) {
   const rating = ratingValue(value);
-  return rating > 0 ? rating.toFixed(1) : "—";
+  return rating > 0 ? rating.toFixed(2) : "—";
 }
 
 function brokerName(broker: Broker) {
