@@ -916,240 +916,349 @@ const comparisons =
       />
 
       {/* HERO */}
-      <section className="relative overflow-hidden border-b border-slate-200 bg-white">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(30,91,184,0.10),transparent_32%),radial-gradient(circle_at_top_right,rgba(14,165,233,0.05),transparent_26%)]" />
+<section className="relative overflow-hidden border-b border-slate-200 bg-white">
+  {/* Background */}
+  <div
+    aria-hidden="true"
+    className="pointer-events-none absolute inset-0 overflow-hidden"
+  >
+    <div className="absolute inset-0 bg-[linear-gradient(245deg,#ffffff_0%,#ffffff_42%,#f4f8ff_72%,#eaf3ff_100%)]" />
 
-        <div className="relative mx-auto max-w-[1520px] px-4 pb-7 pt-6 sm:px-6 sm:py-10 lg:px-8 lg:py-12">
-          <div className="grid items-center gap-7 lg:grid-cols-[minmax(0,1.3fr)_390px] lg:gap-10">
-            <div>
-              <span className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-3 py-1.5 text-[9px] font-black text-brand-600 sm:text-[10px]">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                Independently reviewed — Updated July 2026
-              </span>
+    <div className="absolute -left-40 -top-48 h-[520px] w-[520px] rounded-full bg-blue-100/60 blur-[100px]" />
 
-              <h1 className="mt-4 max-w-[900px] text-[31px] font-black leading-[1.12] tracking-tight text-slate-950 min-[380px]:text-[34px] sm:text-5xl lg:text-[58px]">
-                Best Forex Brokers
-                <span className="block text-brand-500">
-                  in 2026
-                </span>
-              </h1>
+    <div className="absolute -bottom-52 right-[8%] h-[430px] w-[430px] rounded-full bg-brand-100/45 blur-[100px]" />
+  </div>
 
-              <p className="mt-4 max-w-[900px] text-[13px] font-medium leading-7 text-slate-700 min-[380px]:text-sm sm:text-base sm:leading-8">
-                Compare{" "}
-                <strong className="font-black text-slate-950">
-                  {brokers.length} forex and CFD brokers
-                </strong>{" "}
-                by regulation, minimum deposit, trading platforms,
-                account access and overall broker quality. Use our
-                research to shortlist brokers that fit your market,
-                experience and trading priorities.
-              </p>
+  {/* =================================================
+      MOBILE HERO
+  ================================================== */}
+  <div className="relative px-4 pb-5 pt-4 lg:hidden">
+    <div className="mx-auto max-w-[370px]">
+      {/* Update */}
+      <div className="flex items-center justify-center gap-2">
+        <span className="inline-flex min-h-[32px] items-center gap-1.5 rounded-full border border-brand-200 bg-white/85 px-3 text-[8px] font-black text-slate-800 shadow-sm backdrop-blur">
+          <span className="flex h-[18px] w-[18px] items-center justify-center rounded-full bg-brand-600 text-[9px] text-white">
+            ✓
+          </span>
 
-              <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[10px] font-bold text-slate-600 sm:text-[11px]">
-                <span>
-                  Researched by the Broker Alarab Editorial Team
-                </span>
+          Independent Forex Broker Guide
+        </span>
 
-                <span className="hidden h-1 w-1 rounded-full bg-slate-300 sm:block" />
+        <span className="text-[8px] font-black text-slate-600">
+          Updated: Aug 2026
+        </span>
+      </div>
 
-                <Link
-                  href="/en/how-we-review"
-                  className="font-black text-brand-600 transition hover:underline"
-                >
-                  Review our methodology
-                </Link>
-              </div>
+      {/* H1 */}
+      <h1 className="mt-4 text-center text-[31px] font-black leading-[1.08] tracking-[-0.04em] text-[#071226] min-[390px]:text-[33px]">
+        <span className="block whitespace-nowrap">
+          Best Forex Brokers
+        </span>
 
-              <div className="mt-5 grid max-w-[690px] grid-cols-4 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
-                {[
-                  {
-                    value: brokers.length,
-                    label: "Brokers",
-                  },
-                  {
-                    value: activeLicenseCount,
-                    label: "Licences",
-                  },
-                  {
-                    value: accounts.length,
-                    label: "Accounts",
-                  },
-                  {
-                    value: uniqueRegulatorCount,
-                    label: "Regulators",
-                  },
-                ].map((item, index) => (
-                  <div
-                    key={item.label}
-                    className={`px-1 py-3 text-center sm:px-2 ${
-                      index !== 3
-                        ? "border-r border-slate-200"
-                        : ""
-                    }`}
-                  >
-                    <div className="text-[18px] font-black text-slate-950 sm:text-2xl">
-                      {item.value}
-                    </div>
+        <span className="mt-1 block whitespace-nowrap text-brand-600">
+          in 2026
+        </span>
+      </h1>
 
-                    <div className="mt-0.5 text-[8px] font-bold text-slate-600 sm:text-xs">
-                      {item.label}
-                    </div>
-                  </div>
-                ))}
-              </div>
+      {/* Description */}
+      <p className="mx-auto mt-3 max-w-[345px] text-center text-[12px] font-medium leading-7 text-slate-700">
+        Compare trusted and regulated forex brokers by licences, fees,
+        spreads, platforms, minimum deposits and account options.
+      </p>
 
-              <div className="mt-5 grid gap-2.5 sm:flex">
-                <a
-                  href="#comparison-table"
-                  className="inline-flex min-h-12 items-center justify-center rounded-xl bg-brand-500 px-6 text-[13px] font-black text-white shadow-sm transition hover:bg-brand-600 sm:text-sm"
-                >
-                  Compare Top Brokers
-                </a>
+      {/* Trust Points */}
+      <div className="mt-3 flex items-center justify-center gap-2.5 text-[9px] font-black text-slate-600">
+        <span className="inline-flex items-center gap-1">
+          <span className="text-[10px] text-emerald-600">
+            ✓
+          </span>
+          Independent
+        </span>
 
-                <a
-                  href="#broker-finder"
-                  className="inline-flex min-h-12 items-center justify-center rounded-xl border border-slate-300 bg-white px-6 text-[13px] font-black text-slate-800 transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-600 sm:text-sm"
-                >
-                  Find a Suitable Broker
-                </a>
-              </div>
-            </div>
+        <span
+          aria-hidden="true"
+          className="h-1 w-1 rounded-full bg-slate-300"
+        />
 
-            {topBroker ? (
-              <article className="hidden overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_16px_42px_rgba(15,23,42,0.08)] lg:block">
-                <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-5 py-3.5">
-                  <div>
-                    <h2 className="text-sm font-black text-slate-950">
-                      Best Overall Pick
-                    </h2>
+        <span className="inline-flex items-center gap-1">
+          <span className="text-[10px] text-emerald-600">
+            ✓
+          </span>
+          Licences checked
+        </span>
 
-                    <p className="mt-0.5 text-[10px] text-slate-500">
-                      Based on rating, regulation and overall balance
-                    </p>
-                  </div>
+        <span
+          aria-hidden="true"
+          className="h-1 w-1 rounded-full bg-slate-300"
+        />
 
-                  <span className="rounded-full bg-amber-100 px-2.5 py-1 text-[9px] font-black text-amber-800">
-                    Ranked #1
-                  </span>
-                </div>
+        <span className="inline-flex items-center gap-1">
+          <span className="text-[10px] text-emerald-600">
+            ✓
+          </span>
+          Costs compared
+        </span>
+      </div>
 
-                <div className="p-5">
-                  <div className="flex items-center gap-4">
-                    <BrokerLogo
-                      broker={topBroker}
-                      size="large"
-                    />
+      {/* Actions */}
+      <div className="mt-4">
+        <a
+          href="#top-brokers"
+          className="flex min-h-[47px] w-full items-center justify-center gap-2 rounded-[13px] bg-[#1554a3] px-5 text-[13px] font-black text-white shadow-[0_10px_22px_rgba(21,84,163,0.22)] transition active:scale-[0.98]"
+        >
+          View the Best Brokers
+          <span aria-hidden="true">↓</span>
+        </a>
 
-                    <div className="min-w-0">
-                      <h3 className="truncate text-xl font-black text-slate-950">
-                        {brokerName(topBroker)}
-                      </h3>
+        <a
+          href="#comparison-table"
+          className="mx-auto mt-2 flex min-h-[30px] w-fit items-center justify-center gap-2 px-4 text-[10px] font-black text-brand-700 transition active:scale-[0.98]"
+        >
+          Go to the Comparison Table
+          <span aria-hidden="true">→</span>
+        </a>
+      </div>
 
-                      <div className="mt-2">
-                        <RatingBadge
-                          rating={topBroker.rating}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 grid grid-cols-3 overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
-                    <div className="border-r border-slate-200 px-2 py-2.5 text-center">
-                      <div className="text-[8px] text-slate-500">
-                        Deposit
-                      </div>
-
-                      <div className="mt-1 text-xs font-black">
-                        {formatDeposit(
-                          getDisplayDeposit(topBroker)
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="border-r border-slate-200 px-2 py-2.5 text-center">
-                      <div className="text-[8px] text-slate-500">
-                        Licences
-                      </div>
-
-                      <div className="mt-1 text-xs font-black">
-                        {topBroker.active_license_count}
-                      </div>
-                    </div>
-
-                    <div className="px-2 py-2.5 text-center">
-                      <div className="text-[8px] text-slate-500">
-                        Platforms
-                      </div>
-
-                      <div className="mt-1 truncate text-xs font-black">
-                        {splitItems(
-                          topBroker.platforms,
-                          1
-                        )[0] || "Review"}
-                      </div>
-                    </div>
-                  </div>
-
-                  <p className="mt-4 line-clamp-2 text-xs font-bold leading-6 text-slate-600">
-                    Best suited to{" "}
-                    {brokerBestFor(topBroker)}.
-                  </p>
-
-                  <div className="mt-4">
-                    <BrokerButtons
-                      broker={topBroker}
-                    />
-                  </div>
-                </div>
-              </article>
-            ) : null}
+      {/* Live Statistics */}
+      <div className="mt-3 grid grid-cols-3 border-y border-slate-200/80">
+        <div className="border-r border-slate-200 px-2 py-2.5 text-center">
+          <div className="text-[18px] font-black leading-none text-slate-950">
+            {brokers.length}
           </div>
 
-          {topBroker ? (
-            <div className="mt-5 rounded-[18px] border border-slate-200 bg-slate-50 p-3 lg:hidden">
-              <div className="grid grid-cols-[42px_minmax(0,1fr)_auto] items-center gap-3">
-                <BrokerLogo
-                  broker={topBroker}
-                  size="small"
-                />
+          <div className="mt-1.5 text-[9px] font-bold text-slate-600">
+            Brokers
+          </div>
+        </div>
 
-                <div className="min-w-0">
-                  <div className="text-[9px] font-black text-brand-600">
-                    Best overall
-                  </div>
+        <div className="border-r border-slate-200 px-2 py-2.5 text-center">
+          <div className="text-[18px] font-black leading-none text-slate-950">
+            {accounts.length}
+          </div>
 
-                  <div className="mt-0.5 truncate text-sm font-black text-slate-950">
-                    {brokerName(topBroker)}
-                  </div>
+          <div className="mt-1.5 text-[9px] font-bold text-slate-600">
+            Accounts
+          </div>
+        </div>
 
-                  <div className="mt-1 flex items-center gap-2">
-                    <RatingBadge
-                      rating={topBroker.rating}
-                    />
+        <div className="px-2 py-2.5 text-center">
+          <div className="text-[18px] font-black leading-none text-slate-950">
+            {uniqueRegulatorCount}
+          </div>
 
-                    <span className="text-[9px] font-bold text-slate-500">
-                      {formatDeposit(
-                        getDisplayDeposit(topBroker)
-                      )}
-                    </span>
-                  </div>
-                </div>
+          <div className="mt-1.5 text-[9px] font-bold text-slate-600">
+            Regulators
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-                <Link
-                  href={
-                    topBroker.slug
-                      ? `/en/brokers/${topBroker.slug}`
-                      : "/en/brokers"
-                  }
-                  className="rounded-xl bg-brand-500 px-3 py-2 text-[9px] font-black text-white"
-                >
-                  Review
-                </Link>
+  {/* =================================================
+      DESKTOP HERO
+  ================================================== */}
+  <div className="relative mx-auto hidden w-full max-w-[1520px] px-8 pb-12 pt-7 lg:block">
+    {/* Breadcrumb */}
+    <nav
+      aria-label="Breadcrumb"
+      className="mb-5 flex items-center gap-2 text-[11px] font-bold text-slate-500"
+    >
+      <Link
+        href="/en"
+        className="transition hover:text-brand-600"
+      >
+        Home
+      </Link>
+
+      <span aria-hidden="true" className="text-slate-300">
+        /
+      </span>
+
+      <span className="text-slate-800">
+        Best Forex Brokers
+      </span>
+
+      <span aria-hidden="true" className="text-slate-300">
+        /
+      </span>
+
+      <span className="text-brand-600">
+        2026 Rankings
+      </span>
+    </nav>
+
+    <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_390px] xl:grid-cols-[minmax(0,1fr)_420px] xl:gap-20">
+      {/* Main Content */}
+      <div className="min-w-0 text-left">
+        {/* Badges */}
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-white px-3 py-2 text-[10px] font-black text-slate-800 shadow-[0_3px_10px_rgba(15,23,42,0.05)]">
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand-600 text-[10px] text-white">
+              ✓
+            </span>
+
+            Independent Forex Broker Guide
+          </span>
+
+          <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 text-[10px] font-black text-slate-700 shadow-[0_3px_10px_rgba(15,23,42,0.05)]">
+            Last updated: August 2026
+          </span>
+        </div>
+
+        {/* Heading */}
+        <h1 className="mt-5 max-w-[950px] text-[52px] font-black leading-[1.06] tracking-[-0.045em] text-[#071226] xl:text-[62px]">
+          Best Forex Brokers in 2026
+        </h1>
+
+        {/* Main Description */}
+        <p className="mt-4 max-w-[940px] text-[16px] font-medium leading-8 text-slate-700">
+          Compare the best trusted and regulated forex brokers in 2026
+          by licences, trading costs, spreads, platforms, minimum
+          deposits and account options.
+        </p>
+
+        {/* Editorial Description */}
+        <p className="mt-3 max-w-[940px] text-[13px] font-bold leading-7 text-slate-600">
+          The Broker Alarab editorial team reviewed {brokers.length}{" "}
+          brokers to help you choose a forex broker that suits your
+          market, experience and trading priorities using clear,
+          independent criteria.
+        </p>
+
+        {/* Trust Points */}
+        <div className="mt-5 flex flex-wrap items-center gap-5">
+          <div className="flex items-center gap-2 text-[11px] font-black text-slate-700">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 text-[11px] text-emerald-700">
+              ✓
+            </span>
+
+            Independent broker rankings
+          </div>
+
+          <div className="flex items-center gap-2 text-[11px] font-black text-slate-700">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 text-[11px] text-emerald-700">
+              ✓
+            </span>
+
+            Licences and costs reviewed
+          </div>
+
+          <div className="flex items-center gap-2 text-[11px] font-black text-slate-700">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 text-[11px] text-emerald-700">
+              ✓
+            </span>
+
+            Accounts and platforms compared
+          </div>
+        </div>
+
+        {/* Buttons */}
+        <div className="mt-6 flex flex-wrap gap-2.5">
+          <a
+            href="#top-brokers"
+            className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-[#1554a3] px-7 text-[13px] font-black text-white shadow-[0_10px_22px_rgba(21,84,163,0.2)] transition duration-300 hover:-translate-y-0.5 hover:bg-[#0f458c]"
+          >
+            View the Best Brokers
+            <span aria-hidden="true">↓</span>
+          </a>
+
+          <a
+            href="#comparison-table"
+            className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-7 text-[13px] font-black text-slate-900 shadow-[0_4px_12px_rgba(15,23,42,0.04)] transition duration-300 hover:-translate-y-0.5 hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700"
+          >
+            Compare All Brokers
+            <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+
+      {/* Comparison Data Card */}
+      <aside className="mx-auto w-full max-w-[430px]">
+        <div className="rounded-[24px] border border-slate-200 bg-white/95 p-5 shadow-[0_24px_60px_rgba(30,91,184,0.11)] backdrop-blur">
+          {/* Header */}
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <div className="text-[10px] font-black text-brand-600">
+                Broker Alarab Guide 2026
+              </div>
+
+              <h2 className="mt-1 text-[17px] font-black text-slate-950">
+                Key Comparison Data
+              </h2>
+            </div>
+
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-brand-50 text-lg font-black text-brand-700">
+              ✓
+            </span>
+          </div>
+
+          {/* Metrics */}
+          <div className="mt-4 grid grid-cols-3 overflow-hidden rounded-[18px] border border-slate-200 bg-white">
+            <div className="border-r border-slate-200 px-2 py-4 text-center">
+              <div className="text-[24px] font-black leading-none text-slate-950">
+                {brokers.length}
+              </div>
+
+              <div className="mt-2 text-[9px] font-black text-slate-800">
+                Brokers
+              </div>
+
+              <div className="mt-1 text-[8px] text-slate-500">
+                Reviewed
               </div>
             </div>
-          ) : null}
+
+            <div className="border-r border-slate-200 px-2 py-4 text-center">
+              <div className="text-[24px] font-black leading-none text-slate-950">
+                {accounts.length}
+              </div>
+
+              <div className="mt-2 text-[9px] font-black text-slate-800">
+                Accounts
+              </div>
+
+              <div className="mt-1 text-[8px] text-slate-500">
+                Compared
+              </div>
+            </div>
+
+            <div className="px-2 py-4 text-center">
+              <div className="text-[24px] font-black leading-none text-slate-950">
+                {uniqueRegulatorCount}
+              </div>
+
+              <div className="mt-2 text-[9px] font-black text-slate-800">
+                Regulators
+              </div>
+
+              <div className="mt-1 text-[8px] text-slate-500">
+                Checked
+              </div>
+            </div>
+          </div>
+
+          {/* Explanation */}
+          <p className="mt-4 text-[11px] font-medium leading-6 text-slate-500">
+            Rankings are not based on brand recognition or advertising
+            alone. Regulation, account terms, trading costs and platform
+            quality all contribute to the final assessment.
+          </p>
+
+          {/* Methodology */}
+          <div className="mt-4 border-t border-slate-100 pt-3">
+            <Link
+              href="/en/how-we-review"
+              className="inline-flex items-center gap-2 text-[11px] font-black text-brand-700 transition hover:text-brand-900"
+            >
+              Read our broker review methodology
+              <span aria-hidden="true">→</span>
+            </Link>
+          </div>
         </div>
-      </section>
+      </aside>
+    </div>
+  </div>
+</section>
 
       {/* INTERNAL NAVIGATION — DESKTOP */}
       <nav className="hidden border-b border-slate-200 bg-white md:block">

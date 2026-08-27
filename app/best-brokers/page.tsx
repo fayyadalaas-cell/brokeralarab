@@ -834,311 +834,340 @@ isPartOf: {
       />
 
       {/* HERO */}
-      <section className="relative overflow-hidden border-b border-slate-200 bg-white">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(30,91,184,0.10),transparent_32%),radial-gradient(circle_at_top_left,rgba(14,165,233,0.05),transparent_26%)]" />
+<section className="relative overflow-hidden border-b border-slate-200 bg-white">
+  {/* Background */}
+  <div
+    aria-hidden="true"
+    className="pointer-events-none absolute inset-0 overflow-hidden"
+  >
+    <div className="absolute inset-0 bg-[linear-gradient(115deg,#ffffff_0%,#ffffff_42%,#f4f8ff_72%,#eaf3ff_100%)]" />
 
-        <div className="relative mx-auto max-w-[1520px] px-4 pb-7 pt-6 sm:px-6 sm:py-10 lg:px-8 lg:py-12">
-          <div className="grid items-center gap-7 lg:grid-cols-[minmax(0,1.3fr)_390px] lg:gap-10">
+    <div className="absolute -right-40 -top-48 h-[520px] w-[520px] rounded-full bg-blue-100/60 blur-[100px]" />
+
+    <div className="absolute -bottom-52 left-[8%] h-[430px] w-[430px] rounded-full bg-brand-100/45 blur-[100px]" />
+  </div>
+
+{/* MOBILE HERO — FINAL */}
+<div className="relative px-4 pb-5 pt-4 lg:hidden">
+  <div className="mx-auto max-w-[370px]">
+    {/* Update Information */}
+    <div className="flex items-center justify-center gap-2">
+      <span className="inline-flex min-h-[32px] items-center gap-1.5 rounded-full border border-brand-200 bg-white/85 px-3 text-[8px] font-black text-slate-800 shadow-sm backdrop-blur">
+        <span className="flex h-[18px] w-[18px] items-center justify-center rounded-full bg-brand-600 text-[9px] text-white">
+          ✓
+        </span>
+
+        دليل مستقل لشركات التداول
+      </span>
+
+      <span className="text-[8px] font-black text-slate-600">
+        محدث: أغسطس 2026
+      </span>
+    </div>
+
+    {/* Main Heading */}
+    <h1 className="mt-4 text-center text-[31px] font-black leading-[1.08] tracking-[-0.04em] text-[#071226] min-[390px]:text-[33px]">
+      <span className="block whitespace-nowrap">
+        أفضل شركات التداول
+      </span>
+
+      <span className="mt-1 block whitespace-nowrap text-brand-600">
+        في 2026
+      </span>
+    </h1>
+
+    {/* SEO Description */}
+    <p className="mx-auto mt-3 max-w-[345px] text-center text-[12px] font-medium leading-7 text-slate-700">
+      قارن أفضل شركات التداول الموثوقة والمرخصة حسب التراخيص والرسوم
+      والمنصات والإيداع والحساب الإسلامي.
+    </p>
+
+    {/* Trust Points */}
+    <div className="mt-3 flex items-center justify-center gap-2.5 text-[9px] font-black text-slate-600">
+      <span className="inline-flex items-center gap-1">
+        <span className="text-[10px] text-emerald-600">
+          ✓
+        </span>
+        ترتيب مستقل
+      </span>
+
+      <span
+        aria-hidden="true"
+        className="h-1 w-1 rounded-full bg-slate-300"
+      />
+
+      <span className="inline-flex items-center gap-1">
+        <span className="text-[10px] text-emerald-600">
+          ✓
+        </span>
+        فحص التراخيص
+      </span>
+
+      <span
+        aria-hidden="true"
+        className="h-1 w-1 rounded-full bg-slate-300"
+      />
+
+      <span className="inline-flex items-center gap-1">
+        <span className="text-[10px] text-emerald-600">
+          ✓
+        </span>
+        مقارنة التكاليف
+      </span>
+    </div>
+
+    {/* Actions */}
+    <div className="mt-4">
+      <a
+        href="#top-brokers"
+        className="flex min-h-[47px] w-full items-center justify-center gap-2 rounded-[13px] bg-[#1554a3] px-5 text-[13px] font-black text-white shadow-[0_10px_22px_rgba(21,84,163,0.22)] transition active:scale-[0.98]"
+      >
+        عرض أفضل الشركات
+        <span aria-hidden="true">↓</span>
+      </a>
+
+      <a
+        href="#comparison-table"
+        className="mx-auto mt-2 flex w-fit min-h-[30px] items-center justify-center gap-2 px-4 text-[10px] font-black text-brand-700 transition active:scale-[0.98]"
+      >
+        الانتقال إلى جدول المقارنة
+        <span aria-hidden="true">←</span>
+      </a>
+    </div>
+
+    {/* Live Comparison Statistics */}
+    <div className="mt-3 grid grid-cols-3 border-y border-slate-200/80">
+      <div className="border-l border-slate-200 px-2 py-2.5 text-center">
+        <div className="text-[18px] font-black leading-none text-slate-950">
+          {brokers.length}
+        </div>
+
+        <div className="mt-1.5 text-[9px] font-bold text-slate-600">
+          شركة
+        </div>
+      </div>
+
+      <div className="border-l border-slate-200 px-2 py-2.5 text-center">
+        <div className="text-[18px] font-black leading-none text-slate-950">
+          {accounts.length}
+        </div>
+
+        <div className="mt-1.5 text-[9px] font-bold text-slate-600">
+          حساب
+        </div>
+      </div>
+
+      <div className="px-2 py-2.5 text-center">
+        <div className="text-[18px] font-black leading-none text-slate-950">
+          {uniqueRegulatorCount}
+        </div>
+
+        <div className="mt-1.5 text-[9px] font-bold text-slate-600">
+          جهة رقابية
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  <div className="relative mx-auto hidden w-full max-w-[1520px] px-4 pb-8 pt-5 sm:px-6 sm:pb-11 sm:pt-7 lg:block lg:px-8 lg:pb-14 lg:pt-7">
+    
+    {/* Breadcrumb */}
+    <nav
+      aria-label="مسار الصفحة"
+      className="mb-5 hidden items-center gap-2 text-[11px] font-bold text-slate-500 sm:flex"
+    >
+      <Link
+        href="/"
+        className="transition hover:text-brand-600"
+      >
+        الرئيسية
+      </Link>
+
+      <span aria-hidden="true" className="text-slate-300">
+        /
+      </span>
+
+      <span className="text-slate-800">
+        أفضل شركات التداول
+      </span>
+
+      <span aria-hidden="true" className="text-slate-300">
+        /
+      </span>
+
+      <span className="text-brand-600">
+        تصنيف 2026
+      </span>
+    </nav>
+
+    <div className="grid items-center gap-7 lg:grid-cols-[minmax(0,1fr)_390px] lg:gap-14 xl:grid-cols-[minmax(0,1fr)_420px] xl:gap-20">
+      {/* Main Content */}
+      <div className="min-w-0 text-right">
+        {/* Badges */}
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-white px-3 py-2 text-[9px] font-black text-slate-800 shadow-[0_3px_10px_rgba(15,23,42,0.05)] sm:text-[10px]">
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand-600 text-[10px] text-white">
+              ✓
+            </span>
+
+            دليل مستقل لشركات التداول
+          </span>
+
+          <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 text-[9px] font-black text-slate-700 shadow-[0_3px_10px_rgba(15,23,42,0.05)] sm:text-[10px]">
+            آخر تحديث: أغسطس 2026
+          </span>
+        </div>
+
+        {/* Heading */}
+        <h1 className="mt-5 max-w-[900px] text-[35px] font-black leading-[1.12] tracking-[-0.045em] text-[#071226] min-[390px]:text-[39px] sm:text-[50px] lg:text-[58px] xl:text-[64px]">
+          أفضل شركات التداول في 2026
+        </h1>
+
+        <p className="mt-4 max-w-[950px] text-[14px] font-medium leading-8 text-slate-700 sm:text-[16px] lg:text-[17px]">
+  قارن أفضل شركات التداول الموثوقة والمرخصة في 2026، واكتشف تقييم كل
+  وسيط حسب قوة التراخيص، أمان الأموال، الرسوم والسبريد، منصات التداول،
+  الحد الأدنى للإيداع والحساب الإسلامي.
+</p>
+
+<p className="mt-3 max-w-[950px] text-[12px] font-bold leading-7 text-slate-600 sm:text-[13px]">
+  راجع فريق بروكر العرب بيانات {brokers.length} شركة لمساعدتك في اختيار
+  أفضل وسيط تداول يناسب بلدك وخبرتك ورأس مالك، اعتمادًا على معايير واضحة
+  وليس على شهرة الشركة أو الإعلانات.
+</p>
+
+        {/* Trust Points */}
+        <div className="mt-5 grid gap-2.5 sm:flex sm:flex-wrap sm:items-center">
+          <div className="flex items-center gap-2 text-[10px] font-black text-slate-700 sm:text-[11px]">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 text-[11px] text-emerald-700">
+              ✓
+            </span>
+
+            ترتيب مستقل للشركات
+          </div>
+
+          <div className="flex items-center gap-2 text-[10px] font-black text-slate-700 sm:text-[11px]">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 text-[11px] text-emerald-700">
+              ✓
+            </span>
+
+            مراجعة التراخيص والتكاليف
+          </div>
+
+          <div className="flex items-center gap-2 text-[10px] font-black text-slate-700 sm:text-[11px]">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 text-[11px] text-emerald-700">
+              ✓
+            </span>
+
+            مقارنة الحسابات والمنصات
+          </div>
+        </div>
+
+        {/* Buttons */}
+        <div className="mt-6 grid gap-2.5 sm:flex sm:flex-wrap">
+          <a
+            href="#top-brokers"
+            className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-[#1554a3] px-7 text-[13px] font-black text-white shadow-[0_10px_22px_rgba(21,84,163,0.2)] transition duration-300 hover:-translate-y-0.5 hover:bg-[#0f458c]"
+          >
+            عرض أفضل الشركات
+            <span aria-hidden="true">↓</span>
+          </a>
+
+          <a
+            href="#comparison-table"
+            className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-7 text-[13px] font-black text-slate-900 shadow-[0_4px_12px_rgba(15,23,42,0.04)] transition duration-300 hover:-translate-y-0.5 hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700"
+          >
+            مقارنة جميع الشركات
+            <span aria-hidden="true">←</span>
+          </a>
+        </div>
+      </div>
+
+      {/* Key Comparison Data */}
+      <aside className="mx-auto w-full max-w-[430px] lg:mx-0">
+        <div className="rounded-[24px] border border-slate-200 bg-white/95 p-4 shadow-[0_24px_60px_rgba(30,91,184,0.11)] backdrop-blur sm:p-5">
+          {/* Card Header */}
+          <div className="flex items-start justify-between gap-4">
             <div>
-              <span className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-3 py-1.5 text-[9px] font-black text-brand-600 sm:text-[10px]">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                مراجعة مستقلة — آخر تحديث: يوليو 2026
-              </span>
-
-              <h1 className="mt-4 max-w-[850px] text-[31px] font-black leading-[1.14] tracking-tight text-slate-950 min-[380px]:text-[34px] sm:text-5xl lg:text-[58px]">
-                أفضل شركات التداول
-                <span className="block text-brand-500">
-                  في 2026
-                </span>
-              </h1>
-
-              <p className="mt-4 max-w-[860px] text-[13px] font-medium leading-7 text-slate-700 min-[380px]:text-sm sm:text-base sm:leading-8">
-                قارن{" "}
-                <strong className="font-black text-slate-950">
-                  {brokers.length} شركة تداول
-                </strong>{" "}
-                حسب التراخيص والتقييم والتكاليف والمنصات والحساب
-                الإسلامي، ثم انتقل إلى ترتيب يناسب بلدك واحتياجاتك.
-              </p>
-
-              <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[10px] font-bold text-slate-600 sm:text-[11px]">
-                <span>إعداد فريق تحرير بروكر العرب</span>
-
-                <span className="hidden h-1 w-1 rounded-full bg-slate-300 sm:block" />
-
-                <Link
-                   href="/how-we-review-brokers"
-                  className="font-black text-brand-600 transition hover:underline"
-                >
-                  راجع منهجية التقييم
-                </Link>
+              <div className="text-[9px] font-black text-brand-600 sm:text-[10px]">
+                دليل بروكر العرب 2026
               </div>
 
-              <div className="mt-5 grid max-w-[690px] grid-cols-4 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
-                {[
-                  {
-                    value: brokers.length,
-                    label: "شركة",
-                  },
-                  {
-                    value: activeLicenseCount,
-                    label: "ترخيص",
-                  },
-                  {
-                    value: accounts.length,
-                    label: "حساب",
-                  },
-                  {
-                    value: countries.length,
-                    label: "دولة",
-                  },
-                ].map((item, index) => (
-                  <div
-                    key={item.label}
-                    className={`px-1 py-3 text-center sm:px-2 ${
-                      index !== 3
-                        ? "border-l border-slate-200"
-                        : ""
-                    }`}
-                  >
-                    <div className="text-[18px] font-black text-slate-950 sm:text-2xl">
-                      {item.value}
-                    </div>
-
-                    <div className="mt-0.5 text-[8px] font-bold text-slate-600 sm:text-xs">
-                      {item.label}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-5 grid gap-2.5 sm:flex">
-                <a
-                  href="#comparison-table"
-                  className="inline-flex min-h-12 items-center justify-center rounded-xl bg-brand-500 px-6 text-[13px] font-black text-white shadow-sm transition hover:bg-brand-600 sm:text-sm"
-                >
-                  قارن أفضل الشركات
-                </a>
-
-                <a
-                  href="#broker-finder"
-                  className="inline-flex min-h-12 items-center justify-center rounded-xl border border-slate-300 bg-white px-6 text-[13px] font-black text-slate-800 transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-600 sm:text-sm"
-                >
-                  اعثر على وسيط مناسب
-                </a>
-              </div>
+              <h2 className="mt-1 text-[15px] font-black text-slate-950 sm:text-[17px]">
+                بيانات المقارنة الرئيسية
+              </h2>
             </div>
 
-            {topBroker ? (
-              <article className="hidden overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_16px_42px_rgba(15,23,42,0.08)] lg:block">
-                <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-5 py-3.5">
-                  <div>
-                    <h2 className="text-sm font-black text-slate-950">
-                      أفضل اختيار إجمالًا
-                    </h2>
-
-                    <p className="mt-0.5 text-[10px] text-slate-500">
-                      حسب التقييم العام وتوازن المعايير
-                    </p>
-                  </div>
-
-                  <span className="rounded-full bg-amber-100 px-2.5 py-1 text-[9px] font-black text-amber-800">
-                    المركز الأول
-                  </span>
-                </div>
-
-                <div className="p-5">
-                  <div className="flex items-center gap-4">
-                    <BrokerLogo
-                      broker={topBroker}
-                      size="large"
-                    />
-
-                    <div className="min-w-0">
-                      <h3 className="truncate text-xl font-black text-slate-950">
-                        {cleanText(topBroker.name)}
-                      </h3>
-
-                      <div className="mt-2">
-                        <RatingBadge
-                          rating={topBroker.rating}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 grid grid-cols-3 overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
-                    <div className="border-l border-slate-200 px-2 py-2.5 text-center">
-                      <div className="text-[8px] text-slate-500">
-                        الإيداع
-                      </div>
-
-                      <div className="mt-1 text-xs font-black">
-                        {formatDeposit(
-                          getDisplayDeposit(topBroker)
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="border-l border-slate-200 px-2 py-2.5 text-center">
-                      <div className="text-[8px] text-slate-500">
-                        التراخيص
-                      </div>
-
-                      <div className="mt-1 text-xs font-black">
-                        {topBroker.active_license_count}
-                      </div>
-                    </div>
-
-                    <div className="px-2 py-2.5 text-center">
-                      <div className="text-[8px] text-slate-500">
-                        إسلامي
-                      </div>
-
-                      <div
-                        className={`mt-1 text-xs font-black ${
-                          topBroker.has_islamic_account
-                            ? "text-emerald-700"
-                            : "text-slate-600"
-                        }`}
-                      >
-                        {topBroker.has_islamic_account
-                          ? "متوفر"
-                          : "راجع الشروط"}
-                      </div>
-                    </div>
-                  </div>
-
-                  <p className="mt-4 line-clamp-2 text-xs font-bold leading-6 text-slate-600">
-                    {cleanText(
-                      topBroker.key_strength_ar,
-                      topBroker.best_for ||
-                        "وسيط متوازن لمختلف احتياجات التداول"
-                    )}
-                  </p>
-
-                  <div className="mt-4">
-                    <BrokerButtons broker={topBroker} />
-                  </div>
-                </div>
-              </article>
-            ) : null}
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-brand-50 text-lg font-black text-brand-700">
+              ✓
+            </span>
           </div>
 
-          {topBroker ? (
-            <div className="mt-5 rounded-[18px] border border-slate-200 bg-slate-50 p-3 lg:hidden">
-              <div className="grid grid-cols-[42px_minmax(0,1fr)_auto] items-center gap-3">
-                <BrokerLogo
-                  broker={topBroker}
-                  size="small"
-                />
+          {/* Metrics */}
+          <div className="mt-4 grid grid-cols-3 overflow-hidden rounded-[18px] border border-slate-200 bg-white">
+            <div className="border-l border-slate-200 px-2 py-4 text-center">
+              <div className="text-[24px] font-black leading-none text-slate-950">
+                {brokers.length}
+              </div>
 
-                <div className="min-w-0">
-                  <div className="text-[9px] font-black text-brand-600">
-                    الأفضل إجمالًا
-                  </div>
+              <div className="mt-2 text-[9px] font-black text-slate-800">
+                شركة
+              </div>
 
-                  <div className="mt-0.5 truncate text-sm font-black text-slate-950">
-                    {cleanText(topBroker.name)}
-                  </div>
-
-                  <div className="mt-1 flex items-center gap-2">
-                    <RatingBadge
-                      rating={topBroker.rating}
-                    />
-
-                    <span className="text-[9px] font-bold text-slate-500">
-                      {formatDeposit(
-                        getDisplayDeposit(topBroker)
-                      )}
-                    </span>
-                  </div>
-                </div>
-
-                <Link
-                  href={
-                    topBroker.slug
-                      ? `/brokers/${topBroker.slug}`
-                      : "/brokers"
-                  }
-                  className="rounded-xl bg-brand-500 px-3 py-2 text-[9px] font-black text-white"
-                >
-                  التقييم
-                </Link>
+              <div className="mt-1 text-[8px] text-slate-500">
+                تمت مراجعتها
               </div>
             </div>
-          ) : null}
-        </div>
-      </section>
 
-      {/* INTERNAL NAVIGATION — DESKTOP ONLY */}
-      <nav className="hidden border-b border-slate-200 bg-white md:block">
-        <div className="mx-auto flex max-w-[1520px] flex-wrap gap-2 px-6 py-3 lg:px-8">
-          {[
-            ["#top-brokers", "أفضل الاختيارات"],
-            ["#comparison-table", "المقارنة"],
-            ["#broker-finder", "اختيار الوسيط"],
-            ["#countries", "حسب الدولة"],
-            ["#licenses", "حسب الترخيص"],
-            ["#methodology", "منهجية التقييم"],
-          ].map(([href, label]) => (
-            <a
-              key={href}
-              href={href}
-              className="rounded-full border border-slate-200 bg-slate-50 px-3.5 py-1.5 text-[10px] font-black text-slate-600 transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-600"
+            <div className="border-l border-slate-200 px-2 py-4 text-center">
+              <div className="text-[24px] font-black leading-none text-slate-950">
+                {accounts.length}
+              </div>
+
+              <div className="mt-2 text-[9px] font-black text-slate-800">
+                حساب
+              </div>
+
+              <div className="mt-1 text-[8px] text-slate-500">
+                ضمن المقارنة
+              </div>
+            </div>
+
+            <div className="px-2 py-4 text-center">
+              <div className="text-[24px] font-black leading-none text-slate-950">
+                {uniqueRegulatorCount}
+              </div>
+
+              <div className="mt-2 text-[9px] font-black text-slate-800">
+                جهة رقابية
+              </div>
+
+              <div className="mt-1 text-[8px] text-slate-500">
+                جرى فحصها
+              </div>
+            </div>
+          </div>
+
+          {/* Card Explanation */}
+          <p className="mt-4 text-[10px] font-medium leading-6 text-slate-500 sm:text-[11px]">
+            لا يعتمد الترتيب على اسم الشركة أو الإعلان وحده؛ تدخل التراخيص
+            وشروط الحساب وتكاليف التداول وجودة المنصات ضمن نتيجة التقييم.
+          </p>
+
+          {/* Methodology */}
+          <div className="mt-4 border-t border-slate-100 pt-3">
+            <Link
+              href="/how-we-review-brokers"
+              className="inline-flex items-center gap-2 text-[10px] font-black text-brand-700 transition hover:text-brand-900 sm:text-[11px]"
             >
-              {label}
-            </a>
-          ))}
-        </div>
-      </nav>
-
-      {/* COMPACT STATISTICS */}
-      <section className="border-b border-slate-200 bg-[#f5f7fb]">
-        <div className="mx-auto max-w-[1520px] px-4 py-5 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
-            {[
-              {
-                value: activeLicenseCount,
-                title: "ترخيصًا راجعناه",
-                text: "من جهات رقابية مختلفة",
-              },
-              {
-                value: uniqueRegulatorCount,
-title: "جهات رقابية",
-                text: "ضمن قاعدة بياناتنا",
-              },
-              {
-                value: islamicBrokerCount,
-                title: "وسطاء بحساب إسلامي",
-                text: "مع اختلاف الشروط",
-              },
-              {
-                value: arabicSupportCount,
-                title: "وسطاء بدعم عربي",
-                text: "وفق بيانات الشركات",
-              },
-            ].map((item) => (
-              <article
-                key={item.title}
-                className="rounded-[17px] border border-slate-200 bg-white px-4 py-3.5"
-              >
-                <div className="text-xl font-black text-slate-950">
-                  {item.value}
-                </div>
-
-                <h2 className="mt-0.5 text-[10px] font-black text-slate-800 sm:text-xs">
-                  {item.title}
-                </h2>
-
-                <p className="mt-1 hidden text-[9px] text-slate-500 sm:block">
-                  {item.text}
-                </p>
-              </article>
-            ))}
+              اقرأ منهجية تقييم الوسطاء
+              <span aria-hidden="true">←</span>
+            </Link>
           </div>
         </div>
-      </section>
+      </aside>
+    </div>
+  </div>
+</section>
 
             {/* TOP THREE */}
       <section
@@ -1148,7 +1177,7 @@ title: "جهات رقابية",
         <div className="mx-auto max-w-[1520px] px-4 sm:px-6 lg:px-8">
           <SectionHeading
             eyebrow="الاختيارات الأعلى تقييمًا"
-            title="أفضل 3 شركات تداول في 2026"
+            title="أفضل 3 شركات فوركس في 2026"
             description="أعلى الشركات في الترتيب العام وفق التقييم والتراخيص والتكاليف والمنصات."
           />
 
