@@ -533,27 +533,28 @@ export default async function BestBrokersPage() {
     comparisonsResult,
   ] = await Promise.all([
     supabase
-      .from("brokers")
-      .select(`
-        id,
-        name,
-        name_en,
-        slug,
-        rating,
-        min_deposit,
-        best_for,
-        best_for_en,
-        regulation,
-        regulation_short,
-        platforms,
-        logo,
-        real_account_url,
-        demo_account_url,
-        score_safety
-      `)
-      .order("rating", {
-        ascending: false,
-      }),
+  .from("brokers")
+  .select(`
+    id,
+    name,
+    name_en,
+    slug,
+    rating,
+    min_deposit,
+    best_for,
+    best_for_en,
+    regulation,
+    regulation_short,
+    platforms,
+    logo,
+    real_account_url,
+    demo_account_url,
+    score_safety
+  `)
+  .eq("publication_status", "published")
+  .order("rating", {
+    ascending: false,
+  }),
 
     supabase
       .from("broker_licenses")
@@ -607,19 +608,27 @@ export default async function BestBrokersPage() {
   }
 
   const brokersData =
-    (brokersResult.data || []) as Broker[];
+  (brokersResult.data || []) as Broker[];
 
-  const licenses =
-    (licensesResult.data ||
-      []) as BrokerLicense[];
+const publishedBrokerIds = new Set(
+  brokersData.map((broker) => broker.id)
+);
 
-  const accounts =
-    (accountsResult.data ||
-      []) as BrokerAccount[];
+const licenses = (
+  (licensesResult.data || []) as BrokerLicense[]
+).filter((license) =>
+  publishedBrokerIds.has(license.broker_id)
+);
 
-  const comparisons =
-    (comparisonsResult.data ||
-      []) as ComparisonRow[];
+const accounts = (
+  (accountsResult.data || []) as BrokerAccount[]
+).filter((account) =>
+  publishedBrokerIds.has(account.broker_id)
+);
+
+const comparisons =
+  (comparisonsResult.data ||
+    []) as ComparisonRow[];
 
   const licensesByBroker =
     new Map<number, BrokerLicense[]>();

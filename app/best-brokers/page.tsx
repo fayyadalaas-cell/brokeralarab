@@ -468,25 +468,26 @@ export default async function BestBrokersPage() {
     comparisonsResult,
   ] = await Promise.all([
     supabase
-      .from("brokers")
-      .select(`
-        id,
-        name,
-        slug,
-        rating,
-        min_deposit,
-        best_for,
-        regulation,
-        regulation_short,
-        platforms,
-        islamic_account,
-        arabic_support,
-        logo,
-        real_account_url,
-        score_safety,
-        key_strength_ar
-      `)
-      .order("rating", { ascending: false }),
+  .from("brokers")
+  .select(`
+    id,
+    name,
+    slug,
+    rating,
+    min_deposit,
+    best_for,
+    regulation,
+    regulation_short,
+    platforms,
+    islamic_account,
+    arabic_support,
+    logo,
+    real_account_url,
+    score_safety,
+    key_strength_ar
+  `)
+  .eq("publication_status", "published")
+  .order("rating", { ascending: false }),
 
     supabase
       .from("broker_licenses")
@@ -554,11 +555,22 @@ export default async function BestBrokersPage() {
     );
   }
 
-  const brokersData = (brokersResult.data || []) as Broker[];
-  const licenses = (licensesResult.data || []) as BrokerLicense[];
-  const accounts = (accountsResult.data || []) as BrokerAccount[];
-  const countries = (countriesResult.data || []) as CountryPage[];
-  const comparisons = (comparisonsResult.data || []) as ComparisonRow[];
+const brokersData = (brokersResult.data || []) as Broker[];
+
+const publishedBrokerIds = new Set(
+  brokersData.map((broker) => broker.id)
+);
+
+const licenses = ((licensesResult.data || []) as BrokerLicense[]).filter(
+  (license) => publishedBrokerIds.has(license.broker_id)
+);
+
+const accounts = ((accountsResult.data || []) as BrokerAccount[]).filter(
+  (account) => publishedBrokerIds.has(account.broker_id)
+);
+
+const countries = (countriesResult.data || []) as CountryPage[];
+const comparisons = (comparisonsResult.data || []) as ComparisonRow[];
 
   const licensesByBroker = new Map<number, BrokerLicense[]>();
   const accountsByBroker = new Map<number, BrokerAccount[]>();
@@ -1143,15 +1155,18 @@ title: "جهات رقابية",
                    {/* MOBILE */}
           <div className="mt-5 space-y-3 lg:hidden">
             {topThree.map((broker, index) => {
-              const licenseCodes = broker.licenses
-                .map((license) =>
-                  license.regulator_code?.trim()
-                )
-                .filter(
-                  (code): code is string =>
-                    Boolean(code)
-                )
-                .slice(0, 3);
+              const licenseCodes = Array.from(
+  new Set(
+    broker.licenses
+      .map((license) =>
+        license.regulator_code?.trim()
+      )
+      .filter(
+        (code): code is string =>
+          Boolean(code)
+      )
+  )
+).slice(0, 3);
 
               return (
                 <article
@@ -1279,15 +1294,18 @@ title: "جهات رقابية",
           {/* DESKTOP */}
           <div className="mt-7 hidden gap-5 lg:grid lg:grid-cols-3">
             {topThree.map((broker, index) => {
-              const licenseCodes = broker.licenses
-                .map((license) =>
-                  license.regulator_code?.trim()
-                )
-                .filter(
-                  (code): code is string =>
-                    Boolean(code)
-                )
-                .slice(0, 4);
+              const licenseCodes = Array.from(
+  new Set(
+    broker.licenses
+      .map((license) =>
+        license.regulator_code?.trim()
+      )
+      .filter(
+        (code): code is string =>
+          Boolean(code)
+      )
+  )
+).slice(0, 4);
 
               return (
                 <article
@@ -1455,15 +1473,18 @@ title: "جهات رقابية",
 
                 <tbody>
                   {topTen.map((broker, index) => {
-                    const licenseCodes = broker.licenses
-                      .map((license) =>
-                        license.regulator_code?.trim()
-                      )
-                      .filter(
-                        (code): code is string =>
-                          Boolean(code)
-                      )
-                      .slice(0, 5);
+                    const licenseCodes = Array.from(
+  new Set(
+    broker.licenses
+      .map((license) =>
+        license.regulator_code?.trim()
+      )
+      .filter(
+        (code): code is string =>
+          Boolean(code)
+      )
+  )
+).slice(0, 5);
 
                     const platforms = splitItems(
                       broker.platforms,
