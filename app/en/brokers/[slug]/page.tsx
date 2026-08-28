@@ -1567,7 +1567,7 @@ const lowestSpread = accountsData.length
   ? accountsData
       .map((acc) => {
         const spreadText = acc.spread || "";
-        const numeric = Number(String(spreadText).replace(/[^0-9.]/g, ""));
+        const numeric = parseFloat(String(spreadText).replace(",", "."));
         return {
           ...acc,
           numeric: Number.isFinite(numeric) ? numeric : Infinity,
