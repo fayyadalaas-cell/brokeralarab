@@ -1680,17 +1680,34 @@ const openAccountGuide = await getOpenAccountGuide(slug);
     : null;
 
   const lowestSpread = accountsData.length
-    ? accountsData
-        .map((acc) => {
-          const spreadText = acc.spread || "";
-          const numeric = parseFloat(String(spreadText).replace(",", "."));
-          return {
-            ...acc,
-            numeric: Number.isFinite(numeric) ? numeric : Infinity,
-          };
-        })
-        .sort((a, b) => a.numeric - b.numeric)[0]
-    : null;
+  ? accountsData
+      .map((acc) => {
+        const spreadText = String(acc.spread || "").replace(/,/g, ".");
+
+        const numbers =
+          spreadText.match(/\d+(?:\.\d+)?/g)?.map(Number) || [];
+
+        const minSpread = numbers.length
+          ? Math.min(...numbers)
+          : Infinity;
+
+        const maxSpread = numbers.length
+          ? Math.max(...numbers)
+          : Infinity;
+
+        return {
+          ...acc,
+          minSpread,
+          maxSpread,
+        };
+      })
+      .filter((acc) => Number.isFinite(acc.minSpread))
+      .sort(
+        (a, b) =>
+          a.minSpread - b.minSpread ||
+          a.maxSpread - b.maxSpread
+      )[0] || null
+  : null;
 
   const faqItems =
     (broker.faq_ar ?? []).filter(

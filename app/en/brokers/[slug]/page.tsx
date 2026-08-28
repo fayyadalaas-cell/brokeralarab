@@ -1566,14 +1566,31 @@ const lowestDeposit = accountsData.length
 const lowestSpread = accountsData.length
   ? accountsData
       .map((acc) => {
-        const spreadText = acc.spread || "";
-        const numeric = parseFloat(String(spreadText).replace(",", "."));
+        const spreadText = String(acc.spread || "").replace(/,/g, ".");
+
+        const numbers =
+          spreadText.match(/\d+(?:\.\d+)?/g)?.map(Number) || [];
+
+        const minSpread = numbers.length
+          ? Math.min(...numbers)
+          : Infinity;
+
+        const maxSpread = numbers.length
+          ? Math.max(...numbers)
+          : Infinity;
+
         return {
           ...acc,
-          numeric: Number.isFinite(numeric) ? numeric : Infinity,
+          minSpread,
+          maxSpread,
         };
       })
-      .sort((a, b) => a.numeric - b.numeric)[0]
+      .filter((acc) => Number.isFinite(acc.minSpread))
+      .sort(
+        (a, b) =>
+          a.minSpread - b.minSpread ||
+          a.maxSpread - b.maxSpread
+      )[0] || null
   : null;
 
 const noCommissionAccounts = accountsData.filter((acc) => {
