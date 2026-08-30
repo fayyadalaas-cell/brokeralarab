@@ -240,6 +240,7 @@ type Comparison = {
   views_count: number | null;
   broker_1: {
   name: string | null;
+  slug: string | null;
   logo: string | null;
   rating: number | null;
   publication_status: string | null;
@@ -247,6 +248,7 @@ type Comparison = {
 
 broker_2: {
   name: string | null;
+  slug: string | null;
   logo: string | null;
   rating: number | null;
   publication_status: string | null;
@@ -296,17 +298,19 @@ export default async function HomePage() {
     title,
     views_count,
     broker_1:broker_1_id (
-      name,
-      logo,
-      rating,
-      publication_status
-    ),
-    broker_2:broker_2_id (
-      name,
-      logo,
-      rating,
-      publication_status
-    )
+  name,
+  slug,
+  logo,
+  rating,
+  publication_status
+),
+broker_2:broker_2_id (
+  name,
+  slug,
+  logo,
+  rating,
+  publication_status
+)
   `)
   .not("slug", "is", null)
   .not("title", "is", null)
@@ -392,28 +396,59 @@ export default async function HomePage() {
     .sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0))
     .slice(0, 5);
 
-  const topComparisons: Comparison[] = ((comparisonsData ?? []) as any[])
-    .map((item) => ({
-      id: item.id,
-      slug: item.slug,
-      title: item.title,
-      views_count: item.views_count,
-      broker_1: Array.isArray(item.broker_1)
-        ? item.broker_1[0] ?? null
-        : item.broker_1 ?? null,
-      broker_2: Array.isArray(item.broker_2)
-        ? item.broker_2[0] ?? null
-        : item.broker_2 ?? null,
-    }))
-    .filter(
-  (item) =>
-    item.slug &&
-    item.title &&
-    item.broker_1 &&
-    item.broker_2 &&
-    item.broker_1.publication_status === "published" &&
-    item.broker_2.publication_status === "published"
-);
+  const resolveComparisonBroker = (value: any) => {
+  const comparisonBroker = Array.isArray(value)
+    ? value[0] ?? null
+    : value ?? null;
+
+  if (!comparisonBroker) {
+    return null;
+  }
+
+  const normalizedComparisonName = String(
+    comparisonBroker.name || ""
+  )
+    .trim()
+    .toLowerCase();
+
+  const brokerFromMainList = brokers.find(
+    (broker) =>
+      String(broker.name || "")
+        .trim()
+        .toLowerCase() === normalizedComparisonName
+  );
+
+  return {
+    ...comparisonBroker,
+    slug:
+      comparisonBroker.slug ||
+      brokerFromMainList?.slug ||
+      null,
+  };
+};
+
+const topComparisons: Comparison[] = (
+  (comparisonsData ?? []) as any[]
+)
+  .map((item) => ({
+    id: item.id,
+    slug: item.slug,
+    title: item.title,
+    views_count: item.views_count,
+    broker_1: resolveComparisonBroker(item.broker_1),
+    broker_2: resolveComparisonBroker(item.broker_2),
+  }))
+  .filter(
+    (item) =>
+      item.slug &&
+      item.title &&
+      item.broker_1 &&
+      item.broker_2 &&
+      item.broker_1.slug &&
+      item.broker_2.slug &&
+      item.broker_1.publication_status === "published" &&
+      item.broker_2.publication_status === "published"
+  );
 
   const featured = brokers[0] ?? null;
   const countryPages = getCountryPages();
@@ -1137,17 +1172,11 @@ const whyBrokerAlarabItems = [
                 {/* BROKER 1 */}
                 <div className="flex min-w-0 flex-col items-center text-center">
                   <Link
-                    href={`/brokers/${
-                      cmp.broker_1?.name?.toLowerCase() === "exness"
-                        ? "exness"
-                        : cmp.broker_1?.name?.toLowerCase() === "xm"
-                        ? "xm"
-                        : cmp.broker_1?.name?.toLowerCase() === "vantage"
-                        ? "vantage"
-                        : cmp.broker_1?.name?.toLowerCase() === "equiti"
-                        ? "equiti"
-                        : ""
-                    }`}
+                    href={
+  cmp.broker_1?.slug
+    ? `/brokers/${cmp.broker_1.slug}`
+    : "/brokers"
+}
                     className="flex h-[52px] w-[52px] items-center justify-center rounded-[15px] border border-slate-200 bg-slate-50 p-2"
                   >
                     {cmp.broker_1?.logo ? (
@@ -1164,17 +1193,11 @@ const whyBrokerAlarabItems = [
                   </Link>
 
                   <Link
-                    href={`/brokers/${
-                      cmp.broker_1?.name?.toLowerCase() === "exness"
-                        ? "exness"
-                        : cmp.broker_1?.name?.toLowerCase() === "xm"
-                        ? "xm"
-                        : cmp.broker_1?.name?.toLowerCase() === "vantage"
-                        ? "vantage"
-                        : cmp.broker_1?.name?.toLowerCase() === "equiti"
-                        ? "equiti"
-                        : ""
-                    }`}
+                    href={
+  cmp.broker_1?.slug
+    ? `/brokers/${cmp.broker_1.slug}`
+    : "/brokers"
+}
                     className="mt-2 max-w-[100px] truncate text-[14px] font-black leading-5 text-[#0f172a]"
                   >
                     {cmp.broker_1?.name || "Broker 1"}
@@ -1202,62 +1225,50 @@ const whyBrokerAlarabItems = [
 
 
                 {/* BROKER 2 */}
-                <div className="flex min-w-0 flex-col items-center text-center">
-                  <Link
-                    href={`/brokers/${
-                      cmp.broker_2?.name?.toLowerCase() === "exness"
-                        ? "exness"
-                        : cmp.broker_2?.name?.toLowerCase() === "xm"
-                        ? "xm"
-                        : cmp.broker_2?.name?.toLowerCase() === "vantage"
-                        ? "vantage"
-                        : cmp.broker_2?.name?.toLowerCase() === "equiti"
-                        ? "equiti"
-                        : ""
-                    }`}
-                    className="flex h-[52px] w-[52px] items-center justify-center rounded-[15px] border border-slate-200 bg-slate-50 p-2"
-                  >
-                    {cmp.broker_2?.logo ? (
-                      <img
-                        src={cmp.broker_2.logo}
-                        alt={cmp.broker_2.name || "Broker 2"}
-                        className="h-full w-full object-contain"
-                      />
-                    ) : (
-                      <span className="text-[9px] text-slate-400">
-                        Logo
-                      </span>
-                    )}
-                  </Link>
+<div className="flex min-w-0 flex-col items-center text-center">
+  <Link
+    href={
+      cmp.broker_2?.slug
+        ? `/brokers/${cmp.broker_2.slug}`
+        : "/brokers"
+    }
+    className="flex h-[52px] w-[52px] items-center justify-center rounded-[15px] border border-slate-200 bg-slate-50 p-2"
+  >
+    {cmp.broker_2?.logo ? (
+      <img
+        src={cmp.broker_2.logo}
+        alt={cmp.broker_2.name || "Broker 2"}
+        className="h-full w-full object-contain"
+      />
+    ) : (
+      <span className="text-[9px] text-slate-400">
+        Logo
+      </span>
+    )}
+  </Link>
 
-                  <Link
-                    href={`/brokers/${
-                      cmp.broker_2?.name?.toLowerCase() === "exness"
-                        ? "exness"
-                        : cmp.broker_2?.name?.toLowerCase() === "xm"
-                        ? "xm"
-                        : cmp.broker_2?.name?.toLowerCase() === "vantage"
-                        ? "vantage"
-                        : cmp.broker_2?.name?.toLowerCase() === "equiti"
-                        ? "equiti"
-                        : ""
-                    }`}
-                    className="mt-2 max-w-[100px] truncate text-[14px] font-black leading-5 text-[#0f172a]"
-                  >
-                    {cmp.broker_2?.name || "Broker 2"}
-                  </Link>
+  <Link
+    href={
+      cmp.broker_2?.slug
+        ? `/brokers/${cmp.broker_2.slug}`
+        : "/brokers"
+    }
+    className="mt-2 max-w-[100px] truncate text-[14px] font-black leading-5 text-[#0f172a]"
+  >
+    {cmp.broker_2?.name || "Broker 2"}
+  </Link>
 
-                  <span
-                    aria-label={`تقييم ${
-                      cmp.broker_2?.name || "الوسيط الثاني"
-                    } ${
-                      cmp.broker_2?.rating?.toFixed(2) ?? "غير متوفر"
-                    } من 5`}
-                    className="mt-0.5 text-[10px] font-bold text-[#f59e0b]"
-                  >
-                    ★ {cmp.broker_2?.rating?.toFixed(2) ?? "—"}
-                  </span>
-                </div>
+  <span
+    aria-label={`تقييم ${
+      cmp.broker_2?.name || "الوسيط الثاني"
+    } ${
+      cmp.broker_2?.rating?.toFixed(2) ?? "غير متوفر"
+    } من 5`}
+    className="mt-0.5 text-[10px] font-bold text-[#f59e0b]"
+  >
+    ★ {cmp.broker_2?.rating?.toFixed(2) ?? "—"}
+  </span>
+</div>
               </div>
 
 
@@ -1344,133 +1355,108 @@ const whyBrokerAlarabItems = [
 
 
             {/* BROKERS */}
-            <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+<div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
 
-              {/* BROKER 1 */}
-              <div className="flex min-w-0 flex-col items-center text-center">
-                <Link
-                  href={`/brokers/${
-                    cmp.broker_1?.name?.toLowerCase() === "exness"
-                      ? "exness"
-                      : cmp.broker_1?.name?.toLowerCase() === "xm"
-                      ? "xm"
-                      : cmp.broker_1?.name?.toLowerCase() === "vantage"
-                      ? "vantage"
-                      : cmp.broker_1?.name?.toLowerCase() === "equiti"
-                      ? "equiti"
-                      : ""
-                  }`}
-                  className="flex h-[64px] w-[64px] items-center justify-center rounded-[17px] border border-slate-200 bg-slate-50 p-2.5 transition hover:border-brand-100 hover:bg-brand-50 xl:h-[68px] xl:w-[68px]"
-                >
-                  {cmp.broker_1?.logo ? (
-                    <img
-                      src={cmp.broker_1.logo}
-                      alt={cmp.broker_1.name || "Broker 1"}
-                      className="h-full w-full object-contain"
-                    />
-                  ) : (
-                    <span className="text-[9px] text-slate-400">
-                      Logo
-                    </span>
-                  )}
-                </Link>
+  {/* BROKER 1 */}
+  <div className="flex min-w-0 flex-col items-center text-center">
+    <Link
+      href={
+        cmp.broker_1?.slug
+          ? `/brokers/${cmp.broker_1.slug}`
+          : "/brokers"
+      }
+      className="flex h-[64px] w-[64px] items-center justify-center rounded-[17px] border border-slate-200 bg-slate-50 p-2.5 transition hover:border-brand-100 hover:bg-brand-50 xl:h-[68px] xl:w-[68px]"
+    >
+      {cmp.broker_1?.logo ? (
+        <img
+          src={cmp.broker_1.logo}
+          alt={cmp.broker_1.name || "Broker 1"}
+          className="h-full w-full object-contain"
+        />
+      ) : (
+        <span className="text-[9px] text-slate-400">
+          Logo
+        </span>
+      )}
+    </Link>
 
-                <Link
-                  href={`/brokers/${
-                    cmp.broker_1?.name?.toLowerCase() === "exness"
-                      ? "exness"
-                      : cmp.broker_1?.name?.toLowerCase() === "xm"
-                      ? "xm"
-                      : cmp.broker_1?.name?.toLowerCase() === "vantage"
-                      ? "vantage"
-                      : cmp.broker_1?.name?.toLowerCase() === "equiti"
-                      ? "equiti"
-                      : ""
-                  }`}
-                  className="mt-2.5 max-w-[120px] truncate text-[16px] font-black leading-none text-[#0f172a] transition hover:text-brand-500"
-                >
-                  {cmp.broker_1?.name || "Broker 1"}
-                </Link>
+    <Link
+      href={
+        cmp.broker_1?.slug
+          ? `/brokers/${cmp.broker_1.slug}`
+          : "/brokers"
+      }
+      className="mt-2.5 max-w-[120px] truncate text-[16px] font-black leading-none text-[#0f172a] transition hover:text-brand-500"
+    >
+      {cmp.broker_1?.name || "Broker 1"}
+    </Link>
 
-                <span
-                  aria-label={`تقييم ${
-                    cmp.broker_1?.name || "الوسيط الأول"
-                  } ${
-                    cmp.broker_1?.rating?.toFixed(2) ?? "غير متوفر"
-                  } من 5`}
-                  className="mt-1 text-[10px] font-bold text-[#f59e0b]"
-                >
-                  ★ {cmp.broker_1?.rating?.toFixed(2) ?? "—"}
-                </span>
-              </div>
+    <span
+      aria-label={`تقييم ${
+        cmp.broker_1?.name || "الوسيط الأول"
+      } ${
+        cmp.broker_1?.rating?.toFixed(2) ?? "غير متوفر"
+      } من 5`}
+      className="mt-1 text-[10px] font-bold text-[#f59e0b]"
+    >
+      ★ {cmp.broker_1?.rating?.toFixed(2) ?? "—"}
+    </span>
+  </div>
 
+  {/* VS */}
+  <div className="flex items-center justify-center">
+    <div className="flex h-9 w-9 items-center justify-center rounded-full border border-brand-100 bg-brand-50 text-[11px] font-black text-brand-600 shadow-sm">
+      VS
+    </div>
+  </div>
 
-              {/* VS */}
-              <div className="flex items-center justify-center">
-                <div className="flex h-9 w-9 items-center justify-center rounded-full border border-brand-100 bg-brand-50 text-[11px] font-black text-brand-600 shadow-sm">
-                  VS
-                </div>
-              </div>
+  {/* BROKER 2 */}
+  <div className="flex min-w-0 flex-col items-center text-center">
+    <Link
+      href={
+        cmp.broker_2?.slug
+          ? `/brokers/${cmp.broker_2.slug}`
+          : "/brokers"
+      }
+      className="flex h-[64px] w-[64px] items-center justify-center rounded-[17px] border border-slate-200 bg-slate-50 p-2.5 transition hover:border-brand-100 hover:bg-brand-50 xl:h-[68px] xl:w-[68px]"
+    >
+      {cmp.broker_2?.logo ? (
+        <img
+          src={cmp.broker_2.logo}
+          alt={cmp.broker_2.name || "Broker 2"}
+          className="h-full w-full object-contain"
+        />
+      ) : (
+        <span className="text-[9px] text-slate-400">
+          Logo
+        </span>
+      )}
+    </Link>
 
+    <Link
+      href={
+        cmp.broker_2?.slug
+          ? `/brokers/${cmp.broker_2.slug}`
+          : "/brokers"
+      }
+      className="mt-2.5 max-w-[120px] truncate text-[16px] font-black leading-none text-[#0f172a] transition hover:text-brand-500"
+    >
+      {cmp.broker_2?.name || "Broker 2"}
+    </Link>
 
-              {/* BROKER 2 */}
-              <div className="flex min-w-0 flex-col items-center text-center">
-                <Link
-                  href={`/brokers/${
-                    cmp.broker_2?.name?.toLowerCase() === "exness"
-                      ? "exness"
-                      : cmp.broker_2?.name?.toLowerCase() === "xm"
-                      ? "xm"
-                      : cmp.broker_2?.name?.toLowerCase() === "vantage"
-                      ? "vantage"
-                      : cmp.broker_2?.name?.toLowerCase() === "equiti"
-                      ? "equiti"
-                      : ""
-                  }`}
-                  className="flex h-[64px] w-[64px] items-center justify-center rounded-[17px] border border-slate-200 bg-slate-50 p-2.5 transition hover:border-brand-100 hover:bg-brand-50 xl:h-[68px] xl:w-[68px]"
-                >
-                  {cmp.broker_2?.logo ? (
-                    <img
-                      src={cmp.broker_2.logo}
-                      alt={cmp.broker_2.name || "Broker 2"}
-                      className="h-full w-full object-contain"
-                    />
-                  ) : (
-                    <span className="text-[9px] text-slate-400">
-                      Logo
-                    </span>
-                  )}
-                </Link>
-
-                <Link
-                  href={`/brokers/${
-                    cmp.broker_2?.name?.toLowerCase() === "exness"
-                      ? "exness"
-                      : cmp.broker_2?.name?.toLowerCase() === "xm"
-                      ? "xm"
-                      : cmp.broker_2?.name?.toLowerCase() === "vantage"
-                      ? "vantage"
-                      : cmp.broker_2?.name?.toLowerCase() === "equiti"
-                      ? "equiti"
-                      : ""
-                  }`}
-                  className="mt-2.5 max-w-[120px] truncate text-[16px] font-black leading-none text-[#0f172a] transition hover:text-brand-500"
-                >
-                  {cmp.broker_2?.name || "Broker 2"}
-                </Link>
-
-                <span
-                  aria-label={`تقييم ${
-                    cmp.broker_2?.name || "الوسيط الثاني"
-                  } ${
-                    cmp.broker_2?.rating?.toFixed(2) ?? "غير متوفر"
-                  } من 5`}
-                  className="mt-1 text-[10px] font-bold text-[#f59e0b]"
-                >
-                  ★ {cmp.broker_2?.rating?.toFixed(2) ?? "—"}
-                </span>
-              </div>
-            </div>
+    <span
+      aria-label={`تقييم ${
+        cmp.broker_2?.name || "الوسيط الثاني"
+      } ${
+        cmp.broker_2?.rating?.toFixed(2) ?? "غير متوفر"
+      } من 5`}
+      className="mt-1 text-[10px] font-bold text-[#f59e0b]"
+    >
+      ★ {cmp.broker_2?.rating?.toFixed(2) ?? "—"}
+    </span>
+  </div>
+</div>
+          
 
 
             {/* FEATURES */}
