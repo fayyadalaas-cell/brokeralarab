@@ -109,9 +109,9 @@ export async function GET() {
     EVENT_SLUGS.map((event) => `${BASE_URL}/events/${event}`)
   );
 
-  const content = `# Broker AlArab
+  const content = `# Broker Alarab
 
-> Broker AlArab is an independent bilingual broker review and comparison platform helping traders compare forex brokers, trading platforms, account types, fees, regulation, licenses, investor protection, trading tools, and broker alternatives in Arabic and English.
+> Broker Alarab is an independent bilingual broker review and comparison platform helping traders compare forex brokers, trading platforms, account types, fees, regulation, licenses, investor protection, trading tools, and broker alternatives in Arabic and English.
 
 ## Languages
 
@@ -167,7 +167,7 @@ ${eventLinks}
 
 ## Contact
 
-- [Contact Broker AlArab](${BASE_URL}/contact)
+- [Contact Broker Alarab](${BASE_URL}/contact)
 - [English Contact](${BASE_URL}/en/contact)
 
 ## Editorial Principles

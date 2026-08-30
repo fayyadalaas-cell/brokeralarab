@@ -3,7 +3,7 @@ import Link from "next/link";
 export const metadata = {
   title: "Broker Review Methodology | How We Rate Trading Brokers",
   description:
-    "Learn how Broker AlArab reviews and rates trading brokers using 150+ criteria covering regulation, fees, spreads, platforms, withdrawals, account types, and support quality.",
+    "Learn how Broker Alarab reviews and rates trading brokers using 150+ criteria covering regulation, fees, spreads, platforms, withdrawals, account types, and support quality.",
 };
 
 const criteria = [
@@ -86,11 +86,11 @@ export default function HowWeReviewBrokersPage() {
             </div>
 
             <h1 className="max-w-4xl text-4xl font-black leading-tight text-slate-950 md:text-5xl">
-              How Broker AlArab Reviews and Rates Trading Brokers
+              How Broker Alarab Reviews and Rates Trading Brokers
             </h1>
 
             <p className="mt-5 max-w-5xl text-base leading-8 text-slate-700 md:text-lg">
-              Broker AlArab uses a structured review process to compare forex and CFD brokers
+              Broker Alarab uses a structured review process to compare forex and CFD brokers
               across the areas that matter most to traders. Our broker ratings are based on
               150+ review criteria covering regulation, fees, spreads, trading platforms,
               account types, deposits, withdrawals, and support quality.
@@ -276,7 +276,7 @@ export default function HowWeReviewBrokersPage() {
           </h2>
 
           <p className="mt-4 text-sm leading-8 text-slate-700 md:text-base">
-            Broker AlArab applies the same core review structure to the brokers listed on
+            Broker Alarab applies the same core review structure to the brokers listed on
             the website. A broker appearing on our pages or receiving a certain rating does
             not mean it is suitable for every trader, every country, or every trading strategy.
           </p>
@@ -289,7 +289,7 @@ export default function HowWeReviewBrokersPage() {
 
           <p className="mt-4 text-sm leading-8 text-slate-700 md:text-base">
             Some pages may include affiliate or advertising links to trading brokers. In some
-            cases, Broker AlArab may receive a marketing commission when users register through
+            cases, Broker Alarab may receive a marketing commission when users register through
             certain links, usually at no extra cost to the user. However, brokers are still
             reviewed using the same core rating criteria.
           </p>
@@ -318,7 +318,7 @@ export default function HowWeReviewBrokersPage() {
         </h2>
 
         <p className="mt-4 text-sm leading-8 text-slate-700 md:text-base">
-          The content published on Broker AlArab is for educational and informational purposes
+          The content published on Broker Alarab is for educational and informational purposes
           only. It does not represent investment advice, financial advice, or a recommendation
           to buy, sell, or trade any financial product. Every user should conduct independent
           research and make sure any broker or trading service is suitable for their needs,
@@ -337,7 +337,7 @@ export default function HowWeReviewBrokersPage() {
             href="/en/about"
             className="inline-flex min-h-[48px] items-center justify-center rounded-2xl border border-brand-100 bg-white px-6 text-sm font-black text-brand-600 hover:bg-brand-50"
           >
-            About Broker AlArab
+            About Broker Alarab
           </Link>
         </div>
       </section>

@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: {
-    absolute: "Broker AlArab",
-    template: "%s | Broker AlArab",
+    absolute: "Broker Alarab",
+    template: "%s | Broker Alarab",
   },
-  description: "Best brokers and trading reviews on Broker AlArab.",
+  description: "Best brokers and trading reviews on Broker Alarab.",
   metadataBase: new URL("https://brokeralarab.com"),
 
   alternates: {

@@ -822,21 +822,24 @@ export default async function ComparePage({ params }: PageProps) {
 
     <div className="relative">
       <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#dbeafe] bg-[#f8fbff] px-4 py-2 text-xs font-extrabold text-brand-500">
-        <span>المقارنات</span>
-        <span className="text-slate-300">/</span>
-        <span>{left.name} vs {right.name}</span>
-      </div>
+  <span>المقارنات</span>
+  <span className="text-slate-300">/</span>
+  <span>
+    {left.name} vs {right.name}
+  </span>
+</div>
 
-      <h1 className="max-w-6xl text-[42px] font-black leading-[1.2] tracking-[-0.5px] text-[#0f172a] xl:text-[48px]">
-  مقارنة بين {left.name} و{right.name}: أيهما أفضل؟
-</h1>
+{/* العنوان المرئي للديسكتوب — عنوان H1 الدلالي موجود في نسخة الموبايل */}
+<div className="max-w-6xl text-[42px] font-black leading-[1.2] tracking-[-0.5px] text-[#0f172a] xl:text-[48px]">
+  مقارنة بين {left.name} و {right.name}: أيهما أفضل؟
+</div>
 
-      <p className="mt-4 max-w-6xl text-base leading-8 text-slate-600 xl:text-lg xl:leading-9">
-        مقارنة شاملة بين <strong>{left.name}</strong> و{" "}
-        <strong>{right.name}</strong> لمعرفة الفرق في السبريد، الرسوم،
-        التراخيص، الحساب الإسلامي، منصات التداول، طرق الإيداع والسحب،
-        وأنواع الحسابات، مع توضيح أيهما أفضل للمبتدئين والمتداولين العرب.
-      </p>
+<p className="mt-4 max-w-6xl text-base leading-8 text-slate-600 xl:text-lg xl:leading-9">
+  مقارنة شاملة بين <strong>{left.name}</strong> و{" "}
+  <strong>{right.name}</strong> لمعرفة الفرق في السبريد، الرسوم،
+  التراخيص، الحساب الإسلامي، منصات التداول، طرق الإيداع والسحب،
+  وأنواع الحسابات، مع توضيح أيهما أفضل للمبتدئين والمتداولين العرب.
+</p>
 
       <div className="mt-7 grid max-w-6xl grid-cols-3 gap-4">
         <div className="rounded-[22px] border border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-5 py-4 shadow-sm">

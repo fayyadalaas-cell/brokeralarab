@@ -284,7 +284,7 @@ export async function generateMetadata({
   const title =
     broker.meta_title_en ||
     broker.meta_title ||
-    `${broker.name_en || broker.name} Review 2026 | Broker AlArab`;
+    `${broker.name_en || broker.name} Review 2026 | Broker Alarab`;
 
   const description =
     broker.meta_description_en ||
@@ -2112,7 +2112,7 @@ const reviewSchema = {
       </div>
 
       <div className="mt-1 text-[18px] font-black leading-7 text-slate-950 md:text-[24px] md:leading-9">
-        {broker.name_en || broker.name} was reviewed using Broker AlArab's methodology
+        {broker.name_en || broker.name} was reviewed using Broker Alarab's methodology
       </div>
 
       <p className="mt-2 text-[13px] leading-6 text-slate-600 md:text-sm md:leading-7">

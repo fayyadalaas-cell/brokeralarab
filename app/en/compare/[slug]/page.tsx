@@ -340,7 +340,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
  if (!leftSlug || !rightSlug) {
   return {
     metadataBase: new URL(siteUrl),
-    title: "Broker Comparisons | Broker AlArab",
+    title: "Broker Comparisons | Broker Alarab",
     description:
       "Detailed broker comparisons covering accounts, fees, regulation, and trading platforms to help traders choose the right broker.",
     alternates: {
@@ -352,7 +352,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   },
 },
     openGraph: {
-  title: "Broker Comparisons | Broker AlArab",
+  title: "Broker Comparisons | Broker Alarab",
   description:
     "Detailed broker comparisons covering accounts, fees, regulation, and trading platforms.",
   url: `${siteUrl}/en/compare`,
@@ -370,7 +370,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 },
   twitter: {
   card: "summary_large_image",
-  title: "Broker Comparisons | Broker AlArab",
+  title: "Broker Comparisons | Broker Alarab",
   description:
     "Detailed broker comparisons covering accounts, fees, regulation, and trading platforms.",
   images: [`${siteUrl}/og-image.webp`],
@@ -416,7 +416,7 @@ return {
     "broker comparison",
     "forex broker comparison",
     "trading broker comparison",
-    "Broker AlArab",
+    "Broker Alarab",
   ],
  alternates: {
   canonical: `${siteUrl}/en/compare/${slug}`,
@@ -914,21 +914,25 @@ const comparisonSchema = {
 
               <div className="relative">
                 <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#dbeafe] bg-[#f8fbff] px-4 py-2 text-xs font-extrabold text-brand-500">
-                  <span>Comparisons</span>
-                  <span className="text-slate-300">/</span>
-                  <span>{left.name_en || left.name} vs {right.name_en || right.name}</span>
-                </div>
+  <span>Comparisons</span>
+  <span className="text-slate-300">/</span>
+  <span>
+    {left.name_en || left.name} vs {right.name_en || right.name}
+  </span>
+</div>
 
-                <h1 className="max-w-6xl text-[42px] font-black leading-[1.2] tracking-[-0.5px] text-[#0f172a] xl:text-[48px]">
-                  {left.name_en || left.name} vs {right.name_en || right.name}: Which Broker Is Better?
-                </h1>
+{/* Desktop visual heading — semantic H1 is in the mobile hero */}
+<div className="max-w-6xl text-[42px] font-black leading-[1.2] tracking-[-0.5px] text-[#0f172a] xl:text-[48px]">
+  {left.name_en || left.name} vs {right.name_en || right.name}: Which Broker Is Better?
+</div>
 
-                <p className="mt-4 max-w-6xl text-base leading-8 text-slate-600 xl:text-lg xl:leading-9">
-                  A detailed comparison between <strong>{left.name_en || left.name}</strong>{" "}
-                  and <strong>{right.name_en || right.name}</strong> covering spreads,
-                  fees, regulation, Islamic accounts, trading platforms, deposits,
-                  withdrawals, and account types to help you choose the better broker.
-                </p>
+<p className="mt-4 max-w-6xl text-base leading-8 text-slate-600 xl:text-lg xl:leading-9">
+  A detailed comparison between{" "}
+  <strong>{left.name_en || left.name}</strong> and{" "}
+  <strong>{right.name_en || right.name}</strong>, covering spreads,
+  fees, regulation, Islamic accounts, trading platforms, deposits,
+  withdrawals, and account types to help you choose the better broker.
+</p>
 
                 <div className="mt-7 grid max-w-6xl grid-cols-3 gap-4">
                   <div className="rounded-[22px] border border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-5 py-4 shadow-sm">
@@ -1046,7 +1050,7 @@ const comparisonSchema = {
 
                         {broker.expert_insight_en && (
                           <div className="rounded-2xl bg-[#f8fafc] px-4 py-3">
-                            <div className="text-xs font-black text-slate-500">Broker AlArab View</div>
+                            <div className="text-xs font-black text-slate-500">Broker Alarab View</div>
                             <div className="mt-1 text-sm font-medium leading-6 text-[#0f172a]">
                               {broker.expert_insight_en}
                             </div>
