@@ -173,6 +173,38 @@ function getCountryPages() {
       flag: "/flags/eg.svg",
       badge: "مصر",
     },
+    {
+  title: "أفضل شركات التداول في العراق",
+  href: "/best-brokers/iraq",
+  desc: "أفضل الخيارات المتاحة للمتداولين في العراق.",
+  shortDesc: "وسطاء مناسبون للمتداول العراقي",
+  flag: "https://flagcdn.com/w80/iq.png",
+  badge: "العراق",
+},
+{
+  title: "أفضل شركات التداول في ليبيا",
+  href: "/best-brokers/libya",
+  desc: "أفضل الخيارات المتاحة للمتداولين في ليبيا.",
+  shortDesc: "وسطاء مناسبون للمتداول الليبي",
+  flag: "https://flagcdn.com/w80/ly.png",
+  badge: "ليبيا",
+},
+{
+  title: "أفضل شركات التداول في سوريا",
+  href: "/best-brokers/syria",
+  desc: "أفضل الخيارات المتاحة للمتداولين في سوريا.",
+  shortDesc: "وسطاء مناسبون للمتداول السوري",
+  flag: "https://flagcdn.com/w80/sy.png",
+  badge: "سوريا",
+},
+{
+  title: "أفضل شركات التداول في اليمن",
+  href: "/best-brokers/yemen",
+  desc: "أفضل الخيارات المتاحة للمتداولين في اليمن.",
+  shortDesc: "وسطاء مناسبون للمتداول اليمني",
+  flag: "https://flagcdn.com/w80/ye.png",
+  badge: "اليمن",
+},
   ];
 }
 
@@ -299,21 +331,22 @@ export default async function HomePage() {
   .eq("broker.publication_status", "published"),
 
     supabase
-      .from("events")
-      .select(`
-        id,
-        slug,
-        title_ar,
-        excerpt_ar,
-        category,
-        start_date,
-        end_date,
-        venue_ar,
-        city_ar,
-        country_ar,
-        status,
-        hero_image
-      `)
+  .from("events")
+  .select(`
+    id,
+    slug,
+    title_ar,
+    excerpt_ar,
+    category,
+    start_date,
+    end_date,
+    venue_ar,
+    city_ar,
+    country_ar,
+    status,
+    hero_image,
+    is_media_partner
+  `)
       .eq("status", "upcoming")
       .not("title_ar", "is", null)
       .not("slug", "is", null)
@@ -432,6 +465,83 @@ function eventCountdown(start?: string | null, end?: string | null) {
 
   return { status: "upcoming", days, hours };
 }
+
+const accountTypeItems = [
+  {
+    title: "حسابات Standard",
+    mobileSuitable: "للمبتدئين والتداول اليومي",
+    desktopSuitable: "مناسبة للمبتدئين والتداول اليومي",
+    mobileDesc: "رسوم واضحة وبدون تعقيد كبير.",
+    desktopDesc: "حسابات سهلة بتكلفة واضحة وبدون تعقيد في العمولات.",
+    badge: "سهولة البدء",
+    href: "/best-brokers/accounts/standard",
+  },
+  {
+    title: "حسابات Raw Spread",
+    mobileSuitable: "للسكالبينج والمتداول النشط",
+    desktopSuitable: "مناسبة للسكالبينج والمتداول النشط",
+    mobileDesc: "سبريد يبدأ من 0.0 نقطة مع عمولة ثابتة.",
+    desktopDesc:
+      "سبريد يبدأ من 0.0 نقطة مع عمولة ثابتة لتنفيذ احترافي.",
+    badge: "أقل سبريد",
+    href: "/best-brokers/accounts/raw-spread",
+  },
+  {
+    title: "حسابات ECN",
+    mobileSuitable: "للمتداولين المحترفين",
+    desktopSuitable: "مناسبة للمتداولين المحترفين",
+    mobileDesc: "تنفيذ سريع ووصول مباشر للسيولة.",
+    desktopDesc:
+      "تنفيذ سريع ووصول مباشر للسيولة مع تسعير أكثر تنافسية.",
+    badge: "تنفيذ احترافي",
+    href: "/lowest-spread-brokers",
+  },
+  {
+    title: "حسابات Cent / Micro",
+    mobileSuitable: "للتجربة برأس مال صغير",
+    desktopSuitable: "مناسبة للتجربة برأس مال صغير",
+    mobileDesc: "أحجام تداول صغيرة لاختبار استراتيجيتك.",
+    desktopDesc:
+      "أحجام تداول صغيرة لاختبار الاستراتيجيات وتقليل المخاطر.",
+    badge: "رأس مال صغير",
+    href: "/best-brokers/accounts/cent",
+  },
+];
+
+const whyBrokerAlarabItems = [
+  {
+    mobileTitle: "مراجعات واضحة",
+    desktopTitle: "مراجعات منظمة وواضحة",
+    mobileDesc: "نضع أهم معلومات الوسيط في مكان واحد.",
+    desktopDesc:
+      "نجمع أهم بيانات الوسيط مثل الترخيص والرسوم والحسابات والمنصات وطرق الإيداع والسحب في مكان واحد.",
+    tag: "تقييمات",
+  },
+  {
+    mobileTitle: "مقارنات تساعدك",
+    desktopTitle: "مقارنات تساعدك على القرار",
+    mobileDesc: "نوضح الفروقات المهمة بين الوسطاء بسرعة.",
+    desktopDesc:
+      "نوضح الفروقات العملية بين الوسطاء حتى تعرف أي شركة أقرب لاحتياجاتك بدل الاعتماد على الانطباع العام.",
+    tag: "مقارنات",
+  },
+  {
+    mobileTitle: "احتياجات المتداول العربي",
+    desktopTitle: "تركيز على احتياجات العرب",
+    mobileDesc: "نركز على الحساب الإسلامي والدعم وطرق الدفع.",
+    desktopDesc:
+      "نراجع عوامل مهمة مثل الحساب الإسلامي والدعم العربي ومرونة الإيداع والسحب في الدول العربية.",
+    tag: "للمنطقة",
+  },
+  {
+    mobileTitle: "وصول أسرع للخيار المناسب",
+    desktopTitle: "وصول أسرع للخيار المناسب",
+    mobileDesc: "نرتب الوسطاء حسب الدولة ونوع الحساب.",
+    desktopDesc:
+      "نرتب الوسطاء حسب الدولة ونوع الحساب والرسوم حتى تصل بسرعة إلى الخيار الأقرب لأسلوبك.",
+    tag: "اختيار أسهل",
+  },
+];
 
   const faqJsonLd = {
     "@context": "https://schema.org",
@@ -1460,46 +1570,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
 
       <div className="grid grid-cols-2 gap-1.5">
 
-        {[
-          ...countryPages,
-
-          {
-            title: "أفضل شركات التداول في العراق",
-            href: "/best-brokers/iraq",
-            desc: "أفضل الخيارات في العراق",
-            shortDesc: "طرق دفع ودعم مناسب للمتداول العراقي",
-            flag: "https://flagcdn.com/w80/iq.png",
-            badge: "العراق",
-          },
-
-          {
-            title: "أفضل شركات التداول في ليبيا",
-            href: "/best-brokers/libya",
-            desc: "أفضل الخيارات في ليبيا",
-            shortDesc: "خيارات بإيداع مناسب ودعم عربي",
-            flag: "https://flagcdn.com/w80/ly.png",
-            badge: "ليبيا",
-          },
-
-          {
-            title: "أفضل شركات التداول في سوريا",
-            href: "/best-brokers/syria",
-            desc: "أفضل الخيارات في سوريا",
-            shortDesc: "وسطاء متاحون مع خيارات حساب مرنة",
-            flag: "https://flagcdn.com/w80/sy.png",
-            badge: "سوريا",
-          },
-
-          {
-            title: "أفضل شركات التداول في اليمن",
-            href: "/best-brokers/yemen",
-            desc: "أفضل الخيارات المتاحة للمتداولين في اليمن",
-            shortDesc: "وسطاء متاحون وخيارات حساب مناسبة",
-            flag: "https://flagcdn.com/w80/ye.png",
-            badge: "اليمن",
-          },
-
-        ].map((item) => (
+        {countryPages.map((item) => (
 
           <Link
             key={item.href}
@@ -1597,46 +1668,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
 
       <div className="grid gap-2.5 md:grid-cols-2 lg:gap-3">
 
-        {[
-          ...countryPages,
-
-          {
-            title: "أفضل شركات التداول في العراق",
-            href: "/best-brokers/iraq",
-            desc: "أفضل الخيارات في العراق",
-            shortDesc: "وسطاء مناسبون للمتداول العراقي",
-            flag: "https://flagcdn.com/w80/iq.png",
-            badge: "العراق",
-          },
-
-          {
-            title: "أفضل شركات التداول في ليبيا",
-            href: "/best-brokers/libya",
-            desc: "أفضل الخيارات في ليبيا",
-            shortDesc: "وسطاء مناسبون للمتداول الليبي",
-            flag: "https://flagcdn.com/w80/ly.png",
-            badge: "ليبيا",
-          },
-
-          {
-            title: "أفضل شركات التداول في سوريا",
-            href: "/best-brokers/syria",
-            desc: "أفضل الخيارات في سوريا",
-            shortDesc: "وسطاء مناسبون للمتداول السوري",
-            flag: "https://flagcdn.com/w80/sy.png",
-            badge: "سوريا",
-          },
-
-          {
-            title: "أفضل شركات التداول في اليمن",
-            href: "/best-brokers/yemen",
-            desc: "أفضل الخيارات في اليمن",
-            shortDesc: "وسطاء مناسبون للمتداول اليمني",
-            flag: "https://flagcdn.com/w80/ye.png",
-            badge: "اليمن",
-          },
-
-        ].map((item) => (
+        {countryPages.map((item) => (
 
           <Link
             key={item.href}
@@ -1848,36 +1880,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
     ====================================================== */}
     <div className="p-2.5 sm:hidden">
       <div className="grid gap-2.5">
-        {[
-          {
-            title: "حسابات Standard",
-            suitable: "للمبتدئين والتداول اليومي",
-            desc: "رسوم واضحة وبدون تعقيد كبير.",
-            badge: "سهولة البدء",
-            href: "/best-brokers/accounts/standard",
-          },
-          {
-            title: "حسابات Raw Spread",
-            suitable: "للسكالبينج والمتداول النشط",
-            desc: "سبريد يبدأ من 0.0 نقطة مع عمولة ثابتة.",
-            badge: "أقل سبريد",
-            href: "/best-brokers/accounts/raw-spread",
-          },
-          {
-            title: "حسابات ECN",
-            suitable: "للمتداولين المحترفين",
-            desc: "تنفيذ سريع ووصول مباشر للسيولة.",
-            badge: "تنفيذ احترافي",
-            href: "/lowest-spread-brokers",
-          },
-          {
-            title: "حسابات Cent / Micro",
-            suitable: "للتجربة برأس مال صغير",
-            desc: "أحجام تداول صغيرة لاختبار استراتيجيتك.",
-            badge: "رأس مال صغير",
-            href: "/best-brokers/accounts/cent",
-          },
-        ].map((item) => (
+        {accountTypeItems.map((item) => (
           <Link
             key={item.title}
             href={item.href}
@@ -1903,11 +1906,11 @@ function eventCountdown(start?: string | null, end?: string | null) {
                 </h3>
 
                 <p className="mt-1 text-[11px] font-black leading-5 text-brand-600">
-                  {item.suitable}
+                  {item.mobileSuitable}
                 </p>
 
                 <p className="mt-0.5 text-[10.5px] font-semibold leading-5 text-slate-500">
-                  {item.desc}
+                  {item.mobileDesc}
                 </p>
 
               </div>
@@ -1932,36 +1935,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
     ====================================================== */}
     <div className="hidden px-4 pb-4 pt-3 sm:block lg:px-5">
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-        {[
-          {
-            title: "حسابات Standard",
-            suitable: "مناسبة للمبتدئين والتداول اليومي",
-            desc: "حسابات سهلة بتكلفة واضحة وبدون تعقيد في العمولات.",
-            badge: "سهولة البدء",
-            href: "/best-brokers/accounts/standard",
-          },
-          {
-            title: "حسابات Raw Spread",
-            suitable: "مناسبة للسكالبينج والمتداول النشط",
-            desc: "سبريد يبدأ من 0.0 نقطة مع عمولة ثابتة لتنفيذ احترافي.",
-            badge: "أقل سبريد",
-            href: "/best-brokers/accounts/raw-spread",
-          },
-          {
-            title: "حسابات ECN",
-            suitable: "مناسبة للمتداولين المحترفين",
-            desc: "تنفيذ سريع ووصول مباشر للسيولة مع تسعير أكثر تنافسية.",
-            badge: "تنفيذ احترافي",
-            href: "/lowest-spread-brokers",
-          },
-          {
-            title: "حسابات Cent / Micro",
-            suitable: "مناسبة للتجربة برأس مال صغير",
-            desc: "أحجام تداول صغيرة لاختبار الاستراتيجيات وتقليل المخاطر.",
-            badge: "رأس مال صغير",
-            href: "/best-brokers/accounts/cent",
-          },
-        ].map((item) => (
+        {accountTypeItems.map((item) => (
           <Link
             key={item.title}
             href={item.href}
@@ -1988,12 +1962,12 @@ function eventCountdown(start?: string | null, end?: string | null) {
 
             {/* SUITABLE */}
             <p className="mt-1.5 min-h-[36px] text-[12.5px] font-black leading-6 text-brand-600">
-              {item.suitable}
+              {item.desktopSuitable}
             </p>
 
             {/* DESCRIPTION */}
             <p className="mt-1 min-h-[44px] text-[11.5px] font-medium leading-6 text-slate-600">
-              {item.desc}
+              {item.desktopDesc}
             </p>
 
             {/* BOTTOM CTA */}
@@ -2050,26 +2024,9 @@ function eventCountdown(start?: string | null, end?: string | null) {
         MOBILE
     ====================================================== */}
     <div className="grid gap-2.5 p-2.5 sm:hidden">
-      {[
-        {
-          title: "مراجعات واضحة",
-          desc: "نضع أهم معلومات الوسيط في مكان واحد.",
-        },
-        {
-          title: "مقارنات تساعدك",
-          desc: "نوضح الفروقات المهمة بين الوسطاء بسرعة.",
-        },
-        {
-          title: "احتياجات المتداول العربي",
-          desc: "نركز على الحساب الإسلامي والدعم وطرق الدفع.",
-        },
-        {
-          title: "وصول أسرع للخيار المناسب",
-          desc: "نرتب الوسطاء حسب الدولة ونوع الحساب.",
-        },
-      ].map((item, index) => (
+      {whyBrokerAlarabItems.map((item, index) => (
         <div
-          key={item.title}
+          key={item.desktopTitle}
           className="rounded-[14px] border border-slate-200 bg-[#fbfdff] px-3 py-2.5 shadow-[0_2px_8px_rgba(15,23,42,0.035)]"
         >
           <div className="flex items-center gap-2.5">
@@ -2079,11 +2036,11 @@ function eventCountdown(start?: string | null, end?: string | null) {
 
             <div className="min-w-0 flex-1 text-right">
               <h3 className="text-[14px] font-black leading-5 text-[#0f172a]">
-                {item.title}
+                {item.mobileTitle}
               </h3>
 
               <p className="mt-0.5 text-[10.5px] font-semibold leading-5 text-slate-500">
-                {item.desc}
+                {item.mobileDesc}
               </p>
             </div>
           </div>
@@ -2097,30 +2054,9 @@ function eventCountdown(start?: string | null, end?: string | null) {
     ====================================================== */}
     <div className="hidden px-4 pb-4 pt-3 sm:block lg:px-5">
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-        {[
-          {
-            title: "مراجعات منظمة وواضحة",
-            desc: "نجمع أهم بيانات الوسيط مثل الترخيص والرسوم والحسابات والمنصات وطرق الإيداع والسحب في مكان واحد.",
-            tag: "تقييمات",
-          },
-          {
-            title: "مقارنات تساعدك على القرار",
-            desc: "نوضح الفروقات العملية بين الوسطاء حتى تعرف أي شركة أقرب لاحتياجاتك بدل الاعتماد على الانطباع العام.",
-            tag: "مقارنات",
-          },
-          {
-            title: "تركيز على احتياجات العرب",
-            desc: "نراجع عوامل مهمة مثل الحساب الإسلامي والدعم العربي ومرونة الإيداع والسحب في الدول العربية.",
-            tag: "للمنطقة",
-          },
-          {
-            title: "وصول أسرع للخيار المناسب",
-            desc: "نرتب الوسطاء حسب الدولة ونوع الحساب والرسوم حتى تصل بسرعة إلى الخيار الأقرب لأسلوبك.",
-            tag: "اختيار أسهل",
-          },
-        ].map((item, index) => (
+        {whyBrokerAlarabItems.map((item, index) => (
           <div
-            key={item.title}
+            key={item.desktopTitle}
             className="group relative overflow-hidden rounded-[20px] border border-slate-200 bg-white p-4 shadow-[0_4px_14px_rgba(15,23,42,0.035)] transition duration-300 hover:-translate-y-0.5 hover:border-brand-300 hover:bg-[#fcfdff] hover:shadow-[0_12px_28px_rgba(37,99,235,0.09)]"
           >
             <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent opacity-55" />
@@ -2136,11 +2072,11 @@ function eventCountdown(start?: string | null, end?: string | null) {
             </div>
 
             <h3 className="text-[17px] font-black leading-6 tracking-[-0.02em] text-[#07111f]">
-              {item.title}
+              {item.desktopTitle}
             </h3>
 
             <p className="mt-2 text-[11.5px] font-medium leading-6 text-slate-600">
-              {item.desc}
+              {item.desktopDesc}
             </p>
           </div>
         ))}
@@ -2154,34 +2090,21 @@ function eventCountdown(start?: string | null, end?: string | null) {
 <section className="mx-auto w-full max-w-7xl px-0 py-2.5 sm:py-3">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_12px_34px_rgba(15,23,42,0.045)]">
     {(() => {
-      const isMediaPartnerEvent = (event: any) => {
-        const searchableText = `${event.slug || ""} ${
-          event.title_ar || ""
-        }`.toLowerCase();
+  /*
+   * أقرب فعاليتين عاديتين، بالإضافة إلى فعالية
+   * الشريك الإعلامي الرسمي عند وجودها.
+   */
+  const nearestRegularEvents = eventList
+    .filter((event) => event.is_media_partner !== true)
+    .slice(0, 2);
 
-        return (
-          searchableText.includes("forex-expo-dubai") ||
-          searchableText.includes("crypto-expo-dubai") ||
-          searchableText.includes("فوركس إكسبو دبي") ||
-          searchableText.includes("كريبتو إكسبو دبي") ||
-          searchableText.includes("معرض الفوركس دبي") ||
-          searchableText.includes("معرض الكريبتو دبي")
-        );
-      };
+  const mediaPartnerEvent = eventList.find(
+    (event) => event.is_media_partner === true
+  );
 
-      const nearestTwoEvents = eventList.slice(0, 2);
-
-      const mediaPartnerEvent = eventList.find((event) =>
-        isMediaPartnerEvent(event)
-      );
-
-      const selectedEvents =
-        mediaPartnerEvent &&
-        !nearestTwoEvents.some(
-          (event) => event.id === mediaPartnerEvent.id
-        )
-          ? [...nearestTwoEvents, mediaPartnerEvent]
-          : eventList.slice(0, 3);
+  const selectedEvents = mediaPartnerEvent
+    ? [...nearestRegularEvents, mediaPartnerEvent]
+    : eventList.slice(0, 3);
 
       return (
         <>
@@ -2236,7 +2159,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
                 event.end_date
               );
 
-              const mediaPartner = isMediaPartnerEvent(event);
+              const mediaPartner = event.is_media_partner === true;
 
               const eventTitle = (
                 event.title_ar || "معرض تداول"

@@ -72,6 +72,7 @@ type Broker = {
   regulation_short?: string | null;
 
   best_for: string | null;
+  best_for_en: string | null;
   pros: string | null;
 
   real_account_url: string | null;
@@ -1029,6 +1030,7 @@ async function getCountryData(
           regulation,
           regulation_short,
           best_for,
+          best_for_en,
           pros,
           real_account_url,
           islamic_account,
@@ -1906,11 +1908,10 @@ function QuickPicks({
             const rating =
               row.country_rating ||
               broker.rating;
-              const brokerBestFor =
-  safeEnglishText(
-    broker.best_for,
-    "Strong option for forex traders",
-  );
+              const brokerBestFor = safeEnglishText(
+  broker.best_for_en,
+  "Its overall trading offering",
+);
 
             return (
               <article
@@ -2099,10 +2100,8 @@ function QuickPicks({
                     NOTE
                 ================================================= */}
                 <p className="mt-4 text-justify text-[12px] font-semibold leading-[1.9] text-slate-600 sm:text-[13px] sm:leading-[2]">
-
-                  {`${broker.name} is a competitive forex broker option for traders in ${countryName}, particularly for ${brokerBestFor.toLowerCase()}. Compare its regulation, spreads, account terms, trading platforms and funding conditions before making a decision.`}
-
-                </p>
+  {`${broker.name} is a competitive forex broker option for traders in ${countryName}, with ${brokerBestFor.toLowerCase()} among its key strengths. Compare its regulation, spreads, account terms, trading platforms and funding conditions before making a decision.`}
+</p>
 
 
                 {/* =================================================

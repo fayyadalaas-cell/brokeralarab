@@ -460,7 +460,81 @@ const countryPages = getCountryPages();
 
 const typePages = getTypePages();
 
- const faqJsonLd = {
+const accountTypeItemsEn = [
+  {
+    title: "Standard Accounts",
+    mobileSuitable: "For beginners and everyday trading",
+    desktopSuitable: "Suitable for beginners and everyday trading",
+    mobileDesc: "Clear pricing with no complex commission structure.",
+    desktopDesc:
+      "Simple accounts with clear pricing and no complex commission structure.",
+    badge: "Easy to Start",
+    href: "/en/best-brokers/accounts/standard",
+  },
+  {
+    title: "Raw Spread Accounts",
+    mobileSuitable: "For scalping and active trading",
+    desktopSuitable: "Suitable for scalping and active trading",
+    mobileDesc: "Spreads from 0.0 pips with a separate commission.",
+    desktopDesc:
+      "Spreads from 0.0 pips with a separate commission for active traders.",
+    badge: "Lower Spreads",
+    href: "/en/best-brokers/accounts/raw-spread",
+  },
+  {
+    title: "ECN Accounts",
+    mobileSuitable: "For experienced traders",
+    desktopSuitable: "Suitable for experienced traders",
+    mobileDesc: "Fast execution and more direct access to liquidity.",
+    desktopDesc:
+      "Fast execution and more direct access to deeper market liquidity.",
+    badge: "Pro Execution",
+    href: "/en/lowest-spread-brokers#account-types",
+  },
+  {
+    title: "Cent / Micro Accounts",
+    mobileSuitable: "For testing with smaller capital",
+    desktopSuitable: "Suitable for testing with smaller capital",
+    mobileDesc: "Trade smaller positions and test your strategies.",
+    desktopDesc:
+      "Trade smaller position sizes and test strategies with lower capital.",
+    badge: "Small Capital",
+    href: "/en/best-brokers/accounts/cent",
+  },
+];
+
+const whyBrokerAlarabItemsEn = [
+  {
+    mobileTitle: "Clear Broker Reviews",
+    desktopTitle: "Clear & Structured Reviews",
+    mobileDesc: "Key broker information in one organized place.",
+    desktopDesc:
+      "Key information on regulation, accounts, fees and platforms in one organized place.",
+  },
+  {
+    mobileTitle: "Practical Comparisons",
+    desktopTitle: "Practical Comparisons",
+    mobileDesc: "See the differences that matter before choosing.",
+    desktopDesc:
+      "Compare brokers side-by-side and understand the differences before opening an account.",
+  },
+  {
+    mobileTitle: "Country Rankings",
+    desktopTitle: "Country-Based Rankings",
+    mobileDesc: "Broker options organized for different markets.",
+    desktopDesc:
+      "Explore broker options organized by country and find choices for your market.",
+  },
+  {
+    mobileTitle: "Faster Broker Research",
+    desktopTitle: "Faster Broker Selection",
+    mobileDesc: "Find suitable options without browsing endless pages.",
+    desktopDesc:
+      "Use reviews, rankings and account guides to find suitable brokers faster.",
+  },
+];
+
+const faqJsonLd = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
   mainEntity: [
@@ -1809,36 +1883,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
     ====================================================== */}
     <div className="p-2.5 sm:hidden">
       <div className="grid gap-2.5">
-        {[
-          {
-            title: "Standard Accounts",
-            suitable: "For beginners and everyday trading",
-            desc: "Clear pricing with no complex commission structure.",
-            badge: "Easy to Start",
-            href: "/en/best-brokers/accounts/standard",
-          },
-          {
-            title: "Raw Spread Accounts",
-            suitable: "For scalping and active trading",
-            desc: "Spreads from 0.0 pips with a separate commission.",
-            badge: "Lower Spreads",
-            href: "/en/best-brokers/accounts/raw-spread",
-          },
-          {
-            title: "ECN Accounts",
-            suitable: "For experienced traders",
-            desc: "Fast execution and more direct access to liquidity.",
-            badge: "Pro Execution",
-            href: "/en/lowest-spread-brokers#account-types",
-          },
-          {
-            title: "Cent / Micro Accounts",
-            suitable: "For testing with smaller capital",
-            desc: "Trade smaller positions and test your strategies.",
-            badge: "Small Capital",
-            href: "/en/best-brokers/accounts/cent",
-          },
-        ].map((item) => (
+        {accountTypeItemsEn.map((item) => (
           <Link
             key={item.title}
             href={item.href}
@@ -1867,12 +1912,12 @@ function eventCountdown(start?: string | null, end?: string | null) {
 
                 {/* SUITABLE */}
                 <p className="mt-1 text-[11px] font-black leading-5 text-brand-600">
-                  {item.suitable}
+                  {item.mobileSuitable}
                 </p>
 
                 {/* DESCRIPTION */}
                 <p className="mt-0.5 text-[10.5px] font-semibold leading-5 text-slate-500">
-                  {item.desc}
+                  {item.mobileDesc}
                 </p>
 
               </div>
@@ -1898,36 +1943,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
     ====================================================== */}
     <div className="hidden px-4 pb-4 pt-3 sm:block lg:px-5">
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-        {[
-          {
-            title: "Standard Accounts",
-            suitable: "Suitable for beginners and everyday trading",
-            desc: "Simple accounts with clear pricing and no complex commission structure.",
-            badge: "Easy to Start",
-            href: "/en/best-brokers/accounts/standard",
-          },
-          {
-            title: "Raw Spread Accounts",
-            suitable: "Suitable for scalping and active trading",
-            desc: "Spreads from 0.0 pips with a separate commission for active traders.",
-            badge: "Lower Spreads",
-            href: "/en/best-brokers/accounts/raw-spread",
-          },
-          {
-            title: "ECN Accounts",
-            suitable: "Suitable for experienced traders",
-            desc: "Fast execution and more direct access to deeper market liquidity.",
-            badge: "Pro Execution",
-            href: "/en/lowest-spread-brokers#account-types",
-          },
-          {
-            title: "Cent / Micro Accounts",
-            suitable: "Suitable for testing with smaller capital",
-            desc: "Trade smaller position sizes and test strategies with lower capital.",
-            badge: "Small Capital",
-            href: "/en/best-brokers/accounts/cent",
-          },
-        ].map((item) => (
+        {accountTypeItemsEn.map((item) => (
           <Link
             key={item.title}
             href={item.href}
@@ -1954,12 +1970,12 @@ function eventCountdown(start?: string | null, end?: string | null) {
 
             {/* SUITABLE */}
             <p className="mt-1.5 min-h-[36px] text-[12px] font-black leading-6 text-brand-600">
-              {item.suitable}
+              {item.desktopSuitable}
             </p>
 
             {/* DESCRIPTION */}
             <p className="mt-1 min-h-[44px] text-[11.5px] font-medium leading-6 text-slate-600">
-              {item.desc}
+              {item.desktopDesc}
             </p>
 
             {/* BOTTOM CTA */}
@@ -2013,31 +2029,13 @@ function eventCountdown(start?: string | null, end?: string | null) {
       </div>
     </div>
 
-
     {/* =====================================================
         MOBILE
     ====================================================== */}
     <div className="grid gap-2.5 p-2.5 sm:hidden">
-      {[
-        {
-          title: "Clear Broker Reviews",
-          desc: "Key broker information in one organized place.",
-        },
-        {
-          title: "Practical Comparisons",
-          desc: "See the differences that matter before choosing.",
-        },
-        {
-          title: "Country Rankings",
-          desc: "Broker options organized for different markets.",
-        },
-        {
-          title: "Faster Broker Research",
-          desc: "Find suitable options without browsing endless pages.",
-        },
-      ].map((item, index) => (
+      {whyBrokerAlarabItemsEn.map((item, index) => (
         <div
-          key={item.title}
+          key={item.desktopTitle}
           className="rounded-[14px] border border-slate-200 bg-[#fbfdff] px-3 py-2.5 shadow-[0_2px_8px_rgba(15,23,42,0.035)]"
         >
           <div className="flex items-center gap-2.5">
@@ -2050,11 +2048,11 @@ function eventCountdown(start?: string | null, end?: string | null) {
             {/* CONTENT */}
             <div className="min-w-0 flex-1 text-left">
               <h3 className="text-[14px] font-black leading-5 text-[#0f172a]">
-                {item.title}
+                {item.mobileTitle}
               </h3>
 
               <p className="mt-0.5 text-[10.5px] font-semibold leading-5 text-slate-500">
-                {item.desc}
+                {item.mobileDesc}
               </p>
             </div>
 
@@ -2063,54 +2061,36 @@ function eventCountdown(start?: string | null, end?: string | null) {
       ))}
     </div>
 
-
     {/* =====================================================
         DESKTOP / TABLET
     ====================================================== */}
     <div className="hidden px-4 pb-4 pt-3 sm:block lg:px-5">
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-        {[
-  {
-  title: "Clear & Structured Reviews",
-  desc: "Key information on regulation, accounts, fees and platforms in one organized place.",
-},
-{
-  title: "Practical Comparisons",
-  desc: "Compare brokers side-by-side and understand the differences before opening an account.",
-},
-{
-  title: "Country-Based Rankings",
-  desc: "Explore broker options organized by country and find choices for your market.",
-},
-{
-  title: "Faster Broker Selection",
-  desc: "Use reviews, rankings and account guides to find suitable brokers faster.",
-},
-].map((item, index) => (
-  <div
-    key={item.title}
-    className="group relative overflow-hidden rounded-[20px] border border-slate-200 bg-white p-4 shadow-[0_4px_14px_rgba(15,23,42,0.035)] transition duration-300 hover:-translate-y-0.5 hover:border-brand-300 hover:bg-[#fcfdff] hover:shadow-[0_12px_28px_rgba(37,99,235,0.09)]"
-  >
-    {/* TOP ACCENT */}
-    <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent opacity-60 transition duration-300 group-hover:opacity-100" />
+        {whyBrokerAlarabItemsEn.map((item, index) => (
+          <div
+            key={item.desktopTitle}
+            className="group relative overflow-hidden rounded-[20px] border border-slate-200 bg-white p-4 shadow-[0_4px_14px_rgba(15,23,42,0.035)] transition duration-300 hover:-translate-y-0.5 hover:border-brand-300 hover:bg-[#fcfdff] hover:shadow-[0_12px_28px_rgba(37,99,235,0.09)]"
+          >
+            {/* TOP ACCENT */}
+            <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent opacity-60 transition duration-300 group-hover:opacity-100" />
 
-    {/* TITLE + NUMBER */}
-    <div className="flex items-start justify-between gap-3">
-      <h3 className="flex-1 text-[17px] font-black leading-6 tracking-[-0.02em] text-[#07111f]">
-        {item.title}
-      </h3>
+            {/* TITLE + NUMBER */}
+            <div className="flex items-start justify-between gap-3">
+              <h3 className="flex-1 text-[17px] font-black leading-6 tracking-[-0.02em] text-[#07111f]">
+                {item.desktopTitle}
+              </h3>
 
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-[#f8fbff] text-[11px] font-black text-brand-500 transition group-hover:bg-brand-500 group-hover:text-white">
-        {index + 1}
-      </span>
-    </div>
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-[#f8fbff] text-[11px] font-black text-brand-500 transition group-hover:bg-brand-500 group-hover:text-white">
+                {index + 1}
+              </span>
+            </div>
 
-    {/* DESCRIPTION */}
-    <p className="mt-2 text-[11.5px] font-medium leading-6 text-slate-600">
-      {item.desc}
-    </p>
-  </div>
-))}
+            {/* DESCRIPTION */}
+            <p className="mt-2 text-[11.5px] font-medium leading-6 text-slate-600">
+              {item.desktopDesc}
+            </p>
+          </div>
+        ))}
       </div>
     </div>
 
