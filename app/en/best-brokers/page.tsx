@@ -1105,10 +1105,10 @@ const comparisons =
           </span>
         </div>
 
-        {/* Heading */}
-        <h1 className="mt-5 max-w-[950px] text-[52px] font-black leading-[1.06] tracking-[-0.045em] text-[#071226] xl:text-[62px]">
-          Best Forex Brokers in 2026
-        </h1>
+        {/* Desktop visual heading — the semantic H1 is in the mobile-first hero */}
+<div className="mt-5 max-w-[950px] text-[52px] font-black leading-[1.06] tracking-[-0.045em] text-[#071226] xl:text-[62px]">
+  Best Forex Brokers in 2026
+</div>
 
         {/* Main Description */}
         <p className="mt-4 max-w-[940px] text-[16px] font-medium leading-8 text-slate-700">
