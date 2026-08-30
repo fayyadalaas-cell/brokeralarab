@@ -431,28 +431,49 @@ function accountHref(
     : brokerHref(broker);
 }
 
+function normalizeAccountSearchValue(
+  value: string | null | undefined,
+) {
+  return normalizeText(value)
+    .toLowerCase()
+    .trim();
+}
+
 function findAccount(
   accounts: BrokerAccount[],
   brokerId: number,
   accountTypes: string[],
+  excludedAccountIds: number[] = [],
+  allowFallback = false,
 ) {
-  const rows = accounts.filter(
-    (row) =>
-      row.broker_id === brokerId,
+  const keywords = accountTypes.map(
+    normalizeAccountSearchValue,
   );
 
-  for (
-    const type of accountTypes
-  ) {
-    const found = rows.find(
-      (row) =>
-        row.account_type === type,
-    );
+  const rows = accounts.filter(
+    (row) =>
+      Number(row.broker_id) === Number(brokerId) &&
+      !excludedAccountIds.includes(row.id),
+  );
 
-    if (found) return found;
+  const found = rows.find((row) => {
+    const searchableValue =
+      `${row.account_type || ""} ${row.account_name || ""}`
+        .toLowerCase()
+        .trim();
+
+    return keywords.some((keyword) =>
+      searchableValue.includes(keyword),
+    );
+  });
+
+  if (found) {
+    return found;
   }
 
-  return rows[0] ?? null;
+  return allowFallback
+    ? rows[0] ?? null
+    : null;
 }
 
 function accountSpread(
@@ -1129,41 +1150,36 @@ async function getCountryData(
 
 async function getBrokerAccounts(
   brokerIds: number[],
-) {
+): Promise<BrokerAccount[]> {
   if (!brokerIds.length) {
     return [];
   }
 
-  const supabase =
-    await createClient();
+  const supabase = await createClient();
 
-  const { data } =
-    await supabase
-      .from("broker_accounts")
-      .select("*")
-      .in(
-  "broker_id",
-  brokerIds,
-)
-.eq("publication_status", "published")
-.order(
-  "broker_id",
-        {
-          ascending: true,
-        },
-      )
-      .order(
-        "sort_order",
-        {
-          ascending: true,
-        },
-      );
+  const { data, error } = await supabase
+    .from("broker_accounts")
+    .select("*")
+    .in("broker_id", brokerIds)
+    .order("broker_id", {
+      ascending: true,
+    })
+    .order("sort_order", {
+      ascending: true,
+      nullsFirst: false,
+    });
 
-  return (
-    data || []
-  ) as BrokerAccount[];
+  if (error) {
+    console.error(
+      "Failed to load broker accounts for English country page:",
+      error,
+    );
+
+    return [];
+  }
+
+  return (data || []) as BrokerAccount[];
 }
-
 
 /* =========================================================
    METADATA / SEO
@@ -2310,23 +2326,27 @@ function FullRanking({
           }
 
 
-          const standard =
-            findAccount(
-              accounts,
-              broker.id,
-              ["standard"],
-            );
+          const standard = findAccount(
+  accounts,
+  broker.id,
+  ["standard"],
+  [],
+  true,
+);
 
-
-          const pro =
-            findAccount(
-              accounts,
-              broker.id,
-              [
-                "raw",
-                "pro",
-              ],
-            );
+const pro = findAccount(
+  accounts,
+  broker.id,
+  [
+    "raw",
+    "pro",
+    "professional",
+    "zero",
+    "ecn",
+  ],
+  standard ? [standard.id] : [],
+  false,
+);
 
 
           const primaryAccount =
@@ -3553,23 +3573,27 @@ function ComparisonSection({
           }
 
 
-          const standard =
-            findAccount(
-              accounts,
-              broker.id,
-              ["standard"],
-            );
+          const standard = findAccount(
+  accounts,
+  broker.id,
+  ["standard"],
+  [],
+  true,
+);
 
-
-          const pro =
-            findAccount(
-              accounts,
-              broker.id,
-              [
-                "raw",
-                "pro",
-              ],
-            );
+const pro = findAccount(
+  accounts,
+  broker.id,
+  [
+    "raw",
+    "pro",
+    "professional",
+    "zero",
+    "ecn",
+  ],
+  standard ? [standard.id] : [],
+  false,
+);
 
 
           const isFirst =
@@ -4601,24 +4625,20 @@ function CountryGuide({
       },
     };
 
-    return (
-      map[key] || {
-        number: String(
-          index + 1,
-        ).padStart(
-          2,
-          "0",
-        ),
+    const mappedMeta = map[key];
 
-        label:
-          "Forex Trading Guide",
-
-        icon: "•",
-
-        tone:
-          "blue" as const,
-      }
-    );
+return {
+  number: String(index + 1).padStart(2, "0"),
+  label:
+    mappedMeta?.label ||
+    "Forex Trading Guide",
+  icon:
+    mappedMeta?.icon ||
+    "•",
+  tone:
+    mappedMeta?.tone ||
+    "blue",
+};
   };
 
 

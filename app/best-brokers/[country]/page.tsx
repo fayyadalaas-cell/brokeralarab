@@ -235,17 +235,49 @@ function accountHref(broker: Broker, account: BrokerAccount | null) {
     : brokerHref(broker);
 }
 
+function normalizeAccountSearchValue(
+  value: string | null | undefined,
+) {
+  return normalizeText(value)
+    .toLowerCase()
+    .trim();
+}
+
 function findAccount(
   accounts: BrokerAccount[],
   brokerId: number,
   accountTypes: string[],
+  excludedAccountIds: number[] = [],
+  allowFallback = false,
 ) {
-  const rows = accounts.filter((row) => row.broker_id === brokerId);
-  for (const type of accountTypes) {
-    const found = rows.find((row) => row.account_type === type);
-    if (found) return found;
+  const keywords = accountTypes.map(
+    normalizeAccountSearchValue,
+  );
+
+  const rows = accounts.filter(
+    (row) =>
+      Number(row.broker_id) === Number(brokerId) &&
+      !excludedAccountIds.includes(row.id),
+  );
+
+  const found = rows.find((row) => {
+    const searchableValue =
+      `${row.account_type || ""} ${row.account_name || ""}`
+        .toLowerCase()
+        .trim();
+
+    return keywords.some((keyword) =>
+      searchableValue.includes(keyword),
+    );
+  });
+
+  if (found) {
+    return found;
   }
-  return rows[0] ?? null;
+
+  return allowFallback
+    ? rows[0] ?? null
+    : null;
 }
 
 function accountSpread(account: BrokerAccount | null) {
@@ -637,17 +669,31 @@ async function getCountryData(slug: string) {
   };
 }
 
-async function getBrokerAccounts(brokerIds: number[]) {
+async function getBrokerAccounts(
+  brokerIds: number[],
+): Promise<BrokerAccount[]> {
   if (!brokerIds.length) return [];
 
   const supabase = await createClient();
-  const { data } = await supabase
-  .from("broker_accounts")
-  .select("*")
-  .in("broker_id", brokerIds)
-  .eq("publication_status", "published")
-  .order("broker_id", { ascending: true })
-  .order("sort_order", { ascending: true });
+
+  const { data, error } = await supabase
+    .from("broker_accounts")
+    .select("*")
+    .in("broker_id", brokerIds)
+    .order("broker_id", { ascending: true })
+    .order("sort_order", {
+      ascending: true,
+      nullsFirst: false,
+    });
+
+  if (error) {
+    console.error(
+      "Failed to load broker accounts for country page:",
+      error,
+    );
+
+    return [];
+  }
 
   return (data || []) as BrokerAccount[];
 }
@@ -1436,9 +1482,29 @@ const secondBroker = oneBroker(rows[1]?.brokers || null);
           const broker = oneBroker(row.brokers);
           if (!broker) return null;
 
-          const standard = findAccount(accounts, broker.id, ["standard"]);
-          const pro = findAccount(accounts, broker.id, ["raw", "pro"]);
-          const primaryAccount = pro || standard;
+          const standard = findAccount(
+  accounts,
+  broker.id,
+  ["standard"],
+  [],
+  true,
+);
+
+const pro = findAccount(
+  accounts,
+  broker.id,
+  [
+    "raw",
+    "pro",
+    "professional",
+    "zero",
+    "ecn",
+  ],
+  standard ? [standard.id] : [],
+  false,
+);
+
+const primaryAccount = pro || standard;
           const brokerPros = splitValues(broker.pros, 3);
           const regulators = splitValues(broker.regulation_short || broker.regulation, 4);
 
@@ -2163,16 +2229,26 @@ function ComparisonSection({
           if (!broker) return null;
 
           const standard = findAccount(
-            accounts,
-            broker.id,
-            ["standard"]
-          );
+  accounts,
+  broker.id,
+  ["standard"],
+  [],
+  true,
+);
 
-          const pro = findAccount(
-            accounts,
-            broker.id,
-            ["raw", "pro"]
-          );
+const pro = findAccount(
+  accounts,
+  broker.id,
+  [
+    "raw",
+    "pro",
+    "professional",
+    "zero",
+    "ecn",
+  ],
+  standard ? [standard.id] : [],
+  false,
+);
 
           const isFirst = row.rank_position === 1;
 
@@ -2993,14 +3069,20 @@ function CountryGuide({
       },
     };
 
-    return (
-      map[key] || {
-        number: String(index + 1).padStart(2, "0"),
-        label: "دليل التداول",
-        icon: "•",
-        tone: "blue" as const,
-      }
-    );
+    const mappedMeta = map[key];
+
+return {
+  number: String(index + 1).padStart(2, "0"),
+  label:
+    mappedMeta?.label ||
+    "دليل التداول",
+  icon:
+    mappedMeta?.icon ||
+    "•",
+  tone:
+    mappedMeta?.tone ||
+    "blue",
+};
   };
 
   const toneClasses = {
