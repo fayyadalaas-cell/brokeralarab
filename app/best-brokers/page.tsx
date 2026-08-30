@@ -1018,10 +1018,10 @@ isPartOf: {
           </span>
         </div>
 
-        {/* Heading */}
-        <h1 className="mt-5 max-w-[900px] text-[35px] font-black leading-[1.12] tracking-[-0.045em] text-[#071226] min-[390px]:text-[39px] sm:text-[50px] lg:text-[58px] xl:text-[64px]">
-          أفضل شركات التداول في 2026
-        </h1>
+        {/* Desktop visual heading — semantic H1 is in the mobile-first hero */}
+<div className="mt-5 max-w-[900px] text-[35px] font-black leading-[1.12] tracking-[-0.045em] text-[#071226] min-[390px]:text-[39px] sm:text-[50px] lg:text-[58px] xl:text-[64px]">
+  أفضل شركات التداول في 2026
+</div>
 
         <p className="mt-4 max-w-[950px] text-[14px] font-medium leading-8 text-slate-700 sm:text-[16px] lg:text-[17px]">
   قارن أفضل شركات التداول الموثوقة والمرخصة في 2026، واكتشف تقييم كل
