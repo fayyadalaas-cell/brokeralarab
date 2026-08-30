@@ -2135,9 +2135,10 @@ const reviewSchema = {
                   ) : null}
                 </div>
 
-                <h1 className="text-2xl font-black leading-tight text-slate-950 sm:text-3xl md:text-5xl">
-                  تقييم {broker.name} 2026
-                </h1>
+                {/* عنوان الديسكتوب المرئي — عنوان H1 الدلالي موجود في Mobile Hero */}
+<div className="text-2xl font-black leading-tight text-slate-950 sm:text-3xl md:text-5xl">
+  تقييم {broker.name} 2026
+</div>
 
                 <div className="mt-2 text-xs font-semibold text-slate-500">
                   محدث لعام 2026 • بناءً على شروط تداول فعلية

@@ -858,10 +858,11 @@ function HeroSection({
               </span>
             </div>
 
-            <h1 className="mt-4 max-w-[980px] text-[49px] font-black leading-[1.05] tracking-[-0.04em] text-[#07111f] xl:text-[56px]">
-              {page.hero_title ||
-                `أفضل شركات التداول في ${page.country_name_ar}`}
-            </h1>
+            {/* عنوان الديسكتوب المرئي — عنوان H1 الدلالي موجود في نسخة الموبايل */}
+<div className="mt-4 max-w-[980px] text-[49px] font-black leading-[1.05] tracking-[-0.04em] text-[#07111f] xl:text-[56px]">
+  {page.hero_title ||
+    `أفضل شركات التداول في ${page.country_name_ar}`}
+</div>
 
             <p className="mt-3 max-w-[900px] text-[14px] font-semibold leading-8 text-slate-600 xl:text-[15px]">
   {intro}

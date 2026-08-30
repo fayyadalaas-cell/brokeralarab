@@ -1502,9 +1502,10 @@ function HeroSection({
             </div>
 
 
-            <h1 className="mt-4 max-w-[980px] text-[49px] font-black leading-[1.05] tracking-[-0.04em] text-[#07111f] xl:text-[56px]">
-              {heroTitle}
-            </h1>
+            {/* Desktop visual heading — semantic H1 is in the mobile hero */}
+<div className="mt-4 max-w-[980px] text-[49px] font-black leading-[1.05] tracking-[-0.04em] text-[#07111f] xl:text-[56px]">
+  {heroTitle}
+</div>
 
 
             <p className="mt-3 max-w-[900px] text-[14px] font-semibold leading-8 text-slate-600 xl:text-[15px]">

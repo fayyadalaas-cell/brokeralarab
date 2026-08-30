@@ -16,6 +16,7 @@ const ENABLE_EN_EVENT_PAGES = true;
 
 function accountSlug(value: string | null) {
   if (!value) return "";
+
   return value
     .toLowerCase()
     .trim()
@@ -29,7 +30,8 @@ function accountSlug(value: string | null) {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = await createClient();
 
-  const now = new Date();
+  // غيّر هذا التاريخ فقط بعد إجراء تحديث شهري فعلي ومهم للمحتوى
+const LAST_SIGNIFICANT_UPDATE = new Date("2026-08-30T00:00:00.000Z");
 
   const { data: brokers } = await supabase
   .from("brokers")
@@ -41,12 +43,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const brokerPages = brokerSlugs.map((slug) => ({
     url: `${BASE_URL}/brokers/${slug}`,
-    lastModified: now,
+    lastModified: LAST_SIGNIFICANT_UPDATE,
   }));
 
   const brokerPagesEN = brokerSlugs.map((slug) => ({
     url: `${BASE_URL}/en/brokers/${slug}`,
-    lastModified: now,
+    lastModified: LAST_SIGNIFICANT_UPDATE,
   }));
 
   const { data: openAccountGuides } = await supabase
@@ -66,7 +68,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .filter((slug): slug is string => Boolean(slug))
       .map((slug) => ({
         url: `${BASE_URL}/brokers/${slug}/open-account`,
-        lastModified: now,
+        lastModified: LAST_SIGNIFICANT_UPDATE,
       })) || [];
 
   const { data: accounts } = await supabase
@@ -91,12 +93,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     accountPages.push({
       url: `${BASE_URL}/brokers/${slug}/accounts/${account}`,
-      lastModified: now,
+      lastModified: LAST_SIGNIFICANT_UPDATE,
     });
 
     accountPagesEN.push({
       url: `${BASE_URL}/en/brokers/${slug}/accounts/${account}`,
-      lastModified: now,
+      lastModified: LAST_SIGNIFICANT_UPDATE,
     });
   });
 
@@ -113,7 +115,7 @@ const countryPages: MetadataRoute.Sitemap =
     )
     .map((country) => ({
       url: `${BASE_URL}/best-brokers/${country.slug}`,
-      lastModified: now,
+      lastModified: LAST_SIGNIFICANT_UPDATE,
     })) || [];
 
 const countryPagesEN: MetadataRoute.Sitemap =
@@ -125,7 +127,7 @@ const countryPagesEN: MetadataRoute.Sitemap =
     )
     .map((country) => ({
       url: `${BASE_URL}/en/best-brokers/${country.slug}`,
-      lastModified: now,
+      lastModified: LAST_SIGNIFICANT_UPDATE,
     })) || [];
 
   const comparePages: MetadataRoute.Sitemap = [];
@@ -135,45 +137,45 @@ const countryPagesEN: MetadataRoute.Sitemap =
     for (let j = i + 1; j < brokerSlugs.length; j++) {
       comparePages.push({
         url: `${BASE_URL}/compare/${brokerSlugs[i]}-vs-${brokerSlugs[j]}`,
-        lastModified: now,
+        lastModified: LAST_SIGNIFICANT_UPDATE,
       });
 
       comparePagesEN.push({
         url: `${BASE_URL}/en/compare/${brokerSlugs[i]}-vs-${brokerSlugs[j]}`,
-        lastModified: now,
+        lastModified: LAST_SIGNIFICANT_UPDATE,
       });
     }
   }
 
   const toolPages = TOOL_SLUGS.map((slug) => ({
     url: `${BASE_URL}/tools/${slug}`,
-    lastModified: now,
+    lastModified: LAST_SIGNIFICANT_UPDATE,
   }));
 
   const toolPagesEN = TOOL_SLUGS.map((slug) => ({
     url: `${BASE_URL}/en/tools/${slug}`,
-    lastModified: now,
+    lastModified: LAST_SIGNIFICANT_UPDATE,
   }));
 
   const staticPages = STATIC_PAGES.map((page) => ({
     url: page ? `${BASE_URL}/${page}` : BASE_URL,
-    lastModified: now,
+    lastModified: LAST_SIGNIFICANT_UPDATE,
   }));
 
   const staticPagesEN = STATIC_PAGES_EN.map((page) => ({
     url: `${BASE_URL}/${page}`,
-    lastModified: now,
+    lastModified: LAST_SIGNIFICANT_UPDATE,
   }));
 
   const eventPages = EVENT_SLUGS.map((slug) => ({
     url: `${BASE_URL}/events/${slug}`,
-    lastModified: now,
+    lastModified: LAST_SIGNIFICANT_UPDATE,
   }));
 
   const eventPagesEN = ENABLE_EN_EVENT_PAGES
     ? EVENT_SLUGS.map((slug) => ({
         url: `${BASE_URL}/en/events/${slug}`,
-        lastModified: now,
+        lastModified: LAST_SIGNIFICANT_UPDATE,
       }))
     : [];
 
@@ -198,12 +200,12 @@ const countryPagesEN: MetadataRoute.Sitemap =
 
   const regulatorPages = regulatorSlugs.map((slug) => ({
     url: `${BASE_URL}/licenses/${slug}`,
-    lastModified: now,
+    lastModified: LAST_SIGNIFICANT_UPDATE,
   }));
 
   const regulatorPagesEN = regulatorSlugs.map((slug) => ({
     url: `${BASE_URL}/en/licenses/${slug}`,
-    lastModified: now,
+    lastModified: LAST_SIGNIFICANT_UPDATE,
   }));
 
   return [
