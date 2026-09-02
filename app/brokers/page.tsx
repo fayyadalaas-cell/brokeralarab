@@ -4,7 +4,7 @@ import Script from "next/script";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 type Broker = {
   id: number;
@@ -77,87 +77,88 @@ function getAbsoluteUrl(value: string | null | undefined) {
   return `${BASE_URL}${value.startsWith("/") ? value : `/${value}`}`;
 }
 
-export const metadata: Metadata = {
-  title: "تقييم شركات الفوركس 2026: أفضل الوسطاء الموثوقين",
-  description:
-    "تصفح تقييم شركات الفوركس وقارن أفضل الوسطاء من حيث التراخيص والسبريد والمنصات والحد الأدنى للإيداع والحساب الإسلامي والدعم العربي.",
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams?: BrokerSearchParams | Promise<BrokerSearchParams>;
+}): Promise<Metadata> {
+  const params = await Promise.resolve(searchParams ?? {});
+  const filtered = hasActiveFilters(params);
 
-  keywords: [
-    "تقييم شركات الفوركس",
-    "تقييم شركات الفوركس 2026",
-    "تقييم شركات التداول",
-    "أفضل شركات الفوركس",
-    "أفضل شركات الفوركس 2026",
-    "شركات فوركس موثوقة",
-    "شركات تداول موثوقة",
-    "مراجعات شركات الفوركس",
-    "مقارنة شركات الفوركس",
-    "وسطاء الفوركس",
-    "أفضل وسيط فوركس",
-    "بروكر فوركس",
-    "فتح حساب فوركس",
-    "حساب فوركس إسلامي",
-    "منصات تداول الفوركس",
-    "تراخيص شركات الفوركس",
-    "بروكر العرب",
-  ],
-
-  applicationName: "بروكر العرب",
-  category: "المال والأعمال",
-  creator: "بروكر العرب",
-  publisher: "بروكر العرب",
-
-  alternates: {
-    canonical: BROKERS_PAGE_URL,
-    languages: {
-      ar: BROKERS_PAGE_URL,
-      en: `${BASE_URL}/en/brokers`,
-      "x-default": `${BASE_URL}/en/brokers`,
-    },
-  },
-
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      noimageindex: false,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
-    },
-  },
-
-  openGraph: {
-    title: "تقييم شركات الفوركس 2026 | أفضل الوسطاء الموثوقين",
+  return {
+    metadataBase: new URL(BASE_URL),
+    title: "تقييم شركات الفوركس 2026 | دليل الوسطاء",
     description:
-      "قارن تقييمات شركات الفوركس والتراخيص والرسوم والمنصات والإيداع والحساب الإسلامي قبل اختيار وسيط الفوركس المناسب.",
-    url: BROKERS_PAGE_URL,
-    siteName: "بروكر العرب",
-    type: "website",
-    locale: "ar_AR",
-    images: [
-      {
-        url: `${BASE_URL}/og-image.webp`,
-        width: 1560,
-        height: 377,
-        alt: "تقييم شركات الفوركس والوسطاء في بروكر العرب",
+      "دليل تقييم شركات الفوركس: قارن الوسطاء حسب التراخيص والرسوم والمنصات والحد الأدنى للإيداع والحساب الإسلامي قبل فتح الحساب.",
+    applicationName: "بروكر العرب",
+    category: "المال والأعمال",
+    creator: "بروكر العرب",
+    publisher: "بروكر العرب",
+    alternates: {
+      canonical: BROKERS_PAGE_URL,
+      languages: {
+        ar: BROKERS_PAGE_URL,
+        en: `${BASE_URL}/en/brokers`,
+        "x-default": `${BASE_URL}/en/brokers`,
       },
-    ],
-  },
-
-  twitter: {
-    card: "summary_large_image",
-    title: "تقييم شركات الفوركس 2026 | بروكر العرب",
-    description:
-      "قارن شركات الفوركس حسب التقييم والتراخيص والإيداع والمنصات والحساب الإسلامي.",
-    images: [`${BASE_URL}/og-image.webp`],
-  },
-};
+    },
+    robots: filtered
+      ? {
+          index: false,
+          follow: true,
+          googleBot: { index: false, follow: true },
+        }
+      : {
+          index: true,
+          follow: true,
+          googleBot: {
+            index: true,
+            follow: true,
+            noimageindex: false,
+            "max-image-preview": "large",
+            "max-snippet": -1,
+            "max-video-preview": -1,
+          },
+        },
+    openGraph: {
+      title: "تقييم شركات الفوركس 2026 | دليل الوسطاء",
+      description:
+        "قارن شركات الفوركس من حيث التراخيص والتكاليف والمنصات والإيداع والحساب الإسلامي قبل اختيار الوسيط.",
+      url: BROKERS_PAGE_URL,
+      siteName: "بروكر العرب",
+      type: "website",
+      locale: "ar_AR",
+      images: [
+        {
+          url: `${BASE_URL}/og-image.webp`,
+          width: 1560,
+          height: 377,
+          alt: "دليل تقييم شركات الفوركس في بروكر العرب",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "تقييم شركات الفوركس 2026 | بروكر العرب",
+      description:
+        "قارن شركات الفوركس حسب التقييم والتراخيص والإيداع والمنصات والحساب الإسلامي.",
+      images: [`${BASE_URL}/og-image.webp`],
+    },
+  };
+}
 
 function getParam(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] ?? "" : value ?? "";
+}
+
+function hasActiveFilters(params: BrokerSearchParams) {
+  return Boolean(
+    getParam(params.q).trim() ||
+      getParam(params.deposit) ||
+      getParam(params.rating) ||
+      getParam(params.islamic) ||
+      getParam(params.regulator)
+  );
 }
 
 function formatRating(rating: number | null) {
@@ -181,6 +182,18 @@ function islamicAccountLabel(value: string | null | undefined) {
   const v = value.trim().toLowerCase();
 
   if (
+    v.includes("not available") ||
+    v.includes("unavailable") ||
+    v.includes("غير متوفر") ||
+    v.includes("غير متاح") ||
+    v === "no" ||
+    v.startsWith("no ") ||
+    v === "false"
+  ) {
+    return "غير متوفر";
+  }
+
+  if (
     v.includes("yes") ||
     v.includes("available") ||
     v.includes("true") ||
@@ -188,15 +201,6 @@ function islamicAccountLabel(value: string | null | undefined) {
     v.includes("نعم")
   ) {
     return "متوفر";
-  }
-
-  if (
-    v.includes("not available") ||
-    v.includes("غير متوفر") ||
-    v.includes("no") ||
-    v.includes("false")
-  ) {
-    return "غير متوفر";
   }
 
   return value;
@@ -208,6 +212,18 @@ function arabicSupportLabel(value: string | null | undefined) {
   const v = value.trim().toLowerCase();
 
   if (
+    v.includes("not available") ||
+    v.includes("unavailable") ||
+    v.includes("غير متوفر") ||
+    v.includes("غير متاح") ||
+    v === "no" ||
+    v.startsWith("no ") ||
+    v === "false"
+  ) {
+    return "غير متوفر";
+  }
+
+  if (
     v.includes("yes") ||
     v.includes("available") ||
     v.includes("true") ||
@@ -216,15 +232,6 @@ function arabicSupportLabel(value: string | null | undefined) {
     v.includes("نعم")
   ) {
     return "متوفر";
-  }
-
-  if (
-    v.includes("no") ||
-    v.includes("false") ||
-    v.includes("not available") ||
-    v.includes("غير متوفر")
-  ) {
-    return "غير متوفر";
   }
 
   return value;
@@ -420,7 +427,7 @@ function BrokerCard({
         {broker.logo ? (
           <Image
             src={broker.logo}
-            alt={broker.name ?? "Broker logo"}
+            alt={`شعار ${broker.name ?? "شركة التداول"}`}
             fill
             className={`object-contain ${getBrokerLogoClass(broker.name)}`}
             sizes="102px"
@@ -607,6 +614,7 @@ function BrokerCard({
     {realLink ? (
       <a
         href={`/go/${broker.slug}?type=real`}
+        rel="sponsored nofollow"
         className="inline-flex min-h-[38px] items-center justify-center rounded-xl border border-slate-300 bg-white px-3 py-2 text-[11px] font-black text-slate-800 transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700"
       >
         فتح حساب
@@ -632,7 +640,7 @@ function BrokerCard({
               {broker.logo ? (
                 <Image
                   src={broker.logo}
-                  alt={broker.name ?? "Broker logo"}
+                  alt={`شعار ${broker.name ?? "شركة التداول"}`}
                   fill
                   className={`object-contain transition duration-300 ${getBrokerLogoClass(
                     broker.name
@@ -845,6 +853,7 @@ function BrokerCard({
   {realLink ? (
     <a
       href={`/go/${broker.slug}?type=real`}
+      rel="sponsored nofollow"
       className="inline-flex min-h-[38px] min-w-[108px] items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-700 transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700"
     >
       فتح حساب
@@ -868,6 +877,7 @@ function BrokerCard({
   {realLink ? (
     <a
       href={`/go/${broker.slug}?type=real`}
+      rel="sponsored nofollow"
       className="inline-flex min-h-[42px] items-center justify-center rounded-xl border border-brand-200 bg-brand-50 px-3 py-2 text-xs font-black text-brand-700 transition hover:bg-brand-100"
     >
       فتح حساب
@@ -1167,6 +1177,10 @@ export default async function BrokersPage({
   .eq("publication_status", "published")
   .order("rating", { ascending: false });
 
+  if (error) {
+    throw new Error(`Failed to load published brokers: ${error.message}`);
+  }
+
   const brokers = (data as Broker[] | null) ?? [];
 
   const filteredBrokers = brokers.filter((broker) => {
@@ -1235,7 +1249,7 @@ const structuredData = {
         caption: "بروكر العرب",
       },
       description:
-        "منصة عربية متخصصة في تقييم شركات الفوركس والوسطاء ومقارنة التراخيص والحسابات والمنصات وتكاليف التداول.",
+        "منصة دولية ثنائية اللغة متخصصة في تقييم شركات الفوركس والوسطاء ومقارنة التراخيص والحسابات والمنصات وتكاليف التداول.",
       knowsAbout: [
         "تقييم شركات الفوركس",
         "وسطاء الفوركس",
@@ -1287,6 +1301,7 @@ const structuredData = {
       headline: "تقييمات شركات الفوركس لمساعدتك في اختيار الوسيط",
       description:
         "قائمة ومقارنة لتقييم شركات الفوركس حسب التراخيص والتكاليف والمنصات والحد الأدنى للإيداع والحساب الإسلامي والدعم العربي.",
+      isAccessibleForFree: true,
       isPartOf: {
         "@id": `${BASE_URL}/#website`,
       },
@@ -1334,6 +1349,7 @@ const structuredData = {
       url: `${BROKERS_PAGE_URL}#brokers-list`,
       numberOfItems: sortedBrokersForSchema.length,
       itemListOrder: "https://schema.org/ItemListOrderDescending",
+      inLanguage: "ar",
       itemListElement: sortedBrokersForSchema.map((broker, index) => {
         const brokerUrl = `${BASE_URL}/brokers/${broker.slug ?? ""}`;
         const brokerId = `${brokerUrl}#organization`;
@@ -1419,25 +1435,17 @@ const structuredData = {
   ],
 };
 
-  if (error) {
-    return (
-      <main dir="rtl" className="mx-auto max-w-[1520px] px-4 py-16">
-        <div className="rounded-3xl border border-red-200 bg-red-50 p-6 text-red-700">
-          حدث خطأ أثناء تحميل صفحة التقييمات.
-        </div>
-      </main>
-    );
-  }
-
   return (
     <>
-      <Script
-  id="brokers-structured-data"
-  type="application/ld+json"
-  dangerouslySetInnerHTML={{
-    __html: JSON.stringify(structuredData).replace(/</g, "\\u003c"),
-  }}
-/>
+      {!hasActiveFilters(params) && (
+        <Script
+          id="brokers-structured-data"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(structuredData).replace(/</g, "\\u003c"),
+          }}
+        />
+      )}
 
       <main dir="rtl" className="bg-slate-50">
 <section className="relative overflow-hidden border-b border-brand-100 bg-[#eaf3ff]">
@@ -1518,13 +1526,13 @@ const structuredData = {
     </div>
 
     {/* TITLE */}
-    <h1 className="mx-auto mt-3 text-[40px] font-black leading-[1.1] tracking-[-0.025em] text-slate-950 lg:text-[47px]">
+    <div className="mx-auto mt-3 text-[40px] font-black leading-[1.1] tracking-[-0.025em] text-slate-950 lg:text-[47px]">
       تقييمات شركات التداول
 
       <span className="mt-1 block text-[#1E5BB8]">
         لمساعدتك في اختيار الوسيط
       </span>
-    </h1>
+    </div>
 
     {/* DESCRIPTION */}
     <p className="mx-auto mt-3 max-w-[790px] text-[15px] font-medium leading-8 text-slate-600">

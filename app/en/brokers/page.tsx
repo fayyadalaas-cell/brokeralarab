@@ -4,7 +4,7 @@ import Script from "next/script";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 type Broker = {
   id: number;
@@ -79,86 +79,88 @@ function getAbsoluteUrl(value: string | null | undefined) {
   return `${BASE_URL}${value.startsWith("/") ? value : `/${value}`}`;
 }
 
-export const metadata: Metadata = {
-  title: "Forex Broker Reviews 2026: Compare Trusted Brokers",
-  description:
-    "Compare forex broker reviews, regulation, trading platforms, minimum deposits, leverage, Islamic accounts, and Arabic support before choosing a broker.",
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams?: BrokerSearchParams | Promise<BrokerSearchParams>;
+}): Promise<Metadata> {
+  const params = await Promise.resolve(searchParams ?? {});
+  const filtered = hasActiveFilters(params);
 
-  keywords: [
-    "forex broker reviews",
-    "forex broker reviews 2026",
-    "best forex brokers",
-    "best forex brokers 2026",
-    "trusted forex brokers",
-    "regulated forex brokers",
-    "forex broker comparison",
-    "compare forex brokers",
-    "online broker reviews",
-    "forex trading brokers",
-    "best forex broker",
-    "Islamic forex brokers",
-    "low minimum deposit brokers",
-    "forex trading platforms",
-    "forex broker regulation",
-    "Broker Alarab",
-  ],
-
-  applicationName: "Broker Alarab",
-  category: "Finance",
-  creator: "Broker Alarab",
-  publisher: "Broker Alarab",
-
-  alternates: {
-    canonical: BROKERS_PAGE_URL,
-    languages: {
-      ar: `${BASE_URL}/brokers`,
-      en: BROKERS_PAGE_URL,
-      "x-default": BROKERS_PAGE_URL,
-    },
-  },
-
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      noimageindex: false,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
-    },
-  },
-
-  openGraph: {
-    title: "Forex Broker Reviews 2026 | Compare Trusted Brokers",
+  return {
+    metadataBase: new URL(BASE_URL),
+    title: "Forex Broker Reviews 2026 | Compare Brokers",
     description:
-      "Compare forex brokers by regulation, trading costs, platforms, minimum deposit, leverage, Islamic accounts, and support.",
-    url: BROKERS_PAGE_URL,
-    siteName: "Broker Alarab",
-    type: "website",
-    locale: "en_US",
-    images: [
-      {
-        url: `${BASE_URL}/og-image.webp`,
-        width: 1560,
-        height: 377,
-        alt: "Forex broker reviews and comparisons by Broker Alarab",
+      "Compare forex broker reviews, regulation, trading costs, platforms, minimum deposits, leverage, and account conditions before choosing a broker.",
+    applicationName: "Broker Alarab",
+    category: "Finance",
+    creator: "Broker Alarab",
+    publisher: "Broker Alarab",
+    alternates: {
+      canonical: BROKERS_PAGE_URL,
+      languages: {
+        ar: `${BASE_URL}/brokers`,
+        en: BROKERS_PAGE_URL,
+        "x-default": BROKERS_PAGE_URL,
       },
-    ],
-  },
-
-  twitter: {
-    card: "summary_large_image",
-    title: "Forex Broker Reviews 2026 | Broker Alarab",
-    description:
-      "Compare trusted forex brokers by rating, regulation, deposit, platforms, and account conditions.",
-    images: [`${BASE_URL}/og-image.webp`],
-  },
-};
+    },
+    robots: filtered
+      ? {
+          index: false,
+          follow: true,
+          googleBot: { index: false, follow: true },
+        }
+      : {
+          index: true,
+          follow: true,
+          googleBot: {
+            index: true,
+            follow: true,
+            noimageindex: false,
+            "max-image-preview": "large",
+            "max-snippet": -1,
+            "max-video-preview": -1,
+          },
+        },
+    openGraph: {
+      title: "Forex Broker Reviews 2026 | Compare Brokers",
+      description:
+        "Compare forex brokers by regulation, trading costs, platforms, minimum deposit, leverage, and account conditions.",
+      url: BROKERS_PAGE_URL,
+      siteName: "Broker Alarab",
+      type: "website",
+      locale: "en_US",
+      images: [
+        {
+          url: `${BASE_URL}/og-image.webp`,
+          width: 1560,
+          height: 377,
+          alt: "Forex broker reviews and comparisons by Broker Alarab",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Forex Broker Reviews 2026 | Broker Alarab",
+      description:
+        "Compare forex brokers by rating, regulation, deposits, platforms, leverage, and account conditions.",
+      images: [`${BASE_URL}/og-image.webp`],
+    },
+  };
+}
 
 function getParam(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] ?? "" : value ?? "";
+}
+
+function hasActiveFilters(params: BrokerSearchParams) {
+  return Boolean(
+    getParam(params.q).trim() ||
+      getParam(params.deposit) ||
+      getParam(params.rating) ||
+      getParam(params.islamic) ||
+      getParam(params.regulator)
+  );
 }
 
 function getBrokerName(broker: Broker) {
@@ -166,11 +168,15 @@ function getBrokerName(broker: Broker) {
 }
 
 function getBrokerBestFor(broker: Broker) {
-  return (
-    broker.best_for_en?.trim() ||
-    broker.best_for?.trim() ||
-    "General forex trading"
-  );
+  const englishValue = broker.best_for_en?.trim();
+  if (englishValue) return englishValue;
+
+  const fallbackValue = broker.best_for?.trim();
+  if (fallbackValue && !/[\u0600-\u06FF]/.test(fallbackValue)) {
+    return fallbackValue;
+  }
+
+  return "General forex trading";
 }
 
 function formatRating(rating: number | null) {
@@ -199,8 +205,11 @@ function islamicAccountLabel(value: string | null | undefined) {
 
   if (
     normalizedValue.includes("not available") ||
+    normalizedValue.includes("unavailable") ||
     normalizedValue.includes("غير متوفر") ||
+    normalizedValue.includes("غير متاح") ||
     normalizedValue === "no" ||
+    normalizedValue.startsWith("no ") ||
     normalizedValue === "false"
   ) {
     return "Not available";
@@ -227,8 +236,11 @@ function arabicSupportLabel(value: string | null | undefined) {
 
   if (
     normalizedValue.includes("not available") ||
+    normalizedValue.includes("unavailable") ||
     normalizedValue.includes("غير متوفر") ||
+    normalizedValue.includes("غير متاح") ||
     normalizedValue === "no" ||
+    normalizedValue.startsWith("no ") ||
     normalizedValue === "false"
   ) {
     return "Not available";
@@ -603,6 +615,7 @@ function BrokerCard({
           {realLink ? (
             <a
               href={`/go/${broker.slug}?type=real`}
+              rel="sponsored nofollow"
               className="inline-flex min-h-[40px] items-center justify-center rounded-xl border border-slate-300 bg-white px-3 py-2 text-[11px] font-black text-slate-800 transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700"
             >
               Open Account
@@ -811,6 +824,7 @@ function BrokerCard({
             {realLink ? (
               <a
                 href={`/go/${broker.slug}?type=real`}
+                rel="sponsored nofollow"
                 className="inline-flex min-h-[40px] w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-black text-slate-700 transition hover:-translate-y-0.5 hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700"
               >
                 Open Account
@@ -1073,10 +1087,14 @@ export default async function BrokersPage({
   const { data, error } = await supabase
   .from("brokers")
   .select(
-    "id,name,name_en,slug,rating,min_deposit,best_for,best_for_en,regulation,platforms,max_leverage,logo,real_account_url,demo_account_url"
+    "id,name,name_en,slug,rating,min_deposit,best_for,best_for_en,regulation,platforms,islamic_account,max_leverage,arabic_support,logo,real_account_url,demo_account_url"
   )
   .eq("publication_status", "published")
   .order("rating", { ascending: false });
+
+  if (error) {
+    throw new Error(`Failed to load published brokers: ${error.message}`);
+  }
 
   const brokers = (data as Broker[] | null) ?? [];
 
@@ -1197,6 +1215,7 @@ export default async function BrokersPage({
           "Forex broker reviews to help you choose the right broker",
         description:
           "Compare forex brokers by regulation, rating, minimum deposit, maximum leverage, trading platforms, and suitability for different traders.",
+        isAccessibleForFree: true,
         isPartOf: {
           "@id": `${BASE_URL}/#website`,
         },
@@ -1244,6 +1263,7 @@ export default async function BrokersPage({
         numberOfItems: sortedBrokersForSchema.length,
         itemListOrder:
           "https://schema.org/ItemListOrderDescending",
+        inLanguage: "en",
         itemListElement: sortedBrokersForSchema.map(
           (broker, index) => {
             const brokerName = getBrokerName(broker);
@@ -1327,31 +1347,20 @@ export default async function BrokersPage({
     ],
   };
 
-  if (error) {
-    return (
-      <main
-        dir="ltr"
-        className="mx-auto max-w-[1520px] px-4 py-16"
-      >
-        <div className="rounded-3xl border border-red-200 bg-red-50 p-6 text-red-700">
-          An error occurred while loading the broker reviews page.
-        </div>
-      </main>
-    );
-  }
-
   return (
     <>
-      <Script
-        id="brokers-structured-data-en"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(structuredData).replace(
-            /</g,
-            "\\u003c"
-          ),
-        }}
-      />
+      {!hasActiveFilters(params) && (
+        <Script
+          id="brokers-structured-data-en"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(structuredData).replace(
+              /</g,
+              "\\u003c"
+            ),
+          }}
+        />
+      )}
 
       <main dir="ltr" className="bg-slate-50">
         {/* HERO */}
@@ -1427,13 +1436,13 @@ export default async function BrokersPage({
                 Independent forex broker research
               </div>
 
-              <h1 className="mx-auto mt-3 text-[40px] font-black leading-[1.1] tracking-[-0.025em] text-slate-950 lg:text-[47px]">
+              <div className="mx-auto mt-3 text-[40px] font-black leading-[1.1] tracking-[-0.025em] text-slate-950 lg:text-[47px]">
                 Forex Broker Reviews
 
                 <span className="mt-1 block text-[#1E5BB8]">
                   Find and Compare Trusted Brokers
                 </span>
-              </h1>
+              </div>
 
               <p className="mx-auto mt-3 max-w-[790px] text-[15px] font-medium leading-8 text-slate-600">
                 Compare forex brokers by regulation, trading
