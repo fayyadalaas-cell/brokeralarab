@@ -740,52 +740,52 @@ const whyBrokerAlarabItems = [
 
         {/* MAIN HERO */}
 <div className="relative mx-auto w-full max-w-[1560px] px-4 py-2 sm:px-6 sm:py-5 lg:px-8 lg:py-7">
-  <div className="grid items-center gap-5 lg:grid-cols-[minmax(0,1fr)_430px] lg:gap-6 xl:grid-cols-[minmax(0,1fr)_470px] xl:gap-8">
+  <div className="grid items-center gap-5 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-7 xl:grid-cols-[minmax(0,1fr)_445px] xl:gap-9">
 
     {/* HERO CONTENT */}
-    <div className="relative order-1 flex h-full flex-col justify-center py-0 text-center sm:py-2 lg:py-5 lg:text-right">
+    <div className="relative order-1 flex h-full min-w-0 flex-col justify-center py-0 text-center sm:py-2 lg:py-3 lg:text-right">
 
       {/* BRAND POSITIONING */}
-<div className="hidden items-center justify-center gap-2.5 sm:flex lg:justify-start">
-  <span className="h-px w-7 bg-gradient-to-l from-cyan-400 to-transparent sm:w-9" />
+      <div className="hidden items-center justify-center gap-2.5 sm:flex lg:justify-start">
+        <span className="h-px w-7 bg-gradient-to-l from-cyan-400 to-transparent sm:w-9" />
 
-  <div className="flex items-center gap-2 text-[9px] font-black text-blue-200 sm:text-[11px]">
-    <span className="relative flex h-2 w-2">
-      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-60 motion-reduce:animate-none" />
-      <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan-400" />
-    </span>
+        <div className="flex items-center gap-2 text-[9px] font-black text-blue-200 sm:text-[11px]">
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-60 motion-reduce:animate-none" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan-400" />
+          </span>
 
-   <span className="sm:hidden">
-  بيانات أدق · قرار أوضح
-</span>
+          <span className="sm:hidden">
+            بيانات أدق · قرار أوضح
+          </span>
 
-<span className="hidden sm:inline">
-  بيانات أدق · مقارنة أوضح · قرار أفضل
-</span>
-  </div>
-</div>
+          <span className="hidden sm:inline">
+            بيانات أدق · مقارنة أوضح · قرار أفضل
+          </span>
+        </div>
+      </div>
 
       {/* MAIN TITLE */}
-      <h1 className="mx-auto mt-3 max-w-[850px] text-[35px] font-black leading-[1.12] tracking-[-0.04em] text-white sm:mt-4 sm:text-[47px] sm:leading-[1.05] lg:mx-0 lg:text-[48px] xl:text-[58px]">
+      <h1 className="mx-auto mt-3 max-w-[900px] text-[35px] font-black leading-[1.12] tracking-[-0.04em] text-white sm:mt-4 sm:text-[47px] sm:leading-[1.05] lg:mx-0 lg:text-[48px] xl:text-[58px]">
         أفضل شركات التداول
 
-       <span className="mt-2.5 block bg-gradient-to-l from-[#6dd5ff] via-[#62a9ff] to-[#9fc9ff] bg-clip-text pb-2 leading-[1.16] text-transparent sm:mt-1 lg:mt-3">
+        <span className="mt-2.5 block bg-gradient-to-l from-[#6dd5ff] via-[#62a9ff] to-[#9fc9ff] bg-clip-text pb-2 leading-[1.16] text-transparent sm:mt-1 lg:mt-3">
           برؤية أعمق.
         </span>
       </h1>
 
       {/* DESCRIPTION */}
-<p className="mx-auto mt-1 max-w-[325px] text-[13px] font-semibold leading-[1.75] text-slate-200 sm:mt-2 sm:max-w-[820px] sm:text-[14px] sm:leading-7 lg:mx-0 lg:max-w-[700px] lg:text-[16px] lg:leading-8 lg:[text-wrap:pretty] xl:text-[17px]">
-  <span className="sm:hidden">
-    قارن التراخيص والرسوم والحسابات والمنصات، واستكشف تقييمات الوسطاء
-    قبل اختيار الأنسب لك.
-  </span>
+      <p className="mx-auto mt-1 max-w-[325px] text-[13px] font-semibold leading-[1.75] text-slate-200 sm:mt-2 sm:max-w-[820px] sm:text-[14px] sm:leading-7 lg:mx-0 lg:max-w-[700px] lg:text-[16px] lg:leading-8 lg:[text-wrap:pretty] xl:text-[17px]">
+        <span className="sm:hidden">
+          قارن التراخيص والرسوم والحسابات والمنصات، واستكشف تقييمات الوسطاء
+          قبل اختيار الأنسب لك.
+        </span>
 
-  <span className="hidden sm:inline">
-    قارن شركات التداول حسب التراخيص والرسوم والسبريد والحسابات والمنصات،
-    واستكشف تقييمات الوسطاء وبياناتهم قبل اختيار الوسيط المناسب.
-  </span>
-</p>
+        <span className="hidden sm:inline">
+          قارن شركات التداول حسب التراخيص والرسوم والسبريد والحسابات والمنصات،
+          واستكشف تقييمات الوسطاء وبياناتهم قبل اختيار الوسيط المناسب.
+        </span>
+      </p>
 
       {/* ACTIONS */}
       <div className="mt-3 flex flex-col items-stretch justify-center gap-2 sm:mt-5 sm:flex-row sm:items-center sm:gap-3 lg:mt-6 lg:justify-start">
@@ -810,6 +810,43 @@ const whyBrokerAlarabItems = [
             ←
           </span>
         </Link>
+      </div>
+
+      {/* DESKTOP TRUST STATS */}
+      <div className="mt-7 hidden max-w-[900px] grid-cols-4 gap-3 lg:grid">
+        {[
+          {
+            value: "150+",
+            label: "وسيط تمت دراسته",
+          },
+          {
+            value: "50+",
+            label: "مراجعة ومقارنة",
+          },
+          {
+            value: "18+",
+            label: "جهة رقابية",
+          },
+          {
+            value: "10",
+            label: "حاسبات تداول",
+          },
+        ].map((item) => (
+          <div
+            key={item.label}
+            className="group relative overflow-hidden rounded-[17px] border border-white/10 bg-white/[0.055] px-4 py-3.5 text-right backdrop-blur-sm transition duration-300 hover:-translate-y-0.5 hover:border-blue-300/25 hover:bg-white/[0.085]"
+          >
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-l from-transparent via-cyan-300/35 to-transparent" />
+
+            <div className="text-[20px] font-black leading-none text-[#76c8ff] xl:text-[22px]">
+              {item.value}
+            </div>
+
+            <div className="mt-2 text-[10px] font-bold leading-4 text-blue-100/70 xl:text-[11px]">
+              {item.label}
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* MOBILE BROKER LOGOS */}
@@ -850,13 +887,11 @@ const whyBrokerAlarabItems = [
           ))}
         </div>
       </div>
-
-      
     </div>
 
-    {/* BROKER LOGOS - DESKTOP */}
+    {/* BROKER LOGOS — DESKTOP */}
     <div className="order-2 hidden h-full lg:block">
-      <div className="relative h-full max-w-[430px] lg:mr-[52px]">
+      <div className="relative mr-0 h-full w-full">
 
         {/* BLUE GLOW */}
         <div className="absolute -inset-5 rounded-[42px] bg-gradient-to-br from-[#2878e5]/25 via-[#38bdf8]/10 to-transparent blur-[36px]" />
@@ -909,7 +944,7 @@ const whyBrokerAlarabItems = [
 
           {/* CARD FOOTER */}
           <div className="mt-4 flex items-center justify-between rounded-2xl border border-white/10 bg-white/10 px-4 py-3">
-            <div className="text-right">
+            <div className="min-w-0 text-right">
               <div className="text-[13px] font-black text-white">
                 تقييمات مستقلة وبيانات محدثة
               </div>
@@ -921,7 +956,7 @@ const whyBrokerAlarabItems = [
 
             <Link
               href="/brokers"
-              className="inline-flex h-9 items-center justify-center rounded-xl bg-white px-4 text-[11px] font-black text-[#123d73] shadow-sm transition hover:bg-blue-50"
+              className="mr-3 inline-flex h-9 shrink-0 items-center justify-center rounded-xl bg-white px-4 text-[11px] font-black text-[#123d73] shadow-sm transition hover:bg-blue-50"
             >
               جميع الوسطاء
             </Link>
