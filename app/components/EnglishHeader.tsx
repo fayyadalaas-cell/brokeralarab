@@ -719,10 +719,10 @@ export default function EnglishHeader({
           {/* LEARN TRADING */}
 <div className="group relative">
   <Link
-  href="/en/learn-trading"
-  className={mainLinkClass}
->
-  Learn Trading
+    href="/en/learn-trading"
+    className={mainLinkClass}
+  >
+    Learn Trading
     <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
       ▼
     </span>
@@ -734,36 +734,54 @@ export default function EnglishHeader({
     </div>
 
     {learnTradingMenuItems.slice(0, 1).map((item: any) => (
-  <Link
-    key={item.href}
-    href={getLearnTradingHref(item)}
-    className={`${menuCardClass} flex items-center justify-between gap-4`}
-  >
-    <div className="min-w-0 flex-1">
-      <div className="line-clamp-2 text-[13px] font-extrabold leading-6 text-slate-700">
-        {getLearnTradingTitle(item)}
+      <Link
+        key={item.href}
+        href={getLearnTradingHref(item)}
+        className={`${menuCardClass} flex items-center justify-between gap-4`}
+      >
+        <div className="min-w-0 flex-1">
+          <div className="line-clamp-2 text-[13px] font-extrabold leading-6 text-slate-700">
+            {getLearnTradingTitle(item)}
+          </div>
+        </div>
+
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-lg font-black text-brand-600 shadow-sm">
+          →
+        </span>
+      </Link>
+    ))}
+
+    <Link
+      href="/en/learn-trading/economic-indicators"
+      className={`${menuCardClass} mt-2 flex items-center justify-between gap-4`}
+    >
+      <div className="min-w-0 flex-1">
+        <div className="line-clamp-2 text-[13px] font-extrabold leading-6 text-slate-700">
+          Economic Indicators and Their Impact on Trading
+        </div>
       </div>
-    </div>
 
-    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-lg font-black text-brand-600 shadow-sm">
-      →
-    </span>
-  </Link>
-))}
-<Link
-  href="/en/learn-trading/economic-indicators"
-  className={`${menuCardClass} mt-2 flex items-center justify-between gap-4`}
->
-  <div className="min-w-0 flex-1">
-    <div className="line-clamp-2 text-[13px] font-extrabold leading-6 text-slate-700">
-      Economic Indicators and Their Impact on Trading
-    </div>
-  </div>
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-lg font-black text-brand-600 shadow-sm">
+        →
+      </span>
+    </Link>
 
-  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-lg font-black text-brand-600 shadow-sm">
-    →
-  </span>
-</Link>
+    {/* FOREX TRADING STRATEGIES HUB */}
+    <Link
+      href="/en/strategies"
+      className={`${menuCardClass} mt-2 flex items-center justify-between gap-4`}
+    >
+      <div className="min-w-0 flex-1">
+        <div className="line-clamp-2 text-[13px] font-extrabold leading-6 text-slate-700">
+          Forex Trading Strategies
+        </div>
+      </div>
+
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-lg font-black text-brand-600 shadow-sm">
+        →
+      </span>
+    </Link>
+
     <Link
       href="/en/learn-trading"
       className="mt-1 block rounded-2xl px-3 py-3 text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"

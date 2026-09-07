@@ -934,7 +934,8 @@ allTools: isEnglish ? "View All Tools" : "عرض جميع الأدوات",
                     </div>
                   </Section>
 
-                 <Section
+                 {/* LEARN TRADING */}
+<Section
   title={text.learn}
   open={openSection === "learn"}
   onToggle={() => toggleSection("learn")}
@@ -942,8 +943,8 @@ allTools: isEnglish ? "View All Tools" : "عرض جميع الأدوات",
   <div className="space-y-2">
     {learnTradingMenuItems.slice(0, 1).map((item) => {
       const learnTitle = isEnglish
-  ? "Start Trading from Zero"
-  : "ابدأ التداول من الصفر";
+        ? "Start Trading from Zero"
+        : "ابدأ التداول من الصفر";
 
       return (
         <Link
@@ -962,16 +963,36 @@ allTools: isEnglish ? "View All Tools" : "عرض جميع الأدوات",
     })}
 
     <Link
-      href={isEnglish ? "/en/learn-trading/economic-indicators" : "/learn-trading/economic-indicators"}
+      href={
+        isEnglish
+          ? "/en/learn-trading/economic-indicators"
+          : "/learn-trading/economic-indicators"
+      }
       onClick={closeMenu}
       className={`${mobileCardClass} flex min-h-[50px] items-center px-4 py-3`}
     >
       <div className="min-w-0 flex-1">
         <h3 className="line-clamp-2 text-[13px] font-extrabold leading-6 text-slate-800">
-         {isEnglish ? "Economic Indicators Guide" : "دليل المؤشرات الاقتصادية"}
+          {isEnglish
+            ? "Economic Indicators Guide"
+            : "دليل المؤشرات الاقتصادية"}
         </h3>
       </div>
+    </Link>
 
+    {/* STRATEGIES HUB */}
+    <Link
+      href={isEnglish ? "/en/strategies" : "/strategies"}
+      onClick={closeMenu}
+      className={`${mobileCardClass} flex min-h-[50px] items-center px-4 py-3`}
+    >
+      <div className="min-w-0 flex-1">
+        <h3 className="line-clamp-2 text-[13px] font-extrabold leading-6 text-slate-800">
+          {isEnglish
+            ? "Forex Trading Strategies"
+            : "استراتيجيات الفوركس"}
+        </h3>
+      </div>
     </Link>
 
     <Link

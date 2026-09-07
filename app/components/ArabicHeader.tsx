@@ -573,10 +573,10 @@ export default function ArabicHeader({
         {/* LEARN TRADING */}
 <div className="group relative">
   <Link
-  href="/learn-trading"
-  className={mainLinkClass}
->
-  تعلم التداول
+    href="/learn-trading"
+    className={mainLinkClass}
+  >
+    تعلم التداول
     <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
       ▼
     </span>
@@ -584,40 +584,58 @@ export default function ArabicHeader({
 
   <div className={`${dropdownClass} w-[420px]`}>
     <div className="px-3 pb-3 pt-1 text-xs font-black tracking-wide text-slate-500">
-  دليل تعلم التداول
-</div>
+      دليل تعلم التداول
+    </div>
 
-   {learnTradingMenuItems.slice(0, 1).map((item: any) => (
-  <Link
-    key={item.href}
-    href={item.href}
-    className={`${menuCardClass} flex items-center justify-between gap-4 text-right`}
-  >
-    <div className="min-w-0 flex-1 text-right">
-      <div className="line-clamp-2 text-[13px] font-extrabold leading-6 text-slate-700">
-        {item.title}
+    {learnTradingMenuItems.slice(0, 1).map((item: any) => (
+      <Link
+        key={item.href}
+        href={item.href}
+        className={`${menuCardClass} flex items-center justify-between gap-4 text-right`}
+      >
+        <div className="min-w-0 flex-1 text-right">
+          <div className="line-clamp-2 text-[13px] font-extrabold leading-6 text-slate-700">
+            {item.title}
+          </div>
+        </div>
+
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-lg font-black text-brand-600 shadow-sm">
+          ←
+        </span>
+      </Link>
+    ))}
+
+    <Link
+      href="/learn-trading/economic-indicators"
+      className={`${menuCardClass} mt-2 flex items-center justify-between gap-4 text-right`}
+    >
+      <div className="min-w-0 flex-1 text-right">
+        <div className="line-clamp-2 text-[13px] font-extrabold leading-6 text-slate-700">
+          المؤشرات الاقتصادية وتأثيرها على التداول
+        </div>
       </div>
-    </div>
 
-    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-lg font-black text-brand-600 shadow-sm">
-      ←
-    </span>
-  </Link>
-))}
-<Link
-  href="/learn-trading/economic-indicators"
-  className={`${menuCardClass} mt-2 flex items-center justify-between gap-4 text-right`}
->
-  <div className="min-w-0 flex-1 text-right">
-    <div className="line-clamp-2 text-[13px] font-extrabold leading-6 text-slate-700">
-      المؤشرات الاقتصادية وتأثيرها على التداول
-    </div>
-  </div>
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-lg font-black text-brand-600 shadow-sm">
+        ←
+      </span>
+    </Link>
 
-  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-lg font-black text-brand-600 shadow-sm">
-    ←
-  </span>
-</Link>
+    {/* FOREX STRATEGIES HUB */}
+    <Link
+      href="/strategies"
+      className={`${menuCardClass} mt-2 flex items-center justify-between gap-4 text-right`}
+    >
+      <div className="min-w-0 flex-1 text-right">
+        <div className="line-clamp-2 text-[13px] font-extrabold leading-6 text-slate-700">
+          استراتيجيات الفوركس
+        </div>
+      </div>
+
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-lg font-black text-brand-600 shadow-sm">
+        ←
+      </span>
+    </Link>
+
     <Link
       href="/learn-trading"
       className="mt-1 block rounded-2xl px-3 py-3 text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
