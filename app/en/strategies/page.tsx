@@ -10,9 +10,9 @@ const BASE_URL = "https://brokeralarab.com";
 const PAGE_URL = `${BASE_URL}/en/strategies`;
 
 export const metadata: Metadata = {
-  title: "Forex Trading Strategies: 10 Strategies Explained",
+  title: "Forex Trading Strategies: 12 Strategies Explained",
   description:
-    "Explore 10 forex trading strategies including price action, scalping, swing trading, trend following, ICT, SMC, order blocks and liquidity sweeps. Compare styles, timeframes and difficulty.",
+    "Explore 12 forex trading strategies including price action, support and resistance, moving average crossovers, scalping, swing trading, trend following, RSI, ICT, SMC, supply and demand, order blocks and liquidity sweeps.",
 
   keywords: [
     "forex trading strategies",
@@ -31,6 +31,11 @@ export const metadata: Metadata = {
     "supply and demand trading",
     "order block trading",
     "liquidity sweep strategy",
+    "support and resistance strategy",
+    "support and resistance trading",
+    "moving average crossover strategy",
+    "moving average trading strategy",
+    "EMA crossover strategy",
   ],
 
   alternates: {
@@ -45,7 +50,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: PAGE_URL,
-    title: "Forex Trading Strategies: 10 Strategies Explained",
+    title: "Forex Trading Strategies: 12 Strategies Explained",
     description:
       "Compare popular forex trading strategies by trading style, timeframe, difficulty and core market concept.",
     siteName: "Broker Alarab",
@@ -54,9 +59,9 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: "Forex Trading Strategies: 10 Strategies Explained",
+    title: "Forex Trading Strategies: 12 Strategies Explained",
     description:
-      "Explore price action, scalping, swing trading, ICT, SMC, order blocks, liquidity sweeps and other forex trading strategies.",
+      "Explore 12 forex strategies including price action, support and resistance, moving average crossovers, scalping, swing trading, ICT, SMC and liquidity sweeps.",
   },
 };
 
@@ -210,6 +215,31 @@ const strategies: Strategy[] = [
     focus: "BSL / SSL",
     tags: ["Liquidity Sweep", "BSL", "SSL"],
     featured: true,
+  },
+  {
+    number: "11",
+    title: "Support and Resistance Trading Strategy",
+    href: "/en/strategies/support-and-resistance",
+    description:
+      "Learn how to identify support and resistance zones, trade bounces, breakouts and retests, recognize false breakouts and plan entries, stops and targets.",
+    level: "Beginner → Intermediate",
+    style: "Price Action",
+    timeframe: "Multiple",
+    focus: "Key Levels",
+    tags: ["Support", "Resistance", "Breakout"],
+    featured: true,
+  },
+  {
+    number: "12",
+    title: "Moving Average Crossover Strategy",
+    href: "/en/strategies/moving-average-crossover",
+    description:
+      "Learn how fast and slow moving averages interact, how bullish and bearish crossovers form, and how traders use SMA, EMA and trend filters.",
+    level: "Beginner → Intermediate",
+    style: "Indicator Based",
+    timeframe: "Multiple",
+    focus: "Trend",
+    tags: ["Moving Average", "EMA", "Crossover"],
   },
 ];
 
@@ -525,7 +555,7 @@ function LearningMapGraphic() {
         {[
           ["01", "Price Action", "Structure and key price levels"],
           ["02", "Trading Style", "Scalping, swing or trend"],
-          ["03", "Analysis Tools", "RSI and supply & demand"],
+          ["03", "Analysis Tools", "RSI, key levels and moving averages"],
           ["04", "Advanced Concepts", "ICT, SMC and liquidity"],
         ].map(([n, title, text]) => (
           <div key={n} className="relative flex items-center gap-3 py-2.5">
@@ -734,7 +764,7 @@ export default function StrategiesHubPage() {
                   </span>
 
                   <span className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[9px] font-black text-slate-600">
-                    10 Strategies
+                    12 Strategies
                   </span>
 
                   <span className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[9px] font-black text-slate-600">
@@ -750,11 +780,12 @@ export default function StrategiesHubPage() {
                 </h1>
 
                 <p className="mt-4 max-w-[900px] text-[14px] font-medium leading-8 text-slate-700 sm:mt-5 sm:text-[16px] sm:leading-9">
-                  Explore 10 forex trading strategies in one place, from price
-                  action, scalping and swing trading to ICT, Smart Money
-                  Concepts, order blocks and liquidity sweeps. Compare how each
-                  approach works, the timeframes it is commonly used on and the
-                  level of experience it may require.
+                  Explore 12 forex trading strategies in one place, from price
+                  action, support and resistance, moving average crossovers,
+                  scalping and swing trading to ICT, Smart Money Concepts,
+                  order blocks and liquidity sweeps. Compare how each approach
+                  works, the timeframes it is commonly used on and the level of
+                  experience it may require.
                 </p>
 
                 <div className="mt-6 flex flex-col gap-3 sm:mt-7 sm:flex-row sm:flex-wrap">
@@ -776,7 +807,7 @@ export default function StrategiesHubPage() {
 
                 <div className="mt-6 grid grid-cols-2 gap-2.5 sm:mt-8 sm:gap-3 lg:grid-cols-4">
                   {[
-                    ["10", "Strategy Guides"],
+                    ["12", "Strategy Guides"],
                     ["4", "Core Styles"],
                     ["Multiple", "Timeframes"],
                     ["Practical", "Step-by-Step"],
@@ -918,7 +949,7 @@ export default function StrategiesHubPage() {
               </div>
 
               <div className="inline-flex w-fit rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-[10px] font-black text-slate-500">
-                10 Educational Guides
+                12 Educational Guides
               </div>
             </div>
 
@@ -1089,7 +1120,7 @@ export default function StrategiesHubPage() {
                   </h2>
 
                   <p className="mt-4 text-[14px] font-medium leading-8 text-slate-700 sm:text-[15px] sm:leading-9">
-                    Trying to learn ten strategies at the same time usually
+                    Trying to learn many strategies at the same time usually
                     creates more confusion than clarity. A more structured
                     approach is to build your knowledge in stages because many
                     advanced strategies depend on concepts that begin with price
@@ -1191,8 +1222,9 @@ export default function StrategiesHubPage() {
 
                         <p className="mt-2 text-[12px] font-medium leading-7 text-slate-600 sm:text-[13px] sm:leading-8">
                           Once you understand price movement, you can add
-                          indicators or price zones as supporting tools rather
-                          than treating them as isolated trading signals.
+                          indicators, moving averages and key price zones as
+                          supporting tools rather than treating them as isolated
+                          trading signals.
                         </p>
 
                         <div className="mt-3 flex flex-wrap gap-2">
@@ -1208,6 +1240,20 @@ export default function StrategiesHubPage() {
                             className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[10px] font-black text-slate-700 transition hover:bg-slate-950 hover:text-white"
                           >
                             Supply & Demand
+                          </Link>
+
+                          <Link
+                            href="/en/strategies/support-and-resistance"
+                            className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[10px] font-black text-slate-700 transition hover:bg-slate-950 hover:text-white"
+                          >
+                            Support & Resistance
+                          </Link>
+
+                          <Link
+                            href="/en/strategies/moving-average-crossover"
+                            className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[10px] font-black text-slate-700 transition hover:bg-slate-950 hover:text-white"
+                          >
+                            MA Crossover
                           </Link>
                         </div>
                       </div>

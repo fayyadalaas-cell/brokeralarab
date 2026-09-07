@@ -26,7 +26,6 @@ export const STATIC_PAGES = [
   "best-brokers/accounts/standard",
   "best-brokers/accounts/raw-spread",
   "lowest-spread-brokers",
-
   "learn-trading",
   "learn-trading/how-to-start-trading-from-zero",
   "learn-trading/economic-indicators",
@@ -39,7 +38,6 @@ export const STATIC_PAGES = [
   "learn-trading/hedging",
   "learn-trading/liquidity",
   "learn-trading/margin-call",
-
   "licenses",
 
   // Forex Strategies Hub
@@ -56,6 +54,8 @@ export const STATIC_PAGES = [
   "strategies/supply-and-demand",
   "strategies/order-blocks",
   "strategies/liquidity-sweep",
+  "strategies/support-and-resistance",
+  "strategies/moving-average-crossover",
 
   "about",
   "contact",
@@ -76,7 +76,6 @@ export const STATIC_PAGES_EN = [
   "en/best-brokers/accounts/standard",
   "en/best-brokers/accounts/raw-spread",
   "en/lowest-spread-brokers",
-
   "en/learn-trading",
   "en/learn-trading/how-to-start-trading-from-zero",
   "en/learn-trading/economic-indicators",
@@ -89,7 +88,6 @@ export const STATIC_PAGES_EN = [
   "en/learn-trading/hedging",
   "en/learn-trading/liquidity",
   "en/learn-trading/margin-call",
-
   "en/licenses",
 
   // Forex Strategies Hub
@@ -106,6 +104,8 @@ export const STATIC_PAGES_EN = [
   "en/strategies/supply-and-demand",
   "en/strategies/order-blocks",
   "en/strategies/liquidity-sweep",
+  "en/strategies/support-and-resistance",
+  "en/strategies/moving-average-crossover",
 
   "en/about",
   "en/contact",

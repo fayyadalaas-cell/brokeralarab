@@ -11,7 +11,7 @@ const PAGE_URL = "https://brokeralarab.com/strategies";
 export const metadata: Metadata = {
   title: "استراتيجيات الفوركس: دليل شامل لأفضل استراتيجيات التداول",
   description:
-    "تعرف على أهم استراتيجيات الفوركس والتداول، من البرايس أكشن والسكالبينغ والسوينغ إلى ICT وكتل الأوامر وسحب السيولة، واختر الاستراتيجية المناسبة لأسلوبك.",
+    "تعرف على 12 استراتيجية فوركس وتداول، من البرايس أكشن والدعم والمقاومة وتقاطع المتوسطات المتحركة إلى السكالبينغ والسوينغ وICT وSMC وكتل الأوامر وسحب السيولة.",
 
   keywords: [
     "استراتيجيات الفوركس",
@@ -32,6 +32,12 @@ export const metadata: Metadata = {
     "Order Blocks",
     "Supply and Demand",
     "Liquidity Sweep",
+    "استراتيجية الدعم والمقاومة",
+    "الدعم والمقاومة في التداول",
+    "Support and Resistance",
+    "استراتيجية تقاطع المتوسطات المتحركة",
+    "Moving Average Crossover",
+    "EMA Crossover",
   ],
 
   alternates: {
@@ -57,7 +63,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "استراتيجيات الفوركس: دليل شامل لاستراتيجيات التداول",
     description:
-      "تعرف على البرايس أكشن والسكالبينغ والسوينغ وICT وSMC وRSI والعرض والطلب وكتل الأوامر وسحب السيولة.",
+      "استكشف 12 استراتيجية تشمل البرايس أكشن والدعم والمقاومة وتقاطع المتوسطات والسكالبينغ والسوينغ وICT وSMC وRSI وكتل الأوامر وسحب السيولة.",
   },
 };
 
@@ -222,6 +228,33 @@ const strategies: Strategy[] = [
     focus: "BSL / SSL",
     tags: ["سحب السيولة", "BSL", "SSL"],
     featured: true,
+  },
+  {
+    number: "11",
+    title: "استراتيجية الدعم والمقاومة",
+    english: "Support & Resistance",
+    href: "/strategies/support-and-resistance",
+    description:
+      "تعلم تحديد مناطق الدعم والمقاومة، وقراءة الارتداد والاختراق وإعادة الاختبار والاختراقات الكاذبة مع تنظيم الدخول والإبطال والهدف.",
+    level: "مبتدئ → متوسط",
+    style: "حركة السعر",
+    timeframe: "متعدد",
+    focus: "المستويات الرئيسية",
+    tags: ["الدعم", "المقاومة", "الاختراق"],
+    featured: true,
+  },
+  {
+    number: "12",
+    title: "استراتيجية تقاطع المتوسطات المتحركة",
+    english: "Moving Average Crossover",
+    href: "/strategies/moving-average-crossover",
+    description:
+      "تعلم كيف يتفاعل المتوسط السريع والبطيء، والفرق بين SMA وEMA، وكيف تتشكل إشارات التقاطع الصاعد والهابط ضمن سياق الاتجاه.",
+    level: "مبتدئ → متوسط",
+    style: "مؤشر فني",
+    timeframe: "متعدد",
+    focus: "الاتجاه",
+    tags: ["المتوسطات المتحركة", "EMA", "التقاطع"],
   },
 ];
 
@@ -483,7 +516,7 @@ function LearningMapGraphic() {
         {[
           ["01", "حركة السعر", "الهيكل والمستويات"],
           ["02", "أسلوب التداول", "سكالبينغ أو سوينغ أو اتجاه"],
-          ["03", "أدوات التحليل", "RSI والعرض والطلب"],
+          ["03", "أدوات التحليل", "RSI والمستويات والمتوسطات"],
           ["04", "المفاهيم المتقدمة", "ICT وSMC والسيولة"],
         ].map(([n, title, text]) => (
           <div key={n} className="relative flex items-center gap-3 py-2.5">
@@ -694,7 +727,7 @@ export default function StrategiesHubPage() {
                   </span>
 
                   <span className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[9px] font-black text-slate-600">
-                    10 استراتيجيات
+                    12 استراتيجية
                   </span>
 
                   <span className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[9px] font-black text-slate-600">
@@ -710,10 +743,11 @@ export default function StrategiesHubPage() {
                 </h1>
 
                 <p className="mt-4 max-w-[900px] text-[14px] font-medium leading-8 text-slate-700 sm:mt-5 sm:text-[16px] sm:leading-9">
-                  استكشف أهم استراتيجيات الفوركس في مكان واحد، من البرايس أكشن
-                  والسكالبينغ والسوينغ إلى ICT ومفاهيم الأموال الذكية وكتل
-                  الأوامر وسحب السيولة. تعرّف على طريقة عمل كل استراتيجية
-                  والفريم المناسب ومستوى الخبرة قبل اختيار الأسلوب الأقرب لك.
+                  استكشف 12 استراتيجية فوركس في مكان واحد، من البرايس أكشن
+                  والدعم والمقاومة وتقاطع المتوسطات المتحركة إلى السكالبينغ
+                  والسوينغ وICT ومفاهيم الأموال الذكية وكتل الأوامر وسحب السيولة.
+                  تعرّف على طريقة عمل كل استراتيجية والفريم المناسب ومستوى الخبرة
+                  قبل اختيار الأسلوب الأقرب لك.
                 </p>
 
                 <div className="mt-6 flex flex-col gap-3 sm:mt-7 sm:flex-row sm:flex-wrap">
@@ -735,7 +769,7 @@ export default function StrategiesHubPage() {
 
                 <div className="mt-6 grid grid-cols-2 gap-2.5 sm:mt-8 sm:gap-3 lg:grid-cols-4">
                   {[
-                    ["10", "أدلة استراتيجية"],
+                    ["12", "أدلة استراتيجية"],
                     ["4", "أساليب رئيسية"],
                     ["متعدد", "أطر زمنية"],
                     ["عملي", "شرح خطوة بخطوة"],
@@ -876,7 +910,7 @@ export default function StrategiesHubPage() {
               </div>
 
               <div className="inline-flex w-fit rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-[10px] font-black text-slate-500">
-                10 أدلة تعليمية
+                12 دليلًا تعليميًا
               </div>
             </div>
 
@@ -1049,9 +1083,9 @@ export default function StrategiesHubPage() {
                   </h2>
 
                   <p className="mt-4 text-[14px] font-medium leading-8 text-slate-700 sm:text-[15px] sm:leading-9">
-                    لا تحاول تعلم الاستراتيجيات العشر في الوقت نفسه. ابنِ فهمك
-                    على مراحل، لأن كثيرًا من الاستراتيجيات المتقدمة تعتمد على
-                    فهم حركة السعر وهيكل السوق.
+                    لا تحاول تعلم عدد كبير من الاستراتيجيات في الوقت نفسه.
+                    ابنِ فهمك على مراحل، لأن كثيرًا من الاستراتيجيات المتقدمة
+                    تعتمد على فهم حركة السعر وهيكل السوق.
                   </p>
 
                   <Link
@@ -1145,8 +1179,8 @@ export default function StrategiesHubPage() {
                         </h3>
 
                         <p className="mt-2 text-[12px] font-medium leading-7 text-slate-600 sm:text-[13px] sm:leading-8">
-                          بعد فهم حركة السعر، يمكنك دراسة المؤشرات أو المناطق
-                          السعرية واستخدامها كجزء من السياق.
+                          بعد فهم حركة السعر، يمكنك دراسة المؤشرات والمتوسطات
+                          المتحركة والمناطق السعرية واستخدامها كجزء من السياق.
                         </p>
 
                         <div className="mt-3 flex flex-wrap gap-2">
@@ -1162,6 +1196,20 @@ export default function StrategiesHubPage() {
                             className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[10px] font-black text-slate-700 transition hover:bg-slate-950 hover:text-white"
                           >
                             العرض والطلب
+                          </Link>
+
+                          <Link
+                            href="/strategies/support-and-resistance"
+                            className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[10px] font-black text-slate-700 transition hover:bg-slate-950 hover:text-white"
+                          >
+                            الدعم والمقاومة
+                          </Link>
+
+                          <Link
+                            href="/strategies/moving-average-crossover"
+                            className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[10px] font-black text-slate-700 transition hover:bg-slate-950 hover:text-white"
+                          >
+                            تقاطع المتوسطات
                           </Link>
                         </div>
                       </div>
