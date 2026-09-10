@@ -154,6 +154,68 @@ function money(value: number | null) {
   return `$${value}`;
 }
 
+function minimumAccountDeposit(
+  accounts: BrokerAccount[],
+  fallback: number | null
+) {
+  const depositValues = accounts
+    .map((account) => {
+      const value = cleanText(
+        account.min_deposit_en ||
+          account.min_deposit
+      );
+
+      if (!value) {
+        return null;
+      }
+
+      const normalizedValue = value
+        .replace(/,/g, "")
+        .toLowerCase();
+
+      if (
+        normalizedValue.includes("no minimum") ||
+        normalizedValue.includes(
+          "no minimum deposit"
+        ) ||
+        normalizedValue.includes(
+          "no deposit required"
+        )
+      ) {
+        return 0;
+      }
+
+      const match = normalizedValue.match(
+        /\d+(?:\.\d+)?/
+      );
+
+      if (!match) {
+        return null;
+      }
+
+      const numericValue = Number(match[0]);
+
+      return Number.isFinite(numericValue)
+        ? numericValue
+        : null;
+    })
+    .filter(
+      (value): value is number => value !== null
+    );
+
+  if (depositValues.length === 0) {
+    return money(fallback);
+  }
+
+  const minimumDeposit = Math.min(
+    ...depositValues
+  );
+
+  return `$${minimumDeposit.toLocaleString(
+    "en-US"
+  )}`;
+}
+
 function splitParagraphs(value: string | null | undefined) {
   return cleanText(value)
     .split("||")
@@ -353,42 +415,39 @@ function getBeginnerWinner(left: Broker, right: Broker) {
   return "Tie";
 }
 
-function getScalpingWinner(left: Broker, right: Broker) {
-  const leftText = `
-    ${left.spreads_en || left.spreads || ""}
-    ${left.fees_en || left.fees || ""}
-    ${left.best_for_en || left.best_for || ""}
-  `.toLowerCase();
+function getScalpingWinner(
+  left: Broker,
+  right: Broker
+) {
+  const leftScore = left.score_fees;
+  const rightScore = right.score_fees;
 
-  const rightText = `
-    ${right.spreads_en || right.spreads || ""}
-    ${right.fees_en || right.fees || ""}
-    ${right.best_for_en || right.best_for || ""}
-  `.toLowerCase();
-
-  const leftScore =
-    (leftText.includes("0.0") ? 2 : 0) +
-    (leftText.includes("spread") ? 1 : 0) +
-    (leftText.includes("low") ? 1 : 0) +
-    (leftText.includes("fast") ? 1 : 0) +
-    (leftText.includes("scalp") ? 1 : 0);
-
-  const rightScore =
-    (rightText.includes("0.0") ? 2 : 0) +
-    (rightText.includes("spread") ? 1 : 0) +
-    (rightText.includes("low") ? 1 : 0) +
-    (rightText.includes("fast") ? 1 : 0) +
-    (rightText.includes("scalp") ? 1 : 0);
-
-  if (leftScore > rightScore) {
-    return brokerName(left);
+  if (
+    leftScore === null &&
+    rightScore === null
+  ) {
+    return "Tie";
   }
 
-  if (rightScore > leftScore) {
+  if (leftScore === null) {
     return brokerName(right);
   }
 
-  return "Tie";
+  if (rightScore === null) {
+    return brokerName(left);
+  }
+
+  const difference = Math.abs(
+    leftScore - rightScore
+  );
+
+  if (difference < 0.15) {
+    return "Tie";
+  }
+
+  return leftScore > rightScore
+    ? brokerName(left)
+    : brokerName(right);
 }
 
 function getSafetyWinner(
@@ -397,21 +456,58 @@ function getSafetyWinner(
   leftLicences: BrokerLicense[],
   rightLicences: BrokerLicense[]
 ) {
-  const leftScore =
-    (left.score_safety ?? 0) + leftLicences.length * 0.05;
+  const leftSafetyScore = left.score_safety;
+  const rightSafetyScore = right.score_safety;
 
-  const rightScore =
-    (right.score_safety ?? 0) + rightLicences.length * 0.05;
+  if (
+    leftSafetyScore !== null &&
+    rightSafetyScore !== null
+  ) {
+    const difference = Math.abs(
+      leftSafetyScore - rightSafetyScore
+    );
 
-  if (leftScore > rightScore) {
-    return brokerName(left);
+    if (difference >= 0.15) {
+      return leftSafetyScore > rightSafetyScore
+        ? brokerName(left)
+        : brokerName(right);
+    }
   }
 
-  if (rightScore > leftScore) {
-    return brokerName(right);
+  const licenceScore = (
+    licences: BrokerLicense[]
+  ) =>
+    licences.reduce((total, licence) => {
+      if (licence.trust_level === "Tier 1") {
+        return total + 3;
+      }
+
+      if (licence.trust_level === "Tier 2") {
+        return total + 2;
+      }
+
+      if (licence.trust_level === "Tier 3") {
+        return total + 1;
+      }
+
+      return total;
+    }, 0);
+
+  const leftLicenceScore =
+    licenceScore(leftLicences);
+
+  const rightLicenceScore =
+    licenceScore(rightLicences);
+
+  if (
+    leftLicenceScore === rightLicenceScore
+  ) {
+    return "Very close";
   }
 
-  return "Very close";
+  return leftLicenceScore > rightLicenceScore
+    ? brokerName(left)
+    : brokerName(right);
 }
 
 function getBrokerReasons(
@@ -792,6 +888,18 @@ function ExpandableText({
   const leftName = brokerName(left);
   const rightName = brokerName(right);
 
+  const leftMinimumDeposit =
+  minimumAccountDeposit(
+    leftAccounts,
+    left.min_deposit
+  );
+
+const rightMinimumDeposit =
+  minimumAccountDeposit(
+    rightAccounts,
+    right.min_deposit
+  );
+
   const leftRating = left.rating ?? 0;
   const rightRating = right.rating ?? 0;
 
@@ -857,18 +965,32 @@ function ExpandableText({
     )[0] ||
     `${recommendedName} has the higher overall rating, but the final choice should reflect the account type, trading costs, platforms and regulatory entity available in your country.`;
 
-  const decisionBrokers = [
-    {
-      broker: left,
-      other: right,
-      reasons: getBrokerReasons(left, right),
-    },
-    {
-      broker: right,
-      other: left,
-      reasons: getBrokerReasons(right, left),
-    },
-  ];
+  const leftPriorityReasons =
+  splitParagraphs(
+    left.who_should_use_en
+  ).slice(0, 3);
+
+const rightPriorityReasons =
+  splitParagraphs(
+    right.who_should_use_en
+  ).slice(0, 3);
+
+const decisionBrokers = [
+  {
+    broker: left,
+    reasons:
+      leftPriorityReasons.length > 0
+        ? leftPriorityReasons
+        : getBrokerReasons(left, right),
+  },
+  {
+    broker: right,
+    reasons:
+      rightPriorityReasons.length > 0
+        ? rightPriorityReasons
+        : getBrokerReasons(right, left),
+  },
+];
 
   const faqJsonLd = buildFaqJsonLd(left, right);
 
@@ -1830,30 +1952,10 @@ function ExpandableText({
     "Not specified",
 },
               {
-                label: "Minimum Deposit",
-                leftValue:
-                  leftAccounts.find((account) =>
-                    cleanText(
-                      account.min_deposit_en ||
-                        account.min_deposit
-                    )
-                  )?.min_deposit_en ||
-                  leftAccounts.find((account) =>
-                    cleanText(account.min_deposit)
-                  )?.min_deposit ||
-                  money(left.min_deposit),
-                rightValue:
-                  rightAccounts.find((account) =>
-                    cleanText(
-                      account.min_deposit_en ||
-                        account.min_deposit
-                    )
-                  )?.min_deposit_en ||
-                  rightAccounts.find((account) =>
-                    cleanText(account.min_deposit)
-                  )?.min_deposit ||
-                  money(right.min_deposit),
-              },
+  label: "Minimum Deposit",
+  leftValue: leftMinimumDeposit,
+  rightValue: rightMinimumDeposit,
+},
               {
                 label: "Starting Spread",
                 leftValue:
@@ -2034,7 +2136,7 @@ function ExpandableText({
             key={account.id}
             className={`flex min-h-[225px] flex-col rounded-[22px] border border-slate-200 bg-white p-4 shadow-[0_8px_22px_rgba(15,23,42,0.05)] transition duration-200 hover:-translate-y-0.5 hover:border-[#93c5fd] hover:shadow-[0_12px_28px_rgba(37,99,235,0.10)] ${
               brokerAccounts.length > 4
-                ? "w-[calc((100%-48px)/4)] min-w-[270px] shrink-0 snap-start"
+                ? "w-[calc((100%_-_48px)/4)] min-w-[270px] shrink-0 snap-start"
                 : ""
             }`}
           >
@@ -2278,30 +2380,10 @@ function ExpandableText({
     "Not specified",
 },
         {
-          label: "Minimum Deposit",
-          leftValue:
-            leftAccounts.find((account) =>
-              cleanText(
-                account.min_deposit_en ||
-                  account.min_deposit
-              )
-            )?.min_deposit_en ||
-            leftAccounts.find((account) =>
-              cleanText(account.min_deposit)
-            )?.min_deposit ||
-            money(left.min_deposit),
-          rightValue:
-            rightAccounts.find((account) =>
-              cleanText(
-                account.min_deposit_en ||
-                  account.min_deposit
-              )
-            )?.min_deposit_en ||
-            rightAccounts.find((account) =>
-              cleanText(account.min_deposit)
-            )?.min_deposit ||
-            money(right.min_deposit),
-        },
+  label: "Minimum Deposit",
+  leftValue: leftMinimumDeposit,
+  rightValue: rightMinimumDeposit,
+},
         {
           label: "Spread",
           leftValue:

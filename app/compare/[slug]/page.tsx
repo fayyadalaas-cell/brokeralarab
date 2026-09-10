@@ -89,6 +89,57 @@ function money(value: number | null) {
   return `$${value}`;
 }
 
+function minimumAccountDeposit(
+  accounts: BrokerAccount[],
+  fallback: number | null
+) {
+  const depositValues = accounts
+    .map((account) => {
+      const value = cleanText(account.min_deposit);
+
+      if (!value) {
+        return null;
+      }
+
+      const normalizedValue = value
+        .replace(/,/g, "")
+        .toLowerCase();
+
+      if (
+        normalizedValue.includes("no minimum") ||
+        normalizedValue.includes("بدون حد أدنى") ||
+        normalizedValue.includes("لا يوجد حد أدنى")
+      ) {
+        return 0;
+      }
+
+      const match = normalizedValue.match(
+        /\d+(?:\.\d+)?/
+      );
+
+      if (!match) {
+        return null;
+      }
+
+      const numericValue = Number(match[0]);
+
+      return Number.isFinite(numericValue)
+        ? numericValue
+        : null;
+    })
+    .filter(
+      (value): value is number => value !== null
+    );
+
+  if (depositValues.length === 0) {
+    return money(fallback);
+  }
+
+  const minimumDeposit = Math.min(...depositValues);
+
+  return `$${minimumDeposit.toLocaleString("en-US")}`;
+}
+
 function shortReg(value: string | null) {
   if (!value) return "غير محدد";
   return value
@@ -237,28 +288,83 @@ function getBeginnerWinner(left: Broker, right: Broker) {
 }
 
 function getScalpingWinner(left: Broker, right: Broker) {
-  const lText = `${left.spreads || ""} ${left.fees || ""} ${left.best_for || ""}`;
-  const rText = `${right.spreads || ""} ${right.fees || ""} ${right.best_for || ""}`;
+  const leftScore = left.score_fees;
+  const rightScore = right.score_fees;
 
-  const lScore =
-    (lText.includes("0.0") ? 2 : 0) +
-    (lText.includes("سبريد") ? 1 : 0) +
-    (lText.includes("سريع") ? 1 : 0) +
-    (lText.includes("منخفض") ? 1 : 0);
+  if (leftScore === null && rightScore === null) {
+    return "تعادل";
+  }
 
-  const rScore =
-    (rText.includes("0.0") ? 2 : 0) +
-    (rText.includes("سبريد") ? 1 : 0) +
-    (rText.includes("سريع") ? 1 : 0) +
-    (rText.includes("منخفض") ? 1 : 0);
+  if (leftScore === null) {
+    return right.name;
+  }
 
-  return lScore > rScore ? left.name : rScore > lScore ? right.name : "تعادل";
+  if (rightScore === null) {
+    return left.name;
+  }
+
+  const difference = Math.abs(leftScore - rightScore);
+
+  if (difference < 0.15) {
+    return "تعادل";
+  }
+
+  return leftScore > rightScore
+    ? left.name
+    : right.name;
 }
 
-function getSafetyWinner(left: Broker, right: Broker) {
-  const lScore = countLicenses(left.regulation) + ((left.rating ?? 0) >= 4 ? 1 : 0);
-  const rScore = countLicenses(right.regulation) + ((right.rating ?? 0) >= 4 ? 1 : 0);
-  return lScore > rScore ? left.name : rScore > lScore ? right.name : "تعادل";
+function getSafetyWinner(
+  left: Broker,
+  right: Broker,
+  leftLicenses: BrokerLicense[],
+  rightLicenses: BrokerLicense[]
+) {
+  const leftSafetyScore = left.score_safety;
+  const rightSafetyScore = right.score_safety;
+
+  if (
+    leftSafetyScore !== null &&
+    rightSafetyScore !== null
+  ) {
+    const difference = Math.abs(
+      leftSafetyScore - rightSafetyScore
+    );
+
+    if (difference >= 0.15) {
+      return leftSafetyScore > rightSafetyScore
+        ? left.name
+        : right.name;
+    }
+  }
+
+  const licenceScore = (licenses: BrokerLicense[]) =>
+    licenses.reduce((total, license) => {
+      if (license.trust_level === "Tier 1") {
+        return total + 3;
+      }
+
+      if (license.trust_level === "Tier 2") {
+        return total + 2;
+      }
+
+      if (license.trust_level === "Tier 3") {
+        return total + 1;
+      }
+
+      return total;
+    }, 0);
+
+  const leftLicenceScore = licenceScore(leftLicenses);
+  const rightLicenceScore = licenceScore(rightLicenses);
+
+  if (leftLicenceScore === rightLicenceScore) {
+    return "تعادل";
+  }
+
+  return leftLicenceScore > rightLicenceScore
+    ? left.name
+    : right.name;
 }
 
 function compareTitle(left: Broker, right: Broker) {
@@ -699,16 +805,10 @@ const recommendedInsight =
   splitParagraphs(recommendedBroker.expert_insight_ar)[0] ||
   `يتفوق ${recommendedBroker.name} بفارق محدود في التقييم العام، لكن الاختيار النهائي يعتمد على الحساب والتكاليف والكيان التنظيمي المناسب لك.`;
 
-const leftFeeScore = left.score_fees ?? 0;
-const rightFeeScore = right.score_fees ?? 0;
-const feeDifference = Math.abs(leftFeeScore - rightFeeScore);
-
 const feesDecision =
-  feeDifference < 0.15
+  scalpingWinner === "تعادل"
     ? "التكاليف متقاربة"
-    : leftFeeScore > rightFeeScore
-    ? left.name
-    : right.name;
+    : scalpingWinner;
 
 const beginnerDecision =
   beginnerWinner === "تعادل"
@@ -718,15 +818,73 @@ const beginnerDecision =
 const decisionBrokers = [
   {
     broker: left,
-    reasons: splitParagraphs(left.who_should_use_ar).slice(0, 3),
+    reasons: splitParagraphs(
+      left.who_should_use_ar
+    ).slice(0, 3),
   },
   {
     broker: right,
-    reasons: splitParagraphs(right.who_should_use_ar).slice(0, 3),
+    reasons: splitParagraphs(
+      right.who_should_use_ar
+    ).slice(0, 3),
   },
 ];
-  const depositWinner = getBetterValueLabel(left, right);
-  const safetyWinner = getSafetyWinner(left, right);
+
+const leftMinimumDeposit = minimumAccountDeposit(
+  leftAccounts,
+  left.min_deposit
+);
+
+const rightMinimumDeposit = minimumAccountDeposit(
+  rightAccounts,
+  right.min_deposit
+);
+
+const parseMinimumDeposit = (
+  value: string
+): number | null => {
+  if (value === "غير محدد") {
+    return null;
+  }
+
+  const match = value
+    .replace(/,/g, "")
+    .match(/\d+(?:\.\d+)?/);
+
+  if (!match) {
+    return null;
+  }
+
+  const numericValue = Number(match[0]);
+
+  return Number.isFinite(numericValue)
+    ? numericValue
+    : null;
+};
+
+const leftMinimumNumber = parseMinimumDeposit(
+  leftMinimumDeposit
+);
+
+const rightMinimumNumber = parseMinimumDeposit(
+  rightMinimumDeposit
+);
+
+const depositWinner =
+  leftMinimumNumber === null ||
+  rightMinimumNumber === null ||
+  leftMinimumNumber === rightMinimumNumber
+    ? "تعادل"
+    : leftMinimumNumber < rightMinimumNumber
+    ? left.name
+    : right.name;
+
+const safetyWinner = getSafetyWinner(
+  left,
+  right,
+  leftLicenses,
+  rightLicenses
+);
   const siteUrl = "https://brokeralarab.com";
   const pageUrl = `${siteUrl}/compare/${slug}`;
   const shareTitle = `مقارنة ${left.name} و ${right.name} | بروكر العرب`;
@@ -916,17 +1074,11 @@ const decisionBrokers = [
           : "تعادل",
     },
     {
-      label: "أقل إيداع ظاهر في الحسابات",
-      leftValue:
-        leftAccounts
-          .map((a) => a.min_deposit || "")
-          .find((v) => v.trim()) || money(left.min_deposit),
-      rightValue:
-        rightAccounts
-          .map((a) => a.min_deposit || "")
-          .find((v) => v.trim()) || money(right.min_deposit),
-      winner: depositWinner,
-    },
+  label: "أقل إيداع ظاهر في الحسابات",
+  leftValue: leftMinimumDeposit,
+  rightValue: rightMinimumDeposit,
+  winner: depositWinner,
+},
     {
       label: "مناسب للمبتدئين",
       leftValue: cleanText(left.best_for) || "فئات متعددة",
@@ -2161,7 +2313,7 @@ const decisionBrokers = [
           key={acc.id}
           className={`flex min-h-[225px] flex-col rounded-[22px] border border-slate-200 bg-white p-4 shadow-[0_8px_22px_rgba(15,23,42,0.05)] transition duration-200 hover:-translate-y-0.5 hover:border-[#93c5fd] hover:shadow-[0_12px_28px_rgba(37,99,235,0.10)] ${
             brokerAccounts.length > 4
-              ? "w-[calc((100%-48px)/4)] min-w-[270px] shrink-0 snap-start"
+              ? "w-[calc((100%_-_48px)/4)] min-w-[270px] shrink-0 snap-start"
               : ""
           }`}
         >
