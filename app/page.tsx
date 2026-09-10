@@ -2209,17 +2209,7 @@ const whyBrokerAlarabItems = [
    * أقرب فعاليتين عاديتين، بالإضافة إلى فعالية
    * الشريك الإعلامي الرسمي عند وجودها.
    */
-  const nearestRegularEvents = eventList
-    .filter((event) => event.is_media_partner !== true)
-    .slice(0, 2);
-
-  const mediaPartnerEvent = eventList.find(
-    (event) => event.is_media_partner === true
-  );
-
-  const selectedEvents = mediaPartnerEvent
-    ? [...nearestRegularEvents, mediaPartnerEvent]
-    : eventList.slice(0, 3);
+  const selectedEvents = eventList.slice(0, 3);
 
       return (
         <>

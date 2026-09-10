@@ -2258,21 +2258,8 @@ function eventCountdown(start?: string | null, end?: string | null) {
 
 {/* FOREX & FINTECH EVENTS - COMPACT PREMIUM */}
 {(() => {
-  /*
-   * Keep the existing event-selection logic:
-   * nearest two regular events + official media partner event
-   */
-  const nearestRegularEvents = eventList
-    .filter((event) => event.is_media_partner !== true)
-    .slice(0, 2);
-
-  const mediaPartnerEvent = eventList.find(
-    (event) => event.is_media_partner === true
-  );
-
-  const selectedEvents = mediaPartnerEvent
-    ? [...nearestRegularEvents, mediaPartnerEvent]
-    : eventList.slice(0, 3);
+  // Display the three nearest events in chronological order
+const selectedEvents = eventList.slice(0, 3);
 
   return (
     <>
