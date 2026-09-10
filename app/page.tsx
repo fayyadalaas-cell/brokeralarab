@@ -769,7 +769,7 @@ const whyBrokerAlarabItems = [
       <h1 className="mx-auto mt-3 max-w-[900px] text-[35px] font-black leading-[1.12] tracking-[-0.04em] text-white sm:mt-4 sm:text-[47px] sm:leading-[1.05] lg:mx-0 lg:text-[48px] xl:text-[58px]">
         أفضل شركات التداول
 
-        <span className="mt-2.5 block bg-gradient-to-l from-[#6dd5ff] via-[#62a9ff] to-[#9fc9ff] bg-clip-text pb-2 leading-[1.16] text-transparent sm:mt-1 lg:mt-3">
+        <span className="mt-2.5 block bg-gradient-to-l from-[#6dd5ff] via-[#62a9ff] to-[#9fc9ff] bg-clip-text pb-2 pt-[2px] leading-[1.16] text-transparent sm:mt-1 lg:mt-3">
           برؤية أعمق.
         </span>
       </h1>
@@ -943,7 +943,7 @@ const whyBrokerAlarabItems = [
           </div>
 
           {/* CARD FOOTER */}
-          <div className="mt-4 flex items-center justify-between rounded-2xl border border-white/10 bg-white/10 px-4 py-3">
+<div className="mt-auto flex min-h-[82px] items-center justify-between rounded-2xl border border-white/10 bg-white/10 px-4 py-3">
             <div className="min-w-0 text-right">
               <div className="text-[13px] font-black text-white">
                 تقييمات مستقلة وبيانات محدثة

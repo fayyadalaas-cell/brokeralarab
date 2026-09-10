@@ -973,7 +973,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
           </div>
 
           {/* CARD FOOTER */}
-          <div className="mt-4 flex items-center justify-between rounded-2xl border border-white/10 bg-white/10 px-4 py-3">
+<div className="mt-auto flex min-h-[82px] items-center justify-between rounded-2xl border border-white/10 bg-white/10 px-4 py-3">
             <div className="min-w-0 text-left">
               <div className="text-[13px] font-black text-white">
                 Independent reviews. Updated data.

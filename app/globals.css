@@ -41,6 +41,13 @@ button {
   font-family: inherit;
 }
 
-.bg-\[\#2563eb\] {
-  color: #fff !important;
+/* Capital.com logo */
+img[src*="capital-com"],
+img[alt*="capital" i] {
+  scale: 1.48 !important;
+}
+
+.group:hover img[src*="capital-com"],
+.group:hover img[alt*="capital" i] {
+  scale: 1.55 !important;
 }
