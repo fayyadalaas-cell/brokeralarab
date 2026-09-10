@@ -5,51 +5,81 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import React from "react";
 
+export const revalidate = 0;
+
 type Broker = {
   id: number;
   name: string | null;
   name_en: string | null;
   slug: string | null;
+
   rating: number | null;
   min_deposit: number | null;
+
   platforms: string | null;
   regulation: string | null;
   regulation_short: string | null;
+
   best_for: string | null;
   best_for_en: string | null;
+
   intro: string | null;
   intro_en: string | null;
+
   logo: string | null;
   account_types: string | null;
+
   fees: string | null;
   fees_en: string | null;
+
   spreads: string | null;
   spreads_en: string | null;
+
   deposit_withdrawal: string | null;
   deposit_withdrawal_en: string | null;
+
   real_account_url: string | null;
+
   platform_details: string | null;
   platform_details_en: string | null;
+
   support: string | null;
   support_en: string | null;
+
   safety: string | null;
   safety_en: string | null;
+
   final_verdict: string | null;
   final_verdict_en: string | null;
+
   founded_year: string | null;
+
   headquarters: string | null;
   headquarters_en: string | null;
+
   max_leverage: string | null;
   islamic_account: string | null;
   arabic_support: string | null;
   trading_assets: string | null;
-    meta_title_en: string | null;
+
+  meta_title_en: string | null;
   meta_description_en: string | null;
 
   key_strength_en: string | null;
   key_weakness_en: string | null;
   expert_insight_en: string | null;
   who_should_use_en: string | null;
+
+  regulation_summary_en: string | null;
+  fund_protection_en: string | null;
+  safety_factors_en: string | null;
+
+  faq_en:
+    | {
+        question?: string;
+        answer?: string;
+      }[]
+    | null;
 
   score_safety: number | null;
   score_fees: number | null;
@@ -83,6 +113,27 @@ type BrokerAccount = {
   sort_order: number | null;
 };
 
+type BrokerLicense = {
+  id: number;
+  broker_id: number;
+
+  regulator_code: string | null;
+  regulator_name_en: string | null;
+  country_en: string | null;
+
+  license_number: string | null;
+  entity_name_en: string | null;
+
+  status_code: string | null;
+  trust_level: string | null;
+
+  verification_url_en: string | null;
+  verification_url_ar: string | null;
+
+  last_verified: string | null;
+  is_active: boolean | null;
+};
+
 type PageProps = {
   params: Promise<{ slug: string }>;
 };
@@ -91,16 +142,38 @@ function cleanText(value: string | null | undefined) {
   return (value || "").trim();
 }
 
+function brokerName(broker: Broker) {
+  return cleanText(broker.name_en) || cleanText(broker.name) || "Broker";
+}
+
 function money(value: number | null) {
-  if (value === null || Number.isNaN(value)) return "Not specified";
+  if (value === null || Number.isNaN(value)) {
+    return "Not specified";
+  }
+
   return `$${value}`;
+}
+
+function splitParagraphs(value: string | null | undefined) {
+  return cleanText(value)
+    .split("||")
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean);
+}
+
+function splitSafetyFactors(value: string | null | undefined) {
+  return cleanText(value)
+    .split("||")
+    .map((factor) => factor.trim())
+    .filter(Boolean);
 }
 
 function shortReg(value: string | null) {
   if (!value) return "Not specified";
+
   return value
     .split("||")
-    .map((x) => x.trim())
+    .map((item) => item.trim())
     .filter(Boolean)
     .slice(0, 4)
     .join(" / ");
@@ -108,39 +181,73 @@ function shortReg(value: string | null) {
 
 function shortPlatforms(value: string | null) {
   if (!value) return "Not specified";
-  return value.replace("JustMarkets Mobile App", "Mobile").trim();
+
+  return value
+    .replace("JustMarkets Mobile App", "Mobile")
+    .trim();
 }
 
 function yesNoEnglish(value: string | null) {
-  const v = (value || "").toLowerCase();
-  if (v.includes("yes") || v.includes("متوفر")) return "Available";
-  if (v.includes("no") || v.includes("غير")) return "Not clear";
+  const normalized = cleanText(value).toLowerCase();
+
+  if (
+    normalized.includes("yes") ||
+    normalized.includes("available") ||
+    normalized.includes("متوفر")
+  ) {
+    return "Available";
+  }
+
+  if (
+    normalized.includes("no") ||
+    normalized.includes("not available") ||
+    normalized.includes("غير")
+  ) {
+    return "Not available";
+  }
+
   return value || "Not specified";
 }
 
 function countLicenses(value: string | null) {
   if (!value) return 0;
+
   return value
     .split("||")
-    .map((x) => x.trim())
+    .map((item) => item.trim())
     .filter(Boolean).length;
 }
 
 function hasArabicSupportScore(value: string | null) {
-  const v = (value || "").toLowerCase();
-  return v.includes("yes") || v.includes("متوفر") || v.includes("عربي") ? 1 : 0;
+  const normalized = cleanText(value).toLowerCase();
+
+  return normalized.includes("yes") ||
+    normalized.includes("available") ||
+    normalized.includes("arabic") ||
+    normalized.includes("عربي")
+    ? 1
+    : 0;
 }
 
 function hasIslamicScore(value: string | null) {
-  const v = (value || "").toLowerCase();
-  return v.includes("yes") || v.includes("متوفر") ? 1 : 0;
+  const normalized = cleanText(value).toLowerCase();
+
+  return normalized.includes("yes") ||
+    normalized.includes("available") ||
+    normalized.includes("islamic") ||
+    normalized.includes("متوفر")
+    ? 1
+    : 0;
 }
 
 function numericLeverage(value: string | null) {
   if (!value) return 0;
-  const match = value.match(/\d+/g);
-  if (!match) return 0;
-  return Number(match.join(""));
+
+  const matches = value.match(/\d+/g);
+
+  if (!matches) return 0;
+
+  return Number(matches.join(""));
 }
 
 function accountSlug(value: string | null) {
@@ -156,2694 +263,3449 @@ function accountSlug(value: string | null) {
     .replace(/[^\w-]/g, "");
 }
 
-function getBetterValueLabel(left: Broker, right: Broker) {
-  const leftDeposit = left.min_deposit ?? 999999;
-  const rightDeposit = right.min_deposit ?? 999999;
-  return leftDeposit < rightDeposit
-    ? left.name_en || left.name
-    : rightDeposit < leftDeposit
-    ? right.name_en || right.name
-    : "Tie";
+function licenseTrustLabel(value: string | null) {
+  if (value === "Tier 1") return "Strong oversight";
+  if (value === "Tier 2") return "Moderate oversight";
+  if (value === "Tier 3") return "International oversight";
+
+  return "Not classified";
+}
+
+function licenseTrustClasses(value: string | null) {
+  if (value === "Tier 1") {
+    return "border-emerald-200 bg-emerald-50 text-emerald-700";
+  }
+
+  if (value === "Tier 2") {
+    return "border-blue-200 bg-blue-50 text-blue-700";
+  }
+
+  return "border-amber-200 bg-amber-50 text-amber-700";
+}
+
+function licenseStatusLabel(value: string | null) {
+  return value === "active" ? "Active" : "Check status";
+}
+
+function formatVerifiedDate(value: string | null) {
+  if (!value) return "Not specified";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat("en-GB", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  }).format(date);
 }
 
 function getHigherRatingLabel(left: Broker, right: Broker) {
-  const l = left.rating ?? 0;
-  const r = right.rating ?? 0;
-  return l > r
-    ? left.name_en || left.name
-    : r > l
-    ? right.name_en || right.name
-    : "Tie";
+  const leftRating = left.rating ?? 0;
+  const rightRating = right.rating ?? 0;
+
+  if (leftRating > rightRating) {
+    return brokerName(left);
+  }
+
+  if (rightRating > leftRating) {
+    return brokerName(right);
+  }
+
+  return "Tie";
 }
 
 function getBeginnerWinner(left: Broker, right: Broker) {
-  const lDeposit = left.min_deposit ?? 999999;
-  const rDeposit = right.min_deposit ?? 999999;
+  const leftDeposit = left.min_deposit ?? 999999;
+  const rightDeposit = right.min_deposit ?? 999999;
 
-  const lScore =
-    (lDeposit <= 50 ? 2 : 0) +
-    (cleanText(left.best_for_en || left.best_for).toLowerCase().includes("begin") ? 2 : 0) +
+  const leftBestFor = cleanText(
+    left.best_for_en || left.best_for
+  ).toLowerCase();
+
+  const rightBestFor = cleanText(
+    right.best_for_en || right.best_for
+  ).toLowerCase();
+
+  const leftScore =
+    (leftDeposit <= 50 ? 2 : 0) +
+    (leftBestFor.includes("begin") ? 2 : 0) +
     hasIslamicScore(left.islamic_account) +
     hasArabicSupportScore(left.arabic_support);
 
-  const rScore =
-    (rDeposit <= 50 ? 2 : 0) +
-    (cleanText(right.best_for_en || right.best_for).toLowerCase().includes("begin") ? 2 : 0) +
+  const rightScore =
+    (rightDeposit <= 50 ? 2 : 0) +
+    (rightBestFor.includes("begin") ? 2 : 0) +
     hasIslamicScore(right.islamic_account) +
     hasArabicSupportScore(right.arabic_support);
 
-  return lScore > rScore
-    ? left.name_en || left.name
-    : rScore > lScore
-    ? right.name_en || right.name
-    : "Tie";
+  if (leftScore > rightScore) {
+    return brokerName(left);
+  }
+
+  if (rightScore > leftScore) {
+    return brokerName(right);
+  }
+
+  return "Tie";
 }
 
 function getScalpingWinner(left: Broker, right: Broker) {
-  const lText = `${left.spreads_en || left.spreads || ""} ${left.fees_en || left.fees || ""} ${left.best_for_en || left.best_for || ""}`.toLowerCase();
-  const rText = `${right.spreads_en || right.spreads || ""} ${right.fees_en || right.fees || ""} ${right.best_for_en || right.best_for || ""}`.toLowerCase();
+  const leftText = `
+    ${left.spreads_en || left.spreads || ""}
+    ${left.fees_en || left.fees || ""}
+    ${left.best_for_en || left.best_for || ""}
+  `.toLowerCase();
 
-  const lScore =
-    (lText.includes("0.0") ? 2 : 0) +
-    (lText.includes("spread") ? 1 : 0) +
-    (lText.includes("fast") ? 1 : 0) +
-    (lText.includes("low") ? 1 : 0) +
-    (lText.includes("scalp") ? 1 : 0);
+  const rightText = `
+    ${right.spreads_en || right.spreads || ""}
+    ${right.fees_en || right.fees || ""}
+    ${right.best_for_en || right.best_for || ""}
+  `.toLowerCase();
 
-  const rScore =
-    (rText.includes("0.0") ? 2 : 0) +
-    (rText.includes("spread") ? 1 : 0) +
-    (rText.includes("fast") ? 1 : 0) +
-    (rText.includes("low") ? 1 : 0) +
-    (rText.includes("scalp") ? 1 : 0);
+  const leftScore =
+    (leftText.includes("0.0") ? 2 : 0) +
+    (leftText.includes("spread") ? 1 : 0) +
+    (leftText.includes("low") ? 1 : 0) +
+    (leftText.includes("fast") ? 1 : 0) +
+    (leftText.includes("scalp") ? 1 : 0);
 
-  return lScore > rScore
-    ? left.name_en || left.name
-    : rScore > lScore
-    ? right.name_en || right.name
-    : "Tie";
+  const rightScore =
+    (rightText.includes("0.0") ? 2 : 0) +
+    (rightText.includes("spread") ? 1 : 0) +
+    (rightText.includes("low") ? 1 : 0) +
+    (rightText.includes("fast") ? 1 : 0) +
+    (rightText.includes("scalp") ? 1 : 0);
+
+  if (leftScore > rightScore) {
+    return brokerName(left);
+  }
+
+  if (rightScore > leftScore) {
+    return brokerName(right);
+  }
+
+  return "Tie";
 }
 
-function getSafetyWinner(left: Broker, right: Broker) {
-  const lScore = countLicenses(left.regulation) + ((left.rating ?? 0) >= 4 ? 1 : 0);
-  const rScore = countLicenses(right.regulation) + ((right.rating ?? 0) >= 4 ? 1 : 0);
-  return lScore > rScore
-    ? left.name_en || left.name
-    : rScore > lScore
-    ? right.name_en || right.name
-    : "Tie";
-}
+function getSafetyWinner(
+  left: Broker,
+  right: Broker,
+  leftLicences: BrokerLicense[],
+  rightLicences: BrokerLicense[]
+) {
+  const leftScore =
+    (left.score_safety ?? 0) + leftLicences.length * 0.05;
 
-function compareTitle(left: Broker, right: Broker) {
-  return `${left.name_en || left.name} vs ${right.name_en || right.name}: Which Broker Is Better?`;
+  const rightScore =
+    (right.score_safety ?? 0) + rightLicences.length * 0.05;
+
+  if (leftScore > rightScore) {
+    return brokerName(left);
+  }
+
+  if (rightScore > leftScore) {
+    return brokerName(right);
+  }
+
+  return "Very close";
 }
 
 function getBrokerReasons(
   broker: Broker,
-  other: Broker,
-  type: "left" | "right"
+  other: Broker
 ): string[] {
-  const brokerName = broker.name_en || broker.name || "This broker";
-  const otherName = other.name_en || other.name || "the other broker";
   const reasons: string[] = [];
 
   if ((broker.rating ?? 0) > (other.rating ?? 0)) {
-    reasons.push(`${brokerName} has a higher overall rating than ${otherName}.`);
+    reasons.push(
+      `${brokerName(broker)} has the higher overall rating.`
+    );
   }
 
-  if ((broker.min_deposit ?? 999999) < (other.min_deposit ?? 999999)) {
-    reasons.push(`${brokerName} offers a lower minimum deposit.`);
+  if (
+    (broker.min_deposit ?? 999999) <
+    (other.min_deposit ?? 999999)
+  ) {
+    reasons.push(
+      `${brokerName(broker)} has the lower minimum deposit.`
+    );
   }
 
-  if (hasIslamicScore(broker.islamic_account) > hasIslamicScore(other.islamic_account)) {
-    reasons.push(`${brokerName} appears clearer in terms of Islamic account availability.`);
+  if (
+    hasIslamicScore(broker.islamic_account) >
+    hasIslamicScore(other.islamic_account)
+  ) {
+    reasons.push(
+      `${brokerName(broker)} has clearer Islamic account availability.`
+    );
   }
 
-  if (hasArabicSupportScore(broker.arabic_support) > hasArabicSupportScore(other.arabic_support)) {
-    reasons.push(`${brokerName} may be more suitable for Arabic-speaking traders in terms of support.`);
+  if (
+    countLicenses(broker.regulation) >
+    countLicenses(other.regulation)
+  ) {
+    reasons.push(
+      `${brokerName(broker)} lists a broader regulatory structure.`
+    );
   }
 
-  if (countLicenses(broker.regulation) > countLicenses(other.regulation)) {
-    reasons.push(`${brokerName} appears to have broader regulatory coverage.`);
+  if (
+    numericLeverage(broker.max_leverage) >
+    numericLeverage(other.max_leverage)
+  ) {
+    reasons.push(
+      `${brokerName(broker)} lists higher maximum leverage.`
+    );
   }
 
-  if (numericLeverage(broker.max_leverage) > numericLeverage(other.max_leverage)) {
-    reasons.push(`${brokerName} offers higher leverage based on the current data.`);
+  const bestFor = cleanText(
+    broker.best_for_en || broker.best_for
+  );
+
+  if (bestFor) {
+    reasons.push(`${brokerName(broker)} is best suited to ${bestFor}.`);
   }
 
-  if (cleanText(broker.best_for_en || broker.best_for)) {
-    reasons.push(`${brokerName} is positioned for ${cleanText(broker.best_for_en || broker.best_for)}.`);
+  if (reasons.length < 2) {
+    reasons.push(
+      `Compare the available accounts, fees and trading platforms before choosing ${brokerName(
+        broker
+      )}.`
+    );
   }
 
-  if (reasons.length < 4) {
-    if (type === "left") {
-      reasons.push(`${brokerName} may be a strong option if you prefer a more direct and straightforward trading environment.`);
-      reasons.push(`Review the fees and platforms of ${brokerName} before making your final decision.`);
-    } else {
-      reasons.push(`${brokerName} may be a better fit if you are looking for an easier start or a more flexible trading experience.`);
-      reasons.push(`It is worth reviewing the available account types at ${brokerName} before opening an account.`);
-    }
-  }
-
-  return reasons.slice(0, 4);
+  return reasons.slice(0, 3);
 }
 
 function buildFaqJsonLd(left: Broker, right: Broker) {
-  const leftName = left.name_en || left.name;
-  const rightName = right.name_en || right.name;
+  const brokerFaqs = [left, right].flatMap((broker) => {
+    const faqs = Array.isArray(broker.faq_en)
+      ? broker.faq_en
+      : [];
+
+    return faqs
+      .slice(0, 3)
+      .filter(
+        (faq) =>
+          cleanText(faq.question) &&
+          cleanText(faq.answer)
+      )
+      .map((faq) => ({
+        "@type": "Question",
+        name: cleanText(faq.question),
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: cleanText(faq.answer),
+        },
+      }));
+  });
 
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: `What is the difference between ${leftName} and ${rightName}?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: `The difference between ${leftName} and ${rightName} usually appears in regulation, account types, minimum deposit, fees, and trading platforms. This page provides a direct comparison to help traders make a clearer decision.`,
-        },
-      },
-      {
-        "@type": "Question",
-        name: `Which is better for beginners: ${leftName} or ${rightName}?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: `That depends on account simplicity, minimum deposit, Islamic account availability, and general usability. This comparison gives a quick indication of which broker may be more beginner-friendly.`,
-        },
-      },
-      {
-        "@type": "Question",
-        name: `Do ${leftName} and ${rightName} offer Islamic accounts?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: `This comparison shows whether Islamic accounts appear to be available at ${leftName} and ${rightName} based on the current information displayed on the site.`,
-        },
-      },
-      {
-        "@type": "Question",
-        name: `Which broker has a lower minimum deposit: ${leftName} or ${rightName}?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: `This page shows which broker may offer an easier starting point in terms of minimum deposit, while also comparing platforms, regulation, and account types.`,
-        },
-      },
-    ],
+    mainEntity: brokerFaqs,
   };
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const [leftSlug, rightSlug] = slug.split("-vs-");
+
   const siteUrl = "https://brokeralarab.com";
 
- if (!leftSlug || !rightSlug) {
+  if (!leftSlug || !rightSlug) {
+    return {
+      metadataBase: new URL(siteUrl),
+      title: "Compare Forex Brokers | Broker Alarab",
+      description:
+        "Detailed forex broker comparisons covering accounts, fees, regulation, licences and trading platforms.",
+      robots: {
+        index: false,
+        follow: false,
+      },
+    };
+  }
+
+  const supabase = await createClient();
+
+  const { data } = await supabase
+    .from("brokers")
+    .select("name, name_en, slug, publication_status")
+    .eq("publication_status", "published")
+    .in("slug", [leftSlug, rightSlug]);
+
+  const brokers = (data ?? []) as Pick<
+    Broker,
+    "name" | "name_en" | "slug"
+  >[];
+
+  const leftBroker = brokers.find(
+    (broker) => broker.slug === leftSlug
+  );
+
+  const rightBroker = brokers.find(
+    (broker) => broker.slug === rightSlug
+  );
+
+  if (!leftBroker || !rightBroker) {
+    return {
+      metadataBase: new URL(siteUrl),
+      title: "Broker Comparison Not Found | Broker Alarab",
+      description:
+        "The requested forex broker comparison could not be found.",
+      robots: {
+        index: false,
+        follow: false,
+      },
+    };
+  }
+
+  const leftName =
+    cleanText(leftBroker.name_en) ||
+    cleanText(leftBroker.name) ||
+    leftSlug;
+
+  const rightName =
+    cleanText(rightBroker.name_en) ||
+    cleanText(rightBroker.name) ||
+    rightSlug;
+
+  /*
+   * Keep the same indexed English title structure.
+   * The URL and slug are not changed.
+   */
+  const title = `${leftName} vs ${rightName}: Which Broker Is Better?`;
+
+  const description = `Compare ${leftName} vs ${rightName} across regulation, licences, account types, spreads, fees, trading platforms, minimum deposit and investor protection.`;
+
   return {
-    metadataBase: new URL(siteUrl),
-    title: "Broker Comparisons | Broker Alarab",
-    description:
-      "Detailed broker comparisons covering accounts, fees, regulation, and trading platforms to help traders choose the right broker.",
+  metadataBase: new URL(siteUrl),
+
+  title,
+
+  description,
+
     alternates: {
-  canonical: `${siteUrl}/en/compare`,
-  languages: {
-    en: `${siteUrl}/en/compare`,
-    ar: `${siteUrl}/compare`,
-    "x-default": `${siteUrl}/en/compare`,
-  },
-},
-    openGraph: {
-  title: "Broker Comparisons | Broker Alarab",
-  description:
-    "Detailed broker comparisons covering accounts, fees, regulation, and trading platforms.",
-  url: `${siteUrl}/en/compare`,
-  siteName: "Broker Alarab",
-  locale: "en_US",
-  type: "website",
-  images: [
-    {
-      url: `${siteUrl}/og-image.webp`,
-      width: 1560,
-      height: 377,
-      alt: "Broker Alarab",
+      canonical: `${siteUrl}/en/compare/${slug}`,
+      languages: {
+        ar: `${siteUrl}/compare/${slug}`,
+        en: `${siteUrl}/en/compare/${slug}`,
+        "x-default": `${siteUrl}/compare/${slug}`,
+      },
     },
-  ],
-},
-  twitter: {
-  card: "summary_large_image",
-  title: "Broker Comparisons | Broker Alarab",
-  description:
-    "Detailed broker comparisons covering accounts, fees, regulation, and trading platforms.",
-  images: [`${siteUrl}/og-image.webp`],
-},
+
+    openGraph: {
+      title,
+      description,
+      url: `${siteUrl}/en/compare/${slug}`,
+      siteName: "Broker Alarab",
+      locale: "en_US",
+      type: "website",
+      images: [
+        {
+          url: `${siteUrl}/og-image.webp`,
+          width: 1560,
+          height: 377,
+          alt: `${leftName} vs ${rightName} broker comparison`,
+        },
+      ],
+    },
+
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [`${siteUrl}/og-image.webp`],
+    },
   };
 }
 
-  const supabase = await createClient();
-
-const { data } = await supabase
-  .from("brokers")
-  .select("name, name_en, slug")
-  .eq("publication_status", "published")
-  .in("slug", [leftSlug, rightSlug]);
-
-const brokers = (data ?? []) as {
-  name: string | null;
-  name_en: string | null;
-  slug: string | null;
-}[];
-
-const leftBroker = brokers.find((b) => b.slug === leftSlug);
-const rightBroker = brokers.find((b) => b.slug === rightSlug);
-
-const leftName = leftBroker?.name_en || leftBroker?.name || leftSlug;
-const rightName = rightBroker?.name_en || rightBroker?.name || rightSlug;
-
- const title = `${leftName} vs ${rightName} | Fees, Platforms & Regulation`;
-const description = `Compare ${leftName} vs ${rightName} by fees, regulation, account types, and trading platforms.`;
-const imageUrl = `${siteUrl}/og-image.webp`;
-
-  
-return {
-  metadataBase: new URL(siteUrl),
-  title: {
-    absolute: title,
-  },
-  description,
-  keywords: [
-    `${leftName} vs ${rightName}`,
-    `${leftName} review`,
-    `${rightName} review`,
-    "broker comparison",
-    "forex broker comparison",
-    "trading broker comparison",
-    "Broker Alarab",
-  ],
- alternates: {
-  canonical: `${siteUrl}/en/compare/${slug}`,
-  languages: {
-    en: `${siteUrl}/en/compare/${slug}`,
-    ar: `${siteUrl}/compare/${slug}`,
-    "x-default": `${siteUrl}/en/compare/${slug}`,
-  },
-},
-  openGraph: {
-  title,
-  description,
-  url: `${siteUrl}/en/compare/${slug}`,
-  siteName: "Broker Alarab",
-  locale: "en_US",
-  type: "website",
-  images: [
-    {
-      url: imageUrl,
-      width: 1560,
-      height: 377,
-      alt: "Broker Alarab",
-    },
-  ],
-},
-
-twitter: {
-  card: "summary_large_image",
-  title,
-  description,
-  images: [imageUrl],
-  creator: "@brokeralarab",
-},
-};
-}
-
-function BrokerHeadToHeadCard({
-  broker,
-  other,
-  isWinner,
+function ScoreBar({
+  value,
+  highlighted = false,
 }: {
-  broker: Broker;
-  other: Broker;
-  isWinner: boolean;
+  value: number;
+  highlighted?: boolean;
 }) {
-  const name = broker.name_en || broker.name || "Broker";
-  const slug = broker.slug || "";
-  const reason =
-    cleanText(broker.best_for_en || broker.best_for) ||
-    `Suitable for multiple trader profiles compared with ${other.name_en || other.name || "the other broker"}`;
+  const safeValue = Math.max(0, Math.min(5, value));
 
   return (
-    <div
-      className={`rounded-[28px] border p-5 shadow-sm sm:p-6 ${
-        isWinner ? "border-brand-100 bg-[#f8fbff]" : "border-slate-200 bg-white"
-      }`}
-    >
-      <div className="flex items-start justify-between gap-4">
-        <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2">
-            <h2 className="text-2xl font-black sm:text-3xl">{name}</h2>
-            {isWinner ? (
-              <span className="rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-extrabold text-brand-600">
-                Best Overall
-              </span>
-            ) : null}
-          </div>
-
-          <p className="mt-2 text-sm leading-7 text-slate-600">{reason}</p>
-        </div>
-
-        <div className="flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-2xl border border-brand-100 bg-white text-brand-600 sm:h-20 sm:w-20">
-          <span className="text-xl font-black sm:text-2xl">
-            {broker.rating?.toFixed(1) ?? "—"}
-          </span>
-          <span className="text-[10px] font-bold">out of 5</span>
-        </div>
-      </div>
-
-      <div className="mt-5 grid grid-cols-2 gap-3">
-        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
-          <div className="text-[11px] font-bold text-slate-500">Minimum Deposit</div>
-          <div className="mt-1 text-sm font-black text-[#0f172a]">{money(broker.min_deposit)}</div>
-        </div>
-        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
-          <div className="text-[11px] font-bold text-slate-500">Islamic Account</div>
-          <div className="mt-1 text-sm font-black text-[#0f172a]">
-            {yesNoEnglish(broker.islamic_account)}
-          </div>
-        </div>
-        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
-          <div className="text-[11px] font-bold text-slate-500">Platforms</div>
-          <div className="mt-1 text-sm font-black text-[#0f172a]">
-            {shortPlatforms(broker.platforms)}
-          </div>
-        </div>
-        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
-          <div className="text-[11px] font-bold text-slate-500">Regulation</div>
-          <div className="mt-1 text-sm font-black text-[#0f172a]">
-            {shortReg(broker.regulation)}
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <Link
-          href={`/en/brokers/${slug}`}
-          className="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-brand-500 px-5 py-3 text-sm font-extrabold text-white transition hover:bg-brand-600"
-        >
-          Read Review
-        </Link>
-        <a
-          href={`/go/${slug}?type=real`}
-          className="inline-flex min-h-[48px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-5 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
-        >
-          Open Live Account
-        </a>
+    <div>
+      <div className="h-2 overflow-hidden rounded-full bg-slate-200">
+        <div
+          className={`h-full rounded-full ${
+            highlighted ? "bg-brand-500" : "bg-slate-400"
+          }`}
+          style={{
+            width: `${(safeValue / 5) * 100}%`,
+          }}
+        />
       </div>
     </div>
   );
 }
 
-function AccountCard({
-  account,
-  brokerSlug,
+function ExpandableText({
+  text,
+  fallback,
 }: {
-  account: BrokerAccount;
-  brokerSlug: string;
-}){
-  return (
-    <div className="rounded-[22px] border border-slate-200 bg-[#f8fbff] p-4">
-      <div className="flex items-start justify-between gap-3">
-       <Link
-  href={`/en/brokers/${brokerSlug}/accounts/${accountSlug(account.account_name_en || account.account_name)}`}
-  target="_blank"
-  rel="noopener noreferrer"
-  className="inline-block text-lg font-black text-[#0f172a] transition hover:text-brand-500 hover:underline"
->
-  {account.account_name_en || account.account_name || "Account"}
-</Link>
-        <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-brand-600">
-          Account
-        </span>
-      </div>
+  text: string | null | undefined;
+  fallback: string;
+}) {
+  const content = cleanText(text) || fallback;
 
-      <div className="mt-3 grid gap-2 text-sm text-slate-600 sm:grid-cols-2">
-        <div>
-          Spread:{" "}
-          <span className="font-black text-[#0f172a]">{account.spread_en || account.spread || "Not specified"}</span>
+  return (
+    <details className="group/expand">
+      <summary className="cursor-pointer list-none">
+        <div className="relative max-h-[140px] overflow-hidden text-sm leading-7 text-slate-600 group-open/expand:hidden">
+          <p>{content}</p>
+
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-white to-transparent" />
         </div>
-        <div>
-          Commission:{" "}
-          <span className="font-black text-[#0f172a]">{account.commission_en || account.commission || "Not specified"}</span>
-        </div>
-        <div>
-          Min Deposit:{" "}
-          <span className="font-black text-[#0f172a]">{account.min_deposit_en || account.min_deposit || "Not specified"}</span>
-        </div>
-        <div>
-          Execution:{" "}
-          <span className="font-black text-[#0f172a]">
-            {account.execution_type_en || account.execution_type || "Not specified"}
+
+        <div className="mt-2 inline-flex rounded-full border border-brand-100 bg-white px-3 py-1.5 text-[11px] font-black text-brand-500">
+          <span className="group-open/expand:hidden">
+            Read more
+          </span>
+
+          <span className="hidden group-open/expand:inline">
+            Show less
           </span>
         </div>
-      </div>
+      </summary>
 
-      <div className="mt-3 text-sm text-slate-600">
-        Best for:{" "}
-        <span className="font-black text-[#0f172a]">{account.best_for_en || account.best_for || "General traders"}</span>
-      </div>
-    </div>
+      <p className="mt-2 text-sm leading-7 text-slate-600">
+        {content}
+      </p>
+    </details>
   );
 }
-
-export default async function ComparePage({ params }: PageProps) {
+  export default async function ComparePage({
+  params,
+}: PageProps) {
   const { slug } = await params;
   const [leftSlug, rightSlug] = slug.split("-vs-");
 
-  if (!leftSlug || !rightSlug) notFound();
-  
+  if (!leftSlug || !rightSlug) {
+    notFound();
+  }
 
   const supabase = await createClient();
 
-const { data: brokersData } = await supabase
-  .from("brokers")
-  .select("*")
-  .eq("publication_status", "published")
-  .in("slug", [leftSlug, rightSlug]);
+  const { data: brokersData } = await supabase
+    .from("brokers")
+    .select("*")
+    .eq("publication_status", "published")
+    .in("slug", [leftSlug, rightSlug]);
 
   const brokers = (brokersData ?? []) as Broker[];
 
-  const left = brokers.find((b) => b.slug === leftSlug);
-  const right = brokers.find((b) => b.slug === rightSlug);
+  const left = brokers.find(
+    (broker) => broker.slug === leftSlug
+  );
 
-  if (!left || !right) notFound();
+  const right = brokers.find(
+    (broker) => broker.slug === rightSlug
+  );
+
+  if (!left || !right) {
+    notFound();
+  }
 
   const { data: accountsData } = await supabase
     .from("broker_accounts")
     .select("*")
     .in("broker_id", [left.id, right.id])
-    .order("sort_order", { ascending: true });
+    .order("sort_order", {
+      ascending: true,
+    });
 
   const accounts = (accountsData ?? []) as BrokerAccount[];
-  const leftAccounts = accounts.filter((a) => a.broker_id === left.id);
-  const rightAccounts = accounts.filter((a) => a.broker_id === right.id);
 
-  const overallWinner = getHigherRatingLabel(left, right);
-  const beginnerWinner = getBeginnerWinner(left, right);
-  const scalpingWinner = getScalpingWinner(left, right);
-  const depositWinner = getBetterValueLabel(left, right);
-  const safetyWinner = getSafetyWinner(left, right);
-  const siteUrl = "https://brokeralarab.com";
-  const pageUrl = `${siteUrl}/en/compare/${slug}`;
+  const leftAccounts = accounts.filter(
+    (account) => account.broker_id === left.id
+  );
+
+  const rightAccounts = accounts.filter(
+    (account) => account.broker_id === right.id
+  );
+
+  const { data: licencesData } = await supabase
+    .from("broker_licenses")
+    .select(`
+      id,
+      broker_id,
+      regulator_code,
+      regulator_name_en,
+      country_en,
+      license_number,
+      entity_name_en,
+      status_code,
+      trust_level,
+      verification_url_en,
+      verification_url_ar,
+      last_verified,
+      is_active
+    `)
+    .in("broker_id", [left.id, right.id]);
+
+  const licencePriority: Record<string, number> = {
+    "Tier 1": 1,
+    "Tier 2": 2,
+    "Tier 3": 3,
+  };
+
+  const licences = (
+    (licencesData ?? []) as BrokerLicense[]
+  )
+    .filter((licence) => licence.is_active !== false)
+    .sort((a, b) => {
+      const firstPriority =
+        licencePriority[a.trust_level || ""] ?? 4;
+
+      const secondPriority =
+        licencePriority[b.trust_level || ""] ?? 4;
+
+      if (firstPriority !== secondPriority) {
+        return firstPriority - secondPriority;
+      }
+
+      return cleanText(a.regulator_code).localeCompare(
+        cleanText(b.regulator_code)
+      );
+    });
+
+  const leftLicences = licences.filter(
+    (licence) => licence.broker_id === left.id
+  );
+
+  const rightLicences = licences.filter(
+    (licence) => licence.broker_id === right.id
+  );
+
+  const leftName = brokerName(left);
+  const rightName = brokerName(right);
+
+  const leftRating = left.rating ?? 0;
+  const rightRating = right.rating ?? 0;
+
+  const ratingDifference = Math.abs(
+    leftRating - rightRating
+  );
+
+  const ratingsAreClose = ratingDifference < 0.15;
+
+  const recommendedBroker =
+    leftRating >= rightRating ? left : right;
+
+  const alternativeBroker =
+    recommendedBroker.id === left.id ? right : left;
+
+  const recommendedName = brokerName(
+    recommendedBroker
+  );
+
+  const alternativeName = brokerName(
+    alternativeBroker
+  );
+
+  const overallWinner = getHigherRatingLabel(
+    left,
+    right
+  );
+
+  const beginnerWinner = getBeginnerWinner(
+    left,
+    right
+  );
+
+  const scalpingWinner = getScalpingWinner(
+    left,
+    right
+  );
+
+  const safetyWinner = getSafetyWinner(
+    left,
+    right,
+    leftLicences,
+    rightLicences
+  );
+
+  const recommendationLabel = ratingsAreClose
+    ? "The two brokers are closely matched"
+    : recommendedName;
+
+  const beginnerDecision =
+    beginnerWinner === "Tie"
+      ? "Both are suitable"
+      : beginnerWinner;
+
+  const feesDecision =
+    scalpingWinner === "Tie"
+      ? "Costs are closely matched"
+      : scalpingWinner;
+
+  const recommendedInsight =
+    splitParagraphs(
+      recommendedBroker.expert_insight_en
+    )[0] ||
+    `${recommendedName} has the higher overall rating, but the final choice should reflect the account type, trading costs, platforms and regulatory entity available in your country.`;
+
+  const decisionBrokers = [
+    {
+      broker: left,
+      other: right,
+      reasons: getBrokerReasons(left, right),
+    },
+    {
+      broker: right,
+      other: left,
+      reasons: getBrokerReasons(right, left),
+    },
+  ];
 
   const faqJsonLd = buildFaqJsonLd(left, right);
 
-  const comparisonItemListSchema = {
-  "@context": "https://schema.org",
-  "@type": "ItemList",
-  "@id": `${pageUrl}#itemlist`,
-  name: `${left.name_en || left.name} vs ${right.name_en || right.name}`,
-  itemListOrder: "https://schema.org/ItemListUnordered",
-  numberOfItems: 2,
-  itemListElement: [
-    {
-      "@type": "ListItem",
-      position: 1,
-      item: {
-        "@type": "FinancialService",
-        "@id": `${siteUrl}/en/brokers/${left.slug}#broker`,
-        name: left.name_en || left.name,
-        url: `${siteUrl}/en/brokers/${left.slug}`,
-        image: left.logo || undefined,
-        aggregateRating: left.rating
-          ? {
-              "@type": "AggregateRating",
-              ratingValue: left.rating,
-              bestRating: 5,
-              worstRating: 1,
-              ratingCount: 1,
-            }
-          : undefined,
-      },
-    },
-    {
-      "@type": "ListItem",
-      position: 2,
-      item: {
-        "@type": "FinancialService",
-        "@id": `${siteUrl}/en/brokers/${right.slug}#broker`,
-        name: right.name_en || right.name,
-        url: `${siteUrl}/en/brokers/${right.slug}`,
-        image: right.logo || undefined,
-        aggregateRating: right.rating
-          ? {
-              "@type": "AggregateRating",
-              ratingValue: right.rating,
-              bestRating: 5,
-              worstRating: 1,
-              ratingCount: 1,
-            }
-          : undefined,
-      },
-    },
-  ],
-};
-
-const comparisonSchema = {
-  "@context": "https://schema.org",
-  "@type": "WebPage",
-  "@id": `${pageUrl}#webpage`,
-  name: `${left.name_en || left.name} vs ${right.name_en || right.name}`,
-  url: pageUrl,
-  inLanguage: "en",
-  isPartOf: {
-    "@id": `${siteUrl}/#website`,
-  },
-  publisher: {
-    "@id": `${siteUrl}/#organization`,
-  },
-  primaryImageOfPage: {
-    "@type": "ImageObject",
-    url: `${siteUrl}/og-image.webp`,
-  },
-  description: `Compare ${left.name_en || left.name} vs ${right.name_en || right.name} by fees, regulation, account types, and trading platforms.`,
-  about: [
-    { "@id": `${siteUrl}/en/brokers/${left.slug}#broker` },
-    { "@id": `${siteUrl}/en/brokers/${right.slug}#broker` },
-  ],
-  mainEntity: {
-    "@id": `${pageUrl}#itemlist`,
-  },
-};
+  const siteUrl = "https://brokeralarab.com";
+  const pageUrl = `${siteUrl}/en/compare/${slug}`;
 
   const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: `${siteUrl}/en`,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Broker Comparisons",
+        item: `${siteUrl}/en/compare`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: `${leftName} vs ${rightName}`,
+        item: pageUrl,
+      },
+    ],
+  };
+
+  const comparisonSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": `${pageUrl}#webpage`,
+    url: pageUrl,
+    name: `${leftName} vs ${rightName}: Which Broker Is Better?`,
+    headline: `${leftName} vs ${rightName} Broker Comparison`,
+    description: `Compare ${leftName} and ${rightName} across regulation, licences, accounts, fees, spreads, platforms and investor protection.`,
+    inLanguage: "en",
+    isPartOf: {
+      "@type": "WebSite",
+      "@id": `${siteUrl}/#website`,
+      url: siteUrl,
+      name: "Broker Alarab",
+    },
+    about: [
+      {
+        "@type": "Organization",
+        name: leftName,
+        url: `${siteUrl}/en/brokers/${left.slug}`,
+      },
+      {
+        "@type": "Organization",
+        name: rightName,
+        url: `${siteUrl}/en/brokers/${right.slug}`,
+      },
+    ],
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: 2,
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          item: {
+            "@type": "Organization",
+            name: leftName,
+            url: `${siteUrl}/en/brokers/${left.slug}`,
+          },
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          item: {
+            "@type": "Organization",
+            name: rightName,
+            url: `${siteUrl}/en/brokers/${right.slug}`,
+          },
+        },
+      ],
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Broker Alarab",
+      url: siteUrl,
+      logo: {
+        "@type": "ImageObject",
+        url: `${siteUrl}/logo/Asset%204%406x.png`,
+      },
+    },
+  };
+
+  const comparisonFactors = [
     {
-      "@type": "ListItem",
-      position: 1,
-      name: "Home",
-      item: "https://brokeralarab.com/en",
+      label: "Safety & Trust",
+      note: "Regulation and client-fund protection.",
+      leftScore: left.score_safety ?? 0,
+      rightScore: right.score_safety ?? 0,
     },
     {
-      "@type": "ListItem",
-      position: 2,
-      name: "Comparisons",
-      item: "https://brokeralarab.com/en/compare",
+      label: "Fees & Costs",
+      note: "Spreads, commissions and overall trading costs.",
+      leftScore: left.score_fees ?? 0,
+      rightScore: right.score_fees ?? 0,
     },
     {
-      "@type": "ListItem",
-      position: 3,
-      name: `${left.name_en || left.name} vs ${right.name_en || right.name}`,
-      item: `https://brokeralarab.com/en/compare/${slug}`,
+      label: "Trading Platforms",
+      note: "Platform quality and trading tools.",
+      leftScore: left.score_platforms ?? 0,
+      rightScore: right.score_platforms ?? 0,
     },
-  ],
-};
-
-  const comparisonRows = [
-  {
-    label: "Rating",
-    leftValue: `${left.rating?.toFixed(1) ?? "—"} / 5`,
-    rightValue: `${right.rating?.toFixed(1) ?? "—"} / 5`,
-    winner:
-      (left.rating ?? 0) > (right.rating ?? 0)
-        ? left.name_en || left.name
-        : (right.rating ?? 0) > (left.rating ?? 0)
-        ? right.name_en || right.name
-        : "Tie",
-  },
-  {
-    label: "Minimum Deposit",
-    leftValue: money(left.min_deposit),
-    rightValue: money(right.min_deposit),
-    winner: depositWinner,
-  },
-  {
-    label: "Platforms",
-    leftValue: shortPlatforms(left.platforms),
-    rightValue: shortPlatforms(right.platforms),
-    winner: "Tie",
-  },
-  {
-    label: "Islamic Account",
-    leftValue: yesNoEnglish(left.islamic_account),
-    rightValue: yesNoEnglish(right.islamic_account),
-    winner:
-      hasIslamicScore(left.islamic_account) > hasIslamicScore(right.islamic_account)
-        ? left.name_en || left.name
-        : hasIslamicScore(right.islamic_account) > hasIslamicScore(left.islamic_account)
-        ? right.name_en || right.name
-        : "Tie",
-  },
-  {
-    label: "Arabic Support",
-    leftValue: yesNoEnglish(left.arabic_support),
-    rightValue: yesNoEnglish(right.arabic_support),
-    winner:
-      hasArabicSupportScore(left.arabic_support) > hasArabicSupportScore(right.arabic_support)
-        ? left.name_en || left.name
-        : hasArabicSupportScore(right.arabic_support) >
-          hasArabicSupportScore(left.arabic_support)
-        ? right.name_en || right.name
-        : "Tie",
-  },
-  {
-    label: "Regulation",
-    leftValue: shortReg(left.regulation),
-    rightValue: shortReg(right.regulation),
-    winner: safetyWinner,
-  },
-  {
-    label: "Headquarters",
-    leftValue: left.headquarters_en || left.headquarters || "Not specified",
-    rightValue: right.headquarters_en || right.headquarters || "Not specified",
-    winner: "Tie",
-  },
-  {
-    label: "Founded",
-    leftValue: left.founded_year || "Not specified",
-    rightValue: right.founded_year || "Not specified",
-    winner: "Tie",
-  },
-  {
-    label: "Leverage",
-    leftValue: left.max_leverage || "Not specified",
-    rightValue: right.max_leverage || "Not specified",
-    winner:
-      numericLeverage(left.max_leverage) > numericLeverage(right.max_leverage)
-        ? left.name_en || left.name
-        : numericLeverage(right.max_leverage) > numericLeverage(left.max_leverage)
-        ? right.name_en || right.name
-        : "Tie",
-  },
-  {
-    label: "Tradable Assets",
-    leftValue: left.trading_assets || "Not specified",
-    rightValue: right.trading_assets || "Not specified",
-    winner: "Tie",
-  },
-];
-
- const accountSummaryRows = [
-  {
-    label: "Available Accounts",
-    leftValue: String(leftAccounts.length),
-    rightValue: String(rightAccounts.length),
-    winner:
-      leftAccounts.length > rightAccounts.length
-        ? left.name_en || left.name
-        : rightAccounts.length > leftAccounts.length
-        ? right.name_en || right.name
-        : "Tie",
-  },
-  {
-    label: "Lowest Visible Deposit",
-    leftValue:
-      leftAccounts
-        .map((a) => a.min_deposit_en || a.min_deposit || "")
-        .find((v) => v.trim()) || money(left.min_deposit),
-    rightValue:
-      rightAccounts
-        .map((a) => a.min_deposit_en || a.min_deposit || "")
-        .find((v) => v.trim()) || money(right.min_deposit),
-    winner: depositWinner,
-  },
-  {
-    label: "Best for Beginners",
-    leftValue: cleanText(left.best_for_en || left.best_for) || "General traders",
-    rightValue: cleanText(right.best_for_en || right.best_for) || "General traders",
-    winner: beginnerWinner,
-  },
-];
-
-  const leftReasons = getBrokerReasons(left, right, "left");
-  const rightReasons = getBrokerReasons(right, left, "right");
-
- const visibleFaqs = [
-  {
-    q: `What is the difference between ${left.name_en || left.name} and ${right.name_en || right.name}?`,
-    a: `The difference between ${left.name_en || left.name} and ${right.name_en || right.name} usually appears in regulation, account types, minimum deposit, fees, platforms, and the type of trader each broker may suit better.`,
-  },
-  {
-    q: `Which is better for beginners: ${left.name_en || left.name} or ${right.name_en || right.name}?`,
-    a: `Based on the criteria shown on this page, such as minimum deposit, account suitability, and ease of getting started, the quick beginner-friendly choice here is ${beginnerWinner}.`,
-  },
-  {
-    q: `Which broker looks better for spreads and active trading?`,
-    a: `The quick indication for spreads and active trading is ${scalpingWinner}. However, the final decision still depends on the account type you choose and your trading style.`,
-  },
-  {
-    q: `Do ${left.name_en || left.name} and ${right.name_en || right.name} offer Islamic accounts?`,
-    a: `This comparison shows the current Islamic account status for ${left.name_en || left.name} and ${right.name_en || right.name} based on the available data. It is still best to review each broker’s dedicated review page before opening an account.`,
-  },
-];
+    {
+      label: "Deposits & Withdrawals",
+      note: "Funding access and withdrawal experience.",
+      leftScore: left.score_deposit ?? 0,
+      rightScore: right.score_deposit ?? 0,
+    },
+    {
+      label: "Customer Support",
+      note: "Support quality and accessibility.",
+      leftScore: left.score_support ?? 0,
+      rightScore: right.score_support ?? 0,
+    },
+  ];
 
   return (
-    <main dir="ltr" className="min-h-screen bg-[#f4f7fb] text-[#0f172a]">
-     <Script
-  id="compare-en-faq-schema"
-  type="application/ld+json"
-  dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-/>
+    <main
+      dir="ltr"
+      lang="en"
+      className="min-h-screen bg-[#f4f7fb] text-left text-[#0f172a]"
+    >
+      <Script
+        id="comparison-schema-en"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(comparisonSchema),
+        }}
+      />
 
-<Script
-  id="compare-en-webpage-schema"
-  type="application/ld+json"
-  dangerouslySetInnerHTML={{ __html: JSON.stringify(comparisonSchema) }}
-/>
+      <Script
+        id="comparison-breadcrumbs-en"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbSchema),
+        }}
+      />
 
-<Script
-  id="compare-en-itemlist-schema"
-  type="application/ld+json"
-  dangerouslySetInnerHTML={{ __html: JSON.stringify(comparisonItemListSchema) }}
-/>
+      <Script
+        id="comparison-faq-en"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(faqJsonLd),
+        }}
+      />
 
-<Script
-  id="compare-en-breadcrumb-schema"
-  type="application/ld+json"
-  dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-/>
-           <section className="relative overflow-hidden border-b border-slate-200 bg-[linear-gradient(180deg,#f8fbff_0%,#eef4ff_100%)]">
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -top-20 left-0 h-72 w-72 rounded-full bg-brand-500/10 blur-3xl" />
-          <div className="absolute right-0 top-24 h-72 w-72 rounded-full bg-[#60a5fa]/10 blur-3xl" />
+      {/* ======================================================
+          HERO — DESKTOP
+      ====================================================== */}
+      <section className="mx-auto hidden max-w-[1520px] px-4 pb-3 pt-6 sm:px-6 md:block lg:px-8">
+        <div className="relative overflow-hidden rounded-[32px] border border-[#dbeafe] bg-white px-7 py-8 shadow-[0_25px_70px_rgba(37,99,235,0.08)] lg:px-10 lg:py-10">
+          <div className="absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
+
+          <div className="flex flex-wrap items-center gap-2 text-xs font-black text-brand-500">
+            <Link
+              href="/en/compare"
+              className="rounded-full border border-[#dbeafe] bg-[#f8fbff] px-3 py-1.5"
+            >
+              Comparisons
+            </Link>
+
+            <span>/</span>
+
+            <span>
+              {leftName} vs {rightName}
+            </span>
+          </div>
+
+          <h1 className="mt-5 max-w-6xl text-4xl font-black leading-tight text-[#0f172a] lg:text-[52px]">
+            {leftName} vs {rightName}: Which Broker Is Better?
+          </h1>
+
+          <p className="mt-4 max-w-5xl text-base leading-8 text-slate-600 lg:text-lg">
+            Compare {leftName} and {rightName} across spreads,
+            trading fees, regulation, licences, Islamic accounts,
+            trading platforms, deposits, withdrawals and account
+            types to identify the broker that better matches your
+            trading priorities.
+          </p>
+
+          <div className="mt-7 grid overflow-hidden rounded-[24px] border border-[#dbeafe] bg-[#f8fbff] lg:grid-cols-3">
+            <div className="border-b border-[#dbeafe] p-5 text-center lg:border-b-0 lg:border-r">
+              <div className="text-xs font-black text-brand-500">
+                Best Overall
+              </div>
+
+              <div className="mt-2 text-2xl font-black">
+                {overallWinner === "Tie"
+                  ? "Closely matched"
+                  : overallWinner}
+              </div>
+
+              <p className="mt-1 text-xs leading-6 text-slate-500">
+                Based on the overall ratings shown in this comparison.
+              </p>
+            </div>
+
+            <div className="border-b border-[#dbeafe] p-5 text-center lg:border-b-0 lg:border-r">
+              <div className="text-xs font-black text-slate-500">
+                Better for Beginners
+              </div>
+
+              <div className="mt-2 text-2xl font-black">
+                {beginnerDecision}
+              </div>
+
+              <p className="mt-1 text-xs leading-6 text-slate-500">
+                Based on entry requirements and account accessibility.
+              </p>
+            </div>
+
+            <div className="p-5 text-center">
+              <div className="text-xs font-black text-slate-500">
+                Costs & Execution
+              </div>
+
+              <div className="mt-2 text-2xl font-black">
+                {feesDecision}
+              </div>
+
+              <p className="mt-1 text-xs leading-6 text-slate-500">
+                Based on spreads, fees and execution-related data.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================
+    HERO + DIRECT COMPARISON — MOBILE
+====================================================== */}
+<section className="mx-auto max-w-[1520px] px-3 pb-4 pt-4 md:hidden">
+  <div className="md:hidden">
+    {/* Mobile hero */}
+    <div className="relative overflow-hidden rounded-[28px] border border-[#dbeafe] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-4 pb-4 pt-5 shadow-[0_16px_45px_rgba(37,99,235,0.09)]">
+      <div className="absolute inset-x-0 top-0 h-1 bg-brand-500" />
+
+      <div className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[10px] font-black text-brand-500 shadow-sm">
+        Broker Comparison
+      </div>
+
+      <h1 className="mt-3 text-[26px] font-black leading-[1.25] tracking-[-0.3px] text-[#0f172a]">
+        {leftName} vs {rightName}: Which Broker Is Better?
+      </h1>
+
+      <p className="mt-2 text-[13px] leading-6 text-slate-600">
+        Compare {leftName} and {rightName} across fees, spreads,
+        regulation, account types, trading platforms and overall
+        suitability for different trading needs.
+      </p>
+
+      {/* Overall result */}
+      <div className="mt-4 flex items-center justify-between gap-4 rounded-[20px] border border-[#93c5fd] bg-white px-4 py-3 shadow-sm">
+        <div className="min-w-0">
+          <div className="text-[10px] font-black text-brand-500">
+            Best Overall
+          </div>
+
+          <div className="mt-0.5 break-words text-lg font-black leading-6 text-[#0f172a]">
+            {overallWinner === "Tie"
+              ? "The two brokers are closely matched"
+              : overallWinner}
+          </div>
         </div>
 
-        <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8">
-          {/* Top intro - Desktop only */}
-          <div className="mb-5 hidden md:block">
-            <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white px-8 py-8 shadow-[0_18px_55px_rgba(37,99,235,0.08)]">
-              <div className="absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
-              <div className="pointer-events-none absolute right-0 top-0 h-full w-[38%] bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.10),transparent_55%)]" />
+        <div className="shrink-0 rounded-full bg-brand-50 px-3 py-1.5 text-[10px] font-black text-brand-500">
+          Overall Rating
+        </div>
+      </div>
 
-              <div className="relative">
-                <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#dbeafe] bg-[#f8fbff] px-4 py-2 text-xs font-extrabold text-brand-500">
-  <span>Comparisons</span>
-  <span className="text-slate-300">/</span>
-  <span>
-    {left.name_en || left.name} vs {right.name_en || right.name}
-  </span>
-</div>
-
-{/* Desktop visual heading — semantic H1 is in the mobile hero */}
-<div className="max-w-6xl text-[42px] font-black leading-[1.2] tracking-[-0.5px] text-[#0f172a] xl:text-[48px]">
-  {left.name_en || left.name} vs {right.name_en || right.name}: Which Broker Is Better?
-</div>
-
-<p className="mt-4 max-w-6xl text-base leading-8 text-slate-600 xl:text-lg xl:leading-9">
-  A detailed comparison between{" "}
-  <strong>{left.name_en || left.name}</strong> and{" "}
-  <strong>{right.name_en || right.name}</strong>, covering spreads,
-  fees, regulation, Islamic accounts, trading platforms, deposits,
-  withdrawals, and account types to help you choose the better broker.
-</p>
-
-                <div className="mt-7 grid max-w-6xl grid-cols-3 gap-4">
-                  <div className="rounded-[22px] border border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-5 py-4 shadow-sm">
-                    <div className="text-xs font-black text-brand-500">Quick Winner</div>
-                    <div className="mt-1 truncate text-xl font-black text-[#0f172a]">
-                      {overallWinner}
-                    </div>
-                    <div className="mt-1 text-xs font-bold text-slate-500">
-                      Best overall rating in this comparison
-                    </div>
-                  </div>
-
-                  <div className="rounded-[22px] border border-slate-200 bg-white px-5 py-4 shadow-sm">
-                    <div className="text-xs font-black text-slate-500">Best for Beginners</div>
-                    <div className="mt-1 truncate text-xl font-black text-[#0f172a]">
-                      {beginnerWinner}
-                    </div>
-                    <div className="mt-1 text-xs font-bold text-slate-500">
-                      Based on ease of start and account access
-                    </div>
-                  </div>
-
-                  <div className="rounded-[22px] border border-slate-200 bg-white px-5 py-4 shadow-sm">
-                    <div className="text-xs font-black text-slate-500">Best for Spreads</div>
-                    <div className="mt-1 truncate text-xl font-black text-[#0f172a]">
-                      {scalpingWinner}
-                    </div>
-                    <div className="mt-1 text-xs font-bold text-slate-500">
-                      More relevant for cost and execution
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+      {/* Secondary results */}
+      <div className="mt-2 grid grid-cols-2 gap-2">
+        <div className="min-w-0 rounded-[18px] border border-slate-200 bg-white px-3 py-3 shadow-sm">
+          <div className="text-[10px] font-bold text-slate-500">
+            Best for Beginners
           </div>
 
-          {/* Desktop / Tablet */}
-          <div className="hidden md:block">
-            <div className="rounded-[34px] border border-[#dbeafe] bg-white p-6 shadow-[0_24px_70px_rgba(37,99,235,0.10)] lg:p-8">
-              <div className="grid items-center gap-6 lg:grid-cols-[1fr_110px_1fr]">
-                {[left, right].map((broker) => {
-                  const brokerName = broker.name_en || broker.name;
-                  const isWinner = overallWinner === brokerName;
+          <div className="mt-1 break-words text-sm font-black leading-5 text-[#0f172a]">
+            {beginnerWinner === "Tie"
+              ? "Both are suitable"
+              : beginnerWinner}
+          </div>
+        </div>
 
-                  return (
-                    <div
-                      key={broker.slug}
-                      className={`relative overflow-hidden rounded-[30px] border p-6 transition ${
-                        isWinner
-                          ? "scale-[1.015] border-[#3b82f6] bg-gradient-to-b from-[#e0edff] to-white shadow-[0_20px_50px_rgba(37,99,235,0.18)]"
-                          : "border-slate-200 bg-white shadow-sm"
-                      }`}
-                    >
-                      {isWinner && (
-                        <>
-                          <div className="pointer-events-none absolute inset-0 rounded-[30px] ring-2 ring-[#3b82f6]/30" />
-                          <div className="absolute right-4 top-4 rounded-full bg-brand-500 px-3 py-1 text-[11px] font-black text-white shadow-sm">
-                            Best Overall
-                          </div>
-                        </>
-                      )}
-
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="min-w-0">
-                          <h2 className="truncate text-3xl font-black text-[#0f172a]">
-                            {brokerName}
-                          </h2>
-
-                          <p className="mt-2 text-sm font-bold text-brand-500">
-                            {cleanText(broker.best_for_en || broker.best_for) ||
-                              "Suitable for multiple trader profiles"}
-                          </p>
-                        </div>
-
-                        <div className="flex h-[76px] w-[76px] shrink-0 flex-col items-center justify-center rounded-2xl border border-brand-100 bg-white text-brand-500 shadow-sm">
-                          <span className="text-2xl font-black">
-                            {broker.rating?.toFixed(1) ?? "—"}
-                          </span>
-                          <span className="text-[10px] font-bold">out of 5</span>
-                        </div>
-                      </div>
-
-                      <div className="mt-6 flex h-[138px] items-center justify-center rounded-[26px] border border-slate-200 bg-[#fbfdff] p-6">
-                        {broker.logo ? (
-                          <img
-                            src={broker.logo}
-                            alt={brokerName || "Broker logo"}
-                            className="h-[96px] w-full object-contain"
-                          />
-                        ) : (
-                          <div className="text-xl font-black text-slate-300">
-                            {brokerName}
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="mt-5 space-y-3">
-                        {broker.key_strength_en && (
-                          <div className="rounded-2xl bg-[#ecfdf5] px-4 py-3">
-                            <div className="text-xs font-black text-[#059669]">Key Strength</div>
-                            <div className="mt-1 text-sm font-black text-[#064e3b]">
-                              {broker.key_strength_en}
-                            </div>
-                          </div>
-                        )}
-
-                        {broker.key_weakness_en && (
-                          <div className="rounded-2xl bg-[#fff7ed] px-4 py-3">
-                            <div className="text-xs font-black text-[#ea580c]">Important Note</div>
-                            <div className="mt-1 text-sm font-black text-[#7c2d12]">
-                              {broker.key_weakness_en}
-                            </div>
-                          </div>
-                        )}
-
-                        {broker.expert_insight_en && (
-                          <div className="rounded-2xl bg-[#f8fafc] px-4 py-3">
-                            <div className="text-xs font-black text-slate-500">Broker Alarab View</div>
-                            <div className="mt-1 text-sm font-medium leading-6 text-[#0f172a]">
-                              {broker.expert_insight_en}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="mt-6 grid grid-cols-2 gap-3">
-                        <a
-                          href={`/go/${broker.slug ?? ""}?type=real`}
-                          className="inline-flex min-h-[52px] items-center justify-center rounded-2xl bg-brand-500 px-4 py-3 text-sm font-black text-white transition hover:bg-brand-600"
-                        >
-                          Start Now
-                        </a>
-
-                        <Link
-                          href={`/en/brokers/${broker.slug ?? ""}`}
-                          className="inline-flex min-h-[52px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-black text-slate-800 transition hover:bg-slate-50"
-                        >
-                          Review
-                        </Link>
-                      </div>
-                    </div>
-                  );
-                }).reduce((acc, card, index) => {
-                  if (index === 1) {
-                    acc.push(
-                      <div key="center-vs" className="flex flex-col items-center justify-center">
-                        <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 to-[#1e40af] text-2xl font-black text-white shadow-[0_10px_30px_rgba(37,99,235,0.4)]">
-                          VS
-                        </div>
-                      </div>
-                    );
-                  }
-                  acc.push(card);
-                  return acc;
-                }, [] as React.ReactNode[])}
-              </div>
-            </div>
+        <div className="min-w-0 rounded-[18px] border border-slate-200 bg-white px-3 py-3 shadow-sm">
+          <div className="text-[10px] font-bold text-slate-500">
+            Costs and Execution
           </div>
 
-          {/* Mobile version */}
-          <div className="md:hidden">
-            <div className="overflow-hidden rounded-[30px] border border-[#dbeafe] bg-white shadow-[0_20px_60px_rgba(37,99,235,0.08)]">
-              <div className="relative overflow-hidden bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-4 pb-4 pt-5">
-                <div className="absolute inset-x-0 top-0 h-1 bg-brand-500" />
+          <div className="mt-1 break-words text-sm font-black leading-5 text-[#0f172a]">
+            {scalpingWinner === "Tie"
+              ? "Closely matched"
+              : scalpingWinner}
+          </div>
+        </div>
+      </div>
+    </div>
 
-                <div className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[11px] font-black text-brand-500">
-                  Broker Comparison
+    {/* Direct broker comparison */}
+    <div className="mt-3 overflow-hidden rounded-[28px] border border-[#dbeafe] bg-white shadow-[0_16px_45px_rgba(37,99,235,0.07)]">
+      <div className="border-b border-[#dbeafe] bg-[#f8fbff] px-4 py-3">
+        <div className="text-[10px] font-black text-brand-500">
+          Direct Comparison
+        </div>
+
+        <h2 className="mt-1 break-words text-lg font-black leading-7 text-[#0f172a]">
+          {leftName} vs {rightName}
+        </h2>
+      </div>
+
+      {/* Broker cards */}
+      <div className="relative grid grid-cols-2 gap-2 bg-[#f8fbff] p-3">
+        <div className="absolute left-1/2 top-[82px] z-20 flex h-10 w-10 -translate-x-1/2 items-center justify-center rounded-full border-4 border-[#f8fbff] bg-brand-500 text-[11px] font-black text-white shadow-md">
+          VS
+        </div>
+
+        {[left, right].map((broker) => {
+          const name = brokerName(broker);
+
+          return (
+            <div
+              key={broker.id}
+              className="min-w-0 rounded-[22px] border border-[#dbeafe] bg-white px-2 pb-4 pt-2 shadow-sm"
+            >
+              {/* Logo */}
+              <div className="flex h-[94px] items-center justify-center overflow-hidden rounded-[17px] bg-[#f8fafc]">
+                {broker.logo ? (
+                  <img
+                    src={broker.logo}
+                    alt={`${name} logo`}
+                    className="h-[74px] w-full scale-[1.28] object-contain"
+                  />
+                ) : (
+                  <span className="break-words px-2 text-center text-sm font-black text-slate-300">
+                    {name}
+                  </span>
+                )}
+              </div>
+
+              {/* Broker name and rating */}
+              <div className="mt-3 text-center">
+                <h3 className="flex min-h-[44px] items-center justify-center break-words text-center text-[16px] font-black leading-5 text-[#0f172a]">
+                  {name}
+                </h3>
+
+                <div className="mt-2 inline-flex items-center gap-1 rounded-full border border-brand-100 bg-brand-50 px-3 py-1 shadow-sm">
+                  <span className="text-[15px] font-black text-brand-500">
+                    {broker.rating?.toFixed(2) ?? "—"}
+                  </span>
+
+                  <span className="text-[9px] font-bold text-slate-400">
+                    out of 5
+                  </span>
                 </div>
 
-                <h1 className="mt-3 text-[27px] font-black leading-[1.25] tracking-[-0.3px] text-[#0f172a]">
-                  {left.name_en || left.name} vs {right.name_en || right.name}: Which Is Better?
-                </h1>
-
-                <p className="mt-2 text-sm leading-7 text-slate-600">
-                  A quick comparison between {left.name_en || left.name} and{" "}
-                  {right.name_en || right.name} across rating, deposit, Islamic account,
-                  platforms, and spreads.
-                </p>
-
-                <div className="mt-4 rounded-[22px] border border-brand-100 bg-white p-4 shadow-sm">
-                  <div className="text-[11px] font-black text-brand-500">
-                    Quick Recommendation
+                <div className="mt-3">
+                  <div className="text-[9px] font-bold text-slate-400">
+                    Best Suited For
                   </div>
 
-                  <div className="mt-1 text-2xl font-black text-[#0f172a]">
-                    {overallWinner}
-                  </div>
-
-                  <p className="mt-1 text-xs leading-6 text-slate-600">
-                    Best overall based on rating, usability, fees, and account access.
+                  <p className="mt-1 min-h-[36px] break-words text-[11px] font-black leading-[18px] text-brand-500">
+                    {cleanText(broker.best_for_en) ||
+                      "Different trader profiles"}
                   </p>
                 </div>
               </div>
+            </div>
+          );
+        })}
+      </div>
 
-              <div className="grid grid-cols-3 gap-2 border-y border-[#dbeafe] bg-[#f8fbff] p-3">
-                <div className="rounded-2xl bg-white px-2 py-2.5 text-center shadow-sm">
-                  <div className="text-[10px] font-bold text-slate-500">Overall</div>
-                  <div className="mt-1 truncate text-xs font-black text-[#0f172a]">
-                    {overallWinner}
-                  </div>
+      {/* Broker Alarab insights */}
+      <div className="border-t border-[#dbeafe] bg-[#f8fbff] p-3">
+        <div className="mb-2 text-[10px] font-black text-slate-500">
+          Broker Alarab View
+        </div>
+
+        <div className="grid gap-2">
+          {[left, right].map((broker) => {
+            const name = brokerName(broker);
+
+            const insightParagraphs = splitParagraphs(
+              broker.expert_insight_en
+            );
+
+            return (
+              <details
+                key={broker.id}
+                className="group rounded-[18px] border border-slate-200 bg-white"
+              >
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3 [&::-webkit-details-marker]:hidden">
+                  <span className="break-words text-xs font-black text-[#0f172a]">
+                    Our View on {name}
+                  </span>
+
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-50 text-[10px] font-black text-brand-500 transition group-open:rotate-180">
+                    ▼
+                  </span>
+                </summary>
+
+                <div className="space-y-2 border-t border-slate-100 px-3 pb-3 pt-2 text-xs leading-6 text-slate-600">
+                  {insightParagraphs.length > 0 ? (
+                    insightParagraphs.map((paragraph, index) => (
+                      <p key={index} className="break-words">
+                        {paragraph}
+                      </p>
+                    ))
+                  ) : (
+                    <p>
+                      Review this broker’s trading conditions, account
+                      types and regulatory entity before registering.
+                    </p>
+                  )}
                 </div>
+              </details>
+            );
+          })}
+        </div>
+      </div>
 
-                <div className="rounded-2xl bg-white px-2 py-2.5 text-center shadow-sm">
-                  <div className="text-[10px] font-bold text-slate-500">Beginners</div>
-                  <div className="mt-1 truncate text-xs font-black text-[#0f172a]">
-                    {beginnerWinner}
-                  </div>
-                </div>
+      {/* Actions */}
+      <div className="grid grid-cols-2 gap-2 border-t border-[#dbeafe] bg-white p-3">
+        {[left, right].map((broker) => {
+          const name = brokerName(broker);
 
-                <div className="rounded-2xl bg-white px-2 py-2.5 text-center shadow-sm">
-                  <div className="text-[10px] font-bold text-slate-500">Spreads</div>
-                  <div className="mt-1 truncate text-xs font-black text-[#0f172a]">
-                    {scalpingWinner}
-                  </div>
-                </div>
-              </div>
+          return (
+            <div key={broker.id} className="min-w-0">
+              <a
+                href={`/go/${broker.slug ?? ""}?type=real`}
+                target="_blank"
+                rel="noopener noreferrer sponsored nofollow"
+                className="inline-flex min-h-[44px] w-full items-center justify-center rounded-[16px] bg-brand-500 px-2 py-2.5 text-center text-[11px] font-black leading-4 text-white shadow-sm transition active:scale-[0.98]"
+              >
+                Start with {name}
+              </a>
 
-              <div className="space-y-3 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] p-4">
-                {[left, right].map((broker) => {
-                  const brokerName = broker.name_en || broker.name;
-                  const isWinner = overallWinner === brokerName;
+              <Link
+                href={`/en/brokers/${broker.slug ?? ""}`}
+                className="mt-2 inline-flex w-full items-center justify-center text-[11px] font-black text-slate-600 underline decoration-slate-300 underline-offset-4"
+              >
+                Read Review
+              </Link>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </div>
+</section>
 
-                  return (
-                    <div
-                      key={broker.slug}
-                      className={`rounded-[28px] border p-3 ${
-                        isWinner
-                          ? "border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] shadow-[0_14px_35px_rgba(37,99,235,0.14)]"
-                          : "border-slate-200 bg-white shadow-[0_10px_26px_rgba(15,23,42,0.05)]"
-                      }`}
-                    >
-                      <div className="mb-3 flex items-center justify-between gap-3">
-                        <div className="min-w-0">
-                          {isWinner && (
-                            <div className="mb-1.5 inline-flex rounded-full bg-brand-500 px-3 py-1 text-[10px] font-black text-white shadow-sm">
-                              Best Overall
-                            </div>
-                          )}
+      {/* ======================================================
+          BROKER HEAD-TO-HEAD — DESKTOP
+      ====================================================== */}
+      <section className="mx-auto hidden max-w-[1520px] px-4 pb-4 sm:px-6 md:block lg:px-8">
+        <div className="relative overflow-hidden rounded-[32px] border border-[#dbeafe] bg-white p-6 shadow-[0_25px_70px_rgba(37,99,235,0.08)] lg:p-8">
+          <div className="grid gap-6 lg:grid-cols-[1fr_74px_1fr] lg:items-stretch">
+            {[left, right].map((broker, index) => {
+              const other = index === 0 ? right : left;
+              const name = brokerName(broker);
 
-                          <h2 className="truncate text-2xl font-black leading-tight text-[#0f172a]">
-                            {brokerName}
-                          </h2>
+              const isWinner =
+                !ratingsAreClose &&
+                broker.id === recommendedBroker.id;
 
-                          <p className="mt-1 line-clamp-1 text-xs font-bold text-brand-500">
-                            {cleanText(broker.best_for_en || broker.best_for) ||
-                              "Suitable for multiple trader profiles"}
-                          </p>
-                        </div>
+              const insightParagraphs = splitParagraphs(
+                broker.expert_insight_en
+              );
 
-                        <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl border border-brand-100 bg-white text-brand-500 shadow-sm">
-                          <span className="text-lg font-black">
-                            {broker.rating?.toFixed(1) ?? "—"}
+              return (
+                <React.Fragment key={broker.id}>
+                  <article
+                    className={`flex h-full min-w-0 flex-col overflow-hidden rounded-[28px] border ${
+                      isWinner
+                        ? "border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_42%)]"
+                        : "border-[#dbeafe] bg-white"
+                    }`}
+                  >
+                    <div className="flex min-h-[112px] items-start justify-between gap-4 border-b border-[#dbeafe] px-5 py-5">
+                      <div className="min-w-0">
+                        {isWinner ? (
+                          <span className="mb-2 inline-flex rounded-full bg-brand-500 px-3 py-1 text-[10px] font-black text-white">
+                            Best Overall
                           </span>
-                          <span className="text-[10px] font-bold">out of 5</span>
-                        </div>
+                        ) : null}
+
+                        <h2 className="break-words text-3xl font-black">
+                          {name}
+                        </h2>
+
+                        <p className="mt-1 text-sm font-black text-brand-500">
+                          {cleanText(
+                            broker.key_strength_en
+                          ) || "Broker comparison"}
+                        </p>
                       </div>
 
-                      <div className="flex h-[82px] items-center justify-center rounded-[22px] border border-slate-200 bg-white p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]">
-                        {broker.logo ? (
-                          <img
-                            src={broker.logo}
-                            alt={brokerName || "Broker logo"}
-                            className="h-[58px] w-full object-contain"
-                          />
-                        ) : (
-                          <div className="text-base font-black text-slate-300">
-                            {brokerName}
+                      <div className="shrink-0 text-center">
+                        <div className="rounded-[18px] border border-[#dbeafe] bg-white px-4 py-3 shadow-sm">
+                          <div className="text-2xl font-black text-brand-500">
+                            {(broker.rating ?? 0).toFixed(2)}
                           </div>
-                        )}
-                      </div>
 
-                      <div className="mt-3 grid grid-cols-2 gap-2">
-                        <div className="rounded-2xl border border-slate-200 bg-white px-3 py-2.5">
-                          <div className="text-[10px] font-bold text-slate-500">
-                            Minimum Deposit
-                          </div>
-                          <div className="mt-1 text-sm font-black text-[#0f172a]">
-                            {money(broker.min_deposit)}
-                          </div>
-                        </div>
-
-                        <div className="rounded-2xl border border-slate-200 bg-white px-3 py-2.5">
-                          <div className="text-[10px] font-bold text-slate-500">
-                            Islamic Account
-                          </div>
-                          <div className="mt-1 text-sm font-black text-[#0f172a]">
-                            {yesNoEnglish(broker.islamic_account)}
+                          <div className="text-[9px] font-bold text-slate-400">
+                            out of 5
                           </div>
                         </div>
                       </div>
+                    </div>
 
-                      <div className="mt-2 rounded-2xl border border-slate-200 bg-white px-3 py-2.5">
-                        <div className="text-[10px] font-bold text-slate-500">
-                          Trading Platforms
+                    <div className="flex flex-1 flex-col p-5">
+                      <div className="flex h-[150px] shrink-0 items-center justify-center overflow-hidden rounded-[22px] border border-[#dbeafe] bg-[#f8fbff] p-2">
+  {broker.logo ? (
+    <img
+      src={broker.logo}
+      alt={`${name} logo`}
+      className="h-[130px] w-full max-w-[260px] object-contain"
+    />
+  ) : (
+    <span className="text-xl font-black text-slate-400">
+      {name}
+    </span>
+  )}
+</div>
+
+                      <div className="mt-4 rounded-[18px] border border-emerald-100 bg-emerald-50/70 px-4 py-3">
+                        <div className="text-[10px] font-black text-emerald-700">
+                          Key Strength
                         </div>
-                        <div className="mt-1 truncate text-xs font-black text-[#0f172a]">
-                          {shortPlatforms(broker.platforms)}
-                        </div>
+
+                        <p className="mt-1 text-sm font-bold leading-7 text-slate-700">
+                          {cleanText(
+                            broker.key_strength_en
+                          ) ||
+                            "Trading conditions designed for different trader profiles."}
+                        </p>
                       </div>
 
-                      <div className="mt-3 grid grid-cols-2 gap-2">
+                      <div className="mt-3 rounded-[18px] border border-amber-100 bg-amber-50/70 px-4 py-3">
+                        <div className="text-[10px] font-black text-amber-700">
+                          Important Note
+                        </div>
+
+                        <p className="mt-1 text-sm leading-7 text-slate-700">
+                          {cleanText(
+                            broker.key_weakness_en
+                          ) ||
+                            "Review the account conditions, fees and regulatory entity before registering."}
+                        </p>
+                      </div>
+
+                      {insightParagraphs.length > 0 ? (
+                        <div className="mt-3 rounded-[18px] bg-[#f8fbff] px-4 py-3">
+                          <div className="text-[10px] font-black text-brand-500">
+                            Broker Alarab View
+                          </div>
+
+                          <div className="mt-1 space-y-2 text-sm leading-7 text-slate-600">
+                            {insightParagraphs.map(
+                              (paragraph, paragraphIndex) => (
+                                <p key={paragraphIndex}>
+                                  {paragraph}
+                                </p>
+                              )
+                            )}
+                          </div>
+                        </div>
+                      ) : null}
+
+                      <div className="mt-auto grid grid-cols-2 gap-3 pt-4">
                         <a
                           href={`/go/${broker.slug ?? ""}?type=real`}
-                          className="inline-flex min-h-[44px] items-center justify-center rounded-2xl bg-brand-500 px-4 py-2.5 text-sm font-black text-white shadow-sm transition active:scale-[0.98]"
+                          target="_blank"
+                          rel="noopener noreferrer sponsored nofollow"
+                          className={`inline-flex min-h-[48px] items-center justify-center rounded-xl px-4 py-3 text-sm font-black ${
+                            isWinner
+                              ? "bg-brand-500 text-white hover:bg-brand-600"
+                              : "border border-[#bfdbfe] bg-[#eff6ff] text-brand-500"
+                          }`}
                         >
-                          Start Now
+                          Open Account
                         </a>
 
                         <Link
                           href={`/en/brokers/${broker.slug ?? ""}`}
-                          className="inline-flex min-h-[44px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-black text-slate-800 transition active:scale-[0.98]"
+                          className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-black text-slate-700"
                         >
-                          Review
+                          Read Review
                         </Link>
                       </div>
+                    </div>
+                  </article>
+
+                  {index === 0 ? (
+                    <div className="hidden items-center justify-center lg:flex">
+                      <div className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-500 text-lg font-black text-white shadow-[0_14px_30px_rgba(37,99,235,0.25)]">
+                        VS
+                      </div>
+                    </div>
+                  ) : null}
+                </React.Fragment>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================
+          SCORE ANALYSIS — DESKTOP
+      ====================================================== */}
+      <section className="mx-auto hidden max-w-[1520px] px-4 pb-4 sm:px-6 md:block lg:px-8">
+        <div className="relative overflow-hidden rounded-[32px] border border-[#dbeafe] bg-white p-6 shadow-[0_25px_70px_rgba(37,99,235,0.08)] lg:p-8">
+          <div className="absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
+
+          <span className="text-sm font-black text-brand-500">
+            Score Analysis
+          </span>
+
+          <h2 className="mt-2 text-3xl font-black leading-tight lg:text-[42px]">
+            Compare the Strengths of {leftName} and {rightName}
+          </h2>
+
+          <p className="mt-3 max-w-4xl text-base leading-8 text-slate-600">
+            A direct comparison of safety, costs, platforms,
+            deposits and withdrawals, and customer support.
+          </p>
+
+          <div className="mt-7 grid gap-4 lg:grid-cols-5">
+            {comparisonFactors.map((factor) => {
+              const leftWins =
+                factor.leftScore > factor.rightScore;
+
+              const rightWins =
+                factor.rightScore > factor.leftScore;
+
+              return (
+                <div
+                  key={factor.label}
+                  className="rounded-[22px] border border-[#dbeafe] bg-[#f8fbff] p-4"
+                >
+                  <div className="min-h-[52px]">
+                    <h3 className="text-sm font-black">
+                      {factor.label}
+                    </h3>
+
+                    <p className="mt-1 text-[10px] leading-5 text-slate-500">
+                      {factor.note}
+                    </p>
+                  </div>
+
+                  <div className="mt-4 space-y-4">
+                    <div className="rounded-[14px] border border-[#dbeafe] bg-white p-3">
+                      <div className="mb-2 flex items-center justify-between gap-2">
+                        <span className="truncate text-[10px] font-black">
+                          {leftName}
+                        </span>
+
+                        <span className="text-xs font-black text-brand-500">
+                          {factor.leftScore.toFixed(2)}
+                        </span>
+                      </div>
+
+                      <ScoreBar
+                        value={factor.leftScore}
+                        highlighted={leftWins}
+                      />
+                    </div>
+
+                    <div className="rounded-[14px] border border-[#dbeafe] bg-white p-3">
+                      <div className="mb-2 flex items-center justify-between gap-2">
+                        <span className="truncate text-[10px] font-black">
+                          {rightName}
+                        </span>
+
+                        <span className="text-xs font-black text-brand-500">
+                          {factor.rightScore.toFixed(2)}
+                        </span>
+                      </div>
+
+                      <ScoreBar
+                        value={factor.rightScore}
+                        highlighted={rightWins}
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="mt-6 rounded-[20px] border border-[#dbeafe] bg-[#f8fbff] px-5 py-4 text-center">
+            <p className="text-sm leading-7 text-slate-500">
+              Similar scores do not mean the brokers are identical.
+              Your decision should reflect the factor that matters
+              most to you, such as regulation, fees, platforms,
+              withdrawals or customer support.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================
+    SCORE ANALYSIS — MOBILE
+====================================================== */}
+<section className="mx-auto max-w-[1520px] px-3 pb-4 md:hidden">
+  <div className="relative overflow-hidden rounded-[28px] border border-[#dbeafe] bg-white p-4 shadow-[0_16px_45px_rgba(37,99,235,0.07)]">
+    <div className="absolute inset-x-0 top-0 h-1 bg-brand-500" />
+
+    {/* Header */}
+    <div>
+      <span className="text-xs font-black text-brand-500">
+        Score Analysis
+      </span>
+
+      <h2 className="mt-1.5 text-[24px] font-black leading-tight text-[#0f172a]">
+        Strength Comparison
+      </h2>
+
+      <p className="mt-2 text-[12px] leading-5 text-slate-600">
+        Compare {leftName} and {rightName} across the main factors
+        traders consider when choosing a broker.
+      </p>
+    </div>
+
+    {/* Compact comparison table */}
+    <div className="mt-4 overflow-hidden rounded-[22px] border border-[#dbeafe] bg-white shadow-sm">
+      {/* Table header */}
+      <div className="grid grid-cols-[minmax(0,1fr)_66px_66px] items-center gap-2 border-b border-[#dbeafe] bg-[#f8fbff] px-3 py-2.5">
+        <div className="text-[9px] font-black text-slate-400">
+          Comparison Factor
+        </div>
+
+        <div className="break-words text-center text-[9px] font-black leading-3 text-[#0f172a]">
+          {leftName}
+        </div>
+
+        <div className="break-words text-center text-[9px] font-black leading-3 text-[#0f172a]">
+          {rightName}
+        </div>
+      </div>
+
+      {/* Comparison rows */}
+      {comparisonFactors.map((factor, index) => {
+        const difference = Math.abs(
+          factor.leftScore - factor.rightScore
+        );
+
+        const isClose = difference < 0.15;
+
+        const leftHasAdvantage =
+          !isClose && factor.leftScore > factor.rightScore;
+
+        const rightHasAdvantage =
+          !isClose && factor.rightScore > factor.leftScore;
+
+        return (
+          <div
+            key={factor.label}
+            className={`grid grid-cols-[minmax(0,1fr)_66px_66px] items-center gap-2 px-3 py-2.5 ${
+              index !== comparisonFactors.length - 1
+                ? "border-b border-slate-100"
+                : ""
+            }`}
+          >
+            {/* Factor */}
+            <h3 className="min-w-0 break-words text-[12px] font-black leading-5 text-[#0f172a]">
+              {factor.label}
+            </h3>
+
+            {/* Left broker score */}
+            <div
+              className={`rounded-xl px-1 py-2 text-center text-[13px] font-black ${
+                leftHasAdvantage
+                  ? "bg-brand-500 text-white shadow-sm"
+                  : isClose
+                  ? "bg-brand-50 text-brand-500"
+                  : "bg-slate-100 text-slate-600"
+              }`}
+            >
+              {factor.leftScore.toFixed(2)}
+            </div>
+
+            {/* Right broker score */}
+            <div
+              className={`rounded-xl px-1 py-2 text-center text-[13px] font-black ${
+                rightHasAdvantage
+                  ? "bg-brand-500 text-white shadow-sm"
+                  : isClose
+                  ? "bg-brand-50 text-brand-500"
+                  : "bg-slate-100 text-slate-600"
+              }`}
+            >
+              {factor.rightScore.toFixed(2)}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+
+    {/* Comparison note */}
+    <div className="mt-3 rounded-[16px] bg-[#f8fbff] px-3 py-2.5">
+      <p className="text-[10px] font-medium leading-5 text-slate-500">
+        Small score differences do not mean the brokers are identical.
+        Choose according to the factor that matters most to you, such as
+        regulation, trading costs, platforms, withdrawals or customer
+        support.
+      </p>
+    </div>
+  </div>
+</section>
+
+            {/* ======================================================
+          ACCOUNTS & TRADING COSTS — DESKTOP
+      ====================================================== */}
+      <section className="mx-auto hidden max-w-[1520px] px-4 pb-4 sm:px-6 md:block lg:px-8">
+        <div className="relative overflow-hidden rounded-[32px] border border-[#dbeafe] bg-white p-6 shadow-[0_25px_70px_rgba(37,99,235,0.08)] lg:p-8">
+          <div className="absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
+
+          <div className="grid gap-6 lg:grid-cols-[1fr_280px] lg:items-center">
+            <div>
+              <span className="text-sm font-black text-brand-500">
+                Accounts & Trading Costs
+              </span>
+
+              <h2 className="mt-2 text-3xl font-black leading-tight lg:text-[42px]">
+                Compare {leftName} and {rightName} Accounts
+              </h2>
+
+              <p className="mt-3 max-w-4xl text-base leading-8 text-slate-600">
+                Compare available account types, minimum deposits,
+                spreads, commissions and order execution to choose
+                the structure that best matches your trading style.
+              </p>
+            </div>
+
+            <div className="rounded-[24px] border border-[#93c5fd] bg-[linear-gradient(135deg,#eff6ff_0%,#ffffff_100%)] p-5">
+              <div className="text-xs font-black text-brand-500">
+                Quick Account View
+              </div>
+
+              <div className="mt-2 text-2xl font-black">
+                {leftAccounts.length === rightAccounts.length
+                  ? "Account ranges are closely matched"
+                  : leftAccounts.length > rightAccounts.length
+                  ? `${leftName} lists more accounts`
+                  : `${rightName} lists more accounts`}
+              </div>
+
+              <p className="mt-2 text-sm leading-7 text-slate-600">
+                Account quantity alone does not determine value.
+                Compare pricing and entry requirements as well.
+              </p>
+            </div>
+          </div>
+
+          {/* Account indicators */}
+          <div className="mt-7 grid grid-cols-3 overflow-hidden rounded-[24px] border border-[#dbeafe] bg-[#f8fbff]">
+            <div className="border-r border-[#dbeafe] p-5 text-center">
+              <div className="text-xs font-black text-slate-500">
+                Available Accounts
+              </div>
+
+              <div className="mt-3 grid grid-cols-2 gap-3">
+                {[
+                  {
+                    name: leftName,
+                    value: leftAccounts.length,
+                  },
+                  {
+                    name: rightName,
+                    value: rightAccounts.length,
+                  },
+                ].map((item) => (
+                  <div
+                    key={item.name}
+                    className="flex min-h-[96px] flex-col items-center justify-center rounded-[16px] border border-[#dbeafe] bg-white px-3 py-3"
+                  >
+                    <div className="text-xs font-black text-brand-500">
+                      {item.name}
+                    </div>
+
+                    <div className="mt-1 text-2xl font-black">
+                      {item.value}
+                    </div>
+
+                    <div className="text-[9px] font-bold text-slate-400">
+                      account{item.value === 1 ? "" : "s"}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="border-r border-[#dbeafe] p-5 text-center">
+              <div className="text-xs font-black text-slate-500">
+                Better for Beginners
+              </div>
+
+              <div className="mt-5 text-2xl font-black">
+                {beginnerDecision}
+              </div>
+
+              <p className="mt-2 text-xs leading-6 text-slate-500">
+                Based on deposit requirements and account
+                accessibility.
+              </p>
+            </div>
+
+            <div className="p-5 text-center">
+              <div className="text-xs font-black text-slate-500">
+                Important Before Choosing
+              </div>
+
+              <div className="mt-5 text-xl font-black">
+                Account conditions matter more than account count
+              </div>
+
+              <p className="mt-2 text-xs leading-6 text-slate-500">
+                Compare spreads, commissions, execution and deposits.
+              </p>
+            </div>
+          </div>
+
+          {/* Main account-factor comparison */}
+          <div className="mt-6 overflow-hidden rounded-[22px] border border-[#dbeafe]">
+            <div className="grid grid-cols-[1.15fr_1fr_1fr] bg-[#eff6ff] text-sm font-black">
+              <div className="border-r border-[#dbeafe] px-5 py-4">
+                Comparison Factor
+              </div>
+
+              <div className="border-r border-[#dbeafe] px-5 py-4 text-center">
+                {leftName}
+              </div>
+
+              <div className="px-5 py-4 text-center">
+                {rightName}
+              </div>
+            </div>
+
+            {[
+              {
+                label: "Main Account",
+                leftValue:
+                  leftAccounts[0]?.account_name_en ||
+                  leftAccounts[0]?.account_name ||
+                  "Not specified",
+                rightValue:
+                  rightAccounts[0]?.account_name_en ||
+                  rightAccounts[0]?.account_name ||
+                  "Not specified",
+              },
+              {
+                label: "Minimum Deposit",
+                leftValue:
+                  leftAccounts.find((account) =>
+                    cleanText(
+                      account.min_deposit_en ||
+                        account.min_deposit
+                    )
+                  )?.min_deposit_en ||
+                  leftAccounts.find((account) =>
+                    cleanText(account.min_deposit)
+                  )?.min_deposit ||
+                  money(left.min_deposit),
+                rightValue:
+                  rightAccounts.find((account) =>
+                    cleanText(
+                      account.min_deposit_en ||
+                        account.min_deposit
+                    )
+                  )?.min_deposit_en ||
+                  rightAccounts.find((account) =>
+                    cleanText(account.min_deposit)
+                  )?.min_deposit ||
+                  money(right.min_deposit),
+              },
+              {
+                label: "Starting Spread",
+                leftValue:
+                  leftAccounts.find((account) =>
+                    cleanText(
+                      account.spread_en || account.spread
+                    )
+                  )?.spread_en ||
+                  leftAccounts.find((account) =>
+                    cleanText(account.spread)
+                  )?.spread ||
+                  cleanText(left.spreads_en || left.spreads) ||
+                  "Not specified",
+                rightValue:
+                  rightAccounts.find((account) =>
+                    cleanText(
+                      account.spread_en || account.spread
+                    )
+                  )?.spread_en ||
+                  rightAccounts.find((account) =>
+                    cleanText(account.spread)
+                  )?.spread ||
+                  cleanText(right.spreads_en || right.spreads) ||
+                  "Not specified",
+              },
+              {
+                label: "Trading Commission",
+                leftValue:
+                  leftAccounts.find((account) =>
+                    cleanText(
+                      account.commission_en ||
+                        account.commission
+                    )
+                  )?.commission_en ||
+                  leftAccounts.find((account) =>
+                    cleanText(account.commission)
+                  )?.commission ||
+                  "Not specified",
+                rightValue:
+                  rightAccounts.find((account) =>
+                    cleanText(
+                      account.commission_en ||
+                        account.commission
+                    )
+                  )?.commission_en ||
+                  rightAccounts.find((account) =>
+                    cleanText(account.commission)
+                  )?.commission ||
+                  "Not specified",
+              },
+              {
+                label: "Order Execution",
+                leftValue:
+                  leftAccounts.find((account) =>
+                    cleanText(
+                      account.execution_type_en ||
+                        account.execution_type
+                    )
+                  )?.execution_type_en ||
+                  leftAccounts.find((account) =>
+                    cleanText(account.execution_type)
+                  )?.execution_type ||
+                  "Not specified",
+                rightValue:
+                  rightAccounts.find((account) =>
+                    cleanText(
+                      account.execution_type_en ||
+                        account.execution_type
+                    )
+                  )?.execution_type_en ||
+                  rightAccounts.find((account) =>
+                    cleanText(account.execution_type)
+                  )?.execution_type ||
+                  "Not specified",
+              },
+            ].map((row) => (
+              <div
+                key={row.label}
+                className="grid grid-cols-[1.15fr_1fr_1fr] border-t border-[#dbeafe] text-sm"
+              >
+                <div className="border-r border-[#dbeafe] px-5 py-4 font-black">
+                  {row.label}
+                </div>
+
+                <div className="border-r border-[#dbeafe] px-5 py-4 text-center font-bold text-slate-700">
+                  {row.leftValue}
+                </div>
+
+                <div className="px-5 py-4 text-center font-bold text-slate-700">
+                  {row.rightValue}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Broker account groups */}
+          <div className="mt-6 space-y-5">
+            {[
+              {
+                broker: left,
+                brokerAccounts: leftAccounts,
+              },
+              {
+                broker: right,
+                brokerAccounts: rightAccounts,
+              },
+            ].map(({ broker, brokerAccounts }) => {
+              const name = brokerName(broker);
+
+              return (
+                <article
+                  key={broker.id}
+                  className="overflow-hidden rounded-[26px] border border-[#dbeafe] bg-[#f8fbff]"
+                >
+                  <div className="flex items-center justify-between gap-4 border-b border-[#dbeafe] px-5 py-4">
+                    <div>
+                      <div className="text-[10px] font-black text-brand-500">
+                        Available Account Types
+                      </div>
+
+                      <h3 className="mt-1 text-2xl font-black">
+                        {name} Accounts
+                      </h3>
+                    </div>
+
+                    <span className="rounded-full border border-[#bfdbfe] bg-white px-3 py-1.5 text-[11px] font-black text-brand-500">
+                      {brokerAccounts.length} account
+                      {brokerAccounts.length === 1 ? "" : "s"}
+                    </span>
+                  </div>
+
+                  {brokerAccounts.length > 0 ? (
+                    <div className="grid gap-4 p-4 lg:grid-cols-3 xl:grid-cols-4">
+                      {brokerAccounts.map((account) => {
+                        const accountName =
+                          account.account_name_en ||
+                          account.account_name ||
+                          "Trading Account";
+
+                        const accountPath = accountSlug(
+                          account.account_name_en ||
+                            account.account_name
+                        );
+
+                        return (
+                          <div
+                            key={account.id}
+                            className="flex min-h-[270px] flex-col rounded-[20px] border border-[#dbeafe] bg-white p-4 shadow-sm"
+                          >
+                            <div>
+                              <div className="text-lg font-black">
+                                {accountName}
+                              </div>
+
+                              <p className="mt-1 text-[10px] font-bold leading-5 text-brand-500">
+                                {account.best_for_en ||
+                                  account.best_for ||
+                                  "Suitable for different trader profiles"}
+                              </p>
+                            </div>
+
+                            <div className="mt-4 space-y-2.5">
+                              <div className="flex items-start justify-between gap-3 border-b border-slate-100 pb-2">
+                                <span className="text-[10px] font-bold text-slate-400">
+                                  Spread
+                                </span>
+
+                                <span className="text-right text-[11px] font-black">
+                                  {account.spread_en ||
+                                    account.spread ||
+                                    "Not specified"}
+                                </span>
+                              </div>
+
+                              <div className="flex items-start justify-between gap-3 border-b border-slate-100 pb-2">
+                                <span className="text-[10px] font-bold text-slate-400">
+                                  Commission
+                                </span>
+
+                                <span className="text-right text-[11px] font-black">
+                                  {account.commission_en ||
+                                    account.commission ||
+                                    "Not specified"}
+                                </span>
+                              </div>
+
+                              <div className="flex items-start justify-between gap-3 border-b border-slate-100 pb-2">
+                                <span className="text-[10px] font-bold text-slate-400">
+                                  Minimum Deposit
+                                </span>
+
+                                <span className="text-right text-[11px] font-black">
+                                  {account.min_deposit_en ||
+                                    account.min_deposit ||
+                                    "Not specified"}
+                                </span>
+                              </div>
+
+                              <div className="flex items-start justify-between gap-3">
+                                <span className="text-[10px] font-bold text-slate-400">
+                                  Execution
+                                </span>
+
+                                <span className="text-right text-[11px] font-black">
+                                  {account.execution_type_en ||
+                                    account.execution_type ||
+                                    "Not specified"}
+                                </span>
+                              </div>
+                            </div>
+
+                            <Link
+                              href={`/en/brokers/${broker.slug}/accounts/${accountPath}`}
+                              className="mt-auto pt-5 text-sm font-black text-brand-500"
+                            >
+                              Account Details →
+                            </Link>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="px-5 py-8 text-center text-sm text-slate-500">
+                      No account information is currently available
+                      for {name}.
+                    </div>
+                  )}
+                </article>
+              );
+            })}
+          </div>
+
+          <div className="mt-6 rounded-[20px] border border-[#dbeafe] bg-[#f8fbff] px-5 py-4 text-center">
+            <p className="text-sm leading-7 text-slate-500">
+              Actual trading costs depend on the account type,
+              instrument and market conditions. Compare spreads,
+              commissions, deposits and execution before choosing.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================
+          ACCOUNTS & TRADING COSTS — MOBILE
+      ====================================================== */}
+      <section className="mx-auto max-w-[1520px] px-3 pb-4 md:hidden">
+        <div className="relative overflow-hidden rounded-[24px] border border-[#dbeafe] bg-white p-4">
+          <div className="absolute inset-x-0 top-0 h-1 bg-brand-500" />
+
+          <span className="text-[10px] font-black text-brand-500">
+            Accounts & Trading Costs
+          </span>
+
+          <h2 className="mt-1.5 text-[23px] font-black leading-[1.3]">
+            Compare Accounts and Fees
+          </h2>
+
+          <p className="mt-1.5 text-[11px] leading-5 text-slate-500">
+            Compare spreads, commissions, deposits and execution.
+          </p>
+
+          <div className="mt-4 grid grid-cols-2 gap-2">
+            <div className="rounded-[15px] border border-[#dbeafe] bg-[#f8fbff] p-3 text-center">
+              <div className="text-[9px] font-bold text-slate-400">
+                {leftName} Accounts
+              </div>
+
+              <div className="mt-1 text-xl font-black text-brand-500">
+                {leftAccounts.length}
+              </div>
+            </div>
+
+            <div className="rounded-[15px] border border-[#dbeafe] bg-[#f8fbff] p-3 text-center">
+              <div className="text-[9px] font-bold text-slate-400">
+                {rightName} Accounts
+              </div>
+
+              <div className="mt-1 text-xl font-black text-brand-500">
+                {rightAccounts.length}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 space-y-3">
+            {[
+              {
+                broker: left,
+                brokerAccounts: leftAccounts,
+              },
+              {
+                broker: right,
+                brokerAccounts: rightAccounts,
+              },
+            ].map(({ broker, brokerAccounts }) => {
+              const name = brokerName(broker);
+
+              return (
+                <details
+                  key={broker.id}
+                  className="group overflow-hidden rounded-[19px] border border-[#dbeafe] bg-white"
+                >
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3 [&::-webkit-details-marker]:hidden">
+                    <div>
+                      <div className="text-[9px] font-black text-brand-500">
+                        Available Accounts
+                      </div>
+
+                      <h3 className="text-[16px] font-black">
+                        {name}
+                      </h3>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-black text-slate-500">
+                        {brokerAccounts.length}
+                      </span>
+
+                      <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#dbeafe] text-[9px] text-brand-500 transition group-open:rotate-180">
+                        ▼
+                      </span>
+                    </div>
+                  </summary>
+
+                  <div className="space-y-2 border-t border-[#dbeafe] p-3">
+                    {brokerAccounts.length > 0 ? (
+                      brokerAccounts.map((account) => (
+                        <div
+                          key={account.id}
+                          className="rounded-[15px] bg-[#f8fbff] p-3"
+                        >
+                          <div className="font-black">
+                            {account.account_name_en ||
+                              account.account_name ||
+                              "Trading Account"}
+                          </div>
+
+                          <div className="mt-2 grid grid-cols-2 gap-2 text-[10px]">
+                            <div>
+                              <span className="text-slate-400">
+                                Spread:
+                              </span>{" "}
+                              <strong>
+                                {account.spread_en ||
+                                  account.spread ||
+                                  "Not specified"}
+                              </strong>
+                            </div>
+
+                            <div>
+                              <span className="text-slate-400">
+                                Commission:
+                              </span>{" "}
+                              <strong>
+                                {account.commission_en ||
+                                  account.commission ||
+                                  "Not specified"}
+                              </strong>
+                            </div>
+
+                            <div>
+                              <span className="text-slate-400">
+                                Deposit:
+                              </span>{" "}
+                              <strong>
+                                {account.min_deposit_en ||
+                                  account.min_deposit ||
+                                  "Not specified"}
+                              </strong>
+                            </div>
+
+                            <div>
+                              <span className="text-slate-400">
+                                Execution:
+                              </span>{" "}
+                              <strong>
+                                {account.execution_type_en ||
+                                  account.execution_type ||
+                                  "Not specified"}
+                              </strong>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="py-3 text-center text-[11px] text-slate-500">
+                        No account information is currently available.
+                      </div>
+                    )}
+                  </div>
+                </details>
+              );
+            })}
+          </div>
+
+          <div className="mt-4 rounded-[16px] bg-[#f8fbff] px-3 py-3 text-center">
+            <p className="text-[10px] leading-5 text-slate-500">
+              Account quantity alone is not enough. Compare pricing,
+              deposits and execution before choosing.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ======================================================
+          SAFETY & REGULATION — DESKTOP
+      ====================================================== */}
+      <section className="mx-auto hidden max-w-[1520px] px-4 pb-4 sm:px-6 md:block lg:px-8">
+        <div className="relative overflow-hidden rounded-[32px] border border-[#dbeafe] bg-white p-6 shadow-[0_25px_70px_rgba(37,99,235,0.08)] lg:p-8">
+          <div className="absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
+
+          <div className="grid gap-6 lg:grid-cols-[1fr_350px] lg:items-center">
+            <div>
+              <span className="text-sm font-black text-brand-500">
+                Safety & Regulation
+              </span>
+
+              <h2 className="mt-2 text-3xl font-black leading-tight lg:text-[42px]">
+                Safety and Regulation: {leftName} vs {rightName}
+              </h2>
+
+              <p className="mt-3 max-w-4xl text-base leading-8 text-slate-600">
+                Compare regulators, licence numbers, legal entities
+                and client-fund protection to identify the company
+                that will actually be responsible for each account.
+              </p>
+            </div>
+
+            <div className="rounded-[26px] border border-[#93c5fd] bg-[linear-gradient(135deg,#eff6ff_0%,#ffffff_100%)] p-5">
+              <div className="text-xs font-black text-brand-500">
+                Regulatory Comparison
+              </div>
+
+              <div className="mt-2 text-2xl font-black">
+                {safetyWinner}
+              </div>
+
+              <p className="mt-2 text-sm leading-7 text-slate-600">
+                {safetyWinner === "Very close"
+                  ? "No clear safety difference is visible. Compare the legal entity assigned to each account."
+                  : "Scores higher for safety in this comparison, but the registration entity must still be verified."}
+              </p>
+            </div>
+          </div>
+
+          {/* Safety indicators */}
+          <div className="mt-7 grid grid-cols-3 overflow-hidden rounded-[24px] border border-[#dbeafe] bg-[#f8fbff]">
+            <div className="border-r border-[#dbeafe] p-5 text-center">
+              <div className="text-xs font-black text-slate-500">
+                Safety Score
+              </div>
+
+              <div className="mt-3 grid grid-cols-2 gap-3">
+                {[left, right].map((broker) => (
+                  <div
+                    key={broker.id}
+                    className="flex min-h-[104px] flex-col items-center justify-center rounded-[16px] border border-[#dbeafe] bg-white px-3 py-3"
+                  >
+                    <div className="text-xs font-black text-brand-500">
+                      {brokerName(broker)}
+                    </div>
+
+                    <div className="mt-1 text-2xl font-black">
+                      {(broker.score_safety ?? 0).toFixed(2)}
+                    </div>
+
+                    <div className="text-[9px] font-bold text-slate-400">
+                      out of 5
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="border-r border-[#dbeafe] p-5 text-center">
+              <div className="text-xs font-black text-slate-500">
+                Registered Licences
+              </div>
+
+              <div className="mt-3 grid grid-cols-2 gap-3">
+                {[
+                  {
+                    broker: left,
+                    count: leftLicences.length,
+                  },
+                  {
+                    broker: right,
+                    count: rightLicences.length,
+                  },
+                ].map(({ broker, count }) => (
+                  <div
+                    key={broker.id}
+                    className="flex min-h-[104px] flex-col items-center justify-center rounded-[16px] border border-[#dbeafe] bg-white px-3 py-3"
+                  >
+                    <div className="text-xs font-black text-brand-500">
+                      {brokerName(broker)}
+                    </div>
+
+                    <div className="mt-1 text-2xl font-black">
+                      {count}
+                    </div>
+
+                    <div className="text-[9px] font-bold text-slate-400">
+                      active licence{count === 1 ? "" : "s"}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="p-5 text-center">
+              <div className="text-xs font-black text-slate-500">
+                Islamic Account
+              </div>
+
+              <div className="mt-3 grid grid-cols-2 gap-3">
+                {[left, right].map((broker) => {
+                  const status = yesNoEnglish(
+                    broker.islamic_account
+                  );
+
+                  return (
+                    <div
+                      key={broker.id}
+                      className="flex min-h-[104px] flex-col items-center justify-center rounded-[16px] border border-[#dbeafe] bg-white px-3 py-3"
+                    >
+                      <div className="text-xs font-black text-brand-500">
+                        {brokerName(broker)}
+                      </div>
+
+                      <span
+                        className={`mt-2 rounded-full px-3 py-1 text-[10px] font-black ${
+                          status === "Available"
+                            ? "bg-emerald-50 text-emerald-700"
+                            : "bg-slate-100 text-slate-600"
+                        }`}
+                      >
+                        {status}
+                      </span>
                     </div>
                   );
                 })}
               </div>
             </div>
           </div>
-        </div>
-      </section>
 
+          {/* Regulatory profiles */}
+<div className="mt-8 space-y-6">
+  {[left, right].map((broker) => {
+    const brokerLicences =
+      broker.id === left.id ? leftLicences : rightLicences;
 
-<section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
-  <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white shadow-[0_22px_65px_rgba(37,99,235,0.08)]">
-    <div className="pointer-events-none absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
+    const name = brokerName(broker);
 
-    {/* Desktop version */}
-    <div className="hidden p-6 lg:block lg:p-8">
-      <div className="max-w-5xl">
-        <span className="text-sm font-black text-brand-500">Final Verdict</span>
+    const regulationParagraphs = splitParagraphs(
+      broker.regulation_summary_en
+    );
 
-        <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-5xl">
-          Which broker is better: {left.name_en || left.name} or {right.name_en || right.name}?
-        </h2>
+    const safetyFactors = splitSafetyFactors(
+      broker.safety_factors_en
+    );
 
-        <p className="mt-3 text-base leading-8 text-slate-600">
-          This quick verdict helps you choose the broker that fits your trading style,
-          whether you are a beginner, focused on lower costs, or looking for the stronger
-          overall profile.
-        </p>
-      </div>
-
-      <div className="mt-7 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <div className="relative overflow-hidden rounded-[26px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5 shadow-[0_16px_40px_rgba(37,99,235,0.14)]">
-          <div className="absolute right-4 top-4 rounded-full bg-brand-500 px-3 py-1 text-[11px] font-black text-white">
-            Winner
-          </div>
-          <div className="text-xs font-black text-brand-500">Best Overall</div>
-          <div className="mt-3 truncate text-3xl font-black text-[#0f172a]">
-            {overallWinner}
-          </div>
-          <p className="mt-2 text-sm leading-6 text-slate-600">
-            Best balance between rating, trust, fees, and ease of use.
-          </p>
-        </div>
-
-        <div className="rounded-[26px] border border-slate-200 bg-white p-5 shadow-sm">
-          <div className="text-xs font-black text-slate-500">Best for Beginners</div>
-          <div className="mt-3 truncate text-3xl font-black text-[#0f172a]">
-            {beginnerWinner === "Tie" ? "Very Close" : beginnerWinner}
-          </div>
-          <p className="mt-2 text-sm leading-6 text-slate-600">
-            Better for traders who want a simpler and easier start.
-          </p>
-        </div>
-
-        <div className="rounded-[26px] border border-slate-200 bg-white p-5 shadow-sm">
-          <div className="text-xs font-black text-slate-500">Best for Spreads</div>
-          <div className="mt-3 truncate text-3xl font-black text-[#0f172a]">
-            {scalpingWinner === "Tie" ? "Very Close" : scalpingWinner}
-          </div>
-          <p className="mt-2 text-sm leading-6 text-slate-600">
-            More relevant for traders focused on cost and execution.
-          </p>
-        </div>
-
-        <div className="rounded-[26px] border border-slate-200 bg-white p-5 shadow-sm">
-          <div className="text-xs font-black text-slate-500">Best Entry Cost</div>
-          <div className="mt-3 truncate text-3xl font-black text-[#0f172a]">
-            {depositWinner === "Tie" ? "Very Close" : depositWinner}
-          </div>
-          <p className="mt-2 text-sm leading-6 text-slate-600">
-            Better for traders who want to start with a lower deposit.
-          </p>
-        </div>
-      </div>
-
-      <div className="mt-7 rounded-[28px] border border-[#dbeafe] bg-[#f8fbff] p-5 lg:p-6">
-        <div className="grid gap-5 lg:grid-cols-[1.4fr_1fr] lg:items-center">
-          <div>
-            <div className="text-sm font-black text-brand-500">Quick Summary</div>
-            <p className="mt-2 text-sm leading-8 text-slate-700 lg:text-base">
-              If you want the stronger overall broker based on rating, trust, fees,
-              and usability, <strong>{overallWinner}</strong> looks like the stronger
-              option here. For beginners, <strong>{beginnerWinner}</strong> may offer
-              an easier start. If your focus is lower spreads and active trading
-              conditions, <strong>{scalpingWinner}</strong> looks more relevant.
-            </p>
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-            <a
-              href={`/go/${left.slug ?? ""}?type=real`}
-              className={`inline-flex min-h-[50px] items-center justify-center rounded-2xl px-6 py-3 text-sm font-black transition ${
-                overallWinner === (left.name_en || left.name)
-                  ? "bg-brand-500 text-white hover:bg-brand-600"
-                  : "border border-slate-300 bg-white text-slate-800 hover:bg-slate-50"
-              }`}
-            >
-              Open Account with {left.name_en || left.name}
-            </a>
-
-            <a
-              href={`/go/${right.slug ?? ""}?type=real`}
-              className={`inline-flex min-h-[50px] items-center justify-center rounded-2xl px-6 py-3 text-sm font-black transition ${
-                overallWinner === (right.name_en || right.name)
-                  ? "bg-brand-500 text-white hover:bg-brand-600"
-                  : "border border-slate-300 bg-white text-slate-800 hover:bg-slate-50"
-              }`}
-            >
-              Open Account with {right.name_en || right.name}
-            </a>
-          </div>
-        </div>
-
-        <p className="mt-4 text-xs text-slate-500">
-          Account opening is completed through the broker’s official website.
-        </p>
-      </div>
-    </div>
-
-    {/* Mobile version */}
-    <div className="block p-4 lg:hidden">
-      <div className="mb-4">
-        <span className="text-xs font-black text-brand-500">Final Verdict</span>
-
-        <h2 className="mt-2 text-[26px] font-black leading-[1.25] text-[#0f172a]">
-          Which broker is better: {left.name_en || left.name} or {right.name_en || right.name}?
-        </h2>
-
-        <p className="mt-2 text-sm leading-7 text-slate-600">
-          A quick summary to help you choose the better broker based on your goal.
-        </p>
-      </div>
-
-      <div className="rounded-[26px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-4 shadow-[0_14px_35px_rgba(37,99,235,0.14)]">
-        <div className="inline-flex rounded-full bg-brand-500 px-3 py-1 text-[10px] font-black text-white">
-          Overall Winner
-        </div>
-
-        <div className="mt-3 text-3xl font-black text-[#0f172a]">
-          {overallWinner}
-        </div>
-
-        <p className="mt-2 text-sm leading-7 text-slate-600">
-          Best balance between rating, fees, trust, and usability.
-        </p>
-      </div>
-
-      <div className="mt-3 grid grid-cols-3 gap-2">
-        <div className="rounded-2xl border border-slate-200 bg-white px-2 py-3 text-center shadow-sm">
-          <div className="text-[10px] font-bold text-slate-500">Beginners</div>
-          <div className="mt-1 truncate text-xs font-black text-[#0f172a]">
-            {beginnerWinner === "Tie" ? "Close" : beginnerWinner}
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-slate-200 bg-white px-2 py-3 text-center shadow-sm">
-          <div className="text-[10px] font-bold text-slate-500">Spreads</div>
-          <div className="mt-1 truncate text-xs font-black text-[#0f172a]">
-            {scalpingWinner === "Tie" ? "Close" : scalpingWinner}
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-slate-200 bg-white px-2 py-3 text-center shadow-sm">
-          <div className="text-[10px] font-bold text-slate-500">Deposit</div>
-          <div className="mt-1 truncate text-xs font-black text-[#0f172a]">
-            {depositWinner === "Tie" ? "Close" : depositWinner}
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-4 rounded-[24px] border border-[#dbeafe] bg-[#f8fbff] p-4">
-        <div className="text-xs font-black text-brand-500">Quick Summary</div>
-
-        <p className="mt-2 text-sm leading-7 text-slate-700">
-          If you want the stronger overall choice,{" "}
-          <strong>{overallWinner}</strong> looks more suitable here. For beginners,
-          the closer choice is{" "}
-          <strong>{beginnerWinner === "Tie" ? "both brokers" : beginnerWinner}</strong>.
-          For lower spreads and active trading,{" "}
-          <strong>{scalpingWinner === "Tie" ? "the lower-cost account type" : scalpingWinner}</strong>{" "}
-          looks more relevant.
-        </p>
-      </div>
-
-      <div className="mt-4 grid gap-2">
-        <a
-          href={`/go/${overallWinner === (left.name_en || left.name) ? left.slug ?? "" : right.slug ?? ""}?type=real`}
-          className="inline-flex min-h-[50px] items-center justify-center rounded-2xl bg-brand-500 px-5 py-3 text-sm font-black text-white shadow-sm"
-        >
-          Open Account with {overallWinner}
-        </a>
-
-        <Link
-          href={`/en/brokers/${overallWinner === (left.name_en || left.name) ? left.slug ?? "" : right.slug ?? ""}`}
-          className="inline-flex min-h-[48px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-5 py-3 text-sm font-black text-slate-800"
-        >
-          Read {overallWinner} Review
-        </Link>
-      </div>
-
-      <p className="mt-3 text-center text-[11px] leading-5 text-slate-500">
-        Account opening is completed through the broker’s official website.
-      </p>
-    </div>
-  </div>
-</section>
-
-<section className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
-  <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white shadow-[0_25px_70px_rgba(37,99,235,0.08)]">
-    <div className="absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
-
-    {/* Desktop version */}
-    <div className="hidden p-6 md:block lg:p-8">
-      <div className="max-w-5xl">
-        <span className="text-sm font-black text-brand-500">Score Analysis</span>
-
-        <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-5xl">
-          Strength Analysis Between {left.name_en || left.name} and {right.name_en || right.name}
-        </h2>
-
-        <p className="mt-3 text-base leading-8 text-slate-600">
-          A clear visual comparison showing where each broker performs better in safety,
-          fees, platforms, deposits and withdrawals, and customer support.
-        </p>
-      </div>
-
-      <div className="mt-5 flex flex-wrap gap-3">
-        <span className="rounded-full border border-brand-100 bg-brand-50 px-4 py-2 text-sm font-black text-brand-500">
-          Best Overall: {overallWinner}
-        </span>
-
-        <span className="rounded-full border border-slate-200 bg-gradient-to-b from-[#eff6ff] to-white px-4 py-2 text-sm font-black text-slate-600">
-          Best for Beginners: {beginnerWinner === "Tie" ? "Very Close" : beginnerWinner}
-        </span>
-      </div>
-
-      <div className="mt-8 grid gap-4 lg:grid-cols-2">
-        {[
-          {
-            label: "Safety & Trust",
-            leftScore: left.score_safety ?? 0,
-            rightScore: right.score_safety ?? 0,
-            note: "Reflects regulation strength and client fund protection.",
-          },
-          {
-            label: "Fees & Costs",
-            leftScore: left.score_fees ?? 0,
-            rightScore: right.score_fees ?? 0,
-            note: "Measures spreads, trading costs, and general fees.",
-          },
-          {
-            label: "Trading Platforms",
-            leftScore: left.score_platforms ?? 0,
-            rightScore: right.score_platforms ?? 0,
-            note: "Based on platform quality and available trading tools.",
-          },
-          {
-            label: "Deposits & Withdrawals",
-            leftScore: left.score_deposit ?? 0,
-            rightScore: right.score_deposit ?? 0,
-            note: "Focuses on funding options and withdrawal convenience.",
-          },
-          {
-            label: "Support & Customer Service",
-            leftScore: left.score_support ?? 0,
-            rightScore: right.score_support ?? 0,
-            note: "Compares support quality and overall user experience.",
-          },
-        ].map((item) => {
-          const winner =
-            item.leftScore > item.rightScore
-              ? left.name_en || left.name
-              : item.rightScore > item.leftScore
-              ? right.name_en || right.name
-              : "Tie";
-
-          const diff = Math.abs(item.leftScore - item.rightScore);
-          const isClose = diff < 0.3;
-
-          return (
-            <div
-              key={item.label}
-              className={`rounded-[28px] border border-slate-200 bg-[#f8fbff] p-5 shadow-sm ${
-                item.label === "Support & Customer Service" ? "lg:col-span-2" : ""
-              }`}
-            >
-              <div className="mb-5 flex items-start justify-between gap-4">
-                <div>
-                  <h3 className="text-xl font-black text-[#0f172a]">
-                    {item.label}
-                  </h3>
-                  <p className="mt-1 text-sm leading-6 text-slate-500">
-                    {item.note}
-                  </p>
-                </div>
-
-                <span
-                  className={`shrink-0 rounded-full px-4 py-1.5 text-[12px] font-black shadow-sm ${
-                    winner !== "Tie" && !isClose
-                      ? "border border-brand-100 bg-white text-brand-500"
-                      : "border border-slate-200 bg-slate-50 text-slate-500"
-                  }`}
-                >
-                  {winner === "Tie"
-                    ? "Very Close"
-                    : diff < 0.2
-                    ? "Very Close"
-                    : diff < 0.5
-                    ? "Small Edge"
-                    : `Better: ${winner}`}
+    return (
+      <article
+        key={broker.id}
+        className="overflow-hidden rounded-[30px] border border-[#dbeafe] bg-white shadow-[0_12px_35px_rgba(15,23,42,0.06)]"
+      >
+        {/* Broker heading */}
+        <div className="flex items-center justify-between gap-6 border-b border-[#dbeafe] bg-[linear-gradient(90deg,#eff6ff_0%,#ffffff_100%)] px-6 py-5">
+          <div className="flex min-w-0 items-center gap-4">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[18px] border border-[#dbeafe] bg-white p-2 shadow-sm">
+              {broker.logo ? (
+                <img
+                  src={broker.logo}
+                  alt={`${name} logo`}
+                  className="h-full w-full object-contain"
+                />
+              ) : (
+                <span className="text-xs font-black text-slate-400">
+                  {name}
                 </span>
-              </div>
-
-              <div className="grid gap-3">
-                <div
-                  className={`rounded-2xl border px-4 py-3 ${
-                    winner === (left.name_en || left.name) && !isClose
-                      ? "border-[#2563eb] bg-white shadow-sm"
-                      : "border-slate-200 bg-white"
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-4">
-                    <span className="font-black text-[#0f172a]">
-                      {left.name_en || left.name}
-                    </span>
-
-                    <span className="text-xl font-black text-brand-500">
-                      {item.leftScore.toFixed(1)}
-                      <span className="text-xs text-slate-400"> / 5</span>
-                    </span>
-                  </div>
-
-                  <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100">
-                    <div
-                      className="h-full rounded-full bg-brand-500/70"
-                      style={{ width: `${Math.min(item.leftScore * 20, 100)}%` }}
-                    />
-                  </div>
-                </div>
-
-                <div
-                  className={`rounded-2xl border px-4 py-3 ${
-                    winner === (right.name_en || right.name) && !isClose
-                      ? "border-[#2563eb] bg-white shadow-sm"
-                      : "border-slate-200 bg-white"
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-4">
-                    <span className="font-black text-[#0f172a]">
-                      {right.name_en || right.name}
-                    </span>
-
-                    <span className="text-xl font-black text-brand-500">
-                      {item.rightScore.toFixed(1)}
-                      <span className="text-xs text-slate-400"> / 5</span>
-                    </span>
-                  </div>
-
-                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100">
-                    <div
-                      className="h-full rounded-full bg-brand-500/70"
-                      style={{ width: `${Math.min(item.rightScore * 20, 100)}%` }}
-                    />
-                  </div>
-                </div>
-              </div>
+              )}
             </div>
-          );
-        })}
-      </div>
 
-      <div className="mt-8 rounded-[26px] border border-[#dbeafe] bg-[#f8fbff] p-5">
-        <p className="text-sm leading-7 text-slate-600 lg:text-base">
-          These scores do not mean one broker is the best for everyone. They help you
-          understand where each broker performs better depending on your priority:
-          safety, costs, platforms, deposits and withdrawals, or customer support.
-        </p>
-      </div>
-    </div>
+            <div className="min-w-0">
+              <div className="text-xs font-black text-brand-500">
+                Regulatory Profile
+              </div>
 
-    {/* Mobile version */}
-<div className="block p-4 md:hidden">
-  <div>
-    <span className="text-xs font-black text-brand-500">Score Analysis</span>
-
-    <h2 className="mt-2 text-[26px] font-black leading-[1.25] text-[#0f172a]">
-      Strength Analysis Between {left.name_en || left.name} and {right.name_en || right.name}
-    </h2>
-
-    <p className="mt-2 text-sm leading-7 text-slate-600">
-      A visual summary showing where each broker performs better in safety, fees,
-      platforms, deposits and withdrawals, and support.
-    </p>
-  </div>
-
-  <div className="mt-4 flex flex-wrap gap-2">
-    <span className="rounded-full border border-brand-100 bg-brand-50 px-3 py-1.5 text-[11px] font-black text-brand-500">
-      Best Overall: {overallWinner}
-    </span>
-
-    <span className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[11px] font-black text-slate-600">
-      Beginners: {beginnerWinner === "Tie" ? "Very Close" : beginnerWinner}
-    </span>
-  </div>
-
-  <div className="mt-5 space-y-3">
-    {[
-      {
-        label: "Safety & Trust",
-        leftScore: left.score_safety ?? 0,
-        rightScore: right.score_safety ?? 0,
-        note: "Reflects regulation strength and client fund protection.",
-      },
-      {
-        label: "Fees & Costs",
-        leftScore: left.score_fees ?? 0,
-        rightScore: right.score_fees ?? 0,
-        note: "Measures spreads, trading costs, and general fees.",
-      },
-      {
-        label: "Trading Platforms",
-        leftScore: left.score_platforms ?? 0,
-        rightScore: right.score_platforms ?? 0,
-        note: "Based on platform quality and available trading tools.",
-      },
-      {
-        label: "Deposits & Withdrawals",
-        leftScore: left.score_deposit ?? 0,
-        rightScore: right.score_deposit ?? 0,
-        note: "Focuses on funding options and withdrawal convenience.",
-      },
-      {
-        label: "Support & Customer Service",
-        leftScore: left.score_support ?? 0,
-        rightScore: right.score_support ?? 0,
-        note: "Compares support quality and overall user experience.",
-      },
-    ].map((item) => {
-      const winner =
-        item.leftScore > item.rightScore
-          ? left.name_en || left.name
-          : item.rightScore > item.leftScore
-          ? right.name_en || right.name
-          : "Tie";
-
-      const diff = Math.abs(item.leftScore - item.rightScore);
-      const isClose = diff < 0.3;
-
-      return (
-        <div
-          key={item.label}
-          className="rounded-[28px] border border-slate-200 bg-[#f8fbff] p-4 shadow-sm"
-        >
-          <div className="mb-4 flex items-start justify-between gap-3">
-            <div>
-              <h3 className="text-lg font-black text-[#0f172a]">
-                {item.label}
+              <h3 className="mt-1 break-words text-2xl font-black text-[#0f172a]">
+                {name} Licences
               </h3>
 
-              <p className="mt-1 text-xs leading-5 text-slate-500">
-                {item.note}
+              <p className="mt-1 text-sm text-slate-500">
+                {brokerLicences.length} registered licence
+                {brokerLicences.length === 1 ? "" : "s"}
+              </p>
+            </div>
+          </div>
+
+          <div className="grid shrink-0 grid-cols-2 gap-3">
+            <div className="rounded-[18px] border border-[#dbeafe] bg-white px-4 py-3 text-center">
+              <div className="text-xs font-bold text-slate-400">
+                Headquarters
+              </div>
+
+              <div className="mt-1 text-sm font-black text-[#0f172a]">
+                {broker.headquarters_en ||
+                  broker.headquarters ||
+                  "Not specified"}
+              </div>
+            </div>
+
+            <div className="rounded-[18px] border border-[#dbeafe] bg-white px-4 py-3 text-center">
+              <div className="text-xs font-bold text-slate-400">
+                Safety Score
+              </div>
+
+              <div className="mt-1 text-sm font-black text-brand-500">
+                {(broker.score_safety ?? 0).toFixed(2)} out of 5
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Regulatory summary */}
+        <div className="px-6 py-6">
+          <div className="grid gap-6 xl:grid-cols-[300px_minmax(0,1fr)]">
+            {/* Safety factors */}
+            <aside className="rounded-[22px] border border-[#dbeafe] bg-[#f8fbff] p-4">
+              <h4 className="text-sm font-black text-[#0f172a]">
+                Key Safety Factors
+              </h4>
+
+              <div className="mt-3 space-y-2">
+                {safetyFactors.length > 0 ? (
+                  safetyFactors.map((factor, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-2 rounded-[13px] border border-[#dbeafe] bg-white px-3 py-2.5"
+                    >
+                      <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-500" />
+
+                      <span className="text-xs font-bold leading-5 text-slate-700">
+                        {factor}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-xs leading-6 text-slate-500">
+                    Safety factors depend on the legal entity responsible
+                    for the account.
+                  </p>
+                )}
+              </div>
+            </aside>
+
+            {/* Summary text */}
+            <div className="min-w-0">
+              <h4 className="text-xl font-black text-[#0f172a]">
+                Regulatory Summary
+              </h4>
+
+              <div className="mt-4 space-y-4 text-[15px] leading-8 text-slate-700">
+                {regulationParagraphs.length > 0 ? (
+                  regulationParagraphs.map((paragraph, index) => (
+                    <p key={index} className="break-words">
+                      {paragraph}
+                    </p>
+                  ))
+                ) : (
+                  <p>
+                    No detailed regulatory summary is currently available.
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Licences table */}
+        <div className="border-y border-[#dbeafe] bg-[#fbfdff] px-6 py-6">
+          <div className="mb-4 flex items-end justify-between gap-5">
+            <div>
+              <h4 className="text-xl font-black text-[#0f172a]">
+                Regulators and Licence Numbers
+              </h4>
+
+              <p className="mt-1 text-sm leading-6 text-slate-500">
+                Verify the regulator, legal entity and licence number
+                before opening an account.
               </p>
             </div>
 
-            <span
-              className={`shrink-0 rounded-full px-3 py-1 text-[10px] font-black shadow-sm ${
-                winner !== "Tie" && !isClose
-                  ? "border border-brand-100 bg-white text-brand-500"
-                  : "border border-slate-200 bg-slate-50 text-slate-500"
-              }`}
-            >
-              {winner === "Tie"
-                ? "Close"
-                : diff < 0.2
-                ? "Close"
-                : diff < 0.5
-                ? "Small Edge"
-                : `Better: ${winner}`}
+            <span className="inline-flex shrink-0 items-center justify-center rounded-full border border-[#bfdbfe] bg-white px-4 py-2 text-xs font-black text-brand-500 shadow-sm">
+              {brokerLicences.length}{" "}
+              {brokerLicences.length === 1 ? "record" : "records"}
             </span>
           </div>
 
-          <div className="grid gap-3">
-            <div
-              className={`rounded-2xl border px-4 py-3 ${
-                winner === (left.name_en || left.name) && !isClose
-                  ? "border-[#2563eb] bg-white shadow-sm"
-                  : "border-slate-200 bg-white"
-              }`}
-            >
-              <div className="flex items-center justify-between gap-4">
-                <span className="font-black text-[#0f172a]">
-                  {left.name_en || left.name}
-                </span>
+          {brokerLicences.length > 0 ? (
+            <div className="overflow-x-auto rounded-[22px] border border-[#dbeafe] bg-white">
+              <div className="min-w-[1180px]">
+                {/* Table header */}
+                <div className="grid grid-cols-[1.1fr_0.8fr_0.9fr_2.2fr_1fr_0.9fr] items-stretch border-b border-[#dbeafe] bg-[#f4f8fd] text-center">
+                  <div className="flex min-h-[54px] items-center justify-center px-3 py-3 text-xs font-black text-slate-600">
+                    Regulator
+                  </div>
 
-                <span className="text-lg font-black text-brand-500">
-                  {item.leftScore.toFixed(1)}
-                  <span className="text-xs text-slate-400"> / 5</span>
-                </span>
-              </div>
+                  <div className="flex min-h-[54px] items-center justify-center border-l border-[#dbeafe] px-3 py-3 text-xs font-black text-slate-600">
+                    Country
+                  </div>
 
-              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100">
-                <div
-                  className="h-full rounded-full bg-brand-500/70"
-                  style={{ width: `${Math.min(item.leftScore * 20, 100)}%` }}
-                />
-              </div>
-            </div>
+                  <div className="flex min-h-[54px] items-center justify-center border-l border-[#dbeafe] px-3 py-3 text-xs font-black text-slate-600">
+                    Licence Number
+                  </div>
 
-            <div
-              className={`rounded-2xl border px-4 py-3 ${
-                winner === (right.name_en || right.name) && !isClose
-                  ? "border-[#2563eb] bg-white shadow-sm"
-                  : "border-slate-200 bg-white"
-              }`}
-            >
-              <div className="flex items-center justify-between gap-4">
-                <span className="font-black text-[#0f172a]">
-                  {right.name_en || right.name}
-                </span>
+                  <div className="flex min-h-[54px] items-center justify-center border-l border-[#dbeafe] px-3 py-3 text-xs font-black text-slate-600">
+                    Legal Entity
+                  </div>
 
-                <span className="text-lg font-black text-brand-500">
-                  {item.rightScore.toFixed(1)}
-                  <span className="text-xs text-slate-400"> / 5</span>
-                </span>
-              </div>
+                  <div className="flex min-h-[54px] items-center justify-center border-l border-[#dbeafe] px-3 py-3 text-xs font-black text-slate-600">
+                    Oversight Level
+                  </div>
 
-              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100">
-                <div
-                  className="h-full rounded-full bg-brand-500/70"
-                  style={{ width: `${Math.min(item.rightScore * 20, 100)}%` }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    })}
-  </div>
-
-  <div className="mt-5 rounded-[24px] border border-[#dbeafe] bg-[#f8fbff] p-4">
-    <p className="text-sm leading-7 text-slate-600">
-      These scores help you understand where each broker performs better depending
-      on your priority: safety, costs, platforms, deposits and withdrawals, or support.
-    </p>
-  </div>
-</div>
-  </div>
-</section>
-
-<section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
-  <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white shadow-[0_25px_70px_rgba(37,99,235,0.08)]">
-    <div className="absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
-
-    {/* Desktop version */}
-    <div className="hidden p-6 md:block lg:p-8">
-      <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
-        <div>
-          <span className="text-sm font-black text-brand-500">
-            Accounts & Trading Costs
-          </span>
-
-          <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-5xl">
-            Account and Fee Comparison Between {left.name_en || left.name} and {right.name_en || right.name}
-          </h2>
-
-          <p className="mt-3 text-base leading-8 text-slate-600">
-            This section summarizes the main cost factors when choosing an account:
-            minimum deposit, average spread, trading commissions, and execution method.
-          </p>
-        </div>
-
-        <div className="rounded-[28px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5 shadow-[0_16px_40px_rgba(37,99,235,0.12)]">
-          <div className="text-xs font-black text-brand-500">Quick Summary</div>
-          <div className="mt-2 text-3xl font-black text-[#0f172a]">
-            {scalpingWinner === "Tie" ? "Costs Are Close" : scalpingWinner}
-          </div>
-          <p className="mt-2 text-sm leading-7 text-slate-600">
-            {scalpingWinner === "Tie"
-              ? "There is no clear cost winner from the current data, so the account type becomes the most important factor."
-              : `${scalpingWinner} looks stronger in terms of cost or spreads based on the available data.`}
-          </p>
-        </div>
-      </div>
-
-      <div className="mt-7 grid gap-4 md:grid-cols-3">
-        <div className="rounded-[24px] border border-slate-200 bg-[#f8fbff] p-5">
-          <div className="text-xs font-black text-slate-500">Available Accounts</div>
-          <div className="mt-3 flex items-center justify-between gap-6">
-            <div>
-              <div className="text-xs font-bold text-brand-500">{left.name_en || left.name}</div>
-              <div className="text-3xl font-black text-[#0f172a]">
-                {leftAccounts.length}
-              </div>
-            </div>
-            <div>
-              <div className="text-xs font-bold text-brand-500">{right.name_en || right.name}</div>
-              <div className="text-3xl font-black text-[#0f172a]">
-                {rightAccounts.length}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="rounded-[24px] border border-slate-200 bg-[#f8fbff] p-5">
-          <div className="text-xs font-black text-slate-500">Best for Beginners</div>
-          <div className="mt-3 text-2xl font-black text-[#0f172a]">
-            {beginnerWinner === "Tie" ? "Very Close" : beginnerWinner}
-          </div>
-          <p className="mt-2 text-sm leading-6 text-slate-600">
-            Based on ease of entry, minimum deposit, and account clarity.
-          </p>
-        </div>
-
-        <div className="rounded-[24px] border border-brand-100 bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5">
-          <div className="text-xs font-black text-brand-500">Important Before Choosing</div>
-          <div className="mt-3 text-lg font-black leading-7 text-[#0f172a]">
-            The right account matters more than the number of accounts.
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-8 overflow-hidden rounded-[28px] border border-slate-200 bg-[#fbfdff]">
-        <div className="grid grid-cols-[1fr_1fr_1fr] border-b border-slate-200 bg-[#f8fbff] text-sm font-black text-[#0f172a]">
-          <div className="p-4 text-left">Key Cost Factors</div>
-          <div className="border-x border-slate-200 p-4 text-center">{left.name_en || left.name}</div>
-          <div className="p-4 text-center">{right.name_en || right.name}</div>
-        </div>
-
-        {[
-          {
-            label: "Main Account Type",
-            leftValue: leftAccounts[0]?.account_name_en || leftAccounts[0]?.account_name || "Not specified",
-            rightValue: rightAccounts[0]?.account_name_en || rightAccounts[0]?.account_name || "Not specified",
-          },
-          {
-            label: "Minimum Deposit",
-            leftValue:
-              leftAccounts.find((a) => cleanText(a.min_deposit_en || a.min_deposit))?.min_deposit_en ||
-              leftAccounts.find((a) => cleanText(a.min_deposit))?.min_deposit ||
-              money(left.min_deposit),
-            rightValue:
-              rightAccounts.find((a) => cleanText(a.min_deposit_en || a.min_deposit))?.min_deposit_en ||
-              rightAccounts.find((a) => cleanText(a.min_deposit))?.min_deposit ||
-              money(right.min_deposit),
-          },
-          {
-            label: "Average Spread",
-            leftValue:
-              leftAccounts.find((a) => cleanText(a.spread_en || a.spread))?.spread_en ||
-              leftAccounts.find((a) => cleanText(a.spread))?.spread ||
-              cleanText(left.spreads_en || left.spreads) ||
-              "Not specified",
-            rightValue:
-              rightAccounts.find((a) => cleanText(a.spread_en || a.spread))?.spread_en ||
-              rightAccounts.find((a) => cleanText(a.spread))?.spread ||
-              cleanText(right.spreads_en || right.spreads) ||
-              "Not specified",
-          },
-          {
-            label: "Trading Commission",
-            leftValue:
-              leftAccounts.find((a) => cleanText(a.commission_en || a.commission))?.commission_en ||
-              leftAccounts.find((a) => cleanText(a.commission))?.commission ||
-              cleanText(left.fees_en || left.fees) ||
-              "Not specified",
-            rightValue:
-              rightAccounts.find((a) => cleanText(a.commission_en || a.commission))?.commission_en ||
-              rightAccounts.find((a) => cleanText(a.commission))?.commission ||
-              cleanText(right.fees_en || right.fees) ||
-              "Not specified",
-          },
-          {
-            label: "Execution Method",
-            leftValue:
-              leftAccounts.find((a) => cleanText(a.execution_type_en || a.execution_type))?.execution_type_en ||
-              leftAccounts.find((a) => cleanText(a.execution_type))?.execution_type ||
-              "Not specified",
-            rightValue:
-              rightAccounts.find((a) => cleanText(a.execution_type_en || a.execution_type))?.execution_type_en ||
-              rightAccounts.find((a) => cleanText(a.execution_type))?.execution_type ||
-              "Not specified",
-          },
-        ].map((row) => (
-          <div
-            key={row.label}
-            className="grid grid-cols-[1fr_1fr_1fr] border-b border-slate-200 last:border-b-0"
-          >
-            <div className="p-4 text-sm font-black text-slate-600">
-              {row.label}
-            </div>
-            <div className="border-x border-slate-200 p-4 text-center text-sm font-black text-[#0f172a]">
-              {row.leftValue}
-            </div>
-            <div className="p-4 text-center text-sm font-black text-[#0f172a]">
-              {row.rightValue}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-7 grid gap-5 lg:grid-cols-2">
-        {[left, right].map((broker) => {
-          const brokerAccounts = broker.id === left.id ? leftAccounts : rightAccounts;
-          const brokerName = broker.name_en || broker.name;
-
-          return (
-            <details
-              key={broker.slug}
-              className="group rounded-[28px] border border-slate-200 bg-[#f8fbff] p-5"
-            >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4">
-                <div>
-                  <h3 className="text-2xl font-black text-[#0f172a]">
-                    {brokerName} Accounts
-                  </h3>
-                  <p className="mt-1 text-sm font-bold text-brand-500">
-                    {brokerAccounts.length} available account{brokerAccounts.length === 1 ? "" : "s"}
-                  </p>
+                  <div className="flex min-h-[54px] items-center justify-center border-l border-[#dbeafe] px-3 py-3 text-xs font-black text-slate-600">
+                    Verification
+                  </div>
                 </div>
 
-                <span className="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-black text-slate-500 transition group-open:rotate-180">
-                  ▼
-                </span>
-              </summary>
+                {/* Table rows */}
+                {brokerLicences.map((licence, index) => {
+                  const verificationUrl =
+                    licence.verification_url_en ||
+                    licence.verification_url_ar;
 
-              <div className="mt-5 grid gap-4">
-                {brokerAccounts.length > 0 ? (
-                  brokerAccounts.map((acc) => (
+                  return (
                     <div
-                      key={acc.id}
-                      className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm"
+                      key={licence.id}
+                      className={`grid grid-cols-[1.1fr_0.8fr_0.9fr_2.2fr_1fr_0.9fr] items-stretch text-center text-sm transition-colors hover:bg-[#f8fbff] ${
+                        index !== brokerLicences.length - 1
+                          ? "border-b border-[#dbeafe]"
+                          : ""
+                      }`}
                     >
-                      <div className="mb-4">
-                       <Link
-  href={`/en/brokers/${broker.slug}/accounts/${accountSlug(acc.account_name_en || acc.account_name)}`}
-  target="_blank"
-  rel="noopener noreferrer"
-  className="inline-block text-lg font-black text-[#0f172a] transition hover:text-brand-500 hover:underline"
->
-  {acc.account_name_en || acc.account_name || "Account"}
-</Link>
-                        <p className="mt-1 text-xs font-bold text-brand-500">
-                          {acc.best_for_en || acc.best_for || "Suitable for multiple trader profiles"}
-                        </p>
+                      {/* Regulator */}
+                      <div className="flex min-h-[88px] flex-col items-center justify-center px-3 py-3">
+                        <span className="font-black text-[#0f172a]">
+                          {licence.regulator_code || "Not specified"}
+                        </span>
+
+                        {licence.regulator_name_en ? (
+                          <span className="mt-1 max-w-[170px] text-[10px] leading-4 text-slate-400">
+                            {licence.regulator_name_en}
+                          </span>
+                        ) : null}
                       </div>
 
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3">
-                          <div className="text-[11px] font-bold text-slate-500">Spread</div>
-                          <div className="mt-1 text-sm font-black text-[#0f172a]">
-                            {acc.spread_en || acc.spread || "Not specified"}
-                          </div>
-                        </div>
+                      {/* Country */}
+                      <div className="flex min-h-[88px] items-center justify-center border-l border-[#dbeafe] px-3 py-3">
+                        <span className="font-bold leading-5 text-slate-700">
+                          {licence.country_en || "Not specified"}
+                        </span>
+                      </div>
 
-                        <div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3">
-                          <div className="text-[11px] font-bold text-slate-500">Commission</div>
-                          <div className="mt-1 text-sm font-black text-[#0f172a]">
-                            {acc.commission_en || acc.commission || "Not specified"}
-                          </div>
-                        </div>
+                      {/* Licence number */}
+                      <div className="flex min-h-[88px] items-center justify-center border-l border-[#dbeafe] px-3 py-3">
+                        <span
+                          dir="ltr"
+                          className="font-black text-[#0f172a]"
+                        >
+                          {licence.license_number ||
+                            "Not publicly available"}
+                        </span>
+                      </div>
 
-                        <div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3">
-                          <div className="text-[11px] font-bold text-slate-500">Deposit</div>
-                          <div className="mt-1 text-sm font-black text-[#0f172a]">
-                            {acc.min_deposit_en || acc.min_deposit || "Not specified"}
-                          </div>
-                        </div>
+                      {/* Legal entity */}
+                      <div className="flex min-h-[88px] items-center justify-center border-l border-[#dbeafe] px-4 py-3">
+                        <span className="max-w-[340px] break-words text-center font-bold leading-6 text-slate-700">
+                          {licence.entity_name_en || "Not specified"}
+                        </span>
+                      </div>
 
-                        <div className="rounded-xl border border-slate-200 bg-[#fbfdff] px-3 py-3">
-                          <div className="text-[11px] font-bold text-slate-500">Execution</div>
-                          <div className="mt-1 text-sm font-black text-[#0f172a]">
-                            {acc.execution_type_en || acc.execution_type || "Not specified"}
-                          </div>
-                        </div>
+                      {/* Oversight level */}
+                      <div className="flex min-h-[88px] flex-col items-center justify-center border-l border-[#dbeafe] px-3 py-3">
+                        <span
+                          className={`inline-flex items-center justify-center whitespace-nowrap rounded-full border px-3 py-1 text-[10px] font-black ${licenseTrustClasses(
+                            licence.trust_level
+                          )}`}
+                        >
+                          {licenseTrustLabel(licence.trust_level)}
+                        </span>
+
+                        <span className="mt-1.5 text-[9px] font-bold text-slate-400">
+                          {licenseStatusLabel(licence.status_code)}
+                        </span>
+                      </div>
+
+                      {/* Verification */}
+                      <div className="flex min-h-[88px] items-center justify-center border-l border-[#dbeafe] px-3 py-3">
+                        {verificationUrl ? (
+                          <a
+                            href={verificationUrl}
+                            target="_blank"
+                            rel="noopener noreferrer nofollow"
+                            aria-label={`Verify the ${
+                              licence.regulator_code || name
+                            } licence`}
+                            className="inline-flex min-h-[36px] items-center justify-center whitespace-nowrap rounded-xl border border-[#bfdbfe] bg-[#eff6ff] px-3 py-2 text-[10px] font-black text-brand-500 transition hover:border-brand-500 hover:bg-brand-500 hover:text-white"
+                          >
+                            Official Check
+                          </a>
+                        ) : (
+                          <span className="text-[10px] font-bold text-slate-400">
+                            Not available
+                          </span>
+                        )}
                       </div>
                     </div>
-                  ))
-                ) : (
-                  <div className="rounded-[18px] border border-slate-200 bg-white p-4 text-sm text-slate-600">
-                    No account data is currently available.
-                  </div>
-                )}
+                  );
+                })}
               </div>
-            </details>
-          );
-        })}
-      </div>
+            </div>
+          ) : (
+            <div className="rounded-[20px] border border-amber-200 bg-amber-50 px-5 py-4 text-center text-sm leading-7 text-amber-800">
+              No licence records are currently available for {name}.
+            </div>
+          )}
+        </div>
 
-      <div className="mt-6 rounded-[28px] border border-[#2563eb]/20 bg-[linear-gradient(135deg,#eff6ff_0%,#ffffff_100%)] p-6 shadow-[0_20px_50px_rgba(37,99,235,0.08)] sm:p-7">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <h3 className="text-xl font-black text-[#0f172a] sm:text-2xl">
-              Start trading with the broker that fits you best
-            </h3>
-            <p className="mt-2 text-sm leading-7 text-slate-600 sm:text-base">
-              After reviewing account types and costs, you can open an account directly
-              with the broker that better fits your trading style.
+        {/* Fund protection */}
+        <div className="px-6 py-6">
+          <div className="rounded-[22px] border border-emerald-200 bg-emerald-50/60 px-5 py-5">
+            <div className="flex items-center justify-between gap-4">
+              <h4 className="text-lg font-black text-[#0f172a]">
+                Client Fund Protection at {name}
+              </h4>
+
+              <span className="shrink-0 rounded-full border border-emerald-200 bg-white px-3 py-1 text-[10px] font-black text-emerald-700">
+                Varies by entity
+              </span>
+            </div>
+
+            <div className="mt-3 space-y-3 text-[15px] leading-8 text-slate-700">
+  {splitParagraphs(
+    cleanText(broker.fund_protection_en) ||
+      "Review client-fund segregation, negative balance protection and compensation arrangements under the legal entity responsible for your account."
+  ).map((paragraph, index) => (
+    <p key={index} className="break-words">
+      {paragraph}
+    </p>
+  ))}
+</div>
+          </div>
+
+          <div className="mt-3 text-[11px] text-slate-400">
+            Last licence-record verification:{" "}
+            <span className="font-bold text-slate-600">
+              {brokerLicences.length > 0
+                ? formatVerifiedDate(
+                    brokerLicences
+                      .map((licence) => licence.last_verified)
+                      .filter(Boolean)
+                      .sort()
+                      .reverse()[0] || null
+                  )
+                : "Not specified"}
+            </span>
+          </div>
+        </div>
+      </article>
+    );
+  })}
+</div>
+
+          <div className="mt-6 rounded-[20px] border border-[#dbeafe] bg-[#f8fbff] px-5 py-4 text-center">
+            <p className="text-sm leading-7 text-slate-500">
+              The number of licences alone does not determine safety.
+              Verify the legal entity named in your client agreement,
+              its licence number and the protections that apply before
+              depositing.
             </p>
           </div>
-
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <Link
-              href={`/go/${left.slug}`}
-              className="inline-flex items-center justify-center rounded-2xl bg-brand-500 px-7 py-3 text-sm font-extrabold text-white shadow-md transition hover:scale-[1.02] hover:bg-brand-600"
-            >
-              Open {left.name_en || left.name} Account
-            </Link>
-
-            <Link
-              href={`/go/${right.slug}`}
-              className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-7 py-3 text-sm font-extrabold text-slate-800 transition hover:bg-slate-50"
-            >
-              Open {right.name_en || right.name} Account
-            </Link>
-          </div>
         </div>
-      </div>
+      </section>
 
-      <div className="mt-7 rounded-[26px] border border-[#dbeafe] bg-[#f8fbff] p-5">
-        <p className="text-sm leading-7 text-slate-600 lg:text-base">
-          This section summarizes trading costs in a practical way. The number of accounts
-          alone is not enough to judge a broker; what matters most is choosing the account
-          that matches your needs in terms of spreads, commission, minimum deposit, and execution.
-        </p>
-      </div>
-    </div>
+      {/* ======================================================
+          SAFETY & REGULATION — MOBILE
+      ====================================================== */}
+      <section className="mx-auto max-w-[1520px] px-3 pb-4 md:hidden">
+        <div className="relative overflow-hidden rounded-[24px] border border-[#dbeafe] bg-white p-4">
+          <div className="absolute inset-x-0 top-0 h-1 bg-brand-500" />
 
-    {/* Mobile version */}
-    <div className="block p-4 md:hidden">
-      <div>
-        <span className="text-xs font-black text-brand-500">
-          Accounts & Trading Costs
-        </span>
-
-        <h2 className="mt-2 text-[26px] font-black leading-[1.25] text-[#0f172a]">
-          Account and Fee Comparison
-        </h2>
-
-        <p className="mt-2 text-sm leading-7 text-slate-600">
-          A quick summary of the main cost factors between {left.name_en || left.name} and {right.name_en || right.name}.
-        </p>
-      </div>
-
-      <div className="mt-4 rounded-[24px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-4 shadow-[0_12px_28px_rgba(37,99,235,0.12)]">
-        <div className="text-[11px] font-black text-brand-500">
-          Quick Summary
-        </div>
-
-        <div className="mt-1 text-2xl font-black text-[#0f172a]">
-          {scalpingWinner === "Tie" ? "Costs Are Close" : scalpingWinner}
-        </div>
-
-        <p className="mt-1 text-xs leading-6 text-slate-600">
-          {scalpingWinner === "Tie"
-            ? "There is no clear cost winner; the account type is the key factor."
-            : `${scalpingWinner} looks stronger in terms of cost or spreads.`}
-        </p>
-      </div>
-
-      <div className="mt-4 grid grid-cols-3 gap-2">
-        <div className="rounded-2xl border border-slate-200 bg-[#f8fbff] px-2 py-3 text-center">
-          <div className="text-[10px] font-bold text-slate-500">
-            {left.name_en || left.name} Accounts
-          </div>
-          <div className="mt-1 text-xl font-black text-[#0f172a]">
-            {leftAccounts.length}
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-slate-200 bg-[#f8fbff] px-2 py-3 text-center">
-          <div className="text-[10px] font-bold text-slate-500">
-            {right.name_en || right.name} Accounts
-          </div>
-          <div className="mt-1 text-xl font-black text-[#0f172a]">
-            {rightAccounts.length}
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-brand-100 bg-brand-50 px-2 py-3 text-center">
-          <div className="text-[10px] font-bold text-brand-500">Beginners</div>
-          <div className="mt-1 truncate text-xs font-black text-[#0f172a]">
-            {beginnerWinner === "Tie" ? "Very Close" : beginnerWinner}
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-4 overflow-hidden rounded-[24px] border border-[#dbeafe]">
-        <div className="grid grid-cols-[1.15fr_1fr_1fr] bg-[#f8fbff] text-[11px] font-black text-[#0f172a]">
-          <div className="p-3 text-left">Factor</div>
-          <div className="border-x border-[#dbeafe] p-3 text-center">
-            {left.name_en || left.name}
-          </div>
-          <div className="p-3 text-center">{right.name_en || right.name}</div>
-        </div>
-
-        {[
-          {
-            label: "Main Account",
-            leftValue: leftAccounts[0]?.account_name_en || leftAccounts[0]?.account_name || "Not specified",
-            rightValue: rightAccounts[0]?.account_name_en || rightAccounts[0]?.account_name || "Not specified",
-          },
-          {
-            label: "Min Deposit",
-            leftValue:
-              leftAccounts.find((a) => cleanText(a.min_deposit_en || a.min_deposit))?.min_deposit_en ||
-              leftAccounts.find((a) => cleanText(a.min_deposit))?.min_deposit ||
-              money(left.min_deposit),
-            rightValue:
-              rightAccounts.find((a) => cleanText(a.min_deposit_en || a.min_deposit))?.min_deposit_en ||
-              rightAccounts.find((a) => cleanText(a.min_deposit))?.min_deposit ||
-              money(right.min_deposit),
-          },
-          {
-            label: "Spread",
-            leftValue:
-              leftAccounts.find((a) => cleanText(a.spread_en || a.spread))?.spread_en ||
-              leftAccounts.find((a) => cleanText(a.spread))?.spread ||
-              cleanText(left.spreads_en || left.spreads) ||
-              "Not specified",
-            rightValue:
-              rightAccounts.find((a) => cleanText(a.spread_en || a.spread))?.spread_en ||
-              rightAccounts.find((a) => cleanText(a.spread))?.spread ||
-              cleanText(right.spreads_en || right.spreads) ||
-              "Not specified",
-          },
-          {
-            label: "Commission",
-            leftValue:
-              leftAccounts.find((a) => cleanText(a.commission_en || a.commission))?.commission_en ||
-              leftAccounts.find((a) => cleanText(a.commission))?.commission ||
-              cleanText(left.fees_en || left.fees) ||
-              "Not specified",
-            rightValue:
-              rightAccounts.find((a) => cleanText(a.commission_en || a.commission))?.commission_en ||
-              rightAccounts.find((a) => cleanText(a.commission))?.commission ||
-              cleanText(right.fees_en || right.fees) ||
-              "Not specified",
-          },
-          {
-            label: "Execution",
-            leftValue:
-              leftAccounts.find((a) => cleanText(a.execution_type_en || a.execution_type))?.execution_type_en ||
-              leftAccounts.find((a) => cleanText(a.execution_type))?.execution_type ||
-              "Not specified",
-            rightValue:
-              rightAccounts.find((a) => cleanText(a.execution_type_en || a.execution_type))?.execution_type_en ||
-              rightAccounts.find((a) => cleanText(a.execution_type))?.execution_type ||
-              "Not specified",
-          },
-        ].map((row) => (
-          <div
-            key={row.label}
-            className="grid grid-cols-[1.15fr_1fr_1fr] border-t border-[#dbeafe] text-[11px]"
-          >
-            <div className="bg-[#fbfdff] p-3 font-black text-slate-600">
-              {row.label}
-            </div>
-
-            <div className="border-x border-[#dbeafe] p-3 text-center font-black text-[#0f172a]">
-              {row.leftValue}
-            </div>
-
-            <div className="p-3 text-center font-black text-[#0f172a]">
-              {row.rightValue}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-4 grid gap-3">
-        {[left, right].map((broker) => {
-          const brokerAccounts = broker.id === left.id ? leftAccounts : rightAccounts;
-          const brokerName = broker.name_en || broker.name;
-
-          return (
-            <details
-              key={broker.slug}
-              className="group rounded-[24px] border border-slate-200 bg-[#f8fbff] p-4"
-            >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-3">
-                <div>
-                  <h3 className="text-xl font-black text-[#0f172a]">
-                    {brokerName} Accounts
-                  </h3>
-
-                  <p className="mt-1 text-xs font-bold text-brand-500">
-                    {brokerAccounts.length} available account{brokerAccounts.length === 1 ? "" : "s"}
-                  </p>
-                </div>
-
-                <span className="rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-500 transition group-open:rotate-180">
-                  ▼
-                </span>
-              </summary>
-
-              <div className="mt-4 grid gap-3">
-                {brokerAccounts.length > 0 ? (
-                  brokerAccounts.map((acc) => (
-                    <div
-                      key={acc.id}
-                      className="rounded-[20px] border border-slate-200 bg-white p-4"
-                    >
-                     <Link
-  href={`/en/brokers/${broker.slug}/accounts/${accountSlug(acc.account_name_en || acc.account_name)}`}
-  target="_blank"
-  rel="noopener noreferrer"
-  className="inline-block text-sm font-black text-[#0f172a] transition hover:text-brand-500 hover:underline"
->
-  {acc.account_name_en || acc.account_name || "Account"}
-</Link>
-
-                      <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-                        <div className="rounded-xl bg-[#fbfdff] p-3">
-                          <div className="font-bold text-slate-500">Spread</div>
-                          <div className="mt-1 font-black text-[#0f172a]">
-                            {acc.spread_en || acc.spread || "Not specified"}
-                          </div>
-                        </div>
-
-                        <div className="rounded-xl bg-[#fbfdff] p-3">
-                          <div className="font-bold text-slate-500">Commission</div>
-                          <div className="mt-1 font-black text-[#0f172a]">
-                            {acc.commission_en || acc.commission || "Not specified"}
-                          </div>
-                        </div>
-
-                        <div className="rounded-xl bg-[#fbfdff] p-3">
-                          <div className="font-bold text-slate-500">Deposit</div>
-                          <div className="mt-1 font-black text-[#0f172a]">
-                            {acc.min_deposit_en || acc.min_deposit || "Not specified"}
-                          </div>
-                        </div>
-
-                        <div className="rounded-xl bg-[#fbfdff] p-3">
-                          <div className="font-bold text-slate-500">Execution</div>
-                          <div className="mt-1 font-black text-[#0f172a]">
-                            {acc.execution_type_en || acc.execution_type || "Not specified"}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="rounded-[18px] border border-slate-200 bg-white p-4 text-sm text-slate-600">
-                    No account data is currently available.
-                  </div>
-                )}
-              </div>
-            </details>
-          );
-        })}
-      </div>
-
-      <div className="mt-4 rounded-[24px] border border-[#2563eb]/20 bg-[linear-gradient(135deg,#eff6ff_0%,#ffffff_100%)] p-4">
-        <h3 className="text-lg font-black text-[#0f172a]">
-          Start with the broker that fits you best
-        </h3>
-
-        <p className="mt-1 text-xs leading-6 text-slate-600">
-          After reviewing accounts and costs, choose the broker that better matches your trading style.
-        </p>
-
-        <div className="mt-4 grid gap-2">
-          <Link
-            href={`/go/${left.slug}`}
-            className="inline-flex min-h-[44px] items-center justify-center rounded-2xl bg-brand-500 px-5 py-3 text-sm font-black text-white shadow-sm"
-          >
-            Open {left.name_en || left.name} Account
-          </Link>
-
-          <Link
-            href={`/go/${right.slug}`}
-            className="inline-flex min-h-[44px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-5 py-3 text-sm font-black text-slate-800"
-          >
-            Open {right.name_en || right.name} Account
-          </Link>
-        </div>
-      </div>
-
-      <div className="mt-4 rounded-[22px] border border-[#dbeafe] bg-[#f8fbff] p-4">
-        <p className="text-sm leading-7 text-slate-600">
-          The most important factor is not only the number of accounts, but choosing
-          the account that fits your needs in terms of spread, commission, minimum
-          deposit, and execution method.
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
-  <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white shadow-[0_25px_70px_rgba(37,99,235,0.08)]">
-    <div className="absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
-
-    {/* Desktop */}
-    <div className="hidden p-6 md:block lg:p-8">
-      <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
-        <div>
-          <span className="text-sm font-black text-brand-500">
+          <span className="text-[10px] font-black text-brand-500">
             Safety & Regulation
           </span>
 
-          <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-5xl">
-            Safety Comparison: {left.name_en || left.name} vs {right.name_en || right.name}
+          <h2 className="mt-1.5 text-[23px] font-black leading-[1.3]">
+            Compare Broker Safety
           </h2>
 
-          <p className="mt-3 text-base leading-8 text-slate-600">
-            This section evaluates broker safety based on regulation strength, investor protection,
-            company transparency, and whether an Islamic account is available.
+          <p className="mt-1.5 text-[11px] leading-5 text-slate-500">
+            Check the regulator, legal entity and licence number
+            responsible for each account.
           </p>
-        </div>
 
-        <div className="rounded-[28px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5 shadow-[0_16px_40px_rgba(37,99,235,0.12)]">
-          <div className="text-xs font-black text-brand-500">
-            Stronger in Safety
-          </div>
+          <div className="mt-4 grid grid-cols-2 gap-2">
+            {[left, right].map((broker) => {
+              const brokerLicences =
+                broker.id === left.id
+                  ? leftLicences
+                  : rightLicences;
 
-          <div className="mt-2 text-3xl font-black text-[#0f172a]">
-            {(left.score_safety ?? 0) > (right.score_safety ?? 0)
-              ? left.name_en || left.name
-              : (right.score_safety ?? 0) > (left.score_safety ?? 0)
-              ? right.name_en || right.name
-              : "Very Close"}
-          </div>
-
-          <p className="mt-2 text-sm leading-7 text-slate-600">
-            Based on regulation strength, transparency, and available protection mechanisms.
-          </p>
-        </div>
-      </div>
-
-      {/* Scores */}
-      <div className="mt-7 grid gap-4 md:grid-cols-3">
-        <div className="rounded-[24px] border border-slate-200 bg-[#f8fbff] p-5">
-          <div className="text-xs font-black text-slate-500">Safety Score</div>
-
-          <div className="mt-3 flex items-center justify-between gap-6">
-            <div>
-              <div className="text-xs font-bold text-brand-500">{left.name_en || left.name}</div>
-              <div className="text-3xl font-black text-[#0f172a]">
-                {(left.score_safety ?? 0).toFixed(1)}
-                <span className="text-sm text-slate-400"> / 5</span>
-              </div>
-            </div>
-
-            <div>
-              <div className="text-xs font-bold text-brand-500">{right.name_en || right.name}</div>
-              <div className="text-3xl font-black text-[#0f172a]">
-                {(right.score_safety ?? 0).toFixed(1)}
-                <span className="text-sm text-slate-400"> / 5</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="rounded-[24px] border border-slate-200 bg-[#f8fbff] p-5">
-          <div className="text-xs font-black text-slate-500">Islamic Account</div>
-          <div className="mt-3 text-lg font-black leading-7 text-[#0f172a]">
-            {left.name_en || left.name}: {yesNoEnglish(left.islamic_account)}
-            <br />
-            {right.name_en || right.name}: {yesNoEnglish(right.islamic_account)}
-          </div>
-        </div>
-
-        <div className="rounded-[24px] border border-brand-100 bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5">
-          <div className="text-xs font-black text-brand-500">Important</div>
-          <div className="mt-3 text-lg font-black leading-7 text-[#0f172a]">
-            Always verify which regulatory entity your account will be opened under.
-          </div>
-        </div>
-      </div>
-
-      {/* Cards */}
-      <div className="mt-8 grid gap-5 md:grid-cols-2">
-        {[left, right].map((broker) => {
-          const brokerSafety = broker.score_safety ?? 0;
-          const maxSafety = Math.max(left.score_safety ?? 0, right.score_safety ?? 0);
-          const isWinner = brokerSafety === maxSafety && maxSafety > 0;
-
-          return (
-            <div
-              key={broker.slug}
-              className={`rounded-[30px] border p-5 shadow-sm ${
-                isWinner
-                  ? "border-[#2563eb] bg-gradient-to-b from-[#eff6ff] to-white"
-                  : "border-slate-200 bg-[#fbfdff]"
-              }`}
-            >
-              <div className="mb-5 flex items-start justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-slate-200 bg-white p-2">
-                    {broker.logo ? (
-                      <img src={broker.logo} className="h-full w-full object-contain" />
-                    ) : null}
+              return (
+                <div
+                  key={broker.id}
+                  className="rounded-[15px] border border-[#dbeafe] bg-[#f8fbff] p-3 text-center"
+                >
+                  <div className="text-[9px] font-black text-brand-500">
+                    {brokerName(broker)}
                   </div>
 
-                  <div>
-                    <h3 className="text-2xl font-black text-[#0f172a]">
-                      {broker.name_en || broker.name}
-                    </h3>
-                    <p className="mt-1 text-sm font-bold text-brand-500">
-                      Safety & Trust
-                    </p>
+                  <div className="mt-1 text-lg font-black">
+                    {(broker.score_safety ?? 0).toFixed(2)}
+                  </div>
+
+                  <div className="text-[8px] text-slate-400">
+                    {brokerLicences.length} licence
+                    {brokerLicences.length === 1 ? "" : "s"}
                   </div>
                 </div>
+              );
+            })}
+          </div>
 
-                {isWinner && (
-                  <span className="rounded-full bg-brand-500 px-3 py-1 text-[11px] font-black text-white">
-                    Stronger
-                  </span>
+          <div className="mt-4 space-y-3">
+            {[
+              {
+                broker: left,
+                brokerLicences: leftLicences,
+              },
+              {
+                broker: right,
+                brokerLicences: rightLicences,
+              },
+            ].map(({ broker, brokerLicences }) => {
+              const name = brokerName(broker);
+
+              const regulationParagraphs =
+                splitParagraphs(
+                  broker.regulation_summary_en
+                );
+
+              const safetyFactors =
+                splitSafetyFactors(
+                  broker.safety_factors_en
+                );
+
+              return (
+                <details
+                  key={broker.id}
+                  className="group overflow-hidden rounded-[19px] border border-[#dbeafe] bg-white"
+                >
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3 [&::-webkit-details-marker]:hidden">
+                    <div className="flex min-w-0 items-center gap-2.5">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] border border-[#dbeafe] bg-white p-2">
+                        {broker.logo ? (
+                          <img
+                            src={broker.logo}
+                            alt={`${name} logo`}
+                            className="h-full w-full object-contain"
+                          />
+                        ) : null}
+                      </div>
+
+                      <div className="min-w-0">
+                        <div className="text-[9px] font-black text-brand-500">
+                          Regulatory Profile
+                        </div>
+
+                        <h3 className="break-words text-[16px] font-black">
+                          {name} Licences
+                        </h3>
+                      </div>
+                    </div>
+
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#dbeafe] text-[9px] text-brand-500 transition group-open:rotate-180">
+                      ▼
+                    </span>
+                  </summary>
+
+                  <div className="border-t border-[#dbeafe] p-3">
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="rounded-[13px] bg-[#f8fbff] p-2.5 text-center">
+                        <div className="text-[8px] font-bold text-slate-400">
+                          Headquarters
+                        </div>
+
+                        <div className="mt-1 text-[10px] font-black">
+                          {broker.headquarters_en ||
+                            broker.headquarters ||
+                            "Not specified"}
+                        </div>
+                      </div>
+
+                      <div className="rounded-[13px] bg-[#f8fbff] p-2.5 text-center">
+                        <div className="text-[8px] font-bold text-slate-400">
+                          Islamic Account
+                        </div>
+
+                        <div className="mt-1 text-[10px] font-black">
+                          {yesNoEnglish(
+                            broker.islamic_account
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {brokerLicences.length > 0 ? (
+                      <div className="mt-3 space-y-2">
+                        {brokerLicences.map((licence) => {
+                          const verificationUrl =
+                            licence.verification_url_en ||
+                            licence.verification_url_ar;
+
+                          return (
+                            <div
+                              key={licence.id}
+                              className="overflow-hidden rounded-[14px] border border-[#dbeafe]"
+                            >
+                              <div className="flex items-start justify-between gap-3 bg-[#f8fbff] px-3 py-2.5">
+                                <div>
+                                  <div className="text-[10px] font-black">
+                                    {licence.regulator_code ||
+                                      "Not specified"}
+                                  </div>
+
+                                  <div className="mt-0.5 text-[8px] text-slate-400">
+                                    {licence.regulator_name_en}
+                                  </div>
+                                </div>
+
+                                <div className="text-right">
+                                  <div
+                                    dir="ltr"
+                                    className="text-[10px] font-black"
+                                  >
+                                    {licence.license_number ||
+                                      "Not available"}
+                                  </div>
+
+                                  <div className="mt-0.5 text-[8px] text-slate-400">
+                                    {licence.country_en ||
+                                      "Not specified"}
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="border-t border-[#dbeafe] px-3 py-2.5">
+                                <div className="text-[8px] font-bold text-slate-400">
+                                  Legal Entity
+                                </div>
+
+                                <div className="mt-0.5 text-[10px] font-black leading-5">
+                                  {licence.entity_name_en ||
+                                    "Not specified"}
+                                </div>
+                              </div>
+
+                              <div className="flex items-center justify-between border-t border-[#dbeafe] px-3 py-2">
+                                <span
+                                  className={`rounded-full border px-2 py-0.5 text-[8px] font-black ${licenseTrustClasses(
+                                    licence.trust_level
+                                  )}`}
+                                >
+                                  {licenseTrustLabel(
+                                    licence.trust_level
+                                  )}
+                                </span>
+
+                                {verificationUrl ? (
+                                  <a
+                                    href={verificationUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer nofollow"
+                                    className="text-[9px] font-black text-brand-500"
+                                  >
+                                    Verify Licence →
+                                  </a>
+                                ) : (
+                                  <span className="text-[8px] text-slate-400">
+                                    No verification link
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <div className="mt-3 rounded-[14px] bg-[#f8fbff] p-3 text-center text-[10px] text-slate-500">
+                        No licence records are currently available.
+                      </div>
+                    )}
+
+                    <details className="group/analysis mt-3 rounded-[15px] bg-[#f8fbff]">
+                      <summary className="flex cursor-pointer list-none items-center justify-between px-3 py-3 [&::-webkit-details-marker]:hidden">
+                        <span className="text-[10px] font-black">
+                          Regulatory Analysis
+                        </span>
+
+                        <span className="text-[9px] font-black text-brand-500">
+                          Read Details
+                        </span>
+                      </summary>
+
+                      <div className="space-y-2 border-t border-[#dbeafe] px-3 py-3 text-[10px] leading-5 text-slate-600">
+                        {regulationParagraphs.length > 0 ? (
+                          regulationParagraphs.map(
+                            (paragraph, index) => (
+                              <p key={index}>{paragraph}</p>
+                            )
+                          )
+                        ) : (
+                          <p>
+                            No regulatory summary is currently
+                            available.
+                          </p>
+                        )}
+                      </div>
+                    </details>
+
+                    {safetyFactors.length > 0 ? (
+                      <div className="mt-3 flex flex-wrap gap-1.5">
+                        {safetyFactors.map((factor, index) => (
+                          <span
+                            key={index}
+                            className="rounded-full border border-emerald-100 bg-emerald-50 px-2 py-1 text-[8px] font-black text-emerald-700"
+                          >
+                            {factor}
+                          </span>
+                        ))}
+                      </div>
+                    ) : null}
+
+                    <div className="mt-3 rounded-[15px] border border-emerald-100 bg-emerald-50/60 p-3">
+                      <div className="text-[9px] font-black text-emerald-700">
+                        Client Fund Protection
+                      </div>
+
+                      <p className="mt-1 text-[10px] leading-5 text-slate-600">
+                        {cleanText(
+                          broker.fund_protection_en
+                        ) ||
+                          "Review the protection rules applied by the entity that will hold your account."}
+                      </p>
+                    </div>
+                  </div>
+                </details>
+              );
+            })}
+          </div>
+
+          <div className="mt-4 rounded-[16px] bg-[#f8fbff] px-3 py-3 text-center">
+            <p className="text-[10px] leading-5 text-slate-500">
+              Before depositing, match the legal entity and licence
+              number in your client agreement with the regulator’s
+              official register.
+            </p>
+          </div>
+        </div>
+      </section>
+            {/* ======================================================
+          FINAL DECISION — DESKTOP
+      ====================================================== */}
+      <section className="mx-auto hidden max-w-[1520px] px-4 pb-4 sm:px-6 md:block lg:px-8">
+        <div className="relative overflow-hidden rounded-[32px] border border-[#dbeafe] bg-white p-6 shadow-[0_25px_70px_rgba(37,99,235,0.08)] lg:p-8">
+          <div className="absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
+
+          <div className="grid gap-6 lg:grid-cols-[1fr_350px] lg:items-center">
+            <div>
+              <span className="text-sm font-black text-brand-500">
+                Comparison Summary
+              </span>
+
+              <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-[42px]">
+                Which Broker Better Fits Your Needs?
+              </h2>
+
+              <p className="mt-3 max-w-4xl text-base leading-8 text-slate-600">
+                The decision should not depend on the broker’s name
+                or overall rating alone. Compare why each broker may
+                suit you, its main strength and the trade-offs that
+                could affect your trading experience.
+              </p>
+            </div>
+
+            <div className="rounded-[26px] border border-[#2563eb] bg-[linear-gradient(135deg,#eff6ff_0%,#ffffff_100%)] p-5 shadow-[0_14px_35px_rgba(37,99,235,0.10)]">
+              <div className="text-xs font-black text-brand-500">
+                Overall Result
+              </div>
+
+              <div className="mt-2 text-2xl font-black text-[#0f172a]">
+                {recommendationLabel}
+              </div>
+
+              <p className="mt-2 text-sm leading-7 text-slate-600">
+                {ratingsAreClose
+                  ? "The rating difference is limited. Choose the broker whose accounts, costs and platforms better match your trading style."
+                  : `${recommendedName} has the higher overall rating, but review the reasons and trade-offs below before deciding.`}
+              </p>
+            </div>
+          </div>
+
+          {/* Decision indicators */}
+          <div className="mt-7 grid grid-cols-3 overflow-hidden rounded-[22px] border border-[#dbeafe] bg-[#f8fbff]">
+            <div className="border-r border-[#dbeafe] px-5 py-4 text-center">
+              <div className="text-[10px] font-bold text-slate-400">
+                Overall Rating
+              </div>
+
+              <div className="mt-1 text-lg font-black text-[#0f172a]">
+                {ratingsAreClose
+                  ? "Closely Matched"
+                  : recommendedName}
+              </div>
+
+              <p className="mt-1 text-[9px] text-slate-400">
+                {leftRating.toFixed(2)} vs {rightRating.toFixed(2)}
+              </p>
+            </div>
+
+            <div className="border-r border-[#dbeafe] px-5 py-4 text-center">
+              <div className="text-[10px] font-bold text-slate-400">
+                Easier Start
+              </div>
+
+              <div className="mt-1 text-lg font-black text-[#0f172a]">
+                {beginnerDecision}
+              </div>
+
+              <p className="mt-1 text-[9px] text-slate-400">
+                Based on deposit and account accessibility
+              </p>
+            </div>
+
+            <div className="px-5 py-4 text-center">
+              <div className="text-[10px] font-bold text-slate-400">
+                Fees & Trading Costs
+              </div>
+
+              <div className="mt-1 text-lg font-black text-[#0f172a]">
+                {feesDecision}
+              </div>
+
+              <p className="mt-1 text-[9px] text-slate-400">
+                Based on the fees scores in this comparison
+              </p>
+            </div>
+          </div>
+
+          {/* Broker decision cards */}
+          <div className="mt-6 grid gap-5 lg:grid-cols-2">
+            {decisionBrokers.map(
+              ({ broker, other, reasons }) => {
+                const name = brokerName(broker);
+
+                const isRecommended =
+                  !ratingsAreClose &&
+                  broker.id === recommendedBroker.id;
+
+                return (
+                  <article
+                    key={broker.id}
+                    className={`overflow-hidden rounded-[24px] border ${
+                      isRecommended
+                        ? "border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_48%)]"
+                        : "border-[#dbeafe] bg-white"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-4 border-b border-[#dbeafe] px-5 py-4">
+                      <div className="flex min-w-0 items-center gap-3">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[14px] border border-[#dbeafe] bg-white p-2 shadow-sm">
+                          {broker.logo ? (
+                            <img
+                              src={broker.logo}
+                              alt={`${name} logo`}
+                              className="h-full w-full object-contain"
+                            />
+                          ) : (
+                            <span className="text-[8px] font-black text-slate-400">
+                              {name}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="min-w-0">
+                          <div className="text-[10px] font-black text-brand-500">
+                            {isRecommended
+                              ? "Higher Overall Rating"
+                              : "Alternative Based on Priority"}
+                          </div>
+
+                          <h3 className="break-words text-xl font-black text-[#0f172a]">
+                            {name}
+                          </h3>
+                        </div>
+                      </div>
+
+                      <div className="shrink-0 text-center">
+                        <div className="text-2xl font-black text-brand-500">
+                          {(broker.rating ?? 0).toFixed(2)}
+                        </div>
+
+                        <div className="text-[8px] font-bold text-slate-400">
+                          out of 5
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-5">
+                      <div className="rounded-[18px] border border-emerald-200 bg-emerald-50/60 px-4 py-3">
+                        <div className="text-[10px] font-black text-emerald-700">
+                          Choose {name} If You Want
+                        </div>
+
+                        <p className="mt-1.5 text-sm font-bold leading-7 text-slate-700">
+                          {cleanText(
+                            broker.key_strength_en
+                          ) ||
+                            "A trading environment that matches your main requirements."}
+                        </p>
+                      </div>
+
+                      {reasons.length > 0 ? (
+                        <div className="mt-4">
+                          <div className="text-[10px] font-black text-slate-500">
+                            Better Suited To
+                          </div>
+
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            {reasons.map((reason, index) => (
+                              <span
+                                key={index}
+                                className="rounded-full border border-[#bfdbfe] bg-[#eff6ff] px-3 py-1.5 text-[9px] font-black text-brand-500"
+                              >
+                                {reason}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      ) : null}
+
+                      <div className="mt-4 rounded-[18px] border border-amber-200 bg-amber-50/60 px-4 py-3">
+                        <div className="text-[10px] font-black text-amber-700">
+                          Important Before Choosing
+                        </div>
+
+                        <p className="mt-1.5 text-sm leading-7 text-slate-700">
+                          {cleanText(
+                            broker.key_weakness_en
+                          ) ||
+                            "Review the account conditions, fees and regulatory entity before registering."}
+                        </p>
+                      </div>
+
+                      <div className="mt-4 grid grid-cols-2 gap-3">
+                        <a
+                          href={`/go/${broker.slug ?? ""}?type=real`}
+                          target="_blank"
+                          rel="noopener noreferrer sponsored nofollow"
+                          className={`inline-flex min-h-[46px] items-center justify-center rounded-xl px-4 py-2 text-sm font-black transition ${
+                            isRecommended
+                              ? "bg-brand-500 text-white hover:bg-brand-600"
+                              : "border border-[#bfdbfe] bg-[#eff6ff] text-brand-500 hover:border-brand-500"
+                          }`}
+                        >
+                          Open Account
+                        </a>
+
+                        <Link
+                          href={`/en/brokers/${broker.slug ?? ""}`}
+                          className="inline-flex min-h-[46px] items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-black text-slate-700 transition hover:border-[#93c5fd] hover:text-brand-500"
+                        >
+                          Read Review
+                        </Link>
+                      </div>
+                    </div>
+                  </article>
+                );
+              }
+            )}
+          </div>
+
+          {/* Broker Alarab editorial decision */}
+          <div className="mt-6 rounded-[24px] border border-[#bfdbfe] bg-[#f8fbff] px-5 py-5">
+            <div className="grid gap-5 lg:grid-cols-[190px_minmax(0,1fr)] lg:items-center">
+              <div>
+                <div className="text-xl font-black text-[#0f172a]">
+                  Final Decision
+                </div>
+
+                <div className="mt-1 text-xs font-black text-brand-500">
+                  Broker Alarab View
+                </div>
+              </div>
+
+              <div className="space-y-3 text-sm leading-8 text-slate-700">
+                {splitParagraphs(
+                  recommendedBroker.expert_insight_en
+                ).length > 0 ? (
+                  splitParagraphs(
+                    recommendedBroker.expert_insight_en
+                  ).map((paragraph, index) => (
+                    <p key={index}>{paragraph}</p>
+                  ))
+                ) : (
+                  <p>{recommendedInsight}</p>
                 )}
               </div>
+            </div>
+          </div>
 
-              <div className="grid gap-3">
-                <div className="rounded-[22px] border border-slate-200 bg-white p-4">
-                  <div className="text-sm font-black text-[#0f172a]">
-                    Regulation
-                  </div>
-                  <p className="mt-2 text-sm font-black text-slate-700">
-                    {shortReg(broker.regulation) || "Not specified"}
-                  </p>
-                </div>
+          <p className="mt-4 text-center text-[11px] leading-6 text-slate-400">
+            This editorial recommendation is based on the information
+            displayed in this comparison. Confirm that the available
+            products, account conditions and regulatory entity are
+            appropriate for your country before opening an account.
+          </p>
+        </div>
+      </section>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="rounded-[22px] border border-slate-200 bg-white p-4">
-                    <div className="text-xs font-black text-slate-500">
-                      Headquarters
-                    </div>
-                    <div className="mt-2 text-sm font-black text-[#0f172a]">
-                      {broker.headquarters_en || broker.headquarters || "Not specified"}
-                    </div>
-                  </div>
+      {/* ======================================================
+          FINAL DECISION — MOBILE
+      ====================================================== */}
+      <section className="mx-auto max-w-[1520px] px-3 pb-4 md:hidden">
+        <div className="relative overflow-hidden rounded-[24px] border border-[#dbeafe] bg-white p-4 pt-5">
+          <div className="absolute inset-x-0 top-0 h-1 bg-brand-500" />
 
-                  <div className="rounded-[22px] border border-slate-200 bg-white p-4">
-                    <div className="text-xs font-black text-slate-500">
-                      Islamic Account
-                    </div>
-                    <div className="mt-2 text-sm font-black text-[#0f172a]">
-                      {yesNoEnglish(broker.islamic_account)}
-                    </div>
-                  </div>
-                </div>
+          <span className="text-[10px] font-black text-brand-500">
+            Comparison Summary
+          </span>
 
-                <div className="rounded-[22px] border border-[#dbeafe] bg-[#f8fbff] p-4">
-                  <div className="text-sm font-black text-brand-500">
-                    Fund Protection
-                  </div>
-                  <p className="mt-2 text-sm text-slate-600">
-                    Client fund protection depends on the regulatory entity and account type.
-                    Always verify segregation, compensation schemes, and negative balance protection.
-                  </p>
-                </div>
+          <h2 className="mt-1.5 text-[24px] font-black leading-[1.3] text-[#0f172a]">
+            Which Broker Fits You?
+          </h2>
+
+          <p className="mt-1.5 text-[12px] leading-6 text-slate-500">
+            Choose according to your priorities, not the overall
+            rating alone.
+          </p>
+
+          <div className="mt-4 rounded-[20px] border border-[#2563eb] bg-[linear-gradient(145deg,#eff6ff_0%,#ffffff_100%)] px-4 py-4">
+            <div className="text-[10px] font-black text-brand-500">
+              Overall Result
+            </div>
+
+            <div className="mt-1 break-words text-[22px] font-black leading-7 text-[#0f172a]">
+              {recommendationLabel}
+            </div>
+
+            <p className="mt-1 text-[11px] leading-6 text-slate-500">
+              {ratingsAreClose
+                ? "The rating difference is limited. Compare the accounts, fees and platforms you need."
+                : `${recommendedName} has the higher overall rating, but review why each broker may suit you below.`}
+            </p>
+          </div>
+
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            <div className="rounded-[16px] border border-[#dbeafe] bg-[#f8fbff] px-2 py-3 text-center">
+              <div className="text-[9px] font-bold text-slate-400">
+                Easier Start
+              </div>
+
+              <div className="mt-1 break-words text-[11px] font-black leading-5 text-[#0f172a]">
+                {beginnerDecision}
               </div>
             </div>
-          );
-        })}
-      </div>
 
-      <div className="mt-7 rounded-[26px] border border-[#dbeafe] bg-[#f8fbff] p-5">
-        <p className="text-sm leading-7 text-slate-600 lg:text-base">
-          Regulation alone does not guarantee full protection. Always verify the legal entity,
-          jurisdiction, and account conditions before opening a real account.
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
+            <div className="rounded-[16px] border border-[#dbeafe] bg-[#f8fbff] px-2 py-3 text-center">
+              <div className="text-[9px] font-bold text-slate-400">
+                Fees & Costs
+              </div>
 
-<section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
-  <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white p-6 shadow-[0_25px_70px_rgba(37,99,235,0.08)] lg:p-8">
-    <div className="absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
-
-    <div className="hidden gap-6 md:grid lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
-      <div>
-        <span className="text-sm font-black text-brand-500">Quick Decision</span>
-
-        <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-5xl">
-          Which Broker Should You Choose Now?
-        </h2>
-
-        <p className="mt-3 text-base leading-8 text-slate-600">
-          Instead of reading the full comparison again, this practical summary helps you
-          choose the better broker based on your trading goal.
-        </p>
-      </div>
-
-      <div className="rounded-[28px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5 shadow-[0_16px_40px_rgba(37,99,235,0.12)]">
-        <div className="text-xs font-black text-brand-500">Overall Recommendation</div>
-        <div className="mt-2 text-3xl font-black text-[#0f172a]">
-          {overallWinner}
-        </div>
-        <p className="mt-2 text-sm leading-7 text-slate-600">
-          The strongest overall choice based on the rating and comparison summary.
-        </p>
-      </div>
-    </div>
-
-    <div className="mt-8 hidden gap-4 md:grid lg:grid-cols-3">
-      <div className="rounded-[26px] border border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-5 shadow-sm">
-        <div className="text-xs font-black text-brand-500">Best Overall</div>
-        <div className="mt-2 text-3xl font-black text-[#0f172a]">
-          {overallWinner}
-        </div>
-        <p className="mt-2 text-sm leading-7 text-slate-600">
-          Best if you want a balanced choice without going too deep into every detail.
-        </p>
-      </div>
-
-      <div className="rounded-[26px] border border-slate-200 bg-[#fbfdff] p-5 shadow-sm">
-        <div className="text-xs font-black text-slate-500">For Beginners</div>
-        <div className="mt-2 text-3xl font-black text-[#0f172a]">
-          {beginnerWinner === "Tie" ? "Both Are Suitable" : beginnerWinner}
-        </div>
-        <p className="mt-2 text-sm leading-7 text-slate-600">
-          Best if your priority is an easy start and clear account options.
-        </p>
-      </div>
-
-      <div className="rounded-[26px] border border-slate-200 bg-[#fbfdff] p-5 shadow-sm">
-        <div className="text-xs font-black text-slate-500">For Costs & Spreads</div>
-        <div className="mt-2 text-3xl font-black text-[#0f172a]">
-          {scalpingWinner === "Tie" ? "Very Close" : scalpingWinner}
-        </div>
-        <p className="mt-2 text-sm leading-7 text-slate-600">
-          Best if your focus is spreads, fees, and execution speed.
-        </p>
-      </div>
-    </div>
-
-    <div className="mt-7 hidden rounded-[28px] border border-[#dbeafe] bg-[#f8fbff] p-5 md:block lg:p-6">
-      <div className="grid gap-5 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
-        <div>
-          <div className="text-sm font-black text-brand-500">Short Decision</div>
-          <p className="mt-2 text-sm leading-8 text-slate-700 lg:text-base">
-            Choose <strong>{overallWinner}</strong> if you want the strongest overall option.
-            If you are a beginner, review{" "}
-            <strong>{beginnerWinner === "Tie" ? "both brokers" : beginnerWinner}</strong>.
-            If trading costs and spreads are your priority, the closer fit is{" "}
-            <strong>
-              {scalpingWinner === "Tie" ? "the lower-cost account type" : scalpingWinner}
-            </strong>.
-          </p>
-        </div>
-
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-          <a
-            href={`/go/${
-              overallWinner === (left.name_en || left.name) ? left.slug ?? "" : right.slug ?? ""
-            }?type=real`}
-            className="inline-flex min-h-[50px] items-center justify-center rounded-2xl bg-brand-500 px-6 py-3 text-sm font-black text-white transition hover:bg-brand-600"
-          >
-            Open Account with {overallWinner}
-          </a>
-
-          <Link
-            href={`/en/brokers/${
-              overallWinner === (left.name_en || left.name) ? left.slug ?? "" : right.slug ?? ""
-            }`}
-            className="inline-flex min-h-[50px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-black text-slate-800 transition hover:bg-slate-50"
-          >
-            Read {overallWinner} Review
-          </Link>
-        </div>
-      </div>
-    </div>
-
-    {/* Mobile */}
-    <div className="mt-5 md:hidden">
-      <div className="rounded-[24px] border border-[#dbeafe] bg-[#f8fbff] p-4">
-        <span className="text-xs font-black text-brand-500">Quick Decision</span>
-
-        <h2 className="mt-2 text-[24px] font-black leading-[1.25] text-[#0f172a]">
-          Which Broker Should You Choose Now?
-        </h2>
-
-        <p className="mt-2 text-sm leading-6 text-slate-600">
-          A practical summary to choose the better broker based on your goal.
-        </p>
-
-        <div className="mt-4 rounded-[20px] border border-[#2563eb] bg-white p-4 shadow-sm">
-          <div className="text-[11px] font-black text-brand-500">
-            Overall Recommendation
-          </div>
-
-          <div className="mt-1 text-2xl font-black text-[#0f172a]">
-            {overallWinner}
-          </div>
-
-          <p className="mt-1 text-xs leading-6 text-slate-600">
-            The strongest overall choice based on this comparison.
-          </p>
-        </div>
-
-        <div className="mt-3 grid grid-cols-2 gap-2">
-          <div className="rounded-2xl border border-slate-200 bg-white px-3 py-3 text-center">
-            <div className="text-[10px] font-bold text-slate-500">Beginners</div>
-            <div className="mt-1 truncate text-xs font-black text-[#0f172a]">
-              {beginnerWinner === "Tie" ? "Both Suitable" : beginnerWinner}
+              <div className="mt-1 break-words text-[11px] font-black leading-5 text-[#0f172a]">
+                {feesDecision}
+              </div>
             </div>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white px-3 py-3 text-center">
-            <div className="text-[10px] font-bold text-slate-500">Costs</div>
-            <div className="mt-1 truncate text-xs font-black text-[#0f172a]">
-              {scalpingWinner === "Tie" ? "Very Close" : scalpingWinner}
+          <div className="mt-4 space-y-3">
+            {decisionBrokers.map(
+              ({ broker, other, reasons }) => {
+                const name = brokerName(broker);
+
+                const isRecommended =
+                  !ratingsAreClose &&
+                  broker.id === recommendedBroker.id;
+
+                return (
+                  <article
+                    key={broker.id}
+                    className={`overflow-hidden rounded-[20px] border ${
+                      isRecommended
+                        ? "border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_48%)]"
+                        : "border-[#dbeafe] bg-white"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-3 px-3 py-3">
+                      <div className="flex min-w-0 items-center gap-2.5">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] border border-[#dbeafe] bg-white p-2">
+                          {broker.logo ? (
+                            <img
+                              src={broker.logo}
+                              alt={`${name} logo`}
+                              className="h-full w-full object-contain"
+                            />
+                          ) : (
+                            <span className="text-[7px] font-black text-slate-400">
+                              {name}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="min-w-0">
+                          <div className="text-[9px] font-black text-brand-500">
+                            {isRecommended
+                              ? "Higher Overall Rating"
+                              : "Alternative Choice"}
+                          </div>
+
+                          <h3 className="break-words text-[16px] font-black leading-5 text-[#0f172a]">
+                            {name}
+                          </h3>
+                        </div>
+                      </div>
+
+                      <div className="shrink-0 text-center">
+                        <div className="text-lg font-black text-brand-500">
+                          {(broker.rating ?? 0).toFixed(2)}
+                        </div>
+
+                        <div className="text-[8px] font-bold text-slate-400">
+                          out of 5
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="border-t border-[#dbeafe] px-3 py-3">
+                      <div>
+                        <div className="text-[9px] font-black text-emerald-700">
+                          Choose This Broker If You Want
+                        </div>
+
+                        <p className="mt-1 text-[11px] font-bold leading-6 text-slate-700">
+                          {cleanText(
+                            broker.key_strength_en
+                          ) ||
+                            "A trading environment that fits your main requirements."}
+                        </p>
+                      </div>
+
+                      {reasons.length > 0 ? (
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          {reasons
+                            .slice(0, 2)
+                            .map((reason, index) => (
+                              <span
+                                key={index}
+                                className="rounded-full bg-[#eff6ff] px-2 py-1 text-[8px] font-black text-brand-500"
+                              >
+                                {reason}
+                              </span>
+                            ))}
+                        </div>
+                      ) : null}
+
+                      <div className="mt-3 rounded-[14px] bg-amber-50 px-3 py-2.5">
+                        <div className="text-[9px] font-black text-amber-700">
+                          Important
+                        </div>
+
+                        <p className="mt-0.5 text-[10px] leading-5 text-slate-600">
+                          {cleanText(
+                            broker.key_weakness_en
+                          ) ||
+                            "Review the account conditions and fees before registering."}
+                        </p>
+                      </div>
+
+                      <div className="mt-3 grid grid-cols-2 gap-2">
+                        <a
+                          href={`/go/${broker.slug ?? ""}?type=real`}
+                          target="_blank"
+                          rel="noopener noreferrer sponsored nofollow"
+                          className={`inline-flex min-h-[42px] items-center justify-center rounded-xl px-2 py-2 text-[11px] font-black ${
+                            isRecommended
+                              ? "bg-brand-500 text-white"
+                              : "border border-[#bfdbfe] bg-[#eff6ff] text-brand-500"
+                          }`}
+                        >
+                          Open Account
+                        </a>
+
+                        <Link
+                          href={`/en/brokers/${broker.slug ?? ""}`}
+                          className="inline-flex min-h-[42px] items-center justify-center rounded-xl border border-slate-300 bg-white px-2 py-2 text-[11px] font-black text-slate-700"
+                        >
+                          Read Review
+                        </Link>
+                      </div>
+                    </div>
+                  </article>
+                );
+              }
+            )}
+          </div>
+
+          <div className="mt-4 rounded-[18px] border border-[#dbeafe] bg-[#f8fbff] px-3 py-3">
+            <div className="text-[17px] font-black text-[#0f172a]">
+              Final Decision
+            </div>
+
+            <div className="mt-1 text-[10px] font-black text-brand-500">
+              Broker Alarab View
+            </div>
+
+            <div className="mt-2 space-y-2 text-[11px] leading-6 text-slate-600">
+              {splitParagraphs(
+                recommendedBroker.expert_insight_en
+              ).length > 0 ? (
+                splitParagraphs(
+                  recommendedBroker.expert_insight_en
+                ).map((paragraph, index) => (
+                  <p key={index}>{paragraph}</p>
+                ))
+              ) : (
+                <p>{recommendedInsight}</p>
+              )}
             </div>
           </div>
-        </div>
 
-        <div className="mt-4 rounded-[18px] border border-[#dbeafe] bg-white p-3">
-          <div className="text-xs font-black text-brand-500">Short Decision</div>
-
-          <p className="mt-2 text-sm leading-7 text-slate-700">
-            Choose <strong>{overallWinner}</strong> if you want the strongest overall option.
-            For an easier start, the closer choice is{" "}
-            <strong>{beginnerWinner === "Tie" ? "both brokers" : beginnerWinner}</strong>.
+          <p className="mt-3 text-center text-[9px] leading-5 text-slate-400">
+            Check the account conditions, fees and regulatory entity
+            available in your country before registering.
           </p>
         </div>
+      </section>
 
-        <div className="mt-4 grid gap-2">
-          <a
-            href={`/go/${
-              overallWinner === (left.name_en || left.name) ? left.slug ?? "" : right.slug ?? ""
-            }?type=real`}
-            className="inline-flex min-h-[46px] items-center justify-center rounded-2xl bg-brand-500 px-5 py-3 text-sm font-black text-white shadow-sm"
-          >
-            Open Account with {overallWinner}
-          </a>
+      {/* ======================================================
+          FREQUENTLY ASKED QUESTIONS
+      ====================================================== */}
+      <section className="mx-auto max-w-[1520px] px-3 pb-4 sm:px-6 lg:px-8">
+        <div className="relative overflow-hidden rounded-[32px] border border-[#dbeafe] bg-white shadow-[0_25px_70px_rgba(37,99,235,0.08)]">
+          <div className="absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
 
-          <Link
-            href={`/en/brokers/${
-              overallWinner === (left.name_en || left.name) ? left.slug ?? "" : right.slug ?? ""
-            }`}
-            className="inline-flex min-h-[44px] items-center justify-center rounded-2xl border border-slate-300 bg-white px-5 py-3 text-sm font-black text-slate-800"
-          >
-            Read {overallWinner} Review
-          </Link>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-10 lg:px-8">
-  <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white shadow-[0_25px_70px_rgba(37,99,235,0.08)]">
-    <div className="absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
-
-    {/* Desktop */}
-    <div className="hidden p-6 md:block lg:p-8">
-      <div className="max-w-4xl">
-        <span className="text-sm font-black text-brand-500">Frequently Asked Questions</span>
-
-        <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-5xl">
-          FAQs About {left.name_en || left.name} and {right.name_en || right.name}
-        </h2>
-
-        <p className="mt-3 text-base leading-8 text-slate-600">
-          These questions summarize key points traders usually check before opening an account
-          or choosing the better broker.
-        </p>
-      </div>
-
-      <div className="mt-8 grid gap-6 lg:grid-cols-2">
-        <div>
-          <div className="mb-4 rounded-[20px] border border-brand-100 bg-brand-50 px-5 py-3">
-            <h3 className="text-lg font-black text-[#0f172a]">
-              Questions About {left.name_en || left.name}
-            </h3>
-          </div>
-
-          <div className="space-y-4">
-            {(((left as any).faq_en || []) as { question: string; answer: string }[])
-              .slice(0, 3)
-              .map((faq, index) => (
-                <details
-                  key={`left-faq-${index}`}
-                  className="group rounded-[24px] border border-slate-200 bg-[#fbfdff] p-5 shadow-sm open:border-brand-100 open:bg-white"
-                >
-                  <summary className="flex min-h-[64px] cursor-pointer list-none items-center justify-between gap-4">
-                    <h4 className="text-base font-black leading-7 text-[#0f172a]">
-                      {faq.question}
-                    </h4>
-
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-sm font-black text-slate-500 transition group-open:rotate-180">
-                      ▼
-                    </span>
-                  </summary>
-
-                  <p className="mt-4 border-t border-slate-200 pt-4 text-sm leading-8 text-slate-600">
-                    {faq.answer}
-                  </p>
-                </details>
-              ))}
-          </div>
-        </div>
-
-        <div>
-          <div className="mb-4 rounded-[20px] border border-brand-100 bg-brand-50 px-5 py-3">
-            <h3 className="text-lg font-black text-[#0f172a]">
-              Questions About {right.name_en || right.name}
-            </h3>
-          </div>
-
-          <div className="space-y-4">
-            {(((right as any).faq_en || []) as { question: string; answer: string }[])
-              .slice(0, 3)
-              .map((faq, index) => (
-                <details
-                  key={`right-faq-${index}`}
-                  className="group rounded-[24px] border border-slate-200 bg-[#fbfdff] p-5 shadow-sm open:border-brand-100 open:bg-white"
-                >
-                  <summary className="flex min-h-[64px] cursor-pointer list-none items-center justify-between gap-4">
-                    <h4 className="text-base font-black leading-7 text-[#0f172a]">
-                      {faq.question}
-                    </h4>
-
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-sm font-black text-slate-500 transition group-open:rotate-180">
-                      ▼
-                    </span>
-                  </summary>
-
-                  <p className="mt-4 border-t border-slate-200 pt-4 text-sm leading-8 text-slate-600">
-                    {faq.answer}
-                  </p>
-                </details>
-              ))}
-          </div>
-        </div>
-      </div>
-
-     
-    </div>
-
-    {/* Mobile */}
-    <div className="block p-4 md:hidden">
-      <div>
-        <span className="text-xs font-black text-brand-500">FAQs</span>
-
-        <h2 className="mt-2 text-[22px] font-black leading-[1.3] text-[#0f172a]">
-          Questions About {left.name_en || left.name} and {right.name_en || right.name}
-        </h2>
-
-        <p className="mt-1 text-xs leading-6 text-slate-600">
-          Key questions before opening an account.
-        </p>
-      </div>
-
-      <div className="mt-3 grid grid-cols-2 gap-2">
-        <div className="rounded-xl border border-brand-100 bg-brand-50 py-2 text-center text-xs font-black text-[#0f172a]">
-          {left.name_en || left.name}
-        </div>
-
-        <div className="rounded-xl border border-brand-100 bg-brand-50 py-2 text-center text-xs font-black text-[#0f172a]">
-          {right.name_en || right.name}
-        </div>
-      </div>
-
-      <div className="mt-3 space-y-2">
-        {[
-          ...(((left as any).faq_en || []) as { question: string; answer: string }[])
-            .slice(0, 3)
-            .map((faq) => ({
-              ...faq,
-              brokerName: left.name_en || left.name,
-            })),
-          ...(((right as any).faq_en || []) as { question: string; answer: string }[])
-            .slice(0, 3)
-            .map((faq) => ({
-              ...faq,
-              brokerName: right.name_en || right.name,
-            })),
-        ].map((faq, index) => (
-          <details
-            key={`${faq.brokerName}-${index}`}
-            className="group rounded-[18px] border border-slate-200 bg-white p-3 shadow-sm open:border-brand-100"
-          >
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-3">
-              <h3 className="text-sm font-black leading-6 text-[#0f172a]">
-                {faq.question}
-              </h3>
-
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-[10px] text-slate-500 transition group-open:rotate-180">
-                ▼
+          {/* FAQ desktop */}
+          <div className="hidden p-6 md:block lg:p-8">
+            <div className="max-w-4xl">
+              <span className="text-sm font-black text-brand-500">
+                Frequently Asked Questions
               </span>
-            </summary>
 
-            <p className="mt-3 border-t border-slate-200 pt-3 text-xs leading-6 text-slate-600">
-              {faq.answer}
-            </p>
-          </details>
-        ))}
-      </div>
-    </div>
-  </div>
-</section>
+              <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-5xl">
+                Frequently Asked Questions About {leftName} and{" "}
+                {rightName}
+              </h2>
 
+              <p className="mt-3 text-base leading-8 text-slate-600">
+                Concise answers to important questions that may affect
+                your decision before opening an account or choosing
+                the more suitable broker.
+              </p>
+            </div>
+
+            <div className="mt-8 grid gap-6 lg:grid-cols-2">
+              {[
+                {
+                  broker: left,
+                  faqs: Array.isArray(left.faq_en)
+                    ? left.faq_en.slice(0, 3)
+                    : [],
+                },
+                {
+                  broker: right,
+                  faqs: Array.isArray(right.faq_en)
+                    ? right.faq_en.slice(0, 3)
+                    : [],
+                },
+              ].map(({ broker, faqs }) => {
+                const name = brokerName(broker);
+
+                return (
+                  <div key={broker.id} className="min-w-0">
+                    <div className="mb-4 flex items-center justify-between gap-3 rounded-[18px] border border-[#bfdbfe] bg-[#eff6ff] px-5 py-3">
+                      <h3 className="min-w-0 break-words text-lg font-black text-[#0f172a]">
+                        Questions About {name}
+                      </h3>
+
+                      <span className="shrink-0 rounded-full bg-white px-3 py-1 text-[10px] font-black text-brand-500">
+                        {faqs.length} question
+                        {faqs.length === 1 ? "" : "s"}
+                      </span>
+                    </div>
+
+                    <div className="space-y-3">
+                      {faqs.length > 0 ? (
+                        faqs.map((faq, index) => (
+                          <details
+                            key={`${broker.slug}-faq-${index}`}
+                            className="group overflow-hidden rounded-[20px] border border-[#dbeafe] bg-[#fbfdff] shadow-sm transition open:border-[#93c5fd] open:bg-white"
+                          >
+                            <summary className="flex min-h-[72px] cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 [&::-webkit-details-marker]:hidden">
+                              <h4 className="min-w-0 text-[15px] font-black leading-7 text-[#0f172a]">
+                                {cleanText(faq.question)}
+                              </h4>
+
+                              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#dbeafe] bg-white text-xs font-black text-brand-500 transition-transform duration-200 group-open:rotate-180">
+                                ▼
+                              </span>
+                            </summary>
+
+                            <div className="border-t border-[#eaf2fc] px-5 py-4">
+                              <p className="text-sm leading-8 text-slate-600">
+                                {cleanText(faq.answer)}
+                              </p>
+                            </div>
+                          </details>
+                        ))
+                      ) : (
+                        <div className="rounded-[20px] border border-slate-200 bg-[#fbfdff] px-5 py-6 text-center text-sm text-slate-500">
+                          No questions are currently available.
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="mt-7 rounded-[20px] border border-[#dbeafe] bg-[#f8fbff] px-5 py-4 text-center">
+              <p className="text-sm leading-7 text-slate-500">
+                Conditions, products and regulatory entities vary by
+                country. Review the broker page and client agreement
+                before registering.
+              </p>
+            </div>
+          </div>
+
+          {/* FAQ mobile */}
+          <div className="p-4 pt-5 md:hidden">
+            <div>
+              <span className="text-[11px] font-black text-brand-500">
+                Frequently Asked Questions
+              </span>
+
+              <h2 className="mt-1.5 text-[24px] font-black leading-[1.35] text-[#0f172a]">
+                Questions About {leftName} and {rightName}
+              </h2>
+
+              <p className="mt-1.5 text-[12px] leading-6 text-slate-500">
+                Important answers before opening an account or
+                choosing a broker.
+              </p>
+            </div>
+
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              {[left, right].map((broker) => (
+                <div
+                  key={broker.id}
+                  className="flex min-h-[40px] items-center justify-center rounded-[13px] border border-[#bfdbfe] bg-[#eff6ff] px-2 py-2 text-center"
+                >
+                  <span className="break-words text-[10px] font-black leading-4 text-[#0f172a]">
+                    {brokerName(broker)}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-4 space-y-4">
+              {[
+                {
+                  broker: left,
+                  faqs: Array.isArray(left.faq_en)
+                    ? left.faq_en.slice(0, 3)
+                    : [],
+                },
+                {
+                  broker: right,
+                  faqs: Array.isArray(right.faq_en)
+                    ? right.faq_en.slice(0, 3)
+                    : [],
+                },
+              ].map(({ broker, faqs }) => {
+                const name = brokerName(broker);
+
+                return (
+                  <div key={broker.id}>
+                    <div className="mb-2 flex items-center justify-between gap-2 px-1">
+                      <h3 className="text-[12px] font-black text-[#0f172a]">
+                        Questions About {name}
+                      </h3>
+
+                      <span className="text-[9px] font-bold text-brand-500">
+                        {faqs.length} question
+                        {faqs.length === 1 ? "" : "s"}
+                      </span>
+                    </div>
+
+                    <div className="space-y-2">
+                      {faqs.length > 0 ? (
+                        faqs.map((faq, index) => (
+                          <details
+                            key={`${broker.slug}-mobile-faq-${index}`}
+                            className="group overflow-hidden rounded-[17px] border border-[#dbeafe] bg-white shadow-sm open:border-[#93c5fd]"
+                          >
+                            <summary className="flex min-h-[64px] cursor-pointer list-none items-center justify-between gap-3 px-3 py-3 [&::-webkit-details-marker]:hidden">
+                              <h4 className="min-w-0 text-[12px] font-black leading-6 text-[#0f172a]">
+                                {cleanText(faq.question)}
+                              </h4>
+
+                              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#dbeafe] bg-[#f8fbff] text-[9px] font-black text-brand-500 transition-transform duration-200 group-open:rotate-180">
+                                ▼
+                              </span>
+                            </summary>
+
+                            <div className="border-t border-[#eaf2fc] px-3 py-3">
+                              <p className="text-[11px] leading-6 text-slate-600">
+                                {cleanText(faq.answer)}
+                              </p>
+                            </div>
+                          </details>
+                        ))
+                      ) : (
+                        <div className="rounded-[17px] border border-slate-200 bg-[#fbfdff] px-3 py-4 text-center text-[11px] text-slate-500">
+                          No questions are currently available.
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="mt-4 rounded-[17px] border border-[#dbeafe] bg-[#f8fbff] px-3 py-3 text-center">
+              <p className="text-[10px] leading-5 text-slate-500">
+                Conditions may vary by country and regulatory entity.
+                Review the account details before registering.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
