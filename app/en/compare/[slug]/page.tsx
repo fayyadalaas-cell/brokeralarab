@@ -1819,16 +1819,16 @@ function ExpandableText({
 
             {[
               {
-                label: "Main Account",
-                leftValue:
-                  leftAccounts[0]?.account_name_en ||
-                  leftAccounts[0]?.account_name ||
-                  "Not specified",
-                rightValue:
-                  rightAccounts[0]?.account_name_en ||
-                  rightAccounts[0]?.account_name ||
-                  "Not specified",
-              },
+  label: "Main Account",
+  leftValue:
+    leftAccounts[0]?.account_name_en ||
+    leftAccounts[0]?.account_name ||
+    "Not specified",
+  rightValue:
+    rightAccounts[0]?.account_name_en ||
+    rightAccounts[0]?.account_name ||
+    "Not specified",
+},
               {
                 label: "Minimum Deposit",
                 leftValue:
@@ -1985,102 +1985,150 @@ function ExpandableText({
                     </span>
                   </div>
 
-                  {brokerAccounts.length > 0 ? (
-                    <div className="grid gap-4 p-4 lg:grid-cols-3 xl:grid-cols-4">
-                      {brokerAccounts.map((account) => {
-                        const accountName =
-                          account.account_name_en ||
-                          account.account_name ||
-                          "Trading Account";
+                  {/* Accounts display */}
+<div className="p-5">
+  {/* Scroll indication when accounts exceed four */}
+  {brokerAccounts.length > 4 && (
+    <div className="mb-3 flex items-center justify-between gap-4">
+      <p className="text-xs font-bold text-slate-500">
+        Scroll horizontally to view the remaining accounts
+      </p>
 
-                        const accountPath = accountSlug(
-                          account.account_name_en ||
-                            account.account_name
-                        );
+      <span className="rounded-full bg-brand-50 px-3 py-1 text-[10px] font-black text-brand-500">
+        {brokerAccounts.length} accounts
+      </span>
+    </div>
+  )}
 
-                        return (
-                          <div
-                            key={account.id}
-                            className="flex min-h-[270px] flex-col rounded-[20px] border border-[#dbeafe] bg-white p-4 shadow-sm"
-                          >
-                            <div>
-                              <div className="text-lg font-black">
-                                {accountName}
-                              </div>
+  <div
+    className={
+      brokerAccounts.length > 4
+        ? "flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3"
+        : "grid gap-4"
+    }
+    style={
+      brokerAccounts.length <= 4
+        ? {
+            gridTemplateColumns: `repeat(${Math.max(
+              brokerAccounts.length,
+              1
+            )}, minmax(0, 1fr))`,
+          }
+        : undefined
+    }
+  >
+    {brokerAccounts.length > 0 ? (
+      brokerAccounts.map((account) => {
+        const accountName =
+          account.account_name_en ||
+          account.account_name ||
+          "Trading Account";
 
-                              <p className="mt-1 text-[10px] font-bold leading-5 text-brand-500">
-                                {account.best_for_en ||
-                                  account.best_for ||
-                                  "Suitable for different trader profiles"}
-                              </p>
-                            </div>
+        const accountPath = accountSlug(
+          account.account_name_en ||
+            account.account_name
+        );
 
-                            <div className="mt-4 space-y-2.5">
-                              <div className="flex items-start justify-between gap-3 border-b border-slate-100 pb-2">
-                                <span className="text-[10px] font-bold text-slate-400">
-                                  Spread
-                                </span>
+        return (
+          <article
+            key={account.id}
+            className={`flex min-h-[225px] flex-col rounded-[22px] border border-slate-200 bg-white p-4 shadow-[0_8px_22px_rgba(15,23,42,0.05)] transition duration-200 hover:-translate-y-0.5 hover:border-[#93c5fd] hover:shadow-[0_12px_28px_rgba(37,99,235,0.10)] ${
+              brokerAccounts.length > 4
+                ? "w-[calc((100%-48px)/4)] min-w-[270px] shrink-0 snap-start"
+                : ""
+            }`}
+          >
+            {/* Account name */}
+            <div className="min-h-[62px] border-b border-slate-100 pb-3">
+              <Link
+                href={`/en/brokers/${broker.slug}/accounts/${accountPath}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-lg font-black leading-6 text-[#0f172a] transition hover:text-brand-500"
+              >
+                {accountName}
+              </Link>
 
-                                <span className="text-right text-[11px] font-black">
-                                  {account.spread_en ||
-                                    account.spread ||
-                                    "Not specified"}
-                                </span>
-                              </div>
+              <p className="mt-1 line-clamp-2 text-xs font-bold leading-5 text-brand-500">
+                {account.best_for_en ||
+                  account.best_for ||
+                  "Suitable for different trader profiles"}
+              </p>
+            </div>
 
-                              <div className="flex items-start justify-between gap-3 border-b border-slate-100 pb-2">
-                                <span className="text-[10px] font-bold text-slate-400">
-                                  Commission
-                                </span>
+            {/* Account information */}
+            <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-3">
+              <div>
+                <div className="text-[10px] font-bold text-slate-400">
+                  Spread
+                </div>
 
-                                <span className="text-right text-[11px] font-black">
-                                  {account.commission_en ||
-                                    account.commission ||
-                                    "Not specified"}
-                                </span>
-                              </div>
+                <div className="mt-1 text-sm font-black text-[#0f172a]">
+                  {account.spread_en ||
+                    account.spread ||
+                    "Not specified"}
+                </div>
+              </div>
 
-                              <div className="flex items-start justify-between gap-3 border-b border-slate-100 pb-2">
-                                <span className="text-[10px] font-bold text-slate-400">
-                                  Minimum Deposit
-                                </span>
+              <div>
+                <div className="text-[10px] font-bold text-slate-400">
+                  Commission
+                </div>
 
-                                <span className="text-right text-[11px] font-black">
-                                  {account.min_deposit_en ||
-                                    account.min_deposit ||
-                                    "Not specified"}
-                                </span>
-                              </div>
+                <div className="mt-1 text-sm font-black text-[#0f172a]">
+                  {account.commission_en ||
+                    account.commission ||
+                    "Not specified"}
+                </div>
+              </div>
 
-                              <div className="flex items-start justify-between gap-3">
-                                <span className="text-[10px] font-bold text-slate-400">
-                                  Execution
-                                </span>
+              <div>
+                <div className="text-[10px] font-bold text-slate-400">
+                  Minimum Deposit
+                </div>
 
-                                <span className="text-right text-[11px] font-black">
-                                  {account.execution_type_en ||
-                                    account.execution_type ||
-                                    "Not specified"}
-                                </span>
-                              </div>
-                            </div>
+                <div className="mt-1 text-sm font-black text-[#0f172a]">
+                  {account.min_deposit_en ||
+                    account.min_deposit ||
+                    "Not specified"}
+                </div>
+              </div>
 
-                            <Link
-                              href={`/en/brokers/${broker.slug}/accounts/${accountPath}`}
-                              className="mt-auto pt-5 text-sm font-black text-brand-500"
-                            >
-                              Account Details →
-                            </Link>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    <div className="px-5 py-8 text-center text-sm text-slate-500">
-                      No account information is currently available
-                      for {name}.
-                    </div>
-                  )}
+              <div>
+                <div className="text-[10px] font-bold text-slate-400">
+                  Execution
+                </div>
+
+                <div className="mt-1 break-words text-sm font-black leading-5 text-[#0f172a]">
+                  {account.execution_type_en ||
+                    account.execution_type ||
+                    "Not specified"}
+                </div>
+              </div>
+            </div>
+
+            {/* Account details */}
+            <div className="mt-auto pt-4">
+              <Link
+                href={`/en/brokers/${broker.slug}/accounts/${accountPath}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-xs font-black text-brand-500 transition hover:underline"
+              >
+                Account Details
+                <span className="ml-1">→</span>
+              </Link>
+            </div>
+          </article>
+        );
+      })
+    ) : (
+      <div className="w-full rounded-[20px] border border-slate-200 bg-white p-6 text-center text-sm text-slate-600">
+        No account information is currently available for {name}.
+      </div>
+    )}
+  </div>
+</div>
                 </article>
               );
             })}
@@ -2097,165 +2145,483 @@ function ExpandableText({
       </section>
 
       {/* ======================================================
-          ACCOUNTS & TRADING COSTS — MOBILE
-      ====================================================== */}
-      <section className="mx-auto max-w-[1520px] px-3 pb-4 md:hidden">
-        <div className="relative overflow-hidden rounded-[24px] border border-[#dbeafe] bg-white p-4">
-          <div className="absolute inset-x-0 top-0 h-1 bg-brand-500" />
+    ACCOUNTS & TRADING COSTS — MOBILE
+====================================================== */}
+<section className="mx-auto max-w-[1520px] px-3 pb-4 md:hidden">
+  <div className="relative overflow-hidden rounded-[28px] border border-[#dbeafe] bg-white p-4 shadow-[0_16px_45px_rgba(37,99,235,0.07)]">
+    <div className="absolute inset-x-0 top-0 h-1 bg-brand-500" />
 
-          <span className="text-[10px] font-black text-brand-500">
-            Accounts & Trading Costs
-          </span>
+    {/* Header */}
+    <div>
+      <span className="text-[12px] font-black text-brand-500">
+        Accounts & Trading Costs
+      </span>
 
-          <h2 className="mt-1.5 text-[23px] font-black leading-[1.3]">
-            Compare Accounts and Fees
-          </h2>
+      <h2 className="mt-1.5 text-[26px] font-black leading-[1.25] text-[#0f172a]">
+        Compare Accounts and Fees
+      </h2>
 
-          <p className="mt-1.5 text-[11px] leading-5 text-slate-500">
-            Compare spreads, commissions, deposits and execution.
-          </p>
+      <p className="mt-2 text-[14px] leading-7 text-slate-600">
+        Compare account types, spreads, commissions and minimum
+        deposits at {leftName} and {rightName}.
+      </p>
+    </div>
 
-          <div className="mt-4 grid grid-cols-2 gap-2">
-            <div className="rounded-[15px] border border-[#dbeafe] bg-[#f8fbff] p-3 text-center">
-              <div className="text-[9px] font-bold text-slate-400">
-                {leftName} Accounts
-              </div>
+    {/* Quick cost result */}
+    <div className="mt-4 rounded-[22px] border border-[#93c5fd] bg-[linear-gradient(135deg,#eff6ff_0%,#ffffff_100%)] px-4 py-4 shadow-[0_10px_25px_rgba(37,99,235,0.08)]">
+      <div className="text-[11px] font-black text-brand-500">
+        Quick Cost Comparison
+      </div>
 
-              <div className="mt-1 text-xl font-black text-brand-500">
-                {leftAccounts.length}
-              </div>
+      <div className="mt-1.5 break-words text-[22px] font-black leading-7 text-[#0f172a]">
+        {scalpingWinner === "Tie"
+          ? "Trading costs are closely matched"
+          : scalpingWinner}
+      </div>
+
+      <p className="mt-2 text-[12px] leading-6 text-slate-600">
+        {scalpingWinner === "Tie"
+          ? "Neither broker has a decisive cost advantage, so compare the conditions of each account."
+          : `${scalpingWinner} shows an advantage in trading costs or spreads based on the available data.`}
+      </p>
+    </div>
+
+    {/* Account counts */}
+    <div className="mt-3 grid grid-cols-2 gap-2">
+      {[
+        {
+          broker: left,
+          brokerAccounts: leftAccounts,
+        },
+        {
+          broker: right,
+          brokerAccounts: rightAccounts,
+        },
+      ].map(({ broker, brokerAccounts }) => {
+        const name = brokerName(broker);
+
+        return (
+          <div
+            key={broker.id}
+            className="flex min-w-0 flex-col items-center justify-center rounded-[18px] border border-[#dbeafe] bg-[#f8fbff] px-2 py-3 text-center"
+          >
+            <div className="flex min-h-[34px] items-center justify-center">
+              <span className="break-words text-[11px] font-black leading-4 text-brand-500">
+                {name}
+              </span>
             </div>
 
-            <div className="rounded-[15px] border border-[#dbeafe] bg-[#f8fbff] p-3 text-center">
-              <div className="text-[9px] font-bold text-slate-400">
-                {rightName} Accounts
-              </div>
+            <div className="mt-1 text-[24px] font-black leading-none text-[#0f172a]">
+              {brokerAccounts.length}
+            </div>
 
-              <div className="mt-1 text-xl font-black text-brand-500">
-                {rightAccounts.length}
-              </div>
+            <div className="mt-1 text-[10px] font-bold text-slate-400">
+              {brokerAccounts.length === 1
+                ? "available account"
+                : "available accounts"}
             </div>
           </div>
+        );
+      })}
+    </div>
 
-          <div className="mt-4 space-y-3">
-            {[
-              {
-                broker: left,
-                brokerAccounts: leftAccounts,
-              },
-              {
-                broker: right,
-                brokerAccounts: rightAccounts,
-              },
-            ].map(({ broker, brokerAccounts }) => {
-              const name = brokerName(broker);
+    {/* Beginner result */}
+    <div className="mt-2 flex items-center justify-between gap-3 rounded-[17px] border border-[#dbeafe] bg-white px-3.5 py-3">
+      <div>
+        <div className="text-[10px] font-bold text-slate-400">
+          Ease of Entry
+        </div>
 
-              return (
-                <details
-                  key={broker.id}
-                  className="group overflow-hidden rounded-[19px] border border-[#dbeafe] bg-white"
-                >
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3 [&::-webkit-details-marker]:hidden">
-                    <div>
-                      <div className="text-[9px] font-black text-brand-500">
-                        Available Accounts
-                      </div>
+        <div className="mt-0.5 text-[12px] font-black text-slate-600">
+          Best for Beginners
+        </div>
+      </div>
 
-                      <h3 className="text-[16px] font-black">
-                        {name}
-                      </h3>
-                    </div>
+      <span className="max-w-[52%] break-words text-right text-[14px] font-black leading-5 text-[#0f172a]">
+        {beginnerWinner === "Tie"
+          ? "Both are suitable"
+          : beginnerWinner}
+      </span>
+    </div>
 
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-black text-slate-500">
-                        {brokerAccounts.length}
-                      </span>
+    {/* Main account comparison */}
+    <div className="mt-4 overflow-hidden rounded-[21px] border border-[#dbeafe] bg-white">
+      {/* Table heading */}
+      <div className="grid grid-cols-[minmax(0,1fr)_80px_80px] items-center bg-[#f8fbff]">
+        <div className="px-3 py-3 text-[10px] font-black text-slate-400">
+          Comparison
+        </div>
 
-                      <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#dbeafe] text-[9px] text-brand-500 transition group-open:rotate-180">
-                        ▼
-                      </span>
-                    </div>
-                  </summary>
+        <div className="flex min-h-[48px] items-center justify-center border-l border-[#dbeafe] px-1.5 py-2 text-center">
+          <span className="break-words text-[10px] font-black leading-4 text-[#0f172a]">
+            {leftName}
+          </span>
+        </div>
 
-                  <div className="space-y-2 border-t border-[#dbeafe] p-3">
-                    {brokerAccounts.length > 0 ? (
-                      brokerAccounts.map((account) => (
-                        <div
-                          key={account.id}
-                          className="rounded-[15px] bg-[#f8fbff] p-3"
-                        >
-                          <div className="font-black">
-                            {account.account_name_en ||
-                              account.account_name ||
-                              "Trading Account"}
+        <div className="flex min-h-[48px] items-center justify-center border-l border-[#dbeafe] px-1.5 py-2 text-center">
+          <span className="break-words text-[10px] font-black leading-4 text-[#0f172a]">
+            {rightName}
+          </span>
+        </div>
+      </div>
+
+      {[
+        {
+  label: "Main Account",
+  leftValue:
+    leftAccounts[0]?.account_name_en ||
+    leftAccounts[0]?.account_name ||
+    "Not specified",
+  rightValue:
+    rightAccounts[0]?.account_name_en ||
+    rightAccounts[0]?.account_name ||
+    "Not specified",
+},
+        {
+          label: "Minimum Deposit",
+          leftValue:
+            leftAccounts.find((account) =>
+              cleanText(
+                account.min_deposit_en ||
+                  account.min_deposit
+              )
+            )?.min_deposit_en ||
+            leftAccounts.find((account) =>
+              cleanText(account.min_deposit)
+            )?.min_deposit ||
+            money(left.min_deposit),
+          rightValue:
+            rightAccounts.find((account) =>
+              cleanText(
+                account.min_deposit_en ||
+                  account.min_deposit
+              )
+            )?.min_deposit_en ||
+            rightAccounts.find((account) =>
+              cleanText(account.min_deposit)
+            )?.min_deposit ||
+            money(right.min_deposit),
+        },
+        {
+          label: "Spread",
+          leftValue:
+            leftAccounts.find((account) =>
+              cleanText(account.spread_en || account.spread)
+            )?.spread_en ||
+            leftAccounts.find((account) =>
+              cleanText(account.spread)
+            )?.spread ||
+            cleanText(left.spreads_en) ||
+            "Not specified",
+          rightValue:
+            rightAccounts.find((account) =>
+              cleanText(account.spread_en || account.spread)
+            )?.spread_en ||
+            rightAccounts.find((account) =>
+              cleanText(account.spread)
+            )?.spread ||
+            cleanText(right.spreads_en) ||
+            "Not specified",
+        },
+        {
+          label: "Commission",
+          leftValue:
+            leftAccounts.find((account) =>
+              cleanText(
+                account.commission_en ||
+                  account.commission
+              )
+            )?.commission_en ||
+            leftAccounts.find((account) =>
+              cleanText(account.commission)
+            )?.commission ||
+            cleanText(left.fees_en) ||
+            "Not specified",
+          rightValue:
+            rightAccounts.find((account) =>
+              cleanText(
+                account.commission_en ||
+                  account.commission
+              )
+            )?.commission_en ||
+            rightAccounts.find((account) =>
+              cleanText(account.commission)
+            )?.commission ||
+            cleanText(right.fees_en) ||
+            "Not specified",
+        },
+        {
+          label: "Execution",
+          leftValue:
+            leftAccounts.find((account) =>
+              cleanText(
+                account.execution_type_en ||
+                  account.execution_type
+              )
+            )?.execution_type_en ||
+            leftAccounts.find((account) =>
+              cleanText(account.execution_type)
+            )?.execution_type ||
+            "Not specified",
+          rightValue:
+            rightAccounts.find((account) =>
+              cleanText(
+                account.execution_type_en ||
+                  account.execution_type
+              )
+            )?.execution_type_en ||
+            rightAccounts.find((account) =>
+              cleanText(account.execution_type)
+            )?.execution_type ||
+            "Not specified",
+        },
+      ].map((row) => (
+        <div
+          key={row.label}
+          className="grid grid-cols-[minmax(0,1fr)_80px_80px] items-stretch border-t border-[#dbeafe]"
+        >
+          <div className="flex min-w-0 items-center bg-[#fbfdff] px-3 py-3 text-[11px] font-black leading-5 text-slate-600">
+            {row.label}
+          </div>
+
+          <div className="flex min-w-0 items-center justify-center border-l border-[#dbeafe] px-1.5 py-3 text-center">
+            <span className="break-words text-[10px] font-black leading-4 text-[#0f172a]">
+              {row.leftValue}
+            </span>
+          </div>
+
+          <div className="flex min-w-0 items-center justify-center border-l border-[#dbeafe] px-1.5 py-3 text-center">
+            <span className="break-words text-[10px] font-black leading-4 text-[#0f172a]">
+              {row.rightValue}
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    {/* Account details */}
+    <div className="mt-6">
+      <span className="text-[10px] font-black text-brand-500">
+        Account Details
+      </span>
+
+      <h3 className="mt-1 text-[21px] font-black leading-7 text-[#0f172a]">
+        Explore Available Account Types
+      </h3>
+
+      <p className="mt-1 text-[12px] leading-6 text-slate-500">
+        Open each broker to compare the spread, commission,
+        deposit and execution method for every account.
+      </p>
+
+      <div className="mt-3 space-y-3">
+        {[
+          {
+            broker: left,
+            brokerAccounts: leftAccounts,
+          },
+          {
+            broker: right,
+            brokerAccounts: rightAccounts,
+          },
+        ].map(({ broker, brokerAccounts }) => {
+          const name = brokerName(broker);
+
+          return (
+            <details
+              key={broker.id}
+              className="group overflow-hidden rounded-[22px] border border-[#dbeafe] bg-white"
+            >
+              {/* Broker heading */}
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 bg-[#f8fbff] px-4 py-4 [&::-webkit-details-marker]:hidden">
+                <div className="min-w-0">
+                  <h4 className="break-words text-[17px] font-black leading-6 text-[#0f172a]">
+                    {name} Accounts
+                  </h4>
+
+                  <p className="mt-1 text-[11px] font-bold text-brand-500">
+                    {brokerAccounts.length}{" "}
+                    {brokerAccounts.length === 1
+                      ? "available account"
+                      : "available accounts"}
+                  </p>
+                </div>
+
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#bfdbfe] bg-white text-[11px] font-black text-brand-500 transition-transform duration-200 group-open:rotate-180">
+                  ▼
+                </span>
+              </summary>
+
+              {/* Accounts */}
+              <div className="border-t border-[#dbeafe]">
+                {brokerAccounts.length > 0 ? (
+                  brokerAccounts.map((account, index) => {
+                    const accountName =
+  account.account_name_en ||
+  account.account_name ||
+  "Trading Account";
+
+                    const accountPath = accountSlug(
+                      account.account_name_en ||
+                        account.account_name
+                    );
+
+                    return (
+                      <article
+                        key={account.id}
+                        className={`px-4 py-4 ${
+                          index !== brokerAccounts.length - 1
+                            ? "border-b border-slate-100"
+                            : ""
+                        }`}
+                      >
+                        {/* Account heading */}
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <Link
+                              href={`/en/brokers/${broker.slug}/accounts/${accountPath}`}
+                              className="break-words text-[15px] font-black leading-6 text-[#0f172a] transition hover:text-brand-500"
+                            >
+                              {accountName}
+                            </Link>
+
+                            <p className="mt-0.5 line-clamp-2 text-[11px] font-bold leading-5 text-brand-500">
+                              {account.best_for_en ||
+                                "Suitable for different trader profiles"}
+                            </p>
                           </div>
 
-                          <div className="mt-2 grid grid-cols-2 gap-2 text-[10px]">
-                            <div>
-                              <span className="text-slate-400">
-                                Spread:
-                              </span>{" "}
-                              <strong>
-                                {account.spread_en ||
-                                  account.spread ||
-                                  "Not specified"}
-                              </strong>
+                          <Link
+                            href={`/en/brokers/${broker.slug}/accounts/${accountPath}`}
+                            aria-label={`${accountName} account details`}
+                            className="shrink-0 rounded-full bg-[#eff6ff] px-3 py-1.5 text-[10px] font-black text-brand-500"
+                          >
+                            Details
+                          </Link>
+                        </div>
+
+                        {/* Account data */}
+                        <div className="mt-3 grid grid-cols-3 gap-2">
+                          <div className="min-w-0 rounded-[13px] bg-[#f8fafc] px-2 py-2.5">
+                            <div className="text-[9px] font-bold text-slate-400">
+                              Spread
                             </div>
 
-                            <div>
-                              <span className="text-slate-400">
-                                Commission:
-                              </span>{" "}
-                              <strong>
-                                {account.commission_en ||
-                                  account.commission ||
-                                  "Not specified"}
-                              </strong>
+                            <div className="mt-1 break-words text-[10px] font-black leading-4 text-[#0f172a]">
+                              {account.spread_en ||
+                                account.spread ||
+                                "Not specified"}
+                            </div>
+                          </div>
+
+                          <div className="min-w-0 rounded-[13px] bg-[#f8fafc] px-2 py-2.5">
+                            <div className="text-[9px] font-bold text-slate-400">
+                              Commission
                             </div>
 
-                            <div>
-                              <span className="text-slate-400">
-                                Deposit:
-                              </span>{" "}
-                              <strong>
-                                {account.min_deposit_en ||
-                                  account.min_deposit ||
-                                  "Not specified"}
-                              </strong>
+                            <div className="mt-1 break-words text-[10px] font-black leading-4 text-[#0f172a]">
+                              {account.commission_en ||
+                                account.commission ||
+                                "Not specified"}
+                            </div>
+                          </div>
+
+                          <div className="min-w-0 rounded-[13px] bg-[#f8fafc] px-2 py-2.5">
+                            <div className="text-[9px] font-bold text-slate-400">
+                              Deposit
                             </div>
 
-                            <div>
-                              <span className="text-slate-400">
-                                Execution:
-                              </span>{" "}
-                              <strong>
-                                {account.execution_type_en ||
-                                  account.execution_type ||
-                                  "Not specified"}
-                              </strong>
+                            <div className="mt-1 break-words text-[10px] font-black leading-4 text-[#0f172a]">
+                              {account.min_deposit_en ||
+                                account.min_deposit ||
+                                "Not specified"}
                             </div>
                           </div>
                         </div>
-                      ))
-                    ) : (
-                      <div className="py-3 text-center text-[11px] text-slate-500">
-                        No account information is currently available.
-                      </div>
-                    )}
-                  </div>
-                </details>
-              );
-            })}
-          </div>
 
-          <div className="mt-4 rounded-[16px] bg-[#f8fbff] px-3 py-3 text-center">
-            <p className="text-[10px] leading-5 text-slate-500">
-              Account quantity alone is not enough. Compare pricing,
-              deposits and execution before choosing.
-            </p>
-          </div>
-        </div>
-      </section>
+                        {(account.execution_type_en ||
+                          account.execution_type) && (
+                          <div className="mt-2.5 rounded-xl bg-[#fbfdff] px-3 py-2 text-[10px] leading-5 text-slate-500">
+                            <span className="font-bold">
+                              Execution:
+                            </span>{" "}
+                            <span className="font-black text-[#0f172a]">
+                              {account.execution_type_en ||
+                                account.execution_type}
+                            </span>
+                          </div>
+                        )}
+                      </article>
+                    );
+                  })
+                ) : (
+                  <div className="px-4 py-5 text-center text-[12px] leading-6 text-slate-500">
+                    No account information is currently available
+                    for {name}.
+                  </div>
+                )}
+              </div>
+            </details>
+          );
+        })}
+      </div>
+    </div>
+
+    {/* Note */}
+    <div className="mt-4 rounded-[18px] border border-[#dbeafe] bg-[#f8fbff] px-4 py-3">
+      <p className="text-[11px] leading-6 text-slate-600">
+        Do not choose a broker based only on the number of accounts.
+        Compare spreads, commissions, minimum deposits and execution
+        methods before selecting a trading account.
+      </p>
+    </div>
+
+    {/* CTA */}
+    <div className="mt-4 rounded-[22px] border border-[#93c5fd] bg-[linear-gradient(135deg,#eff6ff_0%,#ffffff_100%)] p-4">
+      <h3 className="text-[19px] font-black leading-7 text-[#0f172a]">
+        Choose the Broker That Fits Your Trading
+      </h3>
+
+      <p className="mt-1 text-[12px] leading-6 text-slate-600">
+        Continue after reviewing the available accounts and trading
+        costs.
+      </p>
+
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        {[left, right].map((broker, index) => {
+          const name = brokerName(broker);
+
+          return (
+            <div
+              key={broker.id}
+              className="flex min-w-0 flex-col rounded-[16px] border border-[#dbeafe] bg-white p-2.5 text-center"
+            >
+              <div className="flex min-h-[42px] items-center justify-center">
+                <span className="break-words text-[12px] font-black leading-5 text-[#0f172a]">
+                  {name}
+                </span>
+              </div>
+
+              <a
+  href={`/go/${broker.slug ?? ""}?type=real`}
+  target="_blank"
+  rel="noopener noreferrer sponsored nofollow"
+  aria-label={`Start with ${name}`}
+  className={`mt-2 inline-flex h-[44px] w-full items-center justify-center whitespace-nowrap rounded-xl px-2 py-2 text-center text-[11px] font-black transition ${
+    index === 0
+      ? "bg-brand-500 text-white shadow-sm hover:bg-brand-600"
+      : "border border-slate-300 bg-white text-slate-800 hover:border-[#93c5fd] hover:text-brand-500"
+  }`}
+>
+  Start Now
+</a>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* ======================================================
           SAFETY & REGULATION — DESKTOP
@@ -2740,772 +3106,899 @@ function ExpandableText({
       </section>
 
       {/* ======================================================
-          SAFETY & REGULATION — MOBILE
-      ====================================================== */}
-      <section className="mx-auto max-w-[1520px] px-3 pb-4 md:hidden">
-        <div className="relative overflow-hidden rounded-[24px] border border-[#dbeafe] bg-white p-4">
-          <div className="absolute inset-x-0 top-0 h-1 bg-brand-500" />
+    SAFETY & REGULATION — MOBILE
+====================================================== */}
+<section className="mx-auto max-w-[1520px] px-3 pb-4 md:hidden">
+  <div className="relative overflow-hidden rounded-[28px] border border-[#dbeafe] bg-white px-4 pb-5 pt-5 shadow-[0_16px_45px_rgba(37,99,235,0.07)]">
+    <div className="absolute inset-x-0 top-0 h-1 bg-brand-500" />
 
-          <span className="text-[10px] font-black text-brand-500">
-            Safety & Regulation
-          </span>
+    {/* Header */}
+    <div>
+      <span className="text-[11px] font-black text-brand-500">
+        Safety & Regulation
+      </span>
 
-          <h2 className="mt-1.5 text-[23px] font-black leading-[1.3]">
-            Compare Broker Safety
-          </h2>
+      <h2 className="mt-1.5 text-[25px] font-black leading-[1.35] text-[#0f172a]">
+        Compare Broker Safety
+      </h2>
 
-          <p className="mt-1.5 text-[11px] leading-5 text-slate-500">
-            Check the regulator, legal entity and licence number
-            responsible for each account.
-          </p>
+      <p className="mt-1 text-[12px] font-bold leading-6 text-slate-500">
+        {leftName} vs {rightName}
+      </p>
 
-          <div className="mt-4 grid grid-cols-2 gap-2">
-            {[left, right].map((broker) => {
-              const brokerLicences =
-                broker.id === left.id
-                  ? leftLicences
-                  : rightLicences;
+      <p className="mt-2 text-[12px] leading-6 text-slate-500">
+        Compare safety scores, regulators and the legal entity
+        responsible for each trading account.
+      </p>
+    </div>
 
-              return (
-                <div
-                  key={broker.id}
-                  className="rounded-[15px] border border-[#dbeafe] bg-[#f8fbff] p-3 text-center"
-                >
-                  <div className="text-[9px] font-black text-brand-500">
-                    {brokerName(broker)}
-                  </div>
+    {/* Compact safety comparison */}
+    <div className="mt-4 overflow-hidden rounded-[22px] border border-[#bfdbfe] bg-white">
+      {/* Safety scores */}
+      <div className="grid grid-cols-2 divide-x divide-[#dbeafe] bg-[#f8fbff]">
+        {[
+          {
+            broker: left,
+            brokerLicences: leftLicences,
+          },
+          {
+            broker: right,
+            brokerLicences: rightLicences,
+          },
+        ].map(({ broker }) => {
+          const name = brokerName(broker);
 
-                  <div className="mt-1 text-lg font-black">
-                    {(broker.score_safety ?? 0).toFixed(2)}
-                  </div>
+          return (
+            <div
+              key={broker.id}
+              className="min-w-0 px-3 py-4 text-center"
+            >
+              <div className="flex min-h-[32px] items-center justify-center">
+                <span className="break-words text-[11px] font-black leading-4 text-[#0f172a]">
+                  {name}
+                </span>
+              </div>
 
-                  <div className="text-[8px] text-slate-400">
-                    {brokerLicences.length} licence
-                    {brokerLicences.length === 1 ? "" : "s"}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+              <div className="mt-1.5 text-[25px] font-black leading-none text-brand-500">
+                {(broker.score_safety ?? 0).toFixed(2)}
+              </div>
 
-          <div className="mt-4 space-y-3">
-            {[
-              {
-                broker: left,
-                brokerLicences: leftLicences,
-              },
-              {
-                broker: right,
-                brokerLicences: rightLicences,
-              },
-            ].map(({ broker, brokerLicences }) => {
-              const name = brokerName(broker);
+              <div className="mt-1.5 text-[9px] font-bold text-slate-400">
+                Safety score out of 5
+              </div>
+            </div>
+          );
+        })}
+      </div>
 
-              const regulationParagraphs =
-                splitParagraphs(
-                  broker.regulation_summary_en
-                );
+      {/* Broker information */}
+      <div className="border-t border-[#dbeafe] px-3 py-3">
+        {[
+          {
+            broker: left,
+            brokerLicences: leftLicences,
+          },
+          {
+            broker: right,
+            brokerLicences: rightLicences,
+          },
+        ].map(({ broker, brokerLicences }, index) => {
+          const name = brokerName(broker);
+          const islamicStatus = yesNoEnglish(
+            broker.islamic_account
+          );
 
-              const safetyFactors =
-                splitSafetyFactors(
-                  broker.safety_factors_en
-                );
-
-              return (
-                <details
-                  key={broker.id}
-                  className="group overflow-hidden rounded-[19px] border border-[#dbeafe] bg-white"
-                >
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3 [&::-webkit-details-marker]:hidden">
-                    <div className="flex min-w-0 items-center gap-2.5">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] border border-[#dbeafe] bg-white p-2">
-                        {broker.logo ? (
-                          <img
-                            src={broker.logo}
-                            alt={`${name} logo`}
-                            className="h-full w-full object-contain"
-                          />
-                        ) : null}
-                      </div>
-
-                      <div className="min-w-0">
-                        <div className="text-[9px] font-black text-brand-500">
-                          Regulatory Profile
-                        </div>
-
-                        <h3 className="break-words text-[16px] font-black">
-                          {name} Licences
-                        </h3>
-                      </div>
-                    </div>
-
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#dbeafe] text-[9px] text-brand-500 transition group-open:rotate-180">
-                      ▼
-                    </span>
-                  </summary>
-
-                  <div className="border-t border-[#dbeafe] p-3">
-                    <div className="grid grid-cols-2 gap-2">
-                      <div className="rounded-[13px] bg-[#f8fbff] p-2.5 text-center">
-                        <div className="text-[8px] font-bold text-slate-400">
-                          Headquarters
-                        </div>
-
-                        <div className="mt-1 text-[10px] font-black">
-                          {broker.headquarters_en ||
-                            broker.headquarters ||
-                            "Not specified"}
-                        </div>
-                      </div>
-
-                      <div className="rounded-[13px] bg-[#f8fbff] p-2.5 text-center">
-                        <div className="text-[8px] font-bold text-slate-400">
-                          Islamic Account
-                        </div>
-
-                        <div className="mt-1 text-[10px] font-black">
-                          {yesNoEnglish(
-                            broker.islamic_account
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    {brokerLicences.length > 0 ? (
-                      <div className="mt-3 space-y-2">
-                        {brokerLicences.map((licence) => {
-                          const verificationUrl =
-                            licence.verification_url_en ||
-                            licence.verification_url_ar;
-
-                          return (
-                            <div
-                              key={licence.id}
-                              className="overflow-hidden rounded-[14px] border border-[#dbeafe]"
-                            >
-                              <div className="flex items-start justify-between gap-3 bg-[#f8fbff] px-3 py-2.5">
-                                <div>
-                                  <div className="text-[10px] font-black">
-                                    {licence.regulator_code ||
-                                      "Not specified"}
-                                  </div>
-
-                                  <div className="mt-0.5 text-[8px] text-slate-400">
-                                    {licence.regulator_name_en}
-                                  </div>
-                                </div>
-
-                                <div className="text-right">
-                                  <div
-                                    dir="ltr"
-                                    className="text-[10px] font-black"
-                                  >
-                                    {licence.license_number ||
-                                      "Not available"}
-                                  </div>
-
-                                  <div className="mt-0.5 text-[8px] text-slate-400">
-                                    {licence.country_en ||
-                                      "Not specified"}
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div className="border-t border-[#dbeafe] px-3 py-2.5">
-                                <div className="text-[8px] font-bold text-slate-400">
-                                  Legal Entity
-                                </div>
-
-                                <div className="mt-0.5 text-[10px] font-black leading-5">
-                                  {licence.entity_name_en ||
-                                    "Not specified"}
-                                </div>
-                              </div>
-
-                              <div className="flex items-center justify-between border-t border-[#dbeafe] px-3 py-2">
-                                <span
-                                  className={`rounded-full border px-2 py-0.5 text-[8px] font-black ${licenseTrustClasses(
-                                    licence.trust_level
-                                  )}`}
-                                >
-                                  {licenseTrustLabel(
-                                    licence.trust_level
-                                  )}
-                                </span>
-
-                                {verificationUrl ? (
-                                  <a
-                                    href={verificationUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer nofollow"
-                                    className="text-[9px] font-black text-brand-500"
-                                  >
-                                    Verify Licence →
-                                  </a>
-                                ) : (
-                                  <span className="text-[8px] text-slate-400">
-                                    No verification link
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    ) : (
-                      <div className="mt-3 rounded-[14px] bg-[#f8fbff] p-3 text-center text-[10px] text-slate-500">
-                        No licence records are currently available.
-                      </div>
-                    )}
-
-                    <details className="group/analysis mt-3 rounded-[15px] bg-[#f8fbff]">
-                      <summary className="flex cursor-pointer list-none items-center justify-between px-3 py-3 [&::-webkit-details-marker]:hidden">
-                        <span className="text-[10px] font-black">
-                          Regulatory Analysis
-                        </span>
-
-                        <span className="text-[9px] font-black text-brand-500">
-                          Read Details
-                        </span>
-                      </summary>
-
-                      <div className="space-y-2 border-t border-[#dbeafe] px-3 py-3 text-[10px] leading-5 text-slate-600">
-                        {regulationParagraphs.length > 0 ? (
-                          regulationParagraphs.map(
-                            (paragraph, index) => (
-                              <p key={index}>{paragraph}</p>
-                            )
-                          )
-                        ) : (
-                          <p>
-                            No regulatory summary is currently
-                            available.
-                          </p>
-                        )}
-                      </div>
-                    </details>
-
-                    {safetyFactors.length > 0 ? (
-                      <div className="mt-3 flex flex-wrap gap-1.5">
-                        {safetyFactors.map((factor, index) => (
-                          <span
-                            key={index}
-                            className="rounded-full border border-emerald-100 bg-emerald-50 px-2 py-1 text-[8px] font-black text-emerald-700"
-                          >
-                            {factor}
-                          </span>
-                        ))}
-                      </div>
-                    ) : null}
-
-                    <div className="mt-3 rounded-[15px] border border-emerald-100 bg-emerald-50/60 p-3">
-                      <div className="text-[9px] font-black text-emerald-700">
-                        Client Fund Protection
-                      </div>
-
-                      <p className="mt-1 text-[10px] leading-5 text-slate-600">
-                        {cleanText(
-                          broker.fund_protection_en
-                        ) ||
-                          "Review the protection rules applied by the entity that will hold your account."}
-                      </p>
-                    </div>
-                  </div>
-                </details>
-              );
-            })}
-          </div>
-
-          <div className="mt-4 rounded-[16px] bg-[#f8fbff] px-3 py-3 text-center">
-            <p className="text-[10px] leading-5 text-slate-500">
-              Before depositing, match the legal entity and licence
-              number in your client agreement with the regulator’s
-              official register.
-            </p>
-          </div>
-        </div>
-      </section>
-            {/* ======================================================
-          FINAL DECISION — DESKTOP
-      ====================================================== */}
-      <section className="mx-auto hidden max-w-[1520px] px-4 pb-4 sm:px-6 md:block lg:px-8">
-        <div className="relative overflow-hidden rounded-[32px] border border-[#dbeafe] bg-white p-6 shadow-[0_25px_70px_rgba(37,99,235,0.08)] lg:p-8">
-          <div className="absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
-
-          <div className="grid gap-6 lg:grid-cols-[1fr_350px] lg:items-center">
-            <div>
-              <span className="text-sm font-black text-brand-500">
-                Comparison Summary
+          return (
+            <div
+              key={broker.id}
+              className={`flex items-center justify-between gap-3 py-2 ${
+                index === 0
+                  ? "border-b border-[#eaf2fc]"
+                  : ""
+              }`}
+            >
+              <span className="min-w-0 break-words text-[10px] font-black text-[#0f172a]">
+                {name}
               </span>
 
-              <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-[42px]">
-                Which Broker Better Fits Your Needs?
-              </h2>
+              <div className="flex shrink-0 items-center gap-2">
+                <span className="rounded-full bg-[#eff6ff] px-2.5 py-1.5 text-[9px] font-black text-brand-500">
+                  {brokerLicences.length}{" "}
+                  {brokerLicences.length === 1
+                    ? "licence"
+                    : "licences"}
+                </span>
 
-              <p className="mt-3 max-w-4xl text-base leading-8 text-slate-600">
-                The decision should not depend on the broker’s name
-                or overall rating alone. Compare why each broker may
-                suit you, its main strength and the trade-offs that
-                could affect your trading experience.
-              </p>
+                <span
+                  className={`rounded-full px-2.5 py-1.5 text-[9px] font-black ${
+                    islamicStatus === "Available"
+                      ? "bg-emerald-50 text-emerald-700"
+                      : "bg-slate-100 text-slate-600"
+                  }`}
+                >
+                  {islamicStatus === "Available"
+                    ? "Islamic account"
+                    : "No Islamic account"}
+                </span>
+              </div>
             </div>
+          );
+        })}
+      </div>
 
-            <div className="rounded-[26px] border border-[#2563eb] bg-[linear-gradient(135deg,#eff6ff_0%,#ffffff_100%)] p-5 shadow-[0_14px_35px_rgba(37,99,235,0.10)]">
-              <div className="text-xs font-black text-brand-500">
-                Overall Result
+      {/* Important hint */}
+      <div className="border-t border-[#dbeafe] bg-[#f8fbff] px-4 py-3 text-center">
+        <p className="text-[10px] font-bold leading-5 text-slate-500">
+          The number of licences alone is not enough. Verify the
+          legal entity that will hold your account.
+        </p>
+      </div>
+    </div>
+
+    {/* Broker regulatory profiles */}
+    <div className="mt-4 space-y-3">
+      {[
+        {
+          broker: left,
+          brokerLicences: leftLicences,
+        },
+        {
+          broker: right,
+          brokerLicences: rightLicences,
+        },
+      ].map(({ broker, brokerLicences }) => {
+        const name = brokerName(broker);
+
+        const regulationParagraphs = splitParagraphs(
+          broker.regulation_summary_en
+        );
+
+        const fundProtectionParagraphs = splitParagraphs(
+          cleanText(broker.fund_protection_en) ||
+            "Review the client-fund protection rules applied by the legal entity responsible for your account."
+        );
+
+        return (
+          <details
+            key={broker.id}
+            className="group overflow-hidden rounded-[22px] border border-[#bfdbfe] bg-white"
+          >
+            {/* Broker summary */}
+<summary className="flex cursor-pointer list-none items-center justify-between gap-2.5 bg-[linear-gradient(135deg,#eff6ff_0%,#ffffff_100%)] px-3 py-3 [&::-webkit-details-marker]:hidden">
+  {/* Logo and broker information */}
+  <div className="flex min-w-0 flex-1 items-center gap-2.5">
+    <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-[13px] border border-[#dbeafe] bg-white p-1.5 shadow-sm">
+      {broker.logo ? (
+        <img
+          src={broker.logo}
+          alt={`${name} logo`}
+          className="h-full w-full scale-105 object-contain"
+        />
+      ) : (
+        <span className="break-words text-center text-[7px] font-black leading-3 text-slate-400">
+          {name}
+        </span>
+      )}
+    </div>
+
+    <div className="min-w-0 flex-1">
+      <div className="text-[9px] font-black text-brand-500">
+        Regulatory Profile
+      </div>
+
+      <h3 className="mt-0.5 line-clamp-2 break-words text-[15px] font-black leading-5 text-[#0f172a]">
+        {name} Licences
+      </h3>
+
+      <p className="mt-1 break-words text-[8px] font-bold leading-4 text-slate-500">
+        {brokerLicences.length}{" "}
+        {brokerLicences.length === 1
+          ? "registered licence"
+          : "registered licences"}
+        {" • "}
+        {(broker.score_safety ?? 0).toFixed(2)} out of 5
+      </p>
+    </div>
+  </div>
+
+  {/* Open button */}
+  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#bfdbfe] bg-white text-[10px] font-black text-brand-500 transition-transform duration-200 group-open:rotate-180">
+    ▼
+  </span>
+</summary>
+
+            <div className="border-t border-[#dbeafe] p-3">
+              {/* Basic information */}
+              <div className="grid grid-cols-2 gap-2">
+                <div className="rounded-[14px] bg-[#f8fbff] px-2 py-2.5 text-center">
+                  <div className="text-[8px] font-bold text-slate-400">
+                    Headquarters
+                  </div>
+
+                  <div className="mt-1 break-words text-[10px] font-black leading-4 text-[#0f172a]">
+                    {broker.headquarters_en ||
+                      broker.headquarters ||
+                      "Not specified"}
+                  </div>
+                </div>
+
+                <div className="rounded-[14px] bg-[#f8fbff] px-2 py-2.5 text-center">
+                  <div className="text-[8px] font-bold text-slate-400">
+                    Islamic Account
+                  </div>
+
+                  <div className="mt-1 text-[10px] font-black leading-4 text-[#0f172a]">
+                    {yesNoEnglish(broker.islamic_account)}
+                  </div>
+                </div>
               </div>
 
-              <div className="mt-2 text-2xl font-black text-[#0f172a]">
-                {recommendationLabel}
+              {/* Licences heading */}
+              <div className="mb-2 mt-3 flex items-center justify-between gap-3">
+                <h4 className="text-[13px] font-black text-[#0f172a]">
+                  Regulators
+                </h4>
+
+                <span className="rounded-full bg-[#eff6ff] px-2.5 py-1 text-[8px] font-black text-brand-500">
+                  {brokerLicences.length}{" "}
+                  {brokerLicences.length === 1
+                    ? "record"
+                    : "records"}
+                </span>
               </div>
 
-              <p className="mt-2 text-sm leading-7 text-slate-600">
-                {ratingsAreClose
-                  ? "The rating difference is limited. Choose the broker whose accounts, costs and platforms better match your trading style."
-                  : `${recommendedName} has the higher overall rating, but review the reasons and trade-offs below before deciding.`}
-              </p>
-            </div>
-          </div>
+              {/* Compact licence list */}
+              {brokerLicences.length > 0 ? (
+                <div className="space-y-2">
+                  {brokerLicences.map((licence) => {
+                    const verificationUrl =
+                      licence.verification_url_en ||
+                      licence.verification_url_ar;
 
-          {/* Decision indicators */}
-          <div className="mt-7 grid grid-cols-3 overflow-hidden rounded-[22px] border border-[#dbeafe] bg-[#f8fbff]">
-            <div className="border-r border-[#dbeafe] px-5 py-4 text-center">
-              <div className="text-[10px] font-bold text-slate-400">
-                Overall Rating
-              </div>
+                    return (
+                      <div
+                        key={licence.id}
+                        className="overflow-hidden rounded-[16px] border border-[#dbeafe] bg-white"
+                      >
+                        {/* Main licence row */}
+                        <div className="flex items-start justify-between gap-3 bg-[#f8fbff] px-3 py-2.5">
+                          <div className="min-w-0">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="text-[13px] font-black text-[#0f172a]">
+                                {licence.regulator_code ||
+                                  "Not specified"}
+                              </span>
 
-              <div className="mt-1 text-lg font-black text-[#0f172a]">
-                {ratingsAreClose
-                  ? "Closely Matched"
-                  : recommendedName}
-              </div>
+                              <span
+                                className={`inline-flex shrink-0 rounded-full border px-2 py-0.5 text-[8px] font-black ${licenseTrustClasses(
+                                  licence.trust_level
+                                )}`}
+                              >
+                                {licenseTrustLabel(
+                                  licence.trust_level
+                                )}
+                              </span>
+                            </div>
 
-              <p className="mt-1 text-[9px] text-slate-400">
-                {leftRating.toFixed(2)} vs {rightRating.toFixed(2)}
-              </p>
-            </div>
+                            {licence.regulator_name_en ? (
+                              <div className="mt-0.5 text-[8px] leading-4 text-slate-400">
+                                {licence.regulator_name_en}
+                              </div>
+                            ) : null}
+                          </div>
 
-            <div className="border-r border-[#dbeafe] px-5 py-4 text-center">
-              <div className="text-[10px] font-bold text-slate-400">
-                Easier Start
-              </div>
+                          <div className="shrink-0 text-right">
+                            <div className="text-[8px] font-bold text-slate-400">
+                              Licence Number
+                            </div>
 
-              <div className="mt-1 text-lg font-black text-[#0f172a]">
-                {beginnerDecision}
-              </div>
+                            <div
+                              dir="ltr"
+                              className="mt-0.5 text-[10px] font-black text-[#0f172a]"
+                            >
+                              {licence.license_number ||
+                                "Not available"}
+                            </div>
+                          </div>
+                        </div>
 
-              <p className="mt-1 text-[9px] text-slate-400">
-                Based on deposit and account accessibility
-              </p>
-            </div>
+                        {/* Legal entity */}
+                        <div className="border-t border-[#eaf2fc] px-3 py-2.5">
+                          <div className="text-[8px] font-bold text-slate-400">
+                            Legal Entity
+                          </div>
 
-            <div className="px-5 py-4 text-center">
-              <div className="text-[10px] font-bold text-slate-400">
-                Fees & Trading Costs
-              </div>
+                          <div className="mt-0.5 break-words text-[10px] font-black leading-5 text-[#0f172a]">
+                            {licence.entity_name_en ||
+                              "Not specified"}
+                          </div>
+                        </div>
 
-              <div className="mt-1 text-lg font-black text-[#0f172a]">
-                {feesDecision}
-              </div>
+                        {/* Country and verification */}
+                        <div className="flex items-center justify-between gap-3 border-t border-[#eaf2fc] px-3 py-2">
+                          <div className="text-[9px] font-bold text-slate-600">
+                            {licence.country_en || "Not specified"}
+                          </div>
 
-              <p className="mt-1 text-[9px] text-slate-400">
-                Based on the fees scores in this comparison
-              </p>
-            </div>
-          </div>
-
-          {/* Broker decision cards */}
-          <div className="mt-6 grid gap-5 lg:grid-cols-2">
-            {decisionBrokers.map(
-              ({ broker, other, reasons }) => {
-                const name = brokerName(broker);
-
-                const isRecommended =
-                  !ratingsAreClose &&
-                  broker.id === recommendedBroker.id;
-
-                return (
-                  <article
-                    key={broker.id}
-                    className={`overflow-hidden rounded-[24px] border ${
-                      isRecommended
-                        ? "border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_48%)]"
-                        : "border-[#dbeafe] bg-white"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between gap-4 border-b border-[#dbeafe] px-5 py-4">
-                      <div className="flex min-w-0 items-center gap-3">
-                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[14px] border border-[#dbeafe] bg-white p-2 shadow-sm">
-                          {broker.logo ? (
-                            <img
-                              src={broker.logo}
-                              alt={`${name} logo`}
-                              className="h-full w-full object-contain"
-                            />
+                          {verificationUrl ? (
+                            <a
+                              href={verificationUrl}
+                              target="_blank"
+                              rel="noopener noreferrer nofollow"
+                              aria-label={`Verify the ${
+                                licence.regulator_code || name
+                              } licence`}
+                              className="inline-flex items-center justify-center rounded-lg border border-[#bfdbfe] bg-[#eff6ff] px-2.5 py-1.5 text-[9px] font-black text-brand-500"
+                            >
+                              Official Check
+                            </a>
                           ) : (
-                            <span className="text-[8px] font-black text-slate-400">
-                              {name}
+                            <span className="text-[8px] font-bold text-slate-400">
+                              No verification link
                             </span>
                           )}
                         </div>
-
-                        <div className="min-w-0">
-                          <div className="text-[10px] font-black text-brand-500">
-                            {isRecommended
-                              ? "Higher Overall Rating"
-                              : "Alternative Based on Priority"}
-                          </div>
-
-                          <h3 className="break-words text-xl font-black text-[#0f172a]">
-                            {name}
-                          </h3>
-                        </div>
                       </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="rounded-[14px] border border-amber-200 bg-amber-50 px-3 py-3 text-center text-[10px] leading-5 text-amber-800">
+                  No licence records are currently available.
+                </div>
+              )}
 
-                      <div className="shrink-0 text-center">
-                        <div className="text-2xl font-black text-brand-500">
-                          {(broker.rating ?? 0).toFixed(2)}
-                        </div>
-
-                        <div className="text-[8px] font-bold text-slate-400">
-                          out of 5
-                        </div>
-                      </div>
+              {/* Regulatory analysis */}
+              <details className="group/analysis mt-3 overflow-hidden rounded-[16px] border border-[#dbeafe] bg-[#f8fbff]">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3 [&::-webkit-details-marker]:hidden">
+                  <div>
+                    <div className="text-[11px] font-black text-brand-500">
+                      Regulation and Fund Protection
                     </div>
 
-                    <div className="p-5">
-                      <div className="rounded-[18px] border border-emerald-200 bg-emerald-50/60 px-4 py-3">
-                        <div className="text-[10px] font-black text-emerald-700">
-                          Choose {name} If You Want
-                        </div>
-
-                        <p className="mt-1.5 text-sm font-bold leading-7 text-slate-700">
-                          {cleanText(
-                            broker.key_strength_en
-                          ) ||
-                            "A trading environment that matches your main requirements."}
-                        </p>
-                      </div>
-
-                      {reasons.length > 0 ? (
-                        <div className="mt-4">
-                          <div className="text-[10px] font-black text-slate-500">
-                            Better Suited To
-                          </div>
-
-                          <div className="mt-2 flex flex-wrap gap-2">
-                            {reasons.map((reason, index) => (
-                              <span
-                                key={index}
-                                className="rounded-full border border-[#bfdbfe] bg-[#eff6ff] px-3 py-1.5 text-[9px] font-black text-brand-500"
-                              >
-                                {reason}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      ) : null}
-
-                      <div className="mt-4 rounded-[18px] border border-amber-200 bg-amber-50/60 px-4 py-3">
-                        <div className="text-[10px] font-black text-amber-700">
-                          Important Before Choosing
-                        </div>
-
-                        <p className="mt-1.5 text-sm leading-7 text-slate-700">
-                          {cleanText(
-                            broker.key_weakness_en
-                          ) ||
-                            "Review the account conditions, fees and regulatory entity before registering."}
-                        </p>
-                      </div>
-
-                      <div className="mt-4 grid grid-cols-2 gap-3">
-                        <a
-                          href={`/go/${broker.slug ?? ""}?type=real`}
-                          target="_blank"
-                          rel="noopener noreferrer sponsored nofollow"
-                          className={`inline-flex min-h-[46px] items-center justify-center rounded-xl px-4 py-2 text-sm font-black transition ${
-                            isRecommended
-                              ? "bg-brand-500 text-white hover:bg-brand-600"
-                              : "border border-[#bfdbfe] bg-[#eff6ff] text-brand-500 hover:border-brand-500"
-                          }`}
-                        >
-                          Open Account
-                        </a>
-
-                        <Link
-                          href={`/en/brokers/${broker.slug ?? ""}`}
-                          className="inline-flex min-h-[46px] items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-black text-slate-700 transition hover:border-[#93c5fd] hover:text-brand-500"
-                        >
-                          Read Review
-                        </Link>
-                      </div>
+                    <div className="mt-0.5 text-[9px] text-slate-500">
+                      Read the full analysis
                     </div>
-                  </article>
-                );
-              }
-            )}
-          </div>
+                  </div>
 
-          {/* Broker Alarab editorial decision */}
-          <div className="mt-6 rounded-[24px] border border-[#bfdbfe] bg-[#f8fbff] px-5 py-5">
-            <div className="grid gap-5 lg:grid-cols-[190px_minmax(0,1fr)] lg:items-center">
-              <div>
-                <div className="text-xl font-black text-[#0f172a]">
-                  Final Decision
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-[9px] font-black text-brand-500 transition-transform group-open/analysis:rotate-180">
+                    ▼
+                  </span>
+                </summary>
+
+                <div className="border-t border-[#dbeafe] bg-white px-3 py-3">
+                  <h4 className="text-[12px] font-black text-[#0f172a]">
+                    Regulatory Summary
+                  </h4>
+
+                  <div className="mt-2 space-y-3 text-[11px] leading-6 text-slate-600">
+                    {regulationParagraphs.length > 0 ? (
+                      regulationParagraphs.map(
+                        (paragraph, index) => (
+                          <p key={index} className="break-words">
+                            {paragraph}
+                          </p>
+                        )
+                      )
+                    ) : (
+                      <p>
+                        No detailed regulatory summary is currently
+                        available.
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="my-3 h-px bg-[#dbeafe]" />
+
+                  <h4 className="text-[12px] font-black text-[#0f172a]">
+                    Client Fund Protection at {name}
+                  </h4>
+
+                  <div className="mt-2 space-y-3 text-[11px] leading-6 text-slate-600">
+                    {fundProtectionParagraphs.map(
+                      (paragraph, index) => (
+                        <p key={index} className="break-words">
+                          {paragraph}
+                        </p>
+                      )
+                    )}
+                  </div>
+                </div>
+              </details>
+            </div>
+          </details>
+        );
+      })}
+    </div>
+
+    {/* Final note */}
+    <div className="mt-4 rounded-[18px] border border-[#dbeafe] bg-[#f8fbff] px-3 py-3">
+      <p className="text-[10px] leading-5 text-slate-500">
+        Before depositing, match the legal entity and licence number
+        in your client agreement with the regulator’s official
+        register.
+      </p>
+    </div>
+  </div>
+</section>
+
+           {/* ======================================================
+    FINAL DECISION — DESKTOP
+====================================================== */}
+<section className="mx-auto hidden max-w-[1520px] px-4 pb-8 sm:px-6 sm:pb-10 md:block lg:px-8">
+  <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white p-6 shadow-[0_25px_70px_rgba(37,99,235,0.08)] lg:p-8">
+    <div className="absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
+
+    {/* Header */}
+    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-center">
+      <div>
+        <span className="text-sm font-black text-brand-500">
+          Comparison Summary
+        </span>
+
+        <h2 className="mt-2 text-3xl font-black leading-tight text-[#0f172a] lg:text-[42px]">
+          Which Broker Better Fits Your Needs?
+        </h2>
+
+        <p className="mt-3 max-w-3xl text-base leading-8 text-slate-600">
+          The decision should not depend on the broker’s name or
+          overall rating alone. Compare why each broker may suit you,
+          its main strengths and the trade-offs that could affect
+          your trading experience.
+        </p>
+      </div>
+
+      {/* Main recommendation */}
+      <div className="rounded-[26px] border border-[#2563eb] bg-[linear-gradient(135deg,#eff6ff_0%,#ffffff_100%)] p-5 shadow-[0_14px_35px_rgba(37,99,235,0.11)]">
+        <div className="text-xs font-black text-brand-500">
+          Overall Result
+        </div>
+
+        <div className="mt-2 break-words text-3xl font-black leading-tight text-[#0f172a]">
+          {recommendationLabel}
+        </div>
+
+        <p className="mt-2 text-sm leading-7 text-slate-600">
+          {ratingsAreClose
+            ? "The overall rating difference is limited. Choose the broker whose accounts, costs and platforms better match your trading style."
+            : `${recommendedName} has the higher overall rating, but review the reasons and trade-offs below before deciding.`}
+        </p>
+      </div>
+    </div>
+
+    {/* Decision indicators */}
+    <div className="mt-7 grid grid-cols-3 overflow-hidden rounded-[22px] border border-[#dbeafe] bg-[#f8fbff]">
+      <div className="border-r border-[#dbeafe] px-5 py-4 text-center">
+        <div className="text-[11px] font-black text-slate-400">
+          Overall Rating
+        </div>
+
+        <div className="mt-1 text-xl font-black text-[#0f172a]">
+          {recommendationLabel}
+        </div>
+
+        <div className="mt-1 text-[10px] text-slate-500">
+          {leftRating.toFixed(2)} vs {rightRating.toFixed(2)}
+        </div>
+      </div>
+
+      <div className="border-r border-[#dbeafe] px-5 py-4 text-center">
+        <div className="text-[11px] font-black text-slate-400">
+          Easier Start
+        </div>
+
+        <div className="mt-1 text-xl font-black text-[#0f172a]">
+          {beginnerDecision}
+        </div>
+
+        <div className="mt-1 text-[10px] text-slate-500">
+          Based on deposit, support and account accessibility
+        </div>
+      </div>
+
+      <div className="px-5 py-4 text-center">
+        <div className="text-[11px] font-black text-slate-400">
+          Fees & Trading Costs
+        </div>
+
+        <div className="mt-1 text-xl font-black text-[#0f172a]">
+          {feesDecision}
+        </div>
+
+        <div className="mt-1 text-[10px] text-slate-500">
+          Based on the fees scores in this comparison
+        </div>
+      </div>
+    </div>
+
+    {/* Broker decision cards */}
+    <div className="mt-7 grid items-stretch gap-5 lg:grid-cols-2">
+      {decisionBrokers.map(({ broker, reasons }) => {
+        const name = brokerName(broker);
+
+        const isRecommended =
+          !ratingsAreClose &&
+          broker.id === recommendedBroker.id;
+
+        return (
+          <article
+            key={broker.slug}
+            className={`flex h-full flex-col overflow-hidden rounded-[28px] border ${
+              isRecommended
+                ? "border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_42%)] shadow-[0_12px_32px_rgba(37,99,235,0.10)]"
+                : "border-[#dbeafe] bg-white shadow-sm"
+            }`}
+          >
+            {/* Broker card header */}
+            <div className="flex items-center justify-between gap-4 border-b border-[#dbeafe] px-5 py-4">
+              <div className="flex min-w-0 items-center gap-3">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-[16px] border border-[#dbeafe] bg-white p-2 shadow-sm">
+                  {broker.logo ? (
+                    <img
+                      src={broker.logo}
+                      alt={`${name} logo`}
+                      className="h-full w-full object-contain"
+                    />
+                  ) : (
+                    <span className="break-words text-center text-[9px] font-black leading-3 text-slate-400">
+                      {name}
+                    </span>
+                  )}
                 </div>
 
-                <div className="mt-1 text-xs font-black text-brand-500">
-                  Broker Alarab View
+                <div className="min-w-0">
+                  <div className="text-[11px] font-black text-brand-500">
+                    When Should You Choose This Broker?
+                  </div>
+
+                  <h3 className="mt-0.5 break-words text-2xl font-black text-[#0f172a]">
+                    {name}
+                  </h3>
                 </div>
               </div>
 
-              <div className="space-y-3 text-sm leading-8 text-slate-700">
-                {splitParagraphs(
-                  recommendedBroker.expert_insight_en
-                ).length > 0 ? (
-                  splitParagraphs(
-                    recommendedBroker.expert_insight_en
-                  ).map((paragraph, index) => (
-                    <p key={index}>{paragraph}</p>
-                  ))
-                ) : (
-                  <p>{recommendedInsight}</p>
-                )}
+              <div className="shrink-0 text-center">
+                <div className="text-2xl font-black text-brand-500">
+                  {(broker.rating ?? 0).toFixed(2)}
+                </div>
+
+                <div className="text-[9px] font-bold text-slate-400">
+                  out of 5
+                </div>
               </div>
             </div>
+
+            {/* Broker card content */}
+            <div className="flex flex-1 flex-col p-5">
+              {/* Strength */}
+              <div className="rounded-[18px] border border-emerald-200 bg-emerald-50/60 px-4 py-3">
+                <div className="text-[11px] font-black text-emerald-700">
+                  Choose {name} If You Want
+                </div>
+
+                <p className="mt-1.5 text-sm font-bold leading-7 text-slate-700">
+                  {cleanText(broker.key_strength_en) ||
+                    "A trading environment that matches your main requirements."}
+                </p>
+              </div>
+
+              {/* Suitable users */}
+              <div className="mt-4">
+                <div className="text-[11px] font-black text-slate-500">
+                  Better Suited To
+                </div>
+
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {reasons.length > 0 ? (
+                    reasons.map((reason, index) => (
+                      <span
+                        key={index}
+                        className="rounded-full border border-[#dbeafe] bg-[#f8fbff] px-3 py-1.5 text-[10px] font-black leading-5 text-slate-600"
+                      >
+                        {reason}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-xs leading-6 text-slate-500">
+                      Traders whose requirements match the broker’s
+                      accounts and trading platforms.
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Weakness */}
+              <div className="mt-4 rounded-[18px] border border-amber-200 bg-amber-50/60 px-4 py-3">
+                <div className="text-[11px] font-black text-amber-700">
+                  Important Before Choosing
+                </div>
+
+                <p className="mt-1.5 text-sm leading-7 text-slate-700">
+                  {cleanText(broker.key_weakness_en) ||
+                    "Review the account conditions, fees and regulatory entity before registering."}
+                </p>
+              </div>
+
+              {/* Actions */}
+              <div className="mt-auto grid grid-cols-2 gap-3 pt-4">
+                <a
+                  href={`/go/${broker.slug ?? ""}?type=real`}
+                  target="_blank"
+                  rel="noopener noreferrer sponsored nofollow"
+                  aria-label={`Open an account with ${name}`}
+                  className={`inline-flex min-h-[46px] items-center justify-center rounded-xl px-4 py-2 text-sm font-black transition ${
+                    isRecommended
+                      ? "bg-brand-500 text-white hover:bg-brand-600"
+                      : "border border-[#bfdbfe] bg-[#eff6ff] text-brand-500 hover:border-brand-500"
+                  }`}
+                >
+                  Open Account
+                </a>
+
+                <Link
+                  href={`/en/brokers/${broker.slug ?? ""}`}
+                  className="inline-flex min-h-[46px] items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-black text-slate-700 transition hover:border-[#93c5fd] hover:text-brand-500"
+                >
+                  Read Review
+                </Link>
+              </div>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+
+    {/* Editorial decision */}
+    <div className="mt-6 rounded-[24px] border border-[#bfdbfe] bg-[#f8fbff] px-5 py-5">
+      <div className="grid gap-5 lg:grid-cols-[190px_minmax(0,1fr)] lg:items-center">
+        <div>
+          <div className="text-xl font-black text-[#0f172a]">
+            Final Decision
           </div>
 
-          <p className="mt-4 text-center text-[11px] leading-6 text-slate-400">
-            This editorial recommendation is based on the information
-            displayed in this comparison. Confirm that the available
-            products, account conditions and regulatory entity are
-            appropriate for your country before opening an account.
-          </p>
+          <div className="mt-1 text-xs font-black text-brand-500">
+            Broker Alarab View
+          </div>
         </div>
-      </section>
+
+        <div className="space-y-3 text-sm leading-8 text-slate-700">
+          {splitParagraphs(
+            recommendedBroker.expert_insight_en
+          ).length > 0 ? (
+            splitParagraphs(
+              recommendedBroker.expert_insight_en
+            ).map((paragraph, index) => (
+              <p key={index}>{paragraph}</p>
+            ))
+          ) : (
+            <p>{recommendedInsight}</p>
+          )}
+        </div>
+      </div>
+    </div>
+
+    {/* Editorial note */}
+    <p className="mt-4 text-center text-[11px] leading-6 text-slate-400">
+      This editorial recommendation is based on the information
+      displayed in this comparison. Confirm that the available
+      products, account conditions and regulatory entity are
+      appropriate for your country before opening an account.
+    </p>
+  </div>
+</section>
 
       {/* ======================================================
-          FINAL DECISION — MOBILE
-      ====================================================== */}
-      <section className="mx-auto max-w-[1520px] px-3 pb-4 md:hidden">
-        <div className="relative overflow-hidden rounded-[24px] border border-[#dbeafe] bg-white p-4 pt-5">
-          <div className="absolute inset-x-0 top-0 h-1 bg-brand-500" />
+    FINAL DECISION — MOBILE
+====================================================== */}
+<section className="mx-auto max-w-[1520px] px-4 pb-8 sm:px-6 sm:pb-10 md:hidden lg:px-8">
+  <div className="relative overflow-hidden rounded-[34px] border border-[#dbeafe] bg-white shadow-[0_25px_70px_rgba(37,99,235,0.08)]">
+    <div className="absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
 
-          <span className="text-[10px] font-black text-brand-500">
-            Comparison Summary
-          </span>
+    <div className="p-4 pt-5">
+      {/* Heading */}
+      <div>
+        <span className="text-[11px] font-black text-brand-500">
+          Comparison Summary
+        </span>
 
-          <h2 className="mt-1.5 text-[24px] font-black leading-[1.3] text-[#0f172a]">
-            Which Broker Fits You?
-          </h2>
+        <h2 className="mt-1.5 text-[25px] font-black leading-[1.35] text-[#0f172a]">
+          Which Broker Fits You?
+        </h2>
 
-          <p className="mt-1.5 text-[12px] leading-6 text-slate-500">
-            Choose according to your priorities, not the overall
-            rating alone.
-          </p>
+        <p className="mt-1.5 text-[12px] leading-6 text-slate-500">
+          Choose based on your priorities, not the overall rating
+          alone.
+        </p>
+      </div>
 
-          <div className="mt-4 rounded-[20px] border border-[#2563eb] bg-[linear-gradient(145deg,#eff6ff_0%,#ffffff_100%)] px-4 py-4">
-            <div className="text-[10px] font-black text-brand-500">
-              Overall Result
-            </div>
-
-            <div className="mt-1 break-words text-[22px] font-black leading-7 text-[#0f172a]">
-              {recommendationLabel}
-            </div>
-
-            <p className="mt-1 text-[11px] leading-6 text-slate-500">
-              {ratingsAreClose
-                ? "The rating difference is limited. Compare the accounts, fees and platforms you need."
-                : `${recommendedName} has the higher overall rating, but review why each broker may suit you below.`}
-            </p>
-          </div>
-
-          <div className="mt-3 grid grid-cols-2 gap-2">
-            <div className="rounded-[16px] border border-[#dbeafe] bg-[#f8fbff] px-2 py-3 text-center">
-              <div className="text-[9px] font-bold text-slate-400">
-                Easier Start
-              </div>
-
-              <div className="mt-1 break-words text-[11px] font-black leading-5 text-[#0f172a]">
-                {beginnerDecision}
-              </div>
-            </div>
-
-            <div className="rounded-[16px] border border-[#dbeafe] bg-[#f8fbff] px-2 py-3 text-center">
-              <div className="text-[9px] font-bold text-slate-400">
-                Fees & Costs
-              </div>
-
-              <div className="mt-1 break-words text-[11px] font-black leading-5 text-[#0f172a]">
-                {feesDecision}
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-4 space-y-3">
-            {decisionBrokers.map(
-              ({ broker, other, reasons }) => {
-                const name = brokerName(broker);
-
-                const isRecommended =
-                  !ratingsAreClose &&
-                  broker.id === recommendedBroker.id;
-
-                return (
-                  <article
-                    key={broker.id}
-                    className={`overflow-hidden rounded-[20px] border ${
-                      isRecommended
-                        ? "border-[#2563eb] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_48%)]"
-                        : "border-[#dbeafe] bg-white"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between gap-3 px-3 py-3">
-                      <div className="flex min-w-0 items-center gap-2.5">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] border border-[#dbeafe] bg-white p-2">
-                          {broker.logo ? (
-                            <img
-                              src={broker.logo}
-                              alt={`${name} logo`}
-                              className="h-full w-full object-contain"
-                            />
-                          ) : (
-                            <span className="text-[7px] font-black text-slate-400">
-                              {name}
-                            </span>
-                          )}
-                        </div>
-
-                        <div className="min-w-0">
-                          <div className="text-[9px] font-black text-brand-500">
-                            {isRecommended
-                              ? "Higher Overall Rating"
-                              : "Alternative Choice"}
-                          </div>
-
-                          <h3 className="break-words text-[16px] font-black leading-5 text-[#0f172a]">
-                            {name}
-                          </h3>
-                        </div>
-                      </div>
-
-                      <div className="shrink-0 text-center">
-                        <div className="text-lg font-black text-brand-500">
-                          {(broker.rating ?? 0).toFixed(2)}
-                        </div>
-
-                        <div className="text-[8px] font-bold text-slate-400">
-                          out of 5
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="border-t border-[#dbeafe] px-3 py-3">
-                      <div>
-                        <div className="text-[9px] font-black text-emerald-700">
-                          Choose This Broker If You Want
-                        </div>
-
-                        <p className="mt-1 text-[11px] font-bold leading-6 text-slate-700">
-                          {cleanText(
-                            broker.key_strength_en
-                          ) ||
-                            "A trading environment that fits your main requirements."}
-                        </p>
-                      </div>
-
-                      {reasons.length > 0 ? (
-                        <div className="mt-2 flex flex-wrap gap-1.5">
-                          {reasons
-                            .slice(0, 2)
-                            .map((reason, index) => (
-                              <span
-                                key={index}
-                                className="rounded-full bg-[#eff6ff] px-2 py-1 text-[8px] font-black text-brand-500"
-                              >
-                                {reason}
-                              </span>
-                            ))}
-                        </div>
-                      ) : null}
-
-                      <div className="mt-3 rounded-[14px] bg-amber-50 px-3 py-2.5">
-                        <div className="text-[9px] font-black text-amber-700">
-                          Important
-                        </div>
-
-                        <p className="mt-0.5 text-[10px] leading-5 text-slate-600">
-                          {cleanText(
-                            broker.key_weakness_en
-                          ) ||
-                            "Review the account conditions and fees before registering."}
-                        </p>
-                      </div>
-
-                      <div className="mt-3 grid grid-cols-2 gap-2">
-                        <a
-                          href={`/go/${broker.slug ?? ""}?type=real`}
-                          target="_blank"
-                          rel="noopener noreferrer sponsored nofollow"
-                          className={`inline-flex min-h-[42px] items-center justify-center rounded-xl px-2 py-2 text-[11px] font-black ${
-                            isRecommended
-                              ? "bg-brand-500 text-white"
-                              : "border border-[#bfdbfe] bg-[#eff6ff] text-brand-500"
-                          }`}
-                        >
-                          Open Account
-                        </a>
-
-                        <Link
-                          href={`/en/brokers/${broker.slug ?? ""}`}
-                          className="inline-flex min-h-[42px] items-center justify-center rounded-xl border border-slate-300 bg-white px-2 py-2 text-[11px] font-black text-slate-700"
-                        >
-                          Read Review
-                        </Link>
-                      </div>
-                    </div>
-                  </article>
-                );
-              }
-            )}
-          </div>
-
-          <div className="mt-4 rounded-[18px] border border-[#dbeafe] bg-[#f8fbff] px-3 py-3">
-            <div className="text-[17px] font-black text-[#0f172a]">
-              Final Decision
-            </div>
-
-            <div className="mt-1 text-[10px] font-black text-brand-500">
-              Broker Alarab View
-            </div>
-
-            <div className="mt-2 space-y-2 text-[11px] leading-6 text-slate-600">
-              {splitParagraphs(
-                recommendedBroker.expert_insight_en
-              ).length > 0 ? (
-                splitParagraphs(
-                  recommendedBroker.expert_insight_en
-                ).map((paragraph, index) => (
-                  <p key={index}>{paragraph}</p>
-                ))
-              ) : (
-                <p>{recommendedInsight}</p>
-              )}
-            </div>
-          </div>
-
-          <p className="mt-3 text-center text-[9px] leading-5 text-slate-400">
-            Check the account conditions, fees and regulatory entity
-            available in your country before registering.
-          </p>
+      {/* Main recommendation */}
+      <div className="mt-4 rounded-[20px] border border-[#2563eb] bg-[linear-gradient(145deg,#eff6ff_0%,#ffffff_100%)] px-4 py-4">
+        <div className="text-[10px] font-black text-brand-500">
+          Overall Result
         </div>
-      </section>
+
+        <div className="mt-1 break-words text-[22px] font-black leading-7 text-[#0f172a]">
+          {recommendationLabel}
+        </div>
+
+        <p className="mt-1 text-[11px] leading-6 text-slate-500">
+          {ratingsAreClose
+            ? "The difference is limited. Make your decision based on the account, fees and trading platform you need."
+            : `${recommendedName} has the higher overall rating, but review why each broker may suit you before deciding.`}
+        </p>
+      </div>
+
+      {/* Mobile indicators */}
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        <div className="rounded-[16px] border border-[#dbeafe] bg-[#f8fbff] px-2 py-3 text-center">
+          <div className="text-[9px] font-bold text-slate-400">
+            Easier Start
+          </div>
+
+          <div className="mt-1 break-words text-[11px] font-black leading-5 text-[#0f172a]">
+            {beginnerDecision}
+          </div>
+        </div>
+
+        <div className="rounded-[16px] border border-[#dbeafe] bg-[#f8fbff] px-2 py-3 text-center">
+          <div className="text-[9px] font-bold text-slate-400">
+            Fees & Costs
+          </div>
+
+          <div className="mt-1 break-words text-[11px] font-black leading-5 text-[#0f172a]">
+            {feesDecision}
+          </div>
+        </div>
+      </div>
+
+      {/* Broker choices */}
+      <div className="mt-4 space-y-3">
+        {decisionBrokers.map(({ broker, reasons }) => {
+          const name = brokerName(broker);
+
+          const isRecommended =
+            !ratingsAreClose &&
+            broker.id === recommendedBroker.id;
+
+          return (
+            <article
+              key={broker.slug}
+              className="overflow-hidden rounded-[20px] border border-[#dbeafe] bg-white"
+            >
+              {/* Broker heading */}
+              <div className="flex items-center justify-between gap-3 px-3 py-3">
+                <div className="flex min-w-0 items-center gap-2.5">
+                  <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-[14px] border border-[#dbeafe] bg-white p-1.5 shadow-sm">
+  {broker.logo ? (
+    <img
+      src={broker.logo}
+      alt={`${name} logo`}
+      className="h-full w-full scale-110 object-contain"
+    />
+  ) : (
+                      <span className="text-[7px] font-black text-slate-400">
+                        {name}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="min-w-0">
+                    <div className="text-[9px] font-black text-brand-500">
+                      {isRecommended
+                        ? "Best Choice by Overall Rating"
+                        : "Alternative Choice by Priority"}
+                    </div>
+
+                    <h3 className="break-words text-[16px] font-black leading-5 text-[#0f172a]">
+                      {name}
+                    </h3>
+                  </div>
+                </div>
+
+                <div className="shrink-0 text-center">
+                  <div className="text-lg font-black text-brand-500">
+                    {(broker.rating ?? 0).toFixed(2)}
+                  </div>
+
+                  <div className="text-[8px] font-bold text-slate-400">
+                    out of 5
+                  </div>
+                </div>
+              </div>
+
+              {/* Broker details */}
+              <div className="border-t border-[#dbeafe] px-3 py-3">
+                {/* Strength */}
+                <div>
+                  <div className="text-[9px] font-black text-emerald-700">
+                    Choose This Broker If You Want
+                  </div>
+
+                  <p className="mt-1 text-[11px] font-bold leading-6 text-slate-700">
+                    {cleanText(broker.key_strength_en) ||
+                      "A trading environment that matches your main requirements."}
+                  </p>
+                </div>
+
+                {/* Suitable users */}
+                {reasons.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {reasons.slice(0, 2).map((reason, index) => (
+                      <span
+                        key={index}
+                        className="rounded-full bg-[#eff6ff] px-2 py-1 text-[8px] font-black text-brand-500"
+                      >
+                        {reason}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {/* Weakness */}
+                <div className="mt-3 rounded-[14px] bg-amber-50 px-3 py-2.5">
+                  <div className="text-[9px] font-black text-amber-700">
+                    Important
+                  </div>
+
+                  <p className="mt-0.5 text-[10px] leading-5 text-slate-600">
+                    {cleanText(broker.key_weakness_en) ||
+                      "Review the account conditions, fees and regulatory entity before registering."}
+                  </p>
+                </div>
+
+                {/* Actions */}
+                <div className="mt-3 grid grid-cols-2 gap-2">
+                  <a
+                    href={`/go/${broker.slug ?? ""}?type=real`}
+                    target="_blank"
+                    rel="noopener noreferrer sponsored nofollow"
+                    aria-label={`Start with ${name}`}
+                    className="inline-flex min-h-[42px] items-center justify-center rounded-xl border border-[#bfdbfe] bg-[#eff6ff] px-2 py-2 text-[11px] font-black text-brand-500"
+                  >
+                    Start Now
+                  </a>
+
+                  <Link
+                    href={`/en/brokers/${broker.slug ?? ""}`}
+                    className="inline-flex min-h-[42px] items-center justify-center rounded-xl border border-slate-300 bg-white px-2 py-2 text-[11px] font-black text-slate-700"
+                  >
+                    Read Review
+                  </Link>
+                </div>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+
+      {/* Editorial view */}
+      <div className="mt-4 rounded-[18px] border border-[#dbeafe] bg-[#f8fbff] px-3 py-3">
+        <div className="text-[17px] font-black text-[#0f172a]">
+          Final Decision
+        </div>
+
+        <div className="mt-1 text-[10px] font-black text-brand-500">
+          Broker Alarab View
+        </div>
+
+        <p className="mt-2 text-[11px] leading-6 text-slate-600">
+          {recommendedInsight}
+        </p>
+      </div>
+
+      {/* Final note */}
+      <p className="mt-3 text-center text-[9px] leading-5 text-slate-400">
+        Check the account conditions, fees and regulatory entity
+        available in your country before registering.
+      </p>
+    </div>
+  </div>
+</section>
 
       {/* ======================================================
           FREQUENTLY ASKED QUESTIONS
       ====================================================== */}
-      <section className="mx-auto max-w-[1520px] px-3 pb-4 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-[1520px] px-4 pb-3 sm:px-6 sm:pb-4 lg:px-8">
         <div className="relative overflow-hidden rounded-[32px] border border-[#dbeafe] bg-white shadow-[0_25px_70px_rgba(37,99,235,0.08)]">
           <div className="absolute inset-x-0 top-0 h-1.5 bg-brand-500" />
 
@@ -3602,108 +4095,118 @@ function ExpandableText({
             </div>
           </div>
 
-          {/* FAQ mobile */}
-          <div className="p-4 pt-5 md:hidden">
-            <div>
-              <span className="text-[11px] font-black text-brand-500">
-                Frequently Asked Questions
-              </span>
+          {/* ================= FAQ MOBILE ================= */}
+<div dir="ltr" className="p-4 pt-5 md:hidden">
+  {/* Header */}
+  <div>
+    <span className="text-[11px] font-black text-brand-500">
+      Frequently Asked Questions
+    </span>
 
-              <h2 className="mt-1.5 text-[24px] font-black leading-[1.35] text-[#0f172a]">
-                Questions About {leftName} and {rightName}
-              </h2>
+    <h2 className="mt-1.5 break-words text-[24px] font-black leading-[1.35] text-[#0f172a]">
+      Questions About {leftName} and {rightName}
+    </h2>
 
-              <p className="mt-1.5 text-[12px] leading-6 text-slate-500">
-                Important answers before opening an account or
-                choosing a broker.
-              </p>
-            </div>
+    <p className="mt-1.5 text-[12px] leading-6 text-slate-500">
+      Important answers before opening an account or choosing the
+      more suitable broker.
+    </p>
+  </div>
 
-            <div className="mt-4 grid grid-cols-2 gap-2">
-              {[left, right].map((broker) => (
-                <div
-                  key={broker.id}
-                  className="flex min-h-[40px] items-center justify-center rounded-[13px] border border-[#bfdbfe] bg-[#eff6ff] px-2 py-2 text-center"
-                >
-                  <span className="break-words text-[10px] font-black leading-4 text-[#0f172a]">
-                    {brokerName(broker)}
-                  </span>
-                </div>
-              ))}
-            </div>
+  {/* Broker tabs */}
+  <div className="mt-4 grid grid-cols-2 gap-2">
+    {[left, right].map((broker) => {
+      const name = brokerName(broker);
 
-            <div className="mt-4 space-y-4">
-              {[
-                {
-                  broker: left,
-                  faqs: Array.isArray(left.faq_en)
-                    ? left.faq_en.slice(0, 3)
-                    : [],
-                },
-                {
-                  broker: right,
-                  faqs: Array.isArray(right.faq_en)
-                    ? right.faq_en.slice(0, 3)
-                    : [],
-                },
-              ].map(({ broker, faqs }) => {
-                const name = brokerName(broker);
+      return (
+        <div
+          key={broker.slug}
+          className="flex min-h-[40px] min-w-0 items-center justify-center rounded-[13px] border border-[#bfdbfe] bg-[#eff6ff] px-2 py-2 text-center"
+        >
+          <span className="line-clamp-2 break-words text-[10px] font-black leading-4 text-[#0f172a]">
+            {name}
+          </span>
+        </div>
+      );
+    })}
+  </div>
 
-                return (
-                  <div key={broker.id}>
-                    <div className="mb-2 flex items-center justify-between gap-2 px-1">
-                      <h3 className="text-[12px] font-black text-[#0f172a]">
-                        Questions About {name}
-                      </h3>
+  {/* Mobile FAQs */}
+  <div className="mt-4 space-y-4">
+    {[
+      {
+        broker: left,
+        faqs: Array.isArray(left.faq_en)
+          ? left.faq_en.slice(0, 3)
+          : [],
+      },
+      {
+        broker: right,
+        faqs: Array.isArray(right.faq_en)
+          ? right.faq_en.slice(0, 3)
+          : [],
+      },
+    ].map(({ broker, faqs }) => {
+      const name = brokerName(broker);
 
-                      <span className="text-[9px] font-bold text-brand-500">
-                        {faqs.length} question
-                        {faqs.length === 1 ? "" : "s"}
-                      </span>
-                    </div>
+      return (
+        <div key={broker.slug}>
+          {/* Broker heading */}
+          <div className="mb-2 flex items-center justify-between gap-2 px-1">
+            <h3 className="min-w-0 break-words text-[12px] font-black leading-5 text-[#0f172a]">
+              Questions About {name}
+            </h3>
 
-                    <div className="space-y-2">
-                      {faqs.length > 0 ? (
-                        faqs.map((faq, index) => (
-                          <details
-                            key={`${broker.slug}-mobile-faq-${index}`}
-                            className="group overflow-hidden rounded-[17px] border border-[#dbeafe] bg-white shadow-sm open:border-[#93c5fd]"
-                          >
-                            <summary className="flex min-h-[64px] cursor-pointer list-none items-center justify-between gap-3 px-3 py-3 [&::-webkit-details-marker]:hidden">
-                              <h4 className="min-w-0 text-[12px] font-black leading-6 text-[#0f172a]">
-                                {cleanText(faq.question)}
-                              </h4>
-
-                              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#dbeafe] bg-[#f8fbff] text-[9px] font-black text-brand-500 transition-transform duration-200 group-open:rotate-180">
-                                ▼
-                              </span>
-                            </summary>
-
-                            <div className="border-t border-[#eaf2fc] px-3 py-3">
-                              <p className="text-[11px] leading-6 text-slate-600">
-                                {cleanText(faq.answer)}
-                              </p>
-                            </div>
-                          </details>
-                        ))
-                      ) : (
-                        <div className="rounded-[17px] border border-slate-200 bg-[#fbfdff] px-3 py-4 text-center text-[11px] text-slate-500">
-                          No questions are currently available.
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="mt-4 rounded-[17px] border border-[#dbeafe] bg-[#f8fbff] px-3 py-3 text-center">
-              <p className="text-[10px] leading-5 text-slate-500">
-                Conditions may vary by country and regulatory entity.
-                Review the account details before registering.
-              </p>
-            </div>
+            <span className="shrink-0 text-[9px] font-bold text-brand-500">
+              {faqs.length}{" "}
+              {faqs.length === 1 ? "question" : "questions"}
+            </span>
           </div>
+
+          {/* Questions */}
+          <div className="space-y-2">
+            {faqs.length > 0 ? (
+              faqs.map((faq, index) => (
+                <details
+                  key={`${broker.slug}-mobile-faq-${index}`}
+                  className="group overflow-hidden rounded-[17px] border border-[#dbeafe] bg-white shadow-sm transition open:border-[#93c5fd]"
+                >
+                  <summary className="flex min-h-[64px] cursor-pointer list-none items-center justify-between gap-3 px-3 py-3 [&::-webkit-details-marker]:hidden">
+                    <h4 className="min-w-0 break-words text-[12px] font-black leading-6 text-[#0f172a]">
+                      {cleanText(faq.question)}
+                    </h4>
+
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#dbeafe] bg-[#f8fbff] text-[9px] font-black text-brand-500 transition-transform duration-200 group-open:rotate-180">
+                      ▼
+                    </span>
+                  </summary>
+
+                  <div className="border-t border-[#eaf2fc] px-3 py-3">
+                    <p className="break-words text-[11px] leading-6 text-slate-600">
+                      {cleanText(faq.answer)}
+                    </p>
+                  </div>
+                </details>
+              ))
+            ) : (
+              <div className="rounded-[17px] border border-slate-200 bg-[#fbfdff] px-3 py-4 text-center text-[11px] leading-5 text-slate-500">
+                No questions are currently available.
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    })}
+  </div>
+
+  {/* Mobile note */}
+  <div className="mt-4 rounded-[17px] border border-[#dbeafe] bg-[#f8fbff] px-3 py-3 text-center">
+    <p className="text-[10px] leading-5 text-slate-500">
+      Conditions may vary by country and regulatory entity. Review
+      the account details before registering.
+    </p>
+  </div>
+</div>
         </div>
       </section>
     </main>

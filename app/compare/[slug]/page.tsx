@@ -1573,7 +1573,7 @@ const decisionBrokers = [
         item.leftScore - item.rightScore
       );
 
-      const isClose = difference < 0.15;
+      const isClose = difference < 0.001;
 
       const strongerBroker =
         item.leftScore > item.rightScore
@@ -1800,7 +1800,7 @@ const decisionBrokers = [
         item.leftScore - item.rightScore
       );
 
-      const isClose = difference < 0.15;
+      const isClose = difference < 0.001;
 
       const leftHasAdvantage =
         !isClose && item.leftScore > item.rightScore;
