@@ -331,14 +331,18 @@ function getSafetyWinner(
       leftSafetyScore - rightSafetyScore
     );
 
-    if (difference >= 0.15) {
-      return leftSafetyScore > rightSafetyScore
-        ? left.name
-        : right.name;
+    if (difference < 0.001) {
+      return "تعادل";
     }
+
+    return leftSafetyScore > rightSafetyScore
+      ? left.name
+      : right.name;
   }
 
-  const licenceScore = (licenses: BrokerLicense[]) =>
+  const licenceScore = (
+    licenses: BrokerLicense[]
+  ) =>
     licenses.reduce((total, license) => {
       if (license.trust_level === "Tier 1") {
         return total + 3;
@@ -355,10 +359,15 @@ function getSafetyWinner(
       return total;
     }, 0);
 
-  const leftLicenceScore = licenceScore(leftLicenses);
-  const rightLicenceScore = licenceScore(rightLicenses);
+  const leftLicenceScore =
+    licenceScore(leftLicenses);
 
-  if (leftLicenceScore === rightLicenceScore) {
+  const rightLicenceScore =
+    licenceScore(rightLicenses);
+
+  if (
+    leftLicenceScore === rightLicenceScore
+  ) {
     return "تعادل";
   }
 
@@ -1147,7 +1156,11 @@ const safetyWinner = getSafetyWinner(
 </div>
 
 {/* العنوان المرئي للديسكتوب — عنوان H1 الدلالي موجود في نسخة الموبايل */}
-<div className="max-w-6xl text-[42px] font-black leading-[1.2] tracking-[-0.5px] text-[#0f172a] xl:text-[48px]">
+<div
+  role="heading"
+  aria-level={1}
+  className="max-w-6xl text-[42px] font-black leading-[1.2] tracking-[-0.5px] text-[#0f172a] xl:text-[48px]"
+>
   مقارنة بين {left.name} و {right.name}: أيهما أفضل؟
 </div>
 

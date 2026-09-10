@@ -467,11 +467,13 @@ function getSafetyWinner(
       leftSafetyScore - rightSafetyScore
     );
 
-    if (difference >= 0.15) {
-      return leftSafetyScore > rightSafetyScore
-        ? brokerName(left)
-        : brokerName(right);
+    if (difference < 0.001) {
+      return "Very close";
     }
+
+    return leftSafetyScore > rightSafetyScore
+      ? brokerName(left)
+      : brokerName(right);
   }
 
   const licenceScore = (
