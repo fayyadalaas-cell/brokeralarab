@@ -26,9 +26,10 @@ const brokerLogoMap: Record<string, string> = {
   multibank: "/brokers/MultibankGroup.png",
   "multi-bank": "/brokers/MultibankGroup.png",
   "multi-bank-group": "/brokers/MultibankGroup.png",
-  "markets-com": "/brokers/markets-com.png",
+    "markets-com": "/brokers/markets-com.png",
   marketscom: "/brokers/markets-com.png",
   plus500: "/brokers/plus500.png",
+  "capital-com": "/brokers/capital-com.png",
 };
 
 function getBrokerLogo(slug: string): string {
@@ -104,7 +105,7 @@ const menuCardClass =
   "rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-[13px] font-extrabold text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600";
 
 const logoBoxClass =
-  "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm";
+  "flex h-11 w-16 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm";
 
 export default function EnglishHeader({
   topBrokers,

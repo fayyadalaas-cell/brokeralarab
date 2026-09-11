@@ -60,6 +60,7 @@ const brokerLogoMap: Record<string, string> = {
   xm: "/brokers/xm.png",
   xs: "/brokers/xs.png",
   multibank: "/brokers/MultibankGroup.png",
+  "capital-com": "/brokers/capital-com.png",
 };
 
 const brokerNamesAr: Record<string, string> = {
@@ -493,15 +494,15 @@ allTools: isEnglish ? "View All Tools" : "عرض جميع الأدوات",
                               {text.reviewSuffix}
                             </div>
 
-                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white shadow-sm">
-                              <Image
-                                src={getBrokerLogo(broker.slug)}
-                                alt={brokerName}
-                                width={24}
-                                height={24}
-                                className="h-full w-full object-contain p-1"
-                              />
-                            </div>
+                            <div className="flex h-8 w-12 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white shadow-sm">
+  <Image
+    src={getBrokerLogo(broker.slug)}
+    alt={brokerName}
+    width={40}
+    height={24}
+    className="h-full w-full object-contain p-1"
+  />
+</div>
                           </Link>
                         );
                       })}
