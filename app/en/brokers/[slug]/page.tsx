@@ -1599,13 +1599,12 @@ const noCommissionAccounts = accountsData.filter((acc) => {
     .toLowerCase();
 
   return (
-    !commission ||
-    commission === "-" ||
-    commission === "$0" ||
-    commission === "0" ||
-    commission === "0$" ||
-    commission.includes("no")
-  );
+  commission === "$0" ||
+  commission === "0" ||
+  commission === "0$" ||
+  commission === "no commission" ||
+  commission === "no trading commission"
+);
 });
 
 const commissionAccounts = accountsData.filter((acc) => {
@@ -2038,27 +2037,66 @@ const reviewSchema = {
   ) : null}
 
   <div className="mt-6 grid grid-cols-3 gap-2">
-  <div className="rounded-2xl border border-slate-200 bg-white p-3 text-center shadow-sm">
+  {/* Rating */}
+  <div
+    className={`rounded-2xl border border-slate-200 bg-white p-3 text-center shadow-sm ${
+      broker.slug === "capital-com" ? "flex flex-col justify-center" : ""
+    }`}
+  >
     <div className="text-[11px] font-bold text-slate-500">Rating</div>
     <div className="mt-1 text-xl font-black text-slate-950">
       {overallScore || broker.rating || "-"}
     </div>
   </div>
 
-  <div className="rounded-2xl border border-slate-200 bg-white p-3 text-center shadow-sm">
+  {/* Min Deposit */}
+  <div
+    className={`rounded-2xl border border-slate-200 bg-white p-3 text-center shadow-sm ${
+      broker.slug === "capital-com" ? "flex flex-col justify-center" : ""
+    }`}
+  >
     <div className="text-[11px] font-bold text-slate-500">Min Deposit</div>
     <div className="mt-1 text-xl font-black text-slate-950">
       {formatMoney(broker.min_deposit)}
     </div>
   </div>
 
+  {/* Leverage */}
   <div className="rounded-2xl border border-slate-200 bg-white p-3 text-center shadow-sm">
-    <div className="text-[11px] font-bold text-slate-500">Leverage</div>
+    <div className="flex items-center justify-center gap-1.5 text-[11px] font-bold text-slate-500">
+  <span>Leverage</span>
+
+  {broker.slug === "capital-com" ? (
+    <span className="group relative inline-flex md:hidden">
+      <button
+        type="button"
+        aria-label="Leverage information"
+        className="flex h-4 w-4 items-center justify-center rounded-full border border-slate-300 bg-slate-50 text-[9px] font-black text-slate-500"
+      >
+        ?
+      </button>
+
+      <span className="pointer-events-none absolute bottom-full right-0 z-50 mb-2 hidden w-[210px] rounded-xl border border-slate-200 bg-slate-950 px-3 py-2 text-left text-[10px] font-medium leading-4 text-white shadow-xl group-focus-within:block">
+        Maximum leverage depends on the applicable regulatory entity and client eligibility.
+      </span>
+    </span>
+  ) : null}
+</div>
+
     <div className="mt-1 text-xl font-black text-slate-950">
-      {broker.max_leverage || "-"}
+      {broker.slug === "capital-com" && broker.max_leverage
+        ? `Up to ${broker.max_leverage}`
+        : broker.max_leverage || "-"}
     </div>
+
+    {broker.slug === "capital-com" ? (
+  <div className="mt-1 hidden text-[10px] leading-4 text-slate-500 md:block">
+    Varies by regulatory entity and client eligibility.
+  </div>
+) : null}
   </div>
 </div>
+
 
 <div className="mt-4 grid gap-3 lg:flex lg:flex-wrap lg:items-center lg:justify-center">
   <a
@@ -2499,6 +2537,12 @@ const reviewSchema = {
   previewToken={previewToken}
 />
 
+{broker.slug === "capital-com" ? (
+  <p className="mt-3 text-left text-[12px] leading-6 text-slate-600 md:hidden">
+    Swap-Free account availability depends on the client&apos;s country of residence.
+  </p>
+) : null}
+
         <div className="mt-5 rounded-[22px] border border-brand-100 bg-brand-50 p-4 shadow-sm">
           <div className="text-[15px] font-black text-slate-950">
             Start trading with {broker.name_en || broker.name}
@@ -2594,15 +2638,17 @@ const reviewSchema = {
               </div>
 
               <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
-                <div className="text-xs font-bold text-slate-500">
-                  Commission Structure
-                </div>
-                <div className="mt-2 text-base font-black text-slate-950">
-                  {commissionAccounts.length
-                    ? `${commissionAccounts.length} commission accounts`
-                    : "No clear commission"}
-                </div>
-              </div>
+  <div className="text-xs font-bold text-slate-500">
+    Commission Structure
+  </div>
+  <div className="mt-2 text-base font-black text-slate-950">
+    {commissionAccounts.length
+      ? `${commissionAccounts.length} commission accounts`
+      : noCommissionAccounts.length === accountsData.length && accountsData.length > 0
+      ? "No trading commission"
+      : "Commission information unavailable"}
+  </div>
+</div>
             </div>
           </div>
         </div>
@@ -2611,8 +2657,8 @@ const reviewSchema = {
 
     {/* Desktop — paragraph */}
     <p className="hidden leading-8 text-slate-700 md:block">
-      {broker.name_en || broker.name} offers a range of account types designed for different trader profiles, from simple beginner-friendly accounts to lower-spread or commission-based accounts for more active traders.
-    </p>
+  {broker.name_en || broker.name} offers a range of account types with different features and trading conditions. Availability and account terms may vary depending on the client&apos;s jurisdiction and account type.
+</p>
 
     {/* Desktop — stronger table, Best For removed */}
     <div className="hidden md:block">
@@ -2675,6 +2721,17 @@ const reviewSchema = {
       </div>
     </div>
 
+{broker.slug === "capital-com" ? (
+  <div className="mt-4 hidden rounded-2xl border border-brand-100 bg-brand-50 px-4 py-3 md:block">
+    <p className="text-sm leading-7 text-slate-700">
+      <span className="font-black text-slate-900">Swap-Free availability:</span>{" "}
+      Swap-Free accounts are available only under Capital.com&apos;s SCB and CMA regulated entities,
+      and availability depends on the client&apos;s country of residence.
+    </p>
+  </div>
+) : null}
+
+
     <div className="hidden md:block">
       <div className="mt-4 overflow-hidden rounded-[28px] border border-brand-100 bg-gradient-to-r from-brand-100 via-brand-50 to-brand-100 p-6 shadow-sm">
         <div className="flex items-center justify-between gap-6">
@@ -2732,8 +2789,10 @@ const reviewSchema = {
 
             <div className="mt-1 text-sm font-black text-slate-950">
               {commissionAccounts.length
-                ? `${commissionAccounts.length} commission-based accounts`
-                : "Commission-free pricing available"}
+  ? `${commissionAccounts.length} commission-based accounts`
+  : noCommissionAccounts.length === accountsData.length && accountsData.length > 0
+  ? "Commission-free pricing"
+  : "Commission information unavailable"}
             </div>
           </div>
         </div>
@@ -3616,6 +3675,33 @@ const reviewSchema = {
 )}
 </SectionCard>
           </div>
+
+{/* Risk Warning */}
+<div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50/70 px-5 py-4 md:px-6 md:py-5">
+  <div className="flex items-start gap-3">
+    <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-amber-200 bg-white text-sm font-black text-amber-700">
+      !
+    </div>
+
+    <div>
+      <div className="text-sm font-black text-slate-900 md:text-base">
+        Risk Warning
+      </div>
+
+      <p className="mt-1.5 text-xs leading-6 text-slate-600 md:text-sm md:leading-7">
+        The information provided on this page is for educational and informational
+        purposes only and does not constitute financial or investment advice.
+        Broker Alarab does not provide trading services or hold client funds.
+        Forex, CFDs, and other leveraged products involve a high level of risk
+        and may not be suitable for all investors. You may lose some or all of
+        your invested capital. Trading conditions, leverage, and investor
+        protections may vary depending on the broker, regulatory entity, and
+        client jurisdiction.
+      </p>
+    </div>
+  </div>
+</div>
+
           </div>
         </div>
       </main>

@@ -194,12 +194,22 @@ export default async function BrokerAccountPage({
   );
 
   if (!current) {
-    notFound();
-  }
+  notFound();
+}
 
-  const cheapestSpread = [...accounts].sort(
-    (a, b) => Number(a.spread_avg ?? 99) - Number(b.spread_avg ?? 99)
-  )[0];
+const isCapital = broker.slug === "capital-com";
+
+const isCapitalSwapFree =
+  isCapital &&
+  (current.account_name || "").toLowerCase().startsWith("swap-free");
+
+const isCapitalCfd =
+  isCapital &&
+  (current.account_name || "").toLowerCase().startsWith("cfd");
+
+const cheapestSpread = [...accounts].sort(
+  (a, b) => Number(a.spread_avg ?? 99) - Number(b.spread_avg ?? 99)
+)[0];
 
   const lowestDeposit = [...accounts].sort(
     (a, b) => moneyRank(a.min_deposit) - moneyRank(b.min_deposit)
@@ -452,10 +462,35 @@ export default async function BrokerAccountPage({
                 {current.best_for}
               </p>
             </div>
-          </aside>
+                    </aside>
         </div>
       </section>
-            <section className="mx-auto max-w-7xl px-4 py-5 md:py-8">
+
+      {isCapital ? (
+        <section className="mx-auto max-w-7xl px-4 pt-2 md:pt-4">
+          <div className="rounded-2xl border border-brand-100 bg-brand-50 px-4 py-3 text-right md:px-5 md:py-4">
+            <p className="text-xs leading-6 text-slate-700 md:text-sm md:leading-7">
+              <span className="font-black text-slate-900">
+                الرافعة المالية:
+              </span>{" "}
+              قد تصل الرافعة المالية لدى Capital.com إلى 1:500، ويعتمد الحد الأقصى
+              المتاح على الكيان التنظيمي المطبق ومدى أهلية العميل.
+            </p>
+
+            {isCapitalSwapFree ? (
+              <p className="mt-2 border-t border-brand-100 pt-2 text-xs leading-6 text-slate-700 md:text-sm md:leading-7">
+                <span className="font-black text-slate-900">
+                  توفر حساب Swap-Free:
+                </span>{" "}
+                يتوفر هذا الحساب فقط من خلال كيانات Capital.com الخاضعة لرقابة
+                SCB وCMA، كما يعتمد توفره على بلد إقامة العميل.
+              </p>
+            ) : null}
+          </div>
+        </section>
+      ) : null}
+
+      <section className="mx-auto max-w-7xl px-4 py-5 md:py-8">
         <div className="grid gap-3 md:grid-cols-3 md:gap-5">
           <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
             <p className="text-sm text-slate-500">أقل سبريد في حسابات {broker.name}</p>
@@ -490,19 +525,38 @@ export default async function BrokerAccountPage({
               ما هو حساب {current.account_name} في {broker.name}؟
             </h2>
 
-            <p className="mt-4 text-sm leading-8 text-slate-600">
-              حساب {current.account_name} هو أحد حسابات التداول التي توفرها شركة{" "}
-              {broker.name}. يتميز بسبريد يتراوح بين{" "}
-              <strong>{current.spread}</strong>، وعمولة تبلغ{" "}
-              <strong>{current.commission}</strong>، مع حد أدنى للإيداع يبدأ من{" "}
-              <strong>{current.min_deposit}</strong>.
-            </p>
+            {isCapitalSwapFree ? (
+  <>
+    <p className="mt-4 text-sm leading-8 text-slate-600">
+      حساب Swap-Free لدى Capital.com مخصص للعملاء المؤهلين الذين يحتاجون
+      إلى التداول دون رسوم تبييت تقليدية. وقد تكون فروقات الأسعار في هذا
+      الحساب أوسع من حساب CFD القياسي، كما قد تختلف شروط التداول بحسب
+      الأداة المالية وظروف السوق والكيان التنظيمي المطبق.
+    </p>
 
-            <p className="mt-4 text-sm leading-8 text-slate-600">
-              يناسب هذا الحساب فئة <strong>{current.best_for}</strong>، لكن
-              الأفضل دائمًا مقارنته مع باقي حسابات {broker.name} من حيث السبريد،
-              العمولة، نوع التنفيذ، وأسلوب التداول المناسب.
-            </p>
+    <p className="mt-4 text-sm leading-8 text-slate-600">
+      يتوفر حساب Swap-Free فقط من خلال كيانات Capital.com الخاضعة لرقابة
+      SCB وCMA، كما يعتمد توفر الحساب على بلد إقامة العميل. لذلك يجب التأكد
+      من توفر الحساب والكيان القانوني المطبق قبل التسجيل.
+    </p>
+  </>
+) : (
+  <>
+    <p className="mt-4 text-sm leading-8 text-slate-600">
+      حساب {current.account_name} هو أحد حسابات التداول التي توفرها شركة{" "}
+      {broker.name}. يتميز بسبريد يتراوح بين{" "}
+      <strong>{current.spread}</strong>، وعمولة تبلغ{" "}
+      <strong>{current.commission}</strong>، مع حد أدنى للإيداع يبدأ من{" "}
+      <strong>{current.min_deposit}</strong>.
+    </p>
+
+    <p className="mt-4 text-sm leading-8 text-slate-600">
+      يناسب هذا الحساب فئة <strong>{current.best_for}</strong>، لكن
+      الأفضل دائمًا مقارنته مع باقي حسابات {broker.name} من حيث السبريد،
+      العمولة، نوع التنفيذ، وأسلوب التداول المناسب.
+    </p>
+  </>
+)}
           </div>
 
           <div className="rounded-3xl border border-brand-100 bg-brand-50 p-5 shadow-sm md:p-6">
@@ -755,18 +809,27 @@ export default async function BrokerAccountPage({
           </div>
 
           <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
-            <h2 className="text-[22px] font-black leading-8 md:text-2xl">
-              التراخيص والأمان
-            </h2>
+  <h2 className="text-[22px] font-black leading-8 md:text-2xl">
+    التراخيص والأمان
+  </h2>
 
-            <p className="mt-4 text-sm leading-8 text-slate-600">
-              اختيار حساب التداول لا ينفصل عن تقييم شركة الوساطة نفسها. قبل فتح
-              حساب {current.account_name}، راجع تراخيص {broker.name}، حماية أموال
-              العملاء، جودة المنصات، وسرعة السحب والإيداع. التراخيص المختصرة
-              لهذا الوسيط:{" "}
-              <strong>{broker.regulation_short || "غير محدد"}</strong>.
-            </p>
-          </div>
+  {isCapitalSwapFree ? (
+    <p className="mt-4 text-sm leading-8 text-slate-600">
+      يتوفر حساب Swap-Free لدى Capital.com فقط من خلال الكيانات الخاضعة
+      لرقابة <strong>SCB</strong> و<strong>CMA</strong>. كما يعتمد توفر
+      الحساب على بلد إقامة العميل، لذلك ينبغي التأكد من الكيان القانوني
+      الذي ينطبق على الحساب قبل التسجيل.
+    </p>
+  ) : (
+    <p className="mt-4 text-sm leading-8 text-slate-600">
+      اختيار حساب التداول لا ينفصل عن تقييم شركة الوساطة نفسها. قبل فتح
+      حساب {current.account_name}، راجع تراخيص {broker.name}، حماية أموال
+      العملاء، جودة المنصات، وسرعة السحب والإيداع. التراخيص المختصرة
+      لهذا الوسيط:{" "}
+      <strong>{broker.regulation_short || "غير محدد"}</strong>.
+    </p>
+  )}
+</div>
         </div>
       </section>
 
@@ -778,23 +841,27 @@ export default async function BrokerAccountPage({
 
           <div className="mt-5 grid gap-3 md:mt-6 md:grid-cols-2 md:gap-4">
             {[
-              [
-                `ما أقل إيداع في حساب ${current.account_name}؟`,
-                `أقل إيداع في حساب ${current.account_name} لدى ${broker.name} يبدأ من ${current.min_deposit}.`,
-              ],
-              [
-                `ما سبريد حساب ${current.account_name}؟`,
-                `سبريد حساب ${current.account_name} لدى ${broker.name} يتراوح بين ${current.spread}.`,
-              ],
-              [
-                `هل حساب ${current.account_name} بدون عمولة؟`,
-                `العمولة في حساب ${current.account_name} هي ${current.commission}.`,
-              ],
-              [
-                `هل حساب ${current.account_name} مناسب للمبتدئين؟`,
-                `يعتمد ذلك على أسلوب التداول، لكن هذا الحساب مناسب بشكل خاص لـ ${current.best_for}.`,
-              ],
-            ].map(([q, a]) => (
+  [
+    `ما أقل إيداع في حساب ${current.account_name}؟`,
+    `أقل إيداع في حساب ${current.account_name} لدى ${broker.name} يبدأ من ${current.min_deposit}.`,
+  ],
+  [
+    `ما سبريد حساب ${current.account_name}؟`,
+    isCapitalSwapFree
+      ? "قد تكون فروقات الأسعار في حساب Swap-Free لدى Capital.com أوسع من حساب CFD القياسي، كما تختلف بحسب الأداة المالية وظروف السوق والكيان التنظيمي المطبق."
+      : `سبريد حساب ${current.account_name} لدى ${broker.name} يتراوح بين ${current.spread}.`,
+  ],
+  [
+    `هل حساب ${current.account_name} بدون عمولة؟`,
+    isCapital
+      ? "تعتمد Capital.com على التسعير القائم على السبريد ولا تفرض عمولة تداول منفصلة على هذا الحساب، مع إمكانية تطبيق تكاليف أو رسوم أخرى بحسب النشاط والمنتج المستخدم."
+      : `العمولة في حساب ${current.account_name} هي ${current.commission}.`,
+  ],
+  [
+    `هل حساب ${current.account_name} مناسب للمبتدئين؟`,
+    `يعتمد ذلك على أسلوب التداول، لكن هذا الحساب مناسب بشكل خاص لـ ${current.best_for}.`,
+  ],
+].map(([q, a]) => (
               <div key={q} className="rounded-2xl border border-slate-200 p-4 md:p-5">
                 <h3 className="font-black">{q}</h3>
                 <p className="mt-2 text-sm leading-7 text-slate-600">{a}</p>

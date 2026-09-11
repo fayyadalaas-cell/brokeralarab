@@ -2005,11 +2005,32 @@ const reviewSchema = {
     </div>
 
     <div className="rounded-2xl border border-slate-200 bg-gradient-to-b from-white to-slate-50 p-3 text-center shadow-sm">
-      <div className="text-[11px] font-bold text-slate-500">الرافعة</div>
-      <div className="mt-1 text-xl font-black text-slate-950">
-        {broker.max_leverage || "-"}
-      </div>
-    </div>
+  <div className="flex items-center justify-center gap-1.5 text-[11px] font-bold text-slate-500">
+    <span>الرافعة</span>
+
+    {broker.slug === "capital-com" ? (
+      <span className="group relative inline-flex">
+        <button
+          type="button"
+          aria-label="معلومات عن الرافعة المالية"
+          className="flex h-4 w-4 items-center justify-center rounded-full border border-slate-300 bg-slate-50 text-[9px] font-black text-slate-500"
+        >
+          ?
+        </button>
+
+        <span className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 hidden w-[220px] -translate-x-1/2 rounded-xl border border-slate-200 bg-slate-950 px-3 py-2 text-right text-[10px] font-medium leading-5 text-white shadow-xl group-focus-within:block">
+          يعتمد الحد الأقصى للرافعة المالية على الكيان التنظيمي المطبق ومدى أهلية العميل.
+        </span>
+      </span>
+    ) : null}
+  </div>
+
+  <div className="mt-1 text-xl font-black text-slate-950">
+    {broker.slug === "capital-com" && broker.max_leverage
+      ? `حتى ${broker.max_leverage}`
+      : broker.max_leverage || "-"}
+  </div>
+</div>
   </div>
 
   {/* Mobile CTA Buttons */}
@@ -2231,11 +2252,31 @@ const reviewSchema = {
                     accent="emerald"
                   />
 
-                  <QuickStat
-                    label="أقصى رافعة مالية"
-                    value={broker.max_leverage || "-"}
-                    accent="amber"
-                  />
+                  {broker.slug === "capital-com" ? (
+  <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <div className="h-1.5 bg-amber-500" />
+
+    <div className="p-4 text-center">
+      <div className="text-xs font-bold text-slate-500 md:text-sm">
+        أقصى رافعة مالية
+      </div>
+
+      <div className="mt-2 text-2xl font-black text-slate-950">
+        {broker.max_leverage ? `حتى ${broker.max_leverage}` : "-"}
+      </div>
+
+      <div className="mt-1 text-[10px] leading-5 text-slate-500">
+        يعتمد الحد الأقصى على الكيان التنظيمي المطبق ومدى أهلية العميل.
+      </div>
+    </div>
+  </div>
+) : (
+  <QuickStat
+    label="أقصى رافعة مالية"
+    value={broker.max_leverage || "-"}
+    accent="amber"
+  />
+)}
                 </div>
 
                 <div className="mt-5 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap sm:items-center sm:justify-center">
@@ -2372,12 +2413,18 @@ const reviewSchema = {
       </div>
     </div>
 
-    <div className="rounded-2xl border border-slate-200 bg-white p-3 text-center shadow-sm">
-      <div className="text-[10px] font-bold text-slate-500">المنصات</div>
-      <div className="mt-1 truncate text-[12px] font-black text-slate-900">
-        {broker.platforms || "غير محدد"}
-      </div>
-    </div>
+    <div className="min-w-0 rounded-2xl border border-slate-200 bg-white p-3 text-center shadow-sm">
+  <div className="text-[10px] font-bold text-slate-500">
+    المنصات
+  </div>
+
+  <div
+    dir="ltr"
+    className="mt-1 min-w-0 whitespace-normal break-words text-center text-[11px] font-black leading-5 text-slate-900"
+  >
+    {broker.platforms || "غير محدد"}
+  </div>
+</div>
   </div>
 </div>
 
@@ -2704,7 +2751,9 @@ const reviewSchema = {
 </div>
 
 <p className="text-right text-[14px] leading-7 text-slate-600 md:text-base md:leading-8 md:text-slate-700">
-  توفر {broker.name} عدة أنواع من الحسابات تناسب مختلف فئات المتداولين، بدءًا من الحسابات البسيطة للمبتدئين وصولًا إلى الحسابات الاحترافية ذات السبريد المنخفض أو العمولات.
+  {broker.slug === "capital-com"
+    ? "توفر Capital.com مجموعة من أنواع الحسابات بخصائص وشروط تداول مختلفة. وقد تختلف أنواع الحسابات المتاحة وشروطها حسب بلد إقامة العميل والكيان التنظيمي الذي يتم فتح الحساب من خلاله."
+    : `توفر ${broker.name} عدة أنواع من الحسابات تناسب مختلف فئات المتداولين، بدءًا من الحسابات البسيطة للمبتدئين وصولًا إلى الحسابات الاحترافية ذات السبريد المنخفض أو العمولات.`}
 </p>
 
   {/* Mobile Accounts Accordion */}
@@ -2773,9 +2822,22 @@ const reviewSchema = {
   )}
 </div>
 
+{broker.slug === "capital-com" ? (
+  <div className="mt-4 rounded-2xl border border-brand-100 bg-brand-50 px-4 py-3 text-right md:hidden">
+    <p className="text-[12px] leading-6 text-slate-700">
+      <span className="font-black text-slate-900">
+        توفر حساب Swap-Free:
+      </span>{" "}
+      يتوفر حساب Swap-Free فقط من خلال كيانات Capital.com الخاضعة لرقابة SCB وCMA،
+      كما يعتمد توفر الحساب على بلد إقامة العميل.
+    </p>
+  </div>
+) : null}
+
 {/* Mobile CTA */}
 <div className="mt-5 md:hidden">
   <div className="overflow-hidden rounded-[24px] border border-brand-100 bg-gradient-to-r from-blue-50 via-white to-brand-50 p-4 shadow-sm">
+  
     <div className="text-right">
       <div className="text-[15px] font-black text-slate-900">
         ابدأ التداول مع {broker.name}
@@ -2847,7 +2909,7 @@ const reviewSchema = {
                 <td className="p-4 text-center">{acc.execution_type || "-"}</td>
               </tr>
             ))
-          ) : (
+                    ) : (
             <tr>
               <td colSpan={5} className="p-5 text-center text-slate-500">
                 لا توجد بيانات حسابات متاحة حاليًا.
@@ -2859,6 +2921,18 @@ const reviewSchema = {
     </div>
   </div>
 </div>
+
+{broker.slug === "capital-com" ? (
+  <div className="mt-4 hidden rounded-2xl border border-brand-100 bg-brand-50 px-4 py-3 text-right md:block">
+    <p className="text-sm leading-7 text-slate-700">
+      <span className="font-black text-slate-900">
+        توفر حساب Swap-Free:
+      </span>{" "}
+      يتوفر حساب Swap-Free فقط من خلال كيانات Capital.com الخاضعة لرقابة SCB وCMA،
+      كما يعتمد توفر الحساب على بلد إقامة العميل.
+    </p>
+  </div>
+) : null}
 
 <div className="hidden md:block">
   <div className="mt-4 overflow-hidden rounded-[28px] border border-brand-100 bg-gradient-to-r from-brand-100 via-brand-50 to-brand-100 p-6 shadow-sm">
@@ -2919,10 +2993,12 @@ const reviewSchema = {
             </div>
 
             <div className="mt-1 text-sm font-black leading-6 text-slate-950">
-              {commissionAccounts.length
-                ? `${commissionAccounts.length} حسابات بعمولة`
-                : "تتوفر حسابات بدون عمولة"}
-            </div>
+  {broker.slug === "capital-com"
+    ? "بدون عمولة تداول"
+    : commissionAccounts.length
+    ? `${commissionAccounts.length} حسابات بعمولة`
+    : "تتوفر حسابات بدون عمولة"}
+</div>
           </div>
         </div>
       </div>
@@ -3888,7 +3964,35 @@ const reviewSchema = {
     )}
   </SectionCard>
 </div>
-         
+
+{/* تحذير المخاطر */}
+<div
+  dir="rtl"
+  className="mt-6 rounded-2xl border border-amber-200 bg-amber-50/70 px-5 py-4 text-right md:px-6 md:py-5"
+>
+  <div className="flex items-start gap-3">
+    <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-amber-200 bg-white text-sm font-black text-amber-700">
+      !
+    </div>
+
+    <div>
+      <div className="text-sm font-black text-slate-900 md:text-base">
+        تحذير المخاطر
+      </div>
+
+      <p className="mt-1.5 text-xs leading-6 text-slate-600 md:text-sm md:leading-7">
+        المعلومات الواردة في هذه الصفحة مقدمة لأغراض تعليمية ومعلوماتية فقط،
+        ولا تُعد نصيحة مالية أو استثمارية. لا يقدم بروكر العرب خدمات تداول مباشرة
+        ولا يحتفظ بأموال العملاء. ينطوي تداول الفوركس وعقود الفروقات وغيرها من
+        المنتجات ذات الرافعة المالية على مستوى مرتفع من المخاطر، وقد لا يكون
+        مناسبًا لجميع المستثمرين. قد تخسر جزءًا من رأس المال المستثمر أو كامل
+        رأس المال. كما قد تختلف شروط التداول والرافعة المالية ومستويات حماية
+        المستثمر بحسب شركة الوساطة والكيان التنظيمي وبلد إقامة العميل.
+      </p>
+    </div>
+  </div>
+</div>
+
           </div>
         </div>
       </main>

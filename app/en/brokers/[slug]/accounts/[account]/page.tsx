@@ -213,6 +213,10 @@ export default async function BrokerAccountPage({
   const currentDeposit = current.min_deposit_en || current.min_deposit;
   const currentBestFor = accountBestFor(current);
 
+  const isCapitalSwapFree =
+  broker.slug === "capital-com" &&
+  current.account_name?.startsWith("Swap-Free");
+
   const cheapestSpread = [...accounts].sort(
     (a, b) => Number(a.spread_avg ?? 99) - Number(b.spread_avg ?? 99)
   )[0];
@@ -278,6 +282,12 @@ export default async function BrokerAccountPage({
             A clear breakdown of spreads, commission, minimum deposit, execution
             model, and how this account compares with other {brokerName} account types.
           </p>
+
+{isCapitalSwapFree ? (
+  <p className="mx-auto mt-3 max-w-[315px] text-[12px] font-semibold leading-6 text-slate-600">
+    Swap-Free account availability depends on the client&apos;s country of residence.
+  </p>
+) : null}
 
           <div className="mt-5 grid grid-cols-2 gap-2">
             {[
@@ -378,6 +388,12 @@ export default async function BrokerAccountPage({
             <p className="mt-5 max-w-4xl text-sm leading-8 text-slate-600 md:text-base">
               This page breaks down the {current.account_name} account at {brokerName} from a practical trading-cost perspective. We compare its spread, commission, minimum deposit, execution model, and positioning against other {brokerName} account types so you can decide whether it matches your trading style.
             </p>
+
+{isCapitalSwapFree ? (
+  <p className="mt-3 text-sm font-semibold leading-7 text-slate-600">
+    Swap-Free account availability depends on the client&apos;s country of residence.
+  </p>
+) : null}
 
             <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {[
@@ -578,7 +594,9 @@ export default async function BrokerAccountPage({
                 "If you need the lowest possible spread and another account is cheaper.",
                 "If the minimum deposit is higher than your current trading budget.",
                 "If your strategy depends on a different execution model.",
-                "If you trade very frequently and total cost matters more than simplicity.",
+                broker.slug === "capital-com" && current.account_name === "CFD"
+  ? "If your trading strategy requires a different pricing or account structure."
+  : "If you trade very frequently and total cost matters more than simplicity.",
               ].map((item) => (
                 <div
                   key={item}
@@ -772,12 +790,10 @@ export default async function BrokerAccountPage({
             </h2>
 
             <p className="mt-4 text-sm leading-8 text-slate-600">
-              The most important factor when comparing the {current.account_name}
-              account is total trading cost. A zero-commission account can still
-              be more expensive if the spread is wider, while a raw-spread account
-              may look cheaper but include a fixed commission per lot. For active
-              traders, spread and commission should be reviewed together.
-            </p>
+  {isCapitalSwapFree
+    ? "Capital.com’s Swap-Free account is designed for eligible clients who require swap-free trading. Spreads on this account may be wider than on the standard CFD account, and availability depends on the client’s country of residence. Trading conditions may vary depending on the applicable regulatory entity and market conditions."
+    : `The most important factor when comparing the ${current.account_name} account is total trading cost. A zero-commission account can still be more expensive if the spread is wider, while a raw-spread account may look cheaper but include a fixed commission per lot. For active traders, spread and commission should be reviewed together.`}
+</p>
           </div>
 
           <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
@@ -786,12 +802,23 @@ export default async function BrokerAccountPage({
             </h2>
 
             <p className="mt-4 text-sm leading-8 text-slate-600">
-              Account selection should not be separated from broker quality.
-              Before opening the {current.account_name} account, review {brokerName}
-              ’s regulation, platform stability, fund protection, support quality,
-              and withdrawal process. Main regulatory references:{" "}
-              <strong>{broker.regulation_short || "Not specified"}</strong>.
-            </p>
+  {isCapitalSwapFree ? (
+    <>
+      Capital.com&apos;s Swap-Free account is available under its SCB and CMA
+      entities only. Availability also depends on the client&apos;s country of
+      residence. Traders should confirm which legal entity applies to their
+      account before registration.
+    </>
+  ) : (
+    <>
+      Account selection should not be separated from broker quality. Before
+      opening the {current.account_name} account, review {brokerName}&apos;s
+      regulation, platform stability, fund protection, support quality, and
+      withdrawal process. Main regulatory references:{" "}
+      <strong>{broker.regulation_short || "Not specified"}</strong>.
+    </>
+  )}
+</p>
           </div>
         </div>
       </section>
@@ -810,7 +837,9 @@ export default async function BrokerAccountPage({
               ],
               [
                 `What is the spread on the ${current.account_name} account?`,
-                `The ${current.account_name} account at ${brokerName} has a spread of ${current.spread}.`,
+                isCapitalSwapFree
+  ? "Spreads on the Capital.com Swap-Free account may be wider than on the standard CFD account and can vary depending on the instrument, market conditions, and applicable entity."
+  : `The ${current.account_name} account at ${brokerName} has a spread of ${current.spread}.`,
               ],
               [
                 `Does the ${current.account_name} account charge commission?`,
