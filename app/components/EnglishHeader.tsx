@@ -97,6 +97,9 @@ const mainLinkClass =
 const dropdownClass =
   "invisible absolute left-0 top-full z-50 mt-3 translate-y-2 rounded-[28px] border border-slate-200 bg-white p-4 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.14)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100";
 
+  const wideDropdownClass =
+  "invisible absolute left-1/2 top-full z-50 mt-3 w-[940px] max-w-[calc(100vw-32px)] -translate-x-1/2 translate-y-2 rounded-[28px] border border-slate-200 bg-white p-5 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.14)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100";
+
 const menuCardClass =
   "rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-[13px] font-extrabold text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600";
 
@@ -206,16 +209,20 @@ export default function EnglishHeader({
           className="relative flex h-16 items-center justify-between lg:h-20"
           dir="ltr"
         >
-          <Link href="/en" className="min-w-0 shrink-0 lg:justify-self-start">
-            <Image
-              src="/logo/Asset 1@3x.png"
-              alt="Broker Alarab"
-              width={300}
-              height={90}
-              priority
-              className="h-auto w-[130px] sm:w-[155px] lg:w-[180px]"
-            />
-          </Link>
+          <a
+  href="/en"
+  aria-label="Back to homepage"
+  className="min-w-0 shrink-0 lg:justify-self-start"
+>
+  <Image
+    src="/logo/Asset 1@3x.png"
+    alt="Broker Alarab"
+    width={300}
+    height={90}
+    priority
+    className="h-auto w-[130px] sm:w-[155px] lg:w-[180px]"
+  />
+</a>
 
           <nav className="mx-8 hidden flex-1 items-center justify-evenly gap-2 lg:flex xl:mx-12 xl:gap-4">
             {/* REVIEWS */}
@@ -349,9 +356,7 @@ export default function EnglishHeader({
   </Link>
 
 
-  <div
-    className={`${dropdownClass} w-[940px] max-w-[calc(100vw-32px)] p-5`}
-  >
+  <div className={wideDropdownClass}>
 
     <div className="grid grid-cols-[1.35fr_0.85fr_0.85fr] items-stretch gap-5">
 

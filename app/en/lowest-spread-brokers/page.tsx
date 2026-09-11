@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: "Best Low Spread Forex Brokers 2026 | Compare Trading Costs",
 
   description:
-    "Compare the best low spread forex brokers in 2026 by average spreads, commissions, minimum deposits and total trading costs across Standard, Raw Spread, ECN and Cent accounts.",
+  "Compare the best low spread forex brokers in 2026. Review average spreads, commissions, minimum deposits and total trading costs by account type.",
 
   keywords: [
     "best low spread forex brokers",
@@ -39,41 +39,54 @@ export const metadata: Metadata = {
   },
 
   openGraph: {
-    title: "Best Low Spread Forex Brokers 2026 | Broker Alarab",
+  title: "Best Low Spread Forex Brokers 2026 | Broker Alarab",
 
-    description:
-      "Compare forex brokers by average spreads, commissions, minimum deposits and total trading costs across Standard, Raw Spread, ECN and Cent accounts.",
+  description:
+    "Compare forex brokers by average spreads, commissions, minimum deposits and total trading costs across Standard, Raw Spread, ECN and Cent accounts.",
 
-    url: "https://brokeralarab.com/en/lowest-spread-brokers",
+  url: "https://brokeralarab.com/en/lowest-spread-brokers",
 
-    siteName: "Broker Alarab",
+  siteName: "Broker Alarab",
 
-    type: "website",
+  type: "website",
 
-    locale: "en_US",
-  },
+  locale: "en_US",
 
-  twitter: {
-    card: "summary_large_image",
+  images: [
+    {
+      url: "https://brokeralarab.com/og-image.webp",
+      width: 1200,
+      height: 630,
+      alt: "Best Low Spread Forex Brokers 2026",
+    },
+  ],
+},
 
-    title: "Best Low Spread Forex Brokers 2026",
+twitter: {
+  card: "summary_large_image",
 
-    description:
-      "Compare Standard, Raw Spread, ECN and Cent accounts by spreads, commissions and total trading costs.",
-  },
+  title: "Best Low Spread Forex Brokers 2026",
 
-  robots: {
+  description:
+    "Compare Standard, Raw Spread, ECN and Cent accounts by spreads, commissions and total trading costs.",
+
+  images: [
+    "https://brokeralarab.com/images/seo/lowest-spread-forex-brokers-en.jpg",
+  ],
+},
+
+robots: {
+  index: true,
+  follow: true,
+
+  googleBot: {
     index: true,
     follow: true,
-
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
-    },
+    "max-image-preview": "large",
+    "max-snippet": -1,
+    "max-video-preview": -1,
   },
+},
 };
 
 type BrokerAccountRow = {
@@ -288,7 +301,7 @@ function formatRating(value: number | string | null) {
 
   if (!Number.isFinite(rating)) return String(value);
 
-  return rating.toFixed(1);
+  return rating.toFixed(2);
 }
 
 function CompactLogo({
@@ -303,18 +316,26 @@ function CompactLogo({
   const sizeClasses = {
     small: "h-9 w-9 rounded-xl",
     normal: "h-11 w-11 rounded-2xl",
-    large: "h-14 w-14 rounded-2xl",
+    large: "h-15 w-20 rounded-[18px]",
+  };
+
+  const paddingClasses = {
+    small: "p-1.5",
+    normal: "p-1.5",
+    large: "p-1",
   };
 
   return (
     <div
-      className={`flex shrink-0 items-center justify-center overflow-hidden border border-slate-200 bg-white p-1.5 ${sizeClasses[size]}`}
+      className={`flex shrink-0 items-center justify-center overflow-hidden border border-slate-200 bg-white ${paddingClasses[size]} ${sizeClasses[size]}`}
     >
       {src ? (
         <img
           src={src}
           alt={`${alt} logo`}
-          className="h-full w-full object-contain"
+          className={`h-full w-full object-contain ${
+            size === "large" ? "scale-[1.12]" : ""
+          }`}
           loading="lazy"
         />
       ) : (
@@ -543,35 +564,74 @@ export default async function LowestSpreadBrokersPage() {
     };
   });
 
-  const groupedByType = ["standard", "raw", "ecn", "cent"]
-    .map((type) => {
-      const items = accounts
-        .filter(
-          (account) => account.normalized_account_type === type
-        )
-        .sort(compareByRealCost);
+ const selectBestAccountPerType = (
+  type: string
+): PreparedAccount[] => {
+  const seenBrokers = new Set<string>();
 
-      return {
-        type,
-
-        label: getAccountTypeLabel(type),
-
-        shortLabel: getAccountTypeShortLabel(type),
-
-        intro: getAccountTypeIntro(type),
-
-        recommendation: getAccountTypeRecommendation(type),
-
-        winner: items[0] || null,
-
-        items,
-      };
-    })
-    .filter((group) => group.items.length > 0);
-
-  const bestOverall = [...accounts]
+  return accounts
+    .filter(
+      (account) => account.normalized_account_type === type
+    )
     .sort(compareByRealCost)
-    .slice(0, 8);
+    .filter((item) => {
+      const brokerKey = item.broker_name
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, " ");
+
+      if (seenBrokers.has(brokerKey)) {
+        return false;
+      }
+
+      seenBrokers.add(brokerKey);
+      return true;
+    });
+};
+
+const selectUniqueBrokerAccounts = (
+  items: PreparedAccount[]
+): PreparedAccount[] => {
+  const seenBrokers = new Set<string>();
+
+  return [...items]
+    .sort(compareByRealCost)
+    .filter((item) => {
+      const brokerKey = item.broker_name
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, " ");
+
+      if (seenBrokers.has(brokerKey)) {
+        return false;
+      }
+
+      seenBrokers.add(brokerKey);
+      return true;
+    });
+};
+
+const groupedByType = ["standard", "raw", "ecn", "cent"]
+  .map((type) => {
+    const items = selectBestAccountPerType(type);
+
+    return {
+      type,
+      label: getAccountTypeLabel(type),
+      shortLabel: getAccountTypeShortLabel(type),
+      intro: getAccountTypeIntro(type),
+      recommendation: getAccountTypeRecommendation(type),
+      winner: items[0] || null,
+      items,
+    };
+  })
+  .filter((group) => group.items.length > 0);
+
+/*
+  This list is only for the overall SEO/schema summary.
+  It must not control the account-type tables.
+*/
+const bestOverall = selectUniqueBrokerAccounts(accounts).slice(0, 8);
 
   const uniqueBrokerCount = new Set(
     accounts.map((account) => account.broker_id)
@@ -655,42 +715,102 @@ export default async function LowestSpreadBrokersPage() {
     "@type": "FAQPage",
 
     mainEntity: [
-      {
-        "@type": "Question",
+  {
+    "@type": "Question",
 
-        name: "What is a low spread forex broker?",
+    name: "What is a low spread forex broker?",
 
-        acceptedAnswer: {
-          "@type": "Answer",
+    acceptedAnswer: {
+      "@type": "Answer",
 
-          text: "A low spread forex broker offers a relatively small difference between the bid and ask price. Traders should also consider commissions because the lowest advertised spread does not always produce the lowest total trading cost.",
-        },
-      },
+      text: "A low spread forex broker offers a relatively small difference between the bid and ask price. Traders should also consider commissions because the lowest advertised spread does not always produce the lowest total trading cost.",
+    },
+  },
 
-      {
-        "@type": "Question",
+  {
+    "@type": "Question",
 
-        name: "Is the forex account with the lowest spread always the cheapest?",
+    name: "Is the forex account with the lowest spread always the cheapest?",
 
-        acceptedAnswer: {
-          "@type": "Answer",
+    acceptedAnswer: {
+      "@type": "Answer",
 
-          text: "No. The total trading cost can include the average spread, a separate commission, execution quality and other account conditions. Raw Spread and ECN accounts may offer tight spreads while charging a commission.",
-        },
-      },
+      text: "No. The total trading cost can include the average spread, a separate commission, execution quality and other account conditions. Raw Spread and ECN accounts may offer tight spreads while charging a commission.",
+    },
+  },
 
-      {
-        "@type": "Question",
+  {
+    "@type": "Question",
 
-        name: "What is the difference between Standard, Raw Spread and ECN accounts?",
+    name: "What is the difference between Standard, Raw Spread and ECN accounts?",
 
-        acceptedAnswer: {
-          "@type": "Answer",
+    acceptedAnswer: {
+      "@type": "Answer",
 
-          text: "Standard accounts usually include trading costs within the spread, while Raw Spread and ECN accounts generally offer tighter pricing with a separate commission. Account structures vary between brokers.",
-        },
-      },
-    ],
+      text: "Standard accounts usually include trading costs within the spread, while Raw Spread and ECN accounts generally offer tighter pricing with a separate commission. Account structures vary between brokers.",
+    },
+  },
+
+  {
+    "@type": "Question",
+
+    name: "Is an ECN account better than a Standard account?",
+
+    acceptedAnswer: {
+      "@type": "Answer",
+
+      text: "It depends on your trading style. ECN-style pricing may suit active traders, while a Standard account may be simpler for beginners and occasional traders.",
+    },
+  },
+
+  {
+    "@type": "Question",
+
+    name: "What is the best forex account for beginners?",
+
+    acceptedAnswer: {
+      "@type": "Answer",
+
+      text: "A Standard account is often easier for beginners because its pricing is straightforward. Regulation, minimum deposit, support and withdrawal conditions should also be reviewed.",
+    },
+  },
+
+  {
+    "@type": "Question",
+
+    name: "Are Cent accounts suitable for live trading?",
+
+    acceptedAnswer: {
+      "@type": "Answer",
+
+      text: "Cent accounts can be used for live trading with smaller position sizes. They are often useful for learning and strategy testing with limited capital exposure.",
+    },
+  },
+
+  {
+    "@type": "Question",
+
+    name: "Why do forex spreads change during the day?",
+
+    acceptedAnswer: {
+      "@type": "Answer",
+
+      text: "Spreads can widen or tighten based on liquidity, volatility, market sessions, economic announcements and overall trading conditions.",
+    },
+  },
+
+  {
+    "@type": "Question",
+
+    name: "How do I find the lowest-cost forex broker?",
+
+    acceptedAnswer: {
+      "@type": "Answer",
+
+      text: "Compare average spreads, commissions, execution quality, account type and minimum deposit. The best option depends on your position size and trading frequency.",
+    },
+  },
+],
   };
 
   const breadcrumbJsonLd = {
@@ -746,6 +866,7 @@ export default async function LowestSpreadBrokersPage() {
       "Compare low spread forex brokers by account type, average spreads, commissions, minimum deposits and total trading costs.",
 
     inLanguage: "en",
+    dateModified: "2026-09-10",
 
     isPartOf: {
       "@type": "WebSite",
@@ -788,39 +909,6 @@ export default async function LowestSpreadBrokersPage() {
     })),
   };
 
-  const heroWinners = [
-    {
-      type: "standard",
-
-      label: "Best Standard",
-
-      item: bestStandard,
-    },
-
-    {
-      type: "raw",
-
-      label: "Best Raw Spread",
-
-      item: bestRaw,
-    },
-
-    {
-      type: "ecn",
-
-      label: "Best ECN",
-
-      item: bestEcn,
-    },
-  ].filter(
-    (
-      winner
-    ): winner is {
-      type: string;
-      label: string;
-      item: PreparedAccount;
-    } => Boolean(winner.item)
-  );
 
   return (
     <main
@@ -860,622 +948,649 @@ export default async function LowestSpreadBrokersPage() {
       />
 
       {/* HERO */}
-      <section className="overflow-hidden border-b border-slate-200 bg-white">
-        <div className="mx-auto max-w-[1520px] px-4 pb-6 pt-7 sm:px-6 sm:pb-8 sm:pt-9 lg:px-8 lg:py-10 xl:px-10">
-          <div className="grid items-center gap-7 lg:grid-cols-[minmax(0,1.35fr)_minmax(380px,0.65fr)] lg:gap-10 xl:gap-12">
-            {/* HERO CONTENT */}
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[11px] font-extrabold text-brand-600 sm:py-1.5 sm:text-xs">
-                <span className="h-1.5 w-1.5 rounded-full bg-brand-500 sm:h-2 sm:w-2" />
+<section
+  dir="ltr"
+  className="relative isolate overflow-hidden border-b border-[#174373] bg-[#071a31]"
+>
+  {/* Background */}
+  <div className="pointer-events-none absolute inset-0">
+    <div className="absolute inset-0 bg-[linear-gradient(115deg,#061326_0%,#092746_55%,#0c4279_100%)]" />
 
-                2026 Forex Account Comparison
+    <div className="absolute -right-32 -top-52 h-[460px] w-[460px] rounded-full bg-blue-500/20 blur-[120px]" />
+
+    <div className="absolute -bottom-72 left-[12%] h-[440px] w-[440px] rounded-full bg-cyan-400/10 blur-[120px]" />
+
+    <div className="absolute inset-0 opacity-[0.05] [background-image:linear-gradient(rgba(147,197,253,0.55)_1px,transparent_1px),linear-gradient(90deg,rgba(147,197,253,0.55)_1px,transparent_1px)] [background-size:56px_56px]" />
+  </div>
+
+  <div className="relative mx-auto max-w-[1520px] px-4 py-5 sm:px-6 sm:py-7 lg:px-10 lg:py-9">
+    <div className="grid items-center gap-8 min-[1500px]:grid-cols-[minmax(0,1fr)_250px] min-[1500px]:gap-20">
+      {/* MAIN CONTENT */}
+      <div className="min-w-0 text-left">
+        {/* Breadcrumb */}
+        <nav
+          aria-label="Breadcrumb"
+          className="hidden items-center gap-2 text-[10px] font-bold text-blue-200/75 sm:flex sm:text-xs"
+        >
+          <Link
+            href="/en/best-brokers"
+            className="transition hover:text-white"
+          >
+            Best Forex Brokers
+          </Link>
+
+          <span className="text-blue-300/40">/</span>
+
+          <span className="text-white">Lowest Spread</span>
+        </nav>
+
+        {/* Badge */}
+        <div className="mt-0 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.07] px-3 py-1.5 text-[9px] font-extrabold text-blue-100 backdrop-blur-sm sm:mt-5 sm:text-[11px]">
+          <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.9)]" />
+
+          Forex Broker Comparison 2026
+        </div>
+
+        {/* Heading */}
+        <h1 className="mt-3 max-w-[1100px] text-[30px] font-black leading-[1.12] tracking-[-0.035em] text-white min-[380px]:text-[32px] sm:text-[44px] lg:text-[53px] xl:text-[58px]">
+          <span className="inline">
+            Best Low Spread Forex Brokers{" "}
+          </span>
+
+          <span className="inline text-[#59c0ff]">
+            in 2026
+          </span>
+        </h1>
+
+        {/* Mobile description */}
+        <p className="mt-3 text-[12px] font-medium leading-6 text-slate-200 sm:hidden">
+          Compare average spreads, commissions and total trading costs to find
+          the lowest-cost forex account.
+        </p>
+
+        {/* Desktop description */}
+        <p className="mt-3 hidden max-w-[1050px] text-[15px] font-medium leading-8 text-slate-200 sm:block lg:text-[16px]">
+          Compare forex brokers by average spreads, commissions and total
+          trading costs, with separate results for Standard, Raw Spread, ECN
+          and Cent accounts.
+        </p>
+
+        {/* Update information */}
+        <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[8px] font-bold text-blue-100/85 sm:mt-3 sm:gap-x-4 sm:text-[11px]">
+          <time
+            dateTime="2026-09-10"
+            className="inline-flex items-center gap-1.5"
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+
+            <span className="sm:hidden">
+              Updated September 2026
+            </span>
+
+            <span className="hidden sm:inline">
+              Last updated: September 10, 2026
+            </span>
+          </time>
+
+          <span className="hidden h-3 w-px bg-white/20 sm:block" />
+
+          <span className="inline-flex items-center gap-1.5">
+            <span className="text-cyan-300">✓</span>
+            Commission included in the evaluation
+          </span>
+
+          <span className="hidden h-3 w-px bg-white/20 sm:block" />
+
+          <span className="hidden items-center gap-1.5 sm:inline-flex">
+            <span className="text-cyan-300">✓</span>
+            Independent comparison by account type
+          </span>
+        </div>
+
+        {/* Stats and buttons */}
+        <div className="mt-3.5 flex flex-col gap-3 sm:mt-5 sm:gap-4">
+          {/* Stats */}
+          <div className="grid w-full max-w-[760px] grid-cols-3 overflow-hidden rounded-[15px] border border-white/10 bg-white/[0.06] p-1 backdrop-blur-sm">
+            <div className="px-1 py-2 text-center sm:px-2 sm:py-2.5">
+              <div className="text-base font-black text-[#66c8ff] sm:text-xl">
+                {uniqueBrokerCount}
               </div>
 
-              <h1 className="mt-4 max-w-[980px] text-[30px] font-black leading-[1.18] tracking-[-0.02em] text-slate-950 min-[380px]:text-[32px] sm:text-[46px] sm:leading-[1.12] lg:text-[54px] xl:text-[60px]">
-                Best Low Spread
-
-                <span className="mt-1 block text-brand-500">
-                  Forex Brokers in 2026
-                </span>
-              </h1>
-
-              <p className="mt-4 max-w-[850px] text-sm leading-7 text-slate-600 sm:text-base sm:leading-8">
-                Compare the best low spread forex brokers by{" "}
-
-                <strong className="font-black text-slate-900">
-                  average spreads, commissions and total trading
-                  costs
-                </strong>
-
-                . We evaluate Standard, Raw Spread, ECN and Cent
-                accounts separately to provide a fair account-level
-                comparison.
-              </p>
-
-              <div className="mt-5 grid max-w-[640px] grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3">
-                <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-center sm:px-4">
-                  <div className="text-xl font-black text-slate-950 sm:text-2xl">
-                    {uniqueBrokerCount}
-                  </div>
-
-                  <div className="mt-0.5 text-[10px] font-bold text-slate-500 sm:text-xs">
-                    Brokers Compared
-                  </div>
-                </div>
-
-                <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-center sm:px-4">
-                  <div className="text-xl font-black text-slate-950 sm:text-2xl">
-                    {accounts.length}
-                  </div>
-
-                  <div className="mt-0.5 text-[10px] font-bold text-slate-500 sm:text-xs">
-                    Trading Accounts
-                  </div>
-                </div>
-
-                <div className="hidden rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-center sm:block">
-                  <div className="text-2xl font-black text-slate-950">
-                    {groupedByType.length}
-                  </div>
-
-                  <div className="mt-0.5 text-xs font-bold text-slate-500">
-                    Account Categories
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-5 flex flex-col gap-3 sm:mt-6 sm:flex-row">
-                <a
-                  href="#account-types"
-                  className="inline-flex min-h-12 w-full items-center justify-center rounded-2xl bg-brand-500 px-6 py-3 text-sm font-extrabold text-white shadow-[0_10px_24px_rgba(30,91,184,0.18)] transition hover:bg-brand-600 sm:w-auto sm:min-w-[220px]"
-                >
-                  Compare Account Types
-                </a>
-
-                <a
-                  href="#head-to-head"
-                  className="hidden min-h-12 items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-3 text-sm font-extrabold text-slate-800 transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-600 sm:inline-flex sm:min-w-[200px]"
-                >
-                  Compare Two Brokers
-                </a>
+              <div className="mt-0.5 text-[7px] font-bold text-slate-300 sm:text-[10px]">
+                Forex Brokers
               </div>
             </div>
 
-            {/* DESKTOP SUMMARY */}
-            <div className="hidden lg:block">
-              <div className="overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-[0_14px_40px_rgba(15,23,42,0.07)]">
-                <div className="flex items-center justify-between gap-4 border-b border-slate-200 bg-slate-50/70 px-5 py-4">
-                  <div>
-                    <h2 className="text-lg font-black text-slate-950">
-                      Top Account in Each Category
-                    </h2>
+            <div className="border-x border-white/10 px-1 py-2 text-center sm:px-2 sm:py-2.5">
+              <div className="text-base font-black text-[#66c8ff] sm:text-xl">
+                {accounts.length}
+              </div>
 
-                    <p className="mt-1 text-xs text-slate-500">
-                      A quick look at our leading results
-                    </p>
-                  </div>
+              <div className="mt-0.5 text-[7px] font-bold text-slate-300 sm:text-[10px]">
+                Compared Accounts
+              </div>
+            </div>
 
-                  <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-extrabold text-emerald-700">
-                    Updated
-                  </span>
-                </div>
+            <div className="px-1 py-2 text-center sm:px-2 sm:py-2.5">
+              <div className="text-base font-black text-[#66c8ff] sm:text-xl">
+                {groupedByType.length}
+              </div>
 
-                <div className="divide-y divide-slate-200">
-                  {heroWinners.map(
-                    ({ type, label, item }, index) => (
-                      <div
-                        key={type}
-                        className="grid grid-cols-[32px_40px_minmax(0,1fr)_auto] items-center gap-3 px-5 py-3.5"
-                      >
-                        <RankingBadge index={index} />
-
-                        <CompactLogo
-                          src={item.broker_logo}
-                          alt={item.broker_name}
-                          size="small"
-                        />
-
-                        <div className="min-w-0">
-                          <div className="truncate text-sm font-black text-slate-950">
-                            {item.broker_name}
-                          </div>
-
-                          <div className="mt-0.5 truncate text-[11px] font-bold text-slate-500">
-                            {item.account_name || "—"}
-                          </div>
-                        </div>
-
-                        <div className="shrink-0 text-right">
-                          <div className="text-[10px] font-extrabold text-brand-600">
-                            {label}
-                          </div>
-
-                          <div className="mt-0.5 text-xs font-black text-emerald-700">
-                            {item.spread || "—"}
-                          </div>
-                        </div>
-                      </div>
-                    )
-                  )}
-                </div>
-
-                <div className="border-t border-slate-200 bg-slate-50 px-5 py-3">
-                  <p className="text-[11px] leading-5 text-slate-500">
-                    Rankings consider average spreads, commissions
-                    and estimated total trading costs.
-                  </p>
-                </div>
+              <div className="mt-0.5 text-[7px] font-bold text-slate-300 sm:text-[10px]">
+                Account Types
               </div>
             </div>
           </div>
 
-          {/* MOBILE QUICK WINNERS */}
-          <div className="mt-5 overflow-hidden rounded-[22px] border border-slate-200 bg-slate-50 lg:hidden">
-            <div className="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3">
-              <h2 className="text-sm font-black text-slate-950">
-                Top Account Picks
-              </h2>
+          {/* Buttons */}
+          <div className="grid w-full max-w-[760px] grid-cols-2 gap-2.5 sm:w-auto sm:max-w-none sm:flex sm:gap-3">
+            <a
+              href="#account-types"
+              className="inline-flex min-h-[43px] items-center justify-center gap-2 rounded-[12px] bg-[#2471df] px-2 text-[10px] font-black text-white shadow-[0_12px_30px_rgba(37,99,235,0.28)] transition hover:-translate-y-0.5 hover:bg-[#2e7cea] sm:min-h-[46px] sm:min-w-[210px] sm:px-5 sm:text-sm"
+            >
+              <span className="sm:hidden">View Spreads</span>
 
-              <span className="text-[10px] font-extrabold text-brand-600">
-                By Account Type
+              <span className="hidden sm:inline">
+                View Spread Comparison
               </span>
+
+              <span aria-hidden="true">→</span>
+            </a>
+
+            <a
+              href="#head-to-head"
+              className="inline-flex min-h-[43px] items-center justify-center gap-2 rounded-[12px] border border-white/20 bg-white/[0.07] px-2 text-[10px] font-black text-white backdrop-blur-sm transition hover:-translate-y-0.5 hover:bg-white/[0.12] sm:min-h-[46px] sm:min-w-[190px] sm:px-5 sm:text-sm"
+            >
+              <span className="sm:hidden">Compare Brokers</span>
+
+              <span className="hidden sm:inline">
+                Compare Broker by Broker
+              </span>
+
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* SPREAD ILLUSTRATION */}
+<div
+  aria-hidden="true"
+  className="hidden w-[250px] min-[1500px]:block min-[1500px]:-translate-x-16"
+>
+        <div className="rounded-[17px] border border-white/10 bg-[#0b2948]/90 p-3 shadow-[0_20px_50px_rgba(0,0,0,0.2)] backdrop-blur-md">
+          <div className="flex items-center justify-between gap-2">
+            <div className="text-[10px] font-black text-white">
+              How Is Spread Calculated?
             </div>
 
-            <div className="divide-y divide-slate-200">
-              {heroWinners.map(
-                ({ type, label, item }, index) => (
-                  <div
-                    key={type}
-                    className="grid grid-cols-[30px_36px_minmax(0,1fr)_auto] items-center gap-2.5 px-3.5 py-3"
-                  >
-                    <RankingBadge index={index} />
+            <div className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-2 py-0.5 text-[7px] font-bold text-cyan-200">
+              Simple example
+            </div>
+          </div>
 
-                    <CompactLogo
-                      src={item.broker_logo}
-                      alt={item.broker_name}
-                      size="small"
-                    />
+          <div className="mt-3 space-y-2">
+            <div className="rounded-[11px] border border-emerald-300/15 bg-emerald-300/[0.07] px-3 py-2 text-center">
+              <div className="text-[8px] font-bold text-emerald-200/75">
+                Ask Price
+              </div>
 
-                    <div className="min-w-0">
-                      <div className="truncate text-sm font-black text-slate-950">
+              <div
+                dir="ltr"
+                className="mt-0.5 text-[15px] font-black tracking-wide text-emerald-300"
+              >
+                1.08420
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="h-px flex-1 bg-gradient-to-r from-cyan-300/30 to-transparent" />
+
+              <div className="inline-flex items-center gap-1.5 rounded-full border border-cyan-300/15 bg-cyan-300/10 px-2.5 py-1">
+                <span className="text-[7px] font-bold text-blue-200/75">
+                  Spread
+                </span>
+
+                <span
+                  dir="ltr"
+                  className="text-[11px] font-black text-[#65c9ff]"
+                >
+                  1.00
+                </span>
+
+                <span className="text-[7px] font-bold text-blue-200/75">
+                  pips
+                </span>
+              </div>
+
+              <span className="h-px flex-1 bg-gradient-to-l from-cyan-300/30 to-transparent" />
+            </div>
+
+            <div className="rounded-[11px] border border-rose-300/15 bg-rose-300/[0.06] px-3 py-2 text-center">
+              <div className="text-[8px] font-bold text-rose-200/75">
+                Bid Price
+              </div>
+
+              <div
+                dir="ltr"
+                className="mt-0.5 text-[15px] font-black tracking-wide text-rose-300"
+              >
+                1.08410
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-2.5 border-t border-white/10 pt-2 text-center">
+            <p className="text-[7px] font-bold text-blue-100/60">
+              The difference between prices is the spread cost
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+      {/* PAGE NAVIGATION */}
+<section className="hidden border-b border-slate-200 bg-white sm:block">
+  <div className="mx-auto max-w-[1520px] px-6 py-3 lg:px-8 xl:px-10">
+    <nav
+      aria-label="Page sections"
+      className="flex flex-wrap items-center justify-center gap-2 lg:justify-start"
+    >
+      {[
+        {
+          href: "#account-types",
+          label: "Compare Account Types",
+        },
+        {
+          href: "#head-to-head",
+          label: "Compare Brokers",
+        },
+        {
+          href: "#best-by-category",
+          label: "Top Account Picks",
+        },
+        {
+          href: "#selection-method",
+          label: "How We Rank",
+        },
+        {
+          href: "#faq",
+          label: "Frequently Asked Questions",
+        },
+      ].map((item) => (
+        <a
+          key={item.href}
+          href={item.href}
+          className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-extrabold text-slate-700 transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-600"
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+  </div>
+</section>
+
+{/* ACCOUNT TYPES */}
+<section
+  id="account-types"
+  className="scroll-mt-24 bg-[#f4f7fb] pb-8 pt-6 sm:pb-10 sm:pt-8 lg:pb-12 lg:pt-10"
+>
+  <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-8 xl:px-10">
+    {/* SECTION INTRO */}
+    <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end lg:gap-8">
+      <div className="max-w-[980px]">
+        <span className="inline-flex rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-[10px] font-black text-brand-600 sm:text-[11px]">
+          Account-Level Cost Comparison
+        </span>
+
+        <h2 className="mt-3 max-w-[360px] text-[24px] font-black leading-[1.28] tracking-[-0.01em] text-slate-950 sm:max-w-[950px] sm:text-4xl sm:leading-tight">
+          Compare Low Spread Forex Accounts by Account Type
+        </h2>
+
+        <p className="mt-2.5 max-w-[370px] text-[12px] leading-6 text-slate-600 sm:mt-3 sm:max-w-[1000px] sm:text-base sm:leading-8">
+          Standard, Raw Spread, ECN and Cent accounts have different cost
+          structures. We compare spreads, commissions and minimum deposits
+          separately to identify the most suitable low-cost account for each
+          trading style.
+        </p>
+      </div>
+
+      <div className="rounded-[20px] border border-amber-200 bg-amber-50 px-5 py-4">
+        <div className="flex items-center gap-2">
+          <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-amber-100 text-xs font-black text-amber-800">
+            !
+          </span>
+
+          <div className="text-xs font-black text-amber-950">
+            Consider the Total Trading Cost
+          </div>
+        </div>
+
+        <p className="mt-2 text-xs leading-6 text-amber-900/80">
+          A lower advertised spread does not always mean a cheaper account.
+          Raw Spread and ECN accounts may also charge a separate commission.
+        </p>
+      </div>
+    </div>
+
+    {/* ACCOUNT GROUPS */}
+    <div className="mt-6 space-y-5 sm:mt-8 sm:space-y-7">
+      {groupedByType.map((group) => {
+        const visibleItems = group.items.slice(0, 7);
+
+        const renderMobileCard = (item: any, index: number) => (
+          <div
+            key={item.id}
+            className={`overflow-hidden rounded-[17px] border bg-white ${
+              index === 0
+                ? "border-amber-200 shadow-[0_7px_20px_rgba(245,158,11,0.08)]"
+                : "border-slate-200 shadow-[0_4px_14px_rgba(15,23,42,0.035)]"
+            }`}
+          >
+            {index === 0 ? (
+              <div className="h-1 bg-gradient-to-r from-amber-400 via-amber-300 to-transparent" />
+            ) : null}
+
+            <div className="p-3">
+              <div className="flex items-start justify-between gap-2.5">
+                <div className="flex min-w-0 items-center gap-2.5">
+                  <CompactLogo
+                    src={item.broker_logo}
+                    alt={item.broker_name}
+                    size="normal"
+                  />
+
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <div className="truncate text-[15px] font-black text-slate-950">
                         {item.broker_name}
                       </div>
 
-                      <div className="mt-0.5 truncate text-[10px] font-bold text-slate-500">
-                        {item.account_name || "—"}
-                      </div>
+                      {index === 0 ? (
+                        <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[7px] font-black text-amber-800">
+                          Top Pick
+                        </span>
+                      ) : null}
                     </div>
 
-                    <div className="shrink-0 text-right">
-                      <div className="text-[9px] font-extrabold text-brand-600">
-                        {label}
-                      </div>
+                    <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                      <AccountLink item={item} />
 
-                      <div className="mt-0.5 text-[11px] font-black text-emerald-700">
-                        {item.spread || "—"}
-                      </div>
+                      {formatRating(item.broker_rating) ? (
+                        <span className="text-[9px] font-black text-amber-600">
+                          ★ {formatRating(item.broker_rating)}
+                        </span>
+                      ) : null}
                     </div>
                   </div>
-                )
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
+                </div>
 
-      {/* PAGE NAVIGATION */}
-      <section className="hidden border-b border-slate-200 bg-white sm:block">
-        <div className="mx-auto max-w-[1520px] px-6 py-3 lg:px-8 xl:px-10">
-          <nav
-            aria-label="Page sections"
-            className="flex flex-wrap items-center justify-center gap-2 lg:justify-start"
-          >
-            {[
-              {
-                href: "#account-types",
-                label: "Compare Account Types",
-              },
-
-              {
-                href: "#head-to-head",
-                label: "Compare Brokers",
-              },
-
-              {
-                href: "#best-by-category",
-                label: "Top Account Picks",
-              },
-
-              {
-                href: "#selection-method",
-                label: "How We Rank",
-              },
-
-              {
-                href: "#faq",
-                label: "Frequently Asked Questions",
-              },
-            ].map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-extrabold text-slate-700 transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-600"
-              >
-                {item.label}
-              </a>
-            ))}
-          </nav>
-        </div>
-      </section>
-
-      {/* ACCOUNT TYPES */}
-      <section
-        id="account-types"
-        className="scroll-mt-24 pb-8 pt-7 sm:py-10 lg:py-12"
-      >
-        <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-8 xl:px-10">
-          {/* SECTION INTRO */}
-          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end lg:gap-8">
-            <div className="max-w-[950px]">
-              <span className="inline-flex rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-[10px] font-black text-brand-600 sm:text-[11px]">
-                Account-Level Cost Comparison
-              </span>
-
-              <h2 className="mt-3 max-w-[340px] text-[24px] font-black leading-[1.28] tracking-[-0.01em] text-slate-950 sm:max-w-[900px] sm:text-4xl sm:leading-tight">
-  Compare Low Spread Forex Accounts by Account Type
-</h2>
-
-             <p className="mt-2.5 max-w-[355px] text-[12px] leading-6 text-slate-600 sm:mt-3 sm:max-w-[960px] sm:text-base sm:leading-8">
-                A Raw Spread account should not be ranked directly
-                against a Standard account because their fees are
-                structured differently. We separate each account type
-                to identify the strongest options within comparable
-                categories.
-              </p>
-            </div>
-
-            <div className="hidden rounded-[20px] border border-amber-200 bg-amber-50 px-5 py-4 lg:block">
-              <div className="flex items-center gap-2">
-                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-amber-100 text-xs font-black text-amber-800">
-                  !
+                <span
+                  className={`inline-flex h-8 min-w-8 items-center justify-center rounded-full px-2 text-[10px] font-black ${
+                    index === 0
+                      ? "bg-amber-100 text-amber-800"
+                      : "bg-slate-100 text-slate-600"
+                  }`}
+                >
+                  #{index + 1}
                 </span>
+              </div>
 
-                <div className="text-xs font-black text-amber-950">
-                  Consider the Total Trading Cost
+              <div className="mt-2.5 grid grid-cols-3 overflow-hidden rounded-[11px] border border-slate-200 bg-[#f7f9fc]">
+                <div className="border-r border-slate-200 px-1 py-2 text-center">
+                  <div className="text-[8px] font-extrabold text-slate-500">
+                    Spread
+                  </div>
+
+                  <div
+                    dir="ltr"
+                    className="mt-0.5 text-[12px] font-black text-emerald-700"
+                  >
+                    {item.spread || "—"}
+                  </div>
+                </div>
+
+                <div className="border-r border-slate-200 px-1 py-2 text-center">
+                  <div className="text-[8px] font-extrabold text-slate-500">
+                    Commission
+                  </div>
+
+                  <div
+                    dir="ltr"
+                    className="mt-0.5 break-words text-[10px] font-black text-slate-900"
+                  >
+                    {item.commission_en || item.commission || "—"}
+                  </div>
+                </div>
+
+                <div className="px-1 py-2 text-center">
+                  <div className="text-[8px] font-extrabold text-slate-500">
+                    Min. Deposit
+                  </div>
+
+                  <div
+                    dir="ltr"
+                    className="mt-0.5 text-[12px] font-black text-slate-900"
+                  >
+                    {item.min_deposit || "—"}
+                  </div>
                 </div>
               </div>
 
-              <p className="mt-2 text-xs leading-6 text-amber-900/80">
-                A lower advertised spread does not always mean a
-                cheaper account. Raw Spread and ECN accounts may also
-                charge a separate commission.
-              </p>
+              <div className="mt-2.5 [&_a]:min-h-[39px]">
+                <ActionButtons item={item} />
+              </div>
             </div>
           </div>
+        );
 
-          {/* ACCOUNT GROUPS */}
-          <div className="mt-6 space-y-5 sm:mt-8 sm:space-y-6 lg:space-y-7">
-            {groupedByType.map((group) => (
-              <article
-                key={group.type}
-                className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_10px_28px_rgba(15,23,42,0.055)] sm:rounded-[28px]"
-              >
-                {/* GROUP HEADER */}
-                <div className="border-b border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] px-4 py-3.5 sm:px-6 sm:py-5 lg:px-7">
-                  <div className="grid gap-3.5 sm:gap-4 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-center">
-                    <div className="min-w-0">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="inline-flex rounded-full bg-brand-500 px-3 py-1 text-[10px] font-black text-white sm:text-[11px]">
-                          {group.shortLabel}
-                        </span>
+        return (
+          <article
+            key={group.type}
+            className="overflow-hidden rounded-[21px] border border-slate-200 bg-white shadow-[0_14px_38px_rgba(15,23,42,0.065)] sm:rounded-[27px]"
+          >
+            {/* GROUP HEADER */}
+            <div className="relative overflow-hidden border-b border-slate-200 bg-[linear-gradient(110deg,#ffffff_0%,#f5f9ff_65%,#eaf4ff_100%)] px-4 py-3.5 sm:px-7 sm:py-5 lg:px-8">
+              <div className="absolute bottom-0 left-0 top-0 w-1 bg-gradient-to-b from-[#2f80ed] to-[#1353a5]" />
 
-                        <span className="inline-flex rounded-full border border-slate-200 bg-white px-3 py-1 text-[10px] font-extrabold text-slate-600 sm:text-[11px]">
-                          {group.recommendation}
-                        </span>
-                      </div>
+              <div className="flex items-start justify-between gap-6">
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="inline-flex rounded-full bg-brand-500 px-3 py-1 text-[9px] font-black text-white sm:text-[11px]">
+                      {group.shortLabel}
+                    </span>
 
-                      <h3 className="mt-3 max-w-[335px] text-[19px] font-black leading-[1.3] tracking-[-0.01em] text-slate-950 sm:max-w-none sm:text-2xl sm:leading-[1.28] lg:text-[28px]">
-  Best {group.label} for Low Trading Costs
-</h3>
+                    <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[8px] font-extrabold text-slate-600 sm:text-[10px]">
+                      {group.recommendation}
+                    </span>
+                  </div>
 
-<p className="mt-2 max-w-[345px] text-[12px] leading-6 text-slate-600 sm:max-w-[920px] sm:text-[15px] sm:leading-7">
-  {group.intro}
-</p>
+                  <h3 className="mt-2.5 text-[20px] font-black leading-[1.25] text-slate-950 sm:text-2xl lg:text-[30px]">
+                    Best {group.label} Accounts for Spread and Cost
+                  </h3>
+
+                  <p className="mt-2 hidden max-w-[1000px] text-[14px] leading-7 text-slate-600 sm:block">
+                    {group.intro}
+                  </p>
+                </div>
+
+                <div className="hidden shrink-0 items-center gap-3 rounded-[15px] border border-blue-100 bg-white/95 px-4 py-3 shadow-sm lg:flex">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-[12px] bg-brand-50 text-lg font-black text-brand-600">
+                    {visibleItems.length}
+                  </div>
+
+                  <div>
+                    <div className="text-[12px] font-black text-slate-900">
+                      Top Results Shown
                     </div>
 
-                    {group.winner ? (
-                      <div className="grid grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-3 rounded-[18px] border border-emerald-300 bg-emerald-50 px-3.5 py-3">
-                        <CompactLogo
-                          src={group.winner.broker_logo}
-                          alt={group.winner.broker_name}
-                          size="small"
-                        />
-
-                        <div className="min-w-0">
-                          <div className="text-[9px] font-black text-emerald-700 sm:text-[10px]">
-                            Top-Ranked in This Category
-                          </div>
-
-                          <div className="mt-0.5 truncate text-sm font-black text-slate-950">
-                            {group.winner.broker_name}
-                          </div>
-
-                          <div className="mt-0.5 truncate text-[10px] font-extrabold text-slate-500 sm:text-[11px]">
-                            {group.winner.account_name || "—"}
-                          </div>
-                        </div>
-
-                        <div className="shrink-0 border-l border-emerald-200 pl-3 text-right">
-                          <div className="text-[9px] font-bold text-slate-500">
-                            Spread
-                          </div>
-
-                          <div className="mt-0.5 text-xs font-black text-emerald-700 sm:text-sm">
-                            {group.winner.spread || "—"}
-                          </div>
-                        </div>
-                      </div>
-                    ) : null}
+                    <div className="mt-0.5 text-[10px] font-bold text-slate-500">
+                      From {group.items.length} accounts
+                    </div>
                   </div>
                 </div>
+              </div>
+            </div>
 
-                {/* DESKTOP TABLE */}
-                <div className="hidden p-5 lg:block lg:p-6">
-                  <div className="overflow-hidden rounded-[20px] border border-slate-200">
-                    <table className="w-full table-fixed text-left">
-                      <thead className="bg-slate-100/80">
-                        <tr className="text-[11px] text-slate-600">
-                          <th className="w-[7%] px-4 py-3.5 text-center font-black">
-                            Rank
-                          </th>
+            {/* DESKTOP TABLE */}
+            <div className="hidden p-5 lg:block lg:p-6">
+              <div className="overflow-hidden rounded-[18px] border border-slate-200 shadow-[0_7px_24px_rgba(15,23,42,0.055)]">
+                <table className="w-full table-fixed text-left">
+                  <thead className="bg-[linear-gradient(90deg,#071c34_0%,#0b3157_55%,#0d426f_100%)] text-white">
+                    <tr className="text-[13px]">
+                      <th className="w-[8%] px-4 py-4 text-center font-black">
+                        Rank
+                      </th>
 
-                          <th className="w-[30%] px-4 py-3.5 font-black">
-                            Broker and Account
-                          </th>
+                      <th className="w-[34%] px-6 py-4 font-black">
+                        Broker and Account
+                      </th>
 
-                          <th className="w-[13%] px-4 py-3.5 text-center font-black">
-                            Spread
-                          </th>
+                      <th className="w-[13%] px-4 py-4 text-center font-black">
+                        Spread
+                      </th>
 
-                          <th className="w-[15%] px-4 py-3.5 text-center font-black">
-                            Commission
-                          </th>
+                      <th className="w-[12%] px-4 py-4 text-center font-black">
+                        Commission
+                      </th>
 
-                          <th className="w-[13%] px-4 py-3.5 text-center font-black">
-                            Minimum Deposit
-                          </th>
+                      <th className="w-[12%] px-4 py-4 text-center font-black">
+                        Deposit
+                      </th>
 
-                          <th className="w-[22%] px-4 py-3.5 text-center font-black">
-                            Actions
-                          </th>
-                        </tr>
-                      </thead>
+                      <th className="w-[21%] px-4 py-4 text-center font-black">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
 
-                      <tbody>
-                        {group.items
-                          .slice(0, 7)
-                          .map((item, index) => (
-                            <tr
-                              key={item.id}
-                              className="border-t border-slate-200 bg-white text-sm transition hover:bg-brand-50/30"
-                            >
-                              <td className="px-4 py-3 text-center">
-                                <RankingBadge index={index} />
-                              </td>
-
-                              <td className="px-4 py-3">
-                                <div className="flex items-center gap-3">
-                                  <CompactLogo
-                                    src={item.broker_logo}
-                                    alt={item.broker_name}
-                                    size="small"
-                                  />
-
-                                  <div className="min-w-0">
-                                    <div className="truncate text-[13px] font-black text-slate-950">
-                                      {item.broker_name}
-                                    </div>
-
-                                    <div className="mt-1 flex flex-wrap items-center gap-2">
-                                      <AccountLink item={item} />
-
-                                      {formatRating(
-                                        item.broker_rating
-                                      ) ? (
-                                        <span className="text-[10px] font-black text-amber-600">
-                                          ★{" "}
-                                          {formatRating(
-                                            item.broker_rating
-                                          )}
-                                        </span>
-                                      ) : null}
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-
-                              <td className="px-4 py-3 text-center">
-                                <span className="inline-flex rounded-full border border-emerald-300 bg-emerald-50 px-3 py-1 text-[11px] font-black text-emerald-700">
-                                  {item.spread || "—"}
-                                </span>
-                              </td>
-
-                              <td className="px-4 py-3 text-center text-xs font-extrabold text-slate-800">
-                                {item.commission_en || item.commission || "—"}
-                              </td>
-
-                              <td className="px-4 py-3 text-center text-xs font-extrabold text-slate-800">
-                                {item.min_deposit || "—"}
-                              </td>
-
-                              <td className="px-4 py-3">
-                                <div className="flex justify-center">
-                                  <ActionButtons
-                                    item={item}
-                                    compact
-                                  />
-                                </div>
-                              </td>
-                            </tr>
-                          ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                {/* MOBILE CARDS */}
-                <div className="grid gap-3 p-3.5 lg:hidden">
-                  {group.items
-                    .slice(0, 2)
-                    .map((item, index) => (
-                      <div
+                  <tbody>
+                    {visibleItems.map((item, index) => (
+                      <tr
                         key={item.id}
-                        className="rounded-[20px] border border-slate-200 bg-white p-3.5 shadow-[0_5px_16px_rgba(15,23,42,0.035)]"
+                        className={`border-t border-slate-200 transition duration-200 hover:bg-blue-50/80 ${
+                          index === 0
+                            ? "bg-[linear-gradient(90deg,#fffdf7_0%,#fff9e9_100%)]"
+                            : index % 2 === 0
+                            ? "bg-[#f8fafc]"
+                            : "bg-white"
+                        }`}
                       >
-                        <div className="grid grid-cols-[30px_42px_minmax(0,1fr)] items-center gap-2.5">
-                          <RankingBadge index={index} />
+                        <td className="px-4 py-[18px] text-center">
+                          <span
+                            className={`inline-flex h-10 min-w-10 items-center justify-center rounded-full px-2 text-[13px] font-black ${
+                              index === 0
+                                ? "bg-amber-100 text-amber-800 ring-2 ring-amber-200/70"
+                                : "bg-slate-100 text-slate-600"
+                            }`}
+                          >
+                            #{index + 1}
+                          </span>
+                        </td>
 
-                          <CompactLogo
-                            src={item.broker_logo}
-                            alt={item.broker_name}
-                            size="small"
-                          />
+                        <td className="px-6 py-[18px]">
+                          <div className="flex items-center gap-4">
+                            <CompactLogo
+                              src={item.broker_logo}
+                              alt={item.broker_name}
+                              size="large"
+                            />
 
-                          <div className="min-w-0">
-                            <div className="truncate text-[15px] font-black text-slate-950">
-                              {item.broker_name}
-                            </div>
+                            <div className="min-w-0">
+                              <div className="flex flex-wrap items-center gap-2.5">
+                                <div className="truncate text-[18px] font-black text-slate-950">
+                                  {item.broker_name}
+                                </div>
 
-                            <div className="mt-1">
-                              <AccountLink item={item} />
-                            </div>
-                          </div>
-                        </div>
+                                {index === 0 ? (
+                                  <span className="rounded-full border border-amber-200 bg-amber-100 px-2.5 py-1 text-[9px] font-black text-amber-800">
+                                    Top in Category
+                                  </span>
+                                ) : null}
+                              </div>
 
-                        <div className="mt-3 grid grid-cols-3 overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
-                          <div className="border-r border-slate-200 px-1.5 py-2.5 text-center">
-                            <div className="text-[8px] font-extrabold text-slate-500">
-                              Spread
-                            </div>
+                              <div className="mt-2 flex flex-wrap items-center gap-3">
+                                <AccountLink item={item} />
 
-                            <div className="mt-1 text-[11px] font-black leading-5 text-emerald-700">
-                              {item.spread || "—"}
-                            </div>
-                          </div>
-
-                          <div className="border-r border-slate-200 px-1.5 py-2.5 text-center">
-                            <div className="text-[8px] font-extrabold text-slate-500">
-                              Commission
-                            </div>
-
-                            <div className="mt-1 min-h-[20px] break-words text-[10px] font-black leading-5 text-slate-900">
-                              {item.commission_en || item.commission || "—"}
-                            </div>
-                          </div>
-
-                          <div className="px-1.5 py-2.5 text-center">
-                            <div className="text-[8px] font-extrabold text-slate-500">
-                              Min. Deposit
-                            </div>
-
-                            <div className="mt-1 text-[11px] font-black leading-5 text-slate-900">
-                              {item.min_deposit || "—"}
+                                {formatRating(item.broker_rating) ? (
+                                  <span className="text-[12px] font-black text-amber-600">
+                                    ★ {formatRating(item.broker_rating)}
+                                  </span>
+                                ) : null}
+                              </div>
                             </div>
                           </div>
-                        </div>
+                        </td>
 
-                        <div className="mt-3">
-                          <ActionButtons item={item} />
-                        </div>
-                      </div>
+                        <td className="px-4 py-[18px] text-center">
+                          <span
+                            dir="ltr"
+                            className="inline-flex min-w-[96px] items-center justify-center rounded-full border border-emerald-300 bg-emerald-50 px-4 py-2 text-[14px] font-black text-emerald-700 shadow-sm"
+                          >
+                            {item.spread || "—"}
+                          </span>
+                        </td>
+
+                        <td
+                          dir="ltr"
+                          className="px-4 py-[18px] text-center text-[15px] font-black text-slate-950"
+                        >
+                          {item.commission_en || item.commission || "—"}
+                        </td>
+
+                        <td
+                          dir="ltr"
+                          className="px-4 py-[18px] text-center text-[15px] font-black text-slate-950"
+                        >
+                          {item.min_deposit || "—"}
+                        </td>
+
+                        <td className="px-4 py-[18px]">
+                          <div className="mx-auto max-w-[240px] [&_a]:min-h-[44px] [&_a]:text-[13px]">
+                            <ActionButtons item={item} compact />
+                          </div>
+                        </td>
+                      </tr>
                     ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
 
-                  {group.items.length > 2 ? (
-                    <details className="group overflow-hidden rounded-[18px] border border-slate-200 bg-slate-50">
-                      <summary className="flex cursor-pointer list-none items-center justify-center gap-2 px-4 py-3 text-xs font-black text-brand-600">
-                        View More Accounts
+            {/* MOBILE CARDS */}
+            <div className="grid gap-3 p-3 lg:hidden">
+              {visibleItems
+                .slice(0, 3)
+                .map((item, index) => renderMobileCard(item, index))}
 
-                        <span className="transition group-open:rotate-180">
-                          ▼
-                        </span>
-                      </summary>
+              {visibleItems.length > 3 ? (
+                <details className="group overflow-hidden rounded-[16px] border border-slate-200 bg-white">
+                  <summary className="flex cursor-pointer list-none items-center justify-center gap-2 bg-slate-50 px-4 py-3 text-xs font-black text-brand-600">
+                    View {visibleItems.length - 3} More Accounts
 
-                      <div className="grid gap-2.5 border-t border-slate-200 bg-white p-3">
-                        {group.items
-                          .slice(2, 7)
-                          .map((item, index) => (
-                            <div
-                              key={item.id}
-                              className="rounded-[17px] border border-slate-200 bg-white p-3"
-                            >
-                              <div className="grid grid-cols-[28px_36px_minmax(0,1fr)] items-center gap-2">
-                                <RankingBadge
-                                  index={index + 2}
-                                />
+                    <span className="transition group-open:rotate-180">
+                      ▼
+                    </span>
+                  </summary>
 
-                                <CompactLogo
-                                  src={item.broker_logo}
-                                  alt={item.broker_name}
-                                  size="small"
-                                />
-
-                                <div className="min-w-0">
-                                  <div className="truncate text-sm font-black text-slate-950">
-                                    {item.broker_name}
-                                  </div>
-
-                                  <div className="mt-0.5 truncate text-[10px] font-extrabold text-slate-500">
-                                    {item.account_name || "—"}
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div className="mt-3 grid grid-cols-3 overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
-                                <div className="border-r border-slate-200 px-1 py-2 text-center">
-                                  <div className="text-[8px] font-bold text-slate-500">
-                                    Spread
-                                  </div>
-
-                                  <div className="mt-0.5 text-[10px] font-black leading-5 text-emerald-700">
-                                    {item.spread || "—"}
-                                  </div>
-                                </div>
-
-                                <div className="border-r border-slate-200 px-1 py-2 text-center">
-                                  <div className="text-[8px] font-bold text-slate-500">
-                                    Commission
-                                  </div>
-
-                                  <div className="mt-0.5 break-words text-[9px] font-black leading-4 text-slate-900">
-                                    {item.commission_en || item.commission || "—"}
-                                  </div>
-                                </div>
-
-                                <div className="px-1 py-2 text-center">
-                                  <div className="text-[8px] font-bold text-slate-500">
-                                    Min. Deposit
-                                  </div>
-
-                                  <div className="mt-0.5 text-[10px] font-black leading-5 text-slate-900">
-                                    {item.min_deposit || "—"}
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div className="mt-2.5">
-                                <ActionButtons item={item} />
-                              </div>
-                            </div>
-                          ))}
-                      </div>
-                    </details>
-                  ) : null}
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+                  <div className="grid gap-3 border-t border-slate-200 bg-[#f4f7fb] p-3">
+                    {visibleItems
+                      .slice(3)
+                      .map((item, index) =>
+                        renderMobileCard(item, index + 3)
+                      )}
+                  </div>
+                </details>
+              ) : null}
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  </div>
+</section>
             {/* HEAD TO HEAD COMPARISON */}
       <section
         id="head-to-head"
@@ -1513,714 +1628,752 @@ export default async function LowestSpreadBrokersPage() {
       </section>
 
       {/* BEST BY CATEGORY */}
-      <section
-        id="best-by-category"
-        className="scroll-mt-24 pb-8 sm:pb-10 lg:pb-12"
-      >
-        <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-8 xl:px-10">
-          <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.055)] sm:rounded-[28px]">
-            {/* SECTION HEADER */}
-            <div className="border-b border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] px-4 py-5 sm:px-7 sm:py-6">
-              <span className="inline-flex rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-[10px] font-black text-brand-600 sm:text-[11px]">
-                Our Top Account Picks
-              </span>
+<section
+  id="best-by-category"
+  className="scroll-mt-24 pb-8 sm:pb-10 lg:pb-12"
+>
+  <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-8 xl:px-10">
+    <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.055)] sm:rounded-[28px]">
+      {/* SECTION HEADER */}
+      <div className="border-b border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] px-5 py-6 sm:px-7">
+        <span className="inline-flex rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-[10px] font-black text-brand-600 sm:text-[11px]">
+          Best Accounts by Type
+        </span>
 
-              <h2 className="mt-3 max-w-[340px] text-[24px] font-black leading-[1.28] tracking-[-0.01em] text-slate-950 sm:max-w-[900px] sm:text-4xl sm:leading-tight">
-                Best Low Spread Broker by Account Category
-              </h2>
+        <h2 className="mt-3 max-w-[900px] text-[25px] font-black leading-[1.25] text-slate-950 sm:text-4xl sm:leading-tight">
+          Best Low Spread Forex Account by Category
+        </h2>
 
-              <p className="mt-2.5 max-w-[355px] text-[12px] leading-6 text-slate-600 sm:mt-3 sm:max-w-[1000px] sm:text-base sm:leading-8">
-                We selected the leading account in each category using
-                average spreads, commissions and estimated total
-                trading costs. This avoids placing accounts with
-                different fee structures into one misleading ranking.
-              </p>
-            </div>
+        <p className="mt-3 max-w-[1050px] text-[12px] leading-6 text-slate-600 sm:text-base sm:leading-8">
+          We identify the best Standard, Raw Spread, ECN and Cent accounts
+          by comparing average spreads, commissions, minimum deposits and
+          estimated total forex trading costs.
+        </p>
+      </div>
 
-            {(() => {
-              const bestByCategory = [
-                {
-                  title: "Best Standard Forex Account",
-                  mobileTitle: "Best Standard Account",
-                  type: "Standard",
-                  description:
-                    "A straightforward option for beginners and casual traders",
-                  item: bestStandard,
-                },
-                {
-                  title: "Best Raw Spread Forex Account",
-                  mobileTitle: "Best Raw Spread Account",
-                  type: "Raw",
-                  description:
-                    "Designed for scalpers, day traders and frequent trading",
-                  item: bestRaw,
-                },
-                {
-                  title: "Best ECN Forex Account",
-                  mobileTitle: "Best ECN Account",
-                  type: "ECN",
-                  description:
-                    "Competitive pricing for execution-focused active traders",
-                  item: bestEcn,
-                },
-                {
-                  title: "Best Cent or Micro Account",
-                  mobileTitle: "Best Cent / Micro Account",
-                  type: "Cent",
-                  description:
-                    "Suitable for beginners, testing and smaller balances",
-                  item: bestCent,
-                },
-              ];
+      {(() => {
+        const bestByCategory = [
+          {
+            title: "Best Standard Forex Account",
+            mobileTitle: "Best Standard Account",
+            type: "Standard",
+            description:
+              "A simple account for beginners and everyday forex trading, usually without a separate commission.",
+            item: bestStandard,
+          },
+          {
+            title: "Best Raw Spread Forex Account",
+            mobileTitle: "Best Raw Spread Account",
+            type: "Raw",
+            description:
+              "A low spread account for scalpers and frequent traders, with commission included in the total cost.",
+            item: bestRaw,
+          },
+          {
+            title: "Best ECN Forex Account",
+            mobileTitle: "Best ECN Account",
+            type: "ECN",
+            description:
+              "Designed for active traders who prioritize competitive pricing and fast execution.",
+            item: bestEcn,
+          },
+          {
+            title: "Best Cent or Micro Forex Account",
+            mobileTitle: "Best Cent / Micro Account",
+            type: "Cent",
+            description:
+              "Suitable for beginners, testing strategies and trading with a smaller balance.",
+            item: bestCent,
+          },
+        ];
 
-              return (
-                <>
-                  {/* DESKTOP */}
-                  <div className="hidden grid-cols-2 gap-4 p-5 md:grid sm:p-7 xl:grid-cols-4">
-                    {bestByCategory.map((card, index) => (
-                      <article
-                        key={card.type}
-                        className="flex h-full min-w-0 flex-col rounded-[22px] border border-slate-200 bg-slate-50/70 p-5 transition hover:-translate-y-0.5 hover:border-brand-200 hover:bg-white hover:shadow-[0_12px_28px_rgba(15,23,42,0.06)]"
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="min-w-0">
-                            <h3 className="text-base font-black leading-6 text-slate-950 lg:text-lg">
-                              {card.title}
-                            </h3>
-
-                            <p className="mt-1 text-[11px] font-bold leading-5 text-slate-500">
-                              {card.description}
-                            </p>
-                          </div>
-
-                          <span
-                            className={`inline-flex shrink-0 rounded-full px-2.5 py-1 text-[9px] font-black ${
-                              index === 0
-                                ? "bg-amber-100 text-amber-800"
-                                : "bg-brand-100 text-brand-700"
-                            }`}
-                          >
-                            {card.type}
-                          </span>
-                        </div>
-
-                        {card.item ? (
-                          <>
-                            <div className="mt-5 flex items-center gap-3">
-                              <CompactLogo
-                                src={card.item.broker_logo}
-                                alt={card.item.broker_name}
-                                size="normal"
-                              />
-
-                              <div className="min-w-0 flex-1">
-                                <div className="truncate text-base font-black text-slate-950">
-                                  {card.item.broker_name}
-                                </div>
-
-                                <div className="mt-1">
-                                  <AccountLink item={card.item} />
-                                </div>
-
-                                {formatRating(
-                                  card.item.broker_rating
-                                ) ? (
-                                  <div className="mt-1.5 text-[11px] font-black text-amber-600">
-                                    ★{" "}
-                                    {formatRating(
-                                      card.item.broker_rating
-                                    )}
-                                  </div>
-                                ) : null}
-                              </div>
-                            </div>
-
-                            <div className="mt-5 grid grid-cols-3 overflow-hidden rounded-xl border border-slate-200 bg-white">
-                              <div className="border-r border-slate-200 px-1.5 py-3 text-center">
-                                <div className="text-[8px] font-extrabold text-slate-500">
-                                  Spread
-                                </div>
-
-                                <div className="mt-1 text-[11px] font-black text-emerald-700">
-                                  {card.item.spread || "—"}
-                                </div>
-                              </div>
-
-                              <div className="border-r border-slate-200 px-1.5 py-3 text-center">
-                                <div className="text-[8px] font-extrabold text-slate-500">
-                                  Commission
-                                </div>
-
-                                <div className="mt-1 break-words text-[10px] font-black text-slate-950">
-                                  {card.item.commission_en || card.item.commission || "—"}
-                                </div>
-                              </div>
-
-                              <div className="px-1.5 py-3 text-center">
-                                <div className="text-[8px] font-extrabold text-slate-500">
-                                  Min. Deposit
-                                </div>
-
-                                <div className="mt-1 text-[11px] font-black text-slate-950">
-                                  {card.item.min_deposit || "—"}
-                                </div>
-                              </div>
-                            </div>
-
-                            <div className="mt-auto pt-5">
-                              <ActionButtons item={card.item} />
-                            </div>
-                          </>
-                        ) : (
-                          <div className="mt-5 flex flex-1 items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-8 text-center text-sm font-bold text-slate-500">
-                            There is not enough account data available
-                            for this category yet.
-                          </div>
-                        )}
-                      </article>
-                    ))}
-                  </div>
-
-                  {/* MOBILE */}
-                  <div className="grid gap-3 p-4 md:hidden">
-                    {bestByCategory.map((card, index) => (
-                      <details
-                        key={card.type}
-                        className="group overflow-hidden rounded-[20px] border border-slate-200 bg-slate-50"
-                      >
-                        <summary className="grid cursor-pointer list-none grid-cols-[38px_minmax(0,1fr)_auto] items-center gap-3 p-3.5">
-                          {card.item ? (
-                            <CompactLogo
-                              src={card.item.broker_logo}
-                              alt={card.item.broker_name}
-                              size="small"
-                            />
-                          ) : (
-                            <div className="h-9 w-9 shrink-0 rounded-xl border border-slate-200 bg-white" />
-                          )}
-
-                          <div className="min-w-0">
-                            <div className="flex min-w-0 items-center gap-2">
-                              <h3 className="min-w-0 flex-1 text-[13px] font-black leading-5 text-slate-950">
-                                {card.mobileTitle}
-                              </h3>
-
-                              <span
-                                className={`inline-flex shrink-0 rounded-full px-2 py-0.5 text-[8px] font-black ${
-                                  index === 0
-                                    ? "bg-amber-100 text-amber-800"
-                                    : "bg-brand-100 text-brand-700"
-                                }`}
-                              >
-                                {card.type}
-                              </span>
-                            </div>
-
-                            <p className="mt-1 truncate text-[10px] font-extrabold text-slate-500">
-                              {card.item?.broker_name ||
-                                "Currently unavailable"}
-                            </p>
-                          </div>
-
-                          <span className="shrink-0 text-xs text-slate-400 transition group-open:rotate-180">
-                            ▼
-                          </span>
-                        </summary>
-
-                        <div className="border-t border-slate-200 bg-white p-4">
-                          {card.item ? (
-                            <>
-                              <div className="flex items-center justify-between gap-3">
-                                <div className="min-w-0">
-                                  <div className="truncate text-base font-black text-slate-950">
-                                    {card.item.broker_name}
-                                  </div>
-
-                                  <div className="mt-1">
-                                    <AccountLink item={card.item} />
-                                  </div>
-                                </div>
-
-                                {formatRating(
-                                  card.item.broker_rating
-                                ) ? (
-                                  <span className="shrink-0 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-black text-amber-700">
-                                    ★{" "}
-                                    {formatRating(
-                                      card.item.broker_rating
-                                    )}
-                                  </span>
-                                ) : null}
-                              </div>
-
-                              <div className="mt-4 grid grid-cols-3 overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
-                                <div className="border-r border-slate-200 px-1.5 py-2.5 text-center">
-                                  <div className="text-[8px] font-bold text-slate-500">
-                                    Spread
-                                  </div>
-
-                                  <div className="mt-1 text-[11px] font-black text-emerald-700">
-                                    {card.item.spread || "—"}
-                                  </div>
-                                </div>
-
-                                <div className="border-r border-slate-200 px-1.5 py-2.5 text-center">
-                                  <div className="text-[8px] font-bold text-slate-500">
-                                    Commission
-                                  </div>
-
-                                  <div className="mt-1 break-words text-[10px] font-black leading-4 text-slate-950">
-                                    {card.item.commission_en || card.item.commission || "—"}
-                                  </div>
-                                </div>
-
-                                <div className="px-1.5 py-2.5 text-center">
-                                  <div className="text-[8px] font-bold text-slate-500">
-                                    Min. Deposit
-                                  </div>
-
-                                  <div className="mt-1 text-[11px] font-black text-slate-950">
-                                    {card.item.min_deposit || "—"}
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div className="mt-4">
-                                <ActionButtons item={card.item} />
-                              </div>
-                            </>
-                          ) : (
-                            <div className="rounded-2xl bg-slate-50 px-4 py-5 text-center text-sm font-bold text-slate-500">
-                              There is not enough account data
-                              available for this category yet.
-                            </div>
-                          )}
-                        </div>
-                      </details>
-                    ))}
-                  </div>
-                </>
-              );
-            })()}
-          </div>
-        </div>
-      </section>
-            {/* SELECTION METHOD */}
-      <section
-        id="selection-method"
-        className="scroll-mt-24 pb-7 sm:pb-10 lg:pb-12"
-      >
-        <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-8 xl:px-10">
-          <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.05)] sm:rounded-[28px]">
-            <div className="grid lg:grid-cols-[0.78fr_1.22fr]">
-              {/* INTRO */}
-              <div className="border-b border-slate-200 bg-[linear-gradient(145deg,#eef5ff_0%,#ffffff_85%)] px-4 py-5 sm:px-7 sm:py-6 lg:border-b-0 lg:border-r lg:py-8">
-                <span className="inline-flex rounded-full border border-brand-200 bg-white px-3 py-1 text-[10px] font-black text-brand-600 sm:text-[11px]">
-                  Broker Alarab Methodology
-                </span>
-
-                <h2 className="mt-3 max-w-[340px] text-balance text-[24px] font-black leading-[1.28] tracking-[-0.01em] text-slate-950 sm:max-w-none sm:text-4xl sm:leading-tight">
-                  How We Rank Low Spread Forex Brokers
-                </h2>
-
-                <p className="mt-2.5 max-w-[355px] text-[12px] leading-6 text-slate-600 sm:mt-3 sm:max-w-none sm:text-base sm:leading-8">
-                  We compare the estimated trading cost of each account
-                  and separate the results by account type to avoid
-                  misleading comparisons between different pricing
-                  structures.
-                </p>
-
-                <div className="mt-4 rounded-[17px] border border-brand-200 bg-white p-3.5 sm:mt-5 sm:p-4">
-                  <div className="text-sm font-black text-slate-950">
-                    Our Core Cost Formula
-                  </div>
-
-                  <div className="mt-2 rounded-xl bg-brand-50 px-3 py-2.5 text-center text-[13px] font-black text-brand-700 sm:py-3 sm:text-sm">
-                    Estimated Trading Cost = Spread + Commission
-                  </div>
-
-                  <p className="mt-2.5 text-[11px] leading-5 text-slate-500 sm:mt-3 sm:text-xs sm:leading-6">
-                    We also consider the account type, minimum deposit,
-                    pricing transparency and suitability for different
-                    trading styles.
-                  </p>
-
-                  <Link
-                    href="/en/learn-trading/spread"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-3 inline-flex items-center gap-1 text-xs font-black text-brand-600 transition hover:text-brand-700"
-                  >
-                    Learn how forex spreads work
-                    <span aria-hidden="true">→</span>
-                  </Link>
-                </div>
-
-                {/* RELATED LINKS - DESKTOP */}
-                <div className="mt-4 hidden lg:block">
-                  <div className="mb-2 text-[11px] font-black text-slate-950">
-                    Related Resources
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-2">
-                    <Link
-                      href="/en/brokers"
-                      className="flex min-h-[54px] items-center justify-between gap-2 rounded-[13px] border border-slate-200 bg-white px-3 py-2 transition hover:border-brand-200 hover:bg-brand-50"
-                    >
-                      <span className="text-[10px] font-black leading-4 text-slate-800">
-                        Broker Reviews
-                      </span>
-
-                      <span className="shrink-0 text-xs font-black text-brand-500">
-                        →
-                      </span>
-                    </Link>
-
-                    <Link
-                      href="/en/best-brokers"
-                      className="flex min-h-[54px] items-center justify-between gap-2 rounded-[13px] border border-slate-200 bg-white px-3 py-2 transition hover:border-brand-200 hover:bg-brand-50"
-                    >
-                      <span className="text-[10px] font-black leading-4 text-slate-800">
-                        Best Brokers
-                      </span>
-
-                      <span className="shrink-0 text-xs font-black text-brand-500">
-                        →
-                      </span>
-                    </Link>
-
-                    <Link
-                      href="/en/compare"
-                      className="flex min-h-[54px] items-center justify-between gap-2 rounded-[13px] border border-slate-200 bg-white px-3 py-2 transition hover:border-brand-200 hover:bg-brand-50"
-                    >
-                      <span className="text-[10px] font-black leading-4 text-slate-800">
-                        Broker Comparisons
-                      </span>
-
-                      <span className="shrink-0 text-xs font-black text-brand-500">
-                        →
-                      </span>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-
-              {/* DESKTOP METHOD */}
-              <div className="hidden p-6 md:block lg:p-7">
-                <div className="grid gap-4 md:grid-cols-2">
-                  {[
-                    {
-                      number: "01",
-                      title: "Average Spread",
-                      description:
-                        "We compare the expected average spread rather than relying only on the lowest advertised spread available under ideal market conditions.",
-                    },
-                    {
-                      number: "02",
-                      title: "Trading Commission",
-                      description:
-                        "We include any separate commission because a near-zero spread account may still carry a meaningful cost per lot or per side.",
-                    },
-                    {
-                      number: "03",
-                      title: "Account Structure",
-                      description:
-                        "Standard, Raw Spread, ECN and Cent accounts are ranked separately so that accounts with similar pricing models are compared fairly.",
-                    },
-                    {
-                      number: "04",
-                      title: "Minimum Deposit",
-                      description:
-                        "We review how accessible each account is because some low spread accounts require a higher opening deposit or account balance.",
-                    },
-                    {
-                      number: "05",
-                      title: "Trading Style",
-                      description:
-                        "An account designed for scalping or frequent trading may not be the most practical choice for a beginner or occasional trader.",
-                    },
-                    {
-                      number: "06",
-                      title: "Pricing Transparency",
-                      description:
-                        "We favor brokers that clearly disclose spreads, commissions, execution terms and other important account conditions.",
-                    },
-                  ].map((item) => (
-                    <article
-                      key={item.number}
-                      className="rounded-[20px] border border-slate-200 bg-slate-50/80 p-5 transition hover:border-brand-200 hover:bg-white"
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-500 text-xs font-black text-white">
-                          {item.number}
-                        </span>
-
-                        <h3 className="text-base font-black text-slate-950 lg:text-lg">
-                          {item.title}
-                        </h3>
-                      </div>
-
-                      <p className="mt-3 text-sm leading-7 text-slate-600">
-                        {item.description}
-                      </p>
-                    </article>
-                  ))}
-                </div>
-              </div>
-
-              {/* MOBILE METHOD */}
-              <div className="p-3.5 md:hidden">
-                <div className="overflow-hidden rounded-[17px] border border-slate-200 bg-white">
-                  {[
-                    {
-                      number: "01",
-                      title: "Average Spread",
-                      description:
-                        "We use estimated average pricing, not only the lowest promotional figure.",
-                    },
-                    {
-                      number: "02",
-                      title: "Commission",
-                      description:
-                        "We add commissions to the spread to estimate the real trading cost.",
-                    },
-                    {
-                      number: "03",
-                      title: "Account Type",
-                      description:
-                        "We separate pricing models to keep the comparison fair.",
-                    },
-                  ].map((item, index) => (
-                    <div
-                      key={item.number}
-                      className={`grid grid-cols-[34px_minmax(0,1fr)] items-center gap-3 px-3.5 py-3 ${
-                        index > 0 ? "border-t border-slate-200" : ""
-                      }`}
-                    >
-                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-brand-500 text-[9px] font-black text-white">
-                        {item.number}
-                      </span>
-
-                      <div className="min-w-0">
-                        <h3 className="text-[12px] font-black text-slate-950">
-                          {item.title}
-                        </h3>
-
-                        <p className="mt-0.5 text-[10px] leading-5 text-slate-500">
-                          {item.description}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <details className="group mt-2.5 overflow-hidden rounded-[16px] border border-brand-200 bg-brand-50">
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-[11px] font-black text-brand-600">
-                    Additional Factors We Review
-
-                    <span className="transition group-open:rotate-180">
-                      ▼
-                    </span>
-                  </summary>
-
-                  <div className="border-t border-brand-200 bg-white px-4 py-3">
-                    <p className="text-[11px] leading-6 text-slate-600">
-                      Minimum deposit requirements, execution terms,
-                      pricing transparency and whether the account is
-                      suitable for beginners, scalpers or frequent
-                      traders.
-                    </p>
-                  </div>
-                </details>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* HOW TO CHOOSE */}
-      <section className="pb-7 sm:pb-10 lg:pb-12">
-        <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-8 xl:px-10">
-          <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.05)] sm:rounded-[28px]">
-            {/* HEADER */}
-            <div className="border-b border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] px-4 py-5 sm:px-7 sm:py-6">
-              <span className="inline-flex rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-[10px] font-black text-brand-600 sm:text-[11px]">
-                Choose the Right Pricing Model
-              </span>
-
-              <h2 className="mt-3 max-w-[340px] text-[24px] font-black leading-[1.28] tracking-[-0.01em] text-slate-950 sm:max-w-[900px] sm:text-4xl sm:leading-tight">
-                Which Low Spread Account Is Right for You?
-              </h2>
-
-              <p className="mt-2.5 max-w-[355px] text-[12px] leading-6 text-slate-600 sm:mt-3 sm:max-w-[1000px] sm:text-base sm:leading-8">
-                The right account depends on your trading frequency,
-position size and whether costs are charged through the
-spread, a commission or both.
-              </p>
-            </div>
-
+        return (
+          <>
             {/* DESKTOP */}
             <div className="hidden grid-cols-2 gap-4 p-5 md:grid sm:p-7 xl:grid-cols-4">
-              {[
-                {
-                  title: "I Am a Beginner",
-                  account: "Standard",
-                  description:
-                    "A Standard account is often easier to understand because trading costs are usually included within the spread and no separate commission is charged.",
-                  link: "#account-types",
-                },
-                {
-                  title: "I Trade Frequently",
-                  account: "Raw / ECN",
-                  description:
-                    "Tighter spreads can become more important for scalping and frequent trading, but the separate commission must be included in every cost comparison.",
-                  link: "#account-types",
-                },
-                {
-                  title: "I Have a Small Balance",
-                  account: "Cent / Micro",
-                  description:
-                    "Cent and Micro accounts allow smaller trade sizes and lower capital exposure, although they may not always provide the tightest pricing.",
-                  link: "#account-types",
-                },
-                {
-                  title: "I Want the Lowest Cost",
-                  account: "Spread + Commission",
-                  description:
-                    "Compare the average spread and commission together instead of choosing an account only because it advertises spreads from zero pips.",
-                  link: "#account-types",
-                },
-              ].map((item) => (
+              {bestByCategory.map((card, index) => (
                 <article
-                  key={item.title}
-                  className="flex flex-col rounded-[24px] border border-slate-200 bg-slate-50 p-5 transition hover:-translate-y-0.5 hover:border-brand-200 hover:bg-white hover:shadow-[0_12px_28px_rgba(15,23,42,0.05)]"
+                  key={card.type}
+                  className="flex min-h-[390px] min-w-0 flex-col rounded-[22px] border border-slate-200 bg-slate-50/70 p-5 transition hover:-translate-y-0.5 hover:border-brand-200 hover:bg-white hover:shadow-[0_12px_28px_rgba(15,23,42,0.06)]"
                 >
-                  <span className="inline-flex w-fit rounded-full border border-brand-100 bg-white px-3 py-1 text-[10px] font-black text-brand-600">
-                    {item.account}
-                  </span>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 min-h-[126px]">
+  <h3
+    className="min-h-[52px] text-base font-black leading-6 text-slate-950 lg:text-lg"
+  >
+                        {card.title}
+                      </h3>
 
-                  <h3 className="mt-4 text-xl font-black text-slate-950">
-                    {item.title}
-                  </h3>
+                      <p className="mt-1 min-h-[60px] text-[11px] font-bold leading-5 text-slate-500">
+                        {card.description}
+                      </p>
+                    </div>
 
-                  <p className="mt-3 flex-1 text-sm leading-7 text-slate-600">
-                    {item.description}
-                  </p>
+                    <span
+                      className={`inline-flex shrink-0 rounded-full px-2.5 py-1 text-[9px] font-black ${
+                        index === 0
+                          ? "bg-amber-100 text-amber-800"
+                          : "bg-brand-100 text-brand-700"
+                      }`}
+                    >
+                      {card.type}
+                    </span>
+                  </div>
 
-                  <a
-                    href={item.link}
-                    className="mt-5 inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-extrabold text-slate-700 transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-600"
-                  >
-                    View Account Comparison
-                  </a>
+                  {card.item ? (
+                    <>
+                      <div className="mt-5 flex min-h-[92px] items-start gap-3">
+                        <CompactLogo
+                          src={card.item.broker_logo}
+                          alt={card.item.broker_name}
+                          size="normal"
+                        />
+
+                        <div className="min-w-0 flex-1">
+                          <div className="truncate text-base font-black text-slate-950">
+                            {card.item.broker_name}
+                          </div>
+
+                          <div className="mt-1">
+                            <AccountLink item={card.item} />
+                          </div>
+
+                          {formatRating(card.item.broker_rating) ? (
+                            <div className="mt-1.5 text-[11px] font-black text-amber-600">
+                              ★ {formatRating(card.item.broker_rating)}
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+
+                      <div className="mt-5 grid grid-cols-3 overflow-hidden rounded-xl border border-slate-200 bg-white">
+                        <div className="border-r border-slate-200 px-1.5 py-3 text-center">
+                          <div className="text-[8px] font-extrabold text-slate-500">
+                            Spread
+                          </div>
+
+                          <div
+                            dir="ltr"
+                            className="mt-1 text-[11px] font-black text-emerald-700"
+                          >
+                            {card.item.spread || "—"}
+                          </div>
+                        </div>
+
+                        <div className="border-r border-slate-200 px-1.5 py-3 text-center">
+                          <div className="text-[8px] font-extrabold text-slate-500">
+                            Commission
+                          </div>
+
+                          <div
+                            dir="ltr"
+                            className="mt-1 break-words text-[10px] font-black text-slate-950"
+                          >
+                            {card.item.commission_en ||
+                              card.item.commission ||
+                              "—"}
+                          </div>
+                        </div>
+
+                        <div className="px-1.5 py-3 text-center">
+                          <div className="text-[8px] font-extrabold text-slate-500">
+                            Min. Deposit
+                          </div>
+
+                          <div
+                            dir="ltr"
+                            className="mt-1 text-[11px] font-black text-slate-950"
+                          >
+                            {card.item.min_deposit || "—"}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mt-auto pt-5">
+                        <ActionButtons item={card.item} />
+                      </div>
+                    </>
+                  ) : (
+                    <div className="mt-5 flex flex-1 items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-8 text-center text-sm font-bold text-slate-500">
+                      Account data is not currently available for this
+                      category.
+                    </div>
+                  )}
                 </article>
               ))}
             </div>
 
             {/* MOBILE */}
             <div className="grid gap-3 p-4 md:hidden">
-              {[
-                {
-                  title: "For Beginners",
-                  account: "Standard",
-                  description:
-                    "Simple pricing with no separate commission in many cases.",
-                },
-                {
-                  title: "For Frequent Trading",
-                  account: "Raw / ECN",
-                  description:
-                    "Tighter spreads may help, but the commission must also be calculated.",
-                },
-                {
-                  title: "For Smaller Balances",
-                  account: "Cent / Micro",
-                  description:
-                    "Smaller position sizes can reduce capital exposure while learning.",
-                },
-                {
-                  title: "For the Lowest Total Cost",
-                  account: "Spread + Commission",
-                  description:
-                    "Compare the average spread and commission together.",
-                },
-              ].map((item) => (
+              {bestByCategory.map((card, index) => (
                 <details
-                  key={item.title}
-                  className="group overflow-hidden rounded-[18px] border border-slate-200 bg-slate-50"
+                  key={card.type}
+                  className="group overflow-hidden rounded-[20px] border border-slate-200 bg-slate-50"
                 >
-                  <summary className="grid cursor-pointer list-none grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3.5">
-                    <div className="min-w-0">
-                      <span className="inline-flex rounded-full border border-brand-100 bg-white px-2.5 py-0.5 text-[8px] font-black text-brand-600">
-                        {item.account}
-                      </span>
+                  <summary className="grid cursor-pointer list-none grid-cols-[38px_minmax(0,1fr)_auto] items-center gap-3 p-3.5">
+                    {card.item ? (
+                      <CompactLogo
+                        src={card.item.broker_logo}
+                        alt={card.item.broker_name}
+                        size="small"
+                      />
+                    ) : (
+                      <div className="h-9 w-9 shrink-0 rounded-xl border border-slate-200 bg-white" />
+                    )}
 
-                      <h3 className="mt-1.5 text-[13px] font-black leading-5 text-slate-950">
-                        {item.title}
-                      </h3>
+                    <div className="min-w-0">
+                      <div className="flex min-w-0 items-center gap-2">
+                        <h3 className="min-w-0 flex-1 text-[13px] font-black leading-5 text-slate-950">
+                          {card.mobileTitle}
+                        </h3>
+
+                        <span
+                          className={`inline-flex shrink-0 rounded-full px-2 py-0.5 text-[8px] font-black ${
+                            index === 0
+                              ? "bg-amber-100 text-amber-800"
+                              : "bg-brand-100 text-brand-700"
+                          }`}
+                        >
+                          {card.type}
+                        </span>
+                      </div>
+
+                      <p className="mt-1 truncate text-[10px] font-extrabold text-slate-500">
+                        {card.item?.broker_name || "Currently unavailable"}
+                      </p>
                     </div>
 
-                    <span className="text-xs text-slate-400 transition group-open:rotate-180">
+                    <span className="shrink-0 text-xs text-slate-400 transition group-open:rotate-180">
                       ▼
                     </span>
                   </summary>
 
-                  <div className="border-t border-slate-200 bg-white px-4 py-3">
-                    <p className="text-xs leading-6 text-slate-600">
-                      {item.description}
-                    </p>
+                  <div className="border-t border-slate-200 bg-white p-4">
+                    {card.item ? (
+                      <>
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="min-w-0">
+                            <div className="truncate text-base font-black text-slate-950">
+                              {card.item.broker_name}
+                            </div>
 
-                    <a
-                      href="#account-types"
-                      className="mt-3 inline-flex text-[11px] font-black text-brand-600"
-                    >
-                      Compare Accounts
-                      <span className="ml-1">→</span>
-                    </a>
+                            <div className="mt-1">
+                              <AccountLink item={card.item} />
+                            </div>
+                          </div>
+
+                          {formatRating(card.item.broker_rating) ? (
+                            <span className="shrink-0 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-black text-amber-700">
+                              ★ {formatRating(card.item.broker_rating)}
+                            </span>
+                          ) : null}
+                        </div>
+
+                        <div className="mt-4 grid grid-cols-3 overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
+                          <div className="border-r border-slate-200 px-1.5 py-2.5 text-center">
+                            <div className="text-[8px] font-bold text-slate-500">
+                              Spread
+                            </div>
+
+                            <div
+                              dir="ltr"
+                              className="mt-1 text-[11px] font-black text-emerald-700"
+                            >
+                              {card.item.spread || "—"}
+                            </div>
+                          </div>
+
+                          <div className="border-r border-slate-200 px-1.5 py-2.5 text-center">
+                            <div className="text-[8px] font-bold text-slate-500">
+                              Commission
+                            </div>
+
+                            <div
+                              dir="ltr"
+                              className="mt-1 break-words text-[10px] font-black leading-4 text-slate-950"
+                            >
+                              {card.item.commission_en ||
+                                card.item.commission ||
+                                "—"}
+                            </div>
+                          </div>
+
+                          <div className="px-1.5 py-2.5 text-center">
+                            <div className="text-[8px] font-bold text-slate-500">
+                              Min. Deposit
+                            </div>
+
+                            <div
+                              dir="ltr"
+                              className="mt-1 text-[11px] font-black text-slate-950"
+                            >
+                              {card.item.min_deposit || "—"}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="mt-4">
+                          <ActionButtons item={card.item} />
+                        </div>
+                      </>
+                    ) : (
+                      <div className="rounded-2xl bg-slate-50 px-4 py-5 text-center text-sm font-bold text-slate-500">
+                        Account data is not currently available for this
+                        category.
+                      </div>
+                    )}
                   </div>
                 </details>
               ))}
             </div>
+          </>
+        );
+      })()}
+    </div>
+  </div>
+</section>
+           {/* SELECTION METHOD */}
+<section
+  id="selection-method"
+  className="scroll-mt-24 pb-7 sm:pb-10 lg:pb-12"
+>
+  <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-8 xl:px-10">
+    <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.05)] sm:rounded-[28px]">
+      <div className="grid lg:grid-cols-[0.78fr_1.22fr]">
+        {/* INTRO */}
+        <div className="border-b border-slate-200 bg-[linear-gradient(145deg,#eef5ff_0%,#ffffff_85%)] px-4 py-5 sm:px-7 sm:py-6 lg:border-b-0 lg:border-r lg:py-8">
+          <span className="inline-flex rounded-full border border-brand-200 bg-white px-3 py-1 text-[10px] font-black text-brand-600 sm:text-[11px]">
+            Broker Alarab Methodology
+          </span>
+
+          <h2 className="mt-3 max-w-[340px] text-balance text-[24px] font-black leading-[1.28] tracking-[-0.01em] text-slate-950 sm:max-w-none sm:text-4xl sm:leading-tight">
+            How We Compare Low Spread Forex Brokers
+          </h2>
+
+          <p className="mt-2.5 max-w-[370px] text-[12px] leading-[1.9] text-slate-600 sm:mt-3 sm:max-w-none sm:text-base sm:leading-8">
+            Our forex spread comparison considers average spreads,
+            commissions, account type and minimum deposit. This helps
+            identify the real trading cost instead of relying only on the
+            lowest advertised spread.
+          </p>
+
+          <div className="mt-4 rounded-[17px] border border-brand-200 bg-white p-3.5 sm:mt-5 sm:p-4">
+            <div className="text-sm font-black text-slate-950">
+              Our Core Trading Cost Formula
+            </div>
+
+            <div className="mt-2 rounded-xl bg-brand-50 px-3 py-2.5 text-center text-[13px] font-black leading-6 text-brand-700 sm:py-3 sm:text-sm">
+              Estimated Trading Cost = Average Spread + Commission
+            </div>
+
+            <p className="mt-2.5 text-[11px] leading-5 text-slate-500 sm:mt-3 sm:text-xs sm:leading-6">
+              We also review the account structure, minimum deposit,
+              pricing transparency and suitability for beginners, scalpers
+              and active traders.
+            </p>
+
+            <Link
+              href="/en/learn-trading/spread"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 inline-flex items-center gap-1 text-xs font-black text-brand-600 transition hover:text-brand-700"
+            >
+              Learn more about forex spreads
+              <span aria-hidden="true">→</span>
+            </Link>
           </div>
-        </div>
-      </section>
 
-      {/* IMPORTANT NOTICE */}
-      <section className="pb-7 sm:pb-10 lg:pb-12">
-        <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-8 xl:px-10">
-         <div className="rounded-[22px] border border-amber-200 bg-amber-50 px-4 py-4.5 sm:rounded-[26px] sm:px-6 sm:py-6">
-            <div className="grid gap-3.5 sm:grid-cols-[44px_minmax(0,1fr)] sm:items-start">
-              <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-amber-300 bg-white text-lg font-black text-amber-700">
-                !
-              </span>
+          {/* RELATED LINKS - DESKTOP */}
+          <div className="mt-4 hidden lg:block">
+            <div className="mb-2 text-[11px] font-black text-slate-950">
+              Related Forex Resources
+            </div>
 
-              <div>
-                <h2 className="max-w-[300px] text-[20px] font-black leading-[1.35] tracking-[-0.01em] text-amber-950 sm:max-w-none sm:text-xl">
-  Low Spreads Are Not the Only Factor to Consider
-</h2>
+            <div className="grid grid-cols-3 gap-2">
+              <Link
+                href="/en/brokers"
+                className="flex min-h-[54px] items-center justify-between gap-2 rounded-[13px] border border-slate-200 bg-white px-3 py-2 transition hover:border-brand-200 hover:bg-brand-50"
+              >
+                <span className="text-[10px] font-black leading-4 text-slate-800">
+                  Forex Broker Reviews
+                </span>
 
-                <p className="mt-2 max-w-[1150px] text-sm leading-7 text-amber-950/80 sm:text-base sm:leading-8">
-                  Advertised spreads may change with market liquidity,
-                  volatility, economic news and trading hours. Before
-                  opening an account, review the average spread,
-                  commission, execution terms, regulation, funding
-                  methods and withdrawal conditions.
-                </p>
+                <span className="shrink-0 text-xs font-black text-brand-500">
+                  →
+                </span>
+              </Link>
 
-                <Link
-                  href="/en/learn-trading/spread"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-3 inline-flex items-center gap-1 text-xs font-black text-amber-800 transition hover:text-amber-950"
-                >
-                  Read our complete forex spread guide
-                  <span aria-hidden="true">→</span>
-                </Link>
-              </div>
+              <Link
+                href="/en/best-brokers"
+                className="flex min-h-[54px] items-center justify-between gap-2 rounded-[13px] border border-slate-200 bg-white px-3 py-2 transition hover:border-brand-200 hover:bg-brand-50"
+              >
+                <span className="text-[10px] font-black leading-4 text-slate-800">
+                  Best Forex Brokers
+                </span>
+
+                <span className="shrink-0 text-xs font-black text-brand-500">
+                  →
+                </span>
+              </Link>
+
+              <Link
+                href="/en/compare"
+                className="flex min-h-[54px] items-center justify-between gap-2 rounded-[13px] border border-slate-200 bg-white px-3 py-2 transition hover:border-brand-200 hover:bg-brand-50"
+              >
+                <span className="text-[10px] font-black leading-4 text-slate-800">
+                  Forex Broker Comparisons
+                </span>
+
+                <span className="shrink-0 text-xs font-black text-brand-500">
+                  →
+                </span>
+              </Link>
             </div>
           </div>
         </div>
-      </section>
+
+        {/* DESKTOP METHOD */}
+        <div className="hidden p-6 md:block lg:p-7">
+          <div className="grid gap-4 md:grid-cols-2">
+            {[
+              {
+                number: "01",
+                title: "Average Forex Spread",
+                description:
+                  "We compare the expected average spread instead of relying only on the lowest advertised spread available under ideal market conditions.",
+              },
+              {
+                number: "02",
+                title: "Trading Commission",
+                description:
+                  "We include any separate commission because a Raw Spread or ECN forex account may have a low spread but a higher cost per lot.",
+              },
+              {
+                number: "03",
+                title: "Account Type",
+                description:
+                  "Standard, Raw Spread, ECN and Cent accounts are ranked separately so similar pricing structures are compared fairly.",
+              },
+              {
+                number: "04",
+                title: "Minimum Deposit",
+                description:
+                  "We review the minimum deposit and account requirements because some low spread forex brokers require a higher opening balance.",
+              },
+              {
+                number: "05",
+                title: "Trading Style",
+                description:
+                  "The best forex account for scalping and frequent trading may not be the most suitable choice for beginners or long-term traders.",
+              },
+              {
+                number: "06",
+                title: "Pricing Transparency",
+                description:
+                  "We favor brokers that clearly disclose spreads, commissions, execution terms and other important forex trading costs.",
+              },
+            ].map((item) => (
+              <article
+                key={item.number}
+                className="rounded-[20px] border border-slate-200 bg-slate-50/80 p-5 transition hover:border-brand-200 hover:bg-white"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-500 text-xs font-black text-white">
+                    {item.number}
+                  </span>
+
+                  <h3 className="text-base font-black text-slate-950 lg:text-lg">
+                    {item.title}
+                  </h3>
+                </div>
+
+                <p className="mt-3 text-sm leading-7 text-slate-600">
+                  {item.description}
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        {/* MOBILE METHOD */}
+        <div className="p-3.5 md:hidden">
+          <div className="overflow-hidden rounded-[17px] border border-slate-200 bg-white">
+            {[
+              {
+                number: "01",
+                title: "Average Forex Spread",
+                description:
+                  "We use estimated average pricing, not only the lowest promotional spread.",
+              },
+              {
+                number: "02",
+                title: "Commission",
+                description:
+                  "We add commissions to the spread to estimate the real trading cost.",
+              },
+              {
+                number: "03",
+                title: "Account Type",
+                description:
+                  "We separate Standard, Raw Spread, ECN and Cent accounts for a fair comparison.",
+              },
+            ].map((item, index) => (
+              <div
+                key={item.number}
+                className={`grid grid-cols-[34px_minmax(0,1fr)] items-center gap-3 px-3.5 py-3 ${
+                  index > 0 ? "border-t border-slate-200" : ""
+                }`}
+              >
+                <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-brand-500 text-[9px] font-black text-white">
+                  {item.number}
+                </span>
+
+                <div className="min-w-0">
+                  <h3 className="text-[12px] font-black text-slate-950">
+                    {item.title}
+                  </h3>
+
+                  <p className="mt-0.5 text-[10px] leading-5 text-slate-500">
+                    {item.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <details className="group mt-2.5 overflow-hidden rounded-[16px] border border-brand-200 bg-brand-50">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-[11px] font-black text-brand-600">
+              Additional Factors We Review
+
+              <span className="transition group-open:rotate-180">
+                ▼
+              </span>
+            </summary>
+
+            <div className="grid gap-3 border-t border-brand-200 bg-white px-4 py-3">
+              <div>
+                <h3 className="text-[11px] font-black text-slate-950">
+                  Minimum Deposit
+                </h3>
+
+                <p className="mt-0.5 text-[10px] leading-5 text-slate-500">
+                  We review the minimum amount required to open the account.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-[11px] font-black text-slate-950">
+                  Trading Style
+                </h3>
+
+                <p className="mt-0.5 text-[10px] leading-5 text-slate-500">
+                  An account suitable for scalping may not be best for every
+                  trader.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-[11px] font-black text-slate-950">
+                  Pricing Transparency
+                </h3>
+
+                <p className="mt-0.5 text-[10px] leading-5 text-slate-500">
+                  We prefer brokers that clearly explain spreads, commissions
+                  and execution conditions.
+                </p>
+              </div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+      {/* HOW TO CHOOSE */}
+<section
+  id="account-guide"
+  className="scroll-mt-24 pb-7 sm:pb-10 lg:pb-12"
+>
+  <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-8 xl:px-10">
+    <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.05)] sm:rounded-[28px]">
+      {/* HEADER */}
+      <div className="border-b border-slate-200 bg-[linear-gradient(180deg,#ffffff_0%,#f8fafc_100%)] px-4 py-5 sm:px-7 sm:py-6">
+        <span className="inline-flex rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-[10px] font-black text-brand-600 sm:text-[11px]">
+          Forex Account Selection Guide
+        </span>
+
+        <h2 className="mt-3 max-w-[360px] text-[24px] font-black leading-[1.28] tracking-[-0.01em] text-slate-950 sm:max-w-[950px] sm:text-4xl sm:leading-tight">
+          How to Choose the Best Forex Account for Your Trading
+        </h2>
+
+        <p className="mt-2.5 max-w-[380px] text-[12px] leading-6 text-slate-600 sm:mt-3 sm:max-w-[1050px] sm:text-base sm:leading-8">
+          The best forex account depends on your trading frequency, account
+          size and total trading costs. Compare the spread, commission and
+          account conditions before choosing a forex broker.
+        </p>
+      </div>
+
+      {/* DESKTOP */}
+      <div className="hidden grid-cols-2 gap-4 p-5 md:grid sm:p-7 xl:grid-cols-4">
+        {[
+          {
+            title: "Best Forex Account for Beginners",
+            account: "Standard",
+            description:
+              "A Standard forex account is usually easier to understand because the trading cost is included in the spread and there is often no separate commission.",
+          },
+          {
+            title: "Best Account for Scalping",
+            account: "Raw / ECN",
+            description:
+              "A Raw Spread or ECN forex account may offer tighter spreads for scalping and frequent trading, but the commission must be added to the total cost.",
+          },
+          {
+            title: "Best Account for Small Balances",
+            account: "Cent / Micro",
+            description:
+              "Cent and Micro accounts allow smaller trade sizes and lower capital exposure, which can help beginners test strategies and manage risk.",
+          },
+          {
+            title: "Best Account for Low Trading Costs",
+            account: "Spread + Commission",
+            description:
+              "Compare the average spread and commission together. The lowest advertised spread does not always mean the cheapest forex account.",
+          },
+        ].map((item) => (
+          <article
+            key={item.title}
+            className="flex min-h-[330px] flex-col rounded-[22px] border border-slate-200 bg-slate-50 p-5 transition hover:-translate-y-0.5 hover:border-brand-200 hover:bg-white hover:shadow-[0_12px_28px_rgba(15,23,42,0.05)]"
+          >
+            <span className="inline-flex w-fit rounded-full border border-brand-100 bg-white px-3 py-1 text-[10px] font-black text-brand-600">
+              {item.account}
+            </span>
+
+            <h3 className="mt-4 min-h-[52px] text-lg font-black leading-7 text-slate-950">
+              {item.title}
+            </h3>
+
+            <p className="mt-3 flex-1 text-sm leading-7 text-slate-600">
+              {item.description}
+            </p>
+
+            <a
+              href="#account-types"
+              className="mt-5 inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-extrabold text-slate-700 transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-600"
+            >
+              Compare Account Types
+              <span className="ml-1">→</span>
+            </a>
+          </article>
+        ))}
+      </div>
+
+      {/* MOBILE */}
+      <div className="grid gap-3 p-4 md:hidden">
+        {[
+          {
+            title: "For Forex Beginners",
+            account: "Standard",
+            description:
+              "Simple pricing with no separate commission in many cases.",
+          },
+          {
+            title: "For Scalping and Frequent Trading",
+            account: "Raw / ECN",
+            description:
+              "Tighter spreads may help, but the commission must also be calculated.",
+          },
+          {
+            title: "For Smaller Trading Balances",
+            account: "Cent / Micro",
+            description:
+              "Smaller position sizes can reduce capital exposure while learning.",
+          },
+          {
+            title: "For the Lowest Total Cost",
+            account: "Spread + Commission",
+            description:
+              "Compare the average spread and commission instead of choosing by spread alone.",
+          },
+        ].map((item) => (
+          <details
+            key={item.title}
+            className="group overflow-hidden rounded-[18px] border border-slate-200 bg-slate-50"
+          >
+            <summary className="grid cursor-pointer list-none grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3.5">
+              <div className="min-w-0">
+                <span className="inline-flex rounded-full border border-brand-100 bg-white px-2.5 py-0.5 text-[8px] font-black text-brand-600">
+                  {item.account}
+                </span>
+
+                <h3 className="mt-1.5 text-[13px] font-black leading-5 text-slate-950">
+                  {item.title}
+                </h3>
+              </div>
+
+              <span className="text-xs text-slate-400 transition group-open:rotate-180">
+                ▼
+              </span>
+            </summary>
+
+            <div className="border-t border-slate-200 bg-white px-4 py-3">
+              <p className="text-xs leading-6 text-slate-600">
+                {item.description}
+              </p>
+
+              <a
+                href="#account-types"
+                className="mt-3 inline-flex text-[11px] font-black text-brand-600"
+              >
+                Compare Account Types
+                <span className="ml-1">→</span>
+              </a>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+{/* IMPORTANT NOTICE */}
+<section className="pb-7 sm:pb-10 lg:pb-12">
+  <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-8 xl:px-10">
+    <div className="rounded-[22px] border border-amber-200 bg-amber-50 px-4 py-5 sm:rounded-[26px] sm:px-6 sm:py-6">
+      <div className="grid gap-3.5 sm:grid-cols-[44px_minmax(0,1fr)] sm:items-start">
+        <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-amber-300 bg-white text-lg font-black text-amber-700">
+          !
+        </span>
+
+        <div>
+          <h2 className="max-w-[360px] text-[20px] font-black leading-[1.35] tracking-[-0.01em] text-amber-950 sm:max-w-none sm:text-xl">
+            Low Spreads Do Not Always Mean Lower Trading Costs
+          </h2>
+
+          <p className="mt-2 max-w-[1180px] text-sm leading-7 text-amber-950/80 sm:text-base sm:leading-8">
+            Forex spreads can change with market liquidity, volatility,
+            economic news and trading hours. A Raw Spread or ECN account may
+            charge a separate commission, while a Standard account may include
+            more of the cost in the spread. Always compare the average spread,
+            commission, execution conditions, regulation and withdrawal terms
+            before opening an account.
+          </p>
+
+          <Link
+            href="/en/learn-trading/spread"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 inline-flex items-center gap-1 text-xs font-black text-amber-800 transition hover:text-amber-950"
+          >
+            Read our complete forex spread guide
+            <span aria-hidden="true">→</span>
+          </Link>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* FAQ */}
       <section

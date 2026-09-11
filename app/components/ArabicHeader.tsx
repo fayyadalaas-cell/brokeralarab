@@ -148,16 +148,20 @@ export default function ArabicHeader({
   } px-4 sm:px-6 lg:px-8`}
 >
         <div dir="rtl" className="relative flex h-16 items-center justify-between lg:h-20">
-          <Link href="/" className="min-w-0 shrink-0 lg:justify-self-end">
-            <Image
-              src="/logo/Asset 4@6x.png"
-              alt="Broker Alarab"
-              width={500}
-              height={160}
-              priority
-              className="h-auto w-[130px] sm:w-[155px] lg:w-[180px]"
-            />
-          </Link>
+          <a
+  href="/"
+  aria-label="العودة إلى الصفحة الرئيسية"
+  className="min-w-0 shrink-0 lg:justify-self-end"
+>
+  <Image
+    src="/logo/Asset 4@6x.png"
+    alt="Broker Alarab"
+    width={500}
+    height={160}
+    priority
+    className="h-auto w-[130px] sm:w-[155px] lg:w-[180px]"
+  />
+</a>
 
           <nav
   className={`hidden items-center justify-center lg:flex ${

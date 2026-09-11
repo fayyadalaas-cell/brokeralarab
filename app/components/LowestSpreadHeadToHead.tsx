@@ -7,6 +7,7 @@ type PreparedAccount = {
   id: number;
   broker_id: number;
   account_name: string | null;
+  account_name_ar?: string | null;
   spread: string | null;
   commission: string | null;
   min_deposit: string | null;
@@ -48,93 +49,120 @@ type BrokerSummary = {
   best_overall?: PreparedAccount | null;
 };
 
-type CompareItem = {
-  key: string;
+type CategoryKey = "standard" | "raw" | "ecn" | "cent";
+
+type CompareCategory = {
+  key: CategoryKey;
   label: string;
   shortLabel: string;
-  leftAccount: PreparedAccount | null | undefined;
-  rightAccount: PreparedAccount | null | undefined;
-  leftValue: string;
-  rightValue: string;
-  winnerId: number | null;
+  firstAccount: PreparedAccount | null | undefined;
+  secondAccount: PreparedAccount | null | undefined;
 };
 
-function formatValue(value: number | string | null | undefined) {
-  if (value === null || value === undefined || value === "") {
-    return "غير متوفر";
+function toFiniteNumber(value: unknown) {
+  if (
+    value === null ||
+    value === undefined ||
+    value === ""
+  ) {
+    return null;
   }
 
   const numericValue = Number(value);
 
-  if (Number.isFinite(numericValue)) {
-    return numericValue.toFixed(2).replace(/\.?0+$/, "");
-  }
-
-  return String(value);
+  return Number.isFinite(numericValue)
+    ? numericValue
+    : null;
 }
 
-function formatRating(value: number | string | null | undefined) {
-  if (value === null || value === undefined || value === "") {
-    return "غير متوفر";
-  }
+function formatNumber(value: unknown) {
+  const numericValue = toFiniteNumber(value);
 
-  const numericValue = Number(value);
+  if (numericValue === null) return "—";
 
-  if (!Number.isFinite(numericValue)) {
-    return String(value);
-  }
+  return numericValue
+    .toFixed(2)
+    .replace(/\.?0+$/, "");
+}
 
-  return numericValue.toFixed(1);
+function formatRating(
+  value: number | string | null | undefined
+) {
+  const numericValue = toFiniteNumber(value);
+
+  if (numericValue === null) return null;
+
+  return numericValue.toFixed(2);
+}
+
+function getAccountDisplayName(
+  account: PreparedAccount | null | undefined
+) {
+  if (!account) return "غير متوفر";
+
+  return (
+    account.account_name_ar?.trim() ||
+    account.account_name?.trim() ||
+    "اسم الحساب غير متوفر"
+  );
 }
 
 function getWinnerId(
-  leftAccount: PreparedAccount | null | undefined,
-  rightAccount: PreparedAccount | null | undefined
+  firstAccount: PreparedAccount | null | undefined,
+  secondAccount: PreparedAccount | null | undefined
 ) {
-  if (!leftAccount && !rightAccount) return null;
-  if (leftAccount && !rightAccount) return leftAccount.broker_id;
-  if (!leftAccount && rightAccount) return rightAccount.broker_id;
-  if (!leftAccount || !rightAccount) return null;
+  if (!firstAccount && !secondAccount) return null;
 
-  const leftCost = Number(leftAccount.total_cost_score ?? 9999);
-  const rightCost = Number(rightAccount.total_cost_score ?? 9999);
-
-  if (leftCost !== rightCost) {
-    return leftCost < rightCost
-      ? leftAccount.broker_id
-      : rightAccount.broker_id;
+  if (firstAccount && !secondAccount) {
+    return firstAccount.broker_id;
   }
 
-  const leftSpread = Number(leftAccount.spread_avg ?? 9999);
-  const rightSpread = Number(rightAccount.spread_avg ?? 9999);
+  if (!firstAccount && secondAccount) {
+    return secondAccount.broker_id;
+  }
 
-  if (leftSpread !== rightSpread) {
-    return leftSpread < rightSpread
-      ? leftAccount.broker_id
-      : rightAccount.broker_id;
+  if (!firstAccount || !secondAccount) return null;
+
+  const firstCost =
+    toFiniteNumber(firstAccount.total_cost_score) ??
+    9999;
+
+  const secondCost =
+    toFiniteNumber(secondAccount.total_cost_score) ??
+    9999;
+
+  if (firstCost !== secondCost) {
+    return firstCost < secondCost
+      ? firstAccount.broker_id
+      : secondAccount.broker_id;
+  }
+
+  const firstSpread =
+    toFiniteNumber(firstAccount.spread_avg) ??
+    9999;
+
+  const secondSpread =
+    toFiniteNumber(secondAccount.spread_avg) ??
+    9999;
+
+  if (firstSpread !== secondSpread) {
+    return firstSpread < secondSpread
+      ? firstAccount.broker_id
+      : secondAccount.broker_id;
   }
 
   return null;
 }
 
-function CompactLogo({
+function BrokerLogo({
   src,
   alt,
-  size = "normal",
 }: {
   src: string | null;
   alt: string;
-  size?: "small" | "normal";
 }) {
-  const sizeClasses =
-    size === "small"
-      ? "h-9 w-9 rounded-xl"
-      : "h-12 w-12 rounded-2xl";
-
   return (
-    <div
-      className={`flex shrink-0 items-center justify-center overflow-hidden border border-slate-200 bg-white p-1.5 ${sizeClasses}`}
-    >
+    <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-[14px] border border-brand-100 bg-white p-1.5 shadow-[0_4px_12px_rgba(30,91,184,0.08)] sm:h-[72px] sm:w-[72px] sm:rounded-[18px] sm:p-2.5 lg:h-20 lg:w-20">
       {src ? (
         <img
           src={src}
@@ -151,14 +179,10 @@ function CompactLogo({
   );
 }
 
-function BrokerActionButtons({
+function BrokerLinks({
   broker,
-  compact = false,
-  mobileSummary = false,
 }: {
   broker: BrokerSummary;
-  compact?: boolean;
-  mobileSummary?: boolean;
 }) {
   const reviewHref = broker.broker_slug
     ? `/brokers/${broker.broker_slug}`
@@ -172,45 +196,18 @@ function BrokerActionButtons({
 
   if (!reviewHref && !accountHref) return null;
 
-  if (mobileSummary) {
-    const primaryHref = accountHref || reviewHref;
-    const isExternal = Boolean(accountHref);
-
-    if (!primaryHref) return null;
-
-    return isExternal ? (
-      <a
-        href={primaryHref}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex min-h-9 w-full items-center justify-center rounded-xl bg-brand-500 px-2 text-[9px] font-black text-white"
-      >
-        فتح حساب
-      </a>
-    ) : (
-      <Link
-        href={primaryHref}
-        className="inline-flex min-h-9 w-full items-center justify-center rounded-xl border border-slate-300 bg-white px-2 text-[9px] font-black text-slate-800"
-      >
-        التقييم
-      </Link>
-    );
-  }
-
   return (
     <div
-      className={`grid w-full gap-2 ${
-        reviewHref && accountHref ? "grid-cols-2" : "grid-cols-1"
+      className={`grid gap-2 ${
+        reviewHref && accountHref
+          ? "grid-cols-2"
+          : "grid-cols-1"
       }`}
     >
       {reviewHref ? (
         <Link
           href={reviewHref}
-          className={`inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white font-black text-slate-800 transition hover:border-brand-300 hover:bg-brand-50 hover:text-brand-600 ${
-            compact
-              ? "min-h-9 px-1.5 text-[9px]"
-              : "min-h-11 px-4 text-xs"
-          }`}
+          className="inline-flex min-h-9 items-center justify-center rounded-xl border border-brand-100 bg-white px-2.5 text-[10px] font-black text-brand-600 transition hover:border-brand-400 hover:bg-brand-50 sm:min-h-10 sm:px-3 sm:text-[11px]"
         >
           التقييم
         </Link>
@@ -221,11 +218,7 @@ function BrokerActionButtons({
           href={accountHref}
           target="_blank"
           rel="noopener noreferrer"
-          className={`inline-flex items-center justify-center rounded-xl bg-brand-500 font-black text-white shadow-[0_4px_12px_rgba(30,91,184,0.16)] transition hover:bg-brand-600 ${
-            compact
-              ? "min-h-9 px-1.5 text-[9px]"
-              : "min-h-11 px-4 text-xs"
-          }`}
+          className="inline-flex min-h-9 items-center justify-center rounded-xl bg-brand-500 px-2.5 text-[10px] font-black text-white shadow-[0_5px_14px_rgba(30,91,184,0.18)] transition hover:bg-brand-600 sm:min-h-10 sm:px-3 sm:text-[11px]"
         >
           فتح حساب
         </a>
@@ -234,310 +227,222 @@ function BrokerActionButtons({
   );
 }
 
-function BrokerHeader({
+function BrokerProfile({
   broker,
 }: {
   broker: BrokerSummary;
 }) {
+  const rating = formatRating(
+    broker.broker_rating
+  );
+
   return (
-    <div className="min-w-0">
-      <div className="flex items-center gap-4">
-        <CompactLogo
+    <div className="mt-2 rounded-[16px] border border-brand-100 bg-brand-50/50 p-2.5 sm:mt-3 sm:rounded-[18px] sm:p-4">
+      <div className="flex items-center gap-2.5 sm:gap-3.5">
+        <BrokerLogo
           src={broker.broker_logo}
           alt={broker.broker_name}
         />
 
-        <div className="min-w-0 flex-1 text-right">
-          <div className="truncate text-xl font-black text-slate-950">
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-sm font-black text-slate-950 sm:text-lg">
             {broker.broker_name}
           </div>
 
-          <div className="mt-1.5 inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-black text-amber-700">
-            <span>★</span>
-            <span>{formatRating(broker.broker_rating)}</span>
-          </div>
+          {rating ? (
+            <div className="mt-1 inline-flex items-center gap-1 rounded-full bg-white px-2 py-0.5 text-[9px] font-black text-amber-600 ring-1 ring-amber-100 sm:mt-1.5 sm:px-2.5 sm:py-1 sm:text-[10px]">
+              <span aria-hidden="true">★</span>
+              <span>{rating}</span>
+            </div>
+          ) : null}
         </div>
       </div>
 
-      <div className="mt-4">
-        <BrokerActionButtons broker={broker} />
+      <div className="mt-2 sm:mt-3">
+        <BrokerLinks broker={broker} />
       </div>
     </div>
   );
 }
 
-function AccountValue({
+function BrokerSelectionColumn({
+  label,
+  selectId,
   value,
-  available,
-  winner,
+  excludedId,
+  brokers,
+  broker,
+  onChange,
 }: {
-  value: string;
-  available: boolean;
-  winner: boolean;
+  label: string;
+  selectId: string;
+  value: number;
+  excludedId: number;
+  brokers: BrokerSummary[];
+  broker: BrokerSummary;
+  onChange: (brokerId: number) => void;
 }) {
-  if (!available) {
-    return (
-      <span className="inline-flex min-h-8 items-center justify-center rounded-lg bg-slate-100 px-2.5 text-[10px] font-black text-slate-500">
-        غير متوفر
-      </span>
-    );
-  }
-
   return (
-    <span
-      className={`inline-flex min-h-9 min-w-[58px] items-center justify-center rounded-xl border px-3 text-[15px] font-black ${
-       winner
-  ? "border-brand-300 bg-brand-100 text-brand-700"
-  : "border-slate-200 bg-white text-slate-800"
-      }`}
-    >
-      {value}
-    </span>
+    <div className="min-w-0">
+      <label
+        htmlFor={selectId}
+        className="mb-1.5 block text-[11px] font-black text-slate-700 sm:mb-2 sm:text-sm"
+      >
+        {label}
+      </label>
+
+      <select
+        id={selectId}
+        value={value}
+        onChange={(event) =>
+          onChange(Number(event.target.value))
+        }
+        className="h-10 w-full rounded-xl border border-slate-300 bg-white px-3 text-xs font-black text-slate-950 outline-none transition focus:border-brand-400 focus:ring-4 focus:ring-brand-100 sm:h-12 sm:rounded-[14px] sm:px-4 sm:text-sm"
+      >
+        {brokers
+          .filter(
+            (item) =>
+              item.broker_id !== excludedId
+          )
+          .map((item) => (
+            <option
+              key={item.broker_id}
+              value={item.broker_id}
+            >
+              {item.broker_name}
+            </option>
+          ))}
+      </select>
+
+      <BrokerProfile broker={broker} />
+    </div>
   );
 }
 
-function MobileAccountValue({
-  value,
-  available,
+function SpreadLane({
+  broker,
+  account,
   winner,
+  maxSpread,
 }: {
-  value: string;
-  available: boolean;
+  broker: BrokerSummary;
+  account: PreparedAccount | null | undefined;
   winner: boolean;
+  maxSpread: number;
 }) {
-  if (!available) {
-    return (
-      <span className="inline-flex min-h-9 items-center justify-center rounded-xl bg-slate-100 px-3 text-[10px] font-black text-slate-500">
-        غير متوفر
-      </span>
-    );
-  }
+  const spreadValue = toFiniteNumber(
+    account?.spread_avg
+  );
+
+  const barWidth =
+    spreadValue === null
+      ? 0
+      : Math.max(
+          10,
+          Math.min(
+            100,
+            (spreadValue / maxSpread) * 100
+          )
+        );
 
   return (
-    <span
-      className={`inline-flex min-h-9 min-w-[60px] items-center justify-center rounded-xl border px-3 text-[15px] font-black ${
+    <article
+      className={`rounded-[15px] border p-3 transition sm:rounded-[18px] sm:p-5 ${
         winner
-          ? "border-brand-300 bg-brand-100 text-brand-700"
-          : "border-slate-200 bg-white text-slate-800"
+          ? "border-emerald-300 bg-emerald-50/70"
+          : "border-slate-200 bg-white"
       }`}
     >
-      {value}
-    </span>
-  );
-}
+      <div className="flex items-start justify-between gap-3 sm:gap-4">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+            <h4 className="truncate text-sm font-black text-slate-950 sm:text-base">
+              {broker.broker_name}
+            </h4>
 
-function DesktopCompareRow({
-  item,
-  leftBroker,
-  rightBroker,
-}: {
-  item: CompareItem;
-  leftBroker: BrokerSummary;
-  rightBroker: BrokerSummary;
-}) {
-  const leftWins = item.winnerId === leftBroker.broker_id;
-  const rightWins = item.winnerId === rightBroker.broker_id;
+            {winner ? (
+              <span className="rounded-full bg-emerald-600 px-2 py-0.5 text-[8px] font-black text-white sm:px-2.5 sm:py-1 sm:text-[9px]">
+                الأقل تكلفة
+              </span>
+            ) : null}
+          </div>
 
-  const winnerName = leftWins
-    ? leftBroker.broker_name
-    : rightWins
-    ? rightBroker.broker_name
-    : null;
-
-  return (
-    <div className="overflow-hidden rounded-[20px] border border-slate-300 bg-white">
-      <div className="grid grid-cols-[minmax(0,1fr)_230px_minmax(0,1fr)]">
-        {/* RIGHT BROKER */}
-        <div
-          className={`flex min-h-[112px] items-center justify-center px-6 py-5 ${
-            rightWins ? "bg-brand-50" : "bg-white"
-          }`}
-        >
-          <div className="text-center">
-            <div className="text-sm font-black text-slate-700">
-              {rightBroker.broker_name}
-            </div>
-
-            <div className="mt-3">
-              <AccountValue
-                value={item.rightValue}
-                available={Boolean(item.rightAccount)}
-                winner={rightWins}
-              />
-            </div>
-
-            <div className="mt-2 min-h-5 text-xs font-extrabold text-slate-600">
-              {item.rightAccount?.account_name || "لا يتوفر هذا الحساب"}
-            </div>
+          <div className="mt-1 truncate text-[11px] font-extrabold text-slate-600 sm:mt-1.5 sm:text-sm">
+            {getAccountDisplayName(account)}
           </div>
         </div>
 
-        {/* ACCOUNT TYPE */}
-        <div className="flex min-h-[112px] flex-col items-center justify-center border-x border-slate-300 bg-slate-100 px-4 py-4 text-center">
-          <span className="rounded-full bg-brand-500 px-3 py-1 text-[10px] font-black text-white">
-            {item.shortLabel}
-          </span>
-
-          <div className="mt-2 text-base font-black text-slate-950">
-            {item.label}
+        <div className="shrink-0 text-left">
+          <div
+            className={`text-[23px] font-black leading-none sm:text-[34px] ${
+              winner
+                ? "text-emerald-700"
+                : "text-brand-600"
+            }`}
+          >
+            {formatNumber(
+              account?.spread_avg
+            )}
           </div>
 
-          <div className="mt-1 text-[11px] font-bold text-slate-500">
+          <div className="mt-1 text-[8px] font-bold text-slate-500 sm:mt-1.5 sm:text-[9px]">
             متوسط السبريد
           </div>
-
-          {winnerName ? (
-            <div className="mt-2 rounded-full border border-brand-200 bg-brand-100 px-3 py-1 text-[10px] font-black text-brand-700">
-  الأفضل: {winnerName}
-</div>
-          ) : (
-            <div className="mt-2 rounded-full bg-slate-200 px-3 py-1 text-[10px] font-black text-slate-600">
-              لا يوجد فرق واضح
-            </div>
-          )}
         </div>
+      </div>
 
-        {/* LEFT BROKER */}
+      <div className="mt-3 sm:mt-4">
         <div
-          className={`flex min-h-[112px] items-center justify-center px-6 py-5 ${
-            leftWins ? "bg-brand-50" : "bg-white"
-          }`}
+          dir="rtl"
+          className="mb-1.5 flex items-center justify-between text-[8px] font-bold text-slate-500 sm:mb-2 sm:text-[10px]"
         >
-          <div className="text-center">
-            <div className="text-sm font-black text-slate-700">
-              {leftBroker.broker_name}
-            </div>
+          <span>0 نقطة</span>
+          <span>الأقل أفضل</span>
+        </div>
 
-            <div className="mt-3">
-              <AccountValue
-                value={item.leftValue}
-                available={Boolean(item.leftAccount)}
-                winner={leftWins}
-              />
-            </div>
-
-            <div className="mt-2 min-h-5 text-xs font-extrabold text-slate-600">
-              {item.leftAccount?.account_name || "لا يتوفر هذا الحساب"}
-            </div>
+        <div
+          dir="rtl"
+          className="relative h-3 overflow-hidden rounded-full bg-slate-100 ring-1 ring-inset ring-slate-200 sm:h-4"
+        >
+          <div className="pointer-events-none absolute inset-0 grid grid-cols-4 opacity-60">
+            <span className="border-l border-white" />
+            <span className="border-l border-white" />
+            <span className="border-l border-white" />
+            <span />
           </div>
+
+          {account ? (
+            <div
+              className={`relative ml-auto h-full rounded-full transition-[width] duration-500 ${
+                winner
+                  ? "bg-[linear-gradient(270deg,#059669,#34d399)]"
+                  : "bg-[linear-gradient(270deg,#1E5BB8,#2B6FD0)]"
+              }`}
+              style={{
+                width: `${barWidth}%`,
+              }}
+            />
+          ) : null}
         </div>
       </div>
-    </div>
-  );
-}
 
-function MobileCompareRow({
-  item,
-  leftBroker,
-  rightBroker,
-}: {
-  item: CompareItem;
-  leftBroker: BrokerSummary;
-  rightBroker: BrokerSummary;
-}) {
-  const leftAvailable = Boolean(item.leftAccount);
-  const rightAvailable = Boolean(item.rightAccount);
-
-  const leftWins = item.winnerId === leftBroker.broker_id;
-  const rightWins = item.winnerId === rightBroker.broker_id;
-
-  const winnerName = leftWins
-    ? leftBroker.broker_name
-    : rightWins
-    ? rightBroker.broker_name
-    : null;
-
-  return (
-    <article className="overflow-hidden rounded-[17px] border border-slate-200 bg-white">
-      <header className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-3 py-2.5">
-        <div className="min-w-0">
-          <h3 className="text-[12px] font-black text-slate-950">
-            {item.label}
-          </h3>
-        </div>
-
-        <span className="shrink-0 rounded-full bg-brand-500 px-2.5 py-1 text-[8px] font-black text-white">
-          {item.shortLabel}
+      <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1.5 border-t border-slate-200/80 pt-2.5 text-[9px] font-bold text-slate-500 sm:mt-3 sm:gap-x-4 sm:gap-y-2 sm:pt-3 sm:text-xs">
+        <span>
+          العمولة:{" "}
+          <strong className="font-black text-slate-950">
+            {account?.commission || "—"}
+          </strong>
         </span>
-      </header>
 
-      <div
-        className={`grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-slate-200 px-3 py-2.5 ${
-          leftWins ? "bg-brand-50" : "bg-white"
-        }`}
-      >
-        <div className="min-w-0">
-          <div
-            className={`truncate text-[11px] font-black ${
-              leftWins ? "text-brand-700" : "text-slate-900"
-            }`}
-          >
-            {leftBroker.broker_name}
-          </div>
+        <span className="hidden h-3 w-px bg-slate-300 sm:block" />
 
-          <div className="mt-0.5 truncate text-[8px] font-bold text-slate-500">
-            {item.leftAccount?.account_name ||
-              "هذا الحساب غير متوفر"}
-          </div>
-        </div>
-
-        <MobileAccountValue
-          value={item.leftValue}
-          available={leftAvailable}
-          winner={leftWins}
-        />
+        <span>
+          الحد الأدنى للإيداع:{" "}
+          <strong className="font-black text-slate-950">
+            {account?.min_deposit || "—"}
+          </strong>
+        </span>
       </div>
-
-      <div
-        className={`grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-3 py-2.5 ${
-          rightWins ? "bg-brand-50" : "bg-white"
-        }`}
-      >
-        <div className="min-w-0">
-          <div
-            className={`truncate text-[11px] font-black ${
-              rightWins ? "text-brand-700" : "text-slate-900"
-            }`}
-          >
-            {rightBroker.broker_name}
-          </div>
-
-          <div className="mt-0.5 truncate text-[8px] font-bold text-slate-500">
-            {item.rightAccount?.account_name ||
-              "هذا الحساب غير متوفر"}
-          </div>
-        </div>
-
-        <MobileAccountValue
-          value={item.rightValue}
-          available={rightAvailable}
-          winner={rightWins}
-        />
-      </div>
-
-      <footer
-        className={`border-t px-3 py-2 ${
-          winnerName
-            ? "border-brand-200 bg-brand-50"
-            : "border-slate-200 bg-slate-50"
-        }`}
-      >
-        {winnerName ? (
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-[8px] font-bold text-brand-600">
-              الأقل تكلفة
-            </span>
-
-            <span className="truncate text-[9px] font-black text-brand-700">
-              {winnerName}
-            </span>
-          </div>
-        ) : (
-          <div className="text-center text-[8px] font-black text-slate-500">
-            لا يوجد فرق واضح
-          </div>
-        )}
-      </footer>
     </article>
   );
 }
@@ -556,256 +461,335 @@ export default function LowestSpreadHeadToHead({
     );
   }, [brokers]);
 
-  const exness = sortedBrokers.find((broker) =>
-    broker.broker_name.toLowerCase().includes("exness")
+  const exness = sortedBrokers.find(
+    (broker) =>
+      broker.broker_name
+        .toLowerCase()
+        .includes("exness")
   );
 
   const xm = sortedBrokers.find(
     (broker) =>
-      broker.broker_name.toLowerCase() === "xm" ||
+      broker.broker_name.toLowerCase() ===
+        "xm" ||
       broker.broker_name.includes("اكس ام")
   );
 
-  const defaultLeftId =
+  const defaultFirstId =
     exness?.broker_id ??
     sortedBrokers[0]?.broker_id ??
     0;
 
-  const defaultRightId =
+  const defaultSecondId =
     xm?.broker_id ??
     sortedBrokers.find(
-      (broker) => broker.broker_id !== defaultLeftId
+      (broker) =>
+        broker.broker_id !== defaultFirstId
     )?.broker_id ??
     0;
 
-  const [leftId, setLeftId] = useState<number>(defaultLeftId);
-  const [rightId, setRightId] = useState<number>(defaultRightId);
+  const [firstId, setFirstId] =
+    useState<number>(defaultFirstId);
 
-  const left =
+  const [secondId, setSecondId] =
+    useState<number>(defaultSecondId);
+
+  const [activeCategory, setActiveCategory] =
+    useState<CategoryKey>("standard");
+
+  const firstBroker =
     sortedBrokers.find(
-      (broker) => broker.broker_id === leftId
+      (broker) =>
+        broker.broker_id === firstId
     ) ?? null;
 
-  const right =
+  const secondBroker =
     sortedBrokers.find(
-      (broker) => broker.broker_id === rightId
+      (broker) =>
+        broker.broker_id === secondId
     ) ?? null;
 
-    const leftName = left?.broker_name || "الشركة الأولى";
-const rightName = right?.broker_name || "الشركة الثانية";
-
-  const rows: CompareItem[] = [
+  const categories: CompareCategory[] = [
     {
       key: "standard",
       label: "حساب Standard",
       shortLabel: "Standard",
-      leftAccount: left?.best_standard,
-      rightAccount: right?.best_standard,
-      leftValue: formatValue(left?.best_standard?.spread_avg),
-      rightValue: formatValue(right?.best_standard?.spread_avg),
-      winnerId: getWinnerId(
-        left?.best_standard,
-        right?.best_standard
-      ),
+      firstAccount:
+        firstBroker?.best_standard,
+      secondAccount:
+        secondBroker?.best_standard,
     },
     {
       key: "raw",
       label: "حساب Raw Spread",
-      shortLabel: "Raw",
-      leftAccount: left?.best_raw,
-      rightAccount: right?.best_raw,
-      leftValue: formatValue(left?.best_raw?.spread_avg),
-      rightValue: formatValue(right?.best_raw?.spread_avg),
-      winnerId: getWinnerId(
-        left?.best_raw,
-        right?.best_raw
-      ),
+      shortLabel: "Raw Spread",
+      firstAccount: firstBroker?.best_raw,
+      secondAccount:
+        secondBroker?.best_raw,
     },
     {
       key: "ecn",
       label: "حساب ECN",
       shortLabel: "ECN",
-      leftAccount: left?.best_ecn,
-      rightAccount: right?.best_ecn,
-      leftValue: formatValue(left?.best_ecn?.spread_avg),
-      rightValue: formatValue(right?.best_ecn?.spread_avg),
-      winnerId: getWinnerId(
-        left?.best_ecn,
-        right?.best_ecn
-      ),
+      firstAccount: firstBroker?.best_ecn,
+      secondAccount:
+        secondBroker?.best_ecn,
     },
     {
       key: "cent",
       label: "حساب Cent / Micro",
-      shortLabel: "Cent",
-      leftAccount: left?.best_cent,
-      rightAccount: right?.best_cent,
-      leftValue: formatValue(left?.best_cent?.spread_avg),
-      rightValue: formatValue(right?.best_cent?.spread_avg),
-      winnerId: getWinnerId(
-        left?.best_cent,
-        right?.best_cent
-      ),
+      shortLabel: "Cent / Micro",
+      firstAccount: firstBroker?.best_cent,
+      secondAccount:
+        secondBroker?.best_cent,
     },
   ];
 
-  const visibleRows = rows.filter(
-  (item) => Boolean(item.leftAccount) || Boolean(item.rightAccount)
-);
+  const availableCategories =
+    categories.filter(
+      (category) =>
+        Boolean(category.firstAccount) ||
+        Boolean(category.secondAccount)
+    );
+
+  const selectedCategory =
+    availableCategories.find(
+      (category) =>
+        category.key === activeCategory
+    ) ??
+    availableCategories[0] ??
+    null;
+
+  const winnerId = selectedCategory
+    ? getWinnerId(
+        selectedCategory.firstAccount,
+        selectedCategory.secondAccount
+      )
+    : null;
+
+  const firstWins =
+    winnerId === firstBroker?.broker_id;
+
+  const secondWins =
+    winnerId === secondBroker?.broker_id;
+
+  const winnerBroker = firstWins
+    ? firstBroker
+    : secondWins
+      ? secondBroker
+      : null;
+
+  const firstSpread = toFiniteNumber(
+    selectedCategory?.firstAccount
+      ?.spread_avg
+  );
+
+  const secondSpread = toFiniteNumber(
+    selectedCategory?.secondAccount
+      ?.spread_avg
+  );
+
+  const maxSpread = Math.max(
+    firstSpread ?? 0,
+    secondSpread ?? 0,
+    0.01
+  );
+
+  const spreadDifference =
+    firstSpread !== null &&
+    secondSpread !== null
+      ? Math.abs(
+          firstSpread - secondSpread
+        )
+      : null;
 
   if (sortedBrokers.length < 2) {
     return (
-      <div className="rounded-[24px] border border-amber-200 bg-amber-50 px-5 py-6 text-center">
+      <div className="rounded-[24px] border border-amber-200 bg-amber-50 px-5 py-7 text-center">
         <p className="text-sm font-extrabold text-amber-900">
-          لا توجد شركات كافية لإجراء المقارنة حاليًا.
+          لا توجد شركات كافية لإجراء
+          المقارنة حاليًا.
         </p>
       </div>
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-[0_12px_32px_rgba(15,23,42,0.055)] sm:rounded-[30px]">
-      {/* SELECTORS */}
-<div className="border-b border-slate-200 bg-white p-3 sm:p-5 lg:p-6">
-  <div className="grid gap-2.5 sm:grid-cols-2 sm:gap-4">
-    <div>
-      <label
-        htmlFor="head-to-head-left-broker"
-        className="mb-1.5 block text-[10px] font-black text-slate-700 sm:mb-2 sm:text-sm"
-      >
-        الشركة الأولى
-      </label>
+    <div
+      dir="rtl"
+      className="overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-[0_18px_45px_rgba(15,23,42,0.07)] sm:rounded-[30px]"
+    >
+      {/* Header */}
+<header className="relative overflow-hidden border-b border-brand-100 bg-[linear-gradient(135deg,#EEF5FD_0%,#ffffff_68%)] px-3.5 py-4 sm:px-7 sm:py-7 lg:px-8">
+  <div className="absolute inset-y-0 right-0 w-1 sm:w-1.5 bg-[linear-gradient(180deg,#2B6FD0,#1E5BB8)]" />
 
-      <select
-        id="head-to-head-left-broker"
-        value={leftId}
-        onChange={(event) =>
-          setLeftId(Number(event.target.value))
-        }
-        className="h-11 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 text-[13px] font-black text-slate-900 outline-none transition focus:border-brand-300 focus:bg-white focus:ring-2 focus:ring-brand-100 sm:h-12 sm:rounded-2xl sm:px-4 sm:text-sm"
-      >
-        {sortedBrokers
-          .filter((broker) => broker.broker_id !== rightId)
-          .map((broker) => (
-            <option
-              key={broker.broker_id}
-              value={broker.broker_id}
-            >
-              {broker.broker_name}
-            </option>
-          ))}
-      </select>
-    </div>
-
-    <div>
-      <label
-        htmlFor="head-to-head-right-broker"
-        className="mb-1.5 block text-[10px] font-black text-slate-700 sm:mb-2 sm:text-sm"
-      >
-        الشركة الثانية
-      </label>
-
-      <select
-        id="head-to-head-right-broker"
-        value={rightId}
-        onChange={(event) =>
-          setRightId(Number(event.target.value))
-        }
-        className="h-11 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 text-[13px] font-black text-slate-900 outline-none transition focus:border-brand-300 focus:bg-white focus:ring-2 focus:ring-brand-100 sm:h-12 sm:rounded-2xl sm:px-4 sm:text-sm"
-      >
-        {sortedBrokers
-          .filter((broker) => broker.broker_id !== leftId)
-          .map((broker) => (
-            <option
-              key={broker.broker_id}
-              value={broker.broker_id}
-            >
-              {broker.broker_name}
-            </option>
-          ))}
-      </select>
-    </div>
-  </div>
-</div>
-
-      {left && right ? (
-        <>
-         {/* DESKTOP */}
-<div className="hidden p-5 md:block lg:p-6">
-  <div className="overflow-hidden rounded-[24px] border border-slate-300 bg-white">
-    {/* BROKERS HEADER */}
-    <div className="grid grid-cols-[minmax(0,1fr)_180px_minmax(0,1fr)] items-stretch border-b border-slate-300 bg-slate-50">
-     <div className="p-6">
-  <BrokerHeader broker={left} />
-</div>
-
-<div className="flex flex-col items-center justify-center border-x border-slate-300 bg-white px-4 text-center">
-  <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-brand-500 text-xs font-black text-white shadow-[0_6px_16px_rgba(30,91,184,0.2)]">
-    VS
-  </span>
-
-  <div className="mt-2 text-xs font-black text-slate-600">
-    مقارنة مباشرة
-  </div>
-</div>
-
-<div className="p-6">
-  <BrokerHeader broker={right} />
-</div>
-</div>
-
-    {/* COMPARISON ROWS */}
-    <div className="space-y-4 bg-[#f8fafc] p-5">
-      {visibleRows.map((item) => (
-        <DesktopCompareRow
-          key={item.key}
-          item={item}
-          leftBroker={left}
-          rightBroker={right}
-        />
-      ))}
-    </div>
-
-    <div className="border-t border-slate-300 bg-white px-6 py-4 text-center">
-      <p className="text-xs font-bold leading-6 text-slate-600">
-        يتم تحديد الأفضل وفق متوسط السبريد والتكلفة الفعلية للحساب المتوفر
-        لدى كل شركة.
-      </p>
-    </div>
-  </div>
-</div>
-
-{/* MOBILE */}
-<div className="md:hidden">
-  {/* RESULTS HEADER */}
-  <div className="flex items-center justify-between border-b border-slate-200 bg-white px-3.5 py-3.5">
-    <div>
-      <h3 className="text-[14px] font-black text-slate-950">
-        نتيجة المقارنة
-      </h3>
-
-      <p className="mt-0.5 text-[9px] font-bold text-slate-500">
-        الحساب الأقل تكلفة حسب نوع الحساب
-      </p>
-    </div>
-
-    <span className="rounded-full border border-brand-100 bg-brand-50 px-2.5 py-1 text-[9px] font-black text-brand-600">
-      {visibleRows.length} فئات
+  <div className="relative">
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-100 bg-white px-2.5 py-1 text-[9px] font-black text-brand-600 shadow-sm sm:gap-2 sm:px-3 sm:py-1.5 sm:text-xs">
+      <span className="h-1.5 w-1.5 rounded-full bg-brand-400 sm:h-2 sm:w-2" />
+      أداة مقارنة تفاعلية
     </span>
-  </div>
 
-  {/* ACCOUNT RESULTS */}
-  <div className="space-y-2.5 bg-slate-50/60 p-3">
-    {visibleRows.map((item) => (
-      <MobileCompareRow
-        key={item.key}
-        item={item}
-        leftBroker={left}
-        rightBroker={right}
-      />
-    ))}
+    <h2 className="mt-2.5 text-[22px] font-black leading-[1.3] text-slate-950 sm:mt-3 sm:text-3xl lg:text-[36px]">
+      قارن السبريد بين شركتين
+    </h2>
+
+    <p className="mt-1.5 max-w-[760px] text-xs font-medium leading-5 text-slate-600 sm:mt-2 sm:text-base sm:leading-7">
+      اختر شركتين ونوع الحساب،
+      وشاهد فرق متوسط السبريد
+      والعمولة مباشرة.
+    </p>
   </div>
-</div>
+</header>
+
+{firstBroker && secondBroker ? (
+  <>
+    {/* Each broker appears directly under its select */}
+    <div className="bg-[#f8fafe] p-2.5 sm:p-5 lg:p-6">
+      <div className="grid items-center gap-2 sm:grid-cols-[minmax(0,1fr)_46px_minmax(0,1fr)] sm:gap-4">
+        <BrokerSelectionColumn
+          label="الشركة الأولى"
+          selectId="spread-tool-first-broker"
+          value={firstId}
+          excludedId={secondId}
+          brokers={sortedBrokers}
+          broker={firstBroker}
+          onChange={setFirstId}
+        />
+
+        <div className="flex items-center justify-center py-0.5 sm:py-0">
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-500 text-[8px] font-black text-white shadow-[0_5px_14px_rgba(30,91,184,0.22)] sm:h-11 sm:w-11 sm:text-[10px]">
+            VS
+          </span>
+        </div>
+
+        <BrokerSelectionColumn
+          label="الشركة الثانية"
+          selectId="spread-tool-second-broker"
+          value={secondId}
+          excludedId={firstId}
+          brokers={sortedBrokers}
+          broker={secondBroker}
+          onChange={setSecondId}
+        />
+      </div>
+    </div>
+
+    {/* Account type tabs */}
+    <div className="border-y border-slate-200 bg-white px-3 py-2.5 sm:px-6 sm:py-3">
+      <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-center">
+        {availableCategories.map(
+          (category) => {
+            const isActive =
+              category.key ===
+              selectedCategory?.key;
+
+            return (
+              <button
+                key={category.key}
+                type="button"
+                aria-pressed={isActive}
+                onClick={() =>
+                  setActiveCategory(
+                    category.key
+                  )
+                }
+                className={`min-h-9 w-full rounded-xl border px-2 text-[10px] font-black transition sm:min-h-11 sm:w-auto sm:rounded-full sm:px-6 sm:text-xs ${
+                  isActive
+                    ? "border-brand-500 bg-brand-500 text-white shadow-[0_5px_14px_rgba(30,91,184,0.18)]"
+                    : "border-slate-200 bg-white text-slate-600 hover:border-brand-400 hover:bg-brand-50 hover:text-brand-600"
+                }`}
+              >
+                {category.shortLabel}
+              </button>
+            );
+          }
+        )}
+      </div>
+    </div>
+
+          {selectedCategory ? (
+  <div className="p-2.5 sm:p-5 lg:p-6">
+    <section className="overflow-hidden rounded-[18px] border border-slate-200 bg-[#f8fafe] sm:rounded-[26px]">
+      {/* Result */}
+      <div className="flex flex-col gap-2.5 border-b border-slate-200 bg-white px-3.5 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:px-6 sm:py-5">
+        <div>
+          <div className="text-[9px] font-black text-brand-600 sm:text-xs">
+            نتيجة{" "}
+            {selectedCategory.label}
+          </div>
+
+          <h3 className="mt-1 text-base font-black text-slate-950 sm:text-2xl">
+            {winnerBroker
+              ? `${winnerBroker.broker_name} الأقل تكلفة`
+              : "لا يوجد فرق واضح بين الشركتين"}
+          </h3>
+        </div>
+
+        {spreadDifference !== null ? (
+          <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-brand-100 bg-brand-50 px-2.5 py-1.5 sm:gap-2 sm:px-3 sm:py-2">
+            <span className="text-[9px] font-bold text-slate-500 sm:text-[10px]">
+              فرق السبريد
+            </span>
+
+            <span className="text-xs font-black text-brand-600 sm:text-sm">
+              {formatNumber(
+                spreadDifference
+              )}{" "}
+              نقطة
+            </span>
+          </div>
+        ) : null}
+      </div>
+
+      {/* Scale explanation */}
+      <div className="border-b border-brand-100 bg-brand-50 px-3.5 py-2.5 sm:px-5 sm:py-3">
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-[11px] font-black text-brand-600 sm:text-sm">
+            مقياس متوسط السبريد
+          </span>
+
+          <span className="rounded-full bg-white px-2 py-1 text-[8px] font-black text-brand-600 ring-1 ring-brand-100 sm:px-3 sm:py-1.5 sm:text-[10px]">
+            الأقصر يعني سبريد أقل
+          </span>
+        </div>
+      </div>
+
+      {/* Spread lanes */}
+      <div className="space-y-2.5 p-2.5 sm:space-y-3 sm:p-5">
+        <SpreadLane
+          broker={firstBroker}
+          account={
+            selectedCategory.firstAccount
+          }
+          winner={firstWins}
+          maxSpread={maxSpread}
+        />
+
+        <SpreadLane
+          broker={secondBroker}
+          account={
+            selectedCategory.secondAccount
+          }
+          winner={secondWins}
+          maxSpread={maxSpread}
+        />
+      </div>
+
+      <div className="border-t border-slate-200 bg-white px-3 py-2.5 text-center text-[9px] font-bold leading-4 text-slate-500 sm:px-6 sm:py-3 sm:text-xs sm:leading-5">
+        النتيجة النهائية تراعي متوسط
+        السبريد والعمولة المسجلة على
+        الحساب.
+      </div>
+    </section>
+  </div>
+) : (
+  <div className="p-3 sm:p-6">
+    <div className="rounded-[18px] border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-xs font-black text-slate-500 sm:rounded-[20px] sm:px-5 sm:py-8 sm:text-sm">
+      لا تتوفر أنواع حسابات للمقارنة
+      بين الشركتين.
+    </div>
+  </div>
+)}
         </>
       ) : null}
     </div>
