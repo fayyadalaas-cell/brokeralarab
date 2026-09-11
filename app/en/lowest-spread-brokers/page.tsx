@@ -71,8 +71,8 @@ twitter: {
     "Compare Standard, Raw Spread, ECN and Cent accounts by spreads, commissions and total trading costs.",
 
   images: [
-    "https://brokeralarab.com/images/seo/lowest-spread-forex-brokers-en.jpg",
-  ],
+  "https://brokeralarab.com/og-image.webp",
+],
 },
 
 robots: {
@@ -1408,8 +1408,8 @@ const bestOverall = selectUniqueBrokerAccounts(accounts).slice(0, 8);
                   </div>
 
                   <h3 className="mt-2.5 text-[20px] font-black leading-[1.25] text-slate-950 sm:text-2xl lg:text-[30px]">
-                    Best {group.label} Accounts for Spread and Cost
-                  </h3>
+  Best {group.label} for Low Trading Costs
+</h3>
 
                   <p className="mt-2 hidden max-w-[1000px] text-[14px] leading-7 text-slate-600 sm:block">
                     {group.intro}
