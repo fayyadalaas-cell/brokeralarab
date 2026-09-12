@@ -792,24 +792,37 @@ const showAll = getSearchParam(params.all) === "1";
                             {group.licenses.map((item) => (
                               <tr key={item.id} className="transition hover:bg-slate-50">
                                <td className="px-5 py-3">
-  <Link
-    href={`/en/licenses/${
-      regulatorRows.find(
-        (r) => r.code === item.regulator_code
-      )?.slug || item.regulator_code.toLowerCase()
-    }`}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="block transition hover:text-brand-600"
-  >
-    <div className="text-sm font-black text-slate-950 hover:underline">
-      {item.regulator_code}
-    </div>
+  {(() => {
+  const regulator = regulatorRows.find(
+    (r) =>
+      cleanText(r.code) === cleanText(item.regulator_code)
+  );
 
-    <div className="mt-1 text-[12px] font-bold leading-5 text-slate-500 hover:text-brand-600">
-      {item.regulator_name_en || item.regulator_name_ar}
-    </div>
-  </Link>
+  const content = (
+    <>
+      <div className="text-sm font-black text-slate-950">
+        {item.regulator_code}
+      </div>
+
+      <div className="mt-1 text-[12px] font-bold leading-5 text-slate-500">
+        {item.regulator_name_en || item.regulator_name_ar}
+      </div>
+    </>
+  );
+
+  return regulator?.slug ? (
+    <Link
+      href={`/en/licenses/${regulator.slug}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="block transition hover:text-brand-600 hover:underline"
+    >
+      {content}
+    </Link>
+  ) : (
+    <div className="block">{content}</div>
+  );
+})()}
 
   <div className="mt-1 inline-flex rounded-full bg-slate-50 px-2.5 py-1 text-[11px] font-black text-slate-600">
     License No: {item.license_number || "Not available"}
