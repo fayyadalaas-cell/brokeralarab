@@ -30,6 +30,16 @@ const nextConfig: NextConfig = {
         destination: "/en/how-we-review-brokers",
         permanent: true,
       },
+      {
+        source: "/licenses/fsc",
+        destination: "/licenses/fsc-bvi",
+        permanent: true,
+      },
+      {
+        source: "/en/licenses/fsc",
+        destination: "/en/licenses/fsc-bvi",
+        permanent: true,
+      },
     ];
   },
 
