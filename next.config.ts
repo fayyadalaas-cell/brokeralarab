@@ -15,6 +15,11 @@ const nextConfig: NextConfig = {
         destination: "/en/terms-and-conditions",
         permanent: true,
       },
+      {
+        source: "/how-to-start-trading-from-zero",
+        destination: "/learn-trading/how-to-start-trading-from-zero",
+        permanent: true,
+      },
     ];
   },
 
