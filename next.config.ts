@@ -40,6 +40,18 @@ const nextConfig: NextConfig = {
         destination: "/en/licenses/fsc-bvi",
         permanent: true,
       },
+
+      // Redirect old Arabic URLs to the main Arabic structure
+      {
+        source: "/ar",
+        destination: "/",
+        permanent: true,
+      },
+      {
+        source: "/ar/:path*",
+        destination: "/:path*",
+        permanent: true,
+      },
     ];
   },
 
