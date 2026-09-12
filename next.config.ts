@@ -20,6 +20,16 @@ const nextConfig: NextConfig = {
         destination: "/learn-trading/how-to-start-trading-from-zero",
         permanent: true,
       },
+      {
+        source: "/how-we-review",
+        destination: "/how-we-review-brokers",
+        permanent: true,
+      },
+      {
+        source: "/en/how-we-review",
+        destination: "/en/how-we-review-brokers",
+        permanent: true,
+      },
     ];
   },
 
