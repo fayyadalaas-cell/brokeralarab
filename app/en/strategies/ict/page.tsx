@@ -6846,7 +6846,7 @@ export default function ICTStrategyEnglishPage() {
                   label: "Position Sizing",
                   title: "Lot Size",
                   text: "Understand how trade size relates to account risk and stop-loss distance.",
-                  href: "/en/learn-trading/lot-size",
+                  href: "/en/tools/lot-size-calculator",
                 },
               ].map((item) => (
                 <Link
@@ -6903,7 +6903,7 @@ export default function ICTStrategyEnglishPage() {
                   {
                     label: "Position Sizing",
                     title: "Lot Size",
-                    href: "/en/learn-trading/lot-size",
+                    href: "/en/tools/lot-size-calculator",
                   },
                 ].map((item) => (
                   <Link
