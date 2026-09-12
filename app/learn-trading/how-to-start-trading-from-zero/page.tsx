@@ -75,7 +75,7 @@ export async function generateMetadata(): Promise<Metadata> {
   title,
   description,
   alternates: {
-    canonical: "https://brokeralarab.com/how-to-start-trading-from-zero",
+    canonical: "https://brokeralarab.com/learn-trading/how-to-start-trading-from-zero",
   },
   robots: {
     index: true,
@@ -84,7 +84,7 @@ export async function generateMetadata(): Promise<Metadata> {
   openGraph: {
     title,
     description,
-    url: "https://brokeralarab.com/how-to-start-trading-from-zero",
+    url: "https://brokeralarab.com/learn-trading/how-to-start-trading-from-zero",
     type: "article",
     locale: "ar_AR",
     images: article.cover_image
@@ -706,7 +706,7 @@ export default async function Page() {
             "@graph": [
               {
                 "@type": "Article",
-                "@id": "https://brokeralarab.com/how-to-start-trading-from-zero#article",
+                "@id": "https://brokeralarab.com/learn-trading/how-to-start-trading-from-zero#article",
                 headline: "كيف تبدأ التداول من الصفر خطوة بخطوة للمبتدئين",
                 datePublished: "2026-03-23",
                 dateModified: "2026-03-23",
@@ -715,7 +715,7 @@ export default async function Page() {
                 inLanguage: "ar",
                 mainEntityOfPage: {
                   "@type": "WebPage",
-                  "@id": "https://brokeralarab.com/how-to-start-trading-from-zero",
+                  "@id": "https://brokeralarab.com/learn-trading/how-to-start-trading-from-zero",
                 },
                 author: {
   "@type": "Organization",
@@ -753,7 +753,7 @@ export default async function Page() {
                     "@type": "ListItem",
                     position: 3,
                     name: "كيف تبدأ التداول من الصفر خطوة بخطوة",
-                    item: "https://brokeralarab.com/how-to-start-trading-from-zero",
+                    item: "https://brokeralarab.com/learn-trading/how-to-start-trading-from-zero",
                   },
                 ],
               },
