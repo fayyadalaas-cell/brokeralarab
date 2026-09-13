@@ -187,7 +187,9 @@ const countryPagesEN: MetadataRoute.Sitemap =
   "fsca",
   "fsa",
   "scb",
-  "fsc",
+  "fsc-bvi",
+  "fsc-belize",
+  "fsc-mauritius",
   "jsc",
   "sca",
   "vfsc",
@@ -196,6 +198,8 @@ const countryPagesEN: MetadataRoute.Sitemap =
   "cvm",
   "cmvm",
   "cima",
+  "adgm-fsra",
+  "bafin",
 ];
 
   const regulatorPages = regulatorSlugs.map((slug) => ({
