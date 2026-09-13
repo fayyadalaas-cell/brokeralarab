@@ -10,33 +10,9 @@ const BASE_URL = "https://brokeralarab.com";
 const PAGE_URL = `${BASE_URL}/en/strategies`;
 
 export const metadata: Metadata = {
-  title: "Forex Trading Strategies: 12 Strategies Explained",
+  title: "Forex Trading Strategies: 12 Guides and Styles Compared",
   description:
-    "Explore 12 forex trading strategies including price action, support and resistance, moving average crossovers, scalping, swing trading, trend following, RSI, ICT, SMC, supply and demand, order blocks and liquidity sweeps.",
-
-  keywords: [
-    "forex trading strategies",
-    "forex strategies",
-    "best forex trading strategies",
-    "forex strategies for beginners",
-    "forex trading strategy",
-    "price action strategy",
-    "scalping strategy",
-    "swing trading strategy",
-    "trend following strategy",
-    "RSI trading strategy",
-    "ICT trading strategy",
-    "smart money concepts",
-    "SMC trading",
-    "supply and demand trading",
-    "order block trading",
-    "liquidity sweep strategy",
-    "support and resistance strategy",
-    "support and resistance trading",
-    "moving average crossover strategy",
-    "moving average trading strategy",
-    "EMA crossover strategy",
-  ],
+    "Explore forex trading strategies and compare 12 guides by style, timeframe and experience. Learn entry rules, stop losses, risk management and backtesting.",
 
   alternates: {
     canonical: PAGE_URL,
@@ -50,18 +26,19 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: PAGE_URL,
-    title: "Forex Trading Strategies: 12 Strategies Explained",
+    title: "Forex Trading Strategies: 12 Guides and Styles Compared",
     description:
-      "Compare popular forex trading strategies by trading style, timeframe, difficulty and core market concept.",
+      "Compare price action, scalping, swing trading, indicators, ICT and SMC. Explore practical guides to trading rules, risk management and strategy testing.",
     siteName: "Broker Alarab",
     locale: "en_US",
+    alternateLocale: ["ar_AR"],
   },
 
   twitter: {
     card: "summary_large_image",
-    title: "Forex Trading Strategies: 12 Strategies Explained",
+    title: "Forex Trading Strategies: 12 Guides and Styles Compared",
     description:
-      "Explore 12 forex strategies including price action, support and resistance, moving average crossovers, scalping, swing trading, ICT, SMC and liquidity sweeps.",
+      "Explore 12 forex strategy guides, compare trading approaches and learn how to define rules, manage risk and test results.",
   },
 };
 
@@ -196,7 +173,7 @@ const strategies: Strategy[] = [
     title: "Order Block Trading Strategy",
     href: "/en/strategies/order-blocks",
     description:
-      "Learn how order blocks are identified and combined with displacement, market structure, liquidity, entries and structural invalidation.",
+  "Learn how to identify order blocks and connect them with market structure and liquidity, including entry conditions, stop losses and failed setups.",
     level: "Intermediate → Advanced",
     style: "SMC / ICT",
     timeframe: "Multiple",
@@ -249,34 +226,44 @@ const strategies: Strategy[] = [
 
 const faqItems: FAQ[] = [
   {
-    question: "What is a forex trading strategy?",
+    question: "What are forex trading strategies?",
     answer:
-      "A forex trading strategy is a defined set of rules for analyzing the market, identifying setups, entering trades, setting invalidation, managing risk and planning exits. A useful strategy should be specific enough to test consistently rather than changing after every trade.",
+      "Forex trading strategies define how you analyze the market, enter and exit trades, and manage risk. They may use price action, indicators or support and resistance. A usable strategy also specifies its timeframe, position sizing and stop-loss rules.",
   },
   {
     question: "What is the best forex trading strategy for beginners?",
     answer:
-      "There is no single best strategy for every beginner. Price action and trend-following approaches can provide a useful foundation because they help traders understand market structure, trends and key price levels before adding more complex concepts.",
+      "No single strategy is best for every beginner. Studying price action, support and resistance or trend following can help build a foundation. Choose clear rules that suit your available time and experience, then test them on a demo account.",
   },
   {
     question: "What is the difference between scalping and swing trading?",
     answer:
-      "Scalping focuses on very short-term price movements and usually requires frequent market monitoring. Swing trading targets broader price moves and positions may remain open for several days or longer.",
+      "Scalping focuses on short trades and frequent monitoring, while swing trades may last days or weeks. Spreads and execution are especially relevant to scalping; overnight costs, news and price gaps matter when holding positions longer.",
   },
   {
-    question: "Can I use more than one forex strategy?",
+    question: "What is the best timeframe for forex trading?",
     answer:
-      "Yes, but combining too many strategies without clear rules can create conflicting signals. It is generally more useful to understand and test one approach first, then add other concepts only when they have a specific role in the trading plan.",
+      "There is no best timeframe for everyone. Shorter timeframes generally require more monitoring and make execution costs important relative to the targeted move. Choose a timeframe that fits your strategy rules, trade duration and available time, and test it before relying on it.",
   },
   {
-    question: "Are ICT and Smart Money Concepts suitable for beginners?",
+    question: "How do you test a forex trading strategy?",
     answer:
-      "Beginners can study them, but concepts such as liquidity, fair value gaps, order blocks, BOS and CHoCH can become complicated without a basic understanding of price action and market structure.",
+      "Write down entry, stop-loss, take-profit and position-sizing rules. Backtest them with trading costs included, then test data you did not use to adjust the rules. Practice on a demo account and record results. Historical and demo performance do not guarantee future results.",
   },
   {
-    question: "Is there a forex strategy that guarantees profits?",
+    question: "Are ICT and SMC suitable for beginners?",
     answer:
-      "No. Every strategy can experience losing trades and unfavorable market conditions. Risk management, position sizing, testing and consistent execution remain important regardless of the trading approach.",
+      "ICT and Smart Money Concepts include overlapping ideas such as market structure, liquidity, order blocks and fair value gaps. Understanding basic price action first can make them easier to study. Definitions vary between sources, so clear application rules are important.",
+  },
+  {
+    question: "Are low spreads enough to choose a forex broker?",
+    answer:
+      "No. Compare spreads alongside commissions, execution, overnight fees and withdrawal terms. Check the legal entity, regulation and availability in your country. Low spreads alone do not establish the total trading cost or whether a broker suits your needs.",
+  },
+  {
+    question: "Does any forex trading strategy guarantee profits?",
+    answer:
+      "No forex trading strategy guarantees profits. Market conditions can change and losing streaks can occur. Testing, position sizing, stop losses and risk management remain important. Past results and demo performance do not guarantee similar results in live trading.",
   },
 ];
 
@@ -287,13 +274,19 @@ const faqItems: FAQ[] = [
 const collectionSchema = {
   "@context": "https://schema.org",
   "@type": "CollectionPage",
-  name: "Forex Trading Strategies",
-  description:
-    "A practical collection of forex trading strategies covering different trading styles, timeframes and market-analysis frameworks.",
+  "@id": `${PAGE_URL}#webpage`,
   url: PAGE_URL,
+  name: "Forex Trading Strategies: 12 Guides and Styles Compared",
+  description:
+    "Explore forex trading strategy guides, compare trading styles and learn about entry rules, stop losses, risk management and strategy testing.",
   inLanguage: "en",
+  breadcrumb: {
+    "@id": `${PAGE_URL}#breadcrumb`,
+  },
   mainEntity: {
     "@type": "ItemList",
+    "@id": `${PAGE_URL}#strategy-guides`,
+    name: "Forex Trading Strategy Guides",
     numberOfItems: strategies.length,
     itemListElement: strategies.map((strategy, index) => ({
       "@type": "ListItem",
@@ -307,6 +300,7 @@ const collectionSchema = {
 const breadcrumbSchema = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
+  "@id": `${PAGE_URL}#breadcrumb`,
   itemListElement: [
     {
       "@type": "ListItem",
@@ -326,6 +320,12 @@ const breadcrumbSchema = {
 const faqSchema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
+  "@id": `${PAGE_URL}#faq`,
+  url: `${PAGE_URL}#strategies-faq`,
+  inLanguage: "en",
+  isPartOf: {
+    "@id": `${PAGE_URL}#webpage`,
+  },
   mainEntity: faqItems.map((item) => ({
     "@type": "Question",
     name: item.question,
@@ -339,15 +339,6 @@ const faqSchema = {
 /* =========================================================
    SMALL COMPONENTS
 ========================================================= */
-
-function SectionLabel({ children }: { children: ReactNode }) {
-  return (
-    <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[9px] font-black tracking-[0.08em] text-slate-700">
-      <span className="h-1.5 w-1.5 rounded-full bg-slate-900" />
-      {children}
-    </div>
-  );
-}
 
 function ArrowIcon() {
   return (
@@ -530,211 +521,6 @@ function StrategyIcon() {
    LEARNING MAP
 ========================================================= */
 
-function LearningMapGraphic() {
-  return (
-    <div className="mt-6 hidden overflow-hidden rounded-[22px] border border-slate-200 bg-slate-50/70 p-4 lg:block">
-      <div className="mb-4 flex items-center justify-between">
-        <div>
-          <div className="text-[10px] font-black text-slate-400">
-            BEGINNER ROADMAP
-          </div>
-
-          <div className="mt-1 text-[13px] font-black text-slate-900">
-            From foundations to advanced concepts
-          </div>
-        </div>
-
-        <span className="rounded-full bg-white px-3 py-1.5 text-[9px] font-black text-slate-500 shadow-sm">
-          4 stages
-        </span>
-      </div>
-
-      <div className="relative">
-        <div className="absolute bottom-5 left-[18px] top-5 w-px bg-slate-200" />
-
-        {[
-          ["01", "Price Action", "Structure and key price levels"],
-          ["02", "Trading Style", "Scalping, swing or trend"],
-          ["03", "Analysis Tools", "RSI, key levels and moving averages"],
-          ["04", "Advanced Concepts", "ICT, SMC and liquidity"],
-        ].map(([n, title, text]) => (
-          <div key={n} className="relative flex items-center gap-3 py-2.5">
-            <span className="relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-[9px] font-black text-slate-900 shadow-sm">
-              {n}
-            </span>
-
-            <div>
-              <div className="text-[12px] font-black text-slate-900">
-                {title}
-              </div>
-
-              <div className="mt-0.5 text-[10px] font-bold text-slate-500">
-                {text}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* =========================================================
-   MINI CHART
-========================================================= */
-
-function MiniChart({ type }: { type: number }) {
-  const charts = [
-    "M8 52 L25 43 L40 47 L57 30 L73 35 L92 18",
-    "M8 25 L23 38 L39 30 L55 45 L72 37 L92 53",
-    "M8 48 L22 34 L37 39 L51 25 L67 31 L80 17 L92 22",
-    "M8 45 L24 45 L35 33 L50 33 L62 21 L78 21 L92 11",
-  ];
-
-  return (
-    <svg
-      viewBox="0 0 100 64"
-      className="h-full w-full"
-      role="img"
-      aria-label="Illustration of price movement"
-    >
-      <defs>
-        <pattern
-          id={`miniGridEn-${type}`}
-          width="20"
-          height="16"
-          patternUnits="userSpaceOnUse"
-        >
-          <path
-            d="M20 0H0V16"
-            fill="none"
-            stroke="#e2e8f0"
-            strokeWidth="0.7"
-          />
-        </pattern>
-      </defs>
-
-      <rect width="100" height="64" fill="#f8fafc" />
-      <rect width="100" height="64" fill={`url(#miniGridEn-${type})`} />
-
-      <path
-        d={charts[type % charts.length]}
-        fill="none"
-        stroke="#0f172a"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-
-      <circle
-        cx="92"
-        cy={type % 2 === 0 ? "18" : "53"}
-        r="3"
-        fill="#ffffff"
-        stroke="#0f172a"
-        strokeWidth="2"
-      />
-    </svg>
-  );
-}
-
-/* =========================================================
-   STRATEGY CARD
-========================================================= */
-
-function StrategyCard({
-  strategy,
-  index,
-}: {
-  strategy: Strategy;
-  index: number;
-}) {
-  return (
-    <Link
-      href={strategy.href}
-      className="group relative flex h-full flex-col overflow-hidden rounded-[22px] border border-slate-200 bg-white transition duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_18px_45px_rgba(15,23,42,0.08)]"
-    >
-      {strategy.featured && (
-        <div className="absolute right-4 top-4 z-10 rounded-full border border-slate-200 bg-white/95 px-2.5 py-1 text-[9px] font-black text-slate-700 shadow-sm backdrop-blur">
-          Featured Guide
-        </div>
-      )}
-
-      <div className="h-[105px] overflow-hidden border-b border-slate-100 sm:h-[120px]">
-        <MiniChart type={index} />
-      </div>
-
-      <div className="flex flex-1 flex-col p-4 sm:p-6">
-        <div className="flex items-start justify-between gap-4">
-          <div className="min-w-0">
-            <div className="text-[10px] font-black text-slate-500">
-              {strategy.number} — FOREX STRATEGY
-            </div>
-
-            <h2 className="mt-2 text-[18px] font-black leading-7 text-slate-950 sm:text-[20px]">
-              {strategy.title}
-            </h2>
-          </div>
-
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-600 transition group-hover:bg-slate-950 group-hover:text-white">
-            <ArrowIcon />
-          </span>
-        </div>
-
-        <p className="mt-3 text-[13px] font-medium leading-7 text-slate-600 sm:mt-4 sm:text-[14px] sm:leading-8">
-          {strategy.description}
-        </p>
-
-        <div className="mt-4 grid grid-cols-3 gap-2 sm:mt-5">
-          <div className="rounded-xl bg-slate-50 p-2.5">
-            <div className="text-[9px] font-black text-slate-400">
-              DIFFICULTY
-            </div>
-            <div className="mt-1 text-[10px] font-black leading-5 text-slate-700 sm:text-[11px]">
-              {strategy.level}
-            </div>
-          </div>
-
-          <div className="rounded-xl bg-slate-50 p-2.5">
-            <div className="text-[9px] font-black text-slate-400">
-              TIMEFRAME
-            </div>
-            <div className="mt-1 text-[10px] font-black leading-5 text-slate-700 sm:text-[11px]">
-              {strategy.timeframe}
-            </div>
-          </div>
-
-          <div className="rounded-xl bg-slate-50 p-2.5">
-            <div className="text-[9px] font-black text-slate-400">
-              FOCUS
-            </div>
-            <div className="mt-1 truncate text-[10px] font-black leading-5 text-slate-700 sm:text-[11px]">
-              {strategy.focus}
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-4 flex flex-wrap gap-1.5 sm:mt-5 sm:gap-2">
-          {strategy.tags.map((tag) => (
-            <span
-              key={tag}
-              className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[9px] font-bold text-slate-500"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-
-        <div className="mt-auto pt-5 sm:pt-6">
-          <div className="flex items-center gap-2 border-t border-slate-100 pt-4 text-[12px] font-black text-slate-900 sm:text-[13px]">
-            <span>Read the full guide</span>
-            <ArrowIcon />
-          </div>
-        </div>
-      </div>
-    </Link>
-  );
-}
 
 /* =========================================================
    PAGE
@@ -743,801 +529,870 @@ function StrategyCard({
 export default function StrategiesHubPage() {
   return (
     <main dir="ltr" className="min-h-screen bg-[#f6f8fb] text-slate-900">
+
+      {/* =================================================
+          HERO
+      ================================================= */}
+
+      <section className="relative isolate w-full overflow-hidden border-b border-[#174373] bg-[#071a31]">
+  <div
+    aria-hidden="true"
+    className="pointer-events-none absolute inset-0"
+  >
+    <div className="absolute inset-0 bg-[linear-gradient(245deg,#061326_0%,#092746_55%,#0c4279_100%)]" />
+
+    <div className="absolute -left-32 -top-52 h-[460px] w-[460px] rounded-full bg-blue-500/20 blur-[120px]" />
+
+    <div className="absolute -bottom-72 right-[12%] h-[440px] w-[440px] rounded-full bg-cyan-400/10 blur-[120px]" />
+
+    <div className="absolute inset-0 opacity-[0.05] [background-image:linear-gradient(rgba(147,197,253,0.55)_1px,transparent_1px),linear-gradient(90deg,rgba(147,197,253,0.55)_1px,transparent_1px)] [background-size:56px_56px]" />
+  </div>
+
+  <div className="relative mx-auto w-full max-w-[1520px] px-4 py-4 sm:px-6 sm:py-8 lg:px-8 lg:py-9">
+    <nav
+      aria-label="Breadcrumb"
+      className="mb-4 flex flex-wrap items-center gap-2 text-[11px] font-bold text-blue-200/80"
+    >
+      <Link href="/en" className="transition hover:text-white">
+        Home
+      </Link>
+
+      <span aria-hidden="true">/</span>
+
+      <span aria-current="page" className="text-white">
+        Forex Trading Strategies
+      </span>
+    </nav>
+
+    <div className="grid items-center gap-7 lg:grid-cols-[minmax(0,1fr)_250px] xl:grid-cols-[minmax(0,1fr)_270px]">
+      <div className="min-w-0">
+        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.07] px-3 py-1.5 text-[10px] font-extrabold text-blue-100 sm:text-[11px]">
+          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-400" />
+          From the Basics to Advanced Concepts
+        </div>
+
+        <h1 className="mt-3 text-[26px] font-black leading-[1.2] tracking-[-0.025em] text-white sm:text-[40px] lg:text-[46px] xl:text-[52px]">
+          Forex Trading Strategies:
+          <span className="mt-2 block text-[21px] leading-[1.35] text-[#55c3ff] sm:text-[30px] lg:text-[34px] xl:text-[38px]">
+            A Practical Guide to Choosing the Right Strategy
+          </span>
+        </h1>
+
+        <p className="mt-3 max-w-[1100px] text-[14px] font-medium leading-6 text-blue-100 sm:mt-4 sm:text-[16px] sm:leading-8">
+          Explore 12 forex strategy guides. Compare trading styles,
+          timeframes and experience levels to find the approach
+          that suits you.
+        </p>
+
+        <div className="mt-4 hidden flex-wrap gap-x-5 gap-y-2 text-[10px] font-bold text-blue-200 sm:flex sm:text-[11px]">
+          <span className="inline-flex items-center gap-1.5">
+            <span className="text-cyan-400">
+              <CheckIcon />
+            </span>
+            Concepts and Practical Application
+          </span>
+
+          <span className="inline-flex items-center gap-1.5">
+            <span className="text-cyan-400">
+              <CheckIcon />
+            </span>
+            Compare Styles and Timeframes
+          </span>
+
+          <span className="inline-flex items-center gap-1.5">
+            <span className="text-cyan-400">
+              <CheckIcon />
+            </span>
+            Risk Management and Common Mistakes
+          </span>
+        </div>
+
+        <div className="mt-4 grid gap-3 sm:mt-5 sm:gap-4 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-center">
+          <div className="grid grid-cols-3 overflow-hidden rounded-[15px] border border-white/10 bg-white/[0.06] p-1">
+            {[
+              ["12", "Strategy Guides"],
+              ["4", "Practical Comparisons"],
+              ["Multiple", "Timeframes"],
+            ].map(([value, label], index) => (
+              <div
+                key={label}
+                className={`px-2 py-2.5 text-center ${
+                  index > 0 ? "border-l border-white/10" : ""
+                }`}
+              >
+                <div className="text-[18px] font-black text-[#66c8ff] sm:text-[21px]">
+                  {value}
+                </div>
+
+                <div className="mt-1 text-[9px] font-bold text-blue-200 sm:text-[10px]">
+                  {label}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <a
+              href="#all-strategies"
+              className="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-xl bg-[#2471df] px-3 py-3 text-center text-[11px] font-black text-white transition hover:bg-[#2e7cea] sm:px-5 sm:text-[13px]"
+            >
+              Explore Strategies
+              <span aria-hidden="true">↓</span>
+            </a>
+
+            <a
+              href="#choose-strategy"
+              className="inline-flex min-h-[46px] items-center justify-center rounded-xl border border-white/20 bg-white/[0.07] px-3 py-3 text-center text-[11px] font-black text-white transition hover:bg-white/[0.12] sm:px-5 sm:text-[13px]"
+            >
+              How Do I Choose?
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div className="hidden lg:block lg:-translate-y-6">
+        <div className="rounded-[20px] border border-white/10 bg-[#0b2948]/90 p-3 shadow-[0_20px_50px_rgba(0,0,0,0.2)]">
+          <div className="mb-3 flex items-center justify-between gap-2">
+            <span className="text-[10px] font-black text-white">
+              From Price Action to a Trading Plan
+            </span>
+
+            <span className="shrink-0 rounded-full bg-cyan-300/10 px-2 py-1 text-[7px] font-bold text-cyan-200">
+              Illustration
+            </span>
+          </div>
+
+          <StrategyIcon />
+
+          <p className="mt-3 text-center text-[9px] font-medium leading-5 text-blue-200">
+            Understand trends and levels before defining entry and risk
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
       <div className="mx-auto w-full max-w-[1520px] px-3 py-4 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
         <div className="space-y-5 sm:space-y-8">
 
-          {/* =================================================
-              HERO
-          ================================================= */}
-
-          <section className="relative overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm sm:rounded-[30px]">
-            <div className="absolute inset-x-0 top-0 h-[3px] bg-slate-950" />
-
-            <div className="absolute -right-24 -top-24 h-[300px] w-[300px] rounded-full bg-slate-100 blur-3xl" />
-            <div className="absolute -bottom-32 left-0 h-[280px] w-[280px] rounded-full bg-slate-50 blur-3xl" />
-
-            <div className="relative grid items-center gap-7 p-5 sm:p-8 lg:grid-cols-[1.12fr_0.88fr] lg:gap-10 lg:p-10 xl:p-12">
-              <div>
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[9px] font-black text-slate-700">
-                    FOREX STRATEGY HUB
-                  </span>
-
-                  <span className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[9px] font-black text-slate-600">
-                    12 Strategies
-                  </span>
-
-                  <span className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[9px] font-black text-slate-600">
-                    Beginner to Advanced
-                  </span>
-                </div>
-
-                <h1 className="mt-5 max-w-[920px] text-[30px] font-black leading-[1.18] tracking-[-0.035em] text-slate-950 sm:mt-6 sm:text-[41px] lg:text-[49px]">
-                  Forex Trading Strategies:
-                  <span className="block text-slate-600">
-                    A Practical Guide to Choosing the Right Strategy
-                  </span>
-                </h1>
-
-                <p className="mt-4 max-w-[900px] text-[14px] font-medium leading-8 text-slate-700 sm:mt-5 sm:text-[16px] sm:leading-9">
-                  Explore 12 forex trading strategies in one place, from price
-                  action, support and resistance, moving average crossovers,
-                  scalping and swing trading to ICT, Smart Money Concepts,
-                  order blocks and liquidity sweeps. Compare how each approach
-                  works, the timeframes it is commonly used on and the level of
-                  experience it may require.
-                </p>
-
-                <div className="mt-6 flex flex-col gap-3 sm:mt-7 sm:flex-row sm:flex-wrap">
-                  <a
-                    href="#all-strategies"
-                    className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 py-3 text-[13px] font-black text-white transition hover:bg-slate-800"
-                  >
-                    Explore Strategies
-                    <span>↓</span>
-                  </a>
-
-                  <a
-                    href="#choose-strategy"
-                    className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-[13px] font-black text-slate-700 transition hover:bg-slate-50"
-                  >
-                    How Do I Choose?
-                  </a>
-                </div>
-
-                <div className="mt-6 grid grid-cols-2 gap-2.5 sm:mt-8 sm:gap-3 lg:grid-cols-4">
-                  {[
-                    ["12", "Strategy Guides"],
-                    ["4", "Core Styles"],
-                    ["Multiple", "Timeframes"],
-                    ["Practical", "Step-by-Step"],
-                  ].map(([value, label]) => (
-                    <div
-                      key={label}
-                      className="rounded-[16px] border border-slate-200 bg-white/80 p-3 sm:rounded-[18px] sm:p-4"
-                    >
-                      <div className="text-[17px] font-black text-slate-950 sm:text-[21px]">
-                        {value}
-                      </div>
-
-                      <div className="mt-1 text-[10px] font-bold text-slate-500 sm:text-[12px]">
-                        {label}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mx-auto hidden w-full max-w-[520px] lg:block">
-                <StrategyIcon />
-              </div>
-            </div>
-          </section>
-
-          {/* =================================================
-              CHOOSE
-          ================================================= */}
-
-          <section
-            id="choose-strategy"
-            className="scroll-mt-24 overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm sm:rounded-[28px]"
-          >
-            <div className="p-5 sm:p-7 lg:p-9">
-              <SectionLabel>CHOOSE BY TRADING STYLE</SectionLabel>
-
-              <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-start lg:gap-8">
-                <div>
-                  <h2 className="text-[23px] font-black leading-[1.25] tracking-[-0.025em] text-slate-950 sm:text-[30px]">
-                    Which Forex Trading Strategy Fits You?
-                  </h2>
-
-                  <p className="mt-4 text-[14px] font-medium leading-8 text-slate-700 sm:text-[15px] sm:leading-9">
-                    Instead of asking which strategy makes the most money, start
-                    with how much time you can dedicate to trading, how quickly
-                    you prefer to make decisions, which timeframes you want to
-                    monitor and how experienced you are with chart analysis.
-                  </p>
-
-                  <p className="mt-3 text-[14px] font-medium leading-8 text-slate-700 sm:mt-4 sm:text-[15px] sm:leading-9">
-                    Choose the situation that sounds closest to you to open the
-                    most relevant strategy guide.
-                  </p>
-                </div>
-
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {[
-                    {
-                      n: "01",
-                      title: "I prefer fast-paced trading",
-                      text: "If you can monitor the market closely and prefer short-duration trades, start with forex scalping.",
-                      strategy: "Forex Scalping Strategy",
-                      href: "/en/strategies/scalping",
-                    },
-                    {
-                      n: "02",
-                      title: "I cannot watch charts all day",
-                      text: "If you prefer broader price movements and trades that may remain open for days, explore swing trading.",
-                      strategy: "Swing Trading Strategy",
-                      href: "/en/strategies/swing-trading",
-                    },
-                    {
-                      n: "03",
-                      title: "I want to understand price first",
-                      text: "If your priority is understanding structure, trends and key levels, price action is a logical starting point.",
-                      strategy: "Price Action Strategy",
-                      href: "/en/strategies/price-action",
-                    },
-                    {
-                      n: "04",
-                      title: "I want to study liquidity and structure",
-                      text: "If you already understand basic price action and want a more advanced framework, explore Smart Money Concepts.",
-                      strategy: "Smart Money Concepts",
-                      href: "/en/strategies/smart-money-concepts",
-                    },
-                  ].map((item) => (
-                    <Link
-                      key={item.n}
-                      href={item.href}
-                      className="group rounded-[18px] border border-slate-200 bg-slate-50/60 p-4 transition hover:border-slate-300 hover:bg-white hover:shadow-sm sm:rounded-[20px] sm:p-5"
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-[9px] font-black text-slate-700 shadow-sm">
-                          {item.n}
-                        </span>
-
-                        <h3 className="text-[13px] font-black leading-6 text-slate-900 sm:text-[14px]">
-                          {item.title}
-                        </h3>
-                      </div>
-
-                      <p className="mt-3 text-[12px] font-medium leading-7 text-slate-600 sm:text-[13px] sm:leading-8">
-                        {item.text}
-                      </p>
-
-                      <div className="mt-3 flex items-center gap-2 text-[11px] font-black text-slate-900">
-                        <span>{item.strategy}</span>
-                        <ArrowIcon />
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* =================================================
-              ALL STRATEGIES
-          ================================================= */}
-
-          <section
-            id="all-strategies"
-            className="scroll-mt-24 rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm sm:rounded-[28px] sm:p-7 lg:p-9"
-          >
-            <SectionLabel>ALL GUIDES</SectionLabel>
-
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-              <div>
-                <h2 className="text-[23px] font-black leading-[1.25] tracking-[-0.025em] text-slate-950 sm:text-[30px]">
-                  Explore Forex Trading Strategies
-                </h2>
-
-                <p className="mt-3 max-w-[900px] text-[14px] font-medium leading-8 text-slate-600 sm:text-[15px]">
-                  Each guide explains the strategy, core market concepts,
-                  common entry logic, invalidation, risk management and common
-                  mistakes.
-                </p>
-              </div>
-
-              <div className="inline-flex w-fit rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-[10px] font-black text-slate-500">
-                12 Educational Guides
-              </div>
-            </div>
-
-            <div className="mt-6 grid gap-4 sm:mt-7 sm:grid-cols-2 xl:grid-cols-3">
-              {strategies.map((strategy, index) => (
-                <StrategyCard
-                  key={strategy.href}
-                  strategy={strategy}
-                  index={index}
-                />
-              ))}
-            </div>
-          </section>
-
-          {/* =================================================
-              COMPARISON
-          ================================================= */}
-
-          <section className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm sm:rounded-[28px]">
-            <div className="p-5 sm:p-7 lg:p-9">
-              <SectionLabel>QUICK COMPARISON</SectionLabel>
-
-              <h2 className="text-[23px] font-black leading-[1.25] tracking-[-0.025em] text-slate-950 sm:text-[30px]">
-                Compare Forex Strategies by Style and Timeframe
-              </h2>
-
-              <p className="mt-4 max-w-[1050px] text-[14px] font-medium leading-8 text-slate-700 sm:text-[15px] sm:leading-9">
-                This comparison does not rank one strategy above another.
-                Instead, it shows how the approaches differ in trading style,
-                timeframe, difficulty and analytical focus. Click any strategy
-                to open the full guide.
-              </p>
-
-              {/* DESKTOP TABLE */}
-
-              <div className="mt-7 hidden overflow-hidden rounded-[20px] border border-slate-200 lg:block">
-                <table className="w-full border-collapse text-left">
-                  <thead className="bg-slate-50">
-                    <tr>
-                      <th className="px-5 py-4 text-[12px] font-black text-slate-600">
-                        Strategy
-                      </th>
-                      <th className="px-5 py-4 text-[12px] font-black text-slate-600">
-                        Style
-                      </th>
-                      <th className="px-5 py-4 text-[12px] font-black text-slate-600">
-                        Timeframe
-                      </th>
-                      <th className="px-5 py-4 text-[12px] font-black text-slate-600">
-                        Difficulty
-                      </th>
-                      <th className="px-5 py-4 text-[12px] font-black text-slate-600">
-                        Focus
-                      </th>
-                      <th className="w-[90px] px-5 py-4" />
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    {strategies.map((strategy) => (
-                      <tr
-                        key={strategy.href}
-                        className="border-t border-slate-100 transition hover:bg-slate-50"
-                      >
-                        <td className="px-5 py-4">
-                          <Link
-                            href={strategy.href}
-                            className="group/title inline-flex items-center gap-2"
-                          >
-                            <span className="text-[13px] font-black text-slate-900 transition group-hover/title:text-slate-600">
-                              {strategy.title}
-                            </span>
-
-                            <span className="text-slate-400 transition group-hover/title:translate-x-1">
-                              <ArrowIcon />
-                            </span>
-                          </Link>
-                        </td>
-
-                        <td className="px-5 py-4 text-[12px] font-bold text-slate-600">
-                          {strategy.style}
-                        </td>
-
-                        <td className="px-5 py-4 text-[12px] font-bold text-slate-600">
-                          {strategy.timeframe}
-                        </td>
-
-                        <td className="px-5 py-4 text-[12px] font-bold text-slate-600">
-                          {strategy.level}
-                        </td>
-
-                        <td className="px-5 py-4 text-[12px] font-bold text-slate-600">
-                          {strategy.focus}
-                        </td>
-
-                        <td className="px-5 py-4">
-                          <Link
-                            href={strategy.href}
-                            aria-label={`Read ${strategy.title}`}
-                            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-700 transition hover:bg-slate-950 hover:text-white"
-                          >
-                            <ArrowIcon />
-                          </Link>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* MOBILE COMPARISON */}
-
-              <div className="mt-6 grid gap-3 lg:hidden">
-                {strategies.map((strategy) => (
-                  <Link
-                    key={strategy.href}
-                    href={strategy.href}
-                    className="rounded-[18px] border border-slate-200 bg-slate-50/40 p-4 transition active:bg-slate-100"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <h3 className="text-[14px] font-black leading-6 text-slate-900">
-                        {strategy.title}
-                      </h3>
-
-                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-slate-700 shadow-sm">
-                        <ArrowIcon />
-                      </span>
-                    </div>
-
-                    <div className="mt-4 grid grid-cols-2 gap-2">
-                      <div className="rounded-xl bg-white p-3">
-                        <div className="text-[9px] font-black text-slate-400">
-                          DIFFICULTY
-                        </div>
-
-                        <div className="mt-1 text-[11px] font-black text-slate-700">
-                          {strategy.level}
-                        </div>
-                      </div>
-
-                      <div className="rounded-xl bg-white p-3">
-                        <div className="text-[9px] font-black text-slate-400">
-                          TIMEFRAME
-                        </div>
-
-                        <div className="mt-1 text-[11px] font-black text-slate-700">
-                          {strategy.timeframe}
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </section>
-                    {/* =================================================
-              LEARNING PATH
-          ================================================= */}
-
-          <section className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm sm:rounded-[28px]">
-            <div className="p-5 sm:p-7 lg:p-9">
-              <SectionLabel>LEARNING PATH</SectionLabel>
-
-              <div className="grid gap-6 lg:grid-cols-[0.78fr_1.22fr] lg:gap-9">
-                <div>
-                  <h2 className="text-[23px] font-black leading-[1.25] tracking-[-0.025em] text-slate-950 sm:text-[30px]">
-                    Where Should a Beginner Start?
-                  </h2>
-
-                  <p className="mt-4 text-[14px] font-medium leading-8 text-slate-700 sm:text-[15px] sm:leading-9">
-                    Trying to learn many strategies at the same time usually
-                    creates more confusion than clarity. A more structured
-                    approach is to build your knowledge in stages because many
-                    advanced strategies depend on concepts that begin with price
-                    action and market structure.
-                  </p>
-
-                  <Link
-                    href="/en/learn-trading"
-                    className="mt-5 inline-flex items-center gap-2 text-[13px] font-black text-slate-900 transition hover:text-slate-600 sm:mt-6"
-                  >
-                    Go to the Trading Education Hub
-                    <ArrowIcon />
-                  </Link>
-
-                  <LearningMapGraphic />
-                </div>
-
-                <div className="space-y-3">
-                  <Link
-                    href="/en/strategies/price-action"
-                    className="group flex gap-3 rounded-[18px] border border-slate-200 bg-white p-4 transition hover:border-slate-300 hover:bg-slate-50 sm:gap-4 sm:rounded-[20px] sm:p-5"
-                  >
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-[10px] font-black text-slate-700 sm:h-10 sm:w-10">
-                      01
-                    </span>
-
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center justify-between gap-3">
-                        <h3 className="text-[14px] font-black text-slate-900 sm:text-[15px]">
-                          Start with Price Action
-                        </h3>
-
-                        <span className="shrink-0 text-slate-400 transition group-hover:translate-x-1">
-                          <ArrowIcon />
-                        </span>
-                      </div>
-
-                      <p className="mt-2 text-[12px] font-medium leading-7 text-slate-600 sm:text-[13px] sm:leading-8">
-                        Learn trends, swing highs and lows, support, resistance
-                        and basic market structure before adding more complex
-                        frameworks.
-                      </p>
-                    </div>
-                  </Link>
-
-                  <div className="rounded-[18px] border border-slate-200 bg-white p-4 sm:rounded-[20px] sm:p-5">
-                    <div className="flex gap-3 sm:gap-4">
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-[10px] font-black text-slate-700 sm:h-10 sm:w-10">
-                        02
-                      </span>
-
-                      <div className="min-w-0 flex-1">
-                        <h3 className="text-[14px] font-black text-slate-900 sm:text-[15px]">
-                          Choose a Trading Style
-                        </h3>
-
-                        <p className="mt-2 text-[12px] font-medium leading-7 text-slate-600 sm:text-[13px] sm:leading-8">
-                          Decide whether you prefer fast trades, broader market
-                          swings or a strategy focused on staying with an
-                          established trend.
-                        </p>
-
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          <Link
-                            href="/en/strategies/scalping"
-                            className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[10px] font-black text-slate-700 transition hover:bg-slate-950 hover:text-white"
-                          >
-                            Scalping
-                          </Link>
-
-                          <Link
-                            href="/en/strategies/swing-trading"
-                            className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[10px] font-black text-slate-700 transition hover:bg-slate-950 hover:text-white"
-                          >
-                            Swing Trading
-                          </Link>
-
-                          <Link
-                            href="/en/strategies/trend-following"
-                            className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[10px] font-black text-slate-700 transition hover:bg-slate-950 hover:text-white"
-                          >
-                            Trend Following
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="rounded-[18px] border border-slate-200 bg-white p-4 sm:rounded-[20px] sm:p-5">
-                    <div className="flex gap-3 sm:gap-4">
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-[10px] font-black text-slate-700 sm:h-10 sm:w-10">
-                        03
-                      </span>
-
-                      <div className="min-w-0 flex-1">
-                        <h3 className="text-[14px] font-black text-slate-900 sm:text-[15px]">
-                          Add Analysis Tools
-                        </h3>
-
-                        <p className="mt-2 text-[12px] font-medium leading-7 text-slate-600 sm:text-[13px] sm:leading-8">
-                          Once you understand price movement, you can add
-                          indicators, moving averages and key price zones as
-                          supporting tools rather than treating them as isolated
-                          trading signals.
-                        </p>
-
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          <Link
-                            href="/en/strategies/rsi"
-                            className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[10px] font-black text-slate-700 transition hover:bg-slate-950 hover:text-white"
-                          >
-                            RSI Strategy
-                          </Link>
-
-                          <Link
-                            href="/en/strategies/supply-and-demand"
-                            className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[10px] font-black text-slate-700 transition hover:bg-slate-950 hover:text-white"
-                          >
-                            Supply & Demand
-                          </Link>
-
-                          <Link
-                            href="/en/strategies/support-and-resistance"
-                            className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[10px] font-black text-slate-700 transition hover:bg-slate-950 hover:text-white"
-                          >
-                            Support & Resistance
-                          </Link>
-
-                          <Link
-                            href="/en/strategies/moving-average-crossover"
-                            className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[10px] font-black text-slate-700 transition hover:bg-slate-950 hover:text-white"
-                          >
-                            MA Crossover
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="rounded-[18px] border border-slate-200 bg-white p-4 sm:rounded-[20px] sm:p-5">
-                    <div className="flex gap-3 sm:gap-4">
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-[10px] font-black text-slate-700 sm:h-10 sm:w-10">
-                        04
-                      </span>
-
-                      <div className="min-w-0 flex-1">
-                        <h3 className="text-[14px] font-black text-slate-900 sm:text-[15px]">
-                          Move into Liquidity and Market Structure
-                        </h3>
-
-                        <p className="mt-2 text-[12px] font-medium leading-7 text-slate-600 sm:text-[13px] sm:leading-8">
-                          After building a price-action foundation, concepts such
-                          as liquidity, order blocks, fair value gaps and
-                          structural shifts become easier to study consistently.
-                        </p>
-
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          <Link
-                            href="/en/strategies/ict"
-                            className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[10px] font-black text-slate-700 transition hover:bg-slate-950 hover:text-white"
-                          >
-                            ICT
-                          </Link>
-
-                          <Link
-                            href="/en/strategies/smart-money-concepts"
-                            className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[10px] font-black text-slate-700 transition hover:bg-slate-950 hover:text-white"
-                          >
-                            Smart Money Concepts
-                          </Link>
-
-                          <Link
-                            href="/en/strategies/order-blocks"
-                            className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[10px] font-black text-slate-700 transition hover:bg-slate-950 hover:text-white"
-                          >
-                            Order Blocks
-                          </Link>
-
-                          <Link
-                            href="/en/strategies/liquidity-sweep"
-                            className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[10px] font-black text-slate-700 transition hover:bg-slate-950 hover:text-white"
-                          >
-                            Liquidity Sweeps
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-3 rounded-[18px] border border-slate-200 bg-slate-50/60 p-4 sm:gap-4 sm:rounded-[20px] sm:p-5">
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-[10px] font-black text-slate-700 shadow-sm sm:h-10 sm:w-10">
-                      05
-                    </span>
-
-                    <div>
-                      <h3 className="text-[14px] font-black text-slate-900 sm:text-[15px]">
-                        Turn the Strategy into Testable Rules
-                      </h3>
-
-                      <p className="mt-2 text-[12px] font-medium leading-7 text-slate-600 sm:text-[13px] sm:leading-8">
-                        Define your setup, entry, invalidation, target and risk
-                        rules, then test the same definitions consistently
-                        before judging the strategy.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* =================================================
-              BUILD A STRATEGY
-          ================================================= */}
-
-          <section className="overflow-hidden rounded-[22px] border border-slate-800 bg-slate-950 text-white shadow-sm sm:rounded-[28px]">
-            <div className="p-5 sm:p-7 lg:p-9">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[9px] font-black text-slate-300">
-                <span className="h-1.5 w-1.5 rounded-full bg-white" />
-                TRADING PLAN
-              </div>
-
-              <div className="mt-4 grid gap-5 lg:mt-5 lg:grid-cols-[0.72fr_1.28fr] lg:items-center lg:gap-8">
-                <div>
-                  <h2 className="text-[22px] font-black leading-[1.3] sm:text-[30px]">
-                    Every Strategy Needs Clear Rules
-                  </h2>
-
-                  <p className="mt-3 text-[13px] font-medium leading-7 text-slate-300 sm:mt-4 sm:text-[15px] sm:leading-9">
-                    Knowing the name of a strategy is not enough. Define why you
-                    are entering, where the setup becomes invalid, how much you
-                    are risking and how you plan to exit.
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3">
-                  {[
-                    ["01", "Context", "What is the market doing?"],
-                    ["02", "Location", "Where are you watching?"],
-                    ["03", "Trigger", "What confirms entry?"],
-                    ["04", "Invalidation", "When is it wrong?"],
-                    ["05", "Risk", "How much will you risk?"],
-                    ["06", "Exit", "Where will you close?"],
-                  ].map(([n, title, text]) => (
-                    <div
-                      key={n}
-                      className="rounded-[15px] border border-white/10 bg-white/[0.04] p-3 sm:rounded-[18px] sm:p-4"
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white/10 text-[9px] font-black text-slate-300 sm:h-8 sm:w-8">
-                          {n}
-                        </span>
-
-                        <h3 className="text-[12px] font-black text-white sm:text-[13px]">
-                          {title}
-                        </h3>
-                      </div>
-
-                      <p className="mt-2 text-[10px] font-medium leading-5 text-slate-400 sm:mt-3 sm:text-[12px] sm:leading-7">
-                        {text}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* =================================================
-              KEY PRINCIPLES
-          ================================================= */}
-
-          <section className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm sm:rounded-[28px]">
-            <div className="p-5 sm:p-7 lg:p-9">
-              <SectionLabel>BEFORE YOU TRADE</SectionLabel>
-
-              <h2 className="text-[23px] font-black leading-[1.25] tracking-[-0.025em] text-slate-950 sm:text-[30px]">
-                6 Principles More Important Than Finding a “Perfect” Strategy
-              </h2>
-
-              <div className="mt-6 grid gap-3 sm:mt-7 sm:grid-cols-2 lg:grid-cols-3">
-                {[
-                  "Know why you are entering before clicking buy or sell.",
-                  "Define your stop loss before entering the position.",
-                  "Match position size to the amount you are prepared to risk.",
-                  "Do not rewrite the strategy rules after seeing the outcome.",
-                  "Test the same definitions across a meaningful sample of setups.",
-                  "Evaluate the strategy across a series of trades, not one result.",
-                ].map((text, index) => (
-                  <div
-                    key={text}
-                    className="flex gap-3 rounded-[18px] border border-slate-200 bg-slate-50/50 p-4"
-                  >
-                    <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white text-slate-700 shadow-sm">
-                      <CheckIcon />
-                    </span>
-
-                    <div>
-                      <div className="text-[9px] font-black text-slate-400">
-                        0{index + 1}
-                      </div>
-
-                      <p className="mt-1 text-[12px] font-bold leading-7 text-slate-700 sm:text-[13px] sm:leading-8">
-                        {text}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          {/* =================================================
-              FAQ
-          ================================================= */}
-
-          <section className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm sm:rounded-[28px]">
-            <div className="p-5 sm:p-7 lg:p-9">
-              <SectionLabel>FAQ</SectionLabel>
-
-              <h2 className="text-[23px] font-black leading-[1.25] tracking-[-0.025em] text-slate-950 sm:text-[30px]">
-                Frequently Asked Questions About Forex Trading Strategies
-              </h2>
-
-              <p className="mt-4 max-w-[950px] text-[14px] font-medium leading-8 text-slate-600 sm:text-[15px]">
-                Quick answers to common questions about choosing a strategy,
-                trading style, experience level and testing a trading plan.
-              </p>
-
-              <div className="mt-6 grid gap-3 sm:mt-7 lg:grid-cols-2">
-                {faqItems.map((item, index) => (
-                  <details
-                    key={item.question}
-                    className="group rounded-[18px] border border-slate-200 bg-slate-50/40 p-4 open:bg-white sm:p-5"
-                  >
-                    <summary className="flex cursor-pointer list-none items-start justify-between gap-4">
-                      <div className="flex items-start gap-3">
-                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white text-[9px] font-black text-slate-700 shadow-sm">
-                          {String(index + 1).padStart(2, "0")}
-                        </span>
-
-                        <h3 className="pt-0.5 text-[13px] font-black leading-6 text-slate-900 sm:text-[14px]">
-                          {item.question}
-                        </h3>
-                      </div>
-
-                      <span className="mt-1 text-lg font-light text-slate-400 transition group-open:rotate-45">
-                        +
-                      </span>
-                    </summary>
-
-                    <p className="mt-4 border-t border-slate-100 pt-4 text-[12px] font-medium leading-7 text-slate-600 sm:text-[13px] sm:leading-8">
-                      {item.answer}
-                    </p>
-                  </details>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          {/* =================================================
-              NEXT STEP
-          ================================================= */}
-
-          <section className="relative overflow-hidden rounded-[22px] border border-slate-800 bg-slate-950 shadow-sm sm:rounded-[28px]">
-            <div className="absolute -right-20 -top-20 h-[220px] w-[220px] rounded-full bg-white/[0.04] blur-3xl" />
-
-            <div className="relative p-5 text-white sm:p-8 lg:p-9">
-              <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center lg:gap-7">
-                <div>
-                  <div className="text-[9px] font-black text-slate-400 sm:text-[10px]">
-                    NEXT STEP
-                  </div>
-
-                  <h2 className="mt-2 text-[22px] font-black leading-[1.3] sm:mt-3 sm:text-[30px]">
-                    Start with One Strategy and Build from There
-                  </h2>
-
-                  <p className="mt-3 max-w-[850px] text-[13px] font-medium leading-7 text-slate-300 sm:mt-4 sm:text-[15px] sm:leading-9">
-                    If you are new to chart analysis, start by understanding
-                    price movement and market structure before moving into more
-                    complex frameworks.
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2.5 sm:flex sm:flex-row lg:flex-col xl:flex-row">
-                  <Link
-                    href="/en/strategies/price-action"
-                    className="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-xl bg-white px-3 py-3 text-center text-[11px] font-black text-slate-950 transition hover:bg-slate-100 sm:min-h-[48px] sm:px-5 sm:text-[13px]"
-                  >
-                    Start with Price Action
-                    <ArrowIcon />
-                  </Link>
-
-                  <Link
-                    href="/en/learn-trading"
-                    className="inline-flex min-h-[46px] items-center justify-center rounded-xl border border-white/20 bg-white/[0.06] px-3 py-3 text-center text-[11px] font-black text-white transition hover:bg-white/10 sm:min-h-[48px] sm:px-5 sm:text-[13px]"
-                  >
-                    Trading Education Hub
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* =================================================
-              DISCLAIMER
-          ================================================= */}
-
-          <div className="rounded-[18px] border border-slate-200 bg-white px-4 py-4 text-[12px] font-medium leading-7 text-slate-500 sm:px-5 sm:text-[13px] sm:leading-8">
-            <strong className="text-slate-700">Risk notice:</strong> The strategy
-            guides on this page are provided for educational purposes only and
-            do not constitute investment advice or a recommendation to buy or
-            sell any financial instrument. No trading strategy can guarantee
-            profits, and leveraged trading can result in substantial losses.
-            Test and understand any strategy before risking real capital.
+      {/* =================================================
+    CHOOSE A STRATEGY
+================================================= */}
+
+<section
+  id="choose-strategy"
+  className="scroll-mt-24 overflow-hidden rounded-[22px] border border-blue-100 bg-white shadow-[0_8px_28px_rgba(11,49,87,0.06)] sm:rounded-[28px]"
+>
+  {/* Short introduction */}
+  <div className="relative border-b border-blue-100 bg-[linear-gradient(250deg,#ffffff_0%,#f3f8ff_65%,#e8f3ff_100%)] px-4 py-5 sm:px-7 sm:py-6 lg:px-8">
+    <div
+      aria-hidden="true"
+      className="absolute bottom-0 left-0 top-0 w-1 bg-gradient-to-b from-[#43baff] to-[#2471df]"
+    />
+
+    <span className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white px-3 py-1.5 text-[11px] font-bold text-[#1b5db8] sm:text-[12px]">
+      <span className="h-1.5 w-1.5 rounded-full bg-[#2471df]" />
+      Choosing a Trading Strategy
+    </span>
+
+    <h2 className="mt-3 text-[23px] font-black leading-[1.35] text-[#0b3157] sm:text-[28px] lg:text-[32px]">
+      Which Forex Strategy Suits You?
+    </h2>
+
+    <p className="mt-3 max-w-[1150px] text-[14px] font-medium leading-7 text-slate-700 sm:text-[16px] sm:leading-8">
+      A forex strategy defines how you analyze the market, enter and exit
+      trades, and manage risk. Start with your available time, experience
+      and preferred trading style; no single strategy is best for everyone.
+    </p>
+  </div>
+
+  {/* Direct choices */}
+  <div className="p-3 sm:p-6 lg:p-8">
+    <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+      {[
+        {
+          n: "01",
+          title: "I Prefer Fast-Paced Trading",
+          text: "I have time to monitor the market closely, paying attention to spreads and execution speed.",
+          strategy: "Forex Scalping Strategy",
+          href: "/en/strategies/scalping",
+        },
+        {
+          n: "02",
+          title: "I Prefer Trades Lasting Days",
+          text: "I prefer periodic monitoring of broader moves and understand the risks of holding positions.",
+          strategy: "Swing Trading Strategy",
+          href: "/en/strategies/swing-trading",
+        },
+        {
+          n: "03",
+          title: "I Want to Understand Price Action",
+          text: "I want to start with trends, swing highs and lows, and support and resistance levels.",
+          strategy: "Price Action Trading Strategy",
+          href: "/en/strategies/price-action",
+        },
+        {
+          n: "04",
+          title: "I Want to Study Structure and Liquidity",
+          text: "I understand basic price action and want to explore Smart Money Concepts in more depth.",
+          strategy: "Smart Money Concepts (SMC)",
+          href: "/en/strategies/smart-money-concepts",
+        },
+      ].map((item) => (
+        <Link
+          key={item.n}
+          href={item.href}
+          className="group relative flex h-full flex-col overflow-hidden rounded-[16px] border border-blue-100 bg-[#f7faff] p-4 transition duration-200 hover:border-blue-300 hover:bg-blue-50 hover:shadow-md sm:rounded-[20px] sm:p-5"
+        >
+          <div className="flex items-center gap-3">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-[#e5efff] text-[12px] font-black text-[#1b5db8] sm:h-10 sm:w-10 sm:text-[14px]">
+              {item.n}
+            </span>
+
+            <h3 className="text-[16px] font-black leading-6 text-[#0b3157] sm:text-[19px] sm:leading-7">
+              {item.title}
+            </h3>
           </div>
+
+          <p className="mt-2 text-[14px] font-medium leading-6 text-slate-700 sm:mt-3 sm:text-[15px] sm:leading-7">
+            {item.text}
+          </p>
+
+          <div className="mt-auto pt-3 sm:pt-4">
+            <div className="flex items-center justify-between gap-2 border-t border-blue-100 pt-3 text-[13px] font-black text-[#1b5db8] sm:text-[15px]">
+              <span>{item.strategy}</span>
+
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white text-[#2471df] transition group-hover:bg-[#2471df] group-hover:text-white">
+                <ArrowIcon />
+              </span>
+            </div>
+          </div>
+        </Link>
+      ))}
+    </div>
+
+    {/* Link to all guides */}
+    <div className="mt-4 flex flex-col gap-3 border-t border-blue-100 pt-4 sm:mt-5 sm:flex-row sm:items-center sm:justify-between sm:gap-5">
+      <p className="text-[13px] font-medium leading-6 text-slate-600 sm:text-[14px]">
+        A style such as swing trading can be combined with price action analysis.
+      </p>
+
+      <a
+        href="#all-strategies"
+        className="inline-flex min-h-[44px] shrink-0 items-center justify-center gap-2 rounded-xl bg-[#2471df] px-4 py-2.5 text-[13px] font-black text-white transition hover:bg-[#1b5db8] sm:px-5 sm:text-[14px]"
+      >
+        Explore All 12 Guides
+        <span aria-hidden="true">↓</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+      {/* =================================================
+    ALL STRATEGIES
+================================================= */}
+
+<section
+  id="all-strategies"
+  className="scroll-mt-24 overflow-hidden rounded-[22px] border border-blue-100 bg-white shadow-[0_8px_28px_rgba(11,49,87,0.06)] sm:rounded-[28px]"
+>
+  <div className="relative border-b border-blue-100 bg-[linear-gradient(250deg,#ffffff_0%,#f3f8ff_65%,#e8f3ff_100%)] px-4 py-5 sm:px-7 sm:py-6 lg:px-8">
+    <div
+      aria-hidden="true"
+      className="absolute bottom-0 left-0 top-0 w-1 bg-gradient-to-b from-[#43baff] to-[#2471df]"
+    />
+
+    <span className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white px-3 py-1.5 text-[11px] font-bold text-[#1b5db8] sm:text-[12px]">
+      <span className="h-1.5 w-1.5 rounded-full bg-[#2471df]" />
+      Trading Strategy Guides
+    </span>
+
+    <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <h2 className="text-[23px] font-black leading-[1.35] text-[#0b3157] sm:text-[28px] lg:text-[32px]">
+        Best Forex Trading Strategies
+      </h2>
+
+      <span className="inline-flex w-fit shrink-0 items-center gap-2 rounded-full border border-blue-200 bg-white px-3 py-1.5 text-[12px] font-bold text-[#1b5db8]">
+        <span className="font-black">{strategies.length}</span>
+        Educational Guides
+      </span>
+    </div>
+
+    <p className="mt-3 max-w-[1150px] text-[14px] font-medium leading-7 text-slate-700 sm:text-[16px] sm:leading-8">
+      Explore how each approach works, its typical timeframes and
+      experience level. Open the guides for practical explanations and
+      risk management; the best fit depends on your trading style and experience.
+    </p>
+  </div>
+
+  <div className="p-3 sm:p-6 lg:p-8">
+    <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-3">
+      {strategies.map((strategy) => (
+        <Link
+          key={strategy.href}
+          href={strategy.href}
+          className="group relative flex h-full flex-col overflow-hidden rounded-[16px] border border-blue-100 bg-white p-4 transition duration-200 hover:border-blue-300 hover:bg-[#f8fbff] hover:shadow-[0_8px_24px_rgba(36,113,223,0.08)] sm:rounded-[20px] sm:p-5"
+        >
+          <div className="flex items-center justify-between gap-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#e5efff] text-[13px] font-black text-[#1b5db8] sm:h-10 sm:w-10 sm:text-[14px]">
+              {strategy.number}
+            </span>
+
+            <span className="min-w-0 text-right text-[11px] font-bold leading-5 text-slate-500 sm:text-[12px]">
+              {strategy.style}
+            </span>
+          </div>
+
+          <h3 className="mt-3 text-[18px] font-black leading-7 text-[#0b3157] transition group-hover:text-[#1b5db8] sm:text-[20px] sm:leading-8">
+            {strategy.title}
+          </h3>
+
+          <p className="mt-2 text-[14px] font-medium leading-6 text-slate-700 sm:text-[15px] sm:leading-7">
+            {strategy.description}
+          </p>
+
+          <div className="mt-auto pt-4">
+            <dl className="grid grid-cols-2 gap-2 rounded-xl bg-[#f3f7fd] p-3">
+              <div>
+                <dt className="text-[11px] font-bold text-slate-500">
+                  Experience Level
+                </dt>
+
+                <dd className="mt-1 text-[12px] font-bold leading-5 text-[#0b3157] sm:text-[13px]">
+                  {strategy.level}
+                </dd>
+              </div>
+
+              <div className="border-l border-blue-100 pl-3">
+                <dt className="text-[11px] font-bold text-slate-500">
+                  Timeframe
+                </dt>
+
+                <dd className="mt-1 text-[12px] font-bold leading-5 text-[#0b3157] sm:text-[13px]">
+                  {strategy.timeframe}
+                </dd>
+              </div>
+            </dl>
+
+            <div className="mt-3 flex items-center justify-between gap-3 border-t border-blue-100 pt-3">
+              <span className="text-[13px] font-black text-[#1b5db8] sm:text-[14px]">
+                Read the Strategy Guide
+              </span>
+
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-blue-50 text-[#2471df] transition group-hover:bg-[#2471df] group-hover:text-white">
+                <ArrowIcon />
+              </span>
+            </div>
+          </div>
+        </Link>
+      ))}
+    </div>
+  </div>
+</section>
+
+{/* =================================================
+    COMPARISON
+================================================= */}
+
+<section
+  id="strategy-comparison"
+  className="scroll-mt-24 overflow-hidden rounded-[22px] border border-blue-100 bg-white shadow-[0_8px_28px_rgba(11,49,87,0.06)] sm:rounded-[28px]"
+>
+  <div className="relative border-b border-blue-100 bg-[linear-gradient(250deg,#ffffff_0%,#f3f8ff_65%,#e8f3ff_100%)] px-4 py-5 sm:px-7 sm:py-6 lg:px-8">
+    <div
+      aria-hidden="true"
+      className="absolute bottom-0 left-0 top-0 w-1 bg-gradient-to-b from-[#43baff] to-[#2471df]"
+    />
+
+    <span className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white px-3 py-1.5 text-[11px] font-bold text-[#1b5db8] sm:text-[12px]">
+      <span className="h-1.5 w-1.5 rounded-full bg-[#2471df]" />
+      Understanding the Differences
+    </span>
+
+    <h2 className="mt-3 text-[23px] font-black leading-[1.35] text-[#0b3157] sm:text-[28px] lg:text-[32px]">
+      Forex Trading Styles and Methods Compared
+    </h2>
+
+    <p className="mt-3 max-w-[1150px] text-[14px] font-medium leading-7 text-slate-700 sm:text-[16px] sm:leading-8">
+      Some approaches define how long you hold a trade; others define
+      how you analyze the market. These comparisons explain the practical
+      differences and where the methods overlap.
+    </p>
+  </div>
+
+  <div className="p-3 sm:p-6 lg:p-8">
+    <div className="grid gap-3 sm:gap-4 lg:grid-cols-2">
+  {[
+    {
+      n: "01",
+      title: "Scalping vs Swing Trading",
+      first: {
+        label: "Scalping",
+        text: "Short trades with close monitoring. Check spreads, fees and execution.",
+        href: "/en/strategies/scalping",
+      },
+      second: {
+        label: "Swing",
+        text: "Longer trades with periodic checks. Watch news, gaps and overnight fees.",
+        href: "/en/strategies/swing-trading",
+      },
+      takeaway:
+        "Choose trade duration to match your available monitoring time.",
+    },
+    {
+      n: "02",
+      title: "Price Action vs Technical Indicators",
+      first: {
+        label: "Price Action",
+        text: "Study price trends, swing points and key levels to understand the market.",
+        href: "/en/strategies/price-action",
+      },
+      second: {
+        label: "Indicators",
+        text: "Study price-based tools for momentum and trends to support your analysis.",
+        href: "/en/strategies/rsi",
+      },
+      takeaway:
+        "Both can work together when each has a clear role in your rules.",
+    },
+    {
+      n: "03",
+      title: "Support and Resistance vs Supply and Demand",
+      first: {
+        label: "Key Levels",
+        text: "Study support and resistance zones for price bounces, breaks and retests.",
+        href: "/en/strategies/support-and-resistance",
+      },
+      second: {
+        label: "Price Zones",
+        text: "Study supply and demand zones through departure moves and previous tests.",
+        href: "/en/strategies/supply-and-demand",
+      },
+      takeaway:
+        "Zones may overlap. Define your entry and stop-loss rules.",
+    },
+    {
+      n: "04",
+      title: "ICT vs Smart Money Concepts",
+      first: {
+        label: "ICT",
+        text: "A framework covering liquidity, structure, fair value gaps and order blocks.",
+        href: "/en/strategies/ict",
+      },
+      second: {
+        label: "SMC",
+        text: "Related concepts covering liquidity and structure, with rules varying by source.",
+        href: "/en/strategies/smart-money-concepts",
+      },
+      takeaway:
+        "Similar terms do not prove identical rules or better results.",
+    },
+  ].map((comparison) => (
+    <article
+      key={comparison.n}
+      className="flex h-full flex-col overflow-hidden rounded-[16px] border border-blue-100 bg-white sm:rounded-[20px]"
+    >
+      {/* Full comparison title */}
+      <div className="flex items-center gap-3 border-b border-blue-100 bg-[#f3f7fd] px-4 py-3 sm:px-5 sm:py-4">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-[#e5efff] text-[12px] font-black text-[#1b5db8] sm:h-9 sm:w-9 sm:text-[13px]">
+          {comparison.n}
+        </span>
+
+        <h3 className="text-[17px] font-black leading-6 text-[#0b3157] sm:text-[20px] sm:leading-7">
+          {comparison.title}
+        </h3>
+      </div>
+
+      {/* Compact side-by-side comparison */}
+      <dl className="grid grid-cols-2">
+        {[comparison.first, comparison.second].map((side, index) => (
+          <div
+            key={side.href}
+            className={`min-w-0 px-3 py-3 sm:px-5 sm:py-4 ${
+              index > 0 ? "border-l border-blue-100" : ""
+            }`}
+          >
+            <dt>
+              <Link
+                href={side.href}
+                className="inline-block whitespace-nowrap text-[13px] font-black leading-6 text-[#1b5db8] transition hover:text-[#2471df] hover:underline sm:text-[16px] sm:leading-7"
+              >
+                {side.label}
+              </Link>
+            </dt>
+
+            <dd className="mt-1.5 text-[13px] font-medium leading-[1.7] text-slate-700 sm:text-[15px] sm:leading-7">
+              {side.text}
+            </dd>
+          </div>
+        ))}
+      </dl>
+
+      {/* Summary */}
+      <div className="mt-auto border-t border-blue-100 bg-[#f8fbff] px-4 py-3 sm:px-5">
+        <p className="text-[13px] font-medium leading-6 text-slate-700 sm:text-[14px]">
+          <span className="font-black text-[#0b3157]">
+            Takeaway:{" "}
+          </span>
+          {comparison.takeaway}
+        </p>
+      </div>
+    </article>
+  ))}
+</div>
+  </div>
+</section>
+
+{/* =================================================
+    LEARNING PATH
+================================================= */}
+
+<section
+  id="forex-learning-path"
+  className="scroll-mt-24 overflow-hidden rounded-[22px] border border-blue-100 bg-white shadow-[0_8px_28px_rgba(11,49,87,0.06)] sm:rounded-[28px]"
+>
+  <div className="relative border-b border-blue-100 bg-[linear-gradient(250deg,#ffffff_0%,#f3f8ff_65%,#e8f3ff_100%)] px-4 py-5 sm:px-7 sm:py-6 lg:px-8">
+    <div
+      aria-hidden="true"
+      className="absolute bottom-0 left-0 top-0 w-1 bg-gradient-to-b from-[#43baff] to-[#2471df]"
+    />
+
+    <span className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white px-3 py-1.5 text-[11px] font-bold text-[#1b5db8] sm:text-[12px]">
+      <span className="h-1.5 w-1.5 rounded-full bg-[#2471df]" />
+      From Learning to Practice
+    </span>
+
+    <h2 className="mt-3 text-[23px] font-black leading-[1.35] text-[#0b3157] sm:text-[28px] lg:text-[32px]">
+      Learn Forex Trading for Beginners
+    </h2>
+
+    <p className="mt-3 max-w-[1150px] text-[14px] font-medium leading-7 text-slate-700 sm:text-[16px] sm:leading-8">
+      Understand the basics, define one strategy and practice on a demo
+      account before considering trading with real money.
+    </p>
+  </div>
+
+  <div className="p-3 sm:p-6 lg:p-8">
+    <ol className="grid list-none gap-3 sm:gap-4 lg:grid-cols-3">
+      {[
+        {
+          n: "01",
+          title: "Understand Price and Trading Costs",
+          text: "Learn about price action, spreads, leverage and margin, and how they affect trading decisions and risk.",
+          label: "Trading Education Hub",
+          href: "/en/learn-trading",
+        },
+        {
+          n: "02",
+          title: "Define One Trading Strategy",
+          text: "Write down entry, stop-loss and exit rules. Define your position size before placing a trade.",
+          label: "Learn Price Action",
+          href: "/en/strategies/price-action",
+        },
+        {
+          n: "03",
+          title: "Test and Record Results",
+          text: "Practice the rules on a demo account and record trades. Demo results do not guarantee similar live performance.",
+          label: "Compare Trading Account Costs",
+          href: "/en/lowest-spread-brokers",
+        },
+      ].map((step) => (
+        <li
+          key={step.n}
+          className="flex h-full gap-3 rounded-[16px] border border-blue-100 bg-[#f8fbff] p-4 sm:rounded-[20px] sm:p-5"
+        >
+          <span
+            aria-hidden="true"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-[#e5efff] text-[12px] font-black text-[#1b5db8] sm:h-10 sm:w-10 sm:text-[14px]"
+          >
+            {step.n}
+          </span>
+
+          <div className="flex min-w-0 flex-1 flex-col">
+            <h3 className="text-[16px] font-black leading-6 text-[#0b3157] sm:text-[19px] sm:leading-7">
+              {step.title}
+            </h3>
+
+            <p className="mt-2 text-[14px] font-medium leading-6 text-slate-700 sm:text-[15px] sm:leading-7">
+              {step.text}
+            </p>
+
+            <div className="mt-auto pt-3">
+              <Link
+                href={step.href}
+                className="group inline-flex min-h-[44px] items-center gap-2 text-[13px] font-black text-[#1b5db8] transition hover:text-[#2471df] sm:text-[14px]"
+              >
+                <span>{step.label}</span>
+
+                <span className="shrink-0 transition group-hover:translate-x-1">
+                  <ArrowIcon />
+                </span>
+              </Link>
+            </div>
+          </div>
+        </li>
+      ))}
+    </ol>
+
+    <div className="relative mt-4 overflow-hidden rounded-[18px] border border-[#174373] bg-[linear-gradient(245deg,#071a31_0%,#0b3157_60%,#0c4279_100%)] p-4 sm:mt-6 sm:rounded-[22px] sm:p-6">
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-6">
+        <div>
+          <span className="text-[11px] font-bold text-[#66c8ff] sm:text-[12px]">
+            Before Opening a Trading Account
+          </span>
+
+          <h3 className="mt-2 text-[20px] font-black leading-[1.4] text-white sm:text-[25px]">
+            Compare Brokers and Accounts for Your Trading Style
+          </h3>
+
+          <p className="mt-2 max-w-[850px] text-[14px] font-medium leading-6 text-blue-100 sm:text-[15px] sm:leading-7">
+            Check regulation, availability in your country, spreads,
+            commissions and withdrawal terms before deciding whether
+            an account meets your needs.
+          </p>
+        </div>
+
+        <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-1">
+          <Link
+            href="/en/lowest-spread-brokers"
+            className="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-xl bg-[#2471df] px-4 py-3 text-center text-[14px] font-black text-white transition hover:bg-[#2e7cea] sm:px-5"
+          >
+            Compare Accounts and Spreads
+            <span className="shrink-0">
+              <ArrowIcon />
+            </span>
+          </Link>
+
+          <Link
+            href="/en/brokers"
+            className="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/[0.07] px-4 py-3 text-center text-[14px] font-black text-white transition hover:bg-white/[0.12] sm:px-5"
+          >
+            Explore Forex Broker Reviews
+            <span className="shrink-0">
+              <ArrowIcon />
+            </span>
+          </Link>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+     {/* =================================================
+    TRADING PLAN AND TESTING
+================================================= */}
+
+<section
+  id="strategy-testing"
+  className="scroll-mt-24 overflow-hidden rounded-[22px] border border-blue-100 bg-white shadow-[0_8px_28px_rgba(11,49,87,0.06)] sm:rounded-[28px]"
+>
+  <div className="relative border-b border-blue-100 bg-[linear-gradient(250deg,#ffffff_0%,#f3f8ff_65%,#e8f3ff_100%)] px-4 py-5 sm:px-7 sm:py-6 lg:px-8">
+    <div
+      aria-hidden="true"
+      className="absolute bottom-0 left-0 top-0 w-1 bg-gradient-to-b from-[#43baff] to-[#2471df]"
+    />
+
+    <span className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white px-3 py-1.5 text-[11px] font-bold text-[#1b5db8] sm:text-[12px]">
+      <span className="h-1.5 w-1.5 rounded-full bg-[#2471df]" />
+      Trading Rules and Performance
+    </span>
+
+    <h2 className="mt-3 text-[23px] font-black leading-[1.35] text-[#0b3157] sm:text-[28px] lg:text-[32px]">
+      How to Test a Forex Trading Strategy
+    </h2>
+
+    <p className="mt-3 max-w-[1150px] text-[14px] font-medium leading-7 text-slate-700 sm:text-[16px] sm:leading-8">
+      Turn your approach into written rules and test them consistently.
+      Evaluate results across a series of trades, including costs,
+      rather than relying on one winning trade or win rate alone.
+    </p>
+  </div>
+
+  <div className="p-4 sm:p-6 lg:p-8">
+    <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
+
+      {/* Trading plan */}
+      <div>
+        <h3 className="text-[18px] font-black leading-7 text-[#0b3157] sm:text-[22px]">
+          How to Build a Forex Trading Plan
+        </h3>
+
+        <dl className="mt-3 divide-y divide-blue-100">
+          {[
+            {
+              title: "Currency Pair and Timeframe",
+              text: "Choose your currency pair, timeframe and market conditions before looking for a trade.",
+            },
+            {
+              title: "Entry Points and Stop Loss",
+              text: "Define entry conditions and stop-loss placement. Skip trades that do not meet your rules.",
+            },
+            {
+              title: "Position Size and Take Profit",
+              text: "Match position size to your risk limit, and define take-profit levels and exit rules in advance.",
+            },
+          ].map((item) => (
+            <div key={item.title} className="py-3">
+              <dt className="text-[15px] font-black leading-6 text-[#1b5db8] sm:text-[17px]">
+                {item.title}
+              </dt>
+
+              <dd className="mt-1 text-[14px] font-medium leading-6 text-slate-700 sm:text-[15px] sm:leading-7 lg:min-h-[56px]">
+                {item.text}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+
+      {/* Performance assessment */}
+      <div>
+        <h3 className="text-[18px] font-black leading-7 text-[#0b3157] sm:text-[22px]">
+          How to Evaluate Strategy Results
+        </h3>
+
+        <dl className="mt-3 divide-y divide-blue-100">
+          {[
+            {
+              title: "Win Rate and Average Profit or Loss",
+              text: "Compare win rate with average gains and losses. A high win rate alone does not establish profitability.",
+            },
+            {
+              title: "Trading Costs and Drawdown",
+              text: "Include spreads, commissions, swaps and slippage. Track account drawdown and consecutive losses.",
+            },
+            {
+              title: "Backtesting and Demo Trading",
+              text: "Test data not used to adjust your rules, then practice on a demo account and record the results.",
+            },
+          ].map((item) => (
+            <div key={item.title} className="py-3">
+              <dt className="text-[15px] font-black leading-6 text-[#1b5db8] sm:text-[17px]">
+                {item.title}
+              </dt>
+
+              <dd className="mt-1 text-[14px] font-medium leading-6 text-slate-700 sm:text-[15px] sm:leading-7 lg:min-h-[56px]">
+                {item.text}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </div>
+
+    {/* Practical example and tools */}
+    <div className="mt-5 overflow-hidden rounded-[16px] border border-blue-100 bg-[#f3f8ff] sm:mt-6 sm:rounded-[20px]">
+      <div className="px-4 py-4 sm:px-5">
+        <p className="text-[14px] font-medium leading-6 text-slate-700 sm:text-[15px] sm:leading-7">
+          <strong className="font-black text-[#0b3157]">
+            Make the rules testable:{" "}
+          </strong>
+          Instead of “buy at support,” define how you identify the zone,
+          what confirms entry and when you avoid the trade. Clear
+          definitions make testing repeatable and results easier to compare.
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-3 border-t border-blue-100 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-5 sm:px-5">
+        <p className="text-[13px] font-medium leading-6 text-slate-600 sm:text-[14px]">
+          Past and demo results do not guarantee future performance.
+          Use the{" "}
+          <Link
+            href="/en/tools/lot-size-calculator"
+            className="font-bold text-[#1b5db8] underline decoration-blue-200 underline-offset-4 transition hover:decoration-blue-500"
+          >
+            lot size calculator
+          </Link>
+          {" "}to estimate position size using your inputs and risk limit.
+        </p>
+
+        <Link
+          href="/en/tools"
+          className="inline-flex min-h-[44px] shrink-0 items-center justify-center gap-2 rounded-xl bg-[#2471df] px-4 py-2.5 text-[13px] font-black text-white transition hover:bg-[#1b5db8] sm:px-5 sm:text-[14px]"
+        >
+          Trading Tools and Calculators
+          <span className="shrink-0">
+            <ArrowIcon />
+          </span>
+        </Link>
+      </div>
+    </div>
+  </div>
+</section>
+
+{/* =================================================
+    FAQ
+================================================= */}
+
+<section
+  id="strategies-faq"
+  className="scroll-mt-24 overflow-hidden rounded-[22px] border border-blue-100 bg-white shadow-[0_8px_28px_rgba(11,49,87,0.06)] sm:rounded-[28px]"
+>
+  <div className="relative border-b border-blue-100 bg-[linear-gradient(250deg,#ffffff_0%,#f3f8ff_65%,#e8f3ff_100%)] px-4 py-5 sm:px-7 sm:py-6 lg:px-8">
+    <div
+      aria-hidden="true"
+      className="absolute bottom-0 left-0 top-0 w-1 bg-gradient-to-b from-[#43baff] to-[#2471df]"
+    />
+
+    <span className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white px-3 py-1.5 text-[11px] font-bold text-[#1b5db8] sm:text-[12px]">
+      <span className="h-1.5 w-1.5 rounded-full bg-[#2471df]" />
+      Frequently Asked Questions
+    </span>
+
+    <h2 className="mt-3 text-[23px] font-black leading-[1.35] text-[#0b3157] sm:text-[28px] lg:text-[32px]">
+      Forex Trading Strategies FAQ
+    </h2>
+  </div>
+
+  <div className="divide-y divide-blue-100 px-4 sm:px-7 lg:px-8">
+    {faqItems.map((item) => (
+      <details
+        key={item.question}
+        className="group py-1"
+      >
+        <summary className="flex min-h-[58px] cursor-pointer list-none items-center justify-between gap-4 py-3 [&::-webkit-details-marker]:hidden">
+          <h3 className="text-[15px] font-black leading-6 text-[#0b3157] transition group-open:text-[#1b5db8] sm:text-[18px] sm:leading-7">
+            {item.question}
+          </h3>
+
+          <span
+            aria-hidden="true"
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-[20px] font-normal leading-none text-[#2471df] transition group-open:rotate-45"
+          >
+            +
+          </span>
+        </summary>
+
+        <p className="max-w-[1100px] pb-4 pr-3 text-[14px] font-medium leading-7 text-slate-700 sm:pb-5 sm:text-[16px] sm:leading-8">
+          {item.answer}
+        </p>
+      </details>
+    ))}
+  </div>
+</section>
+
+{/* =================================================
+    DISCLAIMER
+================================================= */}
+
+<div className="relative overflow-hidden rounded-[18px] border border-blue-100 bg-[#f3f8ff] px-4 py-4 sm:rounded-[22px] sm:px-6 sm:py-5">
+  <div
+    aria-hidden="true"
+    className="absolute bottom-0 left-0 top-0 w-1 bg-[#2471df]"
+  />
+
+  <p className="text-[13px] font-medium leading-6 text-slate-700 sm:text-[14px] sm:leading-7">
+    <strong className="font-black text-[#0b3157]">
+      Risk notice:{" "}
+    </strong>
+    Forex strategy content is educational and does not constitute
+    investment advice or a buy or sell signal. No strategy guarantees
+    profits, and leveraged trading can result in substantial losses.
+    Understand the risks and test your rules on a demo account before
+    trading with real money.
+  </p>
+</div>
         </div>
       </div>
 
