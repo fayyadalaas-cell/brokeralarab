@@ -853,6 +853,24 @@ function ExpandableText({
     `)
     .in("broker_id", [left.id, right.id]);
 
+    const { data: regulatorsData } = await supabase
+  .from("regulators")
+  .select("slug, code, short_name");
+
+const regulatorLinks = new Map<string, string>();
+
+for (const regulator of regulatorsData ?? []) {
+  if (!regulator.slug) continue;
+
+  const href = `/en/licenses/${regulator.slug}`;
+
+  for (const value of [regulator.code, regulator.short_name]) {
+    if (value) {
+      regulatorLinks.set(value.trim().toLowerCase(), href);
+    }
+  }
+}
+
   const licencePriority: Record<string, number> = {
     "Tier 1": 1,
     "Tier 2": 2,
@@ -1171,9 +1189,13 @@ const decisionBrokers = [
             </span>
           </div>
 
-          <h1 className="mt-5 max-w-6xl text-4xl font-black leading-tight text-[#0f172a] lg:text-[52px]">
-            {leftName} vs {rightName}: Which Broker Is Better?
-          </h1>
+          <div
+  role="heading"
+  aria-level={1}
+  className="mt-5 max-w-6xl text-4xl font-black leading-tight text-[#0f172a] lg:text-[52px]"
+>
+  {leftName} vs {rightName}: Which Broker Is Better?
+</div>
 
           <p className="mt-4 max-w-5xl text-base leading-8 text-slate-600 lg:text-lg">
             Compare {leftName} and {rightName} across spreads,
@@ -3049,17 +3071,35 @@ const decisionBrokers = [
                       }`}
                     >
                       {/* Regulator */}
-                      <div className="flex min-h-[88px] flex-col items-center justify-center px-3 py-3">
-                        <span className="font-black text-[#0f172a]">
-                          {licence.regulator_code || "Not specified"}
-                        </span>
+<div className="flex min-h-[88px] flex-col items-center justify-center px-3 py-3">
+  {regulatorLinks.has(
+    (licence.regulator_code || "").trim().toLowerCase()
+  ) ? (
+    <a
+      href={regulatorLinks.get(
+        (licence.regulator_code || "").trim().toLowerCase()
+      )}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="rounded-sm font-black text-[#0f172a] transition-colors hover:text-[#2563eb] hover:underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#2563eb]"
+      aria-label={`Read about ${
+        licence.regulator_code || ""
+      } regulation — opens in a new tab`}
+    >
+      {licence.regulator_code}
+    </a>
+  ) : (
+    <span className="font-black text-[#0f172a]">
+      {licence.regulator_code || "Not specified"}
+    </span>
+  )}
 
-                        {licence.regulator_name_en ? (
-                          <span className="mt-1 max-w-[170px] text-[10px] leading-4 text-slate-400">
-                            {licence.regulator_name_en}
-                          </span>
-                        ) : null}
-                      </div>
+  {licence.regulator_name_en ? (
+    <span className="mt-1 max-w-[170px] text-[10px] leading-4 text-slate-400">
+      {licence.regulator_name_en}
+    </span>
+  ) : null}
+</div>
 
                       {/* Country */}
                       <div className="flex min-h-[88px] items-center justify-center border-l border-[#dbeafe] px-3 py-3">
@@ -3448,10 +3488,27 @@ const decisionBrokers = [
                         <div className="flex items-start justify-between gap-3 bg-[#f8fbff] px-3 py-2.5">
                           <div className="min-w-0">
                             <div className="flex flex-wrap items-center gap-2">
-                              <span className="text-[13px] font-black text-[#0f172a]">
-                                {licence.regulator_code ||
-                                  "Not specified"}
-                              </span>
+                              {regulatorLinks.has(
+  (licence.regulator_code || "").trim().toLowerCase()
+) ? (
+  <a
+    href={regulatorLinks.get(
+      (licence.regulator_code || "").trim().toLowerCase()
+    )}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="rounded-sm text-[13px] font-black text-[#0f172a] transition-colors hover:text-[#2563eb] hover:underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#2563eb]"
+    aria-label={`Read about ${
+      licence.regulator_code || ""
+    } regulation — opens in a new tab`}
+  >
+    {licence.regulator_code}
+  </a>
+) : (
+  <span className="text-[13px] font-black text-[#0f172a]">
+    {licence.regulator_code || "Not specified"}
+  </span>
+)}
 
                               <span
                                 className={`inline-flex shrink-0 rounded-full border px-2 py-0.5 text-[8px] font-black ${licenseTrustClasses(

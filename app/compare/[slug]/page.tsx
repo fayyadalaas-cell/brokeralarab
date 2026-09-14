@@ -762,6 +762,24 @@ export default async function ComparePage({ params }: PageProps) {
   `)
   .in("broker_id", [left.id, right.id]);
 
+  const { data: regulatorsData } = await supabase
+  .from("regulators")
+  .select("slug, code, short_name");
+
+const regulatorLinks = new Map<string, string>();
+
+for (const regulator of regulatorsData ?? []) {
+  if (!regulator.slug) continue;
+
+  const href = `/licenses/${regulator.slug}`;
+
+  for (const value of [regulator.code, regulator.short_name]) {
+    if (value) {
+      regulatorLinks.set(value.trim().toLowerCase(), href);
+    }
+  }
+}
+
 const licensePriority: Record<string, number> = {
   "Tier 1": 1,
   "Tier 2": 2,
@@ -3235,17 +3253,35 @@ const safetyWinner = getSafetyWinner(
               }`}
             >
               {/* Regulator */}
-              <div className="flex min-h-[82px] flex-col items-center justify-center px-3 py-3">
-                <div className="font-black text-[#0f172a]">
-                  {license.regulator_code || "غير محدد"}
-                </div>
+<div className="flex min-h-[82px] flex-col items-center justify-center px-3 py-3">
+  {regulatorLinks.has(
+    (license.regulator_code || "").trim().toLowerCase()
+  ) ? (
+    <a
+      href={regulatorLinks.get(
+        (license.regulator_code || "").trim().toLowerCase()
+      )}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="rounded-sm font-black text-[#0f172a] transition-colors hover:text-[#2563eb] hover:underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#2563eb]"
+      aria-label={`اقرأ عن ترخيص ${
+        license.regulator_code || ""
+      } — يفتح في تبويب جديد`}
+    >
+      {license.regulator_code}
+    </a>
+  ) : (
+    <div className="font-black text-[#0f172a]">
+      {license.regulator_code || "غير محدد"}
+    </div>
+  )}
 
-                {license.regulator_name_ar && (
-                  <div className="mt-1 max-w-[150px] text-[10px] leading-4 text-slate-400">
-                    {license.regulator_name_ar}
-                  </div>
-                )}
-              </div>
+  {license.regulator_name_ar && (
+    <div className="mt-1 max-w-[150px] text-[10px] leading-4 text-slate-400">
+      {license.regulator_name_ar}
+    </div>
+  )}
+</div>
 
               {/* Country */}
               <div className="flex min-h-[82px] items-center justify-center border-r border-[#dbeafe] px-3 py-3">
@@ -3605,10 +3641,27 @@ const safetyWinner = getSafetyWinner(
                       <div className="flex items-start justify-between gap-3 bg-[#f8fbff] px-3 py-2.5">
                         <div className="min-w-0">
                           <div className="flex items-center gap-2">
-                            <span className="text-[13px] font-black text-[#0f172a]">
-                              {license.regulator_code ||
-                                "غير محدد"}
-                            </span>
+                            {regulatorLinks.has(
+  (license.regulator_code || "").trim().toLowerCase()
+) ? (
+  <a
+    href={regulatorLinks.get(
+      (license.regulator_code || "").trim().toLowerCase()
+    )}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="rounded-sm text-[13px] font-black text-[#0f172a] transition-colors hover:text-[#2563eb] hover:underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#2563eb]"
+    aria-label={`اقرأ عن ترخيص ${
+      license.regulator_code || ""
+    } — يفتح في تبويب جديد`}
+  >
+    {license.regulator_code}
+  </a>
+) : (
+  <span className="text-[13px] font-black text-[#0f172a]">
+    {license.regulator_code || "غير محدد"}
+  </span>
+)}
 
                             <span
                               className={`inline-flex shrink-0 rounded-full border px-2 py-0.5 text-[8px] font-black ${licenseTrustClasses(
