@@ -275,16 +275,21 @@ async function getBrokerAccounts(brokerId: number): Promise<BrokerAccount[]> {
   return data as BrokerAccount[];
 }
 
-async function getBrokerLicenses(brokerId: number): Promise<BrokerLicense[]> {
+async function getBrokerLicenses(
+  brokerId: number
+): Promise<BrokerLicense[]> {
   const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("broker_licenses")
     .select("*")
     .eq("broker_id", brokerId)
+    .eq("is_active", true)
     .order("regulator_code", { ascending: true });
 
-  if (error || !data) return [];
+  if (error || !data) {
+    return [];
+  }
 
   return data as BrokerLicense[];
 }
@@ -1689,7 +1694,64 @@ export default async function BrokerPage({
 }
 
 const relatedBrokers = await getRelatedBrokers(slug);
-const accountsData = await getBrokerAccounts(broker.id);
+
+const allAccountsData = await getBrokerAccounts(broker.id);
+
+const isNaga = broker.slug === "naga";
+
+const accountsData = isNaga
+  ? allAccountsData.filter(
+      (account) =>
+        ![
+          "Iron",
+          "Bronze",
+          "Silver",
+          "Gold",
+          "Diamond",
+          "Crystal",
+        ].includes(account.account_name || "")
+    )
+  : allAccountsData;
+
+const nagaVipLevels = [
+  {
+    name: "Iron",
+    points: "250 VIP points",
+    spread: "Standard spreads, example EUR/USD: 1.1 pips",
+    copy: "Up to $0.12 per copied trade",
+  },
+  {
+    name: "Bronze",
+    points: "2,500 VIP points",
+    spread: "Standard spreads, example EUR/USD: 1.1 pips",
+    copy: "Up to $0.15 per copied trade",
+  },
+  {
+    name: "Silver",
+    points: "5,000 VIP points",
+    spread: "Silver spreads, example EUR/USD: 1.1 pips",
+    copy: "Up to $0.18 per copied trade",
+  },
+  {
+    name: "Gold",
+    points: "25,000 VIP points",
+    spread: "Gold spreads, example EUR/USD: 0.9 pips",
+    copy: "Up to $0.22 per copied trade",
+  },
+  {
+    name: "Diamond",
+    points: "50,000 VIP points",
+    spread: "Diamond spreads, example EUR/USD: 0.9 pips",
+    copy: "Up to $0.27 per copied trade",
+  },
+  {
+    name: "Crystal",
+    points: "100,000 VIP points",
+    spread: "VIP spreads, example EUR/USD: 0.7 pips",
+    copy: "Up to $0.32 per copied trade",
+  },
+];
+
 const brokerLicenses = await getBrokerLicenses(broker.id);
   
   const pros = splitText(
@@ -1808,10 +1870,13 @@ const paymentMethods = splitText(
   broker.payment_methods_en
 );
 
-const depositSummary =
-  broker.deposit_withdrawal_summary_en ||
-  broker.deposit_withdrawal_en ||
-  null;
+const depositSummary = isNaga
+  ? broker.deposit_withdrawal_en ||
+    broker.deposit_withdrawal_summary_en ||
+    null
+  : broker.deposit_withdrawal_summary_en ||
+    broker.deposit_withdrawal_en ||
+    null;
 
 const withdrawalSpeed =
   broker.withdrawal_speed_en || null;
@@ -1824,10 +1889,13 @@ const platformTools = splitText(
   broker.platform_tools_en
 );
 
-const platformSummary =
-  broker.platform_summary_en ||
-  broker.platform_details_en ||
-  null;
+const platformSummary = isNaga
+  ? broker.platform_details_en ||
+    broker.platform_summary_en ||
+    null
+  : broker.platform_summary_en ||
+    broker.platform_details_en ||
+    null;
 
 const regulationBodies = splitText(
   broker.regulation
@@ -2977,23 +3045,47 @@ return (
   <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between lg:gap-8">
     <div className="min-w-0 flex-1">
       <h2
-        id="accounts-section-title"
-        className="text-[22px] font-extrabold leading-8 text-slate-950 md:text-2xl"
-      >
-        Account Types at{" "}
-        <bdi>{broker.name_en || broker.name}</bdi>
-      </h2>
+  id="accounts-section-title"
+  className="text-[22px] font-extrabold leading-8 text-slate-950 md:text-2xl"
+>
+  {isNaga ? (
+    <>
+      Trading Account & VIP Levels at{" "}
+      <bdi>{broker.name_en || broker.name}</bdi>
+    </>
+  ) : (
+    <>
+      Account Types at{" "}
+      <bdi>{broker.name_en || broker.name}</bdi>
+    </>
+  )}
+</h2>
 
       <p className="mt-2 text-base font-medium leading-7 text-slate-600 md:text-[17px] md:leading-8">
-        <span className="md:hidden">
-          Compare the accounts and tap an account name for more details.
-        </span>
+  {isNaga ? (
+    <>
+      <span className="md:hidden">
+        Review the NAGA trading account and its VIP user levels.
+      </span>
 
-        <span className="hidden md:inline">
-          Compare the available account conditions and open an account page to
-          review its full details.
-        </span>
-      </p>
+      <span className="hidden md:inline">
+        Review the general NAGA trading account and the benefits linked to
+        each VIP user level.
+      </span>
+    </>
+  ) : (
+    <>
+      <span className="md:hidden">
+        Compare the accounts and tap an account name for more details.
+      </span>
+
+      <span className="hidden md:inline">
+        Compare the available account conditions and open an account page to
+        review its full details.
+      </span>
+    </>
+  )}
+</p>
     </div>
 
     {/* Quick Account Stats */}
@@ -3211,6 +3303,89 @@ return (
       </p>
     )}
   </div>
+
+{isNaga && (
+  <div
+    id="naga-vip-levels"
+    className="mt-6 border-t border-slate-200 pt-5 md:pt-6"
+  >
+    <div className="rounded-2xl border border-brand-100 bg-brand-50/60 px-4 py-4 md:px-5 md:py-5">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <h3 className="text-xl font-extrabold leading-8 text-slate-950 md:text-2xl">
+            NAGA VIP User Levels
+          </h3>
+
+          <p className="mt-1 text-sm leading-6 text-slate-700 md:text-base md:leading-7">
+            These are benefit levels, not separate trading account products.
+            They are linked to VIP points and may affect spreads, copy-trading
+            benefits and additional services.
+          </p>
+        </div>
+
+        <span className="inline-flex w-fit shrink-0 rounded-full border border-brand-200 bg-white px-3 py-1.5 text-[11px] font-bold text-brand-700">
+          VIP User Levels
+        </span>
+      </div>
+    </div>
+
+    <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+      {nagaVipLevels.map((level) => (
+        <article
+          key={level.name}
+          className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5"
+        >
+          <div className="flex items-center justify-between gap-3 border-b border-slate-200 pb-3">
+            <h4 className="text-lg font-extrabold text-slate-950">
+              <bdi>{level.name}</bdi>
+            </h4>
+
+            <span className="shrink-0 rounded-full bg-white px-2.5 py-1 text-[10px] font-bold text-brand-700">
+              <bdi>{level.points}</bdi>
+            </span>
+          </div>
+
+          <dl className="mt-2 divide-y divide-slate-200 text-[13px] leading-6 text-slate-700 md:text-sm">
+            <div className="py-2">
+              <dt className="font-extrabold text-slate-950">
+                Spread Conditions
+              </dt>
+              <dd className="mt-0.5">
+                <bdi>{level.spread}</bdi>
+              </dd>
+            </div>
+
+            <div className="py-2">
+              <dt className="font-extrabold text-slate-950">
+                Copy Trading Benefits
+              </dt>
+              <dd className="mt-0.5">
+                <bdi>{level.copy}</bdi>
+              </dd>
+            </div>
+
+            <div className="py-2">
+              <dt className="font-extrabold text-slate-950">
+                Withdrawal Fees
+              </dt>
+              <dd className="mt-0.5">
+                <bdi>$0</bdi> according to the published VIP table. Banks or
+                payment providers may apply separate charges.
+              </dd>
+            </div>
+          </dl>
+        </article>
+      ))}
+    </div>
+
+    <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-[13px] leading-6 text-slate-700 md:text-sm md:leading-7">
+      VIP levels do not represent minimum deposits or separate trading
+      accounts. The minimum first deposit applies to the general NAGA account.
+      Products, fees and trading conditions may vary by legal entity, client
+      country and financial instrument.
+    </div>
+  </div>
+)}
 
   {/* Account Availability Note from Supabase */}
   {broker.account_availability_note_en?.trim() && (

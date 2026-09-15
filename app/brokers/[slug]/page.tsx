@@ -314,9 +314,12 @@ async function getBrokerLicenses(
     .from("broker_licenses")
     .select("*")
     .eq("broker_id", brokerId)
+    .eq("is_active", true)
     .order("regulator_code", { ascending: true });
 
-  if (error || !data) return [];
+  if (error || !data) {
+    return [];
+  }
 
   return data as BrokerLicense[];
 }
