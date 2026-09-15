@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
+
 type BrokerItem = {
   id: string | number;
   slug: string;
@@ -15,34 +16,40 @@ type BrokerItem = {
 type Props = {
   broker: BrokerItem;
   relatedBrokers: BrokerItem[];
+  locale?: "ar" | "en";
 };
 
 export default function BrokerRelatedComparisons({
   broker,
   relatedBrokers,
+  locale = "ar",
 }: Props) {
   const [offset, setOffset] = useState(0);
-  const visitedSlug = useRef<string | null>(null);
+  const visitedKey = useRef<string | null>(null);
 
-  // إزالة الشركة الحالية وأي شركات مكررة.
+  const isEnglish = locale === "en";
+
+  // Remove the current broker and duplicate companies.
   const candidates = relatedBrokers.filter(
     (item, index, items) =>
+      item.slug &&
       item.slug !== broker.slug &&
       items.findIndex((other) => other.slug === item.slug) === index
   );
 
   const count = candidates.length;
-  console.log("عدد شركات المقارنة المتاحة:", count);
 
   useEffect(() => {
-    if (!count || visitedSlug.current === broker.slug) return;
+    const currentVisitKey = `${locale}:${broker.slug}`;
 
-    visitedSlug.current = broker.slug;
+    if (!count || visitedKey.current === currentVisitKey) return;
 
-    const key = `broker-comparisons:${broker.slug}`;
+    visitedKey.current = currentVisitKey;
+
+    const storageKey = `broker-comparisons:${locale}:${broker.slug}`;
 
     try {
-      const saved = Number(localStorage.getItem(key) || "0");
+      const saved = Number(localStorage.getItem(storageKey) || "0");
 
       const start =
         Number.isSafeInteger(saved) && saved >= 0
@@ -52,113 +59,169 @@ export default function BrokerRelatedComparisons({
       setOffset(start);
 
       localStorage.setItem(
-        key,
+        storageKey,
         String((start + Math.min(3, count)) % count)
       );
     } catch {
-      // عرض أول مجموعة إذا تعذر استخدام التخزين.
       setOffset(0);
     }
-  }, [broker.slug, count]);
+  }, [broker.slug, count, locale]);
 
-  const selected = Array.from(
+  const visibleBrokers = Array.from(
     { length: Math.min(3, count) },
     (_, index) => candidates[(offset + index) % count]
   );
 
-  const currentName = broker.name || broker.name_en || broker.slug;
+  const currentBrokerName = isEnglish
+    ? broker.name_en || broker.name || broker.slug
+    : broker.name || broker.name_en || broker.slug;
 
-  const renderLogo = (item: BrokerItem) => (
-    <div className="flex h-14 w-full items-center justify-center rounded-lg border border-slate-200 bg-white px-3 md:h-16">
-      {item.logo ? (
-        <img
-          src={item.logo}
-          alt={item.name || item.name_en || item.slug}
-          loading="lazy"
-          width={120}
-          height={48}
-          className="h-full w-full object-contain"
-        />
-      ) : (
-        <span className="text-xs font-semibold text-slate-500">
-          {item.name || item.name_en || item.slug}
-        </span>
-      )}
-    </div>
-  );
+  if (!visibleBrokers.length) {
+    return (
+      <p
+        dir={isEnglish ? "ltr" : "rtl"}
+        className={isEnglish ? "text-left text-sm text-slate-500" : "text-right text-sm text-slate-500"}
+      >
+        {isEnglish
+          ? "No broker comparisons are currently available."
+          : "لا توجد مقارنات متاحة حاليًا."}
+      </p>
+    );
+  }
 
   return (
     <div
-      dir="rtl"
+      dir={isEnglish ? "ltr" : "rtl"}
       className="grid gap-3 md:grid-cols-2 xl:grid-cols-3"
     >
-      {selected.length ? (
-        selected.map((item) => {
-          const otherName = item.name || item.name_en || item.slug;
+      {visibleBrokers.map((item) => {
+        const relatedBrokerName = isEnglish
+          ? item.name_en || item.name || item.slug
+          : item.name || item.name_en || item.slug;
 
-          return (
-            <Link
-              key={item.id}
-              href={`/compare/${broker.slug}-vs-${item.slug}`}
-              className="group flex min-w-0 flex-col rounded-xl border border-slate-200 bg-white p-3.5 transition hover:border-brand-200 hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 md:p-4"
-            >
-              {/* الشركة الحالية أولًا دائمًا */}
-              <div className="grid grid-cols-[minmax(0,1fr)_24px_minmax(0,1fr)] items-start gap-2">
-                <div className="min-w-0 text-center">
-                  {renderLogo(broker)}
-                  <div className="mt-1.5 break-words text-xs font-semibold leading-5 text-slate-800">
-                    <bdi>{currentName}</bdi>
-                  </div>
+        const href = isEnglish
+          ? `/en/compare/${broker.slug}-vs-${item.slug}`
+          : `/compare/${broker.slug}-vs-${item.slug}`;
+
+        return (
+          <Link
+            key={item.id}
+            href={href}
+            aria-label={
+              isEnglish
+                ? `Compare ${currentBrokerName} with ${relatedBrokerName}`
+                : `مقارنة ${currentBrokerName} مع ${relatedBrokerName}`
+            }
+            className="group flex min-w-0 flex-col rounded-2xl border border-slate-200 bg-white p-4 transition hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md"
+          >
+            {/* Logos */}
+            <div className="flex items-center gap-3">
+              {/* Current broker */}
+              <div className="min-w-0 flex-1">
+                <div className="flex h-16 w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 shadow-sm">
+                  {broker.logo ? (
+                    <img
+                      src={broker.logo}
+                      alt={`${currentBrokerName} logo`}
+                      loading="lazy"
+                      decoding="async"
+                      className="h-12 w-full scale-[1.55] object-contain"
+                    />
+                  ) : (
+                    <span className="text-[10px] text-slate-400">
+                      {isEnglish ? "No logo" : "لا يوجد شعار"}
+                    </span>
+                  )}
                 </div>
 
-                <span
-                  aria-hidden="true"
-                  className="pt-5 text-center text-[10px] font-semibold text-slate-400"
-                >
-                  VS
-                </span>
-
-                <div className="min-w-0 text-center">
-                  {renderLogo(item)}
-                  <div className="mt-1.5 break-words text-xs font-semibold leading-5 text-slate-800">
-                    <bdi>{otherName}</bdi>
-                  </div>
-                </div>
-              </div>
-
-              <h3 className="mt-3 text-center text-[13px] font-bold leading-6 text-slate-950 md:text-sm">
-                مقارنة <bdi>{currentName}</bdi> مع{" "}
-                <bdi>{otherName}</bdi>
-              </h3>
-
-              <p className="mt-1 text-center text-xs leading-6 text-slate-500">
-                التراخيص، الرسوم، الحسابات ومنصات التداول.
-              </p>
-
-              <div className="mt-auto pt-3">
-                <div className="flex items-center justify-between gap-3 border-t border-slate-100 pt-3">
-                  <span className="min-w-0 text-xs leading-5 text-slate-500">
-                    تقييم <bdi>{otherName}</bdi>
-                  </span>
-
-                  <span className="shrink-0 text-xs font-bold text-slate-950">
-                    <bdi dir="ltr">{item.rating ?? "—"} / 5</bdi>
-                  </span>
-                </div>
-
-                <div className="mt-3 flex min-h-[44px] items-center justify-center gap-2 rounded-lg bg-brand-50 text-xs font-semibold text-brand-600 transition group-hover:bg-brand-100">
-                  عرض المقارنة
-                  <span aria-hidden="true">←</span>
+                <div className="mt-2 truncate text-center text-xs font-semibold text-slate-900">
+                  <bdi>{currentBrokerName}</bdi>
                 </div>
               </div>
-            </Link>
-          );
-        })
-      ) : (
-        <p className="text-xs leading-6 text-slate-500">
-          لا توجد مقارنات متاحة حاليًا.
-        </p>
-      )}
+
+              {/* VS */}
+              <span className="shrink-0 text-[10px] font-semibold uppercase text-slate-400">
+                VS
+              </span>
+
+              {/* Related broker */}
+              <div className="min-w-0 flex-1">
+                <div className="flex h-16 w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 shadow-sm">
+                  {item.logo ? (
+                    <img
+                      src={item.logo}
+                      alt={`${relatedBrokerName} logo`}
+                      loading="lazy"
+                      decoding="async"
+                      className="h-12 w-full scale-[1.55] object-contain"
+                    />
+                  ) : (
+                    <span className="text-[10px] text-slate-400">
+                      {isEnglish ? "No logo" : "لا يوجد شعار"}
+                    </span>
+                  )}
+                </div>
+
+                <div className="mt-2 truncate text-center text-xs font-semibold text-slate-900">
+                  <bdi>{relatedBrokerName}</bdi>
+                </div>
+              </div>
+            </div>
+
+            {/* Comparison title */}
+            <h3 className="mt-4 text-center text-sm font-extrabold leading-6 text-slate-950">
+              {isEnglish ? (
+                <>
+                  Compare <bdi>{currentBrokerName}</bdi> with{" "}
+                  <bdi>{relatedBrokerName}</bdi>
+                </>
+              ) : (
+                <>
+                  مقارنة <bdi>{currentBrokerName}</bdi> مع{" "}
+                  <bdi>{relatedBrokerName}</bdi>
+                </>
+              )}
+            </h3>
+
+            {/* Description */}
+            <p className="mt-1 text-center text-xs leading-6 text-slate-500">
+              {isEnglish
+                ? "Compare regulation, fees, accounts and trading platforms."
+                : "التراخيص، الرسوم، الحسابات ومنصات التداول."}
+            </p>
+
+            {/* Rating */}
+            <div className="mt-4 flex items-center justify-between gap-3 border-t border-slate-100 pt-3">
+              <span className="min-w-0 truncate text-xs text-slate-500">
+                {isEnglish ? (
+                  <>
+                    <bdi>{relatedBrokerName}</bdi> rating
+                  </>
+                ) : (
+                  <>
+                    تقييم <bdi>{relatedBrokerName}</bdi>
+                  </>
+                )}
+              </span>
+
+              <span className="shrink-0 text-xs font-extrabold text-slate-950">
+                {item.rating ?? "—"} / 5
+              </span>
+            </div>
+
+            {/* CTA */}
+            <div className="mt-3 flex min-h-[44px] items-center justify-center gap-2 rounded-lg bg-blue-50 px-3 text-xs font-bold text-brand-600 transition group-hover:bg-blue-100">
+              <span>
+                {isEnglish ? "View comparison" : "عرض المقارنة"}
+              </span>
+
+              <span aria-hidden="true">
+                {isEnglish ? "→" : "←"}
+              </span>
+            </div>
+          </Link>
+        );
+      })}
     </div>
   );
 }
