@@ -1962,35 +1962,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
 
 </section>
 
-{/* PEPPERSTONE PREMIUM BANNER */}
-<div className="mx-auto -my-1 flex w-full max-w-7xl justify-center sm:-my-1.5 sm:py-0">
-  <a
-    href="https://track.pepperstonepartners.com/visit/?bta=44176&nci=7484"
-    target="_blank"
-    rel="sponsored noopener noreferrer"
-    aria-label="Visit Pepperstone"
-    className="
-      group block w-full max-w-[900px]
-      overflow-hidden rounded-[14px]
-      border border-slate-200/80
-      bg-white p-[5px]
-      shadow-[0_8px_24px_rgba(15,23,42,0.075)]
-      transition duration-300
-      hover:-translate-y-[1px]
-      hover:border-slate-300
-      hover:shadow-[0_12px_30px_rgba(15,23,42,0.10)]
-      sm:max-w-[820px]
-    "
-  >
-    <img
-      src="https://pepperstonepartners.ck-cdn.com/tn/serve/?cid=687947"
-      width="728"
-      height="90"
-      alt="Pepperstone"
-      className="block h-auto w-full rounded-[10px] object-contain sm:h-[82px] sm:object-cover"
-    />
-  </a>
-</div>
+
 
 {/* ACCOUNT TYPES HOME SECTION - COMPACT PREMIUM ENGLISH */}
 <section className="mx-auto w-full max-w-7xl px-0 py-2.5 sm:py-3">
@@ -2155,6 +2127,36 @@ function eventCountdown(start?: string | null, end?: string | null) {
 
   </div>
 </section>
+
+{/* PEPPERSTONE PREMIUM BANNER */}
+<div className="mx-auto -my-1 flex w-full max-w-7xl justify-center sm:-my-1.5 sm:py-0">
+  <a
+    href="https://track.pepperstonepartners.com/visit/?bta=44176&nci=7484"
+    target="_blank"
+    rel="sponsored noopener noreferrer"
+    aria-label="Visit Pepperstone"
+    className="
+      group block w-full max-w-[900px]
+      overflow-hidden rounded-[14px]
+      border border-slate-200/80
+      bg-white p-[5px]
+      shadow-[0_8px_24px_rgba(15,23,42,0.075)]
+      transition duration-300
+      hover:-translate-y-[1px]
+      hover:border-slate-300
+      hover:shadow-[0_12px_30px_rgba(15,23,42,0.10)]
+      sm:max-w-[820px]
+    "
+  >
+    <img
+      src="https://pepperstonepartners.ck-cdn.com/tn/serve/?cid=687947"
+      width="728"
+      height="90"
+      alt="Pepperstone"
+      className="block h-auto w-full rounded-[10px] object-contain sm:h-[82px] sm:object-cover"
+    />
+  </a>
+</div>
 
 {/* WHY TRUST BROKER ALARAB - COMPACT PREMIUM */}
 <section className="mx-auto w-full max-w-7xl px-0 py-2.5 sm:py-3">
@@ -3170,6 +3172,44 @@ const selectedEvents = eventList.slice(0, 3);
       ====================================================== */}
       <MarketHoursSidebarEn />
 
+{/* =====================================================
+          ONEROYAL SPONSORED SIDEBAR AD
+      ====================================================== */}
+      <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white p-2 shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
+
+        <div className="mb-2 flex items-center justify-between px-1">
+
+          <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[8px] font-black text-slate-500">
+            Advertisement
+          </span>
+
+          <span className="text-[10px] font-bold text-slate-600">
+            OneRoyal
+          </span>
+
+        </div>
+
+        <a
+          href="https://vc.cabinet.oneroyal.com/links/go/15855"
+          target="_blank"
+          rel="nofollow sponsored noopener noreferrer"
+          aria-label="Open a trading account with OneRoyal"
+          className="group block overflow-hidden rounded-[16px] bg-white"
+        >
+
+          <img
+            src="https://vc.cabinet.oneroyal.com/uploads/public/banners/2024/01/25/b7a653ad68c699083b38e7f823a1a35f.png"
+            width="300"
+            height="250"
+            alt="OneRoyal trading account advertisement"
+            title="Open a trading account with OneRoyal"
+            loading="lazy"
+            className="mx-auto block h-auto w-full max-w-[300px] object-contain transition duration-300 group-hover:scale-[1.02]"
+          />
+
+        </a>
+
+      </div>
 
       {/* =====================================================
           LICENSES
@@ -3446,46 +3486,36 @@ const selectedEvents = eventList.slice(0, 3);
 
       </div>
 
+{/* XS.COM SPONSORED SIDEBAR AD */}
+<div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white p-2 shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
+  <div className="mb-2 flex items-center justify-between px-1">
+    <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[8px] font-black text-slate-500">
+      Advertisement
+    </span>
 
-      {/* =====================================================
-          ONEROYAL SPONSORED SIDEBAR AD
-      ====================================================== */}
-      <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white p-2 shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
+    <span className="text-[10px] font-bold text-slate-600">
+      XS.com
+    </span>
+  </div>
 
-        <div className="mb-2 flex items-center justify-between px-1">
-
-          <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[8px] font-black text-slate-500">
-            Advertisement
-          </span>
-
-          <span className="text-[10px] font-bold text-slate-600">
-            OneRoyal
-          </span>
-
-        </div>
-
-        <a
-          href="https://vc.cabinet.oneroyal.com/links/go/15855"
-          target="_blank"
-          rel="nofollow sponsored noopener noreferrer"
-          aria-label="Open a trading account with OneRoyal"
-          className="group block overflow-hidden rounded-[16px] bg-white"
-        >
-
-          <img
-            src="https://vc.cabinet.oneroyal.com/uploads/public/banners/2024/01/25/b7a653ad68c699083b38e7f823a1a35f.png"
-            width="300"
-            height="250"
-            alt="OneRoyal trading account advertisement"
-            title="Open a trading account with OneRoyal"
-            loading="lazy"
-            className="mx-auto block h-auto w-full max-w-[300px] object-contain transition duration-300 group-hover:scale-[1.02]"
-          />
-
-        </a>
-
-      </div>
-
+  <a
+    href="https://my.xs.com/links/go/5611"
+    target="_blank"
+    rel="nofollow sponsored noopener noreferrer"
+    aria-label="Open a trading account with XS.com"
+    className="group block overflow-hidden rounded-[16px] bg-white"
+  >
+    <img
+      src="/brokers/xs-banner-en.gif"
+      width="250"
+      height="360"
+      alt="XS.com financial markets trading advertisement"
+      title="Trade financial markets with XS.com"
+      loading="lazy"
+      className="block aspect-[25/36] w-full object-fill transition duration-300 group-hover:scale-[1.02]"
+    />
+  </a>
+</div>
 
       {/* =====================================================
           TRADING TERMS
