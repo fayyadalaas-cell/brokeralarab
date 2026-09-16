@@ -3523,40 +3523,6 @@ const whyBrokerAlarabItems = [
 </div>
 </div>
 
-      {/* MULTIBANK SPONSORED SIDEBAR AD */}
-<div className="px-3 pt-3">
-  <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white p-2 shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
-    <div className="mb-2 flex items-center justify-between px-1">
-      <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[8px] font-black text-slate-500">
-        إعلان
-      </span>
-
-      <span className="text-[10px] font-bold text-slate-600">
-         MultiBank Group
-      </span>
-    </div>
-
-    <a
-      href="https://trade.multibankfx.com/register?ibNum=9951544&utm_source=ib-media-generator&utm_media=300x250&utm_term=9951544"
-      target="_blank"
-      rel="nofollow sponsored noopener noreferrer"
-      aria-label="فتح حساب تداول حقيقي مع MultiBank Group"
-      className="group block overflow-hidden rounded-[16px] bg-[#081528]"
-    >
-      <img
-        src="https://my.multibankfx.com/build/client/images/ib-media/2/ar-300x250.png"
-        width="300"
-        height="250"
-        alt="إعلان MultiBank Group لفتح حساب تداول حقيقي"
-        title="فتح حساب تداول حقيقي مع MultiBank Group"
-        loading="lazy"
-        className="mx-auto block h-auto w-full max-w-[300px] object-contain transition duration-300 group-hover:scale-[1.015]"
-      />
-    </a>
-
-     </div>
-</div>
-
     </div>
   </aside>
 
