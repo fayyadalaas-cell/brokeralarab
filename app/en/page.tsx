@@ -820,7 +820,7 @@ function eventCountdown(start?: string | null, end?: string | null) {
       {/* ACTIONS */}
       <div className="mt-3 flex flex-col items-stretch justify-center gap-2 sm:mt-5 sm:flex-row sm:items-center sm:gap-3 lg:mt-6 lg:justify-start">
         <a
-          href="#finder"
+  href="/en/brokers"
           className="group inline-flex min-h-[46px] items-center justify-center gap-3 rounded-[13px] bg-[linear-gradient(135deg,#2878e5_0%,#1664cf_100%)] px-5 text-[12px] font-black text-white shadow-[0_14px_30px_rgba(20,105,220,0.32)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_42px_rgba(20,105,220,0.42)] sm:min-h-[50px] sm:min-w-[180px] sm:px-6 sm:text-[13px]"
         >
           Explore Brokers
