@@ -430,7 +430,7 @@ export default async function HomePage() {
     (a, b) =>
       Number(b.rating || 0) - Number(a.rating || 0)
   )
-  .slice(0, 9);
+  .slice(0, 7);
 
   const footerFeaturedBrokers = brokers
   .filter((broker) => broker.logo && broker.slug && (broker.name_en || broker.name))
