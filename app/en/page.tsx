@@ -2477,7 +2477,7 @@ const selectedEvents = eventList.slice(0, 3);
                   href={`/en/events/${event.slug}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-2 inline-flex min-h-[38px] w-full items-center justify-center rounded-xl border border-brand-200 bg-brand-50 px-3 text-[11px] font-black text-brand-600 transition duration-300 hover:-translate-y-0.5 hover:border-brand-500 hover:bg-brand-500 hover:text-white sm:min-h-[40px] sm:text-[12px]"
+                  className="mt-auto inline-flex min-h-[38px] w-full items-center justify-center rounded-xl border border-brand-200 bg-brand-50 px-3 text-[11px] font-black text-brand-600 transition duration-300 hover:-translate-y-0.5 hover:border-brand-500 hover:bg-brand-500 hover:text-white sm:min-h-[40px] sm:text-[12px]"
                 >
                   View Event Details
 
