@@ -1063,7 +1063,7 @@ if (
           </span>
 
           <span className="inline-flex min-h-[31px] items-center rounded-full border border-slate-200 bg-white/90 px-4 text-[11px] font-black text-slate-600 shadow-sm">
-            آخر تحديث: يوليو 2026
+            آخر تحديث: سبتمبر 2026
           </span>
         </div>
 

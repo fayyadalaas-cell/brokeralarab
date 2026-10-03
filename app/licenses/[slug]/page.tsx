@@ -453,7 +453,7 @@ const regulatorSchema = {
             <div className="mt-4 flex flex-wrap justify-center gap-2">
   {[
     "تم التحقق من السجل الرسمي",
-    "آخر تحديث: يونيو 2026",
+    "آخر تحديث: سبتمبر 2026",
     `${brokerGroups.length} شركة مرخصة`,
   ].map((item) => (
     <span
