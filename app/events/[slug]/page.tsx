@@ -511,7 +511,7 @@ export default async function Page({
             )}
 
             <div
-              className="mt-5 hidden rounded-2xl border border-slate-200 bg-slate-50 p-5 text-justify text-sm leading-8 text-slate-700 md:block [&_p]:mb-4 [&_strong]:font-normal [&_strong]:text-slate-700"
+              className="mt-5 hidden rounded-2xl border border-slate-200 bg-slate-50 p-5 text-justify text-sm leading-8 text-slate-700 md:block [&_p]:mb-4 [&_strong]:font-black [&_strong]:text-slate-900 [&_a]:font-black [&_a]:text-blue-600 [&_a]:underline [&_a]:underline-offset-4 [&_a]:transition-colors hover:[&_a]:text-blue-800"
               dangerouslySetInnerHTML={{
                 __html: release.content,
               }}
@@ -525,7 +525,7 @@ export default async function Page({
               </summary>
 
               <div
-                className="mt-5 text-justify text-[13px] leading-8 text-slate-700 [&_p]:mb-4 [&_strong]:font-normal [&_strong]:text-slate-700"
+                className="mt-5 text-justify text-[13px] leading-8 text-slate-700 [&_p]:mb-4 [&_strong]:font-black [&_strong]:text-slate-900 [&_a]:font-black [&_a]:text-blue-600 [&_a]:underline [&_a]:underline-offset-4 [&_a]:transition-colors hover:[&_a]:text-blue-800"
                 dangerouslySetInnerHTML={{
                   __html: release.content,
                 }}
