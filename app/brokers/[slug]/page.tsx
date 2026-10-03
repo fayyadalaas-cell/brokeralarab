@@ -424,7 +424,9 @@ export async function generateMetadata({
           },
         },
 
-    alternates: {
+    alternates: isPreview
+  ? undefined
+  : {
       canonical: canonicalUrl,
       languages: {
         ar: canonicalUrl,
