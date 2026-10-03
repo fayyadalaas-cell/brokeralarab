@@ -638,33 +638,23 @@ function eventCountdown(start?: string | null, end?: string | null) {
 {/* HERO - FINTECH ENGLISH */}
 <section className="relative overflow-hidden border-b border-[#173b70] bg-[linear-gradient(135deg,#eef5ff_0%,#dceaff_48%,#c9ddfb_100%)]">
   {(() => {
-    const allHeroBrokers = Array.from(
-      ((brokers || []) as Broker[]).reduce((acc, broker) => {
-        if (!broker || !broker.name) return acc;
+    // الشركات التي تريد عرضها في الهيرو، بالترتيب
+const heroBrokerIds = [1, 2, 18, 14, 25, 6];
 
-        const key = String(broker.name).trim().toLowerCase();
-        const existing = acc.get(key);
-
-        if (
-          !existing ||
-          Number(broker.rating || 0) > Number(existing.rating || 0)
-        ) {
-          acc.set(key, broker);
-        }
-
-        return acc;
-      }, new Map<string, Broker>()).values()
-    )
-      .sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0))
-      .map((broker) => ({
-        id: broker.id,
-        name: broker.name_en || broker.name || "Trading Broker",
-        slug: broker.slug || "",
-        rating: broker.rating
-          ? Number(broker.rating).toFixed(2)
-          : "—",
-        logo: broker.logo || null,
-      }));
+const allHeroBrokers = heroBrokerIds
+  .map((id) =>
+    brokers.find((broker) => Number(broker.id) === id)
+  )
+  .filter((broker): broker is Broker => Boolean(broker))
+  .map((broker) => ({
+    id: broker.id,
+    name: broker.name_en || broker.name || "Trading Broker",
+    slug: broker.slug || "",
+    rating: broker.rating
+      ? Number(broker.rating).toFixed(2)
+      : "—",
+    logo: broker.logo || null,
+  }));
 
     return (
       <>
