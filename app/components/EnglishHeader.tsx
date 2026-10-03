@@ -207,7 +207,7 @@ export default function EnglishHeader({
     >
       <div className="mx-auto w-full max-w-[1560px] px-4 sm:px-6 lg:px-8">
         <div
-          className="relative flex h-16 items-center justify-between lg:h-20"
+          className="relative flex h-16 items-center justify-between 2xl:h-20"
           dir="ltr"
         >
           <a
@@ -221,11 +221,11 @@ export default function EnglishHeader({
     width={300}
     height={90}
     priority
-    className="h-auto w-[130px] sm:w-[155px] lg:w-[180px]"
+    className="h-auto w-[130px] sm:w-[155px] 2xl:w-[180px]"
   />
 </a>
 
-          <nav className="mx-8 hidden flex-1 items-center justify-evenly gap-2 lg:flex xl:mx-12 xl:gap-4">
+          <nav className="mx-8 hidden flex-1 items-center justify-evenly gap-2 2xl:flex xl:mx-12 xl:gap-4">
             {/* REVIEWS */}
             <div className="group relative">
               <Link href="/en/brokers" className={mainLinkClass}>
@@ -802,7 +802,7 @@ export default function EnglishHeader({
             </Link>
           </nav>
 
-          <div className="hidden min-w-[125px] items-center justify-start pl-3 lg:flex xl:pl-5">
+          <div className="hidden min-w-[125px] items-center justify-start pl-3 2xl:flex xl:pl-5">
             <Link
               href="/"
               className="inline-flex items-center rounded-full border border-blue-300 bg-white px-3 py-1.5 text-[12px] font-bold text-brand-600 shadow-sm transition hover:border-blue-400 hover:bg-brand-50"

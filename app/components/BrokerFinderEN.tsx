@@ -700,13 +700,13 @@ export default function BrokerFinder({ brokers, countryRankings = [] }: Props) {
                     <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-brand-400 via-brand-500 to-brand-600" />
                   )}
 
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex min-w-0 flex-1 items-center gap-4">
+                  <div className="flex items-start justify-between gap-4 md:max-xl:relative md:max-xl:gap-2">
+                    <div className="flex min-w-0 flex-1 items-center gap-4 md:max-xl:w-full md:max-xl:flex-none md:max-xl:flex-col md:max-xl:gap-0">
                       <Link
                         href={`/en/brokers/${broker.slug}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex h-[78px] w-[78px] shrink-0 items-center justify-center overflow-hidden rounded-[24px] border border-slate-200 bg-white p-2 shadow-[0_12px_28px_rgba(15,23,42,0.08)] transition hover:scale-[1.03]"
+                        className="flex h-[78px] w-[78px] shrink-0 items-center justify-center overflow-hidden rounded-[24px] border border-slate-200 bg-white p-2 shadow-[0_12px_28px_rgba(15,23,42,0.08)] transition hover:scale-[1.03] md:max-xl:h-[60px] md:max-xl:w-[60px] md:max-xl:self-start"
                       >
                         {broker.logo ? (
                           <img
@@ -721,7 +721,7 @@ export default function BrokerFinder({ brokers, countryRankings = [] }: Props) {
                         )}
                       </Link>
 
-                      <div className="flex min-h-[78px] min-w-0 flex-1 flex-col justify-center">
+                      <div className="flex min-h-[78px] min-w-0 flex-1 flex-col justify-center md:max-xl:min-h-0 md:max-xl:w-full md:max-xl:flex-none md:max-xl:items-center md:max-xl:text-center md:max-xl:-mt-1">
                         <div className="flex items-start gap-2">
                           <span className="inline-flex h-7 min-w-7 shrink-0 items-center justify-center rounded-full bg-brand-500 px-2 text-xs font-black text-white">
                             {index + 1}
@@ -731,7 +731,7 @@ export default function BrokerFinder({ brokers, countryRankings = [] }: Props) {
                             href={`/en/brokers/${broker.slug}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="block max-w-[170px] leading-[1.15] text-[20px] font-black text-[#07111f] transition hover:text-brand-500"
+                            className="block max-w-[170px] leading-[1.15] text-[20px] font-black text-[#07111f] transition hover:text-brand-500 md:max-xl:min-w-0 md:max-xl:flex-1 md:max-xl:break-words"
                             title={name}
                           >
                             {name}
@@ -746,8 +746,8 @@ export default function BrokerFinder({ brokers, countryRankings = [] }: Props) {
                       </div>
                     </div>
 
-                    <div className="shrink-0 rounded-[24px] border border-brand-100 bg-brand-50 px-4 py-3 text-center">
-                      <div className="text-2xl font-black text-brand-600">
+                    <div className="shrink-0 rounded-[24px] border border-brand-100 bg-brand-50 px-4 py-3 text-center md:max-xl:absolute md:max-xl:right-0 md:max-xl:top-0 md:max-xl:rounded-xl md:max-xl:px-1.5 md:max-xl:py-1">
+                      <div className="text-2xl font-black text-brand-600 md:max-xl:text-lg md:max-xl:leading-5">
                         {broker.countryRating?.toFixed(2) ??
                           broker.rating?.toFixed(2) ??
                           "—"}
@@ -840,9 +840,9 @@ export default function BrokerFinder({ brokers, countryRankings = [] }: Props) {
                       href={openAccountHref}
                       target="_blank"
                       rel="noopener noreferrer sponsored"
-                      className="inline-flex items-center justify-center rounded-[16px] bg-gradient-to-r from-brand-500 to-brand-600 px-4 py-3 text-sm font-extrabold text-white shadow-[0_14px_28px_rgba(37,99,235,0.28)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_36px_rgba(37,99,235,0.34)]"
+                      className="inline-flex items-center justify-center rounded-[16px] bg-gradient-to-r from-brand-500 to-brand-600 px-4 py-3 text-sm font-extrabold text-white shadow-[0_14px_28px_rgba(37,99,235,0.28)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_36px_rgba(37,99,235,0.34)] md:max-xl:whitespace-nowrap md:max-xl:px-2"
                     >
-                      Open Live Account
+                      <span>Open <span className="md:max-xl:hidden">Live </span>Account</span>
                     </Link>
                   </div>
                 </article>

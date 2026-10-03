@@ -315,7 +315,7 @@ broker_2:broker_2_id (
   .not("slug", "is", null)
   .not("title", "is", null)
   .order("views_count", { ascending: false })
-  .limit(3),
+  .limit(4),
 
     supabase
   .from("country_broker_rankings")
@@ -1449,7 +1449,7 @@ const whyBrokerAlarabItems = [
     {/* =====================================================
         DESKTOP / TABLET
     ====================================================== */}
-    <div className="hidden gap-3 px-4 pb-4 pt-3 md:grid md:grid-cols-2 xl:grid-cols-3 xl:px-5">
+    <div className="hidden gap-3 px-4 pb-4 pt-3 md:grid md:grid-cols-2 xl:px-5">
       {topComparisons.map((cmp, index) => (
         <article
           key={cmp.id}
@@ -2492,14 +2492,14 @@ const whyBrokerAlarabItems = [
           {/* =====================================================
               MOBILE ONLY
           ====================================================== */}
-          <div className="sm:hidden">
+          <div className="xl:hidden">
             {/* MOBILE HEADER */}
             <div className="border-b border-slate-100 bg-gradient-to-b from-[#f8fbff] to-[#eef5ff] px-4 pb-3 pt-3.5 text-center">
               <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[10px] font-black text-brand-500 shadow-sm">
                 الأعلى تقييمًا
               </span>
 
-              <h2 className="mx-auto mt-2 max-w-[310px] text-[24px] font-black leading-[1.12] tracking-[-0.02em] text-[#07111f]">
+              <h2 className="mx-auto mt-2 max-w-[310px] text-[24px] font-black leading-[1.12] tracking-[-0.02em] text-[#07111f] md:max-w-none md:whitespace-nowrap">
                 أفضل الوسطاء في بروكر العرب
               </h2>
 
@@ -2532,7 +2532,7 @@ const whyBrokerAlarabItems = [
                   key={broker.id}
                   className="
                     group relative
-                    w-[145px] min-w-[145px]
+                    w-[145px] min-w-[145px] shrink-0 md:w-[300px] md:min-w-[300px]
                     snap-start
                     overflow-hidden
                     rounded-[16px]
@@ -2615,7 +2615,7 @@ const whyBrokerAlarabItems = [
               DESKTOP / TABLET
               YOUR CURRENT DESIGN - UNCHANGED
           ====================================================== */}
-          <div className="hidden sm:block">
+          <div className="hidden xl:block">
             {/* HEADER */}
             <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-6 py-5">
               <div className="flex items-center justify-between gap-8">

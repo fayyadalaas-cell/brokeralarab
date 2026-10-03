@@ -148,7 +148,7 @@ export default function ArabicHeader({
     wide ? "max-w-[1560px]" : "max-w-7xl"
   } px-4 sm:px-6 lg:px-8`}
 >
-        <div dir="rtl" className="relative flex h-16 items-center justify-between lg:h-20">
+        <div dir="rtl" className="relative flex h-16 items-center justify-between 2xl:h-20">
           <a
   href="/"
   aria-label="العودة إلى الصفحة الرئيسية"
@@ -160,12 +160,12 @@ export default function ArabicHeader({
     width={500}
     height={160}
     priority
-    className="h-auto w-[130px] sm:w-[155px] lg:w-[180px]"
+    className="h-auto w-[130px] sm:w-[155px] 2xl:w-[180px]"
   />
 </a>
 
           <nav
-  className={`hidden items-center justify-center lg:flex ${
+  className={`hidden items-center justify-center 2xl:flex ${
     wide
       ? "mx-8 flex-1 justify-evenly gap-2 xl:mx-12 xl:gap-4"
       : "flex-1 gap-0.5 xl:gap-1"
@@ -662,7 +662,7 @@ export default function ArabicHeader({
             </Link>
           </nav>
 
-          <div className="hidden min-w-[105px] items-center justify-start lg:flex">
+          <div className="hidden min-w-[105px] items-center justify-start 2xl:flex">
             <Link
               href="/en"
               className="inline-flex items-center rounded-full border border-blue-300 bg-white px-3 py-1.5 text-[12px] font-bold text-brand-600 shadow-sm transition hover:border-blue-400 hover:bg-brand-50"

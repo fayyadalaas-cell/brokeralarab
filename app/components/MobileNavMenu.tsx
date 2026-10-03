@@ -405,7 +405,7 @@ allTools: isEnglish ? "View All Tools" : "عرض جميع الأدوات",
   };
 
   return (
-    <div className="lg:hidden">
+    <div className="2xl:hidden">
       <button
         type="button"
         aria-label={isOpen ? text.close : text.open}
