@@ -5,6 +5,7 @@ import Script from "next/script";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import SmoothFollowSidebar from "@/app/components/SmoothFollowSidebar";
+import ExpandableCountryText from "./ExpandableCountryText";
 
 export const dynamic = "force-dynamic";
 
@@ -25,6 +26,7 @@ type CountryPage = {
   currency: string | null;
   regulator_name: string | null;
   regulator_url: string | null;
+
   hero_title: string | null;
   hero_description: string | null;
   seo_title: string | null;
@@ -34,9 +36,42 @@ type CountryPage = {
   hero_intro: string | null;
   risk_warning: string | null;
   comparison_intro: string | null;
+
   last_updated: string | null;
   ar_enabled: boolean | null;
   en_enabled: boolean | null;
+
+  /* =======================================================
+     OPTIONAL ENHANCED COUNTRY CONTENT
+     يظهر فقط عندما يكون الحقل معبأ في Supabase
+  ======================================================= */
+
+  regulation_details_ar: string | null;
+  regulation_details_en: string | null;
+
+  how_to_choose_broker_ar: string | null;
+  how_to_choose_broker_en: string | null;
+
+  investor_protection_ar: string | null;
+  investor_protection_en: string | null;
+
+  trading_costs_ar: string | null;
+  trading_costs_en: string | null;
+
+  islamic_trading_ar: string | null;
+  islamic_trading_en: string | null;
+
+  banking_details_ar: string | null;
+  banking_details_en: string | null;
+
+  tax_details_ar: string | null;
+  tax_details_en: string | null;
+
+  popular_markets_ar: string | null;
+  popular_markets_en: string | null;
+
+  local_trading_tips_ar: string | null;
+  local_trading_tips_en: string | null;
 };
 
 type Broker = {
@@ -1071,6 +1106,207 @@ function HeroSection({
             ))}
           </div>
         </div>
+      </div>
+    </section>
+  );
+}
+
+/* =========================================================
+   OPTIONAL ENHANCED COUNTRY CONTENT
+   يظهر فقط للدول التي تحتوي على بيانات إضافية في Supabase
+========================================================= */
+
+/* =========================================================
+   OPTIONAL ENHANCED COUNTRY CONTENT
+   يظهر فقط للدول التي تحتوي على بيانات إضافية في Supabase
+========================================================= */
+
+function EnhancedCountryContent({
+  page,
+}: {
+  page: CountryPage;
+}) {
+  const sections = [
+    {
+      key: "regulation",
+      eyebrow: "التنظيم المحلي",
+      title: `تنظيم تداول الفوركس في ${page.country_name_ar}`,
+      content: page.regulation_details_ar,
+      icon: "⚖",
+    },
+    {
+      key: "choose-broker",
+      eyebrow: "اختيار الوسيط",
+      title: `كيف تختار شركة تداول في ${page.country_name_ar}؟`,
+      content: page.how_to_choose_broker_ar,
+      icon: "✓",
+    },
+    {
+      key: "investor-protection",
+      eyebrow: "الأمان والحماية",
+      title: `حماية أموال المتداولين في ${page.country_name_ar}`,
+      content: page.investor_protection_ar,
+      icon: "🛡",
+    },
+    {
+      key: "trading-costs",
+      eyebrow: "التكاليف",
+      title: `تكاليف التداول في ${page.country_name_ar}`,
+      content: page.trading_costs_ar,
+      icon: "$",
+    },
+    {
+      key: "islamic-trading",
+      eyebrow: "الحسابات الإسلامية",
+      title: `الحسابات الإسلامية للمتداولين في ${page.country_name_ar}`,
+      content: page.islamic_trading_ar,
+      icon: "☾",
+    },
+    {
+      key: "banking",
+      eyebrow: "الإيداع والسحب",
+      title: `الإيداع والسحب للمتداولين في ${page.country_name_ar}`,
+      content: page.banking_details_ar,
+      icon: "↔",
+    },
+    {
+      key: "tax",
+      eyebrow: "اعتبارات محلية",
+      title: `الضرائب والاعتبارات المالية في ${page.country_name_ar}`,
+      content: page.tax_details_ar,
+      icon: "%",
+    },
+    {
+  key: "markets",
+  eyebrow: "الأسواق",
+  title:
+    page.slug === "saudi-arabia"
+      ? "تداول الذهب والفوركس في السعودية"
+      : `الأسواق الأكثر تداولًا في ${page.country_name_ar}`,
+  content: page.popular_markets_ar,
+  icon: "↗",
+},
+    {
+      key: "local-tips",
+      eyebrow: "قبل فتح الحساب",
+      title: `نصائح للمتداولين في ${page.country_name_ar}`,
+      content: page.local_trading_tips_ar,
+      icon: "!",
+    },
+  ].filter(
+    (
+      section,
+    ): section is {
+      key: string;
+      eyebrow: string;
+      title: string;
+      content: string;
+      icon: string;
+    } => Boolean(section.content?.trim()),
+  );
+
+  if (!sections.length) {
+    return null;
+  }
+
+  return (
+    <section
+      id="local-trading-guide"
+      className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_14px_38px_rgba(15,23,42,0.055)] sm:rounded-[28px]"
+    >
+      {/* HEADER */}
+      <div className="relative overflow-hidden border-b border-slate-200 bg-[linear-gradient(135deg,#ffffff_0%,#f5f9ff_58%,#edf5ff_100%)] px-4 py-5 sm:px-6 sm:py-6">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0"
+        >
+          <div className="absolute -right-24 -top-28 h-[240px] w-[240px] rounded-full bg-brand-100/50 blur-[90px]" />
+          <div className="absolute -left-20 bottom-[-150px] h-[220px] w-[220px] rounded-full bg-blue-100/40 blur-[90px]" />
+        </div>
+
+        <div className="relative">
+          <span className="inline-flex min-h-[27px] items-center rounded-full border border-brand-100 bg-white px-3 text-[9px] font-black text-brand-700 shadow-sm sm:text-[10px]">
+            دليل التداول المحلي
+          </span>
+
+          <h2 className="mt-3 text-[23px] font-black leading-[1.2] tracking-[-0.025em] text-slate-950 sm:text-[30px]">
+            دليل التداول في {page.country_name_ar}
+          </h2>
+
+          <p className="mt-2 max-w-[900px] text-[11px] font-semibold leading-6 text-slate-600 sm:text-[13px] sm:leading-7">
+            معلومات محلية تساعدك على فهم بيئة التداول واختيار الوسيط
+            والحساب المناسب قبل فتح حساب تداول في {page.country_name_ar}.
+          </p>
+        </div>
+      </div>
+
+      {/* SECTIONS */}
+      <div className="grid grid-cols-1 md:grid-cols-2">
+        {sections.map((section, index) => {
+          const isLast =
+            index === sections.length - 1;
+
+          const shouldSpanFull =
+            isLast && sections.length % 2 !== 0;
+
+          return (
+            <article
+  key={section.key}
+  id={section.key}
+  className={`
+    relative flex flex-col border-b border-slate-200
+    px-4 py-5
+    sm:px-6 sm:py-6
+    md:h-full md:px-6 md:py-7
+    md:border-l md:border-slate-200
+    ${shouldSpanFull ? "md:col-span-2" : ""}
+  `}
+>
+              <div className="flex items-start gap-3 sm:gap-4">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] bg-brand-50 text-[16px] font-black text-brand-700 ring-1 ring-brand-100 sm:h-12 sm:w-12">
+                  {section.icon}
+                </div>
+
+                <div className="min-w-0 flex-1">
+                  <span className="block text-[10px] font-black text-brand-600 sm:text-[11px]">
+                    {section.eyebrow}
+                  </span>
+
+                  <h3 className="mt-1 text-[18px] font-black leading-[1.4] tracking-[-0.02em] text-slate-950 sm:text-[21px]">
+                    {section.title}
+                  </h3>
+                </div>
+              </div>
+
+              <ExpandableCountryText
+  paragraphs={paragraphs(section.content)}
+/>
+
+              {index === 0 && page.regulator_name ? (
+                <div className="mt-4 inline-flex flex-wrap items-center gap-2 rounded-xl bg-slate-50 px-3 py-2.5 ring-1 ring-slate-200">
+                  <span className="text-[10px] font-bold text-slate-500 sm:text-[11px]">
+                    الجهة التنظيمية:
+                  </span>
+
+                  {page.regulator_url ? (
+                    <Link
+                      href={page.regulator_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[10px] font-black text-brand-700 transition hover:text-brand-800 sm:text-[11px]"
+                    >
+                      {page.regulator_name}
+                    </Link>
+                  ) : (
+                    <span className="text-[10px] font-black text-slate-800 sm:text-[11px]">
+                      {page.regulator_name}
+                    </span>
+                  )}
+                </div>
+              ) : null}
+            </article>
+          );
+        })}
       </div>
     </section>
   );
@@ -4952,26 +5188,34 @@ return (
 
 
         {/* =================================================
-            COUNTRY GUIDE
-        ================================================= */}
-        <CountryGuide
-          blocks={blocks}
-          page={page}
-        />
+    COUNTRY GUIDE
+================================================= */}
+<CountryGuide
+  blocks={blocks}
+  page={page}
+/>
 
 
-        {/* =================================================
-            FAQ
-        ================================================= */}
-        <FaqSection
-          faqs={faqs}
-          countryName={
-            page.country_name_ar
-          }
-        />
+{/* =================================================
+    OPTIONAL ENHANCED COUNTRY CONTENT
+    يظهر فقط عند وجود بيانات في الأعمدة الجديدة
+================================================= */}
+
+<EnhancedCountryContent
+  page={page}
+/>
 
 
-        {/* =================================================
+{/* =================================================
+    FAQ
+================================================= */}
+<FaqSection
+  faqs={faqs}
+  countryName={page.country_name_ar}
+/>
+
+
+               {/* =================================================
             RISK WARNING
         ================================================= */}
         {page.risk_warning ? (

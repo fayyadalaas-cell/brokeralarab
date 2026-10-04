@@ -5717,41 +5717,74 @@ export default async function ScalpingStrategyPage() {
       ===================================================== */}
 
       {/* ARTICLE SCHEMA */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Article",
-            headline: PAGE_TITLE,
-            description: PAGE_DESCRIPTION,
-            inLanguage: "ar",
-            mainEntityOfPage: {
-              "@type": "WebPage",
-              "@id": PAGE_URL,
-            },
-            author: {
-              "@type": "Organization",
-              name: "بروكر العرب",
-              url: "https://brokeralarab.com",
-            },
-            publisher: {
-              "@type": "Organization",
-              name: "بروكر العرب",
-              url: "https://brokeralarab.com",
-            },
-            about: [
-              "استراتيجية السكالبينج",
-              "سكالبينج الفوركس",
-              "Scalping Strategy",
-              "Forex Scalping",
-              "سكالبينج الدقيقة",
-              "سكالبينج 5 دقائق",
-              "إدارة مخاطر السكالبينج",
-            ],
-          }),
-        }}
-      />
+<script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Article",
+
+      headline: PAGE_TITLE,
+      description: PAGE_DESCRIPTION,
+
+      url: PAGE_URL,
+      inLanguage: "ar",
+
+      datePublished: DATE_PUBLISHED,
+      dateModified: DATE_MODIFIED,
+
+      mainEntityOfPage: {
+        "@type": "WebPage",
+        "@id": PAGE_URL,
+      },
+
+      author: {
+        "@type": "Organization",
+        name: "بروكر العرب",
+        url: "https://brokeralarab.com",
+      },
+
+      publisher: {
+        "@type": "Organization",
+        name: "بروكر العرب",
+        url: "https://brokeralarab.com",
+      },
+
+      about: [
+        {
+          "@type": "Thing",
+          name: "استراتيجية السكالبينج",
+        },
+        {
+          "@type": "Thing",
+          name: "سكالبينج الفوركس",
+        },
+        {
+          "@type": "Thing",
+          name: "Forex Scalping",
+        },
+        {
+          "@type": "Thing",
+          name: "1 Minute Scalping",
+        },
+        {
+          "@type": "Thing",
+          name: "5 Minute Scalping",
+        },
+        {
+          "@type": "Thing",
+          name: "EMA Scalping",
+        },
+        {
+          "@type": "Thing",
+          name: "إدارة مخاطر السكالبينج",
+        },
+      ],
+
+      keywords: PAGE_KEYWORDS,
+    }),
+  }}
+/>
 
 
       {/* BREADCRUMB SCHEMA */}
