@@ -253,24 +253,49 @@ export default function MobileNavMenu({
     ]
   : [
       ...countryMenuItems,
+
+      {
+        label: "أفضل شركات التداول في الجزائر",
+        shortLabel: "الجزائر",
+        href: "/best-brokers/algeria",
+        flag: "https://flagcdn.com/w80/dz.png",
+      },
+
+      {
+        label: "أفضل شركات التداول في فلسطين",
+        shortLabel: "فلسطين",
+        href: "/best-brokers/palestine",
+        flag: "https://flagcdn.com/w80/ps.png",
+      },
+
+      {
+        label: "أفضل شركات التداول في لبنان",
+        shortLabel: "لبنان",
+        href: "/best-brokers/lebanon",
+        flag: "https://flagcdn.com/w80/lb.png",
+      },
+
       {
         label: "أفضل شركات التداول في العراق",
         shortLabel: "العراق",
         href: "/best-brokers/iraq",
         flag: "https://flagcdn.com/w80/iq.png",
       },
+
       {
         label: "أفضل شركات التداول في ليبيا",
         shortLabel: "ليبيا",
         href: "/best-brokers/libya",
         flag: "https://flagcdn.com/w80/ly.png",
       },
+
       {
         label: "أفضل شركات التداول في سوريا",
         shortLabel: "سوريا",
         href: "/best-brokers/syria",
         flag: "https://flagcdn.com/w80/sy.png",
       },
+
       {
         label: "أفضل شركات التداول في اليمن",
         shortLabel: "اليمن",
@@ -330,7 +355,8 @@ export default function MobileNavMenu({
   ];
 
   const [isOpen, setIsOpen] = useState(false);
-  const [openSection, setOpenSection] = useState<string | null>(null);
+const [openSection, setOpenSection] = useState<string | null>(null);
+const [showAllArabicCountries, setShowAllArabicCountries] = useState(false);
 
   useEffect(() => {
     setIsOpen(false);
@@ -604,26 +630,49 @@ allTools: isEnglish ? "View All Tools" : "عرض جميع الأدوات",
       </div>
 
       <div className="grid grid-cols-2 gap-2">
-        {mobileCountryMenuItems.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            onClick={closeMenu}
-            title={item.label}
-            className="group/country flex h-[48px] items-center gap-2 rounded-[14px] border border-slate-200 bg-slate-50 px-2.5 transition hover:border-brand-200 hover:bg-brand-50"
-          >
-            <img
-              src={item.flag}
-              alt={item.shortLabel}
-              className="h-5 w-5 shrink-0 rounded-full border border-white object-cover shadow-sm"
-            />
+  {(isEnglish || showAllArabicCountries
+    ? mobileCountryMenuItems
+    : mobileCountryMenuItems.slice(0, 8)
+  ).map((item) => (
+    <Link
+      key={item.href}
+      href={item.href}
+      onClick={closeMenu}
+      title={item.label}
+      className="group/country flex h-[48px] items-center gap-2 rounded-[14px] border border-slate-200 bg-slate-50 px-2.5 transition hover:border-brand-200 hover:bg-brand-50"
+    >
+      <img
+        src={item.flag}
+        alt={item.shortLabel}
+        className="h-5 w-5 shrink-0 rounded-full border border-white object-cover shadow-sm"
+      />
 
-            <span className="min-w-0 flex-1 truncate text-center text-[10px] font-black leading-4 text-slate-800 transition group-hover/country:text-brand-600">
-              {item.shortLabel}
-            </span>
-          </Link>
-        ))}
-      </div>
+      <span className="min-w-0 flex-1 truncate text-center text-[10px] font-black leading-4 text-slate-800 transition group-hover/country:text-brand-600">
+        {item.shortLabel}
+      </span>
+    </Link>
+  ))}
+</div>
+
+{!isEnglish && mobileCountryMenuItems.length > 8 && (
+  <button
+    type="button"
+    onClick={() => setShowAllArabicCountries((prev) => !prev)}
+    className="mt-3 flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-brand-100 bg-brand-50/60 px-3 text-[11px] font-black text-brand-600 transition hover:border-brand-200 hover:bg-brand-100"
+  >
+    {showAllArabicCountries ? (
+      <>
+        عرض دول أقل
+        <span className="text-[12px]">↑</span>
+      </>
+    ) : (
+      <>
+        عرض المزيد من الدول
+        <span className="text-[12px]">↓</span>
+      </>
+    )}
+  </button>
+)}
 
       <Link
         href={isEnglish ? "/en/best-brokers" : "/best-brokers"}

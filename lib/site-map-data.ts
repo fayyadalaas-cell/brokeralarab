@@ -149,6 +149,7 @@ export const EVENT_SLUGS = [
   "profx-expo-africa-2026",
   "profin-expo-bangkok-2026",
   "ifx-expo-asia-2026",
+  "blockchain-life-ai-future-week-dubai-2026",
 ];
 
 export function url(path: string) {

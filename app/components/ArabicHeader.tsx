@@ -113,6 +113,27 @@ export default function ArabicHeader({
   ...countryMenuItems,
 
   {
+    label: "أفضل شركات التداول في الجزائر",
+    shortLabel: "الجزائر",
+    href: "/best-brokers/algeria",
+    flag: "https://flagcdn.com/w80/dz.png",
+  },
+
+  {
+    label: "أفضل شركات التداول في فلسطين",
+    shortLabel: "فلسطين",
+    href: "/best-brokers/palestine",
+    flag: "https://flagcdn.com/w80/ps.png",
+  },
+
+  {
+    label: "أفضل شركات التداول في لبنان",
+    shortLabel: "لبنان",
+    href: "/best-brokers/lebanon",
+    flag: "https://flagcdn.com/w80/lb.png",
+  },
+
+  {
     label: "أفضل شركات التداول في العراق",
     shortLabel: "العراق",
     href: "/best-brokers/iraq",

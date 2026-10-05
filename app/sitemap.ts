@@ -31,7 +31,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = await createClient();
 
   // غيّر هذا التاريخ فقط بعد إجراء تحديث شهري فعلي ومهم للمحتوى
-const LAST_SIGNIFICANT_UPDATE = new Date("2026-09-30T00:00:00.000Z");
+const LAST_SIGNIFICANT_UPDATE = new Date("2026-10-05T00:00:00.000Z");
 
   const { data: brokers } = await supabase
   .from("brokers")
