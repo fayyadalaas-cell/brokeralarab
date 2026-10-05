@@ -18,15 +18,25 @@ export const STATIC_PAGES = [
   "",
   "brokers",
   "compare",
+
+  // Best Brokers
   "best-brokers",
   "best-brokers/gold",
   "best-brokers/low-minimum-deposit",
   "best-brokers/scalping",
   "best-brokers/stocks",
+  "best-brokers/indices",
+  "best-brokers/commodities",
+
+  // Best Brokers by Account Type
   "best-brokers/accounts/cent",
   "best-brokers/accounts/standard",
   "best-brokers/accounts/raw-spread",
+
+  // Broker Rankings
   "lowest-spread-brokers",
+
+  // Learn Trading
   "learn-trading",
   "learn-trading/how-to-start-trading-from-zero",
   "learn-trading/economic-indicators",
@@ -39,6 +49,8 @@ export const STATIC_PAGES = [
   "learn-trading/hedging",
   "learn-trading/liquidity",
   "learn-trading/margin-call",
+
+  // Licenses
   "licenses",
 
   // Forex Strategies Hub
@@ -58,6 +70,7 @@ export const STATIC_PAGES = [
   "strategies/support-and-resistance",
   "strategies/moving-average-crossover",
 
+  // Company & Legal
   "about",
   "contact",
   "how-we-review-brokers",
@@ -69,15 +82,25 @@ export const STATIC_PAGES_EN = [
   "en",
   "en/brokers",
   "en/compare",
+
+  // Best Brokers
   "en/best-brokers",
   "en/best-brokers/gold",
   "en/best-brokers/low-minimum-deposit",
   "en/best-brokers/scalping",
   "en/best-brokers/stocks",
+  "en/best-brokers/indices",
+  "en/best-brokers/commodities",
+
+  // Best Brokers by Account Type
   "en/best-brokers/accounts/cent",
   "en/best-brokers/accounts/standard",
   "en/best-brokers/accounts/raw-spread",
+
+  // Broker Rankings
   "en/lowest-spread-brokers",
+
+  // Learn Trading
   "en/learn-trading",
   "en/learn-trading/how-to-start-trading-from-zero",
   "en/learn-trading/economic-indicators",
@@ -90,6 +113,8 @@ export const STATIC_PAGES_EN = [
   "en/learn-trading/hedging",
   "en/learn-trading/liquidity",
   "en/learn-trading/margin-call",
+
+  // Licenses
   "en/licenses",
 
   // Forex Strategies Hub
@@ -109,6 +134,7 @@ export const STATIC_PAGES_EN = [
   "en/strategies/support-and-resistance",
   "en/strategies/moving-average-crossover",
 
+  // Company & Legal
   "en/about",
   "en/contact",
   "en/how-we-review-brokers",

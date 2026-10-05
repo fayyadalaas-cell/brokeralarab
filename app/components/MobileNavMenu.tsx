@@ -572,7 +572,7 @@ allTools: isEnglish ? "View All Tools" : "عرض جميع الأدوات",
                     </div>
                   </Section>
 
-                     <Section
+                    <Section
   title={text.best}
   open={openSection === "best"}
   onToggle={() => toggleSection("best")}
@@ -583,23 +583,23 @@ allTools: isEnglish ? "View All Tools" : "عرض جميع الأدوات",
         COUNTRIES
     ====================================================== */}
     <div>
-      <div className="mb-2.5 flex items-center justify-between px-1">
-        <div>
+      <div className="mb-3 flex items-start justify-between gap-3 px-1">
+        <div className="min-w-0">
           <p className="text-[12px] font-black text-slate-950">
             {isEnglish
               ? "Best Brokers by Country"
               : "أفضل الوسطاء حسب الدولة"}
           </p>
 
-          <p className="mt-0.5 text-[9px] font-semibold text-slate-500">
+          <p className="mt-1 text-[9px] font-semibold leading-4 text-slate-500">
             {isEnglish
               ? "Find brokers available in your country"
               : "اختر الوسطاء المتاحين في دولتك"}
           </p>
         </div>
 
-        <span className="rounded-full bg-brand-50 px-2 py-1 text-[8px] font-black text-brand-600">
-          {isEnglish ? "Countries" : "الدول"}
+        <span className="shrink-0 rounded-full bg-brand-50 px-2 py-1 text-[8px] font-black text-brand-600">
+          {isEnglish ? "By Location" : "حسب موقعك"}
         </span>
       </div>
 
@@ -610,15 +610,15 @@ allTools: isEnglish ? "View All Tools" : "عرض جميع الأدوات",
             href={item.href}
             onClick={closeMenu}
             title={item.label}
-            className="group flex h-[48px] items-center gap-2 rounded-[14px] border border-slate-200 bg-slate-50 px-2.5 transition hover:border-brand-200 hover:bg-white"
+            className="group/country flex h-[48px] items-center gap-2 rounded-[14px] border border-slate-200 bg-slate-50 px-2.5 transition hover:border-brand-200 hover:bg-brand-50"
           >
             <img
               src={item.flag}
               alt={item.shortLabel}
-              className="h-5 w-5 shrink-0 rounded-full object-cover shadow-sm"
+              className="h-5 w-5 shrink-0 rounded-full border border-white object-cover shadow-sm"
             />
 
-            <span className="min-w-0 flex-1 truncate text-center text-[11px] font-black leading-4 text-slate-800 group-hover:text-brand-600">
+            <span className="min-w-0 flex-1 truncate text-center text-[10px] font-black leading-4 text-slate-800 transition group-hover/country:text-brand-600">
               {item.shortLabel}
             </span>
           </Link>
@@ -628,135 +628,207 @@ allTools: isEnglish ? "View All Tools" : "عرض جميع الأدوات",
       <Link
         href={isEnglish ? "/en/best-brokers" : "/best-brokers"}
         onClick={closeMenu}
-        className="mt-2.5 flex h-10 items-center justify-center gap-2 rounded-xl border border-brand-100 bg-brand-50/60 text-[11px] font-black text-brand-600 transition hover:bg-brand-100"
+        className="mt-3 flex h-10 items-center justify-center gap-2 rounded-xl border border-brand-100 bg-brand-50/60 px-3 text-[11px] font-black text-brand-600 transition hover:border-brand-200 hover:bg-brand-100"
       >
         {isEnglish ? "View All Countries" : "عرض جميع الدول"}
 
-        <span>
+        <span className="text-[12px]">
           {isEnglish ? "→" : "←"}
         </span>
       </Link>
     </div>
 
-
     {/* =====================================================
-        CATEGORIES
+        BROKERS BY MARKET
     ====================================================== */}
     <div className="border-t border-slate-100 pt-4">
-      <div className="mb-2.5 flex items-center justify-between px-1">
-        <div>
+      <div className="mb-3 flex items-start justify-between gap-3 px-1">
+        <div className="min-w-0">
           <p className="text-[12px] font-black text-slate-950">
             {isEnglish
               ? "Best Brokers by Category"
               : "أفضل الوسطاء حسب الفئة"}
           </p>
 
-          <p className="mt-0.5 text-[9px] font-semibold text-slate-500">
+          <p className="mt-1 text-[9px] font-semibold leading-4 text-slate-500">
             {isEnglish
-              ? "Popular forex broker rankings"
-              : "أشهر تصنيفات الوسطاء"}
+              ? "Choose a market or trading category"
+              : "اختر السوق أو نوع التداول الذي يناسبك"}
           </p>
         </div>
 
-        <span className="rounded-full bg-brand-50 px-2 py-1 text-[8px] font-black text-brand-600">
-          {isEnglish ? "Categories" : "الفئات"}
+        <span className="shrink-0 rounded-full bg-brand-50 px-2 py-1 text-[8px] font-black text-brand-600">
+          {isEnglish ? "Markets" : "الأسواق"}
         </span>
       </div>
 
-      <div className="space-y-2">
-        {(isEnglish
-          ? [
-              {
-                label: "Best Forex Brokers in 2026",
-                href: "/en/best-brokers",
-              },
-              {
-                label: "Best Low Spread Forex Brokers",
-                href: "/en/lowest-spread-brokers",
-              },
-              {
-                label: "Best Gold Trading Brokers",
-                href: "/en/best-brokers/gold",
-              },
-              {
-                label: "Low Minimum Deposit Brokers",
-                href: "/en/best-brokers/low-minimum-deposit",
-              },
-              {
-                label: "Best Scalping Brokers",
-                href: "/en/best-brokers/scalping",
-              },
-            ]
-          : [
-              ...featuredCategories.slice(0, 3),
-              {
-                label: "وسطاء الفوركس بأقل إيداع",
-                href: "/best-brokers/low-minimum-deposit",
-              },
-              {
-                label: "أفضل وسطاء السكالبينج",
-                href: "/best-brokers/scalping",
-              },
-            ]
-        ).map((item) => (
+      {/* MARKET LABEL */}
+      <div className="mb-2 px-1 text-[8px] font-black uppercase tracking-wide text-slate-400">
+        {isEnglish ? "By Market" : "حسب السوق"}
+      </div>
+
+      {/* MARKET GRID */}
+      <div className="grid grid-cols-2 gap-2">
+        {[
+          {
+            title: isEnglish ? "Forex" : "الفوركس",
+            href: isEnglish
+              ? "/en/best-brokers"
+              : "/best-brokers",
+            symbol: "FX",
+          },
+          {
+            title: isEnglish ? "Stocks" : "الأسهم",
+            href: isEnglish
+              ? "/en/best-brokers/stocks"
+              : "/best-brokers/stocks",
+            symbol: "S",
+          },
+          {
+            title: isEnglish ? "Indices" : "المؤشرات",
+            href: isEnglish
+              ? "/en/best-brokers/indices"
+              : "/best-brokers/indices",
+            symbol: "I",
+          },
+          {
+            title: isEnglish ? "Commodities" : "السلع",
+            href: isEnglish
+              ? "/en/best-brokers/commodities"
+              : "/best-brokers/commodities",
+            symbol: "C",
+          },
+        ].map((item) => (
           <Link
-            key={`${item.href}-${item.label}`}
+            key={item.href}
             href={item.href}
             onClick={closeMenu}
-            className="group flex min-h-[48px] items-center justify-between gap-3 rounded-[15px] border border-slate-200 bg-slate-50 px-3.5 py-2.5 transition hover:border-brand-200 hover:bg-white"
+            className="group/market flex h-[58px] items-center gap-2.5 rounded-[14px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-brand-50"
           >
-            <span className="min-w-0 text-[12px] font-black leading-5 text-slate-800 group-hover:text-brand-600">
-              {item.label}
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-blue-50 text-[9px] font-black text-brand-600 transition group-hover/market:bg-brand-600 group-hover/market:text-white">
+              {item.symbol}
             </span>
 
-            <span className="shrink-0 text-[12px] font-black text-brand-600">
-              {isEnglish ? "→" : "←"}
+            <span className="min-w-0 flex-1 text-[11px] font-black text-slate-800 transition group-hover/market:text-brand-600">
+              {item.title}
             </span>
           </Link>
         ))}
       </div>
-    </div>
 
+      {/* POPULAR CATEGORIES */}
+      <div className="mb-2 mt-4 px-1 text-[8px] font-black uppercase tracking-wide text-slate-400">
+        {isEnglish ? "Popular Categories" : "تصنيفات شائعة"}
+      </div>
+
+      <div className="grid grid-cols-2 gap-2">
+        {[
+          {
+            title: isEnglish ? "Gold Trading" : "تداول الذهب",
+            href: isEnglish
+              ? "/en/best-brokers/gold"
+              : "/best-brokers/gold",
+            symbol: "Au",
+          },
+          {
+            title: isEnglish ? "Low Spreads" : "الأقل سبريد",
+            href: isEnglish
+              ? "/en/lowest-spread-brokers"
+              : "/lowest-spread-brokers",
+            symbol: "↔",
+          },
+          {
+            title: isEnglish ? "Low Deposit" : "أقل إيداع",
+            href: isEnglish
+              ? "/en/best-brokers/low-minimum-deposit"
+              : "/best-brokers/low-minimum-deposit",
+            symbol: "$",
+          },
+          {
+            title: isEnglish ? "Scalping" : "السكالبينج",
+            href: isEnglish
+              ? "/en/best-brokers/scalping"
+              : "/best-brokers/scalping",
+            symbol: "⚡",
+          },
+        ].map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            onClick={closeMenu}
+            className="group/category flex h-[52px] items-center gap-2.5 rounded-[13px] border border-slate-200 bg-slate-50 px-2.5 transition hover:border-brand-200 hover:bg-brand-50"
+          >
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-slate-100 bg-white text-[9px] font-black text-brand-600 shadow-sm">
+              {item.symbol}
+            </span>
+
+            <span className="min-w-0 flex-1 text-[10px] font-black leading-4 text-slate-700 transition group-hover/category:text-brand-600">
+              {item.title}
+            </span>
+          </Link>
+        ))}
+      </div>
+
+      {/* CATEGORY CTA */}
+      <Link
+        href={isEnglish ? "/en/best-brokers" : "/best-brokers"}
+        onClick={closeMenu}
+        className="mt-3 flex h-10 items-center justify-center gap-2 rounded-xl border border-brand-100 bg-brand-50/60 px-3 text-[11px] font-black text-brand-600 transition hover:border-brand-200 hover:bg-brand-100"
+      >
+        {isEnglish ? "View Best Brokers" : "عرض أفضل الوسطاء"}
+
+        <span className="text-[12px]">
+          {isEnglish ? "→" : "←"}
+        </span>
+      </Link>
+    </div>
 
     {/* =====================================================
         ACCOUNT TYPES
     ====================================================== */}
     <div className="border-t border-slate-100 pt-4">
-      <div className="mb-2.5 flex items-center justify-between px-1">
-        <div>
+      <div className="mb-3 flex items-start justify-between gap-3 px-1">
+        <div className="min-w-0">
           <p className="text-[12px] font-black text-slate-950">
             {isEnglish
               ? "Best Brokers by Account Type"
               : "أفضل الوسطاء حسب نوع الحساب"}
           </p>
 
-          <p className="mt-0.5 text-[9px] font-semibold text-slate-500">
+          <p className="mt-1 text-[9px] font-semibold leading-4 text-slate-500">
             {isEnglish
-              ? "Choose the account that fits your strategy"
-              : "اختر الحساب الأنسب لطريقة تداولك"}
+              ? "Compare accounts for your trading style"
+              : "قارن الحسابات واختر الأنسب لطريقة تداولك"}
           </p>
         </div>
 
-        <span className="rounded-full bg-brand-50 px-2 py-1 text-[8px] font-black text-brand-600">
+        <span className="shrink-0 rounded-full bg-brand-50 px-2 py-1 text-[8px] font-black text-brand-600">
           {isEnglish ? "Accounts" : "الحسابات"}
         </span>
       </div>
 
+      {/* ACCOUNT CARDS */}
       <div className="space-y-2">
         {mobileAccountTypePages.map((item) => (
           <Link
             key={item.href}
             href={item.href}
             onClick={closeMenu}
-            className="group/account flex h-[48px] items-center gap-2.5 rounded-[15px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-white"
+            className="group/account flex min-h-[54px] items-center gap-3 rounded-[14px] border border-slate-200 bg-slate-50 px-3 py-2 transition hover:border-brand-200 hover:bg-brand-50"
           >
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-brand-100 bg-white text-[11px] font-black text-brand-600 shadow-sm transition group-hover/account:bg-brand-600 group-hover/account:text-white">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-[11px] font-black text-brand-600 shadow-sm transition group-hover/account:bg-brand-600 group-hover/account:text-white">
               {item.symbol}
             </span>
 
-            <span className="min-w-0 flex-1 truncate text-[12px] font-black text-slate-800">
-              {item.title}
-            </span>
+            <div className="min-w-0 flex-1">
+              <span className="block text-[11px] font-black leading-5 text-slate-800 transition group-hover/account:text-brand-600">
+                {item.title}
+              </span>
+
+              <span className="block truncate text-[8px] font-semibold text-slate-500">
+                {item.description}
+              </span>
+            </div>
 
             <span className="shrink-0 text-[12px] font-black text-brand-600">
               {isEnglish ? "→" : "←"}
@@ -764,25 +836,81 @@ allTools: isEnglish ? "View All Tools" : "عرض جميع الأدوات",
           </Link>
         ))}
       </div>
+
+      {/* ACCOUNT HELPER */}
+      <Link
+        href={
+          isEnglish
+            ? "/en/best-brokers/accounts/standard"
+            : "/best-brokers/accounts/standard"
+        }
+        onClick={closeMenu}
+        className="group/helper mt-3 block overflow-hidden rounded-[15px] border border-brand-100 bg-gradient-to-r from-brand-50/80 via-white to-slate-50 transition hover:border-brand-200 hover:shadow-sm"
+      >
+        <div className="flex items-center gap-3 p-3">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-600 text-[15px] font-black text-white shadow-sm">
+            ?
+          </span>
+
+          <div className="min-w-0 flex-1">
+            <div className="text-[10px] font-black leading-5 text-slate-900 transition group-hover/helper:text-brand-600">
+              {isEnglish
+                ? "Which account is right for me?"
+                : "أي حساب يناسبني؟"}
+            </div>
+
+            <div className="mt-0.5 text-[8px] font-semibold leading-4 text-slate-500">
+              {isEnglish
+                ? "Compare the main account types"
+                : "تعرف على أهم أنواع الحسابات"}
+            </div>
+          </div>
+
+          <span className="shrink-0 text-[13px] font-black text-brand-600">
+            {isEnglish ? "→" : "←"}
+          </span>
+        </div>
+      </Link>
+
+      {/* QUICK ACCOUNT OPTIONS */}
+      <div className="mt-3 grid grid-cols-2 gap-2 border-t border-slate-100 pt-3">
+        <Link
+          href={
+            isEnglish
+              ? "/en/best-brokers/low-minimum-deposit"
+              : "/best-brokers/low-minimum-deposit"
+          }
+          onClick={closeMenu}
+          className="rounded-xl bg-slate-50 px-2 py-2.5 text-center transition hover:bg-brand-50"
+        >
+          <span className="block text-[9px] font-black text-slate-700">
+            {isEnglish ? "Smaller Capital" : "رأس مال صغير"}
+          </span>
+
+          <span className="mt-0.5 block text-[8px] font-semibold text-slate-400">
+            {isEnglish ? "Low Deposit" : "أقل إيداع"}
+          </span>
+        </Link>
+
+        <Link
+          href={
+            isEnglish
+              ? "/en/lowest-spread-brokers"
+              : "/lowest-spread-brokers"
+          }
+          onClick={closeMenu}
+          className="rounded-xl bg-slate-50 px-2 py-2.5 text-center transition hover:bg-brand-50"
+        >
+          <span className="block text-[9px] font-black text-slate-700">
+            {isEnglish ? "Active Trading" : "تداول نشط"}
+          </span>
+
+          <span className="mt-0.5 block text-[8px] font-semibold text-slate-400">
+            {isEnglish ? "Lower Spreads" : "سبريد أقل"}
+          </span>
+        </Link>
+      </div>
     </div>
-
-
-    {/* =====================================================
-        FINAL LINK
-    ====================================================== */}
-    <Link
-      href={isEnglish ? "/en/best-brokers" : "/best-brokers"}
-      onClick={closeMenu}
-      className="flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-brand-100 bg-brand-50/60 px-3 text-[12px] font-black text-brand-600 transition hover:bg-brand-100"
-    >
-      {isEnglish
-        ? "View All Broker Rankings"
-        : "عرض جميع تصنيفات الوسطاء"}
-
-      <span>
-        {isEnglish ? "→" : "←"}
-      </span>
-    </Link>
 
   </div>
 </Section>

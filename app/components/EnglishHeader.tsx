@@ -99,7 +99,7 @@ const dropdownClass =
   "invisible absolute left-0 top-full z-50 mt-3 translate-y-2 rounded-[28px] border border-slate-200 bg-white p-4 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.14)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100";
 
   const wideDropdownClass =
-  "invisible absolute left-1/2 top-full z-50 mt-3 w-[940px] max-w-[calc(100vw-32px)] -translate-x-1/2 translate-y-2 rounded-[28px] border border-slate-200 bg-white p-5 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.14)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100";
+  "invisible absolute left-1/2 top-full z-50 mt-3 w-[1020px] max-w-[calc(100vw-32px)] -translate-x-1/2 translate-y-2 rounded-[28px] border border-slate-200 bg-white p-5 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.14)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100";
 
 const menuCardClass =
   "rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-[13px] font-extrabold text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600";
@@ -340,462 +340,772 @@ export default function EnglishHeader({
               </div>
             </div>
 
-               {/* =========================================================
-    BEST BROKERS
-========================================================= */}
-<div className="group relative">
-
-  <Link
-    href="/en/best-brokers"
-    className={mainLinkClass}
-  >
-    Best Brokers
-
-    <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
-      ▼
-    </span>
-  </Link>
-
-
-  <div className={wideDropdownClass}>
-
-    <div className="grid grid-cols-[1.35fr_0.85fr_0.85fr] items-stretch gap-5">
-
-      {/* =====================================================
-          COUNTRIES
-      ====================================================== */}
-      <div className="flex h-full flex-col border-r border-slate-200 pr-5">
-
-        <div className="mb-3 flex min-h-[44px] items-start justify-between gap-3">
-
-          <div>
-            <h3 className="text-[14px] font-black text-slate-950">
-              Best Brokers by Country
-            </h3>
-
-            <p className="mt-1 text-[10px] font-semibold text-slate-500">
-              Find brokers available in your country
-            </p>
-          </div>
-
-
-          <span className="shrink-0 rounded-full bg-brand-50 px-2.5 py-1 text-[9px] font-black text-brand-600">
-            By Market
-          </span>
-
-        </div>
-
-
-        <div className="grid grid-cols-3 gap-2.5">
-
-          {extendedCountryMenuItems.map(
-            (item: any) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                title={item.label}
-                className="group/country flex h-[48px] items-center gap-2.5 rounded-[15px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-brand-50"
-              >
-
-                <img
-                  src={item.flag}
-                  alt={item.shortLabel}
-                  className="h-6 w-6 shrink-0 rounded-full border border-white object-cover shadow-sm"
-                />
-
-
-                <span className="min-w-0 flex-1 text-center text-[12px] font-black text-slate-700 transition group-hover/country:text-brand-600">
-                  {item.shortLabel}
-                </span>
-
-              </Link>
-            ),
-          )}
-
-        </div>
-
-
-        <div className="mt-auto pt-3">
-
-          <Link
-            href="/en/best-brokers"
-            className="flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-brand-100 bg-brand-50/60 px-3 text-[12px] font-black text-brand-600 transition hover:border-brand-200 hover:bg-brand-100"
-          >
-            View All Countries
-
-            <span className="text-sm">
-              →
-            </span>
-          </Link>
-
-        </div>
-
-      </div>
-
-
-      {/* =====================================================
-          CATEGORIES
-      ====================================================== */}
-      <div className="flex h-full flex-col border-r border-slate-200 pr-5">
-
-        <div className="mb-3 min-h-[44px]">
-
-          <h3 className="text-[14px] font-black text-slate-950">
-            Best Brokers by Category
-          </h3>
-
-          <p className="mt-1 text-[10px] font-semibold text-slate-500">
-            Popular broker rankings
-          </p>
-
-        </div>
-
-
-        <div className="space-y-2">
-
-          {[
-            {
-              label: "Best Forex Brokers in 2026",
-              href: "/en/best-brokers",
-            },
-
-            {
-              label: "Best Low Spread Forex Brokers",
-              href: "/en/lowest-spread-brokers",
-            },
-
-            {
-              label: "Best Gold Trading Brokers",
-              href: "/en/best-brokers/gold",
-            },
-
-            {
-              label: "Low Minimum Deposit Brokers",
-              href: "/en/best-brokers/low-minimum-deposit",
-            },
-
-            {
-              label: "Best Scalping Brokers",
-              href: "/en/best-brokers/scalping",
-            },
-          ].map((item) => (
-
-            <Link
-              key={item.href}
-              href={item.href}
-              className="group/category flex min-h-[48px] items-center justify-between gap-3 rounded-[15px] border border-slate-200 bg-slate-50 px-3.5 py-2.5 transition hover:border-brand-200 hover:bg-brand-50"
-            >
-
-              <span className="min-w-0 text-[12px] font-black leading-5 text-slate-700 transition group-hover/category:text-brand-600">
-                {item.label}
-              </span>
-
-
-              <span className="shrink-0 text-[12px] font-black text-slate-400 transition group-hover/category:translate-x-0.5 group-hover/category:text-brand-600">
-                →
-              </span>
-
-            </Link>
-
-          ))}
-
-        </div>
-
-
-        <div className="mt-auto pt-3">
-
-          <Link
-            href="/en/best-brokers"
-            className="flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-brand-100 bg-brand-50/60 px-3 text-[12px] font-black text-brand-600 transition hover:border-brand-200 hover:bg-brand-100"
-          >
-            View All Rankings
-
-            <span className="text-sm">
-              →
-            </span>
-          </Link>
-
-        </div>
-
-      </div>
-
-
-      {/* =====================================================
-          ACCOUNT TYPES
-      ====================================================== */}
-      <div className="flex h-full flex-col">
-
-        <div className="mb-3 min-h-[44px]">
-
-          <h3 className="text-[14px] font-black text-slate-950">
-            Best Brokers by Account Type
-          </h3>
-
-          <p className="mt-1 text-[10px] font-semibold text-slate-500">
-            Choose the account that fits your trading style
-          </p>
-
-        </div>
-
-
-        <div className="space-y-2">
-
-          {accountTypePagesEn.map(
-            (item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                title={item.title}
-                className="group/account flex min-h-[56px] items-center gap-3 rounded-[15px] border border-slate-200 bg-slate-50 px-3 py-2.5 transition hover:border-brand-200 hover:bg-brand-50"
-              >
-
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-[13px] font-black text-brand-600 shadow-sm transition group-hover/account:border-brand-200 group-hover/account:bg-brand-600 group-hover/account:text-white">
-                  {item.symbol}
-                </span>
-
-
-                <div className="min-w-0 flex-1">
-
-                  <span className="block text-[12px] font-black leading-5 text-slate-800 transition group-hover/account:text-brand-600">
-                    {item.shortLabel}
-                  </span>
-
-                  <span className="mt-0.5 block text-[9px] font-semibold text-slate-500">
-                    Compare the best brokers
-                  </span>
-
-                </div>
-
-
-                <span className="shrink-0 text-[12px] font-black text-slate-400 transition group-hover/account:translate-x-0.5 group-hover/account:text-brand-600">
-                  →
-                </span>
-
-              </Link>
-            ),
-          )}
-
-        </div>
-
-
-        <div className="mt-auto pt-3">
-
-          <div className="flex h-11 w-full items-center justify-center rounded-xl border border-brand-100 bg-brand-50/60 px-3 text-center">
-
-            <p className="text-[10px] font-bold leading-5 text-brand-700">
-              Choose the account type that fits your trading style
-            </p>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</div>
-
-                        {/* LICENSES */}
+                          {/* ===================================================
+                BEST BROKERS
+            =================================================== */}
             <div className="group relative">
-              <Link href="/en/licenses" className={mainLinkClass}>
-                Licenses
+              <Link href="/en/best-brokers" className={mainLinkClass}>
+                Best Brokers
+
                 <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
                   ▼
                 </span>
               </Link>
 
-              <div className={`${dropdownClass} w-[460px]`}>
-                <div className="px-3 pb-3 pt-1 text-xs font-black tracking-wide text-slate-500">
-                  Major Financial Regulators
-                </div>
+              <div className={wideDropdownClass}>
+                <div className="grid grid-cols-[1.12fr_0.95fr_1.05fr] gap-5">
 
-                <div className="grid grid-cols-2 gap-2">
-                  {[
-                    {
-                      title: "FCA License - United Kingdom",
-                      href: "/en/licenses/fca",
-                    },
-                    {
-                      title: "ASIC License - Australia",
-                      href: "/en/licenses/asic",
-                    },
-                    {
-                      title: "CySEC License - Cyprus",
-                      href: "/en/licenses/cysec",
-                    },
-                    {
-                      title: "DFSA License - Dubai",
-                      href: "/en/licenses/dfsa",
-                    },
-                    {
-                      title: "FSCA License - South Africa",
-                      href: "/en/licenses/fsca",
-                    },
-                    {
-                      title: "SCA License - UAE",
-                      href: "/en/licenses/sca",
-                    },
-                    {
-                      title: "FSA License - Seychelles",
-                      href: "/en/licenses/fsa",
-                    },
-                    {
-                      title: "CIMA License - Cayman Islands",
-                      href: "/en/licenses/cima",
-                    },
-                  ].map((regulator) => (
-                    <Link
-                      key={regulator.href}
-                      href={regulator.href}
-                      className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-[13px] font-extrabold text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600"
-                    >
-                      {regulator.title}
-                    </Link>
-                  ))}
-                </div>
+                  {/* ===================================================
+                      COUNTRIES
+                  =================================================== */}
+                  <div className="flex flex-col border-r border-slate-200 pr-5">
+                    <div className="mb-3 flex min-h-[44px] items-start justify-between gap-3">
+                      <div>
+                        <h3 className="text-[14px] font-black text-slate-950">
+                          Best Brokers by Country
+                        </h3>
 
-                <div className="my-4 h-px bg-slate-200" />
+                        <p className="mt-1 text-[10px] font-semibold text-slate-500">
+                          Find brokers available in your country
+                        </p>
+                      </div>
 
-                <Link
-                  href="/en/licenses"
-                  className={`${menuCardClass} flex items-center justify-between gap-4`}
-                >
-                  <div className="min-w-0 flex-1 text-left">
-                    <div className="text-[13px] font-extrabold text-slate-800">
-                      Verify a Broker License
+                      <span className="shrink-0 rounded-full bg-brand-50 px-2.5 py-1 text-[9px] font-black text-brand-600">
+                        By Location
+                      </span>
                     </div>
 
-                    <div className="mt-1 text-[10px] font-semibold leading-5 text-slate-500">
-                      Search by broker name or license number and verify the regulator
+                    <div className="grid grid-cols-3 gap-2.5">
+                      {extendedCountryMenuItems.map((item: any) => (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          title={item.label}
+                          className="group/country flex h-[46px] items-center gap-2.5 rounded-[14px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-brand-50"
+                        >
+                          <img
+                            src={item.flag}
+                            alt={item.shortLabel}
+                            className="h-6 w-6 shrink-0 rounded-full border border-white object-cover shadow-sm"
+                          />
+
+                          <span className="min-w-0 flex-1 text-center text-[11px] font-black text-slate-700 transition group-hover/country:text-brand-600">
+                            {item.shortLabel}
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+
+                    <Link
+                      href="/en/best-brokers"
+                      className="mt-4 flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-brand-100 bg-brand-50/60 px-3 text-[12px] font-black text-brand-600 transition hover:border-brand-200 hover:bg-brand-100"
+                    >
+                      View All Countries
+                      <span className="text-sm">→</span>
+                    </Link>
+                  </div>
+
+                  {/* ===================================================
+                      CATEGORIES
+                  =================================================== */}
+                  <div className="flex flex-col border-r border-slate-200 pr-5">
+                    <div className="mb-3 min-h-[44px]">
+                      <h3 className="text-[14px] font-black text-slate-950">
+                        Best Brokers by Category
+                      </h3>
+
+                      <p className="mt-1 text-[10px] font-semibold text-slate-500">
+                        Choose a market or trading category
+                      </p>
+                    </div>
+
+                    {/* MARKETS */}
+                    <div>
+                      <div className="mb-2 text-[9px] font-black uppercase tracking-wide text-slate-400">
+                        By Market
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2">
+                        <Link
+                          href="/en/best-brokers"
+                          className="group/market flex h-[60px] items-center gap-3 rounded-[14px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-brand-50"
+                        >
+                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-blue-50 text-[9px] font-black text-brand-600 transition group-hover/market:bg-brand-600 group-hover/market:text-white">
+                            FX
+                          </span>
+
+                          <span className="text-[11px] font-black text-slate-700 transition group-hover/market:text-brand-600">
+                            Forex
+                          </span>
+                        </Link>
+
+                        <Link
+                          href="/en/best-brokers/stocks"
+                          className="group/market flex h-[60px] items-center gap-3 rounded-[14px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-brand-50"
+                        >
+                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-blue-50 text-[10px] font-black text-brand-600 transition group-hover/market:bg-brand-600 group-hover/market:text-white">
+                            S
+                          </span>
+
+                          <span className="text-[11px] font-black text-slate-700 transition group-hover/market:text-brand-600">
+                            Stocks
+                          </span>
+                        </Link>
+
+                        <Link
+                          href="/en/best-brokers/indices"
+                          className="group/market flex h-[60px] items-center gap-3 rounded-[14px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-brand-50"
+                        >
+                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-blue-50 text-[10px] font-black text-brand-600 transition group-hover/market:bg-brand-600 group-hover/market:text-white">
+                            I
+                          </span>
+
+                          <span className="text-[11px] font-black text-slate-700 transition group-hover/market:text-brand-600">
+                            Indices
+                          </span>
+                        </Link>
+
+                        <Link
+                          href="/en/best-brokers/commodities"
+                          className="group/market flex h-[60px] items-center gap-3 rounded-[14px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-brand-50"
+                        >
+                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-blue-50 text-[10px] font-black text-brand-600 transition group-hover/market:bg-brand-600 group-hover/market:text-white">
+                            C
+                          </span>
+
+                          <span className="text-[11px] font-black text-slate-700 transition group-hover/market:text-brand-600">
+                            Commodities
+                          </span>
+                        </Link>
+                      </div>
+                    </div>
+
+                    {/* POPULAR CATEGORIES */}
+                    <div className="mt-3">
+                      <div className="mb-2 text-[9px] font-black uppercase tracking-wide text-slate-400">
+                        Popular Categories
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2">
+                        {[
+                          {
+                            label: "Gold Trading",
+                            href: "/en/best-brokers/gold",
+                            symbol: "Au",
+                          },
+                          {
+                            label: "Low Spreads",
+                            href: "/en/lowest-spread-brokers",
+                            symbol: "↔",
+                          },
+                          {
+                            label: "Low Deposit",
+                            href: "/en/best-brokers/low-minimum-deposit",
+                            symbol: "$",
+                          },
+                          {
+                            label: "Scalping",
+                            href: "/en/best-brokers/scalping",
+                            symbol: "⚡",
+                          },
+                        ].map((item) => (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            className="group/category flex h-[52px] items-center gap-2.5 rounded-[13px] border border-slate-200 bg-slate-50 px-2.5 transition hover:border-brand-200 hover:bg-brand-50"
+                          >
+                            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-slate-100 bg-white text-[9px] font-black text-brand-600 shadow-sm">
+                              {item.symbol}
+                            </span>
+
+                            <span className="min-w-0 text-[10px] font-black leading-4 text-slate-700 transition group-hover/category:text-brand-600">
+                              {item.label}
+                            </span>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+
+                    <Link
+                      href="/en/best-brokers"
+                      className="mt-4 flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-brand-100 bg-brand-50/60 px-3 text-[12px] font-black text-brand-600 transition hover:border-brand-200 hover:bg-brand-100"
+                    >
+                      View Best Brokers
+                      <span className="text-sm">→</span>
+                    </Link>
+                  </div>
+
+                  {/* ===================================================
+                      ACCOUNT TYPES
+                  =================================================== */}
+                  <div className="flex flex-col">
+                    <div className="mb-3 min-h-[44px]">
+                      <h3 className="text-[14px] font-black text-slate-950">
+                        Best Brokers by Account Type
+                      </h3>
+
+                      <p className="mt-1 text-[10px] font-semibold text-slate-500">
+                        Compare accounts for your trading style
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      {accountTypePagesEn.map((item) => (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          title={item.title}
+                          className="group/account flex h-[56px] items-center gap-3 rounded-[14px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-brand-50"
+                        >
+                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-[13px] font-black text-brand-600 shadow-sm transition group-hover/account:border-brand-200 group-hover/account:bg-brand-600 group-hover/account:text-white">
+                            {item.symbol}
+                          </span>
+
+                          <div className="min-w-0 flex-1">
+                            <span className="block text-[11px] font-black leading-5 text-slate-800 transition group-hover/account:text-brand-600">
+                              {item.shortLabel}
+                            </span>
+
+                            <span className="mt-0.5 block text-[9px] font-semibold text-slate-500">
+                              Compare top brokers
+                            </span>
+                          </div>
+
+                          <span className="shrink-0 text-[12px] font-black text-slate-400 transition group-hover/account:translate-x-0.5 group-hover/account:text-brand-600">
+                            →
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+
+                    {/* ACCOUNT GUIDE */}
+                    <Link
+                      href="/en/best-brokers"
+                      className="group/guide mt-3 overflow-hidden rounded-[16px] border border-brand-100 bg-gradient-to-r from-brand-50/80 to-white transition hover:border-brand-200 hover:shadow-sm"
+                    >
+                      <div className="flex items-center gap-3 p-3">
+                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-600 text-[15px] font-black text-white shadow-sm">
+                          ?
+                        </span>
+
+                        <div className="min-w-0 flex-1">
+                          <div className="text-[10px] font-black text-slate-800 transition group-hover/guide:text-brand-600">
+                            Which account is right for me?
+                          </div>
+
+                          <div className="mt-0.5 text-[9px] font-semibold leading-4 text-slate-500">
+                            Compare the main account types
+                          </div>
+                        </div>
+
+                        <span className="text-[13px] font-black text-brand-600 transition group-hover/guide:translate-x-0.5">
+                          →
+                        </span>
+                      </div>
+                    </Link>
+
+                    <div className="mt-3 border-t border-slate-100 pt-3">
+                      <div className="grid grid-cols-2 gap-2">
+                        <Link
+                          href="/en/best-brokers/low-minimum-deposit"
+                          className="rounded-xl bg-slate-50 px-2 py-2.5 text-center transition hover:bg-brand-50"
+                        >
+                          <span className="block text-[9px] font-black text-slate-700">
+                            Smaller Capital
+                          </span>
+
+                          <span className="mt-0.5 block text-[8px] font-bold text-slate-400">
+                            Low Deposit
+                          </span>
+                        </Link>
+
+                        <Link
+                          href="/en/lowest-spread-brokers"
+                          className="rounded-xl bg-slate-50 px-2 py-2.5 text-center transition hover:bg-brand-50"
+                        >
+                          <span className="block text-[9px] font-black text-slate-700">
+                            Active Trading
+                          </span>
+
+                          <span className="mt-0.5 block text-[8px] font-bold text-slate-400">
+                            Lower Spreads
+                          </span>
+                        </Link>
+                      </div>
                     </div>
                   </div>
 
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-lg font-black text-brand-600 shadow-sm">
-                    →
-                  </span>
-                </Link>
-
-                <Link
-                  href="/en/licenses"
-                  className="mt-1 block rounded-2xl px-3 py-3 text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
-                >
-                  View All Licenses & Regulators →
-                </Link>
+                </div>
               </div>
             </div>
 
-            {/* TRADING TOOLS */}
+            {/* ===================================================
+                LICENSES
+            =================================================== */}
             <div className="group relative">
-              <Link href="/en/tools" className={mainLinkClass}>
-                Tools
+              <Link href="/en/licenses" className={mainLinkClass}>
+                Licenses
+
                 <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
                   ▼
                 </span>
               </Link>
 
-              <div className={`${dropdownClass} w-[460px]`}>
-                <div className="px-3 pb-3 pt-1 text-xs font-black tracking-wide text-slate-500">
-                  Trading Calculators & Tools
+              <div className={`${dropdownClass} w-[500px]`}>
+                {/* HEADER */}
+                <div className="mb-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-brand-50 text-[12px] font-black text-brand-600">
+                          ✓
+                        </span>
+
+                        <h3 className="text-[14px] font-black text-slate-950">
+                          Broker Licenses & Regulators
+                        </h3>
+                      </div>
+
+                      <p className="ml-10 mt-1 text-[10px] font-semibold leading-5 text-slate-500">
+                        Explore major financial regulators and broker licenses
+                      </p>
+                    </div>
+
+                    <span className="shrink-0 rounded-full bg-brand-50 px-2.5 py-1 text-[9px] font-black text-brand-600">
+                      License Guide
+                    </span>
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2">
-                  {tradingToolsEn.map((tool) => (
-                    <Link
-                      key={tool.href}
-                      href={tool.href}
-                      className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-[13px] font-extrabold text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600"
-                    >
-                      {tool.title}
-                    </Link>
-                  ))}
+                {/* REGULATORS */}
+                <div>
+                  <div className="mb-2 text-[9px] font-black uppercase tracking-wide text-slate-400">
+                    Major Regulators
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    {[
+                      {
+                        code: "FCA",
+                        country: "United Kingdom",
+                        href: "/en/licenses/fca",
+                      },
+                      {
+                        code: "ASIC",
+                        country: "Australia",
+                        href: "/en/licenses/asic",
+                      },
+                      {
+                        code: "CySEC",
+                        country: "Cyprus",
+                        href: "/en/licenses/cysec",
+                      },
+                      {
+                        code: "DFSA",
+                        country: "Dubai",
+                        href: "/en/licenses/dfsa",
+                      },
+                      {
+                        code: "FSCA",
+                        country: "South Africa",
+                        href: "/en/licenses/fsca",
+                      },
+                      {
+                        code: "SCA",
+                        country: "UAE",
+                        href: "/en/licenses/sca",
+                      },
+                      {
+                        code: "FSA",
+                        country: "Seychelles",
+                        href: "/en/licenses/fsa",
+                      },
+                      {
+                        code: "CIMA",
+                        country: "Cayman Islands",
+                        href: "/en/licenses/cima",
+                      },
+                    ].map((regulator) => (
+                      <Link
+                        key={regulator.href}
+                        href={regulator.href}
+                        className="group/license flex h-[58px] items-center gap-3 rounded-[14px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-brand-50"
+                      >
+                        <span className="flex h-9 min-w-[48px] shrink-0 items-center justify-center rounded-[10px] border border-slate-100 bg-white px-2 text-[10px] font-black text-brand-600 shadow-sm transition group-hover/license:border-brand-100 group-hover/license:bg-brand-600 group-hover/license:text-white">
+                          {regulator.code}
+                        </span>
+
+                        <div className="min-w-0 flex-1">
+                          <span className="block text-[11px] font-black text-slate-800 transition group-hover/license:text-brand-600">
+                            {regulator.code} License
+                          </span>
+
+                          <span className="mt-0.5 block text-[9px] font-semibold text-slate-500">
+                            {regulator.country}
+                          </span>
+                        </div>
+
+                        <span className="shrink-0 text-[11px] font-black text-slate-400 transition group-hover/license:translate-x-0.5 group-hover/license:text-brand-600">
+                          →
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
 
+                {/* LICENSE CHECK */}
                 <Link
-                  href="/en/tools"
-                  className="mt-3 block rounded-2xl px-3 py-3 text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
+                  href="/en/licenses"
+                  className="group/check mt-4 block overflow-hidden rounded-[16px] border border-brand-100 bg-gradient-to-r from-brand-50/80 to-white transition hover:border-brand-200 hover:shadow-sm"
                 >
-                  View All Trading Tools →
+                  <div className="flex items-center gap-3 p-3.5">
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-600 text-[17px] font-black text-white shadow-sm">
+                      ✓
+                    </span>
+
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[12px] font-black text-slate-900 transition group-hover/check:text-brand-600">
+                        Verify a Broker License
+                      </div>
+
+                      <div className="mt-1 text-[9px] font-semibold leading-5 text-slate-500">
+                        Search by broker name or license number and check the regulator
+                      </div>
+                    </div>
+
+                    <span className="text-[14px] font-black text-brand-600 transition group-hover/check:translate-x-0.5">
+                      →
+                    </span>
+                  </div>
+                </Link>
+
+                {/* FOOTER CTA */}
+                <Link
+                  href="/en/licenses"
+                  className="mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-brand-100 bg-brand-50/60 px-3 text-[12px] font-black text-brand-600 transition hover:border-brand-200 hover:bg-brand-100"
+                >
+                  View All Licenses & Regulators
+                  <span className="text-sm">→</span>
                 </Link>
               </div>
             </div>
 
-          {/* LEARN TRADING */}
-<div className="group relative">
-  <Link
-    href="/en/learn-trading"
-    className={mainLinkClass}
-  >
-    Learn Trading
-    <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
-      ▼
-    </span>
-  </Link>
+            {/* ===================================================
+                TRADING TOOLS
+            =================================================== */}
+            <div className="group relative">
+              <Link href="/en/tools" className={mainLinkClass}>
+                Tools
 
-  <div className={`${dropdownClass} w-[420px]`}>
-    <div className="px-3 pb-3 pt-1 text-xs font-black tracking-wide text-slate-500">
-      Trading Guides
-    </div>
+                <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
+                  ▼
+                </span>
+              </Link>
 
-    {learnTradingMenuItems.slice(0, 1).map((item: any) => (
-      <Link
-        key={item.href}
-        href={getLearnTradingHref(item)}
-        className={`${menuCardClass} flex items-center justify-between gap-4`}
-      >
-        <div className="min-w-0 flex-1">
-          <div className="line-clamp-2 text-[13px] font-extrabold leading-6 text-slate-700">
-            {getLearnTradingTitle(item)}
-          </div>
-        </div>
+              <div className={`${dropdownClass} w-[500px]`}>
+                {/* HEADER */}
+                <div className="mb-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-brand-50 text-[13px] font-black text-brand-600">
+                          ∑
+                        </span>
 
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-lg font-black text-brand-600 shadow-sm">
-          →
-        </span>
-      </Link>
-    ))}
+                        <h3 className="text-[14px] font-black text-slate-950">
+                          Trading Tools & Calculators
+                        </h3>
+                      </div>
 
-    <Link
-      href="/en/learn-trading/economic-indicators"
-      className={`${menuCardClass} mt-2 flex items-center justify-between gap-4`}
-    >
-      <div className="min-w-0 flex-1">
-        <div className="line-clamp-2 text-[13px] font-extrabold leading-6 text-slate-700">
-          Economic Indicators and Their Impact on Trading
-        </div>
-      </div>
+                      <p className="ml-10 mt-1 text-[10px] font-semibold leading-5 text-slate-500">
+                        Calculate risk, position size, margin and potential results
+                      </p>
+                    </div>
 
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-lg font-black text-brand-600 shadow-sm">
-        →
-      </span>
-    </Link>
+                    <span className="shrink-0 rounded-full bg-brand-50 px-2.5 py-1 text-[9px] font-black text-brand-600">
+                      Free Tools
+                    </span>
+                  </div>
+                </div>
 
-    {/* FOREX TRADING STRATEGIES HUB */}
-    <Link
-      href="/en/strategies"
-      className={`${menuCardClass} mt-2 flex items-center justify-between gap-4`}
-    >
-      <div className="min-w-0 flex-1">
-        <div className="line-clamp-2 text-[13px] font-extrabold leading-6 text-slate-700">
-          Forex Trading Strategies
-        </div>
-      </div>
+                {/* FEATURED TOOLS */}
+                <div>
+                  <div className="mb-2 text-[9px] font-black uppercase tracking-wide text-slate-400">
+                    Popular Trading Tools
+                  </div>
 
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-lg font-black text-brand-600 shadow-sm">
-        →
-      </span>
-    </Link>
+                  <div className="grid grid-cols-2 gap-2">
+                    {tradingToolsEn.slice(0, 8).map((tool, index) => {
+                      const toolSymbols = [
+                        "%",
+                        "L",
+                        "P",
+                        "$",
+                        "M",
+                        "ƒ",
+                        "R",
+                        "+",
+                      ];
 
-    <Link
-      href="/en/learn-trading"
-      className="mt-1 block rounded-2xl px-3 py-3 text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
-    >
-      View All Guides →
-    </Link>
-  </div>
-</div>
+                      return (
+                        <Link
+                          key={tool.href}
+                          href={tool.href}
+                          className="group/tool flex h-[58px] items-center gap-3 rounded-[14px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-brand-50"
+                        >
+                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] border border-slate-100 bg-white text-[11px] font-black text-brand-600 shadow-sm transition group-hover/tool:border-brand-100 group-hover/tool:bg-brand-600 group-hover/tool:text-white">
+                            {toolSymbols[index] ?? "•"}
+                          </span>
+
+                          <span className="min-w-0 flex-1 text-[11px] font-black leading-5 text-slate-800 transition group-hover/tool:text-brand-600">
+                            {tool.title}
+                          </span>
+
+                          <span className="shrink-0 text-[11px] font-black text-slate-400 transition group-hover/tool:translate-x-0.5 group-hover/tool:text-brand-600">
+                            →
+                          </span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* QUICK GROUPS */}
+                <div className="mt-4 border-t border-slate-100 pt-3">
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="rounded-[12px] bg-slate-50 px-2 py-2.5 text-center">
+                      <span className="block text-[9px] font-black text-slate-700">
+                        Risk Management
+                      </span>
+
+                      <span className="mt-0.5 block text-[8px] font-semibold text-slate-400">
+                        Position Sizing
+                      </span>
+                    </div>
+
+                    <div className="rounded-[12px] bg-slate-50 px-2 py-2.5 text-center">
+                      <span className="block text-[9px] font-black text-slate-700">
+                        Profit Planning
+                      </span>
+
+                      <span className="mt-0.5 block text-[8px] font-semibold text-slate-400">
+                        Before Trading
+                      </span>
+                    </div>
+
+                    <div className="rounded-[12px] bg-slate-50 px-2 py-2.5 text-center">
+                      <span className="block text-[9px] font-black text-slate-700">
+                        Margin
+                      </span>
+
+                      <span className="mt-0.5 block text-[8px] font-semibold text-slate-400">
+                        & Leverage
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* FOOTER CTA */}
+                <Link
+                  href="/en/tools"
+                  className="mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-brand-100 bg-brand-50/60 px-3 text-[12px] font-black text-brand-600 transition hover:border-brand-200 hover:bg-brand-100"
+                >
+                  View All Trading Tools
+                  <span className="text-sm">→</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* ===================================================
+                LEARN TRADING
+            =================================================== */}
+            <div className="group relative">
+              <Link
+                href="/en/learn-trading"
+                className={mainLinkClass}
+              >
+                Learn Trading
+
+                <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
+                  ▼
+                </span>
+              </Link>
+
+              <div className={`${dropdownClass} w-[500px]`}>
+                {/* HEADER */}
+                <div className="mb-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-brand-50 text-[13px] font-black text-brand-600">
+                          📘
+                        </span>
+
+                        <h3 className="text-[14px] font-black text-slate-950">
+                          Learn Trading Step by Step
+                        </h3>
+                      </div>
+
+                      <p className="ml-10 mt-1 text-[10px] font-semibold leading-5 text-slate-500">
+                        Guides, market concepts and trading strategies
+                      </p>
+                    </div>
+
+                    <span className="shrink-0 rounded-full bg-brand-50 px-2.5 py-1 text-[9px] font-black text-brand-600">
+                      Learning Hub
+                    </span>
+                  </div>
+                </div>
+
+                {/* MAIN GUIDE */}
+                {learnTradingMenuItems.slice(0, 1).map((item: any) => (
+                  <Link
+                    key={item.href}
+                    href={getLearnTradingHref(item)}
+                    className="group/learn block overflow-hidden rounded-[16px] border border-brand-100 bg-gradient-to-r from-brand-50/80 to-white transition hover:border-brand-200 hover:shadow-sm"
+                  >
+                    <div className="flex items-center gap-3 p-3.5">
+                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-600 text-[15px] font-black text-white shadow-sm">
+                        01
+                      </span>
+
+                      <div className="min-w-0 flex-1">
+                        <div className="text-[12px] font-black leading-6 text-slate-900 transition group-hover/learn:text-brand-600">
+                          {getLearnTradingTitle(item)}
+                        </div>
+
+                        <div className="mt-0.5 text-[9px] font-semibold leading-5 text-slate-500">
+                          Start with the fundamentals of online trading
+                        </div>
+                      </div>
+
+                      <span className="shrink-0 text-[14px] font-black text-brand-600 transition group-hover/learn:translate-x-0.5">
+                        →
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+
+                {/* TOPICS */}
+                <div className="mt-4">
+                  <div className="mb-2 text-[9px] font-black uppercase tracking-wide text-slate-400">
+                    Explore Trading Topics
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <Link
+                      href="/en/learn-trading/economic-indicators"
+                      className="group/topic flex min-h-[82px] flex-col justify-between rounded-[14px] border border-slate-200 bg-slate-50 p-3 transition hover:border-brand-200 hover:bg-brand-50"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] border border-slate-100 bg-white text-[12px] font-black text-brand-600 shadow-sm transition group-hover/topic:bg-brand-600 group-hover/topic:text-white">
+                          %
+                        </span>
+
+                        <span className="text-[11px] font-black text-slate-400 transition group-hover/topic:translate-x-0.5 group-hover/topic:text-brand-600">
+                          →
+                        </span>
+                      </div>
+
+                      <div className="mt-3">
+                        <div className="text-[11px] font-black leading-5 text-slate-800 transition group-hover/topic:text-brand-600">
+                          Economic Indicators
+                        </div>
+
+                        <div className="mt-0.5 text-[8px] font-semibold leading-4 text-slate-500">
+                          How data moves financial markets
+                        </div>
+                      </div>
+                    </Link>
+
+                    <Link
+                      href="/en/strategies"
+                      className="group/topic flex min-h-[82px] flex-col justify-between rounded-[14px] border border-slate-200 bg-slate-50 p-3 transition hover:border-brand-200 hover:bg-brand-50"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] border border-slate-100 bg-white text-[11px] font-black text-brand-600 shadow-sm transition group-hover/topic:bg-brand-600 group-hover/topic:text-white">
+                          ↗
+                        </span>
+
+                        <span className="text-[11px] font-black text-slate-400 transition group-hover/topic:translate-x-0.5 group-hover/topic:text-brand-600">
+                          →
+                        </span>
+                      </div>
+
+                      <div className="mt-3">
+                        <div className="text-[11px] font-black leading-5 text-slate-800 transition group-hover/topic:text-brand-600">
+                          Forex Strategies
+                        </div>
+
+                        <div className="mt-0.5 text-[8px] font-semibold leading-4 text-slate-500">
+                          Trading methods and strategies
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+                </div>
+
+                {/* LEARNING PATH */}
+                <div className="mt-4 border-t border-slate-100 pt-3">
+                  <div className="mb-2 text-[9px] font-black uppercase tracking-wide text-slate-400">
+                    Learning Path
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="rounded-[12px] bg-slate-50 px-2 py-2.5 text-center">
+                      <span className="mx-auto flex h-6 w-6 items-center justify-center rounded-full bg-brand-50 text-[9px] font-black text-brand-600">
+                        1
+                      </span>
+
+                      <span className="mt-1.5 block text-[9px] font-black text-slate-700">
+                        Basics
+                      </span>
+
+                      <span className="mt-0.5 block text-[8px] font-semibold text-slate-400">
+                        Learn Trading
+                      </span>
+                    </div>
+
+                    <div className="rounded-[12px] bg-slate-50 px-2 py-2.5 text-center">
+                      <span className="mx-auto flex h-6 w-6 items-center justify-center rounded-full bg-brand-50 text-[9px] font-black text-brand-600">
+                        2
+                      </span>
+
+                      <span className="mt-1.5 block text-[9px] font-black text-slate-700">
+                        Market Analysis
+                      </span>
+
+                      <span className="mt-0.5 block text-[8px] font-semibold text-slate-400">
+                        Read the Market
+                      </span>
+                    </div>
+
+                    <div className="rounded-[12px] bg-slate-50 px-2 py-2.5 text-center">
+                      <span className="mx-auto flex h-6 w-6 items-center justify-center rounded-full bg-brand-50 text-[9px] font-black text-brand-600">
+                        3
+                      </span>
+
+                      <span className="mt-1.5 block text-[9px] font-black text-slate-700">
+                        Strategies
+                      </span>
+
+                      <span className="mt-0.5 block text-[8px] font-semibold text-slate-400">
+                        Build Your Approach
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* FOOTER CTA */}
+                <Link
+                  href="/en/learn-trading"
+                  className="mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-brand-100 bg-brand-50/60 px-3 text-[12px] font-black text-brand-600 transition hover:border-brand-200 hover:bg-brand-100"
+                >
+                  View All Trading Guides
+                  <span className="text-sm">→</span>
+                </Link>
+              </div>
+            </div>
 
             <Link href="/en/about" className={mainLinkClass}>
               About
