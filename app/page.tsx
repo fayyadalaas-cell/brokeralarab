@@ -620,7 +620,7 @@ const whyBrokerAlarabItems = [
 <section className="relative overflow-hidden border-b border-[#173b70] bg-[linear-gradient(135deg,#eef5ff_0%,#dceaff_48%,#c9ddfb_100%)]">
   {(() => {
     // IDs الشركات التي تريد عرضها في الهيرو، بالترتيب
-const heroBrokerIds = [1, 2, 18, 14, 25, 11];
+const heroBrokerIds = [1, 2, 18, 14, 25, 6];
 
 const allHeroBrokers = heroBrokerIds
   .map((id) =>

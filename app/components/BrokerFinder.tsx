@@ -10,6 +10,7 @@ type Broker = {
   rating: number | null;
   min_deposit: number | null;
   platforms: string | null;
+  account_types?: string | null;
   regulation: string | null;
   regulation_short?: string | null;
   best_for: string | null;
@@ -159,6 +160,41 @@ function getRecommendationLabel(
   return "خيار موصى به";
 }
 
+function getBrokerHighlights(broker: Broker) {
+  const strength =
+    broker.key_strength_ar?.trim() ||
+    broker.best_for?.trim() ||
+    "اطلع على تفاصيل الوسيط";
+
+  const accounts = (broker.account_types || "")
+    .split(/\s*\|\|\s*|\s*\|\s*/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  const platforms = (broker.platforms || "")
+    .split(/\s*\|\s*|\s*,\s*/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  const accountSummary =
+    accounts.length > 0
+      ? accounts.slice(0, 3).join(" · ") +
+        (accounts.length > 3 ? ` +${accounts.length - 3}` : "")
+      : "راجع أنواع الحسابات";
+
+  const platformSummary =
+    platforms.length > 0
+      ? platforms.slice(0, 3).join(" · ") +
+        (platforms.length > 3 ? ` +${platforms.length - 3}` : "")
+      : "راجع منصات التداول";
+
+  return {
+    strength,
+    accountSummary,
+    platformSummary,
+  };
+}
+
 function scoreText(value: number | null | undefined) {
   const v = Number(value || 0);
   if (v >= 4.5) return "ممتاز";
@@ -198,12 +234,31 @@ export default function BrokerFinder({ brokers, countryRankings = [] }: Props) {
   const [islamic, setIslamic] = useState("yes");
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [appliedFilters, setAppliedFilters] = useState({
+  country: "",
+  deposit: "" as DepositRange | "",
+  experience: "" as Experience | "",
+  platform: "" as PlatformPref | "",
+  islamic: "yes",
+});
   const [expandedMobileId, setExpandedMobileId] = useState<number | null>(null);
 
-  const canSearch = country !== "" && deposit !== "" && experience !== "" && platform !== "";
+  
+const canSearch =
+  country !== "" &&
+  (deposit !== "" || experience !== "" || platform !== "" || islamic !== "yes");
 
-  const results = useMemo(() => {
-  const hasActiveFilters = hasSearched && canSearch;
+
+ const results = useMemo(() => {
+  const {
+    country,
+    deposit,
+    experience,
+    platform,
+    islamic,
+  } = appliedFilters;
+
+  const hasActiveFilters = hasSearched;
 
   const rankedBrokerIds = new Set(
     countryRankings
@@ -393,17 +448,20 @@ export default function BrokerFinder({ brokers, countryRankings = [] }: Props) {
 }, [
   brokers,
   countryRankings,
-  country,
-  deposit,
-  experience,
-  islamic,
-  platform,
+  appliedFilters,
   hasSearched,
-  canSearch,
 ]);
 
  function handleSearch() {
   if (!canSearch) return;
+
+  setAppliedFilters({
+    country,
+    deposit,
+    experience,
+    platform,
+    islamic,
+  });
 
   setHasSearched(true);
   setShowMobileFilters(false);
@@ -447,22 +505,27 @@ export default function BrokerFinder({ brokers, countryRankings = [] }: Props) {
   value={country}
   onChange={(e) => {
   setCountry(e.target.value);
-  setHasSearched(false);
+  
 }} className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100">
-                  <option value="">اختر الدولة</option>
-                  <option value="saudi-arabia">السعودية</option>
-                  <option value="uae">الإمارات</option>
-                  <option value="kuwait">الكويت</option>
-                  <option value="qatar">قطر</option>
-                  <option value="bahrain">البحرين</option>
-                  <option value="oman">عُمان</option>
-                  <option value="egypt">مصر</option>
-                  <option value="jordan">الأردن</option>
-                  <option value="iraq">العراق</option>
-                  <option value="libya">ليبيا</option>
-                  <option value="syria">سوريا</option>
-                  <option value="yemen">اليمن</option>
-                  <option value="other">دول أخرى</option>
+                  
+<option value="">اختر الدولة</option>
+<option value="saudi-arabia">السعودية</option>
+<option value="uae">الإمارات</option>
+<option value="kuwait">الكويت</option>
+<option value="qatar">قطر</option>
+<option value="bahrain">البحرين</option>
+<option value="oman">عُمان</option>
+<option value="egypt">مصر</option>
+<option value="jordan">الأردن</option>
+<option value="iraq">العراق</option>
+<option value="lebanon">لبنان</option>
+<option value="palestine">فلسطين</option>
+<option value="algeria">الجزائر</option>
+<option value="libya">ليبيا</option>
+<option value="syria">سوريا</option>
+<option value="yemen">اليمن</option>
+<option value="other">دول أخرى</option>
+
                 </select>
               </div>
 
@@ -472,7 +535,7 @@ export default function BrokerFinder({ brokers, countryRankings = [] }: Props) {
   aria-label="اختر مبلغ الإيداع"
   value={deposit} onChange={(e) => {
   setDeposit(e.target.value as DepositRange | "");
-  setHasSearched(false);
+  
 }} className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100">
                   <option value="">مبلغ الإيداع</option>
                   <option value="under50">أقل من 50$</option>
@@ -489,7 +552,7 @@ export default function BrokerFinder({ brokers, countryRankings = [] }: Props) {
   value={experience}
   onChange={(e) => {
   setExperience(e.target.value as Experience | "");
-  setHasSearched(false);
+  
 }} className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100">
                   <option value="">اختر مستوى الخبرة</option>
                   <option value="beginner">مبتدئ</option>
@@ -505,7 +568,7 @@ export default function BrokerFinder({ brokers, countryRankings = [] }: Props) {
   value={platform}
   onChange={(e) => {
   setPlatform(e.target.value as PlatformPref | "");
-  setHasSearched(false);
+  
 }} className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100">
                   <option value="">اختر المنصة</option>
                   <option value="any">أي منصة</option>
@@ -521,7 +584,7 @@ export default function BrokerFinder({ brokers, countryRankings = [] }: Props) {
   value={islamic}
   onChange={(e) => {
   setIslamic(e.target.value);
-  setHasSearched(false);
+  
 }}
 className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100">
                   <option value="yes">نعم</option>
@@ -572,7 +635,13 @@ className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm
 
           <div className="mt-5 grid grid-cols-3 gap-5">
             {results.map((broker, index) => {
-              const recommendation = getRecommendationLabel(broker, index, experience, deposit, hasSearched);
+              const recommendation = getRecommendationLabel(
+  broker,
+  index,
+  appliedFilters.experience,
+  appliedFilters.deposit,
+  hasSearched
+);
               const openAccountHref = broker.real_account_url || `/brokers/${broker.slug}`;
               const strength = decisionPoint(broker, index);
               const weakness = broker.key_weakness_ar || "راجع شروط التداول";
@@ -692,9 +761,7 @@ className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm
                     </div>
                   </div>
 
-                  <div className="mt-4 rounded-2xl bg-orange-50 px-4 py-3 text-xs font-bold text-orange-700 ring-1 ring-orange-100">
-                    تنبيه: {shortText(weakness, 60)}
-                  </div>
+                 
 
                   <div className="mt-auto grid grid-cols-2 gap-3 border-t border-slate-100 pt-5">
                     <Link href={`/brokers/${broker.slug}`} target="_blank" rel="noopener noreferrer" className="inline-flex w-full items-center justify-center rounded-[16px] border border-slate-200 bg-white px-4 py-3 text-[14px] font-extrabold text-[#07111f] transition hover:bg-slate-50">
@@ -761,30 +828,35 @@ className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm
   value={country}
   onChange={(e) => {
   setCountry(e.target.value);
-  setHasSearched(false);
+  
 }}
   className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100">
-                  <option value="">اختر الدولة</option>
-                  <option value="saudi-arabia">السعودية</option>
-                  <option value="uae">الإمارات</option>
-                  <option value="kuwait">الكويت</option>
-                  <option value="qatar">قطر</option>
-                  <option value="bahrain">البحرين</option>
-                  <option value="oman">عُمان</option>
-                  <option value="egypt">مصر</option>
-                  <option value="jordan">الأردن</option>
-                  <option value="iraq">العراق</option>
-                  <option value="libya">ليبيا</option>
-                  <option value="syria">سوريا</option>
-                  <option value="yemen">اليمن</option>
-                  <option value="other">دول أخرى</option>
+                  
+<option value="">اختر الدولة</option>
+<option value="saudi-arabia">السعودية</option>
+<option value="uae">الإمارات</option>
+<option value="kuwait">الكويت</option>
+<option value="qatar">قطر</option>
+<option value="bahrain">البحرين</option>
+<option value="oman">عُمان</option>
+<option value="egypt">مصر</option>
+<option value="jordan">الأردن</option>
+<option value="iraq">العراق</option>
+<option value="lebanon">لبنان</option>
+<option value="palestine">فلسطين</option>
+<option value="algeria">الجزائر</option>
+<option value="libya">ليبيا</option>
+<option value="syria">سوريا</option>
+<option value="yemen">اليمن</option>
+<option value="other">دول أخرى</option>
+
                 </select>
 
                 <select
   aria-label="اختر مبلغ الإيداع"
   value={deposit} onChange={(e) => {
   setDeposit(e.target.value as DepositRange | "");
-  setHasSearched(false);
+  
 }} className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100">
                   <option value="">مبلغ الإيداع</option>
                   <option value="under50">أقل من 50$</option>
@@ -798,7 +870,7 @@ className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm
   value={experience}
   onChange={(e) => {
   setExperience(e.target.value as Experience | "");
-  setHasSearched(false);
+  
 }} className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100">
                   <option value="">اختر مستوى الخبرة</option>
                   <option value="beginner">مبتدئ</option>
@@ -811,7 +883,7 @@ className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm
   value={platform}
   onChange={(e) => {
   setPlatform(e.target.value as PlatformPref | "");
-  setHasSearched(false);
+ 
 }} className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100">
                   <option value="">اختر المنصة</option>
                   <option value="any">أي منصة</option>
@@ -824,7 +896,7 @@ className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm
   value={islamic}
   onChange={(e) => {
   setIslamic(e.target.value);
-  setHasSearched(false);
+  
 }} className="h-[48px] rounded-[16px] border border-slate-200 bg-white px-4 text-[13px] font-bold text-[#07111f] shadow-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100">
                   <option value="yes">حساب إسلامي: نعم</option>
                   <option value="no">لا يهم</option>
@@ -996,9 +1068,7 @@ className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm
                           </span>
                         </div>
 
-                        <div className="rounded-[18px] bg-orange-50 px-3 py-3 text-center text-[12px] font-bold text-orange-700 ring-1 ring-orange-100">
-                          تنبيه: {shortText(weakness, 52)}
-                        </div>
+                       
                       </div>
 
                       <div className="mt-4 grid grid-cols-2 gap-2">
