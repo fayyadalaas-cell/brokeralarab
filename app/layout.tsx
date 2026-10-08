@@ -33,12 +33,34 @@ export const metadata: Metadata = {
   verification: {
     google: "eivw8RsaxU2SPjyhov7RFqS8gdAM0VTN8YsmxQncXm4",
   },
+  
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",
     apple: "/favicon.ico",
   },
+
+  openGraph: {
+    type: "website",
+    locale: "ar_AR",
+    siteName: "بروكر العرب",
+    title: "بروكر العرب",
+    description:
+      "بروكر العرب يقدم تقييمات ومقارنات شاملة لأفضل شركات التداول، مع تحليل التراخيص والرسوم والمنصات لمساعدة المتداول العربي على اختيار الوسيط المناسب بثقة.",
+    images: [
+      {
+        url: "/og-image.webp",
+        alt: "بروكر العرب | Broker Alarab",
+      },
+    ],
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    images: ["/og-image.webp"],
+  },
 };
+
 
 type BrokerMenuItem = {
   name: string;
