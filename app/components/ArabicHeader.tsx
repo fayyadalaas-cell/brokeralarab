@@ -251,76 +251,137 @@ export default function ArabicHeader({
               </div>
             </div>
 
-            {/* COMPARE */}
-            <div className="group relative">
-              <Link href="/compare" className={mainLinkClass}>
-                المقارنات
-                <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
-                  ▼
-                </span>
-              </Link>
+            {/* ===================================================
+    COMPARE - BROKERS & ACCOUNTS
+=================================================== */}
+<div className="group relative">
+  <Link href="/compare" className={mainLinkClass}>
+    المقارنات
+    <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
+      ▼
+    </span>
+  </Link>
 
-              <div className={`${dropdownClass} w-[460px]`}>
-                <div className="px-3 pb-2 pt-1 text-xs font-black tracking-wide text-slate-500">
-                  أشهر المقارنات
-                </div>
+  <div className={`${dropdownClass} w-[500px] max-w-[calc(100vw-32px)]`} dir="rtl">
 
-                {featuredComparisons.map((item: any) => {
-                  const parts = item.label.split(" vs ");
-                  const leftSlug = parts[0]?.toLowerCase().replace(/\s+/g, "-");
-                  const rightSlug = parts[1]?.toLowerCase().replace(/\s+/g, "-");
-                  const leftName = brokerNamesAr[leftSlug] || parts[0];
-                  const rightName = brokerNamesAr[rightSlug] || parts[1];
+    {/* HEADER */}
+    <div className="mb-4 flex items-start justify-between gap-3 px-1">
+      <div>
+        <h3 className="text-[14px] font-black text-slate-950">
+          مقارنات شركات وحسابات التداول
+        </h3>
+        <p className="mt-1 text-[10px] font-semibold text-slate-500">
+          قارن الوسطاء والحسابات لاختيار الأنسب لك
+        </p>
+      </div>
 
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={`${menuCardClass} mb-2 grid grid-cols-[52px_1fr_44px_1fr_52px] items-center gap-2`}
-                    >
-                      <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm">
-                        <Image
-                          src={getBrokerLogo(rightSlug)}
-                          alt={rightName}
-                          width={40}
-                          height={40}
-                          className="h-full w-full object-contain p-1"
-                        />
-                      </div>
+      <span className="shrink-0 rounded-full bg-brand-50 px-2.5 py-1 text-[9px] font-black text-brand-600">
+        مقارنة مباشرة
+      </span>
+    </div>
 
-                      <span className="min-w-0 truncate text-right text-[14px] font-extrabold text-slate-800">
-                        {rightName}
-                      </span>
+    {/* BROKER COMPARISONS */}
+    <div className="mb-2 flex items-center justify-between px-1">
+      <h4 className="text-[12px] font-black text-slate-800">
+        مقارنة شركات التداول
+      </h4>
+      <span className="text-[9px] font-bold text-slate-400">
+        أشهر المقارنات
+      </span>
+    </div>
 
-                      <span className="mx-auto inline-flex shrink-0 items-center justify-center rounded-full bg-slate-100 px-2.5 py-[2px] text-[11px] font-extrabold text-slate-600">
-                        VS
-                      </span>
+    <div className="space-y-2">
+      {featuredComparisons.slice(0, 4).map((item: any) => {
+  const parts = item.label.split(" vs ");
+  const leftSlug = parts[0]?.toLowerCase().replace(/\s+/g, "-");
+  const rightSlug = parts[1]?.toLowerCase().replace(/\s+/g, "-");
 
-                      <span className="min-w-0 truncate text-left text-[14px] font-extrabold text-slate-800">
-                        {leftName}
-                      </span>
+  const leftName = brokerNamesAr[leftSlug] || parts[0];
+  const rightName = brokerNamesAr[rightSlug] || parts[1];
 
-                      <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm">
-                        <Image
-                          src={getBrokerLogo(leftSlug)}
-                          alt={leftName}
-                          width={40}
-                          height={40}
-                          className="h-full w-full object-contain p-1"
-                        />
-                      </div>
-                    </Link>
-                  );
-                })}
+  return (
+    <Link
+      key={item.href}
+      href={item.href}
+      className="group/compare flex min-h-[48px] items-center justify-center rounded-[14px] border border-slate-200 bg-slate-50 px-3 py-2 transition hover:border-brand-200 hover:bg-brand-50"
+    >
+      <div className="grid w-full max-w-[330px] grid-cols-[minmax(0,1fr)_36px_minmax(0,1fr)] items-center gap-3">
 
-                <Link
-                  href="/compare"
-                  className="mt-1 block rounded-2xl px-3 py-3 text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
-                >
-                  جميع المقارنات ←
-                </Link>
-              </div>
-            </div>
+        <span className="truncate text-center text-[12px] font-black text-slate-800 group-hover/compare:text-brand-600">
+          {leftName}
+        </span>
+
+        <span className="flex h-7 w-9 items-center justify-center rounded-full bg-white text-[10px] font-black text-slate-500">
+          VS
+        </span>
+
+        <span className="truncate text-center text-[12px] font-black text-slate-800 group-hover/compare:text-brand-600">
+          {rightName}
+        </span>
+
+      </div>
+    </Link>
+  );
+})}
+    </div>
+
+    {/* ACCOUNT COMPARISONS */}
+<div className="mt-4 border-t border-slate-100 pt-3">
+  <div className="mb-2 flex items-center justify-between px-1">
+    <h4 className="text-[12px] font-black text-slate-800">
+      مقارنة حسابات التداول
+    </h4>
+
+    <span className="rounded-full bg-brand-50 px-2 py-1 text-[9px] font-black text-brand-600">
+      جديد
+    </span>
+  </div>
+
+  <Link
+    href="/compare-accounts"
+    className="group/account flex min-h-[65px] items-center gap-3 rounded-[14px] border border-slate-200 bg-slate-50 px-3 py-3 transition hover:border-brand-200 hover:bg-brand-50"
+  >
+    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-[13px] font-black text-brand-600 shadow-sm">
+      VS
+    </span>
+
+    <div className="min-w-0 flex-1">
+      <div className="text-[12px] font-black text-slate-800 group-hover/account:text-brand-600">
+        قارن بين أي حسابين للتداول
+      </div>
+
+      <div className="mt-1 text-[10px] font-semibold text-slate-500">
+        اختر الحسابات وقارن السبريد والعمولات والإيداع
+      </div>
+    </div>
+
+    <span className="text-[13px] font-black text-brand-600">
+      ←
+    </span>
+  </Link>
+</div>
+
+    {/* FOOTER */}
+<div className="mt-4 grid grid-cols-2 gap-2 border-t border-slate-100 pt-3">
+  <Link
+    href="/compare"
+    className="flex min-h-[48px] items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-2 text-center text-[10px] font-black text-slate-700 transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-600"
+  >
+    جميع مقارنات منصات التداول
+    <span>←</span>
+  </Link>
+
+  <Link
+    href="/compare-accounts"
+    className="flex min-h-[48px] items-center justify-center gap-2 rounded-xl border border-brand-100 bg-brand-50 px-2 text-center text-[10px] font-black text-brand-600 transition hover:border-brand-200 hover:bg-brand-100"
+  >
+    جميع مقارنات حسابات التداول
+    <span>←</span>
+  </Link>
+</div>
+
+  </div>
+</div>
 
                            {/* ===================================================
                 BEST BROKERS

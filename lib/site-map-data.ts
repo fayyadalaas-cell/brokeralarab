@@ -18,6 +18,7 @@ export const STATIC_PAGES = [
   "",
   "brokers",
   "compare",
+  "compare-accounts",
 
   // Best Brokers
   "best-brokers",

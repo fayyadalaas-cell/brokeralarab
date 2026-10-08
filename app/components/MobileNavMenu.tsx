@@ -543,60 +543,155 @@ allTools: isEnglish ? "View All Tools" : "عرض جميع الأدوات",
                     </div>
                   </Section>
 
-                  <Section
-                    title={text.comparisons}
-                    open={openSection === "compare"}
-                    onToggle={() => toggleSection("compare")}
-                  >
-                    <div className="space-y-2">
-                      {comparisonItems.map((item) => (
-       <Link
-  key={item.href}
-  href={withLangHref(item.href, isEnglish)}
-  onClick={closeMenu}
-  className={`${mobileCardClass} flex h-[50px] items-center justify-between gap-2 px-2 py-2`}
+                  
+<Section
+  title={text.comparisons}
+  open={openSection === "compare"}
+  onToggle={() => toggleSection("compare")}
 >
-  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white shadow-sm">
-    <Image
-      src={item.leftLogo}
-      alt={item.displayLeft}
-      width={24}
-      height={24}
-      className="h-full w-full object-contain p-1"
-    />
-  </div>
+  {isEnglish ? (
+    <div className="space-y-2">
+      {comparisonItems.map((item) => (
+        <Link
+          key={item.href}
+          href={withLangHref(item.href, true)}
+          onClick={closeMenu}
+          className={`${mobileCardClass} flex h-[50px] items-center justify-between gap-2 px-2 py-2`}
+        >
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white shadow-sm">
+            <Image
+              src={item.leftLogo}
+              alt={item.displayLeft}
+              width={24}
+              height={24}
+              className="h-full w-full object-contain p-1"
+            />
+          </div>
 
-  <div className="min-w-0 flex-1 text-center">
-    <span className="truncate text-[12px] font-extrabold text-slate-800">
-      {item.displayLeft}
-      <span className="mx-1.5 text-[11px] font-black text-slate-400">
-        {isEnglish ? "vs" : "⇄"}
-      </span>
-      {item.displayRight}
-    </span>
-  </div>
+          <div className="min-w-0 flex-1 text-center">
+            <span className="text-[12px] font-extrabold text-slate-800">
+              {item.displayLeft}
+              <span className="mx-1.5 text-[11px] font-black text-slate-400">
+                vs
+              </span>
+              {item.displayRight}
+            </span>
+          </div>
 
-  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white shadow-sm">
-    <Image
-      src={item.rightLogo}
-      alt={item.displayRight}
-      width={24}
-      height={24}
-      className="h-full w-full object-contain p-1"
-    />
-  </div>
-</Link>
-                      ))}
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white shadow-sm">
+            <Image
+              src={item.rightLogo}
+              alt={item.displayRight}
+              width={24}
+              height={24}
+              className="h-full w-full object-contain p-1"
+            />
+          </div>
+        </Link>
+      ))}
 
-                      <Link
-                        href={withLangHref("/compare", isEnglish)}
-                        onClick={closeMenu}
-                        className="block rounded-2xl border border-slate-200 bg-white px-3 py-3 text-center text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
-                      >
-                        {text.allComparisons}
-                      </Link>
-                    </div>
-                  </Section>
+      <Link
+        href="/en/compare"
+        onClick={closeMenu}
+        className="block rounded-2xl border border-slate-200 bg-white px-3 py-3 text-center text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
+      >
+        {text.allComparisons}
+      </Link>
+    </div>
+  ) : (
+    <div className="space-y-3" dir="rtl">
+      <div className="px-1">
+        <div className="flex items-center justify-between gap-2">
+          <h3 className="text-[12px] font-black text-slate-900">
+            مقارنة شركات التداول
+          </h3>
+          <span className="text-[9px] font-bold text-slate-400">
+            أشهر المقارنات
+          </span>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        {comparisonItems.slice(0, 4).map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            onClick={closeMenu}
+            className="group/compare flex min-h-[48px] items-center justify-center rounded-[14px] border border-slate-200 bg-slate-50 px-2 py-2 transition hover:border-brand-200 hover:bg-brand-50"
+          >
+            <div className="grid w-full grid-cols-[minmax(0,1fr)_34px_minmax(0,1fr)] items-center gap-1.5">
+              <span className="truncate text-center text-[11px] font-black text-slate-800 group-hover/compare:text-brand-600">
+                {item.displayLeft}
+              </span>
+
+              <span className="flex h-6 w-[34px] items-center justify-center rounded-full bg-white text-[9px] font-black text-slate-500">
+                VS
+              </span>
+
+              <span className="truncate text-center text-[11px] font-black text-slate-800 group-hover/compare:text-brand-600">
+                {item.displayRight}
+              </span>
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      <div className="border-t border-slate-100 pt-3">
+        <div className="mb-2 flex items-center justify-between gap-2 px-1">
+          <h3 className="text-[12px] font-black text-slate-900">
+            مقارنة حسابات التداول
+          </h3>
+
+          <span className="rounded-full bg-blue-50 px-2 py-1 text-[9px] font-black text-brand-600">
+            جديد
+          </span>
+        </div>
+
+        <Link
+          href="/compare-accounts"
+          onClick={closeMenu}
+          className="group/account flex min-h-[60px] items-center gap-2.5 rounded-[14px] border border-slate-200 bg-slate-50 px-3 py-2 transition hover:border-brand-200 hover:bg-brand-50"
+        >
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-blue-100 bg-white text-[11px] font-black text-brand-600 shadow-sm">
+            VS
+          </span>
+
+          <div className="min-w-0 flex-1">
+            <span className="block text-[11px] font-black text-slate-900">
+              قارن بين أي حسابين للتداول
+            </span>
+            <span className="mt-1 block text-[9px] font-semibold leading-4 text-slate-500">
+              اختر الحسابين وقارن السبريد والعمولات والإيداع
+            </span>
+          </div>
+
+          <span className="shrink-0 text-[13px] font-black text-brand-600">
+            ←
+          </span>
+        </Link>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2 border-t border-slate-100 pt-3">
+        <Link
+          href="/compare"
+          onClick={closeMenu}
+          className="flex min-h-[55px] items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-2 py-2 text-center text-[10px] font-black leading-4 text-brand-600 transition hover:border-brand-200 hover:bg-brand-50"
+        >
+          جميع مقارنات منصات التداول
+        </Link>
+
+        <Link
+          href="/compare-accounts"
+          onClick={closeMenu}
+          className="flex min-h-[55px] items-center justify-center rounded-xl border border-blue-100 bg-blue-50 px-2 py-2 text-center text-[10px] font-black leading-4 text-brand-600 transition hover:bg-blue-100"
+        >
+          جميع مقارنات حسابات التداول
+        </Link>
+      </div>
+    </div>
+  )}
+</Section>
+
 
                     <Section
   title={text.best}

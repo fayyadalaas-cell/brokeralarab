@@ -71,9 +71,11 @@ const LAST_SIGNIFICANT_UPDATE = new Date("2026-10-05T00:00:00.000Z");
         lastModified: LAST_SIGNIFICANT_UPDATE,
       })) || [];
 
-  const { data: accounts } = await supabase
+  const { data: accounts, error: accountsError } = await supabase
   .from("broker_accounts")
   .select(`
+    id,
+    broker_id,
     account_name,
     brokers!inner(
       slug,
@@ -82,7 +84,12 @@ const LAST_SIGNIFICANT_UPDATE = new Date("2026-10-05T00:00:00.000Z");
   `)
   .eq("brokers.publication_status", "published");
 
-  const accountPages: MetadataRoute.Sitemap = [];
+if (accountsError) {
+  console.error("Sitemap accounts query failed:", accountsError);
+  throw new Error("Failed to load accounts for sitemap");
+}
+
+const accountPages: MetadataRoute.Sitemap = [];
   const accountPagesEN: MetadataRoute.Sitemap = [];
 
   accounts?.forEach((row: any) => {
@@ -146,6 +153,71 @@ const countryPagesEN: MetadataRoute.Sitemap =
       });
     }
   }
+
+// ARABIC ACCOUNT COMPARISON PAGES ONLY
+
+const comparisonKeyCounts = new Map<string, number>();
+
+(accounts ?? []).forEach((row: any) => {
+  const broker = row.brokers?.slug;
+  const account = accountSlug(row.account_name);
+
+  if (!broker || !account) return;
+
+  const key = `${broker}-${account}`;
+
+  comparisonKeyCounts.set(
+    key,
+    (comparisonKeyCounts.get(key) ?? 0) + 1
+  );
+});
+
+const comparisonAccountKeys = Array.from(
+  comparisonKeyCounts.entries()
+)
+  .filter(([, count]) => count === 1)
+  .map(([key]) => key)
+  .sort();
+
+// Count all interpretations of each comparison URL
+const comparisonSlugCounts = new Map<string, number>();
+
+for (let i = 0; i < comparisonAccountKeys.length; i++) {
+  for (let j = i + 1; j < comparisonAccountKeys.length; j++) {
+    const slug =
+      `${comparisonAccountKeys[i]}-vs-${comparisonAccountKeys[j]}`;
+
+    comparisonSlugCounts.set(
+      slug,
+      (comparisonSlugCounts.get(slug) ?? 0) + 1
+    );
+  }
+}
+
+// Include only unambiguous canonical URLs
+const accountComparisonPages: MetadataRoute.Sitemap = [];
+
+for (let i = 0; i < comparisonAccountKeys.length; i++) {
+  for (let j = i + 1; j < comparisonAccountKeys.length; j++) {
+    const slug =
+      `${comparisonAccountKeys[i]}-vs-${comparisonAccountKeys[j]}`;
+
+    if (comparisonSlugCounts.get(slug) !== 1) continue;
+
+    // Avoid ambiguous account keys containing the comparison separator
+    if (
+      comparisonAccountKeys[i].includes("-vs-") ||
+      comparisonAccountKeys[j].includes("-vs-")
+    ) {
+      continue;
+    }
+
+    accountComparisonPages.push({
+      url: `${BASE_URL}/compare-accounts/${slug}`,
+      lastModified: LAST_SIGNIFICANT_UPDATE,
+    });
+  }
+}
 
   const toolPages = TOOL_SLUGS.map((slug) => ({
     url: `${BASE_URL}/tools/${slug}`,
@@ -228,6 +300,7 @@ const countryPagesEN: MetadataRoute.Sitemap =
     ...accountPagesEN,
     ...comparePages,
     ...comparePagesEN,
+    ...accountComparisonPages,
     ...eventPages,
     ...eventPagesEN,
     ...regulatorPages,
