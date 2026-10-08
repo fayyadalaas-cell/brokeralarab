@@ -154,70 +154,78 @@ const countryPagesEN: MetadataRoute.Sitemap =
     }
   }
 
-// ARABIC ACCOUNT COMPARISON PAGES ONLY
 
-const comparisonKeyCounts = new Map<string, number>();
+  // ARABIC & ENGLISH ACCOUNT COMPARISON PAGES
 
-(accounts ?? []).forEach((row: any) => {
-  const broker = row.brokers?.slug;
-  const account = accountSlug(row.account_name);
+  const comparisonKeyCounts = new Map<string, number>();
 
-  if (!broker || !account) return;
+  (accounts ?? []).forEach((row: any) => {
+    const broker = row.brokers?.slug;
+    const account = accountSlug(row.account_name);
 
-  const key = `${broker}-${account}`;
+    if (!broker || !account) return;
 
-  comparisonKeyCounts.set(
-    key,
-    (comparisonKeyCounts.get(key) ?? 0) + 1
-  );
-});
+    const key = `${broker}-${account}`;
 
-const comparisonAccountKeys = Array.from(
-  comparisonKeyCounts.entries()
-)
-  .filter(([, count]) => count === 1)
-  .map(([key]) => key)
-  .sort();
-
-// Count all interpretations of each comparison URL
-const comparisonSlugCounts = new Map<string, number>();
-
-for (let i = 0; i < comparisonAccountKeys.length; i++) {
-  for (let j = i + 1; j < comparisonAccountKeys.length; j++) {
-    const slug =
-      `${comparisonAccountKeys[i]}-vs-${comparisonAccountKeys[j]}`;
-
-    comparisonSlugCounts.set(
-      slug,
-      (comparisonSlugCounts.get(slug) ?? 0) + 1
+    comparisonKeyCounts.set(
+      key,
+      (comparisonKeyCounts.get(key) ?? 0) + 1
     );
-  }
-}
+  });
 
-// Include only unambiguous canonical URLs
-const accountComparisonPages: MetadataRoute.Sitemap = [];
+  const comparisonAccountKeys = Array.from(
+    comparisonKeyCounts.entries()
+  )
+    .filter(([, count]) => count === 1)
+    .map(([key]) => key)
+    .sort();
 
-for (let i = 0; i < comparisonAccountKeys.length; i++) {
-  for (let j = i + 1; j < comparisonAccountKeys.length; j++) {
-    const slug =
-      `${comparisonAccountKeys[i]}-vs-${comparisonAccountKeys[j]}`;
+  // Count all interpretations of each comparison URL
+  const comparisonSlugCounts = new Map<string, number>();
 
-    if (comparisonSlugCounts.get(slug) !== 1) continue;
+  for (let i = 0; i < comparisonAccountKeys.length; i++) {
+    for (let j = i + 1; j < comparisonAccountKeys.length; j++) {
+      const slug =
+        `${comparisonAccountKeys[i]}-vs-${comparisonAccountKeys[j]}`;
 
-    // Avoid ambiguous account keys containing the comparison separator
-    if (
-      comparisonAccountKeys[i].includes("-vs-") ||
-      comparisonAccountKeys[j].includes("-vs-")
-    ) {
-      continue;
+      comparisonSlugCounts.set(
+        slug,
+        (comparisonSlugCounts.get(slug) ?? 0) + 1
+      );
     }
-
-    accountComparisonPages.push({
-      url: `${BASE_URL}/compare-accounts/${slug}`,
-      lastModified: LAST_SIGNIFICANT_UPDATE,
-    });
   }
-}
+
+  // Include only unambiguous canonical URLs
+  const accountComparisonPages: MetadataRoute.Sitemap = [];
+  const accountComparisonPagesEN: MetadataRoute.Sitemap = [];
+
+  for (let i = 0; i < comparisonAccountKeys.length; i++) {
+    for (let j = i + 1; j < comparisonAccountKeys.length; j++) {
+      const slug =
+        `${comparisonAccountKeys[i]}-vs-${comparisonAccountKeys[j]}`;
+
+      if (comparisonSlugCounts.get(slug) !== 1) continue;
+
+      // Avoid ambiguous account keys containing the comparison separator
+      if (
+        comparisonAccountKeys[i].includes("-vs-") ||
+        comparisonAccountKeys[j].includes("-vs-")
+      ) {
+        continue;
+      }
+
+      accountComparisonPages.push({
+        url: `${BASE_URL}/compare-accounts/${slug}`,
+        lastModified: LAST_SIGNIFICANT_UPDATE,
+      });
+
+      accountComparisonPagesEN.push({
+        url: `${BASE_URL}/en/compare-accounts/${slug}`,
+        lastModified: LAST_SIGNIFICANT_UPDATE,
+      });
+    }
+  }
+
 
   const toolPages = TOOL_SLUGS.map((slug) => ({
     url: `${BASE_URL}/tools/${slug}`,
@@ -301,6 +309,7 @@ for (let i = 0; i < comparisonAccountKeys.length; i++) {
     ...comparePages,
     ...comparePagesEN,
     ...accountComparisonPages,
+    ...accountComparisonPagesEN,
     ...eventPages,
     ...eventPagesEN,
     ...regulatorPages,

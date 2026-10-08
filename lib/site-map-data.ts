@@ -83,6 +83,7 @@ export const STATIC_PAGES_EN = [
   "en",
   "en/brokers",
   "en/compare",
+  "en/compare-accounts",
 
   // Best Brokers
   "en/best-brokers",

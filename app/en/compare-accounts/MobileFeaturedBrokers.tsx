@@ -77,7 +77,7 @@ export default function MobileFeaturedBrokers({
   const hasMore = visibleCount < orderedBrokers.length;
 
   return (
-    <div className="space-y-3" dir="rtl">
+    <div className="space-y-3 text-left" dir="ltr" lang="en">
       {displayedBrokers.map((broker) => {
         const brokerAccounts = accounts.filter(
           (account) => account.broker_id === broker.id
@@ -104,7 +104,7 @@ export default function MobileFeaturedBrokers({
                 {broker.logo ? (
                   <img
                     src={broker.logo}
-                    alt={`شعار ${broker.name}`}
+                    alt={`${broker.name} broker logo`}
                     className="h-full w-full object-contain"
                     loading="lazy"
                   />
@@ -123,15 +123,15 @@ export default function MobileFeaturedBrokers({
                 <div className="mt-2">
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1.5 text-[11px] font-extrabold text-[#1E5BB8]">
                     <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
-                    {brokerAccounts.length} حسابات تداول
+                    {brokerAccounts.length} Trading Accounts
                   </span>
                 </div>
 
                 <Link
-                  href={`/brokers/${broker.slug}`}
+                  href={`/en/brokers/${broker.slug}`}
                   className="mt-2 inline-block text-[11px] font-bold text-slate-500 hover:text-[#1E5BB8]"
                 >
-                  عرض تقييم الشركة ←
+                  View Broker Review →
                 </Link>
               </div>
             </div>
@@ -139,7 +139,7 @@ export default function MobileFeaturedBrokers({
             {/* Account preview */}
             <div className="mt-4 border-t border-slate-100 pt-3">
               <div className="mb-3 text-[12px] font-black text-slate-800">
-                حسابات التداول المتوفرة
+                Available Trading Accounts
               </div>
 
               <div className="grid grid-cols-2 gap-2">
@@ -151,16 +151,13 @@ export default function MobileFeaturedBrokers({
                   return (
                     <Link
                       key={account.id}
-                      href={`/brokers/${broker.slug}/accounts/${slug}`}
-                      title={`تفاصيل حساب ${
-                        account.account_name_ar ||
-                        account.account_name
-                      } من ${broker.name}`}
+                      href={`/en/brokers/${broker.slug}/accounts/${slug}`}
+                      title={`View ${account.account_name} account details at ${broker.name}`}
                       className={`flex min-h-[43px] items-center justify-center rounded-xl border border-blue-100 bg-[#f7faff] px-3 py-2 text-center text-[12px] font-extrabold leading-5 text-slate-800 transition-all duration-200 hover:border-blue-300 hover:bg-blue-50 hover:text-[#1E5BB8] active:bg-blue-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 ${
                         visibleAccounts.length === 1 ? "col-span-2" : ""
                       }`}
                     >
-                      {account.account_name_ar || account.account_name}
+                      {account.account_name}
                     </Link>
                   );
                 })}
@@ -174,8 +171,8 @@ export default function MobileFeaturedBrokers({
                   className="mt-3 flex min-h-[35px] w-full items-center justify-center gap-2 rounded-lg px-2 py-1.5 text-center text-[11px] font-extrabold text-[#1E5BB8] transition hover:bg-blue-50"
                 >
                   {isExpanded
-                    ? "عرض أقل"
-                    : `+ عرض ${remainingAccounts} حسابات إضافية`}
+                    ? "Show Fewer Accounts"
+                    : `+ Show ${remainingAccounts} More Accounts`}
 
                   <span aria-hidden="true">
                     {isExpanded ? "↑" : "↓"}
@@ -186,11 +183,11 @@ export default function MobileFeaturedBrokers({
 
             {/* Action */}
             <Link
-              href={`/brokers/${broker.slug}`}
+              href={`/en/brokers/${broker.slug}`}
               className="mt-4 flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl bg-[#1E5BB8] px-4 py-3 text-[13px] font-black text-white shadow-sm transition hover:bg-[#174a98]"
             >
-              استعرض حسابات الشركة
-              <span aria-hidden="true">←</span>
+              Explore Broker Accounts
+              <span aria-hidden="true">→</span>
             </Link>
           </article>
         );
@@ -202,13 +199,14 @@ export default function MobileFeaturedBrokers({
           onClick={() => setVisibleCount((count) => count + 5)}
           className="flex min-h-[46px] w-full items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-[13px] font-black text-[#1E5BB8] transition hover:bg-blue-100"
         >
-          عرض المزيد من الشركات
+          Show More Brokers
           <span aria-hidden="true">↓</span>
         </button>
       )}
 
       <p className="px-2 text-center text-[10px] leading-5 text-slate-500">
-        تختلف شروط الحسابات حسب الشركة والكيان القانوني وبلد الإقامة.
+        Account conditions and availability may vary by broker,
+        regulated entity and country of residence.
       </p>
     </div>
   );

@@ -549,56 +549,105 @@ allTools: isEnglish ? "View All Tools" : "عرض جميع الأدوات",
   open={openSection === "compare"}
   onToggle={() => toggleSection("compare")}
 >
-  {isEnglish ? (
+  
+{isEnglish ? (
+  <div className="space-y-3" dir="ltr">
+    {/* BROKER COMPARISONS */}
+    <div className="px-1">
+      <div className="flex items-center justify-between gap-2">
+        <h3 className="text-[12px] font-black text-slate-900">
+          Broker Comparisons
+        </h3>
+
+        <span className="text-[9px] font-bold text-slate-400">
+          Popular Comparisons
+        </span>
+      </div>
+    </div>
+
     <div className="space-y-2">
-      {comparisonItems.map((item) => (
+      {comparisonItems.slice(0, 4).map((item) => (
         <Link
           key={item.href}
           href={withLangHref(item.href, true)}
           onClick={closeMenu}
-          className={`${mobileCardClass} flex h-[50px] items-center justify-between gap-2 px-2 py-2`}
+          className="group/compare flex min-h-[48px] items-center justify-center rounded-[14px] border border-slate-200 bg-slate-50 px-2 py-2 transition hover:border-brand-200 hover:bg-brand-50"
         >
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white shadow-sm">
-            <Image
-              src={item.leftLogo}
-              alt={item.displayLeft}
-              width={24}
-              height={24}
-              className="h-full w-full object-contain p-1"
-            />
-          </div>
-
-          <div className="min-w-0 flex-1 text-center">
-            <span className="text-[12px] font-extrabold text-slate-800">
+          <div className="grid w-full grid-cols-[minmax(0,1fr)_34px_minmax(0,1fr)] items-center gap-1.5">
+            <span className="truncate text-center text-[11px] font-black text-slate-800 group-hover/compare:text-brand-600">
               {item.displayLeft}
-              <span className="mx-1.5 text-[11px] font-black text-slate-400">
-                vs
-              </span>
+            </span>
+
+            <span className="flex h-6 w-[34px] items-center justify-center rounded-full bg-white text-[9px] font-black text-slate-500">
+              VS
+            </span>
+
+            <span className="truncate text-center text-[11px] font-black text-slate-800 group-hover/compare:text-brand-600">
               {item.displayRight}
             </span>
           </div>
-
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white shadow-sm">
-            <Image
-              src={item.rightLogo}
-              alt={item.displayRight}
-              width={24}
-              height={24}
-              className="h-full w-full object-contain p-1"
-            />
-          </div>
         </Link>
       ))}
+    </div>
 
+    {/* TRADING ACCOUNT COMPARISONS */}
+    <div className="border-t border-slate-100 pt-3">
+      <div className="mb-2 flex items-center justify-between gap-2 px-1">
+        <h3 className="text-[12px] font-black text-slate-900">
+          Trading Account Comparisons
+        </h3>
+
+        <span className="rounded-full bg-blue-50 px-2 py-1 text-[9px] font-black text-brand-600">
+          NEW
+        </span>
+      </div>
+
+      <Link
+        href="/en/compare-accounts"
+        onClick={closeMenu}
+        className="group/account flex min-h-[60px] items-center gap-2.5 rounded-[14px] border border-slate-200 bg-slate-50 px-3 py-2 transition hover:border-brand-200 hover:bg-brand-50"
+      >
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-blue-100 bg-white text-[11px] font-black text-brand-600 shadow-sm">
+          VS
+        </span>
+
+        <div className="min-w-0 flex-1">
+          <span className="block text-[11px] font-black text-slate-900">
+            Compare Any Two Trading Accounts
+          </span>
+
+          <span className="mt-1 block text-[9px] font-semibold leading-4 text-slate-500">
+            Compare spreads, commissions and minimum deposits
+          </span>
+        </div>
+
+        <span className="shrink-0 text-[13px] font-black text-brand-600">
+          →
+        </span>
+      </Link>
+    </div>
+
+    {/* VIEW ALL LINKS */}
+    <div className="grid grid-cols-2 gap-2 border-t border-slate-100 pt-3">
       <Link
         href="/en/compare"
         onClick={closeMenu}
-        className="block rounded-2xl border border-slate-200 bg-white px-3 py-3 text-center text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
+        className="flex min-h-[55px] items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-2 py-2 text-center text-[10px] font-black leading-4 text-brand-600 transition hover:border-brand-200 hover:bg-brand-50"
       >
-        {text.allComparisons}
+        All Broker Comparisons
+      </Link>
+
+      <Link
+        href="/en/compare-accounts"
+        onClick={closeMenu}
+        className="flex min-h-[55px] items-center justify-center rounded-xl border border-blue-100 bg-blue-50 px-2 py-2 text-center text-[10px] font-black leading-4 text-brand-600 transition hover:bg-blue-100"
+      >
+        All Account Comparisons
       </Link>
     </div>
-  ) : (
+  </div>
+) : (
+
     <div className="space-y-3" dir="rtl">
       <div className="px-1">
         <div className="flex items-center justify-between gap-2">

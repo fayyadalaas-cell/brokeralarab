@@ -1,10 +1,7 @@
 
 import type { Metadata } from "next";
 import Link from "next/link";
-import {
-  notFound,
-  permanentRedirect,
-} from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
 export const revalidate = 3600;
@@ -24,9 +21,7 @@ type Broker = {
   publication_status: string | null;
   regulation: string | null;
   platforms: string | null;
-  islamic_account: string | null;
   max_leverage: string | number | null;
-  account_availability_note_ar: string | null;
   real_account_url: string | null;
 };
 
@@ -34,7 +29,6 @@ type Account = {
   id: number;
   broker_id: number;
   account_name: string | null;
-  account_name_ar: string | null;
   account_type: string | null;
   spread: string | null;
   spread_min: string | number | null;
@@ -44,8 +38,6 @@ type Account = {
   min_deposit: string | null;
   execution_type: string | null;
   best_for: string | null;
-  is_islamic_available: boolean | string | null;
-  islamic_conditions: string | null;
   is_best_for_scalping: boolean | null;
   sort_order: number | null;
 };
@@ -53,16 +45,16 @@ type Account = {
 type Content = {
   account_id: number;
   broker_id: number;
-  hero_intro_ar: string | null;
-  overview_ar: string | null;
-  expert_verdict_ar: string | null;
-  pros_ar: unknown;
-  cons_ar: unknown;
-  who_is_it_for_ar: unknown;
-  unique_content_ar: unknown;
-  important_notes_title_ar: string | null;
-  important_notes_ar: unknown;
-  faq_ar: unknown;
+  hero_intro_en: string | null;
+  overview_en: string | null;
+  expert_verdict_en: string | null;
+  pros_en: unknown;
+  cons_en: unknown;
+  who_is_it_for_en: unknown;
+  unique_content_en: unknown;
+  important_notes_title_en: string | null;
+  important_notes_en: unknown;
+  faq_en: unknown;
   updated_at: string | null;
 };
 
@@ -89,6 +81,23 @@ type FAQ = {
   answer: string;
 };
 
+type ComparisonRow = {
+  label: string;
+  a: unknown;
+  b: unknown;
+  note?: string;
+};
+
+type ComparisonGroup = {
+  title: string;
+  description: string;
+  rows: ComparisonRow[];
+};
+
+// ======================================================
+// HELPERS
+// ======================================================
+
 function slugify(value: string | null) {
   if (!value) return "";
 
@@ -104,45 +113,40 @@ function slugify(value: string | null) {
 
 function str(value: unknown): string {
   if (value === null || value === undefined) return "";
-
   return String(value).trim();
 }
 
-function shown(value: unknown) {
-  return str(value) || "غير متوفر";
+function hasArabic(value: string): boolean {
+  return /[\u0600-\u06FF]/.test(value);
 }
 
-function name(item: Item) {
-  const arabicName = str(item.account.account_name_ar);
+function shown(value: unknown): string {
+  const text = str(value);
 
-  if (
-    arabicName &&
-    !/^[.\s،،\-–—]+$/.test(arabicName)
-  ) {
-    return arabicName;
-  }
+  if (!text) return "Not specified";
 
-  const englishName = str(item.account.account_name);
+  // Never display untranslated Arabic on English pages.
+  if (hasArabic(text)) return "Not specified";
 
-  if (englishName.toLowerCase() === "classic") {
-    return "كلاسيك";
-  }
-
-  return englishName || "حساب التداول";
+  return text;
 }
 
-function fullName(item: Item) {
+function name(item: Item): string {
+  return str(item.account.account_name) || "Trading Account";
+}
+
+function fullName(item: Item): string {
   return `${shown(item.broker.name)} ${name(item)}`;
 }
 
-function accountLink(item: Item) {
-  return `/brokers/${item.broker.slug}/accounts/${slugify(
+function accountLink(item: Item): string {
+  return `/en/brokers/${item.broker.slug}/accounts/${slugify(
     item.account.account_name
   )}`;
 }
 
-function brokerLink(item: Item) {
-  return `/brokers/${item.broker.slug}`;
+function brokerLink(item: Item): string {
+  return `/en/brokers/${item.broker.slug}`;
 }
 
 function safeArray(value: unknown): unknown[] {
@@ -167,7 +171,7 @@ function textList(value: unknown): string[] {
   return safeArray(value)
     .filter((item): item is string => typeof item === "string")
     .map((item) => item.trim())
-    .filter(Boolean);
+    .filter((item) => Boolean(item) && !hasArabic(item));
 }
 
 function blocks(value: unknown): TextBlock[] {
@@ -182,7 +186,12 @@ function blocks(value: unknown): TextBlock[] {
       title: str(item.title),
       content: str(item.content),
     }))
-    .filter((item) => item.title && item.content);
+    .filter(
+      (item) =>
+        Boolean(item.title && item.content) &&
+        !hasArabic(item.title) &&
+        !hasArabic(item.content)
+    );
 }
 
 function faqs(value: unknown): FAQ[] {
@@ -197,38 +206,25 @@ function faqs(value: unknown): FAQ[] {
       question: str(item.question),
       answer: str(item.answer),
     }))
-    .filter((item) => item.question && item.answer);
+    .filter(
+      (item) =>
+        Boolean(item.question && item.answer) &&
+        !hasArabic(item.question) &&
+        !hasArabic(item.answer)
+    );
 }
 
 function paragraphs(value: unknown): string[] {
   return str(value)
     .split(/\n\s*\n/)
     .map((part) => part.trim())
-    .filter(Boolean);
+    .filter((part) => Boolean(part) && !hasArabic(part));
 }
 
-function yesNo(value: boolean | string | null) {
-  if (value === true) return "متاح بحسب الشروط";
-  if (value === false) return "غير متاح";
-
-  const normalized = str(value).toLowerCase();
-
-  if (["true", "yes", "1"].includes(normalized)) {
-    return "متاح بحسب الشروط";
-  }
-
-  if (["false", "no", "0"].includes(normalized)) {
-    return "غير متاح";
-  }
-
-  return shown(value);
-}
-
-function logoUrl(value: string | null) {
+function logoUrl(value: string | null): string {
   const src = str(value);
 
   if (!src) return "";
-
   if (src.startsWith("/")) return src;
 
   try {
@@ -248,6 +244,10 @@ function sortedPair(a: Item, b: Item): [Item, Item] {
   return a.key <= b.key ? [a, b] : [b, a];
 }
 
+// ======================================================
+// DATABASE
+// ======================================================
+
 async function getComparison(
   slug: string
 ): Promise<Resolved | null> {
@@ -256,16 +256,14 @@ async function getComparison(
   const { data: brokerRows, error: brokerError } =
     await supabase
       .from("brokers")
-.select(
-  "id,name,slug,logo,rating,publication_status,regulation,platforms,islamic_account,max_leverage,account_availability_note_ar,real_account_url"
-)
-      
+      .select(
+        "id,name,slug,logo,rating,publication_status,regulation,platforms,max_leverage,real_account_url"
+      )
       .eq("publication_status", "published");
 
   if (brokerError || !brokerRows) return null;
 
   const brokers = brokerRows as Broker[];
-
   const brokerMap = new Map<number, Broker>();
 
   for (const broker of brokers) {
@@ -278,13 +276,12 @@ async function getComparison(
     await supabase
       .from("broker_accounts")
       .select(
-        "id,broker_id,account_name,account_name_ar,account_type,spread,spread_min,spread_avg,commission,commission_value,min_deposit,execution_type,best_for,is_islamic_available,islamic_conditions,is_best_for_scalping,sort_order"
+        "id,broker_id,account_name,account_type,spread,spread_min,spread_avg,commission,commission_value,min_deposit,execution_type,best_for,is_best_for_scalping,sort_order"
       );
 
   if (accountError || !accountRows) return null;
 
   const accounts = accountRows as Account[];
-
   const keys = new Map<string, Item[]>();
 
   for (const account of accounts) {
@@ -293,7 +290,6 @@ async function getComparison(
     if (!broker?.slug || !account.account_name) continue;
 
     const accountSlug = slugify(account.account_name);
-
     if (!accountSlug) continue;
 
     const key = `${broker.slug}-${accountSlug}`;
@@ -310,8 +306,8 @@ async function getComparison(
     keys.set(key, existing);
   }
 
-  // Match the entire account key. Never split broker names
-  // or account names using a simple hyphen.
+  // Match complete account keys, including broker slugs
+  // containing hyphens.
   const matches: Array<[Item, Item]> = [];
   const seen = new Set<string>();
 
@@ -344,7 +340,7 @@ async function getComparison(
     }
   }
 
-  // An ambiguous URL must never show the wrong account.
+  // Avoid showing incorrect accounts for ambiguous URLs.
   if (matches.length !== 1) return null;
 
   const [first, second] = matches[0];
@@ -353,7 +349,7 @@ async function getComparison(
     await supabase
       .from("broker_account_content")
       .select(
-        "account_id,broker_id,hero_intro_ar,overview_ar,expert_verdict_ar,pros_ar,cons_ar,who_is_it_for_ar,unique_content_ar,important_notes_title_ar,important_notes_ar,faq_ar,updated_at"
+        "account_id,broker_id,hero_intro_en,overview_en,expert_verdict_en,pros_en,cons_en,who_is_it_for_en,unique_content_en,important_notes_title_en,important_notes_en,faq_en,updated_at"
       )
       .in("account_id", [
         first.account.id,
@@ -381,6 +377,10 @@ async function getComparison(
   };
 }
 
+// ======================================================
+// SEO METADATA
+// ======================================================
+
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
@@ -389,25 +389,23 @@ export async function generateMetadata({
 
   if (!result) {
     return {
-      title: "المقارنة غير متاحة | بروكر العرب",
+      title: "Account Comparison Unavailable | Broker Alarab",
       robots: { index: false, follow: false },
     };
   }
 
   const { first, second, canonicalSlug } = result;
 
-  
+  const title =
+    `Trading Account Comparison: ${fullName(first)} vs ${fullName(second)}`;
 
-const title =
-  `مقارنة حسابات التداول: ${fullName(first)} و${fullName(second)}`;
-
-
-const description =
-  `قارن بين ${fullName(first)} و${fullName(second)} من حيث السبريد والعمولات والحد الأدنى للإيداع ومنصات التداول المتاحة. اكتشف مميزات وعيوب الحسابين وشروط التداول.`;
-
+  const description =
+    `Compare ${fullName(first)} and ${fullName(second)} ` +
+    "by spreads, commissions, minimum deposits, trading platforms, " +
+    "execution conditions, advantages and limitations.";
 
   const url =
-    `${SITE}/compare-accounts/${canonicalSlug}`;
+    `${SITE}/en/compare-accounts/${canonicalSlug}`;
 
   return {
     metadataBase: new URL(SITE),
@@ -420,8 +418,8 @@ const description =
       title,
       description,
       url,
-      siteName: "بروكر العرب",
-      locale: "ar_AR",
+      siteName: "Broker Alarab",
+      locale: "en_US",
       type: "article",
     },
     twitter: {
@@ -431,6 +429,10 @@ const description =
     },
   };
 }
+
+// ======================================================
+// REUSABLE UI
+// ======================================================
 
 function Logo({
   broker,
@@ -452,7 +454,7 @@ function Logo({
       {src ? (
         <img
           src={src}
-          alt={`شعار ${broker.name}`}
+          alt={`${broker.name} logo`}
           className="h-full w-full object-contain"
         />
       ) : (
@@ -464,7 +466,11 @@ function Logo({
   );
 }
 
-function Eyebrow({ children }: { children: React.ReactNode }) {
+function Eyebrow({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <div className="text-[12px] font-black tracking-wide text-[#1E5BB8]">
       {children}
@@ -498,7 +504,9 @@ function SectionTitle({
   );
 }
 
-
+// ======================================================
+// HERO ACCOUNT CARD
+// ======================================================
 
 function HeroAccount({
   item,
@@ -509,27 +517,24 @@ function HeroAccount({
 }) {
   const stats = [
     {
-      label: "السبريد المعلن",
+      label: "Advertised Spread",
       value: item.account.spread,
     },
     {
-      label: "العمولة",
+      label: "Commission",
       value: item.account.commission,
     },
     {
-      label: "الحد الأدنى للإيداع",
+      label: "Minimum Deposit",
       value: item.account.min_deposit,
     },
   ];
 
-  const brokerLogo = logoUrl(item.broker.logo);
-
   return (
-    <article className="flex h-full min-w-0 flex-col rounded-[22px] border border-white/20 bg-white p-5 text-slate-950 shadow-[0_12px_30px_rgba(0,0,0,0.10)]">
-      {/* Account label */}
+    <article className="min-w-0 rounded-[22px] border border-white/20 bg-white p-4 text-slate-950 shadow-[0_12px_30px_rgba(0,0,0,0.10)] sm:p-5">
       <div className="flex items-center justify-between">
         <span className="rounded-full bg-[#eef5fd] px-3 py-1 text-[12px] font-black text-[#1E5BB8]">
-          الحساب {number === 1 ? "الأول" : "الثاني"}
+          Account {number === 1 ? "One" : "Two"}
         </span>
 
         <span className="text-xs font-bold text-slate-400">
@@ -537,33 +542,31 @@ function HeroAccount({
         </span>
       </div>
 
-      {/* Broker logo and account name */}
       <div className="mt-1 flex flex-col items-center text-center">
-        <div className="flex h-[82px] w-full items-center justify-center overflow-visible sm:h-[88px]">
-  {brokerLogo ? (
-    <img
-      src={brokerLogo}
-      alt={`شعار ${item.broker.name}`}
-      className="block h-[100px] w-[220px] max-w-full object-contain sm:h-[115px] sm:w-[240px]"
-    />
-  ) : (
-    <span className="text-center text-2xl font-black text-[#1E5BB8]">
-      {item.broker.name}
-    </span>
-  )}
-</div>
+        <div className="flex h-[75px] w-[220px] items-center justify-center overflow-visible">
+          {logoUrl(item.broker.logo) ? (
+            <img
+              src={logoUrl(item.broker.logo)}
+              alt={`${item.broker.name} logo`}
+              className="block h-[100px] w-[210px] scale-[1.35] object-contain"
+            />
+          ) : (
+            <span className="text-2xl font-black text-[#1E5BB8]">
+              {item.broker.name}
+            </span>
+          )}
+        </div>
 
-        <h2 className="mt-1 flex min-h-[28px] items-center justify-center text-center text-[18px] font-black leading-7 text-[#1E5BB8] sm:text-[20px]">
+        <h2 className="mt-2 text-center text-[18px] font-black text-[#1E5BB8] sm:text-[20px]">
           {name(item)}
         </h2>
       </div>
 
-      {/* Account statistics */}
       <div className="mt-4 grid grid-cols-3 gap-2">
         {stats.map((stat) => (
           <div
             key={stat.label}
-            className="flex min-h-[70px] min-w-0 flex-col items-center justify-center rounded-xl border border-slate-100 bg-[#f5f8fe] p-2.5 text-center"
+            className="min-w-0 rounded-xl border border-slate-100 bg-[#f5f8fe] p-2.5 text-center"
           >
             <div className="text-[11px] font-bold leading-5 text-slate-500">
               {stat.label}
@@ -576,13 +579,12 @@ function HeroAccount({
         ))}
       </div>
 
-      {/* Action buttons */}
-      <div className="mt-auto grid grid-cols-2 gap-2 pt-4">
+      <div className="mt-4 grid grid-cols-2 gap-2">
         <Link
           href={accountLink(item)}
           className="flex min-h-[42px] items-center justify-center rounded-xl border border-[#1E5BB8] bg-white px-2 py-2.5 text-center text-[12px] font-black text-[#1E5BB8] transition hover:bg-[#EEF5FD] sm:text-[13px]"
         >
-          التفاصيل الكاملة للحساب ←
+          Full Account Details →
         </Link>
 
         {item.broker.real_account_url ? (
@@ -592,11 +594,11 @@ function HeroAccount({
             rel="sponsored noopener noreferrer"
             className="flex min-h-[42px] items-center justify-center rounded-xl bg-[#1E5BB8] px-2 py-2.5 text-center text-[12px] font-black text-white transition hover:bg-[#184A97] sm:text-[13px]"
           >
-            فتح حساب ↗
+            Open Account ↗
           </a>
         ) : (
           <span className="flex min-h-[42px] items-center justify-center rounded-xl bg-slate-100 px-2 py-2.5 text-center text-[12px] font-black text-slate-400 sm:text-[13px]">
-            فتح حساب غير متاح
+            Unavailable
           </span>
         )}
       </div>
@@ -604,20 +606,10 @@ function HeroAccount({
   );
 }
 
-
-
-type ComparisonRow = {
-  label: string;
-  a: unknown;
-  b: unknown;
-  note?: string;
-};
-
-type ComparisonGroup = {
-  title: string;
-  description: string;
-  rows: ComparisonRow[];
-};
+// ======================================================
+// COMPARISON TABLE
+// EXACT SAME RESPONSIVE DESIGN AS ARABIC
+// ======================================================
 
 function DataTable({
   first,
@@ -628,11 +620,10 @@ function DataTable({
   second: Item;
   groups: ComparisonGroup[];
 }) {
-    return (
+  return (
     <>
-      {/* MOBILE COMPARISON - NO HORIZONTAL SCROLL */}
-      <div className="space-y-4 md:hidden" dir="rtl">
-
+      {/* MOBILE COMPARISON — NO HORIZONTAL SCROLL */}
+      <div className="space-y-4 md:hidden" dir="ltr">
         {/* ACCOUNT HEADERS */}
         <div className="grid grid-cols-2 gap-2">
           {[first, second].map((item) => (
@@ -708,10 +699,10 @@ function DataTable({
           </section>
         ))}
 
-        {/* OPEN ACCOUNT BUTTONS */}
+        {/* MOBILE OPEN ACCOUNT BUTTONS */}
         <div className="rounded-2xl border border-slate-200 bg-white p-3">
           <h3 className="mb-3 text-center text-[15px] font-black">
-            فتح حساب تداول
+            Open a Trading Account
           </h3>
 
           <div className="grid grid-cols-2 gap-2">
@@ -728,11 +719,11 @@ function DataTable({
                     rel="sponsored noopener noreferrer"
                     className="flex min-h-[44px] items-center justify-center rounded-xl bg-[#1E5BB8] px-2 py-2 text-center text-[12px] font-black text-white"
                   >
-                    فتح حساب ↗
+                    Open Account ↗
                   </a>
                 ) : (
                   <span className="flex min-h-[44px] items-center justify-center rounded-xl bg-slate-100 px-2 py-2 text-center text-[11px] font-bold text-slate-400">
-                    غير متاح
+                    Unavailable
                   </span>
                 )}
               </div>
@@ -741,132 +732,142 @@ function DataTable({
         </div>
 
         <p className="px-2 text-[11px] leading-6 text-slate-500">
-          تُعرض البيانات كما هي مسجلة في بروكر العرب. قد تختلف
-          شروط التداول بحسب الحساب والدولة والكيان القانوني.
+          Information is based on records available to Broker
+          Alarab. Trading conditions may vary by account,
+          country and legal entity.
         </p>
       </div>
 
-      {/* DESKTOP TABLE - KEEP ORIGINAL DESIGN */}
+      {/* DESKTOP TABLE — SAME ARABIC DESIGN */}
       <div className="hidden overflow-hidden rounded-[24px] border border-slate-200 bg-white md:block">
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[620px] border-collapse text-right">
-          <thead>
-            <tr className="bg-[#12244b] text-white">
-              <th className="w-[30%] px-4 py-5 text-[13px] font-black sm:px-6 sm:text-[15px]">
-                معيار المقارنة
-              </th>
-
-              {[first, second].map((item) => (
-                <th
-                  key={item.account.id}
-                  className="w-[35%] px-3 py-5 text-center sm:px-5"
-                >
-                  <div className="text-[15px] font-black sm:text-[19px]">
-                    {item.broker.name}
-                  </div>
-
-                  <div className="mt-1 text-[12px] font-bold text-blue-200 sm:text-[14px]">
-                    {name(item)}
-                  </div>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[620px] border-collapse text-left">
+            <thead>
+              <tr className="bg-[#12244b] text-white">
+                <th className="w-[30%] px-4 py-5 text-[13px] font-black sm:px-6 sm:text-[15px]">
+                  Comparison Criteria
                 </th>
-              ))}
-            </tr>
-          </thead>
 
-          {groups.map((group) => (
-            <tbody key={group.title}>
-              <tr className="bg-[#eaf2ff]">
-                <th
-                  colSpan={3}
-                  className="border-y border-blue-100 px-4 py-4 sm:px-6"
-                >
-                  <div className="text-[15px] font-black text-[#184A97] sm:text-[18px]">
-                    {group.title}
-                  </div>
+                {[first, second].map((item) => (
+                  <th
+                    key={item.account.id}
+                    className="w-[35%] px-3 py-5 text-center sm:px-5"
+                  >
+                    <div className="text-[15px] font-black sm:text-[19px]">
+                      {item.broker.name}
+                    </div>
 
-                  <div className="mt-1 text-[12px] font-medium leading-6 text-slate-600">
-                    {group.description}
-                  </div>
-                </th>
-              </tr>
-
-              {group.rows.map((row, index) => (
-                <tr
-                  key={`${group.title}-${row.label}`}
-                  className={
-                    index % 2 === 0
-                      ? "bg-white"
-                      : "bg-[#f8fbff]"
-                  }
-                >
-                  <th className="border-b border-slate-100 px-4 py-4 align-middle text-[13px] font-extrabold text-slate-800 sm:px-6 sm:py-5 sm:text-[15px]">
-                    {row.label}
-
-                    {row.note && (
-                      <div className="mt-1 text-[11px] font-normal leading-5 text-slate-500">
-                        {row.note}
-                      </div>
-                    )}
+                    <div className="mt-1 text-[12px] font-bold text-blue-200 sm:text-[14px]">
+                      {name(item)}
+                    </div>
                   </th>
+                ))}
+              </tr>
+            </thead>
 
-                  <td className="border-b border-r border-slate-100 px-3 py-4 text-center align-middle sm:px-5">
-                    <span className="break-words text-[13px] font-extrabold leading-7 text-slate-900 sm:text-[16px]">
-                      {shown(row.a)}
-                    </span>
-                  </td>
+            {groups.map((group) => (
+              <tbody key={group.title}>
+                <tr className="bg-[#eaf2ff]">
+                  <th
+                    colSpan={3}
+                    className="border-y border-blue-100 px-4 py-4 sm:px-6"
+                  >
+                    <div className="text-[15px] font-black text-[#184A97] sm:text-[18px]">
+                      {group.title}
+                    </div>
 
-                  <td className="border-b border-r border-slate-100 px-3 py-4 text-center align-middle sm:px-5">
-                    <span className="break-words text-[13px] font-extrabold leading-7 text-slate-900 sm:text-[16px]">
-                      {shown(row.b)}
-                    </span>
-                  </td>
+                    <div className="mt-1 text-[12px] font-medium leading-6 text-slate-600">
+                      {group.description}
+                    </div>
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          ))}
-          <tfoot>
-  <tr className="border-t-2 border-blue-100 bg-[#f8fbff]">
-    <th className="px-4 py-5 text-right text-[13px] font-black text-slate-900 sm:px-6">
-      فتح حساب تداول
-    </th>
 
-    {[first, second].map((item) => (
-      <td
-        key={item.account.id}
-        className="border-r border-slate-100 px-3 py-4 text-center sm:px-5"
-      >
-        {item.broker.real_account_url ? (
-          <a
-            href={item.broker.real_account_url}
-            target="_blank"
-            rel="sponsored noopener noreferrer"
-            className="flex min-h-[42px] w-full items-center justify-center rounded-xl bg-[#1E5BB8] px-3 py-2.5 text-[13px] font-black text-white transition hover:bg-[#184A97]"
-          >
-            فتح حساب ↗
-          </a>
-        ) : (
-          <span className="flex min-h-[42px] items-center justify-center rounded-xl bg-slate-100 px-3 py-2.5 text-[13px] font-bold text-slate-400">
-            فتح حساب غير متاح
-          </span>
-        )}
-      </td>
-    ))}
-  </tr>
-</tfoot>
-        </table>
-      </div>
+                {group.rows.map((row, index) => (
+                  <tr
+                    key={`${group.title}-${row.label}`}
+                    className={
+                      index % 2 === 0
+                        ? "bg-white"
+                        : "bg-[#f8fbff]"
+                    }
+                  >
+                    <th className="border-b border-slate-100 px-4 py-4 align-middle text-[13px] font-extrabold text-slate-800 sm:px-6 sm:py-5 sm:text-[15px]">
+                      {row.label}
 
-      <div className="border-t border-slate-200 bg-[#f8fbff] px-5 py-4 text-[12px] leading-7 text-slate-600">
-        اسحب الجدول أفقياً على الشاشات الصغيرة عند الحاجة.
-        تُعرض البيانات كما هي مسجلة في بروكر العرب.
-        لا نفترض أن قيم السبريد أو العمولة قابلة للمقارنة
-        حسابياً دون التحقق من الوحدة والأداة المالية
-        وطريقة احتساب الرسوم.
+                      {row.note && (
+                        <div className="mt-1 text-[11px] font-normal leading-5 text-slate-500">
+                          {row.note}
+                        </div>
+                      )}
+                    </th>
+
+                    <td className="border-b border-l border-slate-100 px-3 py-4 text-center align-middle sm:px-5">
+                      <span className="break-words text-[13px] font-extrabold leading-7 text-slate-900 sm:text-[16px]">
+                        {shown(row.a)}
+                      </span>
+                    </td>
+
+                    <td className="border-b border-l border-slate-100 px-3 py-4 text-center align-middle sm:px-5">
+                      <span className="break-words text-[13px] font-extrabold leading-7 text-slate-900 sm:text-[16px]">
+                        {shown(row.b)}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            ))}
+
+            <tfoot>
+              <tr className="border-t-2 border-blue-100 bg-[#f8fbff]">
+                <th className="px-4 py-5 text-left text-[13px] font-black text-slate-900 sm:px-6">
+                  Open a Trading Account
+                </th>
+
+                {[first, second].map((item) => (
+                  <td
+                    key={item.account.id}
+                    className="border-l border-slate-100 px-3 py-4 text-center sm:px-5"
+                  >
+                    {item.broker.real_account_url ? (
+                      <a
+                        href={item.broker.real_account_url}
+                        target="_blank"
+                        rel="sponsored noopener noreferrer"
+                        className="flex min-h-[42px] w-full items-center justify-center rounded-xl bg-[#1E5BB8] px-3 py-2.5 text-[13px] font-black text-white transition hover:bg-[#184A97]"
+                      >
+                        Open Account ↗
+                      </a>
+                    ) : (
+                      <span className="flex min-h-[42px] items-center justify-center rounded-xl bg-slate-100 px-3 py-2.5 text-[13px] font-bold text-slate-400">
+                        Unavailable
+                      </span>
+                    )}
+                  </td>
+                ))}
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <div className="border-t border-slate-200 bg-[#f8fbff] px-5 py-4 text-[12px] leading-7 text-slate-600">
+          Information is presented as recorded by Broker Alarab.
+          Spread and commission figures should not be treated
+          as directly comparable without verifying the
+          instrument, pricing units and fee structure.
+        </div>
       </div>
-          </div>
     </>
   );
 }
+
+// ======================================================
+// END OF PART 1
+// PART 2 CONTINUES BELOW
+// ======================================================
+
+ // ======================================================
+ // PARAGRAPHS
+ // ======================================================
 
 function Paragraphs({ value }: { value: unknown }) {
   const parts = paragraphs(value);
@@ -874,7 +875,7 @@ function Paragraphs({ value }: { value: unknown }) {
   if (!parts.length) {
     return (
       <p className="text-sm leading-8 text-slate-500">
-        لا يتوفر تحليل إضافي لهذا الحساب حالياً.
+        Additional account analysis is not currently available.
       </p>
     );
   }
@@ -892,6 +893,10 @@ function Paragraphs({ value }: { value: unknown }) {
     </div>
   );
 }
+
+// ======================================================
+// LIST PANEL
+// ======================================================
 
 function ListPanel({
   title,
@@ -923,8 +928,8 @@ function ListPanel({
                   positive
                     ? "bg-emerald-50 text-emerald-700"
                     : caution
-                      ? "bg-amber-50 text-amber-700"
-                      : "bg-blue-50 text-[#1E5BB8]"
+                    ? "bg-amber-50 text-amber-700"
+                    : "bg-blue-50 text-[#1E5BB8]"
                 }`}
               >
                 {positive ? "✓" : caution ? "!" : "•"}
@@ -936,12 +941,17 @@ function ListPanel({
         </ul>
       ) : (
         <p className="mt-4 text-sm text-slate-500">
-          لا توجد تفاصيل إضافية مسجلة.
+          No additional details are currently available.
         </p>
       )}
     </div>
   );
 }
+
+// ======================================================
+// ACCOUNT ANALYSIS
+// SAME DESIGN AS ARABIC VERSION
+// ======================================================
 
 
 function AccountAnalysis({
@@ -955,15 +965,14 @@ function AccountAnalysis({
 
   const data = items.map((item) => ({
     item,
-    pros: textList(item.content?.pros_ar),
-    cons: textList(item.content?.cons_ar),
-    audience: textList(item.content?.who_is_it_for_ar),
-    analysis: blocks(item.content?.unique_content_ar),
-    notes: blocks(item.content?.important_notes_ar),
+    pros: textList(item.content?.pros_en),
+    cons: textList(item.content?.cons_en),
+    audience: textList(item.content?.who_is_it_for_en),
+    analysis: blocks(item.content?.unique_content_en),
+    notes: blocks(item.content?.important_notes_en),
   }));
 
-  const cell =
-    "min-w-0 rounded-[20px] border border-slate-200 bg-white p-5 sm:p-6";
+  const cell = "min-w-0 rounded-[20px] border border-slate-200 bg-white p-5 sm:p-6";
 
   const pairedRow = (
     render: (entry: (typeof data)[number]) => React.ReactNode
@@ -978,7 +987,7 @@ function AccountAnalysis({
   );
 
   return (
-    <div dir="rtl" className="space-y-4">
+    <div className="space-y-4">
       {/* ACCOUNT HEADERS */}
       {pairedRow(({ item }) => (
         <div className="flex h-full min-h-[112px] items-center gap-4 rounded-[22px] border border-slate-200 bg-[#f1f6ff] p-5 shadow-sm sm:p-6">
@@ -988,7 +997,6 @@ function AccountAnalysis({
             <h3 className="break-words text-[20px] font-black text-slate-950 sm:text-[23px]">
               {item.broker.name}
             </h3>
-
             <p className="mt-1 text-[15px] font-bold text-[#1E5BB8]">
               {name(item)}
             </p>
@@ -1000,17 +1008,16 @@ function AccountAnalysis({
       {pairedRow(({ item }) => (
         <section className={`${cell} h-full`}>
           <h3 className="mb-3 text-[18px] font-black text-slate-950">
-            رأي بروكر العرب
+            Broker Alarab's Assessment
           </h3>
-
-          <Paragraphs value={item.content?.expert_verdict_ar} />
+          <Paragraphs value={item.content?.expert_verdict_en} />
         </section>
       ))}
 
       {/* ADVANTAGES */}
       {pairedRow(({ pros }) => (
         <ListPanel
-          title="مميزات الحساب"
+          title="Account Advantages"
           items={pros}
           tone="positive"
         />
@@ -1019,7 +1026,7 @@ function AccountAnalysis({
       {/* DISADVANTAGES */}
       {pairedRow(({ cons }) => (
         <ListPanel
-          title="العيوب والنقاط التي يجب الانتباه لها"
+          title="Disadvantages and Considerations"
           items={cons}
           tone="caution"
         />
@@ -1028,7 +1035,7 @@ function AccountAnalysis({
       {/* SUITABLE TRADERS */}
       {pairedRow(({ audience }) => (
         <ListPanel
-          title="لمن يناسب هذا الحساب؟"
+          title="Who Is This Account Suitable For?"
           items={audience}
           tone="neutral"
         />
@@ -1038,7 +1045,7 @@ function AccountAnalysis({
       {pairedRow(({ analysis }) => (
         <section className={`${cell} h-full`}>
           <h3 className="mb-5 border-b border-slate-100 pb-4 text-[19px] font-black text-slate-950">
-            تحليل الحساب بالتفصيل
+            Detailed Account Analysis
           </h3>
 
           {analysis.length ? (
@@ -1048,7 +1055,6 @@ function AccountAnalysis({
                   <h4 className="text-[16px] font-black leading-7 text-[#184A97]">
                     {block.title}
                   </h4>
-
                   <p className="mt-2 whitespace-pre-line text-[14px] leading-8 text-slate-700">
                     {block.content}
                   </p>
@@ -1057,7 +1063,7 @@ function AccountAnalysis({
             </div>
           ) : (
             <p className="text-sm leading-8 text-slate-500">
-              لا يتوفر تحليل تفصيلي إضافي لهذا الحساب حالياً.
+              Detailed account analysis is not currently available.
             </p>
           )}
         </section>
@@ -1067,8 +1073,10 @@ function AccountAnalysis({
       {pairedRow(({ item, notes }) => (
         <section className="flex h-full flex-col rounded-[20px] border border-amber-200 bg-amber-50/60 p-5 sm:p-6">
           <h3 className="text-[17px] font-black text-slate-950">
-            {item.content?.important_notes_title_ar ||
-              "ملاحظات مهمة قبل فتح الحساب"}
+            {item.content?.important_notes_title_en &&
+            !hasArabic(item.content.important_notes_title_en)
+              ? item.content.important_notes_title_en
+              : "Important Notes Before Opening an Account"}
           </h3>
 
           {notes.length ? (
@@ -1078,7 +1086,6 @@ function AccountAnalysis({
                   <h4 className="text-[14px] font-black text-slate-900">
                     {note.title}
                   </h4>
-
                   <p className="mt-1 whitespace-pre-line text-[13px] leading-7 text-slate-700">
                     {note.content}
                   </p>
@@ -1087,7 +1094,7 @@ function AccountAnalysis({
             </div>
           ) : (
             <p className="mt-4 text-[13px] leading-7 text-slate-600">
-              لا توجد ملاحظات إضافية مسجلة لهذا الحساب حالياً.
+              No additional account notes are currently available.
             </p>
           )}
         </section>
@@ -1099,13 +1106,17 @@ function AccountAnalysis({
           href={accountLink(item)}
           className="flex min-h-[52px] w-full items-center justify-center rounded-2xl bg-[#1E5BB8] px-5 py-3 text-center text-[14px] font-black text-white transition hover:bg-[#184A97]"
         >
-          اقرأ التقييم الكامل للحساب ←
+          Read the Full Account Review →
         </Link>
       ))}
     </div>
   );
 }
 
+
+// ======================================================
+// STRUCTURED DATA
+// ======================================================
 
 function JsonLd({ data }: { data: unknown }) {
   return (
@@ -1118,8 +1129,13 @@ function JsonLd({ data }: { data: unknown }) {
   );
 }
 
+// ======================================================
+// MAIN PAGE
+// ======================================================
+
 export default async function Page({ params }: PageProps) {
   const { slug } = await params;
+
   const result = await getComparison(slug);
 
   if (!result) notFound();
@@ -1128,7 +1144,7 @@ export default async function Page({ params }: PageProps) {
 
   if (slug !== canonicalSlug) {
     permanentRedirect(
-      `/compare-accounts/${canonicalSlug}`
+      `/en/compare-accounts/${canonicalSlug}`
     );
   }
 
@@ -1136,144 +1152,141 @@ export default async function Page({ params }: PageProps) {
   const secondName = fullName(second);
 
   const canonical =
-    `${SITE}/compare-accounts/${canonicalSlug}`;
+    `${SITE}/en/compare-accounts/${canonicalSlug}`;
+
+  // ====================================================
+  // COMPARISON TABLE GROUPS
+  // FIVE GROUPS — SAME AS ARABIC
+  //
+  // REMOVED:
+  // - Islamic Account Availability
+  // - Islamic Account Conditions
+  // - Best For
+  // ====================================================
 
   const groups: ComparisonGroup[] = [
     {
-      title: "01 — معلومات الحساب الأساسية",
+      title: "01 — Basic Account Information",
       description:
-        "التعريف بالحسابين ونوع كل حساب.",
+        "Compare the broker, account name, account classification and regulatory information.",
       rows: [
         {
-          label: "شركة التداول",
+          label: "Broker",
           a: first.broker.name,
           b: second.broker.name,
         },
         {
-          label: "اسم الحساب",
+          label: "Account Name",
           a: name(first),
           b: name(second),
         },
-        
         {
-          label: "تصنيف الحساب",
+          label: "Account Type",
           a: first.account.account_type,
           b: second.account.account_type,
         },
         {
-  label: "التراخيص التنظيمية للشركة",
-  a: first.broker.regulation,
-  b: second.broker.regulation,
-  note: "تراخيص الشركة العامة؛ تحقق من الكيان القانوني الذي يقدم الحساب في بلدك.",
-},
+          label: "Broker Regulatory Licenses",
+          a: first.broker.regulation,
+          b: second.broker.regulation,
+          note:
+            "Broker-level regulatory information. Verify which legal entity serves your country.",
+        },
       ],
     },
+
     {
-      title: "02 — السبريد وتكاليف التداول",
+      title: "02 — Spreads and Trading Costs",
       description:
-        "الرسوم المسجلة لكل حساب، دون افتراض تكاليف غير موثقة.",
+        "Compare the recorded trading costs without assuming undocumented pricing.",
       rows: [
         {
-          label: "نطاق السبريد المعلن",
+          label: "Advertised Spread Range",
           a: first.account.spread,
           b: second.account.spread,
         },
         {
-          label: "أقل سبريد مسجل",
+          label: "Minimum Recorded Spread",
           a: first.account.spread_min,
           b: second.account.spread_min,
-          note: "بحسب البيانات المتاحة للحساب",
+          note:
+            "Based on the available account information.",
         },
         {
-          label: "متوسط السبريد المسجل",
+          label: "Average Recorded Spread",
           a: first.account.spread_avg,
           b: second.account.spread_avg,
         },
         {
-          label: "العمولة المعلنة",
+          label: "Advertised Commission",
           a: first.account.commission,
           b: second.account.commission,
         },
-        
       ],
     },
+
     {
-      title: "03 — الإيداع والتنفيذ",
+      title: "03 — Deposits and Execution",
       description:
-        "المتطلبات التشغيلية وخصائص تنفيذ الأوامر.",
+        "Review account funding requirements and order execution characteristics.",
       rows: [
         {
-          label: "الحد الأدنى للإيداع",
+          label: "Minimum Deposit",
           a: first.account.min_deposit,
           b: second.account.min_deposit,
         },
         {
-          label: "طريقة تنفيذ الأوامر",
+          label: "Order Execution Method",
           a: first.account.execution_type,
           b: second.account.execution_type,
         },
         {
-          label: "منصات الشركة",
+          label: "Trading Platforms",
           a: first.broker.platforms,
           b: second.broker.platforms,
-          note: "قد تختلف المنصات المتاحة حسب الحساب",
+          note:
+            "Available platforms may differ by account type.",
         },
       ],
     },
+
     {
-      title: "04 — ملاءمة الحساب وشروطه",
+      title: "04 — Account Features and Conditions",
       description:
-        "خصائص مهمة لاختيار الحساب بحسب احتياجات المتداول.",
+        "Review relevant account characteristics and trading suitability.",
       rows: [
         {
-          label: "الفئة المناسبة",
-          a: first.account.best_for,
-          b: second.account.best_for,
-        },
-        {
-          label: "ملاءمة السكالبينج",
+          label: "Scalping Suitability",
           a:
             first.account.is_best_for_scalping === true
-              ? "مصنف ضمن الحسابات المناسبة للسكالبينج"
-              : "غير مصنف ضمن هذه الفئة",
+              ? "Classified as suitable for scalping"
+              : "Not classified in this category",
           b:
             second.account.is_best_for_scalping === true
-              ? "مصنف ضمن الحسابات المناسبة للسكالبينج"
-              : "غير مصنف ضمن هذه الفئة",
-          note: "تصنيف داخلي وليس ضماناً لملاءمة الحساب",
-        },
-        {
-          label: "توفر الحساب الإسلامي",
-          a: yesNo(first.account.is_islamic_available),
-          b: yesNo(second.account.is_islamic_available),
-        },
-        {
-          label: "شروط الحساب الإسلامي",
-          a: first.account.islamic_conditions,
-          b: second.account.islamic_conditions,
+              ? "Classified as suitable for scalping"
+              : "Not classified in this category",
+          note:
+            "An internal classification, not a guarantee of suitability.",
         },
       ],
     },
+
     {
-      title: "05 — معلومات الشركة والتنظيم",
+      title: "05 — Broker Information and Regulation",
       description:
-        "هذه بيانات على مستوى الشركة، وليست ضماناً بانطباق كل ترخيص على الحساب.",
+        "Broker-level information does not guarantee that every license applies to the selected account.",
       rows: [
         {
-          label: "التراخيص المذكورة",
+          label: "Listed Regulatory Licenses",
           a: first.broker.regulation,
           b: second.broker.regulation,
         },
         {
-          label: "الرافعة المالية العامة",
+          label: "Broker Maximum Leverage",
           a: first.broker.max_leverage,
           b: second.broker.max_leverage,
-          note: "قد تختلف حسب الحساب والدولة والكيان",
-        },
-        {
-          label: "ملاحظات توفر الحسابات",
-          a: first.broker.account_availability_note_ar,
-          b: second.broker.account_availability_note_ar,
+          note:
+            "Actual leverage may depend on the account, jurisdiction and legal entity.",
         },
       ],
     },
@@ -1282,43 +1295,50 @@ export default async function Page({ params }: PageProps) {
   const sameBroker =
     first.broker.id === second.broker.id;
 
+  // ====================================================
+  // FAQ
+  // ====================================================
+
   const faqItems: FAQ[] = [
     {
-      question: `ما الفرق بين ${firstName} و${secondName}؟`,
+      question:
+        `What is the difference between ${firstName} and ${secondName}?`,
       answer:
-        `السبريد المسجل في ${firstName} هو ${shown(first.account.spread)}، ` +
-        `مقابل ${shown(second.account.spread)} في ${secondName}. ` +
-        `العمولة المعلنة هي ${shown(first.account.commission)} للحساب الأول ` +
-        `و${shown(second.account.commission)} للحساب الثاني. ` +
-        "يجب أيضاً مقارنة شروط التنفيذ والإيداع وتوفر الحساب حسب الدولة.",
+        `The recorded spread for ${firstName} is ${shown(first.account.spread)}, ` +
+        `compared with ${shown(second.account.spread)} for ${secondName}. ` +
+        `The advertised commissions are ${shown(first.account.commission)} ` +
+        `and ${shown(second.account.commission)}, respectively. ` +
+        "You should also consider execution conditions, deposit requirements and account availability.",
     },
     {
-      question: "هل الحساب الأقل سبريداً هو الأفضل؟",
+      question:
+        "Is the account with the lowest spread always better?",
       answer:
-        "ليس بالضرورة. ينبغي احتساب العمولة والسبريد معاً، " +
-        "مع مراعاة الأداة المالية وحجم الصفقة وطريقة التنفيذ.",
+        "Not necessarily. Trading costs should be evaluated using both spreads and commissions, " +
+        "while considering the financial instrument, position size and execution conditions.",
     },
     {
-      question: "هل يمكن مقارنة حسابين من الشركة نفسها؟",
-      answer:
-        sameBroker
-          ? "نعم، والحسابان المعروضان هنا تابعان للشركة نفسها، لكن تختلف خصائصهما وفق البيانات المسجلة."
-          : "نعم، يتيح محرك بروكر العرب مقارنة حسابين من الشركة نفسها أو من شركتين مختلفتين.",
+      question:
+        "Can I compare two accounts from the same broker?",
+      answer: sameBroker
+        ? "Yes. Both accounts in this comparison belong to the same broker, but their characteristics may differ."
+        : "Yes. Broker Alarab allows traders to compare accounts from the same broker or from different brokers.",
     },
     {
-      question: "هل الحساب الإسلامي متاح لجميع العملاء؟",
+      question:
+        "How can I verify the trading conditions?",
       answer:
-        "ليس بالضرورة. قد يتوقف توفر الحساب الإسلامي على الدولة والكيان القانوني وشروط الأهلية الخاصة بالوسيط.",
+        "Review the broker's official account specifications, applicable legal entity and trading conditions. " +
+        "Spreads, commissions and leverage may vary by instrument, account and jurisdiction.",
     },
   ];
 
-  // Add account-specific questions without repeating identical questions.
   const seenQuestions = new Set(
     faqItems.map((item) => item.question.trim())
   );
 
   for (const item of [first, second]) {
-    for (const faq of faqs(item.content?.faq_ar)) {
+    for (const faq of faqs(item.content?.faq_en)) {
       const key = faq.question.trim();
 
       if (!seenQuestions.has(key)) {
@@ -1327,6 +1347,10 @@ export default async function Page({ params }: PageProps) {
       }
     }
   }
+
+  // ====================================================
+  // LAST UPDATED
+  // ====================================================
 
   const dates = [
     first.content?.updated_at,
@@ -1337,6 +1361,10 @@ export default async function Page({ params }: PageProps) {
     ? dates.sort().at(-1)
     : null;
 
+  // ====================================================
+  // SCHEMA
+  // ====================================================
+
   const structuredData = {
     "@context": "https://schema.org",
     "@graph": [
@@ -1344,18 +1372,18 @@ export default async function Page({ params }: PageProps) {
         "@type": "WebPage",
         "@id": `${canonical}#webpage`,
         url: canonical,
-        name: `مقارنة ${firstName} مع ${secondName}`,
-        inLanguage: "ar",
-        
-description:
-  `مقارنة بين ${firstName} و${secondName} تشمل السبريد والعمولات والإيداع ومنصات التداول وشروط الحسابين.`,
-
+        name:
+          `${firstName} vs ${secondName} Trading Account Comparison`,
+        inLanguage: "en",
+        description:
+          `Compare ${firstName} and ${secondName} by spreads, ` +
+          "commissions, deposits, trading platforms and account conditions.",
         ...(lastUpdated
           ? { dateModified: lastUpdated }
           : {}),
         isPartOf: {
           "@type": "WebSite",
-          name: "بروكر العرب",
+          name: "Broker Alarab",
           url: SITE,
         },
       },
@@ -1365,19 +1393,19 @@ description:
           {
             "@type": "ListItem",
             position: 1,
-            name: "الرئيسية",
-            item: SITE,
+            name: "Home",
+            item: `${SITE}/en`,
           },
           {
             "@type": "ListItem",
             position: 2,
-            name: "مقارنة حسابات التداول",
-            item: `${SITE}/compare-accounts`,
+            name: "Compare Trading Accounts",
+            item: `${SITE}/en/compare-accounts`,
           },
           {
             "@type": "ListItem",
             position: 3,
-            name: `${firstName} مقابل ${secondName}`,
+            name: `${firstName} vs ${secondName}`,
             item: canonical,
           },
         ],
@@ -1387,84 +1415,98 @@ description:
 
   return (
     <main
-      dir="rtl"
+      dir="ltr"
       className="min-h-screen bg-[#f2f6fc] text-slate-950"
     >
       <JsonLd data={structuredData} />
 
-      
-{/* HERO */}
-<section className="bg-[linear-gradient(135deg,#0b1831_0%,#132957_65%,#1d4380_100%)] text-white">
-  <div className="mx-auto max-w-[1520px] px-4 pb-7 pt-5 sm:px-6 lg:px-8">
-    <nav
-      aria-label="مسار التنقل"
-      className="flex flex-wrap items-center gap-2 text-[12px] font-bold text-blue-100/80"
-    >
-      <Link href="/" className="hover:text-white">
-        الرئيسية
-      </Link>
-      <span>/</span>
-      <Link
-        href="/compare-accounts"
-        className="hover:text-white"
-      >
-        مقارنة حسابات التداول
-      </Link>
-      <span>/</span>
-      <span className="text-white">المقارنة الحالية</span>
-    </nav>
+      {/* =================================================
+          HERO — SAME DESIGN AS ARABIC
+      ================================================= */}
 
-    <div className="mx-auto mt-5 max-w-[1100px] text-center">
-      <span className="inline-flex rounded-full border border-blue-300/20 bg-white/10 px-4 py-1.5 text-[11px] font-black text-blue-100">
-        مقارنة تفصيلية لحسابات التداول
-      </span>
+      <section className="bg-[linear-gradient(135deg,#0b1831_0%,#132957_65%,#1d4380_100%)] text-white">
+        <div className="mx-auto max-w-[1520px] px-4 pb-7 pt-5 sm:px-6 lg:px-8">
+          <nav
+            aria-label="Breadcrumb"
+            className="flex flex-wrap items-center gap-2 text-[12px] font-bold text-blue-100/80"
+          >
+            <Link
+              href="/en"
+              className="hover:text-white"
+            >
+              Home
+            </Link>
 
-      
-<h1 className="mt-3 text-[25px] font-black leading-[1.35] sm:text-[34px] lg:text-[38px]">
-  مقارنة حسابات التداول: {firstName}
-  <span className="block text-[#8bc7ff]">
-    مقابل {secondName}
-  </span>
-</h1>
+            <span>/</span>
 
+            <Link
+              href="/en/compare-accounts"
+              className="hover:text-white"
+            >
+              Compare Trading Accounts
+            </Link>
 
-      <p className="mx-auto mt-3 max-w-[850px] text-[13px] leading-7 text-blue-100 sm:text-[15px]">
-        اكتشف الفروقات في السبريد والعمولات والإيداع،
-        مع تحليل شامل لمميزات وعيوب كل حساب.
-      </p>
-    </div>
+            <span>/</span>
 
-    <div className="mx-auto mt-5 grid max-w-[1050px] grid-cols-1 gap-4 md:grid-cols-2">
-      <HeroAccount item={first} number={1} />
-      <HeroAccount item={second} number={2} />
-    </div>
+            <span className="text-white">
+              Current Comparison
+            </span>
+          </nav>
 
-    <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
-      <a
-        href="#comparison-table"
-        className="inline-flex min-h-[42px] items-center justify-center rounded-xl bg-[#2B6FD0] px-5 py-2.5 text-[13px] font-black text-white transition hover:bg-[#1E5BB8]"
-      >
-        شاهد جدول المقارنة ↓
-      </a>
+          <div className="mx-auto mt-5 max-w-[1100px] text-center">
+            <span className="inline-flex rounded-full border border-blue-300/20 bg-white/10 px-4 py-1.5 text-[11px] font-black text-blue-100">
+              Detailed Trading Account Comparison
+            </span>
 
-      <Link
-        href="/compare-accounts#compare-tool"
-        className="inline-flex min-h-[42px] items-center justify-center rounded-xl border border-white/30 bg-white/10 px-5 py-2.5 text-[13px] font-black text-white transition hover:bg-white/20"
-      >
-        قارن حسابين آخرين
-      </Link>
-    </div>
-  </div>
-</section>
+            <h1 className="mt-3 text-[25px] font-black leading-[1.35] sm:text-[34px] lg:text-[38px]">
+              Trading Account Comparison: {firstName}
 
+              <span className="block text-[#8bc7ff]">
+                vs {secondName}
+              </span>
+            </h1>
 
-      {/* INTRODUCTION */}
+            <p className="mx-auto mt-3 max-w-[850px] text-[13px] leading-7 text-blue-100 sm:text-[15px]">
+              Explore differences in spreads, commissions,
+              deposits and trading conditions, alongside
+              a detailed review of each account's
+              advantages and limitations.
+            </p>
+          </div>
+
+          <div className="mx-auto mt-5 grid max-w-[1050px] grid-cols-1 gap-4 md:grid-cols-2">
+            <HeroAccount item={first} number={1} />
+            <HeroAccount item={second} number={2} />
+          </div>
+
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
+            <a
+              href="#comparison-table"
+              className="inline-flex min-h-[42px] items-center justify-center rounded-xl bg-[#2B6FD0] px-5 py-2.5 text-[13px] font-black text-white transition hover:bg-[#1E5BB8]"
+            >
+              View Comparison Table ↓
+            </a>
+
+            <Link
+              href="/en/compare-accounts#compare-tool"
+              className="inline-flex min-h-[42px] items-center justify-center rounded-xl border border-white/30 bg-white/10 px-5 py-2.5 text-[13px] font-black text-white transition hover:bg-white/20"
+            >
+              Compare Other Accounts
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* =================================================
+          INTRODUCTION
+      ================================================= */}
+
       <section className="mx-auto max-w-[1520px] px-3 pt-8 sm:px-6 lg:px-8">
         <div className="rounded-[26px] border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
           <SectionTitle
-            eyebrow="نظرة عامة"
-            title={`ما الذي يميز ${firstName} عن ${secondName}؟`}
-            description="قبل مقارنة الأرقام، من المهم فهم طبيعة كل حساب والشروط التي قد تجعله مناسباً لفئة معينة من المتداولين."
+            eyebrow="ACCOUNT OVERVIEW"
+            title={`What Makes ${firstName} Different from ${secondName}?`}
+            description="Before comparing the numbers, it is important to understand the purpose of each account and the conditions that may make it suitable for different traders."
           />
 
           <div className="grid gap-5 lg:grid-cols-2">
@@ -1479,8 +1521,8 @@ description:
 
                 <Paragraphs
                   value={
-                    item.content?.hero_intro_ar ||
-                    item.content?.overview_ar
+                    item.content?.hero_intro_en ||
+                    item.content?.overview_en
                   }
                 />
               </article>
@@ -1489,18 +1531,19 @@ description:
         </div>
       </section>
 
-      {/* TABLE */}
+      {/* =================================================
+          COMPARISON TABLE
+      ================================================= */}
+
       <section
         id="comparison-table"
         className="mx-auto max-w-[1520px] scroll-mt-24 px-3 py-8 sm:px-6 lg:px-8"
       >
         <div className="rounded-[28px] border border-slate-200 bg-white p-4 shadow-sm sm:p-8">
           <SectionTitle
-            eyebrow="المقارنة المباشرة"
-            
-title="مقارنة حسابات التداول والسبريد والعمولات والمنصات"
-description="قارن بين الحسابين من حيث فروقات الأسعار والعمولات والحد الأدنى للإيداع ومنصات التداول المتاحة وشروط التنفيذ والحساب الإسلامي."
-
+            eyebrow="SIDE-BY-SIDE COMPARISON"
+            title="Compare Trading Accounts, Spreads, Commissions and Platforms"
+            description="Review spreads, commissions, minimum deposits, trading platforms, execution methods and broker-level regulatory information."
           />
 
           <DataTable
@@ -1511,13 +1554,16 @@ description="قارن بين الحسابين من حيث فروقات الأس�
         </div>
       </section>
 
-      {/* EXPERT ANALYSIS */}
+      {/* =================================================
+          EXPERT ANALYSIS
+      ================================================= */}
+
       <section className="mx-auto max-w-[1520px] px-3 pb-8 sm:px-6 lg:px-8">
         <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
           <SectionTitle
-            eyebrow="التحليل المتخصص"
-            title="رأي بروكر العرب في الحسابين"
-            description="نستعرض تحليل كل حساب بصورة مستقلة حتى تتمكن من مقارنة نقاط القوة والقيود والفئات المناسبة له، دون إعلان فائز غير مدعوم بالبيانات."
+            eyebrow="EXPERT ANALYSIS"
+            title="Broker Alarab's Assessment of Both Accounts"
+            description="We review each account independently, highlighting strengths, limitations and the types of traders it may suit, without declaring an unsupported winner."
           />
 
           
@@ -1526,46 +1572,51 @@ description="قارن بين الحسابين من حيث فروقات الأس�
         </div>
       </section>
 
-      {/* HOW TO CHOOSE */}
+      {/* =================================================
+          HOW TO CHOOSE
+      ================================================= */}
+
       <section className="mx-auto max-w-[1520px] px-3 pb-8 sm:px-6 lg:px-8">
         <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
           <SectionTitle
-            eyebrow="دليل اتخاذ القرار"
-            title="كيف تختار الحساب الأنسب لك؟"
-            description="الأرقام وحدها لا تكفي. تعتمد ملاءمة الحساب على استراتيجية التداول وحجم رأس المال والأدوات المالية والشروط المطبقة عليك."
+            eyebrow="DECISION GUIDE"
+            title="How to Choose the Right Trading Account"
+            description="Numbers alone are not enough. Account suitability depends on your trading strategy, capital, financial instruments and the conditions applicable to you."
           />
 
           <div className="grid gap-4 md:grid-cols-2">
             {[
               {
                 number: "01",
-                title: "قارن السبريد والعمولة معاً",
+                title: "Compare Spreads and Commissions Together",
                 text:
-                  `السبريد المسجل في ${firstName} هو ${shown(first.account.spread)}، ` +
-                  `وفي ${secondName} هو ${shown(second.account.spread)}. ` +
-                  "لكن الحكم على التكلفة يتطلب معرفة العمولة ووحدة السبريد والأداة المالية وحجم الصفقة.",
+                  `The recorded spread for ${firstName} is ${shown(first.account.spread)}, ` +
+                  `while ${secondName} shows ${shown(second.account.spread)}. ` +
+                  "Evaluating overall trading costs also requires checking commission rates, pricing units, instruments and position sizes.",
               },
               {
                 number: "02",
-                title: "راجع متطلبات الإيداع",
+                title: "Review Minimum Deposit Requirements",
                 text:
-                  `الحد الأدنى المسجل للحساب الأول ${shown(first.account.min_deposit)}، ` +
-                  `مقابل ${shown(second.account.min_deposit)} للحساب الثاني. ` +
-                  "الإيداع الأقل قد يوفر مرونة أكبر، لكنه لا يعني أن الحساب أفضل من جميع الجوانب.",
+                  `The recorded minimum deposit for ${firstName} is ${shown(first.account.min_deposit)}, ` +
+                  `compared with ${shown(second.account.min_deposit)} for ${secondName}. ` +
+                  "A lower deposit requirement may provide more flexibility, but it does not automatically make an account better.",
               },
-              
-{
-  number: "03",
-  title: "قارن منصات التداول وطرق تنفيذ الأوامر",
-  text:
-    "عند مقارنة حسابات التداول، تحقق من منصات التداول المتاحة لدى كل وسيط، مثل MetaTrader 4 أو MetaTrader 5 إذا كانت مدعومة فعلياً، بالإضافة إلى طريقة تنفيذ الأوامر وسياسة الانزلاق السعري. قد تختلف المنصات والشروط بحسب نوع الحساب والدولة.",
-},
-
+              {
+                number: "03",
+                title: "Compare Trading Platforms and Execution",
+                text:
+                  "Check which trading platforms each broker actually offers for the selected account, " +
+                  "including MetaTrader 4 or MetaTrader 5 where supported. " +
+                  "Also review execution policies and potential slippage. Availability and conditions may vary by account and country.",
+              },
               {
                 number: "04",
-                title: "تأكد من التراخيص والأهلية",
+                title: "Verify Regulation and Eligibility",
                 text:
-                  "تأكد من الكيان القانوني الذي سيخدم حسابك وبلد الإقامة، وتحقق من شروط الحساب الإسلامي إذا كنت تحتاج إليه.",
+                  "Confirm the legal entity that will serve your account, " +
+                  "the regulatory framework applicable to that entity, " +
+                  "and whether the selected account is available in your country.",
               },
             ].map((step) => (
               <article
@@ -1577,7 +1628,7 @@ description="قارن بين الحسابين من حيث فروقات الأس�
                     {step.number}
                   </span>
 
-                  <h3 className="text-[17px] font-black text-slate-950 sm:text-[19px]">
+                  <h3 className="text-[17px] font-black leading-7 text-slate-950">
                     {step.title}
                   </h3>
                 </div>
@@ -1591,112 +1642,90 @@ description="قارن بين الحسابين من حيث فروقات الأس�
         </div>
       </section>
 
-      {/* ACCOUNT LINKS */}
+      {/* =================================================
+          FAQ
+      ================================================= */}
+
       <section className="mx-auto max-w-[1520px] px-3 pb-8 sm:px-6 lg:px-8">
         <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
           <SectionTitle
-            eyebrow="مزيد من المعلومات"
-            title="استكشف الحسابين والشركتين"
-            description="انتقل إلى صفحة الحساب الفردية أو تقييم الشركة للحصول على معلومات أكثر تفصيلاً."
+            eyebrow="FREQUENTLY ASKED QUESTIONS"
+            title={`FAQs About ${firstName} vs ${secondName}`}
+            description="Answers to common questions about account comparisons, trading costs and account conditions."
           />
 
-          <div className="grid gap-4 md:grid-cols-2">
-            {[first, second].map((item) => (
-              <article
-                key={item.account.id}
-                className="rounded-[22px] border border-slate-200 bg-[#f8fbff] p-5"
-              >
-                <div className="flex items-center gap-4">
-                  <Logo broker={item.broker} />
-
-                  <div className="min-w-0">
-                    <h3 className="text-[18px] font-black">
-                      {item.broker.name}
-                    </h3>
-
-                    <p className="mt-1 text-[14px] font-bold text-[#1E5BB8]">
-                      {name(item)}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-5 flex flex-wrap gap-3">
-                  <Link
-                    href={accountLink(item)}
-                    className="rounded-xl bg-[#1E5BB8] px-5 py-3 text-[13px] font-black text-white hover:bg-[#184A97]"
-                  >
-                    تفاصيل الحساب ←
-                  </Link>
-
-                  <Link
-                    href={brokerLink(item)}
-                    className="rounded-xl border border-slate-200 bg-white px-5 py-3 text-[13px] font-black text-slate-800 hover:bg-slate-50"
-                  >
-                    تقييم الشركة ←
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="mx-auto max-w-[1520px] px-3 pb-8 sm:px-6 lg:px-8">
-        <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
-          <SectionTitle
-            eyebrow="الأسئلة الشائعة"
-            title={`أسئلة حول ${firstName} و${secondName}`}
-          />
-
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
-  {[0, 1].map((column) => (
-    <div key={column} className="flex min-w-0 flex-col gap-3">
-      {faqItems
-        .filter((_, index) => index % 2 === column)
-        .map((faq, index) => (
+          
+<div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-2">
+  {[faqItems.slice(0, 5), faqItems.slice(5, 10)].map(
+    (column, columnIndex) => (
+      <div
+        key={columnIndex}
+        className="flex min-w-0 flex-col gap-3"
+      >
+        {column.map((faq, index) => (
           <details
-            key={`${column}-${index}`}
-            className="group rounded-[18px] border border-slate-200 bg-[#f8fbff] p-4 open:bg-white sm:p-5"
+            key={`${faq.question}-${columnIndex}-${index}`}
+            className="group overflow-hidden rounded-2xl border border-slate-200 bg-[#f8fbff]"
           >
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[14px] font-black leading-7 text-slate-950 sm:text-[16px]">
-              {faq.question}
+            <summary className="flex min-h-[62px] cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-[14px] font-black leading-6 text-slate-950 marker:hidden sm:text-[15px] [&::-webkit-details-marker]:hidden">
+              <span className="min-w-0 flex-1">
+                {faq.question}
+              </span>
 
-              <span className="shrink-0 text-xl font-black text-[#1E5BB8]">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#e6f0ff] text-[#1E5BB8] transition group-open:rotate-45">
                 +
               </span>
             </summary>
 
-            <p className="mt-4 border-t border-slate-100 pt-4 text-[14px] leading-8 text-slate-700">
+            <div className="border-t border-slate-200 px-5 py-4 text-[14px] leading-8 text-slate-700">
               {faq.answer}
-            </p>
+            </div>
           </details>
         ))}
-    </div>
-  ))}
+      </div>
+    )
+  )}
 </div>
+
         </div>
       </section>
 
-      {/* FINAL CTA */}
+      {/* =================================================
+          FINAL CTA
+      ================================================= */}
+
       <section className="mx-auto max-w-[1520px] px-3 pb-12 sm:px-6 lg:px-8">
-        <div className="rounded-[28px] bg-[linear-gradient(135deg,#10203f_0%,#1c3e79_100%)] px-5 py-10 text-center text-white sm:px-8">
-          <h2 className="text-[24px] font-black sm:text-[32px]">
-            هل تريد مقارنة حسابات أخرى؟
+        <div className="rounded-[28px] bg-[linear-gradient(135deg,#10244a_0%,#1d4380_100%)] p-6 text-center text-white sm:p-10">
+          <h2 className="text-[23px] font-black leading-tight sm:text-[30px]">
+            Explore Both Trading Accounts in Detail
           </h2>
 
-          <p className="mx-auto mt-3 max-w-[700px] text-[14px] leading-8 text-blue-100">
-            اختر حسابين من شركات التداول المتاحة
-            لدى بروكر العرب، واستعرض الفروقات
-            بينهما في صفحة مقارنة مستقلة.
+          <p className="mx-auto mt-4 max-w-[850px] text-[14px] leading-8 text-blue-100">
+            Review the full account information, compare trading
+            conditions and verify the broker's requirements
+            before opening an account.
           </p>
 
-          <Link
-            href="/compare-accounts#compare-tool"
-            className="mt-6 inline-flex min-h-[52px] items-center justify-center rounded-xl bg-white px-7 py-3 text-[14px] font-black text-[#1E5BB8] transition hover:bg-blue-50"
-          >
-            ابدأ مقارنة جديدة ←
-          </Link>
+          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+            {[first, second].map((item) => (
+              <Link
+                key={item.account.id}
+                href={accountLink(item)}
+                className="flex min-h-[50px] items-center justify-center rounded-xl border border-white/25 bg-white px-4 py-3 text-center text-[13px] font-black text-[#184A97] transition hover:bg-[#EEF5FD]"
+              >
+                View {fullName(item)} →
+              </Link>
+            ))}
+          </div>
+
+          <div className="mt-5 flex justify-center">
+            <Link
+              href="/en/compare-accounts#compare-tool"
+              className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-white/30 bg-white/10 px-5 py-2.5 text-[13px] font-black text-white transition hover:bg-white/20"
+            >
+              Compare Two Other Accounts →
+            </Link>
+          </div>
         </div>
       </section>
     </main>
