@@ -170,6 +170,82 @@ export default async function CompareAccountsPage() {
   const availableBrokers = brokers.filter((broker) => activeBrokerIds.has(broker.id));
   const featured = availableBrokers.slice(0, 9);
 
+  
+const comparisonAccounts = availableBrokers.flatMap((broker) =>
+  accounts
+    .filter((account) => account.broker_id === broker.id)
+    .map((account) => ({
+      broker,
+      account,
+      key: `${broker.slug}-${accountSlug(account.account_name)}`,
+    }))
+    .filter((item) => accountSlug(item.account.account_name))
+);
+
+const comparisonKeyCounts = new Map<string, number>();
+
+comparisonAccounts.forEach((item) => {
+  comparisonKeyCounts.set(
+    item.key,
+    (comparisonKeyCounts.get(item.key) ?? 0) + 1
+  );
+});
+
+const uniqueComparisonAccounts = comparisonAccounts.filter(
+  (item) =>
+    comparisonKeyCounts.get(item.key) === 1 &&
+    !item.key.includes("-vs-")
+);
+
+const popularComparisons: {
+  first: (typeof uniqueComparisonAccounts)[number];
+  second: (typeof uniqueComparisonAccounts)[number];
+  slug: string;
+}[] = [];
+
+const usedPairs = new Set<string>();
+
+for (let offset = 1; offset < availableBrokers.length; offset++) {
+  for (let i = 0; i < availableBrokers.length; i++) {
+    const firstBroker = availableBrokers[i];
+    const secondBroker =
+      availableBrokers[(i + offset) % availableBrokers.length];
+
+    if (firstBroker.id === secondBroker.id) continue;
+
+    const first = uniqueComparisonAccounts.find(
+      (item) => item.broker.id === firstBroker.id
+    );
+
+    const second = uniqueComparisonAccounts.find(
+      (item) => item.broker.id === secondBroker.id
+    );
+
+    if (!first || !second) continue;
+
+    const sorted = [first, second].sort((a, b) =>
+      a.key < b.key ? -1 : a.key > b.key ? 1 : 0
+    );
+
+    const slug = `${sorted[0].key}-vs-${sorted[1].key}`;
+
+    if (usedPairs.has(slug)) continue;
+
+    usedPairs.add(slug);
+
+    popularComparisons.push({
+      first: sorted[0],
+      second: sorted[1],
+      slug,
+    });
+
+    if (popularComparisons.length >= 12) break;
+  }
+
+  if (popularComparisons.length >= 12) break;
+}
+
+
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -373,6 +449,77 @@ export default async function CompareAccountsPage() {
           </div>
         </div>
       </section>
+
+
+{/* POPULAR ACCOUNT COMPARISONS */}
+<section className="mx-auto max-w-[1520px] px-4 pb-10 sm:px-6 lg:px-8">
+  <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
+
+    <div className="text-xs font-extrabold text-brand-600">
+      Trading Account Comparisons
+    </div>
+
+    <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
+      <h2 className="text-[24px] font-black text-slate-900 sm:text-[34px]">
+        Explore Trading Account Comparisons
+      </h2>
+
+      <span className="rounded-full bg-blue-50 px-3 py-1.5 text-[11px] font-extrabold text-brand-600">
+        <span className="sm:hidden">6 Featured Comparisons</span>
+        <span className="hidden sm:inline">12 Featured Comparisons</span>
+      </span>
+    </div>
+
+    <p className="mt-3 max-w-4xl text-sm leading-8 text-slate-600">
+      Explore side-by-side comparisons of forex trading accounts
+      from different brokers. Review spreads, commissions,
+      minimum deposits and account conditions to find the
+      trading account that best matches your needs.
+    </p>
+
+    <div className="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {popularComparisons.map(({ first, second, slug }, index) => (
+        <Link
+          key={slug}
+          href={`/en/compare-accounts/${slug}`}
+          className={`${
+            index >= 6 ? "hidden sm:flex" : "flex"
+          } group min-h-[90px] flex-col justify-center rounded-2xl border border-slate-200 bg-[#f8fbff] p-4 transition hover:border-blue-300 hover:bg-blue-50 hover:shadow-sm`}
+        >
+          <div className="flex items-center justify-center gap-2 text-center">
+
+            <span className="min-w-0 flex-1 text-[12px] font-black leading-6 text-slate-800 group-hover:text-brand-600">
+              {first.broker.name}
+
+              <span className="mt-1 block text-[11px] font-semibold text-slate-500">
+                {first.account.account_name}
+              </span>
+            </span>
+
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-blue-100 bg-white text-[10px] font-black text-brand-600">
+              VS
+            </span>
+
+            <span className="min-w-0 flex-1 text-[12px] font-black leading-6 text-slate-800 group-hover:text-brand-600">
+              {second.broker.name}
+
+              <span className="mt-1 block text-[11px] font-semibold text-slate-500">
+                {second.account.account_name}
+              </span>
+            </span>
+
+          </div>
+
+          <div className="mt-3 border-t border-slate-200 pt-2 text-center text-[11px] font-extrabold text-brand-600">
+            Compare These Accounts →
+          </div>
+        </Link>
+      ))}
+    </div>
+
+  </div>
+</section>
+
 
       {/* SEO GUIDE */}
       <section id="account-guide" className="mx-auto max-w-[1520px] scroll-mt-24 px-4 pb-10 sm:px-6 lg:px-8">

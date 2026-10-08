@@ -3,6 +3,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import MobileExpandableText from "./MobileExpandableText";
+import RelatedAccountComparisonsEN from "./RelatedAccountComparisonsEN";
 
 type PageProps = {
   params: Promise<{
@@ -316,6 +317,78 @@ const hasImportantNotes =
   const betterSpreadAccounts = accounts.filter(
     (a) => Number(a.spread_avg ?? 99) < Number(current.spread_avg ?? 99)
   );
+
+  
+  // Related comparisons with accounts from other brokers
+  const { data: otherAccounts, error: relatedAccountsError } =
+    await supabase
+      .from("broker_accounts")
+      .select(`
+        id,
+        account_name,
+        broker_id,
+        brokers!inner(
+          slug,
+          name,
+          name_en,
+          publication_status
+        )
+      `)
+      .neq("broker_id", broker.id)
+      .eq("brokers.publication_status", "published");
+
+  if (relatedAccountsError) {
+    console.error(
+      "English related account comparisons:",
+      relatedAccountsError
+    );
+  }
+
+  const currentAccountKey = slugify(current.account_name);
+
+  const relatedComparisons = (otherAccounts ?? []).flatMap(
+    (row: any) => {
+      const otherBroker = Array.isArray(row.brokers)
+        ? row.brokers[0]
+        : row.brokers;
+
+      if (!otherBroker?.slug || !row.account_name) return [];
+
+      const otherAccountKey = slugify(row.account_name);
+
+      if (!otherAccountKey) return [];
+
+      const firstKey = `${broker.slug}-${currentAccountKey}`;
+      const secondKey = `${otherBroker.slug}-${otherAccountKey}`;
+
+      if (
+        firstKey.includes("-vs-") ||
+        secondKey.includes("-vs-") ||
+        firstKey === secondKey
+      ) {
+        return [];
+      }
+
+      const comparisonSlug = [firstKey, secondKey]
+        .sort()
+        .join("-vs-");
+
+      return [
+        {
+          key: `${otherBroker.slug}-${row.id}`,
+          brokerName:
+            otherBroker.name_en ||
+            otherBroker.name ||
+            otherBroker.slug,
+          accountName: row.account_name,
+          href: `/en/compare-accounts/${comparisonSlug}`,
+          matchPriority:
+            otherAccountKey === currentAccountKey ? 0 : 1,
+        },
+      ];
+    }
+  );
+
 
   return (
     <main dir="ltr" className="min-h-screen bg-[#f3f7fb] text-[#0f172a]">
@@ -1776,7 +1849,14 @@ const hasImportantNotes =
             </a>
           )}
         </div>
-      </section>
+            </section>
+
+      <RelatedAccountComparisonsEN
+        currentBrokerName={brokerName}
+        currentAccountName={current.account_name}
+        comparisons={relatedComparisons}
+      />
+
     </main>
   );
 }

@@ -8,6 +8,8 @@ import { createClient } from "@/lib/supabase/server";
 
 import MobileExpandableText from "./MobileExpandableText";
 
+import RelatedAccountComparisons from "./RelatedAccountComparisons";
+
 type PageProps = {
   params: Promise<{
     slug: string;
@@ -308,6 +310,100 @@ const cheapestSpread = [...accounts].sort(
   const betterSpreadAccounts = accounts.filter(
     (a) => Number(a.spread_avg ?? 99) < Number(current.spread_avg ?? 99)
   );
+
+  
+const { data: comparisonBrokersData } = await supabase
+  .from("brokers")
+  .select("id,name,slug")
+  .eq("publication_status", "published")
+  .neq("id", broker.id);
+
+const comparisonBrokers = (comparisonBrokersData ?? []).filter(
+  (item) => item.name && item.slug && item.slug !== "naga"
+);
+
+const comparisonBrokerIds = comparisonBrokers.map((item) => item.id);
+
+const { data: comparisonAccountsData } =
+  comparisonBrokerIds.length > 0
+    ? await supabase
+        .from("broker_accounts")
+        .select("id,broker_id,account_name")
+        .in("broker_id", comparisonBrokerIds)
+    : { data: [] };
+
+const currentComparisonKey =
+  `${broker.slug}-${slugify(current.account_name)}`;
+
+const relatedComparisonCandidates = (comparisonAccountsData ?? [])
+  .flatMap((otherAccount) => {
+    const otherBroker = comparisonBrokers.find(
+      (item) => item.id === otherAccount.broker_id
+    );
+
+    if (!otherBroker || !otherAccount.account_name) return [];
+
+    const otherAccountSlug = slugify(otherAccount.account_name);
+
+    if (!otherAccountSlug) return [];
+
+    const otherKey = `${otherBroker.slug}-${otherAccountSlug}`;
+
+    const sortedKeys = [currentComparisonKey, otherKey].sort();
+
+    return [{
+      key: `${otherBroker.id}-${otherAccount.id}`,
+      brokerName: otherBroker.name,
+      accountName: otherAccount.account_name,
+      href: `/compare-accounts/${sortedKeys[0]}-vs-${sortedKeys[1]}`,
+    }];
+  });
+
+
+
+const normalizeAccountType = (name: string) =>
+  name
+    .toLowerCase()
+    .trim()
+    .replace(/\+/g, "plus")
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]/g, "");
+
+const currentAccountType = normalizeAccountType(
+  current.account_name
+);
+
+// Remove duplicate comparison URLs
+const uniqueRelatedComparisons =
+  relatedComparisonCandidates.filter(
+    (item, index, all) =>
+      all.findIndex(
+        (candidate) => candidate.href === item.href
+      ) === index
+  );
+
+// Matching account names have first priority
+const matchingAccounts = uniqueRelatedComparisons.filter(
+  (item) =>
+    normalizeAccountType(item.accountName) === currentAccountType
+);
+
+// Other account types are fallback only
+const fallbackAccounts = uniqueRelatedComparisons.filter(
+  (item) =>
+    normalizeAccountType(item.accountName) !== currentAccountType
+);
+
+const relatedComparisons = [
+  ...matchingAccounts,
+  ...fallbackAccounts,
+].map((item, index) => ({
+  ...item,
+  matchPriority: index < matchingAccounts.length ? 0 : 1,
+}));
+
+
+
 
   return (
     <main dir="rtl" className="min-h-screen bg-[#f3f7fb] text-[#0f172a]">
@@ -1654,6 +1750,15 @@ const cheapestSpread = [...accounts].sort(
           )}
         </div>
       </section>
+      
+{broker.publication_status === "published" && (
+  <RelatedAccountComparisons
+    currentBrokerName={broker.name}
+    currentAccountName={current.account_name}
+    comparisons={relatedComparisons}
+  />
+)}
+
     </main>
   );
 }
