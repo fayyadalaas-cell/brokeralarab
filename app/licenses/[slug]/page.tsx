@@ -137,18 +137,26 @@ export async function generateMetadata({
       regulator.meta_description_ar ||
       `دليل ترخيص ${regulator.short_name}، طريقة التحقق من الترخيص، وأهم شركات التداول المرخصة من هذه الجهة.`,
     alternates: { canonical: pageUrl },
-    openGraph: {
-      title:
-        regulator.meta_title_ar ||
-        `ترخيص ${regulator.short_name} | شركات التداول المرخصة`,
-      description:
-        regulator.meta_description_ar ||
-        `تعرف على ترخيص ${regulator.short_name} وكيفية التحقق من الوسطاء المرخصين.`,
-      url: pageUrl,
-      siteName: "Broker Alarab",
-      locale: "ar_AR",
-      type: "website",
+    
+openGraph: {
+  title:
+    regulator.meta_title_ar ||
+    `ترخيص ${regulator.short_name} | شركات التداول المرخصة`,
+  description:
+    regulator.meta_description_ar ||
+    `تعرف على ترخيص ${regulator.short_name} وكيفية التحقق من الوسطاء المرخصين.`,
+  url: pageUrl,
+  siteName: "Broker Alarab",
+  locale: "ar_AR",
+  type: "website",
+  images: [
+    {
+      url: "/og-image.webp",
+      alt: `ترخيص ${regulator.short_name} | بروكر العرب`,
     },
+  ],
+},
+
     robots: { index: true, follow: true },
   };
 }

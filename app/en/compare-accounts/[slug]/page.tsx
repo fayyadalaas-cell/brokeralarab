@@ -414,19 +414,26 @@ export async function generateMetadata({
     alternates: {
       canonical: url,
     },
-    openGraph: {
-      title,
-      description,
-      url,
-      siteName: "Broker Alarab",
-      locale: "en_US",
-      type: "article",
-    },
-    twitter: {
-      card: "summary",
-      title,
-      description,
-    },
+          openGraph: {
+        title,
+        description,
+        url,
+        siteName: "Broker Alarab",
+        locale: "en_US",
+        type: "article",
+        images: [
+          {
+            url: "/og-image.webp",
+            alt: "Trading Account Comparison | Broker Alarab",
+          },
+        ],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description,
+        images: ["/og-image.webp"],
+      },
   };
 }
 

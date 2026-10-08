@@ -158,11 +158,17 @@ export async function generateMetadata({
         regulator.meta_description_en ||
         `Learn about the ${regulator.short_name} license and how to verify brokers regulated by this authority.`,
       url: pageUrl,
-      siteName: "Broker Alarab",
-      locale: "en_US",
-      type: "website",
-    },
-    robots: { index: true, follow: true },
+              siteName: "Broker Alarab",
+        locale: "en_US",
+        type: "website",
+        images: [
+          {
+            url: "/og-image.webp",
+            alt: `${regulator.short_name} License | Broker Alarab`,
+          },
+        ],
+      },
+      robots: { index: true, follow: true },
   };
 }
 

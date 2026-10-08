@@ -416,19 +416,26 @@ const description =
     alternates: {
       canonical: url,
     },
-    openGraph: {
-      title,
-      description,
-      url,
-      siteName: "بروكر العرب",
-      locale: "ar_AR",
-      type: "article",
-    },
-    twitter: {
-      card: "summary",
-      title,
-      description,
-    },
+          openGraph: {
+        title,
+        description,
+        url,
+        siteName: "بروكر العرب",
+        locale: "ar_AR",
+        type: "article",
+        images: [
+          {
+            url: "/og-image.webp",
+            alt: "مقارنة حسابات التداول | بروكر العرب",
+          },
+        ],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description,
+        images: ["/og-image.webp"],
+      },
   };
 }
 

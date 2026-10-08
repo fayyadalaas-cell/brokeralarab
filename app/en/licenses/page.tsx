@@ -14,13 +14,25 @@ export const metadata: Metadata = {
   description: PAGE_DESCRIPTION,
   alternates: { canonical: PAGE_URL },
   openGraph: {
-    title: PAGE_TITLE,
-    description: PAGE_DESCRIPTION,
-    url: PAGE_URL,
-    siteName: "Broker Alarab",
-    locale: "en_US",
-    type: "website",
-  },
+  title: PAGE_TITLE,
+  description: PAGE_DESCRIPTION,
+  url: PAGE_URL,
+  siteName: "Broker Alarab",
+  locale: "en_US",
+  type: "website",
+  images: [
+    {
+      url: "/og-image.webp",
+      alt: "Broker Alarab | Forex Broker License Checker",
+    },
+  ],
+},
+twitter: {
+  card: "summary_large_image",
+  title: PAGE_TITLE,
+  description: PAGE_DESCRIPTION,
+  images: ["/og-image.webp"],
+},
   robots: { index: true, follow: true },
 };
 
