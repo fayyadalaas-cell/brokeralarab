@@ -79,6 +79,19 @@ type BrokerAccount = {
   min_deposit: string | null;
 };
 
+function accountSlug(value: string | null) {
+  if (!value) return "";
+
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/\+/g, "plus")
+    .replace(/&/g, "and")
+    .replace(/[–—]/g, "-")
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]/g, "");
+}
+
 const faq = [
   {
     q: "كيف أقارن بين حسابين للتداول؟",
@@ -575,16 +588,26 @@ return (
         حسابات التداول المتوفرة
       </h4>
 
-      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-        {brokerAccounts.map((account) => (
-          <div
-            key={account.id}
-            className="flex min-h-[45px] items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-center text-[12px] font-bold leading-5 text-slate-700"
-          >
-            {account.account_name_ar || account.account_name}
-          </div>
-        ))}
-      </div>
+      
+<div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+  {brokerAccounts.map((account) => {
+    const slug = accountSlug(account.account_name);
+
+    if (!slug || !broker.slug) return null;
+
+    return (
+      <Link
+        key={account.id}
+        href={`/brokers/${broker.slug}/accounts/${slug}`}
+        title={`تفاصيل حساب ${account.account_name_ar || account.account_name} من ${broker.name}`}
+        className="flex min-h-[45px] items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-center text-[12px] font-bold leading-5 text-slate-700 transition-all duration-200 hover:border-blue-300 hover:bg-blue-50 hover:text-[#1E5BB8] hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+      >
+        {account.account_name_ar || account.account_name}
+      </Link>
+    );
+  })}
+</div>
+
     </div>
 
     {/* Action */}
