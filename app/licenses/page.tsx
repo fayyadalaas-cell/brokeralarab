@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   title: PAGE_TITLE,
   description: PAGE_DESCRIPTION,
   alternates: { canonical: PAGE_URL },
+  
   openGraph: {
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
@@ -20,7 +21,14 @@ export const metadata: Metadata = {
     siteName: "Broker Alarab",
     locale: "ar_AR",
     type: "website",
+    images: [
+      {
+        url: "/og-image.webp",
+        alt: "بروكر العرب | Broker Alarab",
+      },
+    ],
   },
+
   robots: { index: true, follow: true },
 };
 
