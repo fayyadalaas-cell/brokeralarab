@@ -96,6 +96,12 @@ export const metadata: Metadata = {
     authors: ["فريق بروكر العرب"],
     section: "استراتيجيات التداول",
 
+    images: [
+  {
+    url: "/og-image.webp",
+    alt: "استراتيجية السكالبينج في الفوركس | بروكر العرب",
+  },
+],
     tags: [
       "استراتيجية السكالبينج",
       "سكالبينج الفوركس",
@@ -105,11 +111,14 @@ export const metadata: Metadata = {
     ],
   },
 
+  
   twitter: {
     card: "summary_large_image",
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
+    images: ["/og-image.webp"],
   },
+
 
   other: {
     "article:published_time": DATE_PUBLISHED,

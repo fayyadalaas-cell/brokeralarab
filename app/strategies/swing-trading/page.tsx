@@ -34,6 +34,7 @@ export const metadata: Metadata = {
     follow: true,
   },
 
+  
   openGraph: {
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
@@ -41,13 +42,21 @@ export const metadata: Metadata = {
     type: "article",
     locale: "ar_AR",
     siteName: "Broker Alarab",
+    images: [
+      {
+        url: "/og-image.webp",
+        alt: "استراتيجية السوينغ Swing Trading | بروكر العرب",
+      },
+    ],
   },
 
   twitter: {
     card: "summary_large_image",
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
+    images: ["/og-image.webp"],
   },
+
 };
 
 

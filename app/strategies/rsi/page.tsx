@@ -40,20 +40,29 @@ export const metadata: Metadata = {
     follow: true,
   },
 
+  
   openGraph: {
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
     url: PAGE_URL,
     type: "article",
     locale: "ar_SA",
-    siteName: "Broker Alarab",
+    siteName: "بروكر العرب",
+    images: [
+      {
+        url: "/og-image.webp",
+        alt: "استراتيجية RSI ومؤشر القوة النسبية | بروكر العرب",
+      },
+    ],
   },
 
   twitter: {
     card: "summary_large_image",
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
+    images: ["/og-image.webp"],
   },
+
 };
 
 

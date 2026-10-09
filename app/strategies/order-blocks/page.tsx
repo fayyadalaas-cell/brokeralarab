@@ -65,20 +65,29 @@ export const metadata: Metadata = {
     follow: true,
   },
 
+  
   openGraph: {
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
     url: PAGE_URL,
-    siteName: "Broker Alarab",
+    siteName: "بروكر العرب",
     locale: "ar_AR",
     type: "article",
+    images: [
+      {
+        url: "/og-image.webp",
+        alt: "استراتيجية الأوردر بلوك Order Blocks | بروكر العرب",
+      },
+    ],
   },
 
   twitter: {
     card: "summary_large_image",
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
+    images: ["/og-image.webp"],
   },
+
 };
 
 const faqItems = [

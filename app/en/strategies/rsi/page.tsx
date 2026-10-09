@@ -21,13 +21,39 @@ const PAGE_DESCRIPTION =
    METADATA
 ========================================================= */
 
+
 export const metadata: Metadata = {
-  title: PAGE_TITLE,
+  title: {
+    absolute: PAGE_TITLE,
+  },
+
   description: PAGE_DESCRIPTION,
+
+  keywords: [
+    "RSI trading strategy",
+    "RSI indicator",
+    "Relative Strength Index",
+    "how to use RSI",
+    "RSI strategy for beginners",
+    "RSI 14",
+    "RSI 70 30 strategy",
+    "RSI overbought and oversold",
+    "RSI divergence",
+    "bullish RSI divergence",
+    "bearish RSI divergence",
+    "RSI 50 level",
+    "best RSI settings",
+    "RSI trading signals",
+    "RSI forex strategy",
+    "RSI pullback strategy",
+    "RSI entry and exit strategy",
+    "RSI stop loss",
+    "RSI risk management",
+    "momentum trading strategy",
+  ],
 
   alternates: {
     canonical: PAGE_URL,
-
     languages: {
       en: PAGE_URL,
       ar: `${BASE_URL}/strategies/rsi`,
@@ -38,23 +64,40 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
 
   openGraph: {
-    title: PAGE_TITLE,
-    description: PAGE_DESCRIPTION,
-    url: PAGE_URL,
     type: "article",
     locale: "en_US",
+    url: PAGE_URL,
     siteName: "Broker Alarab",
+    title: PAGE_TITLE,
+    description: PAGE_DESCRIPTION,
+    images: [
+      {
+        url: "/og-image.webp",
+        width: 1560,
+        height: 377,
+        alt: "RSI Trading Strategy: How to Use the RSI Indicator | Broker Alarab",
+      },
+    ],
   },
 
   twitter: {
     card: "summary_large_image",
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
+    images: ["/og-image.webp"],
   },
 };
+
 
 
 /* =========================================================

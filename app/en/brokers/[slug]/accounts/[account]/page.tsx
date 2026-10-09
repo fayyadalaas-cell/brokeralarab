@@ -146,8 +146,12 @@ export async function generateMetadata({
   const description =
     `${brokerName} ${current.account_name} account review covering spreads, fees, minimum deposit and trading costs.`;
 
-const isPreview =
-  broker.publication_status !== "published";
+  const isPreview =
+    broker.publication_status !== "published";
+
+  const pageUrl = `https://brokeralarab.com/en/brokers/${broker.slug}/accounts/${slugify(
+    current.account_name
+  )}`;
 
   return {
     title: {
@@ -167,9 +171,29 @@ const isPreview =
         },
 
     alternates: {
-      canonical: `/en/brokers/${broker.slug}/accounts/${slugify(
-        current.account_name
-      )}`,
+      canonical: pageUrl,
+    },
+
+    openGraph: {
+      title,
+      description,
+      url: pageUrl,
+      type: "article",
+      locale: "en_US",
+      siteName: "Broker Alarab",
+      images: [
+        {
+          url: "/og-image.webp",
+          alt: `${brokerName} ${current.account_name} Account Review | Broker Alarab`,
+        },
+      ],
+    },
+
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["/og-image.webp"],
     },
   };
 }

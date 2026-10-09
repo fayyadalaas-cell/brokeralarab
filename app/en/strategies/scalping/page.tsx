@@ -51,7 +51,9 @@ const PAGE_KEYWORDS = [
 ========================================================= */
 
 export const metadata: Metadata = {
-  title: PAGE_TITLE,
+  title: {
+  absolute: PAGE_TITLE,
+},
 
   description: PAGE_DESCRIPTION,
 
@@ -102,6 +104,14 @@ export const metadata: Metadata = {
     modifiedTime: DATE_MODIFIED,
     authors: ["Broker Alarab Editorial Team"],
     section: "Trading Strategies",
+    images: [
+  {
+    url: "/og-image.webp",
+    width: 1560,
+    height: 377,
+    alt: "Forex Scalping Strategy | Broker Alarab",
+  },
+],
 
     tags: [
       "Forex Scalping Strategy",
@@ -116,10 +126,11 @@ export const metadata: Metadata = {
   },
 
   twitter: {
-    card: "summary_large_image",
-    title: PAGE_TITLE,
-    description: PAGE_DESCRIPTION,
-  },
+  card: "summary_large_image",
+  title: PAGE_TITLE,
+  description: PAGE_DESCRIPTION,
+  images: ["/og-image.webp"],
+},
 
   other: {
     "article:published_time": DATE_PUBLISHED,

@@ -21,13 +21,39 @@ const PAGE_DESCRIPTION =
    METADATA
 ========================================================= */
 
+
 export const metadata: Metadata = {
-  title: PAGE_TITLE,
+  title: {
+    absolute: PAGE_TITLE,
+  },
+
   description: PAGE_DESCRIPTION,
+
+  keywords: [
+    "price action trading",
+    "price action trading strategy",
+    "price action strategy",
+    "what is price action trading",
+    "how to trade price action",
+    "price action trading for beginners",
+    "price action forex strategy",
+    "price action analysis",
+    "market structure trading",
+    "support and resistance trading",
+    "price action candlestick patterns",
+    "price action breakout strategy",
+    "breakout and retest trading",
+    "pullback trading strategy",
+    "trend continuation trading",
+    "price action entry strategy",
+    "price action stop loss",
+    "price action risk management",
+    "price action without indicators",
+    "bullish and bearish price action",
+  ],
 
   alternates: {
     canonical: PAGE_URL,
-
     languages: {
       en: PAGE_URL,
       ar: `${BASE_URL}/strategies/price-action`,
@@ -38,24 +64,40 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
 
   openGraph: {
-    title: PAGE_TITLE,
-    description: PAGE_DESCRIPTION,
-    url: PAGE_URL,
     type: "article",
     locale: "en_US",
+    url: PAGE_URL,
     siteName: "Broker Alarab",
+    title: PAGE_TITLE,
+    description: PAGE_DESCRIPTION,
+    images: [
+      {
+        url: "/og-image.webp",
+        width: 1560,
+        height: 377,
+        alt: "Price Action Trading Strategy | Broker Alarab",
+      },
+    ],
   },
 
   twitter: {
     card: "summary_large_image",
     title: PAGE_TITLE,
-    description:
-      "A practical price action trading guide covering market structure, support and resistance, breakouts, pullbacks, candlestick patterns and risk management.",
+    description: PAGE_DESCRIPTION,
+    images: ["/og-image.webp"],
   },
 };
+
 
 
 /* =========================================================

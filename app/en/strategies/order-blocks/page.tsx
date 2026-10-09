@@ -11,9 +11,47 @@ const PAGE_TITLE =
 const PAGE_DESCRIPTION =
   "Learn order block trading step by step. Discover bullish and bearish order blocks, displacement, BOS, liquidity sweeps, fair value gaps, entries, invalidation, mitigation and risk management.";
 
+
 export const metadata: Metadata = {
-  title: PAGE_TITLE,
+  title: {
+    absolute: PAGE_TITLE,
+  },
+
   description: PAGE_DESCRIPTION,
+
+  keywords: [
+    "order block trading strategy",
+    "order block trading",
+    "order blocks",
+    "what is an order block",
+    "order block strategy",
+    "how to trade order blocks",
+    "bullish order block",
+    "bearish order block",
+    "order block forex",
+    "forex order block strategy",
+    "smart money concepts",
+    "SMC trading strategy",
+    "ICT order blocks",
+    "institutional order blocks",
+    "order block identification",
+    "valid order block",
+    "order block mitigation",
+    "order block retest",
+    "fresh order block",
+    "tested order block",
+    "break of structure",
+    "BOS trading",
+    "market structure trading",
+    "displacement trading",
+    "liquidity sweep",
+    "fair value gap",
+    "FVG trading",
+    "order block entry strategy",
+    "order block stop loss",
+    "supply and demand vs order blocks",
+    "order block trading for beginners",
+  ],
 
   alternates: {
     canonical: PAGE_URL,
@@ -24,21 +62,43 @@ export const metadata: Metadata = {
     },
   },
 
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+
   openGraph: {
+    type: "article",
+    locale: "en_US",
+    url: PAGE_URL,
+    siteName: "Broker Alarab",
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
-    url: PAGE_URL,
-    type: "article",
-    siteName: "Broker Alarab",
-    locale: "en_US",
+    images: [
+      {
+        url: "/og-image.webp",
+        width: 1560,
+        height: 377,
+        alt: "Order Block Trading Strategy | Broker Alarab",
+      },
+    ],
   },
 
   twitter: {
     card: "summary_large_image",
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
+    images: ["/og-image.webp"],
   },
 };
+
 
 /* =========================================================
    SHARED UI

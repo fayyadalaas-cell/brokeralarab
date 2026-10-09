@@ -37,19 +37,26 @@ export const metadata: Metadata = {
   },
 
   openGraph: {
-    title: PAGE_TITLE,
-    description: PAGE_DESCRIPTION,
-    url: PAGE_URL,
-    type: "article",
-    locale: "ar_SA",
-    siteName: "بروكر العرب",
-  },
+  title: PAGE_TITLE,
+  description: PAGE_DESCRIPTION,
+  url: PAGE_URL,
+  type: "article",
+  locale: "ar_SA",
+  siteName: "بروكر العرب",
+  images: [
+    {
+      url: "/og-image.webp",
+      alt: "استراتيجية ICT في التداول | بروكر العرب",
+    },
+  ],
+},
 
   twitter: {
-    card: "summary_large_image",
-    title: PAGE_TITLE,
-    description: PAGE_DESCRIPTION,
-  },
+  card: "summary_large_image",
+  title: PAGE_TITLE,
+  description: PAGE_DESCRIPTION,
+  images: ["/og-image.webp"],
+},
 
   keywords: [
     "استراتيجية ICT",

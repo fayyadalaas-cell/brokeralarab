@@ -64,20 +64,29 @@ export const metadata: Metadata = {
     },
   },
 
+  
   openGraph: {
     type: "article",
     locale: "ar_SA",
     url: PAGE_URL,
-    siteName: "Broker Alarab",
+    siteName: "بروكر العرب",
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
+    images: [
+      {
+        url: "/og-image.webp",
+        alt: "استراتيجية العرض والطلب في التداول | بروكر العرب",
+      },
+    ],
   },
 
   twitter: {
     card: "summary_large_image",
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
+    images: ["/og-image.webp"],
   },
+
 };
 
 const faqItems = [
@@ -1681,16 +1690,18 @@ export default function SupplyAndDemandStrategyPage() {
     url: PAGE_URL,
     datePublished: "2026-09-07",
     dateModified: "2026-09-07",
+    
     author: {
       "@type": "Organization",
-      name: "Broker Alarab",
+      name: "بروكر العرب",
       url: BASE_URL,
     },
     publisher: {
       "@type": "Organization",
-      name: "Broker Alarab",
+      name: "بروكر العرب",
       url: BASE_URL,
     },
+
     articleSection: "استراتيجيات التداول",
     keywords: [
       "استراتيجية العرض والطلب",

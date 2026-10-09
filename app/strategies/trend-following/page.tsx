@@ -38,19 +38,26 @@ export const metadata: Metadata = {
     follow: true,
   },
 
-  openGraph: {
+    openGraph: {
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
     url: PAGE_URL,
     type: "article",
     locale: "ar_SA",
-    siteName: "Broker Alarab",
+    siteName: "بروكر العرب",
+    images: [
+      {
+        url: "/og-image.webp",
+        alt: "استراتيجية تتبع الاتجاه Trend Following | بروكر العرب",
+      },
+    ],
   },
 
   twitter: {
     card: "summary_large_image",
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
+    images: ["/og-image.webp"],
   },
 };
 

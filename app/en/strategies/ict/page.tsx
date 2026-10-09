@@ -16,9 +16,9 @@ const PAGE_TITLE =
 const PAGE_DESCRIPTION =
   "Learn the ICT trading strategy step by step, including liquidity, market structure, FVGs, order blocks, BOS, CHoCH, kill zones, examples and risk management.";
 
-export const metadata: Metadata = {
-  title: PAGE_TITLE,
 
+export const metadata: Metadata = {
+  title: { absolute: PAGE_TITLE },
   description: PAGE_DESCRIPTION,
 
   alternates: {
@@ -49,12 +49,21 @@ export const metadata: Metadata = {
     type: "article",
     locale: "en_US",
     siteName: "Broker Alarab",
+    images: [
+      {
+        url: "/og-image.webp",
+        width: 1560,
+        height: 377,
+        alt: "ICT Trading Strategy | Broker Alarab",
+      },
+    ],
   },
 
   twitter: {
     card: "summary_large_image",
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
+    images: ["/og-image.webp"],
   },
 
   keywords: [

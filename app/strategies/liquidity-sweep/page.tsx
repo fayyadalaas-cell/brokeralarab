@@ -48,16 +48,23 @@ export const metadata: Metadata = {
   title: "استراتيجية سحب السيولة Liquidity Sweep في التداول",
   description:
     "شرح استراتيجية سحب السيولة وكيفية تحديد مناطق السيولة والتمييز بين Liquidity Sweep والاختراق الحقيقي مع أمثلة عملية.",
-    url: "https://brokeralarab.com/strategies/liquidity-sweep",
-    siteName: "بروكر العرب",
-    type: "article",
-    locale: "ar_AR",
-  },
+  url: "https://brokeralarab.com/strategies/liquidity-sweep",
+  siteName: "بروكر العرب",
+  type: "article",
+  locale: "ar_AR",
+  images: [
+    {
+      url: "/og-image.webp",
+      alt: "استراتيجية سحب السيولة Liquidity Sweep | بروكر العرب",
+    },
+  ],
+},
   twitter: {
   card: "summary_large_image",
   title: "استراتيجية سحب السيولة Liquidity Sweep في التداول",
   description:
     "شرح سحب السيولة ومناطق Buy-Side وSell-Side Liquidity وكيفية قراءة السحب والتأكيد على الشارت.",
+  images: ["/og-image.webp"],
 },
 };
 

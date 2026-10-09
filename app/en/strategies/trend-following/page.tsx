@@ -21,13 +21,48 @@ const PAGE_DESCRIPTION =
    METADATA
 ========================================================= */
 
+
 export const metadata: Metadata = {
-  title: PAGE_TITLE,
+  title: {
+    absolute: PAGE_TITLE,
+  },
+
   description: PAGE_DESCRIPTION,
+
+  keywords: [
+    "trend following strategy",
+    "trend trading strategy",
+    "trend following",
+    "trend trading",
+    "how to identify a trend",
+    "how to trade with the trend",
+    "how to identify an uptrend",
+    "how to identify a downtrend",
+    "higher highs higher lows",
+    "lower highs lower lows",
+    "market structure trading",
+    "trend following strategy for beginners",
+    "forex trend following strategy",
+    "forex trend trading strategy",
+    "moving average trend strategy",
+    "20 EMA trend strategy",
+    "50 EMA trend strategy",
+    "200 moving average trend",
+    "ADX indicator",
+    "ADX trend strength",
+    "pullback trading strategy",
+    "trend pullback strategy",
+    "breakout trading strategy",
+    "trend breakout strategy",
+    "trend continuation strategy",
+    "trend following entry",
+    "trend following stop loss",
+    "trend following exit strategy",
+    "technical analysis trend",
+  ],
 
   alternates: {
     canonical: PAGE_URL,
-
     languages: {
       en: PAGE_URL,
       ar: `${BASE_URL}/strategies/trend-following`,
@@ -38,6 +73,13 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
 
   openGraph: {
@@ -47,14 +89,24 @@ export const metadata: Metadata = {
     type: "article",
     locale: "en_US",
     siteName: "Broker Alarab",
+    images: [
+      {
+        url: "/og-image.webp",
+        width: 1560,
+        height: 377,
+        alt: "Trend Following Strategy | Broker Alarab",
+      },
+    ],
   },
 
   twitter: {
     card: "summary_large_image",
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
+    images: ["/og-image.webp"],
   },
 };
+
 
 
 /* =========================================================

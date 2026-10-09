@@ -34,13 +34,20 @@ export const metadata: Metadata = {
     follow: true,
   },
 
+  
   openGraph: {
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
     url: PAGE_URL,
     type: "article",
     locale: "ar_AR",
-    siteName: "Broker Alarab",
+    siteName: "بروكر العرب",
+    images: [
+      {
+        url: "/og-image.webp",
+        alt: "استراتيجية البرايس أكشن Price Action | بروكر العرب",
+      },
+    ],
   },
 
   twitter: {
@@ -48,7 +55,9 @@ export const metadata: Metadata = {
     title: PAGE_TITLE,
     description:
       "دليل شامل لفهم البرايس أكشن وقراءة حركة السعر وهيكل السوق والدعم والمقاومة بدون الاعتماد على المؤشرات.",
+    images: ["/og-image.webp"],
   },
+
 };
 
 

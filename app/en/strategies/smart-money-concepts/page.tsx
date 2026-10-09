@@ -10,8 +10,12 @@ const PAGE_TITLE =
 const PAGE_DESCRIPTION =
   "Learn Smart Money Concepts (SMC) trading step by step, including market structure, BOS, CHoCH, liquidity sweeps, order blocks, fair value gaps (FVG), displacement, entries, exits and risk management.";
 
+
 export const metadata: Metadata = {
-  title: PAGE_TITLE,
+  title: {
+    absolute: PAGE_TITLE,
+  },
+
   description: PAGE_DESCRIPTION,
 
   keywords: [
@@ -67,6 +71,18 @@ export const metadata: Metadata = {
     },
   },
 
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+
   openGraph: {
     type: "article",
     locale: "en_US",
@@ -74,14 +90,24 @@ export const metadata: Metadata = {
     siteName: "Broker Alarab",
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
+    images: [
+      {
+        url: "/og-image.webp",
+        width: 1560,
+        height: 377,
+        alt: "Smart Money Concepts (SMC) Trading Strategy | Broker Alarab",
+      },
+    ],
   },
 
   twitter: {
     card: "summary_large_image",
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
+    images: ["/og-image.webp"],
   },
 };
+
 
 const faqItems = [
   {

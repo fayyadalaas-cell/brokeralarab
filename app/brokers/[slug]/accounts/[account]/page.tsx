@@ -143,6 +143,11 @@ export async function generateMetadata({
 const isPreview =
   broker.publication_status !== "published";
 
+  
+  const pageUrl = `https://brokeralarab.com/brokers/${broker.slug}/accounts/${slugify(
+    current.account_name
+  )}`;
+
   return {
     title: {
       absolute: title,
@@ -161,12 +166,33 @@ const isPreview =
         },
 
     alternates: {
-      canonical: `/brokers/${broker.slug}/accounts/${slugify(
-        current.account_name
-      )}`,
+      canonical: pageUrl,
+    },
+
+    openGraph: {
+      type: "article",
+      locale: "ar_SA",
+      url: pageUrl,
+      siteName: "بروكر العرب",
+      title,
+      description,
+      images: [
+        {
+          url: "/og-image.webp",
+          alt: `حساب ${current.account_name} في ${broker.name} | بروكر العرب`,
+        },
+      ],
+    },
+
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["/og-image.webp"],
     },
   };
 }
+
 
 export default async function BrokerAccountPage({
   params,

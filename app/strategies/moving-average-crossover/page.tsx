@@ -11,6 +11,7 @@ const PAGE_TITLE =
 const PAGE_DESCRIPTION =
   "شرح استراتيجية تقاطع المتوسطات المتحركة Moving Average Crossover في التداول والفوركس: الفرق بين SMA وEMA، المتوسط السريع والبطيء، إشارات التقاطع الصاعد والهابط، الإعدادات، تأكيد الدخول، وقف الخسارة وإدارة المخاطر.";
 
+
 export const metadata: Metadata = {
   title: PAGE_TITLE,
   description: PAGE_DESCRIPTION,
@@ -64,17 +65,25 @@ export const metadata: Metadata = {
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
     url: PAGE_URL,
-    siteName: "Broker Alarab",
+    siteName: "بروكر العرب",
     locale: "ar_AR",
     type: "article",
+    images: [
+      {
+        url: "/og-image.webp",
+        alt: "استراتيجية تقاطع المتوسطات المتحركة | بروكر العرب",
+      },
+    ],
   },
 
   twitter: {
     card: "summary_large_image",
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
+    images: ["/og-image.webp"],
   },
 };
+
 
 const faqItems = [
   {

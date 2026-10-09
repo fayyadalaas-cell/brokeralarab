@@ -11,8 +11,12 @@ const PAGE_TITLE =
 const PAGE_DESCRIPTION =
   "Learn the support and resistance trading strategy step by step: how to identify and draw key zones, trade bounces, breakouts and retests, recognize false breakouts, place stops and targets, and manage risk.";
 
+
 export const metadata: Metadata = {
-  title: PAGE_TITLE,
+  title: {
+    absolute: PAGE_TITLE,
+  },
+
   description: PAGE_DESCRIPTION,
 
   keywords: [
@@ -57,6 +61,13 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
 
   openGraph: {
@@ -66,14 +77,24 @@ export const metadata: Metadata = {
     siteName: "Broker Alarab",
     locale: "en_US",
     type: "article",
+    images: [
+      {
+        url: "/og-image.webp",
+        width: 1560,
+        height: 377,
+        alt: "Support and Resistance Trading Strategy | Broker Alarab",
+      },
+    ],
   },
 
   twitter: {
     card: "summary_large_image",
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
+    images: ["/og-image.webp"],
   },
 };
+
 
 const faqItems = [
   {

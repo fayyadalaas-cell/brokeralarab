@@ -11,8 +11,12 @@ const PAGE_TITLE =
 const PAGE_DESCRIPTION =
   "Learn supply and demand trading step by step: how to identify and draw supply and demand zones, trade DBR, RBR, RBD and DBD patterns, evaluate fresh zones, plan entries, stops, targets and risk.";
 
+
 export const metadata: Metadata = {
-  title: PAGE_TITLE,
+  title: {
+    absolute: PAGE_TITLE,
+  },
+
   description: PAGE_DESCRIPTION,
 
   keywords: [
@@ -66,23 +70,40 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
 
   openGraph: {
-    title: PAGE_TITLE,
-    description: PAGE_DESCRIPTION,
+    type: "article",
+    locale: "en_US",
     url: PAGE_URL,
     siteName: "Broker Alarab",
-    locale: "en_US",
-    type: "article",
+    title: PAGE_TITLE,
+    description: PAGE_DESCRIPTION,
+    images: [
+      {
+        url: "/og-image.webp",
+        width: 1560,
+        height: 377,
+        alt: "Supply and Demand Trading Strategy | Broker Alarab",
+      },
+    ],
   },
 
   twitter: {
     card: "summary_large_image",
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
+    images: ["/og-image.webp"],
   },
 };
+
 
 const faqItems = [
   {

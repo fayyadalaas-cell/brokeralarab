@@ -12,68 +12,110 @@ const PAGE_TITLE =
 const PAGE_DESCRIPTION =
   "Learn the Moving Average Crossover strategy step by step: fast vs slow moving averages, SMA vs EMA, bullish and bearish crossovers, common settings, Golden Cross, Death Cross, whipsaws, entries, exits and risk management.";
 
+
 export const metadata: Metadata = {
-  title: PAGE_TITLE,
-  description: PAGE_DESCRIPTION,
+  title: {
+    absolute:
+      "Liquidity Sweep Trading Strategy: How to Trade Liquidity Sweeps",
+  },
+
+  description:
+    "Learn how to identify and trade liquidity sweeps, including buy-side and sell-side liquidity, liquidity grabs, confirmation, entries, stop loss, targets and risk management.",
 
   keywords: [
-    "moving average crossover",
-    "moving average crossover strategy",
-    "moving average strategy",
-    "moving average trading strategy",
-    "forex moving average crossover",
-    "forex moving average strategy",
-    "EMA crossover strategy",
-    "SMA crossover strategy",
-    "fast moving average",
-    "slow moving average",
-    "bullish moving average crossover",
-    "bearish moving average crossover",
-    "moving average crossover trading",
-    "how to trade moving average crossover",
-    "best moving average crossover",
-    "moving average crossover settings",
-    "9 21 EMA crossover",
-    "20 50 moving average crossover",
-    "50 200 moving average crossover",
-    "Golden Cross",
-    "Death Cross",
-    "moving average whipsaw",
-    "trend following strategy",
-    "moving average forex strategy",
-    "EMA vs SMA",
-    "moving average crossover for beginners",
+    "liquidity sweep",
+    "liquidity sweep trading strategy",
+    "liquidity sweep strategy",
+    "liquidity sweep trading",
+    "how to trade liquidity sweeps",
+    "how to identify liquidity sweeps",
+    "liquidity grab",
+    "liquidity grab trading",
+    "liquidity grab strategy",
+    "liquidity sweep forex",
+    "forex liquidity sweep",
+    "buy side liquidity",
+    "buy-side liquidity",
+    "sell side liquidity",
+    "sell-side liquidity",
+    "BSL trading",
+    "SSL trading",
+    "stop hunt trading",
+    "stop run trading",
+    "liquidity raid",
+    "smart money concepts",
+    "SMC trading strategy",
+    "ICT liquidity",
+    "liquidity sweep ICT",
+    "liquidity sweep SMC",
+    "liquidity sweep vs liquidity grab",
+    "liquidity sweep vs breakout",
+    "equal highs liquidity",
+    "equal lows liquidity",
+    "previous day high liquidity",
+    "previous day low liquidity",
+    "PDH PDL trading",
+    "market structure shift",
+    "MSS trading",
+    "change of character",
+    "CHoCH trading",
+    "fair value gap",
+    "FVG trading",
+    "order block trading",
   ],
 
   alternates: {
-    canonical: PAGE_URL,
+    canonical:
+      "https://brokeralarab.com/en/strategies/liquidity-sweep",
     languages: {
-      en: PAGE_URL,
-      ar: AR_PAGE_URL,
-      "x-default": PAGE_URL,
+      en: "https://brokeralarab.com/en/strategies/liquidity-sweep",
+      ar: "https://brokeralarab.com/strategies/liquidity-sweep",
+      "x-default":
+        "https://brokeralarab.com/en/strategies/liquidity-sweep",
     },
   },
 
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
 
   openGraph: {
-    title: PAGE_TITLE,
-    description: PAGE_DESCRIPTION,
-    url: PAGE_URL,
-    siteName: "Broker Alarab",
-    locale: "en_US",
     type: "article",
+    locale: "en_US",
+    url: "https://brokeralarab.com/en/strategies/liquidity-sweep",
+    title:
+      "Liquidity Sweep Trading Strategy: How to Trade Liquidity Sweeps",
+    description:
+      "Learn how liquidity sweeps work, where liquidity forms, how to identify confirmation, and how traders plan entries, stop loss and targets.",
+    siteName: "Broker Alarab",
+    images: [
+      {
+        url: "/og-image.webp",
+        width: 1560,
+        height: 377,
+        alt: "Liquidity Sweep Trading Strategy | Broker Alarab",
+      },
+    ],
   },
 
   twitter: {
     card: "summary_large_image",
-    title: PAGE_TITLE,
-    description: PAGE_DESCRIPTION,
+    title:
+      "Liquidity Sweep Trading Strategy: How to Trade Liquidity Sweeps",
+    description:
+      "Learn liquidity sweeps, buy-side and sell-side liquidity, confirmation, entries, stop loss and targets with practical trading examples.",
+    images: ["/og-image.webp"],
   },
 };
+
 
 const faqItems = [
   {

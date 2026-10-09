@@ -21,13 +21,41 @@ const PAGE_DESCRIPTION =
    METADATA
 ========================================================= */
 
+
 export const metadata: Metadata = {
-  title: PAGE_TITLE,
+  title: {
+    absolute: PAGE_TITLE,
+  },
+
   description: PAGE_DESCRIPTION,
+
+  keywords: [
+    "swing trading",
+    "swing trading strategy",
+    "swing trading strategies",
+    "how to swing trade",
+    "swing trading for beginners",
+    "forex swing trading",
+    "forex swing trading strategy",
+    "best swing trading strategy",
+    "swing trading setup",
+    "swing trading setups",
+    "swing high",
+    "swing low",
+    "swing high and swing low",
+    "pullback trading",
+    "pullback trading strategy",
+    "breakout and retest",
+    "market structure",
+    "swing trading entry",
+    "swing trading stop loss",
+    "swing trading risk management",
+    "best timeframe for swing trading",
+    "swing trading indicators",
+  ],
 
   alternates: {
     canonical: PAGE_URL,
-
     languages: {
       en: PAGE_URL,
       ar: `${BASE_URL}/strategies/swing-trading`,
@@ -38,6 +66,13 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
 
   openGraph: {
@@ -47,14 +82,24 @@ export const metadata: Metadata = {
     type: "article",
     locale: "en_US",
     siteName: "Broker Alarab",
+    images: [
+      {
+        url: "/og-image.webp",
+        width: 1560,
+        height: 377,
+        alt: "Swing Trading Strategy | Broker Alarab",
+      },
+    ],
   },
 
   twitter: {
     card: "summary_large_image",
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
+    images: ["/og-image.webp"],
   },
 };
+
 
 
 /* =========================================================

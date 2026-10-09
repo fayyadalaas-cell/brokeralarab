@@ -5,8 +5,13 @@ import Link from "next/link";
    SEO METADATA
 ========================================================= */
 
+
 export const metadata: Metadata = {
-  title: "Liquidity Sweep Trading Strategy: How to Trade Liquidity Sweeps",
+  title: {
+    absolute:
+      "Liquidity Sweep Trading Strategy: How to Trade Liquidity Sweeps",
+  },
+
   description:
     "Learn how to identify and trade liquidity sweeps, including buy-side and sell-side liquidity, liquidity grabs, confirmation, entries, stop loss, targets and risk management.",
 
@@ -53,7 +58,8 @@ export const metadata: Metadata = {
   ],
 
   alternates: {
-    canonical: "https://brokeralarab.com/en/strategies/liquidity-sweep",
+    canonical:
+      "https://brokeralarab.com/en/strategies/liquidity-sweep",
     languages: {
       en: "https://brokeralarab.com/en/strategies/liquidity-sweep",
       ar: "https://brokeralarab.com/strategies/liquidity-sweep",
@@ -62,22 +68,47 @@ export const metadata: Metadata = {
     },
   },
 
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+
   openGraph: {
     type: "article",
+    locale: "en_US",
     url: "https://brokeralarab.com/en/strategies/liquidity-sweep",
-    title: "Liquidity Sweep Trading Strategy: How to Trade Liquidity Sweeps",
+    title:
+      "Liquidity Sweep Trading Strategy: How to Trade Liquidity Sweeps",
     description:
       "Learn how liquidity sweeps work, where liquidity forms, how to identify confirmation, and how traders plan entries, stop loss and targets.",
     siteName: "Broker Alarab",
+    images: [
+      {
+        url: "/og-image.webp",
+        width: 1560,
+        height: 377,
+        alt: "Liquidity Sweep Trading Strategy | Broker Alarab",
+      },
+    ],
   },
 
   twitter: {
     card: "summary_large_image",
-    title: "Liquidity Sweep Trading Strategy: How to Trade Liquidity Sweeps",
+    title:
+      "Liquidity Sweep Trading Strategy: How to Trade Liquidity Sweeps",
     description:
       "Learn liquidity sweeps, buy-side and sell-side liquidity, confirmation, entries, stop loss and targets with practical trading examples.",
+    images: ["/og-image.webp"],
   },
 };
+
 
 /* =========================================================
    FAQ
