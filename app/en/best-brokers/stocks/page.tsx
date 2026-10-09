@@ -32,8 +32,14 @@ export const metadata: Metadata = {
     url: "https://brokeralarab.com/en/best-brokers/stocks",
 
     type: "website",
-    siteName: "Broker Alarab",
+        siteName: "Broker Alarab",
     locale: "en_US",
+    images: [
+      {
+        url: "/og-image.webp",
+        alt: "Best Stock Brokers for Online Trading 2026 | Broker Alarab",
+      },
+    ],
   },
 
   twitter: {
@@ -41,8 +47,9 @@ export const metadata: Metadata = {
 
     title: "Best Stock Brokers for Online Trading 2026",
 
-    description:
+        description:
       "Compare stock brokers and online trading platforms to find a broker that fits your stock trading needs.",
+    images: ["/og-image.webp"],
   },
 
   robots: {

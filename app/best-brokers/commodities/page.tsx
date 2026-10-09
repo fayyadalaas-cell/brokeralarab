@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/server";
    SEO METADATA
 ========================================================= */
 
+
 export const metadata: Metadata = {
   title: "أفضل شركات تداول السلع 2026 | الذهب والنفط والمعادن",
   description:
@@ -24,24 +25,26 @@ export const metadata: Metadata = {
 
   openGraph: {
     title: "أفضل شركات تداول السلع والذهب والنفط 2026",
-
     description:
       "مقارنة شركات تداول السلع عبر الإنترنت لتداول الذهب والنفط والفضة والغاز الطبيعي والمعادن والطاقة.",
-
     url: "https://brokeralarab.com/best-brokers/commodities",
-
     type: "website",
-    siteName: "Broker Alarab",
+    siteName: "بروكر العرب",
     locale: "ar_AR",
+    images: [
+      {
+        url: "/og-image.webp",
+        alt: "أفضل شركات تداول السلع والذهب والنفط | بروكر العرب",
+      },
+    ],
   },
 
   twitter: {
     card: "summary_large_image",
-
     title: "أفضل شركات تداول السلع 2026",
-
     description:
       "قارن شركات تداول الذهب والنفط والفضة والغاز الطبيعي والمنصات والحسابات المتاحة.",
+    images: ["/og-image.webp"],
   },
 
   robots: {
@@ -57,6 +60,7 @@ export const metadata: Metadata = {
     },
   },
 };
+
 
 /* =========================================================
    TYPES

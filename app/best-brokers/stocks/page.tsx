@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     },
   },
 
-  openGraph: {
+    openGraph: {
     title: "أفضل شركات تداول الأسهم عبر الإنترنت 2026",
 
     description:
@@ -35,6 +35,15 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "بروكر العرب",
     locale: "ar_AR",
+
+    images: [
+      {
+        url: "https://brokeralarab.com/og-image.webp",
+        width: 1200,
+        height: 630,
+        alt: "أفضل شركات تداول الأسهم 2026 | بروكر العرب",
+      },
+    ],
   },
 
   twitter: {
@@ -44,6 +53,8 @@ export const metadata: Metadata = {
 
     description:
       "قارن شركات تداول الأسهم والمنصات والحسابات المتاحة واختر الوسيط الأنسب لتداول الأسهم عبر الإنترنت.",
+
+    images: ["https://brokeralarab.com/og-image.webp"],
   },
 
   robots: {

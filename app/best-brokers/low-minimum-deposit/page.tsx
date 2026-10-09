@@ -44,15 +44,22 @@ export const metadata: Metadata = {
       "مقارنة شركات الفوركس حسب الحد الأدنى للإيداع، مع تفاصيل الحساب والسبريد والعمولة لاختيار الحساب المناسب لرأس المال الصغير.",
     url: PAGE_URL,
     type: "website",
-    siteName: "بروكر العرب",
+        siteName: "بروكر العرب",
     locale: "ar_AR",
+    images: [
+      {
+        url: "/og-image.webp",
+        alt: "أفضل شركات الفوركس بأقل إيداع 2026 | بروكر العرب",
+      },
+    ],
   },
 
   twitter: {
     card: "summary_large_image",
     title: "أفضل شركات الفوركس بأقل إيداع 2026",
-    description:
+        description:
       "قارن الحد الأدنى للإيداع لدى شركات الفوركس وحسابات التداول المناسبة لرأس المال الصغير.",
+    images: ["/og-image.webp"],
   },
 
   robots: {

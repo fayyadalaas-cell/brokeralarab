@@ -34,8 +34,14 @@ export const metadata: Metadata = {
       "https://brokeralarab.com/en/best-brokers/commodities",
 
     type: "website",
-    siteName: "Broker Alarab",
+        siteName: "Broker Alarab",
     locale: "en_US",
+    images: [
+      {
+        url: "/og-image.webp",
+        alt: "Best Commodity Brokers for Trading in 2026 | Broker Alarab",
+      },
+    ],
   },
 
   twitter: {
@@ -43,8 +49,9 @@ export const metadata: Metadata = {
 
     title: "Best Commodity Brokers 2026",
 
-    description:
+        description:
       "Compare brokers for trading gold, oil, silver, natural gas and other commodities online.",
+    images: ["/og-image.webp"],
   },
 
   robots: {

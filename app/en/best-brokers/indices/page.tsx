@@ -33,6 +33,12 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "Broker Alarab",
     locale: "en_US",
+    images: [
+  {
+    url: "/og-image.webp",
+    alt: "Best Indices Brokers for Index Trading 2026 | Broker Alarab",
+  },
+],
   },
 
   twitter: {
