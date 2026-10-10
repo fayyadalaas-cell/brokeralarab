@@ -2301,7 +2301,13 @@ const selectedEvents = eventList.slice(0, 3);
       {/* =====================================================
           EVENTS
       ====================================================== */}
-      <div className="grid gap-2.5 p-2.5 md:grid-cols-3 lg:gap-3 lg:p-4">
+      <div
+  className={`grid gap-2.5 p-2.5 lg:gap-3 lg:p-4 ${
+    selectedEvents.length === 2
+      ? "md:grid-cols-2"
+      : "md:grid-cols-3"
+  }`}
+>
         {selectedEvents.map((event) => {
           const count = eventCountdown(
             event.start_date,
