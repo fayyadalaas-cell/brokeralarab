@@ -1727,7 +1727,7 @@ const comparisons =
                         <td className="px-4 py-4">
                           {licenseCodes.length ? (
                             <div className="flex flex-wrap items-center justify-center gap-2">
-                              {licenseCodes.map((code) => (
+                              {[...new Set(licenseCodes)].map((code) => (
                                 <span
                                   key={`${broker.id}-${code}`}
                                   className="inline-flex min-h-7 min-w-[48px] items-center justify-center rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-[10px] font-black tracking-wide text-slate-700 shadow-sm"

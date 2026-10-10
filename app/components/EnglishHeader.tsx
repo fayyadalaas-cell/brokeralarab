@@ -1174,9 +1174,11 @@ export default function EnglishHeader({
               </div>
             </div>
 
-            <Link href="/en/about" className={mainLinkClass}>
-              About
-            </Link>
+            
+<Link href="/en/contact" className={mainLinkClass}>
+  Contact Us
+</Link>
+
           </nav>
 
           <div className="hidden min-w-[125px] items-center justify-start pl-3 2xl:flex xl:pl-5">

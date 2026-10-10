@@ -1150,9 +1150,11 @@ export default function ArabicHeader({
               </div>
             </div>
 
-            <Link href="/about" className={mainLinkClass}>
-              عن الموقع
-            </Link>
+            
+<Link href="/contact" className={mainLinkClass}>
+  اتصل بنا
+</Link>
+
           </nav>
 
           <div className="hidden min-w-[105px] items-center justify-start 2xl:flex">
