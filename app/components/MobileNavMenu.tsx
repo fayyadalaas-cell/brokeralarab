@@ -427,7 +427,7 @@ allLicenses: isEnglish
 tools: isEnglish ? "Tools" : "الأدوات",
 allTools: isEnglish ? "View All Tools" : "عرض جميع الأدوات",
     learn: isEnglish ? "Learn Trading" : "تعلم التداول",
-    about: isEnglish ? "About" : "عن الموقع",
+    about: isEnglish ? "Contact Us" : "اتصل بنا",
   };
 
   return (
