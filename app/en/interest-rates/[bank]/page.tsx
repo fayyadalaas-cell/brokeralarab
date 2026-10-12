@@ -257,18 +257,16 @@ function bankName(bank: Bank): string {
   );
 }
 
+
 function rateLabel(bank: Bank): string {
-  const lower = number(
-    bank.current_rate_lower
-  );
+  const lower = number(bank.current_rate_lower);
+  const upper = number(bank.current_rate_upper);
+  const current = number(bank.current_rate);
 
-  const upper = number(
-    bank.current_rate_upper
-  );
-
-  const current = number(
-    bank.current_rate
-  );
+  // Display the Federal Reserve upper bound.
+  if (bank.slug === "fed") {
+    return percentage(upper ?? current ?? lower);
+  }
 
   if (
     bank.rate_format === "range" &&
@@ -282,10 +280,7 @@ function rateLabel(bank: Bank): string {
     return percentage(current);
   }
 
-  if (
-    lower !== null &&
-    upper !== null
-  ) {
+  if (lower !== null && upper !== null) {
     return `${percentage(lower)} – ${percentage(upper)}`;
   }
 
@@ -754,71 +749,17 @@ function ExternalLink({
 // HISTORY TABLE
 // =====================================================
 
-function HistoryTable({
-  rows,
-}: {
-  rows: HistoryRow[];
-}) {
+
+function HistoryTable({ rows }: { rows: HistoryRow[] }) {
   if (!rows.length) {
     return (
       <p className="py-7 text-center text-sm text-slate-500">
-        No historical interest rate
-        decisions are currently available.
+        No historical interest rate decisions are currently available.
       </p>
     );
   }
 
-  function renderRows(
-    items: HistoryRow[]
-  ) {
-    return items.map(
-      (row, index) => (
-        <tr
-          key={`${row.date}-${index}`}
-          className="border-t border-slate-200 even:bg-slate-50"
-        >
-          <td className="px-3 py-3.5 text-center text-xs font-bold">
-            {dateEn(row.date)}
-          </td>
-
-          <td className="px-3 py-3.5 text-center text-xs">
-            {percentage(
-              row.previous
-            )}
-          </td>
-
-          <td className="px-3 py-3.5 text-center text-xs font-black text-blue-700">
-            {percentage(row.rate)}
-          </td>
-
-          <td
-            className={`px-3 py-3.5 text-center text-xs font-black ${decisionColor(
-              row.change
-            )}`}
-          >
-            {row.change === null
-              ? "—"
-              : `${row.change > 0 ? "+" : ""}${row.change}`}
-          </td>
-
-          <td
-            className={`px-3 py-3.5 text-center text-xs font-black ${decisionColor(
-              row.change
-            )}`}
-          >
-            {decisionLabel(
-              row.change,
-              row.type
-            )}
-          </td>
-        </tr>
-      )
-    );
-  }
-
-  function desktopTable(
-    items: HistoryRow[]
-  ) {
+  function desktopTable(items: HistoryRow[]) {
     return (
       <table className="w-full table-fixed border-collapse text-xs">
         <thead>
@@ -839,118 +780,139 @@ function HistoryTable({
             ))}
           </tr>
         </thead>
-
         <tbody>
-          {renderRows(items)}
+          {items.map((row, index) => (
+            <tr
+              key={`${row.date}-${index}`}
+              className="border-t border-slate-200 even:bg-slate-50"
+            >
+              <td className="px-3 py-3.5 text-center font-bold">
+                {dateEn(row.date)}
+              </td>
+              <td className="px-3 py-3.5 text-center">
+                {percentage(row.previous)}
+              </td>
+              <td className="px-3 py-3.5 text-center font-black text-blue-700">
+                {percentage(row.rate)}
+              </td>
+              <td
+                className={`px-3 py-3.5 text-center font-black ${decisionColor(row.change)}`}
+              >
+                {row.change === null
+                  ? "—"
+                  : `${row.change > 0 ? "+" : ""}${row.change}`}
+              </td>
+              <td
+                className={`px-3 py-3.5 text-center font-black ${decisionColor(row.change)}`}
+              >
+                {decisionLabel(row.change, row.type)}
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     );
   }
 
-  function mobileCards(
-    items: HistoryRow[]
-  ) {
+  function mobileCards(items: HistoryRow[]) {
     return (
       <div className="space-y-2">
-        {items.map(
-          (row, index) => (
-            <div
-              key={`${row.date}-${index}`}
-              className="rounded-xl border border-slate-200 bg-slate-50 p-3"
-            >
-              <div className="flex items-center justify-between gap-2">
-                <time className="text-xs font-black text-slate-900">
-                  {dateEn(row.date)}
-                </time>
+        {items.map((row, index) => (
+          <article
+            key={`${row.date}-${index}`}
+            className="rounded-xl border border-slate-200 bg-[#f8fbff] px-3 py-3"
+          >
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <time
+                dateTime={row.date}
+                className="text-[11px] font-black text-[#091b32]"
+              >
+                {dateEn(row.date)}
+              </time>
+              <span
+                className={`text-[10px] font-black ${decisionColor(row.change)}`}
+              >
+                {decisionLabel(row.change, row.type)}
+              </span>
+            </div>
 
-                <span
-                  className={`text-[11px] font-black ${decisionColor(
-                    row.change
-                  )}`}
-                >
-                  {decisionLabel(
-                    row.change,
-                    row.type
-                  )}
-                </span>
+            <div className="mt-2.5 flex items-center justify-between gap-2 border-t border-slate-200 pt-2.5">
+              <div className="min-w-0">
+                <p className="text-[10px] text-slate-500">
+                  Previous Rate
+                </p>
+                <p className="mt-1 text-[13px] font-black text-slate-700">
+                  {percentage(row.previous)}
+                </p>
               </div>
 
-              <div className="mt-3 grid grid-cols-2 gap-2">
-                <div className="rounded-lg bg-white p-3 text-center">
-                  <p className="text-[10px] text-slate-500">
-                    Previous Rate
-                  </p>
+              <span className="text-lg font-black text-blue-300">
+                →
+              </span>
 
-                  <p className="mt-1 text-sm font-black">
-                    {percentage(
-                      row.previous
-                    )}
-                  </p>
-                </div>
-
-                <div className="rounded-lg bg-white p-3 text-center">
-                  <p className="text-[10px] text-slate-500">
-                    New Rate
-                  </p>
-
-                  <p className="mt-1 text-sm font-black text-blue-700">
-                    {percentage(
-                      row.rate
-                    )}
-                  </p>
-                </div>
+              <div className="min-w-0 text-right">
+                <p className="text-[10px] text-slate-500">
+                  New Rate
+                </p>
+                <p className="mt-1 text-[13px] font-black text-[#2471df]">
+                  {percentage(row.rate)}
+                </p>
               </div>
             </div>
-          )
-        )}
+          </article>
+        ))}
       </div>
     );
   }
 
   return (
     <div>
+      {/* TABLET AND DESKTOP */}
       <div className="hidden md:block">
-        {desktopTable(
-          rows.slice(0, 10)
+        {desktopTable(rows.slice(0, 10))}
+
+        {rows.length > 10 && (
+          <details className="group mt-4">
+            <summary className="mx-auto flex w-fit cursor-pointer list-none items-center justify-center rounded-xl border border-blue-200 bg-blue-50 px-6 py-3 text-xs font-black text-blue-700 hover:bg-blue-100 [&::-webkit-details-marker]:hidden">
+              <span className="group-open:hidden">
+                Show More ({rows.length - 10} Decisions)
+              </span>
+              <span className="hidden group-open:inline">
+                Hide Additional Decisions
+              </span>
+            </summary>
+            <div className="mt-4">
+              {desktopTable(rows.slice(10))}
+            </div>
+          </details>
         )}
       </div>
 
+      {/* MOBILE ONLY */}
       <div className="md:hidden">
-        {mobileCards(
-          rows.slice(0, 10)
+        {mobileCards(rows.slice(0, 5))}
+
+        {rows.length > 5 && (
+          <details className="group mt-3">
+            <summary className="mx-auto flex w-fit cursor-pointer list-none items-center justify-center rounded-xl border border-blue-200 bg-blue-50 px-5 py-2.5 text-[11px] font-black text-blue-700 hover:bg-blue-100 [&::-webkit-details-marker]:hidden">
+              <span className="group-open:hidden">
+                Show More ({rows.length - 5} Decisions)
+              </span>
+              <span className="hidden group-open:inline">
+                Hide Additional Decisions
+              </span>
+            </summary>
+
+            <div className="mt-3">
+              {mobileCards(rows.slice(5))}
+            </div>
+          </details>
         )}
       </div>
-
-      {rows.length > 10 && (
-        <details className="group mt-4">
-          <summary className="mx-auto flex w-fit cursor-pointer list-none items-center justify-center rounded-xl border border-blue-200 bg-blue-50 px-6 py-3 text-xs font-black text-blue-700 transition hover:bg-blue-100 [&::-webkit-details-marker]:hidden">
-            <span className="group-open:hidden">
-              Show More (
-              {rows.length - 10}{" "}
-              Decisions)
-            </span>
-
-            <span className="hidden group-open:inline">
-              Hide Additional Decisions
-            </span>
-          </summary>
-
-          <div className="mt-4 hidden md:block">
-            {desktopTable(
-              rows.slice(10)
-            )}
-          </div>
-
-          <div className="mt-4 md:hidden">
-            {mobileCards(
-              rows.slice(10)
-            )}
-          </div>
-        </details>
-      )}
     </div>
   );
 }
+
 
 // =====================================================
 // SEO METADATA
@@ -1283,178 +1245,185 @@ export default async function BankPage({
         }}
       />
 
-      {/* =====================================================
-          HERO — COMPACT AND RESPONSIVE
-      ===================================================== */}
+      
+{/* ================= HERO — COMPACT ENGLISH INTERNAL PAGE ================= */}
+<section className="relative overflow-hidden border-b border-[#d6e5f8] bg-gradient-to-r from-[#eef5fd] via-[#f8fbff] to-white">
+  <div className="pointer-events-none absolute -left-28 -top-32 h-[260px] w-[260px] rounded-full bg-blue-100/50 blur-[85px]" />
+  <div className="pointer-events-none absolute -bottom-32 right-0 h-[220px] w-[220px] rounded-full bg-sky-100/40 blur-[75px]" />
 
-      <section className="bg-gradient-to-r from-[#123f78] via-[#0b2a4c] to-[#06192e] text-white">
-        <div className="mx-auto max-w-[1520px] px-4 py-6 sm:px-7 sm:py-8 lg:px-10 lg:py-8">
-          <nav
-            aria-label="Breadcrumb"
-            className="mb-4 flex flex-wrap items-center gap-2 text-[11px] font-bold text-blue-200 sm:text-xs"
-          >
-            <Link
-              href="/en"
-              className="hover:text-white"
-            >
-              Home
-            </Link>
+  <div className="relative mx-auto max-w-[1520px] px-4 pb-4 pt-3 sm:px-7 sm:pb-7 sm:pt-4 lg:px-10 lg:pb-8">
+    {/* BREADCRUMB */}
+    <nav
+      aria-label="Breadcrumb"
+      className="mb-4 flex flex-wrap items-center gap-2 text-[10px] font-bold text-slate-500"
+    >
+      <Link href="/en" className="transition hover:text-[#2471df]">
+        Home
+      </Link>
 
-            <span>/</span>
+      <span className="text-slate-300">/</span>
 
-            <Link
-              href={HUB}
-              className="hover:text-white"
-            >
-              Interest Rates
-            </Link>
+      <Link href={HUB} className="transition hover:text-[#2471df]">
+        Interest Rates
+      </Link>
 
-            <span>/</span>
+      <span className="text-slate-300">/</span>
 
-            <span className="text-white">
-              {bankTitle}
+      <span className="text-[#1e5bb8]">{bankTitle}</span>
+    </nav>
+
+    {/* PAGE INTRO */}
+    <div className="flex flex-col gap-3">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white px-3 py-1.5 text-[10px] font-black text-[#1e5bb8] shadow-sm">
+          <span className="h-2 w-2 rounded-full bg-[#2471df]" />
+          {country} · {currency}
+        </span>
+
+        <span className="rounded-full border border-blue-100 bg-[#eef5fd] px-3 py-1.5 text-[10px] font-black text-[#1e5bb8]">
+          Monetary Policy & Interest Rates
+        </span>
+      </div>
+
+      <h1 className="max-w-[1200px] text-[23px] font-black leading-[1.35] tracking-tight text-[#091b32] sm:text-[36px] lg:text-[40px]">
+        {heroTitle}
+      </h1>
+
+      {heroDescription && (
+        <p className="max-w-[1250px] text-[12px] font-medium leading-7 text-slate-600 sm:text-[14px] sm:leading-8">
+          {heroDescription}
+        </p>
+      )}
+    </div>
+
+    {/* KEY INTEREST RATE INFORMATION */}
+    <div
+      id="rate-overview"
+      className="mt-4 grid scroll-mt-24 grid-cols-2 gap-2 lg:mt-5 lg:grid-cols-4 lg:gap-3"
+    >
+      {/* CURRENT RATE */}
+      <div className="rounded-2xl border border-[#cbdff8] bg-white px-3 py-2.5 shadow-sm sm:px-4 sm:py-3.5">
+        <p className="text-[10px] font-bold text-slate-500 sm:text-xs">
+          Current Interest Rate
+        </p>
+
+        <p className="mt-1.5 text-[25px] font-black leading-tight text-[#2471df] sm:text-[29px]">
+          {currentRate}
+        </p>
+
+        <p className="mt-1.5 text-[10px] leading-5 text-slate-500">
+          {bank.slug === "fed"
+            ? "Upper Bound of Federal Funds Target Range"
+            : bank.rate_type_en || "Central Bank Policy Rate"}
+        </p>
+      </div>
+
+      {/* PREVIOUS RATE */}
+      <div className="rounded-2xl border border-[#d6e5f8] bg-white px-3 py-2.5 shadow-sm sm:px-4 sm:py-3.5">
+        <p className="text-[10px] font-bold text-slate-500 sm:text-xs">
+          Previous Interest Rate
+        </p>
+
+        <p className="mt-1.5 text-[25px] font-black leading-tight text-[#091b32] sm:text-[29px]">
+          {previousRate}
+        </p>
+
+        <p className="mt-1.5 text-[10px] leading-5 text-slate-500">
+          Before the latest recorded decision
+        </p>
+      </div>
+
+      {/* LATEST DECISION */}
+      <div className="rounded-2xl border border-[#d6e5f8] bg-white px-3 py-2.5 shadow-sm sm:px-4 sm:py-3.5">
+        <p className="text-[10px] font-bold text-slate-500 sm:text-xs">
+          Latest Rate Decision
+        </p>
+
+        <p
+          className={`mt-2 text-[14px] font-black leading-7 sm:text-[16px] ${decisionColor(changeBps)}`}
+        >
+          {decisionLabel(changeBps, bank.last_decision_type)}
+        </p>
+
+        <p className="mt-1 text-[10px] leading-5 text-slate-500">
+          {dateEn(bank.last_decision_date)}
+        </p>
+      </div>
+
+      {/* NEXT MEETING */}
+      <div className="rounded-2xl border border-[#d6e5f8] bg-white px-3 py-2.5 shadow-sm sm:px-4 sm:py-3.5">
+        <p className="text-[10px] font-bold text-slate-500 sm:text-xs">
+          Next Policy Meeting
+        </p>
+
+        <p className="mt-2 text-[14px] font-black leading-7 text-[#091b32] sm:text-[16px]">
+          {next ? dateEn(next.meeting_date) : "Not announced"}
+        </p>
+
+        <p className="mt-1 text-[10px] leading-5 text-slate-500">
+          Based on the recorded meeting calendar
+        </p>
+      </div>
+    </div>
+
+    {/* LINKS AND DATA VERIFICATION */}
+    <div className="mt-3 flex flex-col gap-2 border-t border-[#d6e5f8] pt-3 sm:mt-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-3 sm:pt-4">
+      <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center">
+        <a
+          href="#history"
+          className="inline-flex min-h-9 items-center justify-center rounded-lg bg-[#2471df] px-2 py-2 text-center text-[10px] font-black text-white transition hover:bg-[#1e5bb8] sm:px-3.5 sm:text-[11px]"
+        >
+          Rate History →
+        </a>
+
+        <a
+          href="#meetings"
+          className="inline-flex min-h-9 items-center justify-center rounded-lg border border-blue-200 bg-white px-2 py-2 text-center text-[10px] font-black text-[#1e5bb8] transition hover:bg-blue-50 sm:px-3.5 sm:text-[11px]"
+        >
+          Upcoming Meetings →
+        </a>
+
+        <a
+          href="#impact"
+          className="col-span-2 inline-flex min-h-9 w-full max-w-[220px] items-center justify-center justify-self-center rounded-lg border border-blue-200 bg-white px-3 py-2 text-center text-[10px] font-black text-[#1e5bb8] transition hover:bg-blue-50 sm:w-auto sm:max-w-none sm:px-3.5 sm:text-[11px]"
+        >
+          Market Impact →
+        </a>
+      </div>
+
+      <div className="text-[10px] leading-5 text-slate-500">
+        {bank.last_rate_verified_at ? (
+          <p>
+            Data last verified:{" "}
+            <span className="font-black text-slate-700">
+              {dateEn(bank.last_rate_verified_at)}
             </span>
-          </nav>
+          </p>
+        ) : (
+          <p>
+            Rates are based on published records, not a live feed.
+          </p>
+        )}
+      </div>
+    </div>
 
-          <div className="mt-4 grid items-center gap-5 lg:mt-5 lg:grid-cols-[1.15fr_0.85fr] lg:gap-8">
-            {/* HERO CONTENT */}
+    {/* FEDERAL RESERVE RATE RANGE CLARIFICATION */}
+    {bank.slug === "fed" &&
+      number(bank.current_rate_lower) !== null &&
+      number(bank.current_rate_upper) !== null && (
+        <p className="mt-3 text-[10px] leading-5 text-slate-500">
+          Note: The displayed rate is the upper bound of the
+          Federal Funds Target Range. The full recorded range is{" "}
+          <span className="font-bold">
+            {percentage(bank.current_rate_lower)} –{" "}
+            {percentage(bank.current_rate_upper)}
+          </span>
+          .
+        </p>
+      )}
+  </div>
+</section>
 
-            <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-3">
-                <span className="text-3xl sm:text-4xl">
-                  {bank.flag_emoji ||
-                    bankFlags[bank.slug] ||
-                    "🌐"}
-                </span>
-
-                <span className="rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[10px] font-black text-blue-100 sm:text-xs">
-                  CENTRAL BANK MONETARY POLICY
-                </span>
-              </div>
-
-              <h1 className="mt-4 max-w-[850px] text-[27px] font-black leading-[1.3] tracking-tight sm:text-[39px] lg:text-[45px]">
-                {heroTitle}
-              </h1>
-
-              <p className="mt-3 max-w-[800px] text-[13px] leading-7 text-slate-200 sm:text-[15px] sm:leading-8">
-                {heroDescription}
-              </p>
-
-              <div className="mt-5 flex flex-wrap gap-2">
-                <a
-                  href="#rate-overview"
-                  className="rounded-xl bg-[#2471df] px-4 py-2.5 text-xs font-black text-white transition hover:bg-[#3683ee]"
-                >
-                  Current Interest Rate
-                </a>
-
-                <a
-                  href="#meetings"
-                  className="rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-xs font-black text-white transition hover:bg-white/20"
-                >
-                  Upcoming Meetings
-                </a>
-
-                <a
-                  href="#history"
-                  className="rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-xs font-black text-white transition hover:bg-white/20"
-                >
-                  Rate History
-                </a>
-              </div>
-            </div>
-
-            {/* HERO RATE CARD */}
-
-            <aside className="rounded-[20px] border border-white/15 bg-white/[0.09] p-4 shadow-xl backdrop-blur-sm sm:p-5">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-[10px] font-black tracking-wide text-blue-200">
-                    CURRENT POLICY RATE
-                  </p>
-
-                  <h2 className="mt-1 text-sm font-black text-white sm:text-base">
-                    {fullBankName}
-                  </h2>
-                </div>
-
-                <span className="rounded-full bg-emerald-400/15 px-3 py-1 text-[10px] font-black text-emerald-200">
-                  Published Data
-                </span>
-              </div>
-
-              <div
-                dir="ltr"
-                className="mt-4 break-words text-[32px] font-black leading-tight text-[#76d0ff] sm:text-[43px]"
-              >
-                {currentRate}
-              </div>
-
-              <p className="mt-1 text-xs text-slate-200">
-                {bank.rate_type_en ||
-                  "Central Bank Policy Rate"}
-              </p>
-
-              <div className="mt-5 grid grid-cols-2 gap-2">
-                <div className="rounded-xl border border-white/10 bg-white/[0.07] p-3">
-                  <p className="text-[10px] text-slate-300">
-                    Previous Rate
-                  </p>
-
-                  <p className="mt-1 text-sm font-black text-white">
-                    {previousRate}
-                  </p>
-                </div>
-
-                <div className="rounded-xl border border-white/10 bg-white/[0.07] p-3">
-                  <p className="text-[10px] text-slate-300">
-                    Latest Decision
-                  </p>
-
-                  <p className="mt-1 text-sm font-black text-white">
-                    {dateEn(
-                      bank.last_decision_date
-                    )}
-                  </p>
-                </div>
-
-                <div className="rounded-xl border border-white/10 bg-white/[0.07] p-3">
-                  <p className="text-[10px] text-slate-300">
-                    Rate Change
-                  </p>
-
-                  <p className="mt-1 text-sm font-black text-white">
-                    {changeBps === null
-                      ? "Not available"
-                      : `${changeBps > 0 ? "+" : ""}${changeBps} bps`}
-                  </p>
-                </div>
-
-                <div className="rounded-xl border border-white/10 bg-white/[0.07] p-3">
-                  <p className="text-[10px] text-slate-300">
-                    Next Meeting
-                  </p>
-
-                  <p className="mt-1 text-sm font-black text-white">
-                    {next
-                      ? dateEn(
-                          next.meeting_date
-                        )
-                      : "Not announced"}
-                  </p>
-                </div>
-              </div>
-
-              <p className="mt-3 text-[10px] leading-5 text-slate-300">
-                Rates are based on
-                published database records.
-                Verify the latest decisions
-                with the central bank.
-              </p>
-            </aside>
-          </div>
-        </div>
-      </section>
 
       {/* =====================================================
           PAGE NAVIGATION
@@ -1488,122 +1457,133 @@ export default async function BankPage({
       ===================================================== */}
 
       <div className="mx-auto max-w-[1520px] space-y-6 px-3 py-8 sm:px-7 sm:py-12 lg:px-10">
-        {/* =====================================================
-            CURRENT RATE OVERVIEW
-        ===================================================== */}
+        
+{/* ================= BANK OVERVIEW ================= */}
+{bank.overview_en?.trim() && (
+  <section
+    id="overview"
+    className="scroll-mt-24 overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-sm"
+  >
+    <div className="border-b border-slate-100 px-5 py-4 sm:px-7 sm:py-5">
+      <p className="text-[11px] font-black text-[#2471df]">
+        CENTRAL BANK OVERVIEW
+      </p>
+      <h2 className="mt-1.5 text-xl font-black leading-9 text-[#091b32] sm:text-[24px]">
+        About {fullBankName}
+      </h2>
+    </div>
 
-        <section
-          id="rate-overview"
-          className="scroll-mt-24"
-        >
-          <div className="mb-5">
-            <p className="text-xs font-black text-[#2471df]">
-              CURRENT MONETARY POLICY
-            </p>
-
-            <h2 className="mt-2 text-xl font-black sm:text-2xl">
-              {bankTitle} Interest Rate Today
-            </h2>
-
-            <p className="mt-2 text-sm leading-7 text-slate-600">
-              Current interest rate
-              information and the latest
-              recorded monetary policy
-              decision for {fullBankName}.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-            <StatCard
-              title="Current Interest Rate"
-              value={currentRate}
-              subtitle={
-                bank.rate_type_en ||
-                undefined
-              }
-              valueClass="text-[#1e5bb8]"
-            />
-
-            <StatCard
-              title="Previous Interest Rate"
-              value={previousRate}
-              subtitle="Rate before the latest recorded decision"
-            />
-
-            <StatCard
-              title="Latest Rate Decision"
-              value={decisionLabel(
-                changeBps,
-                bank.last_decision_type
-              )}
-              subtitle={dateEn(
-                bank.last_decision_date
-              )}
-              valueClass={decisionColor(
-                changeBps
-              )}
-            />
-
-            <StatCard
-              title="Next Policy Meeting"
-              value={
-                next
-                  ? dateEn(
-                      next.meeting_date
-                    )
-                  : "Not announced"
-              }
-              subtitle="Subject to the official central bank calendar"
-            />
-          </div>
-
-          {bank.rate_description_en?.trim() && (
-            <div className="mt-4 rounded-[18px] border border-blue-100 bg-[#eef5fd] p-4 sm:p-5">
-              <h3 className="text-sm font-black text-[#184a97]">
-                About This Policy Rate
-              </h3>
-
-              <p className="mt-2 whitespace-pre-line text-[13px] leading-8 text-slate-700">
-                {bank.rate_description_en}
-              </p>
-            </div>
-          )}
-
-          <div className="mt-4 flex flex-wrap gap-2">
-            <ExternalLink
-              href={bank.official_rates_url}
+    <div className="px-5 py-4 sm:px-7 sm:py-5">
+      <div className="space-y-3">
+        {bank.overview_en
+          .split(/\n\s*\n/)
+          .filter((p) => p.trim())
+          .map((p, index) => (
+            <p
+              key={index}
+              className="whitespace-pre-line text-[13px] leading-7 text-slate-600 sm:text-[14px] sm:leading-8"
             >
-              Official Interest Rates
-            </ExternalLink>
+              {p.trim()}
+            </p>
+          ))}
+      </div>
+    </div>
+  </section>
+)}
 
-            <ExternalLink
-              href={bank.official_website}
+{/* ================= BANK ROLE AND MONETARY POLICY ================= */}
+<div
+  id="policy"
+  className="grid scroll-mt-24 items-start gap-4 lg:grid-cols-2"
+>
+  {bank.bank_role_en?.trim() && (
+    <section className="rounded-[20px] border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+      <p className="text-[11px] font-black text-[#2471df]">
+        CENTRAL BANK RESPONSIBILITIES
+      </p>
+      <h2 className="mt-2 text-xl font-black leading-9 text-[#091b32] sm:text-[23px]">
+        The Role of {bankTitle}
+      </h2>
+      <div className="mt-4 space-y-3">
+        {bank.bank_role_en
+          .split(/\n\s*\n/)
+          .filter((p) => p.trim())
+          .map((p, index) => (
+            <p
+              key={index}
+              className="whitespace-pre-line text-[13px] leading-7 text-slate-600 sm:text-[14px] sm:leading-8"
             >
-              Central Bank Website
-            </ExternalLink>
-          </div>
-        </section>
+              {p.trim()}
+            </p>
+          ))}
+      </div>
+    </section>
+  )}
 
-        {/* =====================================================
-            OVERVIEW AND CENTRAL BANK ROLE
-        ===================================================== */}
+  {bank.monetary_policy_en?.trim() && (
+    <section className="rounded-[20px] border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+      <p className="text-[11px] font-black text-[#2471df]">
+        MONETARY POLICY
+      </p>
+      <h2 className="mt-2 text-xl font-black leading-9 text-[#091b32] sm:text-[23px]">
+        How {bankTitle} Manages Monetary Policy
+      </h2>
+      <div className="mt-4 space-y-3">
+        {bank.monetary_policy_en
+          .split(/\n\s*\n/)
+          .filter((p) => p.trim())
+          .map((p, index) => (
+            <p
+              key={index}
+              className="whitespace-pre-line text-[13px] leading-7 text-slate-600 sm:text-[14px] sm:leading-8"
+            >
+              {p.trim()}
+            </p>
+          ))}
+      </div>
+    </section>
+  )}
+</div>
 
-        <div
-          id="overview"
-          className="scroll-mt-24 grid gap-5 lg:grid-cols-2"
-        >
-          <Section
-            eyebrow="CENTRAL BANK OVERVIEW"
-            title={`About ${fullBankName}`}
-            content={bank.overview_en}
-          />
+{/* ================= POLICY RATE EXPLANATION ================= */}
+{bank.rate_description_en?.trim() && (
+  <section className="overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-sm">
+    <div className="border-b border-slate-100 px-5 py-4 sm:px-7 sm:py-5">
+      <p className="text-[11px] font-black text-[#2471df]">
+        UNDERSTANDING THE POLICY RATE
+      </p>
+      <h2 className="mt-1.5 text-xl font-black leading-9 text-[#091b32] sm:text-[24px]">
+        What Is the {bankTitle} Interest Rate?
+      </h2>
+    </div>
 
-          <Section
-            eyebrow="ROLE AND RESPONSIBILITIES"
-            title={`The Role of ${bankTitle}`}
-            content={bank.bank_role_en}
-          />
-        </div>
+    <div className="px-5 py-4 sm:px-7 sm:py-5">
+      <div className="space-y-3">
+        {bank.rate_description_en
+          .split(/\n\s*\n/)
+          .filter((p) => p.trim())
+          .map((p, index) => (
+            <p
+              key={index}
+              className="whitespace-pre-line text-[13px] leading-7 text-slate-600 sm:text-[14px] sm:leading-8"
+            >
+              {p.trim()}
+            </p>
+          ))}
+      </div>
+
+      <div className="mt-4 flex flex-wrap gap-2 border-t border-slate-100 pt-4">
+        <ExternalLink href={bank.official_rates_url}>
+          Official Interest Rates
+        </ExternalLink>
+        <ExternalLink href={bank.official_website}>
+          Central Bank Website
+        </ExternalLink>
+      </div>
+    </div>
+  </section>
+)}
+
 
         {/* =====================================================
             UPCOMING MONETARY POLICY MEETINGS
@@ -2037,255 +2017,230 @@ export default async function BankPage({
           </section>
         )}
 
-        {/* =====================================================
-            METHODOLOGY AND OFFICIAL SOURCES
-        ===================================================== */}
+        
+{/* ================= METHODOLOGY ================= */}
+<Section
+  eyebrow="Data Transparency"
+  title="Interest Rate Data Collection and Update Methodology"
+  content={bank.methodology_en}
+/>
 
-        <section
-          id="sources"
-          className="scroll-mt-24 overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-sm"
+{/* ================= OFFICIAL SOURCES ================= */}
+<section
+  id="sources"
+  className="scroll-mt-24 rounded-[20px] border border-blue-200 bg-[#eef5fd] p-5 shadow-sm sm:p-7"
+>
+  <p className="text-xs font-black text-blue-700">
+    Official Sources
+  </p>
+
+  <h2 className="mt-2 text-xl font-black leading-9 text-[#091b32] sm:text-2xl">
+    {bank.bank_name_en} Interest Rate Data Sources
+  </h2>
+
+  <p className="mt-2 text-[12px] leading-7 text-slate-600 sm:text-[13px]">
+    Review the official central bank publications,
+    policy rate information, meeting calendars and
+    historical records used for independent verification.
+  </p>
+
+  {/* OFFICIAL SOURCE LINKS */}
+  <div className="mt-5 flex flex-wrap justify-center gap-2 sm:justify-start">
+    {[
+      {
+        title: "Official Website",
+        url: bank.official_website,
+      },
+      {
+        title: "Official Policy Rates",
+        url: bank.official_rates_url,
+      },
+      {
+        title: "Meeting Calendar",
+        url: bank.official_calendar_url,
+      },
+      {
+        title: "Historical Rate Data",
+        url: bank.official_history_url,
+      },
+      ...(Array.isArray(bank.additional_sources)
+        ? bank.additional_sources.map((source, index) => ({
+            title:
+              source.title ||
+              source.label ||
+              source.name ||
+              `Additional Source ${index + 1}`,
+            url: source.url || source.href || null,
+          }))
+        : []),
+    ]
+      .filter((source) => validUrl(source.url))
+      .map((source, index) => (
+        <ExternalLink
+          key={`${source.title}-${index}`}
+          href={source.url}
         >
-          <div className="border-b border-slate-200 bg-gradient-to-r from-white to-blue-50 p-5 sm:p-7">
-            <p className="text-xs font-black text-[#2471df]">
-              DATA TRANSPARENCY
-            </p>
+          {source.title}
+        </ExternalLink>
+      ))}
+  </div>
 
-            <h2 className="mt-2 text-xl font-black sm:text-2xl">
-              {bankTitle} Interest Rate Sources and Methodology
-            </h2>
+  {/* REVIEW DATES */}
+  {(bank.content_reviewed_at ||
+    bank.last_rate_verified_at) && (
+    <div className="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-[11px] text-slate-500">
+      {bank.content_reviewed_at && (
+        <p>
+          Content last reviewed:{" "}
+          <span className="font-bold text-slate-700">
+            {dateEn(bank.content_reviewed_at)}
+          </span>
+        </p>
+      )}
 
-            <p className="mt-3 text-[13px] leading-8 text-slate-600">
-              Broker Alarab provides
-              central bank interest rate
-              information with links to
-              official sources for
-              independent verification.
-            </p>
-          </div>
+      {bank.last_rate_verified_at && (
+        <p>
+          Interest rate last verified:{" "}
+          <span className="font-bold text-slate-700">
+            {dateEn(bank.last_rate_verified_at)}
+          </span>
+        </p>
+      )}
+    </div>
+  )}
 
-          <div className="p-5 sm:p-7">
-            {bank.methodology_en?.trim() && (
-              <div className="mb-6">
-                <h3 className="text-base font-black">
-                  Data Collection Methodology
-                </h3>
+  {/* DATA DISCLAIMER */}
+  <div className="mt-4 border-t border-blue-200 pt-4">
+    <p className="text-[11px] font-black text-[#1e5bb8]">
+      Important Data Disclaimer
+    </p>
 
-                <p className="mt-3 whitespace-pre-line text-[13px] leading-8 text-slate-600">
-                  {bank.methodology_en}
-                </p>
-              </div>
-            )}
+    <p className="mt-2 whitespace-pre-line text-xs leading-7 text-slate-600">
+      {bank.data_disclaimer_en?.trim() ||
+        "Central bank policy rates and meeting schedules may change. Always verify the latest decisions using official central bank publications. This content is provided for informational and educational purposes and does not constitute financial or investment advice."}
+    </p>
+  </div>
+</section>
 
-            <h3 className="text-base font-black">
-              Official Central Bank Sources
+{/* ================= OTHER CENTRAL BANKS ================= */}
+<section className="scroll-mt-24 overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-sm">
+
+  {/* HEADER */}
+  <div className="border-b border-slate-100 px-5 py-4 sm:px-7 sm:py-5">
+    <p className="text-[11px] font-black text-[#2471df]">
+      Explore Central Banks
+    </p>
+
+    <h2 className="mt-1.5 text-xl font-black leading-9 text-[#091b32] sm:text-[24px]">
+      Compare Interest Rates from Other Central Banks
+    </h2>
+
+    <p className="mt-2 text-[12px] leading-7 text-slate-600 sm:text-[13px]">
+      Explore policy rates, historical decisions and
+      upcoming meetings from other major central banks.
+    </p>
+  </div>
+
+  {/* BANK CARDS */}
+  <div className="p-4 sm:p-6">
+    <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-12 lg:gap-3">
+      {otherBanks.map((otherSlug) => (
+        <Link
+          key={otherSlug}
+          href={`${HUB}/${otherSlug}`}
+          className="group flex min-w-0 items-center gap-2 rounded-xl border border-slate-200 bg-[#f8fbff] p-3 transition hover:border-blue-300 hover:bg-[#eef5fd] sm:gap-3 sm:p-4 lg:col-span-3 lg:[&:nth-child(n+5)]:col-span-4"
+        >
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-blue-100 bg-white text-lg sm:h-10 sm:w-10 sm:text-xl">
+            {bankFlags[otherSlug] || "🌐"}
+          </span>
+
+          <div className="min-w-0 flex-1">
+            <h3 className="text-[11px] font-black leading-5 text-[#091b32] transition group-hover:text-[#2471df] sm:text-[13px] sm:leading-6">
+              {bankLabels[otherSlug] ||
+                otherSlug.toUpperCase()}
             </h3>
 
-            <div className="mt-4 flex flex-wrap gap-2">
-              <ExternalLink
-                href={bank.official_website}
-              >
-                Official Website
-              </ExternalLink>
-
-              <ExternalLink
-                href={bank.official_rates_url}
-              >
-                Policy Rates
-              </ExternalLink>
-
-              <ExternalLink
-                href={bank.official_calendar_url}
-              >
-                Meeting Calendar
-              </ExternalLink>
-
-              <ExternalLink
-                href={bank.official_history_url}
-              >
-                Historical Data
-              </ExternalLink>
-            </div>
-
-            {Array.isArray(
-              bank.additional_sources
-            ) &&
-              bank.additional_sources.length > 0 && (
-                <div className="mt-6">
-                  <h3 className="text-sm font-black">
-                    Additional References
-                  </h3>
-
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {bank.additional_sources.map(
-                      (source, index) => (
-                        <ExternalLink
-                          key={index}
-                          href={
-                            source.url ||
-                            source.href
-                          }
-                        >
-                          {source.title ||
-                            source.label ||
-                            source.name ||
-                            `Source ${index + 1}`}
-                        </ExternalLink>
-                      )
-                    )}
-                  </div>
-                </div>
-              )}
-
-            <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4">
-              <h3 className="text-sm font-black text-amber-950">
-                Important Data Disclaimer
-              </h3>
-
-              <p className="mt-2 whitespace-pre-line text-xs leading-7 text-amber-900">
-                {bank.data_disclaimer_en ||
-                  "Interest rate data and central bank meeting schedules may change. Always verify the latest policy decisions using official central bank publications. This information is provided for educational purposes and does not constitute financial or investment advice."}
-              </p>
-            </div>
-
-            <div className="mt-5 flex flex-wrap gap-4 text-[11px] text-slate-500">
-              {bank.content_reviewed_at && (
-                <span>
-                  Content reviewed:{" "}
-                  {dateEn(
-                    bank.content_reviewed_at
-                  )}
-                </span>
-              )}
-
-              {bank.last_rate_verified_at && (
-                <span>
-                  Rate last verified:{" "}
-                  {dateEn(
-                    bank.last_rate_verified_at
-                  )}
-                </span>
-              )}
-            </div>
-          </div>
-        </section>
-
-        {/* =====================================================
-            OTHER CENTRAL BANKS — 4 + 3 LAYOUT
-        ===================================================== */}
-
-        <section className="scroll-mt-24">
-          <div className="mb-5">
-            <p className="text-xs font-black text-[#2471df]">
-              EXPLORE MORE CENTRAL BANKS
-            </p>
-
-            <h2 className="mt-2 text-xl font-black sm:text-2xl">
-              Compare Interest Rates from Other Central Banks
-            </h2>
-
-            <p className="mt-3 text-[13px] leading-8 text-slate-600">
-              Explore current policy
-              rates, historical decisions
-              and upcoming monetary policy
-              meetings from other major
-              central banks worldwide.
+            <p className="mt-1 hidden text-[10px] leading-5 text-slate-500 sm:block">
+              Interest Rate & Decisions
             </p>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-12">
-            {otherBanks.map(
-              (otherSlug) => (
-                <Link
-                  key={otherSlug}
-                  href={`${HUB}/${otherSlug}`}
-                  className="group flex min-w-0 items-center gap-3 rounded-[17px] border border-slate-200 bg-white p-4 shadow-sm transition hover:border-blue-200 hover:bg-blue-50 lg:col-span-3 lg:[&:nth-child(n+5)]:col-span-4"
-                >
-                  <span className="shrink-0 text-2xl">
-                    {bankFlags[otherSlug] ||
-                      "🌐"}
-                  </span>
+          <span className="hidden shrink-0 text-sm font-black text-[#2471df] sm:inline">
+            →
+          </span>
+        </Link>
+      ))}
+    </div>
 
-                  <div className="min-w-0 flex-1">
-                    <h3 className="text-xs font-black leading-6 text-slate-900 group-hover:text-blue-700 sm:text-sm">
-                      {bankLabels[otherSlug] ||
-                        otherSlug.toUpperCase()}
-                    </h3>
+    <div className="mt-5 flex justify-center">
+      <Link
+        href={HUB}
+        className="inline-flex min-h-10 items-center justify-center rounded-xl bg-[#2471df] px-5 py-2.5 text-center text-[11px] font-black text-white transition hover:bg-[#1e5bb8] sm:text-xs"
+      >
+        View All Global Interest Rates →
+      </Link>
+    </div>
+  </div>
+</section>
 
-                    <p className="mt-1 text-[10px] text-slate-500">
-                      Interest Rate & Decisions
-                    </p>
-                  </div>
+{/* ================= RELATED TRADING RESOURCES ================= */}
+<section className="overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-sm">
 
-                  <span className="shrink-0 text-sm font-black text-[#2471df]">
-                    →
-                  </span>
-                </Link>
-              )
-            )}
-          </div>
+  {/* HEADER */}
+  <div className="border-b border-slate-100 px-5 py-4 sm:px-7 sm:py-5">
+    <p className="text-[11px] font-black text-[#2471df]">
+      Further Research
+    </p>
 
-          <div className="mt-5 flex justify-center">
-            <Link
-              href={HUB}
-              className="inline-flex items-center justify-center rounded-xl bg-[#2471df] px-6 py-3 text-xs font-black text-white transition hover:bg-[#1e5bb8]"
-            >
-              View All Global Interest Rates →
-            </Link>
-          </div>
-        </section>
+    <h2 className="mt-1.5 text-xl font-black leading-9 text-[#091b32] sm:text-[24px]">
+      Related Trading Research and Tools
+    </h2>
 
-        {/* =====================================================
-            RELATED ENGLISH TRADING RESOURCES
-        ===================================================== */}
+    <p className="mt-2 text-[12px] leading-7 text-slate-600 sm:text-[13px]">
+      Discover independent broker comparisons,
+      trading education and research resources
+      from Broker Alarab.
+    </p>
+  </div>
 
-        <section className="rounded-[20px] border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-          <h2 className="text-xl font-black sm:text-2xl">
-            Related Trading Research and Tools
-          </h2>
+  {/* RESOURCE LINKS */}
+  <div className="grid grid-cols-1 gap-3 p-4 sm:grid-cols-2 sm:p-6 lg:grid-cols-4">
+    {[
+      {
+        title: "Best Forex Brokers",
+        href: "/en/brokers",
+      },
+      {
+        title: "Best Stock Trading Brokers",
+        href: "/en/best-brokers/stocks",
+      },
+      {
+        title: "Best Indices Brokers",
+        href: "/en/best-brokers/indices",
+      },
+      {
+        title: "Trading Education",
+        href: "/en/learn-trading",
+      },
+    ].map((item) => (
+      <Link
+        key={item.href}
+        href={item.href}
+        className="group flex min-h-[64px] items-center justify-between gap-3 rounded-xl border border-slate-200 bg-[#f8fbff] px-4 py-3 transition hover:border-blue-300 hover:bg-[#eef5fd]"
+      >
+        <span className="text-[12px] font-black leading-6 text-[#091b32] transition group-hover:text-[#2471df] sm:text-[13px]">
+          {item.title}
+        </span>
 
-          <p className="mt-2 text-[13px] leading-8 text-slate-600">
-            Explore independent broker
-            comparisons, forex education
-            and trading risk management
-            resources from Broker Alarab.
-          </p>
+        <span className="shrink-0 text-base font-black text-[#2471df] transition group-hover:translate-x-1">
+          →
+        </span>
+      </Link>
+    ))}
+  </div>
+</section>
+</div>
 
-          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              {
-                title: "Best Forex Brokers",
-                href: "/en/brokers",
-              },
-              {
-                title: "Best Stock Trading Brokers",
-                href: "/en/best-brokers/stocks",
-              },
-              {
-                title: "Best Indices Brokers",
-                href: "/en/best-brokers/indices",
-              },
-              {
-                title: "Trading Education",
-                href: "/en/learn-trading",
-              },
-            ].map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="flex items-center justify-between gap-2 rounded-xl border border-slate-200 bg-slate-50 p-4 text-xs font-black text-slate-800 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
-              >
-                <span>
-                  {item.title}
-                </span>
-
-                <span className="text-blue-600">
-                  →
-                </span>
-              </Link>
-            ))}
-          </div>
-        </section>
-      </div>
 
       {/* =====================================================
           BOTTOM LANGUAGE SWITCH
