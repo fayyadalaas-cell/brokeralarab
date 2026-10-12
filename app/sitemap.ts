@@ -294,6 +294,45 @@ const countryPagesEN: MetadataRoute.Sitemap =
     lastModified: LAST_SIGNIFICANT_UPDATE,
   }));
 
+  
+  /* =====================================================
+     CENTRAL BANK INTEREST RATES — AR / EN
+  ===================================================== */
+
+  const interestRateBankSlugs = [
+    "fed",
+    "ecb",
+    "boe",
+    "boj",
+    "boc",
+    "rba",
+    "snb",
+    "rbnz",
+  ];
+
+  const interestRatePages: MetadataRoute.Sitemap = [
+    {
+      url: `${BASE_URL}/interest-rates`,
+      lastModified: LAST_SIGNIFICANT_UPDATE,
+    },
+    {
+      url: `${BASE_URL}/en/interest-rates`,
+      lastModified: LAST_SIGNIFICANT_UPDATE,
+    },
+
+    ...interestRateBankSlugs.flatMap((slug) => [
+      {
+        url: `${BASE_URL}/interest-rates/${slug}`,
+        lastModified: LAST_SIGNIFICANT_UPDATE,
+      },
+      {
+        url: `${BASE_URL}/en/interest-rates/${slug}`,
+        lastModified: LAST_SIGNIFICANT_UPDATE,
+      },
+    ]),
+  ];
+
+
   return [
     ...staticPages,
     ...staticPagesEN,
@@ -314,5 +353,6 @@ const countryPagesEN: MetadataRoute.Sitemap =
     ...eventPagesEN,
     ...regulatorPages,
     ...regulatorPagesEN,
+    ...interestRatePages,
   ];
 }
