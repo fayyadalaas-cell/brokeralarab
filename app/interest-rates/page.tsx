@@ -2049,9 +2049,18 @@ export default async function InterestRatesPage({
                     </span>
                   </div>
 
-                  <h3 className="mt-4 text-base font-black leading-7">
-                    {bankName(bank)}
-                  </h3>
+                  
+<h3 className="mt-4 text-base font-black leading-7">
+  <Link
+    href={`/interest-rates/${bank.slug}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="transition-colors hover:text-[#2471df] hover:underline"
+  >
+    {bankName(bank)}
+  </Link>
+</h3>
+
 
                   <p
                     dir="ltr"
@@ -2075,19 +2084,27 @@ export default async function InterestRatesPage({
                     </p>
                   </div>
 
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    <Link
-                      href={`${PAGE}?history_bank=${bank.slug}#history`}
-                      className="inline-flex rounded-lg bg-[#2471df] px-3 py-2 text-[11px] font-black text-white hover:bg-[#1e5bb8]"
-                    >
-                      تاريخ الفائدة ←
-                    </Link>
+                  
 
-                    <SourceLink
-                      href={details?.calendar}
-                      label="الاجتماعات"
-                    />
-                  </div>
+<div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+  <Link
+    href={`/interest-rates/${bank.slug}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-flex min-h-9 items-center justify-center rounded-lg bg-[#2471df] px-4 py-2 text-center text-[11px] font-black text-white transition hover:bg-[#1e5bb8]"
+  >
+    تفاصيل البنك ↗
+  </Link>
+
+  <Link
+    href={`${PAGE}?history_bank=${bank.slug}#history`}
+    className="inline-flex min-h-9 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-center text-[11px] font-black text-blue-700 transition hover:bg-blue-100"
+  >
+    تاريخ الفائدة ←
+  </Link>
+</div>
+
+
                 </article>
               );
             })}
