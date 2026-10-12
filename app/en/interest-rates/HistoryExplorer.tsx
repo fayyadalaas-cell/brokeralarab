@@ -55,48 +55,39 @@ const dateEn = (value: string) => {
   }).format(date);
 };
 
-const changeLabel = (
-  bps: number | null
-) => {
+const changeLabel = (bps: number | null) => {
   if (bps == null) return "Not available";
-
   if (bps === 0) return "Unchanged";
-
-  if (bps > 0) {
-    return `Raised ${bps} bps`;
-  }
-
+  if (bps > 0) return `Raised ${bps} bps`;
   return `Cut ${Math.abs(bps)} bps`;
 };
 
-const changeClass = (
-  bps: number | null
-) => {
-  if (bps == null) {
-    return "text-slate-500";
-  }
-
-  if (bps > 0) {
-    return "text-rose-700";
-  }
-
-  if (bps < 0) {
-    return "text-emerald-700";
-  }
-
+const changeClass = (bps: number | null) => {
+  if (bps == null) return "text-slate-500";
+  if (bps > 0) return "text-rose-700";
+  if (bps < 0) return "text-emerald-700";
   return "text-blue-700";
 };
 
-const formatBps = (
-  bps: number | null
-) => {
-  if (bps == null) return "—";
+const changeBadgeClass = (bps: number | null) => {
+  if (bps == null) {
+    return "bg-slate-100 text-slate-600 border-slate-200";
+  }
 
-  return `${bps > 0 ? "+" : ""}${bps} bps`;
+  if (bps > 0) {
+    return "bg-rose-50 text-rose-700 border-rose-200";
+  }
+
+  if (bps < 0) {
+    return "bg-emerald-50 text-emerald-700 border-emerald-200";
+  }
+
+  return "bg-blue-50 text-blue-700 border-blue-200";
 };
 
 /* =====================================================
-   HISTORICAL RATE CHART
+   HISTORICAL INTEREST RATE CHART
+   INTERACTIVE — SAME AS ARABIC VERSION
 ===================================================== */
 
 function HistoryChart({
@@ -106,48 +97,46 @@ function HistoryChart({
   history: HistoryPoint[];
   name: string;
 }) {
-  if (history.length < 2) {
+  const [selectedPoint, setSelectedPoint] =
+    useState<number | null>(null);
+
+  const sorted = [...history].sort((a, b) =>
+    a.date.localeCompare(b.date)
+  );
+
+  if (sorted.length < 2) {
     return (
       <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-5 py-10 text-center text-sm text-slate-500">
-        There are not enough historical
-        interest rate decisions to display
-        a chart for this period.
+        Not enough historical interest rate decisions
+        are available to display a chart for this period.
       </div>
     );
   }
 
   const width = 1000;
-  const height = 300;
+  const height = 310;
 
-  const left = 65;
-  const right = 25;
-  const top = 24;
-  const bottom = 48;
+  const left = 70;
+  const right = 35;
+  const top = 25;
+  const bottom = 55;
 
-  const rates = history.map(
-    (point) => point.rate
-  );
+  const plotWidth = width - left - right;
+  const plotHeight = height - top - bottom;
+
+  const rates = sorted.map((h) => h.rate);
 
   const rawMin = Math.min(...rates);
   const rawMax = Math.max(...rates);
 
-  const span = Math.max(
-    rawMax - rawMin,
-    0.5
-  );
+  const span = Math.max(rawMax - rawMin, 0.5);
 
   const min = rawMin - span * 0.12;
   const max = rawMax + span * 0.12;
 
-  const plotWidth =
-    width - left - right;
-
-  const plotHeight =
-    height - top - bottom;
-
-  const dates = history.map((point) =>
+  const dates = sorted.map((h) =>
     new Date(
-      `${point.date}T00:00:00Z`
+      `${h.date.slice(0, 10)}T00:00:00Z`
     ).getTime()
   );
 
@@ -161,65 +150,90 @@ function HistoryChart({
 
   const x = (date: number) =>
     left +
-    ((date - firstDate) / dateSpan) *
-      plotWidth;
+    ((date - firstDate) / dateSpan) * plotWidth;
 
   const y = (rate: number) =>
     top +
-    ((max - rate) / (max - min)) *
-      plotHeight;
+    ((max - rate) / (max - min)) * plotHeight;
 
-  /* =====================================================
-     STEP LINE — RATE REMAINS ACTIVE
-     BETWEEN RECORDED DECISIONS
-  ===================================================== */
+  /* STEP LINE */
 
-  let path = `M ${x(dates[0]).toFixed(
-    2
-  )} ${y(history[0].rate).toFixed(2)}`;
+  let path = `M ${x(dates[0]).toFixed(2)} ${y(
+    sorted[0].rate
+  ).toFixed(2)}`;
 
-  for (
-    let index = 1;
-    index < history.length;
-    index++
-  ) {
-    path += ` H ${x(
-      dates[index]
-    ).toFixed(2)} V ${y(
-      history[index].rate
+  for (let i = 1; i < sorted.length; i++) {
+    path += ` H ${x(dates[i]).toFixed(2)} V ${y(
+      sorted[i].rate
     ).toFixed(2)}`;
   }
 
   const areaPath = `${path} L ${x(
-    dates[dates.length - 1]
+    lastDate
   ).toFixed(2)} ${
     top + plotHeight
-  } L ${x(dates[0]).toFixed(2)} ${
+  } L ${x(firstDate).toFixed(2)} ${
     top + plotHeight
   } Z`;
 
+  /* HORIZONTAL RATE TICKS */
+
   const ticks = Array.from(
     { length: 5 },
-    (_, index) =>
-      min +
-      ((max - min) * index) / 4
+    (_, i) => min + ((max - min) * i) / 4
   );
 
-  const labelIndexes = Array.from(
-    new Set([
-      0,
-      Math.floor(
-        (history.length - 1) / 3
-      ),
-      Math.floor(
-        ((history.length - 1) * 2) / 3
-      ),
-      history.length - 1,
-    ])
-  );
+  /* ACTUAL YEAR TIMELINE */
+
+  const startYear = new Date(
+    firstDate
+  ).getUTCFullYear();
+
+  const endYear = new Date(
+    lastDate
+  ).getUTCFullYear();
+
+  const yearSpan = endYear - startYear;
+
+  const yearStep =
+    yearSpan <= 4
+      ? 1
+      : yearSpan <= 10
+      ? 2
+      : yearSpan <= 20
+      ? 4
+      : 5;
+
+  const yearTicks: number[] = [];
+
+  for (
+    let year =
+      Math.ceil(startYear / yearStep) * yearStep;
+    year <= endYear;
+    year += yearStep
+  ) {
+    const timestamp = Date.UTC(year, 0, 1);
+
+    if (
+      timestamp > firstDate &&
+      timestamp < lastDate &&
+      x(timestamp) > left + 65 &&
+      x(timestamp) < width - right - 65
+    ) {
+      yearTicks.push(year);
+    }
+  }
+
+  const selected =
+    selectedPoint !== null
+      ? sorted[selectedPoint] ?? null
+      : null;
 
   return (
     <div className="w-full overflow-hidden rounded-2xl border border-slate-200 bg-white p-3 sm:p-5">
+
+      {/* CHART HEADER */}
+
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
         <div>
           <h3 className="text-sm font-black text-slate-900 sm:text-base">
@@ -227,8 +241,7 @@ function HistoryChart({
           </h3>
 
           <p className="mt-1 text-[11px] text-slate-500">
-            Historical policy rate changes
-            based on recorded decisions
+            Available historical monetary policy decisions
           </p>
         </div>
 
@@ -237,15 +250,36 @@ function HistoryChart({
           className="rounded-xl bg-blue-50 px-3 py-2 text-lg font-black text-blue-700"
         >
           {formatRate(
-            history[history.length - 1]
-              .rate
+            sorted[sorted.length - 1].rate
           )}
         </span>
       </div>
 
+      {/* HISTORICAL COVERAGE */}
+
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-[11px]">
+        <span className="font-bold text-slate-600">
+          Available period:{" "}
+          {dateEn(sorted[0].date)}
+          {" — "}
+          {dateEn(
+            sorted[sorted.length - 1].date
+          )}
+        </span>
+
+        <span className="rounded-lg bg-slate-100 px-2.5 py-1 font-bold text-slate-600">
+          {sorted.length}{" "}
+          {sorted.length === 1
+            ? "Record"
+            : "Records"}
+        </span>
+      </div>
+
+      {/* INTERACTIVE SVG CHART */}
+
       <svg
         viewBox={`0 0 ${width} ${height}`}
-        role="img"
+        role="group"
         aria-label={`Historical interest rate chart for ${name}`}
         className="h-auto w-full"
       >
@@ -271,7 +305,7 @@ function HistoryChart({
           </linearGradient>
         </defs>
 
-        {/* GRID LINES AND RATE LABELS */}
+        {/* HORIZONTAL GRID AND RATE LABELS */}
 
         {ticks.map((tick, index) => {
           const yy = y(tick);
@@ -292,7 +326,7 @@ function HistoryChart({
                 y={yy + 5}
                 textAnchor="end"
                 fill="#64748b"
-                fontSize="15"
+                fontSize="14"
               >
                 {tick.toFixed(2)}%
               </text>
@@ -300,14 +334,14 @@ function HistoryChart({
           );
         })}
 
-        {/* AREA UNDER THE STEP LINE */}
+        {/* AREA */}
 
         <path
           d={areaPath}
           fill="url(#historyExplorerGradientEn)"
         />
 
-        {/* HISTORICAL STEP LINE */}
+        {/* STEP LINE */}
 
         <path
           d={path}
@@ -318,67 +352,158 @@ function HistoryChart({
           strokeLinecap="round"
         />
 
-        {/* RECORDED DECISION POINTS */}
+        {/* INTERACTIVE DECISION POINTS */}
 
-        {history.map(
-          (row, index) => (
-            <circle
-              key={`${row.date}-${index}`}
-              cx={x(dates[index])}
-              cy={y(row.rate)}
-              r="3.2"
-              fill="#ffffff"
-              stroke="#246cce"
-              strokeWidth="2"
-            >
-              <title>
-                {`${dateEn(
-                  row.date
-                )}: ${formatRate(
-                  row.rate
-                )}`}
-              </title>
-            </circle>
-          )
-        )}
-
-        {/* X-AXIS DATE LABELS */}
-
-        {labelIndexes.map(
-          (index) => (
-            <text
-              key={index}
-              x={x(dates[index])}
-              y={height - 14}
-              textAnchor={
-                index === 0
-                  ? "start"
-                  : index ===
-                    history.length - 1
-                  ? "end"
-                  : "middle"
+        {sorted.map((row, index) => (
+          <circle
+            key={`${row.date}-${index}`}
+            cx={x(dates[index])}
+            cy={y(row.rate)}
+            r={
+              selectedPoint === index
+                ? 5.5
+                : 3.5
+            }
+            fill={
+              selectedPoint === index
+                ? "#246cce"
+                : "#ffffff"
+            }
+            stroke="#246cce"
+            strokeWidth="2"
+            className="cursor-pointer outline-none focus:stroke-[4px]"
+            role="button"
+            tabIndex={0}
+            aria-label={`${dateEn(
+              row.date
+            )}, interest rate ${formatRate(
+              row.rate
+            )}`}
+            onClick={() =>
+              setSelectedPoint(index)
+            }
+            onKeyDown={(event) => {
+              if (
+                event.key === "Enter" ||
+                event.key === " "
+              ) {
+                event.preventDefault();
+                setSelectedPoint(index);
               }
+            }}
+          >
+            <title>
+              {`${dateEn(
+                row.date
+              )} — ${formatRate(row.rate)}`}
+            </title>
+          </circle>
+        ))}
+
+        {/* START YEAR */}
+
+        <text
+          x={left}
+          y={height - 17}
+          textAnchor="start"
+          fontSize="14"
+          fill="#64748b"
+        >
+          {startYear}
+        </text>
+
+        {/* INTERMEDIATE YEARS */}
+
+        {yearTicks.map((year) => (
+          <g key={year}>
+            <line
+              x1={x(Date.UTC(year, 0, 1))}
+              y1={top + plotHeight}
+              x2={x(Date.UTC(year, 0, 1))}
+              y2={top + plotHeight + 5}
+              stroke="#94a3b8"
+            />
+
+            <text
+              x={x(Date.UTC(year, 0, 1))}
+              y={height - 17}
+              textAnchor="middle"
               fontSize="14"
               fill="#64748b"
             >
-              {history[index].date.slice(
-                0,
-                7
-              )}
+              {year}
             </text>
-          )
+          </g>
+        ))}
+
+        {/* END YEAR */}
+
+        {endYear !== startYear && (
+          <text
+            x={width - right}
+            y={height - 17}
+            textAnchor="end"
+            fontSize="14"
+            fill="#64748b"
+          >
+            {endYear}
+          </text>
         )}
       </svg>
 
-      <p className="mt-2 text-[11px] leading-6 text-slate-500">
-        This chart is based on historical
-        monetary policy decisions recorded
-        in the database and does not
-        represent future interest rate
-        forecasts. A step line is used
-        to illustrate how a policy rate
-        remains in effect between
-        recorded decisions.
+      {/* SELECTED DECISION DETAILS */}
+
+      {selected && (
+        <div
+          className="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-blue-200 bg-blue-50 p-3"
+          aria-live="polite"
+        >
+          <div>
+            <p className="text-[10px] font-bold text-slate-500">
+              Selected Decision
+            </p>
+
+            <p className="mt-1 text-xs font-black text-slate-900">
+              {dateEn(selected.date)}
+            </p>
+          </div>
+
+          <div className="text-left">
+            <p className="text-[10px] font-bold text-slate-500">
+              Recorded Interest Rate
+            </p>
+
+            <p
+              dir="ltr"
+              className="mt-1 text-lg font-black text-blue-700"
+            >
+              {formatRate(selected.rate)}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() =>
+              setSelectedPoint(null)
+            }
+            className="rounded-lg border border-blue-200 bg-white px-3 py-2 text-[11px] font-bold text-blue-700 hover:bg-blue-100"
+          >
+            Close
+          </button>
+        </div>
+      )}
+
+      {/* CHART METHODOLOGY */}
+
+      <p className="mt-3 text-[11px] leading-6 text-slate-500">
+        This chart displays available historical interest
+        rates and monetary policy decisions recorded in
+        our database. It may not include every unchanged
+        decision or older meeting. The step line connects
+        recorded policy rates to illustrate their
+        historical development but does not confirm
+        complete coverage of every intervening period.
+        These figures are not forecasts of future rates.
       </p>
     </div>
   );
@@ -386,55 +511,50 @@ function HistoryChart({
 
 /* =====================================================
    MAIN HISTORY EXPLORER
+   MATCHES ARABIC DESKTOP AND MOBILE
 ===================================================== */
 
 export default function HistoryExplorer({
   banks,
 }: Props) {
-  const [
-    selectedBank,
-    setSelectedBank,
-  ] = useState(
-    banks.find(
-      (bank) => bank.slug === "fed"
-    )?.slug ||
-      banks[0]?.slug ||
-      ""
-  );
+  const [selectedBank, setSelectedBank] =
+    useState(
+      banks.find(
+        (bank) => bank.slug === "fed"
+      )?.slug ||
+        banks[0]?.slug ||
+        ""
+    );
 
-  const [
-    selectedYear,
-    setSelectedYear,
-  ] = useState("all");
+  const [selectedYear, setSelectedYear] =
+    useState("all");
 
   const [
     visibleMobileCount,
     setVisibleMobileCount,
-  ] = useState(10);
+  ] = useState(5);
+
+  const [
+    visibleDesktopCount,
+    setVisibleDesktopCount,
+  ] = useState(15);
 
   const bank = banks.find(
-    (item) =>
-      item.slug === selectedBank
+    (item) => item.slug === selectedBank
   );
 
-  /* =====================================================
-     SORT HISTORY CHRONOLOGICALLY
-  ===================================================== */
+  /* SORT HISTORY CHRONOLOGICALLY */
 
   const historyFull = useMemo(
     () =>
       [...(bank?.history || [])].sort(
         (a, b) =>
-          a.date.localeCompare(
-            b.date
-          )
+          a.date.localeCompare(b.date)
       ),
     [bank]
   );
 
-  /* =====================================================
-     AVAILABLE YEARS
-  ===================================================== */
+  /* AVAILABLE YEARS */
 
   const years = useMemo(
     () =>
@@ -448,51 +568,44 @@ export default function HistoryExplorer({
     [historyFull]
   );
 
-  /* =====================================================
-     FILTER HISTORY BY YEAR
-  ===================================================== */
+  /* FILTER BY YEAR */
 
   const historyFiltered = useMemo(
     () =>
       selectedYear === "all"
         ? historyFull
-        : historyFull.filter(
-            (row) =>
-              row.date.startsWith(
-                selectedYear
-              )
+        : historyFull.filter((row) =>
+            row.date.startsWith(
+              selectedYear
+            )
           ),
-    [
-      historyFull,
-      selectedYear,
-    ]
+    [historyFull, selectedYear]
   );
 
-  /* =====================================================
-     MOST RECENT DECISIONS FIRST
-  ===================================================== */
+  /* MOST RECENT DECISIONS FIRST */
 
   const reversedHistory = useMemo(
-    () =>
-      [
-        ...historyFiltered,
-      ].reverse(),
+    () => [...historyFiltered].reverse(),
     [historyFiltered]
   );
+
+  /* FILTER HANDLERS */
 
   const handleBankChange = (
     slug: string
   ) => {
     setSelectedBank(slug);
     setSelectedYear("all");
-    setVisibleMobileCount(10);
+    setVisibleDesktopCount(15);
+    setVisibleMobileCount(5);
   };
 
   const handleYearChange = (
     year: string
   ) => {
     setSelectedYear(year);
-    setVisibleMobileCount(10);
+    setVisibleDesktopCount(15);
+    setVisibleMobileCount(5);
   };
 
   /* =====================================================
@@ -505,91 +618,106 @@ export default function HistoryExplorer({
       lang="en"
       className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm sm:rounded-[28px]"
     >
-      
-{/* HEADER AND FILTERS */}
 
-<div className="border-b border-slate-200 bg-gradient-to-r from-white to-blue-50 p-4 sm:p-6">
-  <h3 className="text-lg font-black sm:text-2xl">
-    Historical Interest Rates & Central Bank Decisions
-  </h3>
+      {/* HEADER AND FILTERS */}
 
-  <p className="mt-2 text-xs leading-7 text-slate-500">
-    Explore historical interest rate changes and monetary
-    policy decisions from major central banks worldwide.
-    Select a central bank and year to view the rate history,
-    interactive chart, and previous decisions.
-  </p>
+      <div className="border-b border-slate-200 bg-gradient-to-r from-white to-blue-50 p-4 sm:p-6">
+        <h3 className="text-lg font-black sm:text-2xl">
+          Interest Rate Chart & Decision History
+        </h3>
 
-  <div className="mt-5 grid gap-3 sm:grid-cols-2">
-    {/* CENTRAL BANK FILTER */}
+        <p className="mt-2 text-xs leading-7 text-slate-500">
+          Select a central bank and year to explore
+          historical monetary policy decisions
+          recorded in our database.
+        </p>
 
-    <label className="block min-w-0">
-      <span className="mb-1.5 block text-[11px] font-black text-slate-600">
-        Central Bank
-      </span>
+        <div className="mt-5 grid gap-3 sm:grid-cols-2">
 
-      <select
-        value={selectedBank}
-        onChange={(event) =>
-          handleBankChange(event.target.value)
-        }
-        className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold text-slate-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-      >
-        {banks.map((item) => (
-          <option key={item.slug} value={item.slug}>
-            {item.name}
-          </option>
-        ))}
-      </select>
-    </label>
+          {/* CENTRAL BANK FILTER */}
 
-    {/* YEAR FILTER */}
+          <label className="block min-w-0">
+            <span className="mb-1.5 block text-[11px] font-black text-slate-600">
+              Central Bank
+            </span>
 
-    <label className="block min-w-0">
-      <span className="mb-1.5 block text-[11px] font-black text-slate-600">
-        Year
-      </span>
+            <select
+              value={selectedBank}
+              onChange={(event) =>
+                handleBankChange(
+                  event.target.value
+                )
+              }
+              className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold text-slate-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            >
+              {banks.map((item) => (
+                <option
+                  key={item.slug}
+                  value={item.slug}
+                >
+                  {item.name}
+                </option>
+              ))}
+            </select>
+          </label>
 
-      <select
-        value={selectedYear}
-        onChange={(event) =>
-          handleYearChange(event.target.value)
-        }
-        className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold text-slate-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-      >
-        <option value="all">All Years</option>
+          {/* YEAR FILTER */}
 
-        {years.map((year) => (
-          <option key={year} value={year}>
-            {year}
-          </option>
-        ))}
-      </select>
-    </label>
-  </div>
+          <label className="block min-w-0">
+            <span className="mb-1.5 block text-[11px] font-black text-slate-600">
+              Year
+            </span>
 
-  {/* RESET YEAR FILTER */}
+            <select
+              value={selectedYear}
+              onChange={(event) =>
+                handleYearChange(
+                  event.target.value
+                )
+              }
+              className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold text-slate-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            >
+              <option value="all">
+                All Years
+              </option>
 
-  {selectedYear !== "all" && (
-    <button
-      type="button"
-      onClick={() => handleYearChange("all")}
-      className="mt-3 text-xs font-black text-blue-700 underline underline-offset-4"
-    >
-      View Full History
-    </button>
-  )}
-</div>
+              {years.map((year) => (
+                <option
+                  key={year}
+                  value={year}
+                >
+                  {year}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
 
+        {/* RESET YEAR FILTER */}
+
+        {selectedYear !== "all" && (
+          <button
+            type="button"
+            onClick={() =>
+              handleYearChange("all")
+            }
+            className="mt-3 text-xs font-black text-blue-700 underline underline-offset-4"
+          >
+            View Full History
+          </button>
+        )}
+      </div>
 
       {/* HISTORY CONTENT */}
 
       <div className="p-3 sm:p-6">
         {bank ? (
           <>
-            {/* CHART */}
+
+            {/* INTERACTIVE CHART */}
 
             <HistoryChart
+              key={`${selectedBank}-${selectedYear}`}
               name={bank.name}
               history={historyFiltered}
             />
@@ -597,116 +725,173 @@ export default function HistoryExplorer({
             {/* DECISION HISTORY HEADING */}
 
             <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-              <h3 className="text-base font-black sm:text-xl">
-                {bank.name} Interest
-                Rate Decision History
-              </h3>
+              <div>
+                <h3 className="text-base font-black text-slate-950 sm:text-xl">
+                  {bank.name} Interest Rate Decision History
+                </h3>
+
+                {historyFiltered.length > 0 && (
+                  <p className="mt-1.5 text-[11px] leading-6 text-slate-500">
+                    Recorded period:{" "}
+                    <span className="font-bold text-slate-700">
+                      {dateEn(
+                        historyFiltered[0].date
+                      )}
+                    </span>
+                    {" — "}
+                    <span className="font-bold text-slate-700">
+                      {dateEn(
+                        historyFiltered[
+                          historyFiltered.length - 1
+                        ].date
+                      )}
+                    </span>
+                  </p>
+                )}
+              </div>
 
               <span className="rounded-full bg-blue-50 px-3 py-2 text-xs font-black text-blue-700">
                 {historyFiltered.length}{" "}
                 {historyFiltered.length === 1
-                  ? "Decision"
-                  : "Decisions"}
+                  ? "Recorded Decision"
+                  : "Recorded Decisions"}
               </span>
             </div>
 
-            {/* ============================================
+            {/* =====================================================
                 DESKTOP / TABLET TABLE
-            ============================================ */}
+                FIRST 15, THEN +15
+            ===================================================== */}
 
-            {reversedHistory.length > 0 && (
-              <div className="mt-4 hidden overflow-hidden rounded-xl border border-slate-200 md:block">
-                <table className="w-full table-fixed text-center">
-                  <thead className="bg-[#0b2949] text-white">
-                    <tr className="text-xs">
-                      <th className="w-1/5 px-5 py-4 text-center">
-                        Decision Date
-                      </th>
+            <div className="mt-4 hidden overflow-hidden rounded-xl border border-slate-200 md:block">
+              <table className="w-full table-fixed text-center">
+                <thead className="bg-[#0b2949] text-white">
+                  <tr className="text-xs">
+                    <th className="w-1/5 px-5 py-4 text-center">
+                      Decision Date
+                    </th>
 
-                      <th className="w-1/5 px-4 py-4 text-center">
-                        Previous Rate
-                      </th>
+                    <th className="w-1/5 px-4 py-4 text-center">
+                      Previous Rate
+                    </th>
 
-                      <th className="w-1/5 px-4 py-4 text-center">
-                        New Rate
-                      </th>
+                    <th className="w-1/5 px-4 py-4 text-center">
+                      New Rate
+                    </th>
 
-                      <th className="w-1/5 px-4 py-4 text-center">
-                        Change
-                      </th>
+                    <th className="w-1/5 px-4 py-4 text-center">
+                      Change
+                    </th>
 
-                      <th className="w-1/5 px-4 py-4 text-center">
-                        Decision Type
-                      </th>
-                    </tr>
-                  </thead>
+                    <th className="w-1/5 px-4 py-4 text-center">
+                      Decision Type
+                    </th>
+                  </tr>
+                </thead>
 
-                  <tbody>
-                    {reversedHistory.map(
-                      (row, index) => (
-                        <tr
-                          key={`${row.date}-${index}`}
-                          className={`border-t border-slate-200 text-xs ${
-                            index % 2
-                              ? "bg-slate-50"
-                              : "bg-white"
-                          }`}
+                <tbody>
+                  {reversedHistory
+                    .slice(
+                      0,
+                      visibleDesktopCount
+                    )
+                    .map((row, index) => (
+                      <tr
+                        key={`${row.date}-${index}`}
+                        className={`border-t border-slate-200 text-xs ${
+                          index % 2
+                            ? "bg-slate-50"
+                            : "bg-white"
+                        }`}
+                      >
+                        <td className="px-5 py-3.5 text-center font-black">
+                          {dateEn(row.date)}
+                        </td>
+
+                        <td
+                          dir="ltr"
+                          className="px-4 py-3.5 text-center font-bold"
                         >
-                          <td className="px-5 py-3.5 text-center font-black">
-                            {dateEn(
-                              row.date
-                            )}
-                          </td>
+                          {formatRate(
+                            row.previousRate
+                          )}
+                        </td>
 
-                          <td
-                            dir="ltr"
-                            className="px-4 py-3.5 text-center font-bold"
-                          >
-                            {formatRate(
-                              row.previousRate
-                            )}
-                          </td>
+                        <td
+                          dir="ltr"
+                          className="px-4 py-3.5 text-center font-black text-blue-700"
+                        >
+                          {formatRate(row.rate)}
+                        </td>
 
-                          <td
-                            dir="ltr"
-                            className="px-4 py-3.5 text-center font-black text-blue-700"
-                          >
-                            {formatRate(
-                              row.rate
-                            )}
-                          </td>
+                        <td
+                          dir="ltr"
+                          className={`px-4 py-3.5 text-center font-black ${changeClass(
+                            row.changeBps
+                          )}`}
+                        >
+                          {row.changeBps == null
+                            ? "—"
+                            : `${
+                                row.changeBps > 0
+                                  ? "+"
+                                  : ""
+                              }${row.changeBps} bps`}
+                        </td>
 
-                          <td
-                            dir="ltr"
-                            className={`px-4 py-3.5 text-center font-black ${changeClass(
-                              row.changeBps
-                            )}`}
-                          >
-                            {formatBps(
-                              row.changeBps
-                            )}
-                          </td>
-
-                          <td
-                            className={`px-4 py-3.5 text-center font-black ${changeClass(
+                        <td className="px-4 py-3.5 text-center">
+                          <span
+                            className={`inline-flex items-center justify-center rounded-lg border px-3 py-1.5 text-[11px] font-black ${changeBadgeClass(
                               row.changeBps
                             )}`}
                           >
                             {changeLabel(
                               row.changeBps
                             )}
-                          </td>
-                        </tr>
-                      )
-                    )}
-                  </tbody>
-                </table>
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* DESKTOP SHOW MORE */}
+
+            {reversedHistory.length >
+              visibleDesktopCount && (
+              <div className="mt-4 hidden justify-center md:flex">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setVisibleDesktopCount(
+                      (count) => count + 15
+                    )
+                  }
+                  className="rounded-xl border border-blue-200 bg-blue-50 px-8 py-3 text-xs font-black text-blue-700 transition hover:bg-blue-100"
+                >
+                  Show More (
+                  {Math.min(
+                    15,
+                    reversedHistory.length -
+                      visibleDesktopCount
+                  )}{" "}
+                  {Math.min(
+                    15,
+                    reversedHistory.length -
+                      visibleDesktopCount
+                  ) === 1
+                    ? "Decision"
+                    : "Decisions"}
+                  )
+                </button>
               </div>
             )}
 
-            {/* ============================================
+            {/* =====================================================
                 MOBILE DECISION CARDS
-            ============================================ */}
+                FIRST 5, THEN +5
+            ===================================================== */}
 
             <div className="mt-4 space-y-2 md:hidden">
               {reversedHistory
@@ -715,17 +900,15 @@ export default function HistoryExplorer({
                   visibleMobileCount
                 )
                 .map((row, index) => (
-                  <article
+                  <div
                     key={`${row.date}-${index}`}
                     className="rounded-xl border border-slate-200 bg-slate-50 p-3.5"
                   >
-                    {/* DATE + DECISION */}
+                    {/* DATE AND DECISION */}
 
                     <div className="flex items-center justify-between gap-2">
                       <span className="text-xs font-black">
-                        {dateEn(
-                          row.date
-                        )}
+                        {dateEn(row.date)}
                       </span>
 
                       <span
@@ -766,38 +949,15 @@ export default function HistoryExplorer({
                           dir="ltr"
                           className="mt-1 text-left text-sm font-black text-blue-700"
                         >
-                          {formatRate(
-                            row.rate
-                          )}
+                          {formatRate(row.rate)}
                         </p>
                       </div>
                     </div>
-
-                    {/* BASIS POINT CHANGE */}
-
-                    <div className="mt-2 flex items-center justify-between rounded-lg bg-white px-2.5 py-2">
-                      <span className="text-[10px] font-medium text-slate-500">
-                        Rate Change
-                      </span>
-
-                      <span
-                        dir="ltr"
-                        className={`text-xs font-black ${changeClass(
-                          row.changeBps
-                        )}`}
-                      >
-                        {formatBps(
-                          row.changeBps
-                        )}
-                      </span>
-                    </div>
-                  </article>
+                  </div>
                 ))}
             </div>
 
-            {/* ============================================
-                SHOW MORE — MOBILE ONLY
-            ============================================ */}
+            {/* MOBILE SHOW MORE */}
 
             {reversedHistory.length >
               visibleMobileCount && (
@@ -806,20 +966,19 @@ export default function HistoryExplorer({
                   type="button"
                   onClick={() =>
                     setVisibleMobileCount(
-                      (count) =>
-                        count + 10
+                      (count) => count + 5
                     )
                   }
                   className="w-full rounded-xl border border-blue-200 bg-blue-50 px-5 py-3 text-xs font-black text-blue-700 transition hover:bg-blue-100"
                 >
                   Show More (
                   {Math.min(
-                    10,
+                    5,
                     reversedHistory.length -
                       visibleMobileCount
                   )}{" "}
                   {Math.min(
-                    10,
+                    5,
                     reversedHistory.length -
                       visibleMobileCount
                   ) === 1
@@ -834,14 +993,12 @@ export default function HistoryExplorer({
 
             {!historyFiltered.length && (
               <div className="mt-4 rounded-xl border border-dashed border-slate-200 bg-slate-50 p-8 text-center text-sm text-slate-500">
-                No historical interest
-                rate decisions are
-                available for the
-                selected period.
+                No historical interest rate decisions
+                are available for the selected period.
               </div>
             )}
 
-            {/* OFFICIAL SOURCE */}
+            {/* OFFICIAL CENTRAL BANK SOURCE */}
 
             {bank.officialUrl &&
               /^https:\/\//i.test(
@@ -854,18 +1011,15 @@ export default function HistoryExplorer({
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-[11px] font-black text-blue-700 transition hover:bg-blue-100"
                   >
-                    Verify Decisions
-                    with the Central
-                    Bank ↗
+                    Verify Decisions with the Central Bank ↗
                   </a>
                 </div>
               )}
           </>
         ) : (
           <div className="p-8 text-center text-sm text-slate-500">
-            No published historical
-            interest rate data is
-            currently available.
+            No published historical interest rate
+            data is currently available.
           </div>
         )}
       </div>

@@ -52,6 +52,19 @@ const changeClass = (bps: number | null) => {
   return "text-blue-700";
 };
 
+const changeBadgeClass = (bps: number | null) => {
+  if (bps == null)
+    return "bg-slate-100 text-slate-600 border-slate-200";
+
+  if (bps > 0)
+    return "bg-rose-50 text-rose-700 border-rose-200";
+
+  if (bps < 0)
+    return "bg-emerald-50 text-emerald-700 border-emerald-200";
+
+  return "bg-blue-50 text-blue-700 border-blue-200";
+};
+
 function HistoryChart({
   history,
   name,
@@ -59,7 +72,13 @@ function HistoryChart({
   history: HistoryPoint[];
   name: string;
 }) {
-  if (history.length < 2) {
+  const [selectedPoint, setSelectedPoint] = useState<number | null>(null);
+
+  const sorted = [...history].sort((a, b) =>
+    a.date.localeCompare(b.date)
+  );
+
+  if (sorted.length < 2) {
     return (
       <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-5 py-10 text-center text-sm text-slate-500">
         لا توجد نقاط تاريخية كافية لرسم تطور الفائدة لهذه الفترة.
@@ -68,24 +87,24 @@ function HistoryChart({
   }
 
   const width = 1000;
-  const height = 300;
-  const left = 65;
-  const right = 25;
-  const top = 24;
-  const bottom = 48;
+  const height = 310;
+  const left = 70;
+  const right = 35;
+  const top = 25;
+  const bottom = 55;
 
-  const rates = history.map((h) => h.rate);
+  const plotWidth = width - left - right;
+  const plotHeight = height - top - bottom;
+
+  const rates = sorted.map((h) => h.rate);
   const rawMin = Math.min(...rates);
   const rawMax = Math.max(...rates);
   const span = Math.max(rawMax - rawMin, 0.5);
   const min = rawMin - span * 0.12;
   const max = rawMax + span * 0.12;
 
-  const plotWidth = width - left - right;
-  const plotHeight = height - top - bottom;
-
-  const dates = history.map((h) =>
-    new Date(`${h.date}T00:00:00Z`).getTime()
+  const dates = sorted.map((h) =>
+    new Date(`${h.date.slice(0, 10)}T00:00:00Z`).getTime()
   );
 
   const firstDate = Math.min(...dates);
@@ -99,34 +118,65 @@ function HistoryChart({
     top + ((max - rate) / (max - min)) * plotHeight;
 
   let path = `M ${x(dates[0]).toFixed(2)} ${y(
-    history[0].rate
+    sorted[0].rate
   ).toFixed(2)}`;
 
-  for (let i = 1; i < history.length; i++) {
+  for (let i = 1; i < sorted.length; i++) {
     path += ` H ${x(dates[i]).toFixed(2)} V ${y(
-      history[i].rate
+      sorted[i].rate
     ).toFixed(2)}`;
   }
 
-  const areaPath = `${path} L ${x(
-    dates[dates.length - 1]
-  ).toFixed(2)} ${top + plotHeight} L ${x(
-    dates[0]
-  ).toFixed(2)} ${top + plotHeight} Z`;
+  const areaPath = `${path} L ${x(lastDate).toFixed(2)} ${
+    top + plotHeight
+  } L ${x(firstDate).toFixed(2)} ${top + plotHeight} Z`;
 
   const ticks = Array.from(
     { length: 5 },
     (_, i) => min + ((max - min) * i) / 4
   );
 
-  const labelIndexes = Array.from(
-    new Set([
-      0,
-      Math.floor((history.length - 1) / 3),
-      Math.floor(((history.length - 1) * 2) / 3),
-      history.length - 1,
-    ])
-  );
+  // Distribute timeline labels evenly by actual time, not point index.
+  const startYear = new Date(firstDate).getUTCFullYear();
+  const endYear = new Date(lastDate).getUTCFullYear();
+  const yearSpan = endYear - startYear;
+
+  const yearStep =
+    yearSpan <= 4 ? 1 :
+    yearSpan <= 10 ? 2 :
+    yearSpan <= 20 ? 4 : 5;
+
+  const yearTicks: number[] = [];
+
+  for (
+    let year = Math.ceil(startYear / yearStep) * yearStep;
+    year <= endYear;
+    year += yearStep
+  ) {
+    const timestamp = Date.UTC(year, 0, 1);
+
+    if (
+      timestamp > firstDate &&
+      timestamp < lastDate &&
+      x(timestamp) > left + 65 &&
+      x(timestamp) < width - right - 65
+    ) {
+      yearTicks.push(year);
+    }
+  }
+
+  const selected =
+    selectedPoint !== null ? sorted[selectedPoint] : null;
+
+  const formatDate = (date: string) => {
+    const parsed = new Date(`${date.slice(0, 10)}T12:00:00Z`);
+    return new Intl.DateTimeFormat("ar", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      timeZone: "UTC",
+    }).format(parsed);
+  };
 
   return (
     <div className="w-full overflow-hidden rounded-2xl border border-slate-200 bg-white p-3 sm:p-5">
@@ -136,7 +186,7 @@ function HistoryChart({
             تطور سعر الفائدة — {name}
           </h3>
           <p className="mt-1 text-[11px] text-slate-500">
-            تغير السعر عند صدور القرارات المسجلة
+            القرارات التاريخية المسجلة والمتاحة
           </p>
         </div>
 
@@ -144,13 +194,24 @@ function HistoryChart({
           dir="ltr"
           className="rounded-xl bg-blue-50 px-3 py-2 text-lg font-black text-blue-700"
         >
-          {formatRate(history[history.length - 1].rate)}
+          {formatRate(sorted[sorted.length - 1].rate)}
+        </span>
+      </div>
+
+      {/* HISTORICAL COVERAGE */}
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-[11px]">
+        <span className="font-bold text-slate-600">
+          الفترة المتاحة: {formatDate(sorted[0].date)} —{" "}
+          {formatDate(sorted[sorted.length - 1].date)}
+        </span>
+        <span className="rounded-lg bg-slate-100 px-2.5 py-1 font-bold text-slate-600">
+          {sorted.length} سجلًا
         </span>
       </div>
 
       <svg
         viewBox={`0 0 ${width} ${height}`}
-        role="img"
+        role="group"
         aria-label={`رسم بياني لتاريخ سعر الفائدة لدى ${name}`}
         className="h-auto w-full"
       >
@@ -175,6 +236,7 @@ function HistoryChart({
           </linearGradient>
         </defs>
 
+        {/* HORIZONTAL GRID AND RATE LABELS */}
         {ticks.map((tick, index) => {
           const yy = y(tick);
 
@@ -193,7 +255,7 @@ function HistoryChart({
                 y={yy + 5}
                 textAnchor="end"
                 fill="#64748b"
-                fontSize="15"
+                fontSize="14"
               >
                 {tick.toFixed(2)}%
               </text>
@@ -201,6 +263,7 @@ function HistoryChart({
           );
         })}
 
+        {/* AREA AND STEP LINE */}
         <path
           d={areaPath}
           fill="url(#historyExplorerGradient)"
@@ -215,50 +278,124 @@ function HistoryChart({
           strokeLinecap="round"
         />
 
-        {history.map((row, index) => (
+        {/* INTERACTIVE DECISION POINTS */}
+        {sorted.map((row, index) => (
           <circle
             key={`${row.date}-${index}`}
             cx={x(dates[index])}
             cy={y(row.rate)}
-            r="3.2"
-            fill="#ffffff"
+            r={selectedPoint === index ? 5.5 : 3.5}
+            fill={selectedPoint === index ? "#246cce" : "#ffffff"}
             stroke="#246cce"
             strokeWidth="2"
+            className="cursor-pointer outline-none focus:stroke-[4px]"
+            role="button"
+            tabIndex={0}
+            aria-label={`${formatDate(row.date)}، الفائدة ${formatRate(row.rate)}`}
+            onClick={() => setSelectedPoint(index)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                setSelectedPoint(index);
+              }
+            }}
           >
             <title>
-              {`${row.date}: ${formatRate(row.rate)}`}
+              {`${formatDate(row.date)} — ${formatRate(row.rate)}`}
             </title>
           </circle>
         ))}
 
-        {labelIndexes.map((index) => (
+        {/* EVENLY SPACED YEAR LABELS */}
+        <text
+          x={left}
+          y={height - 17}
+          textAnchor="start"
+          fontSize="14"
+          fill="#64748b"
+        >
+          {startYear}
+        </text>
+
+        {yearTicks.map((year) => (
+          <g key={year}>
+            <line
+              x1={x(Date.UTC(year, 0, 1))}
+              y1={top + plotHeight}
+              x2={x(Date.UTC(year, 0, 1))}
+              y2={top + plotHeight + 5}
+              stroke="#94a3b8"
+            />
+            <text
+              x={x(Date.UTC(year, 0, 1))}
+              y={height - 17}
+              textAnchor="middle"
+              fontSize="14"
+              fill="#64748b"
+            >
+              {year}
+            </text>
+          </g>
+        ))}
+
+        {endYear !== startYear && (
           <text
-            key={index}
-            x={x(dates[index])}
-            y={height - 14}
-            textAnchor={
-              index === 0
-                ? "start"
-                : index === history.length - 1
-                ? "end"
-                : "middle"
-            }
+            x={width - right}
+            y={height - 17}
+            textAnchor="end"
             fontSize="14"
             fill="#64748b"
           >
-            {history[index].date.slice(0, 7)}
+            {endYear}
           </text>
-        ))}
+        )}
       </svg>
 
-      <p className="mt-2 text-[11px] leading-6 text-slate-500">
-        الرسم يعتمد على القرارات التاريخية المسجلة في قاعدة
-        البيانات، ولا يمثل توقعات مستقبلية. يتم وصل القرارات
-        بخط متدرج لتوضيح استمرار السعر بين القرارات.
+      {/* SELECTED DECISION DETAILS */}
+      {selected && (
+        <div
+          className="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-blue-200 bg-blue-50 p-3"
+          aria-live="polite"
+        >
+          <div>
+            <p className="text-[10px] font-bold text-slate-500">
+              القرار المحدد
+            </p>
+            <p className="mt-1 text-xs font-black text-slate-900">
+              {formatDate(selected.date)}
+            </p>
+          </div>
+
+          <div className="text-left">
+            <p className="text-[10px] font-bold text-slate-500">
+              سعر الفائدة المسجل
+            </p>
+            <p dir="ltr" className="mt-1 text-lg font-black text-blue-700">
+              {formatRate(selected.rate)}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setSelectedPoint(null)}
+            className="rounded-lg border border-blue-200 bg-white px-3 py-2 text-[11px] font-bold text-blue-700 hover:bg-blue-100"
+          >
+            إغلاق
+          </button>
+        </div>
+      )}
+
+      <p className="mt-3 text-[11px] leading-6 text-slate-500">
+        يعرض الرسم أسعار الفائدة والقرارات التاريخية المتاحة
+        في قاعدة البيانات، وقد لا يشمل جميع قرارات التثبيت
+        أو الاجتماعات القديمة. الخط المتدرج يصل بين الأسعار
+        المسجلة لتوضيح تطورها، ولا يؤكد اكتمال توثيق جميع
+        الفترات الواقعة بينها. البيانات ليست توقعات مستقبلية.
       </p>
     </div>
   );
 }
+
 
 export default function HistoryExplorer({ banks }: Props) {
   const [selectedBank, setSelectedBank] = useState(
@@ -268,7 +405,8 @@ export default function HistoryExplorer({ banks }: Props) {
   );
 
   const [selectedYear, setSelectedYear] = useState("all");
-const [visibleMobileCount, setVisibleMobileCount] = useState(10);
+const [visibleMobileCount, setVisibleMobileCount] = useState(5);
+const [visibleDesktopCount, setVisibleDesktopCount] = useState(15);
 
   const bank = banks.find((item) => item.slug === selectedBank);
 
@@ -323,9 +461,11 @@ const [visibleMobileCount, setVisibleMobileCount] = useState(10);
             <select
               value={selectedBank}
               onChange={(event) => {
-                setSelectedBank(event.target.value);
-                setSelectedYear("all");
-              }}
+  setSelectedBank(event.target.value);
+setSelectedYear("all");
+setVisibleDesktopCount(15);
+setVisibleMobileCount(5);
+}}
               className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold text-slate-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             >
               {banks.map((item) => (
@@ -343,9 +483,11 @@ const [visibleMobileCount, setVisibleMobileCount] = useState(10);
 
             <select
               value={selectedYear}
-              onChange={(event) =>
-                setSelectedYear(event.target.value)
-              }
+              onChange={(event) => {
+  setSelectedYear(event.target.value);
+  setVisibleDesktopCount(15);
+  setVisibleMobileCount(5);
+}}
               className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold text-slate-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             >
               <option value="all">جميع السنوات</option>
@@ -378,14 +520,29 @@ const [visibleMobileCount, setVisibleMobileCount] = useState(10);
             />
 
             <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-              <h3 className="text-base font-black sm:text-xl">
-                سجل قرارات {bank.name}
-              </h3>
+  <div>
+    <h3 className="text-base font-black text-slate-950 sm:text-xl">
+      سجل قرارات {bank.name}
+    </h3>
 
-              <span className="rounded-full bg-blue-50 px-3 py-2 text-xs font-black text-blue-700">
-                {historyFiltered.length} قرارًا
-              </span>
-            </div>
+    {historyFiltered.length > 0 && (
+      <p className="mt-1.5 text-[11px] leading-6 text-slate-500">
+        الفترة المسجلة:{" "}
+        <span className="font-bold text-slate-700">
+          {dateAr(historyFiltered[0].date)}
+        </span>
+        {" — "}
+        <span className="font-bold text-slate-700">
+          {dateAr(historyFiltered[historyFiltered.length - 1].date)}
+        </span>
+      </p>
+    )}
+  </div>
+
+  <span className="rounded-full bg-blue-50 px-3 py-2 text-xs font-black text-blue-700">
+    {historyFiltered.length} قرارًا مسجلًا
+  </span>
+</div>
 
             <div className="mt-4 hidden overflow-hidden rounded-xl border border-slate-200 md:block">
               <table className="w-full table-fixed text-center">
@@ -400,7 +557,7 @@ const [visibleMobileCount, setVisibleMobileCount] = useState(10);
                 </thead>
 
                 <tbody>
-                  {reversedHistory.map((row, index) => (
+                  {reversedHistory.slice(0, visibleDesktopCount).map((row, index) => (
                     <tr
                       key={`${row.date}-${index}`}
                       className={`border-t border-slate-200 text-xs ${
@@ -438,18 +595,34 @@ const [visibleMobileCount, setVisibleMobileCount] = useState(10);
                             }${row.changeBps} bps`}
                       </td>
 
-                      <td
-                        className={`px-4 py-3.5 text-center font-black ${changeClass(
-                          row.changeBps
-                        )}`}
-                      >
-                        {changeLabel(row.changeBps)}
-                      </td>
+                      <td className="px-4 py-3.5 text-center">
+  <span
+    className={`inline-flex items-center justify-center rounded-lg border px-3 py-1.5 text-[11px] font-black ${changeBadgeClass(
+      row.changeBps
+    )}`}
+  >
+    {changeLabel(row.changeBps)}
+  </span>
+</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
+
+{reversedHistory.length > visibleDesktopCount && (
+  <div className="mt-4 hidden justify-center md:flex">
+    <button
+      type="button"
+      onClick={() => setVisibleDesktopCount((count) => count + 15)}
+      className="rounded-xl border border-blue-200 bg-blue-50 px-8 py-3 text-xs font-black text-blue-700 transition hover:bg-blue-100"
+    >
+      عرض المزيد (
+      {Math.min(15, reversedHistory.length - visibleDesktopCount)}
+      {" "}قرارًا)
+    </button>
+  </div>
+)}
 
             <div className="mt-4 space-y-2 md:hidden">
   {reversedHistory.slice(0, visibleMobileCount).map((row, index) => (
@@ -504,10 +677,17 @@ const [visibleMobileCount, setVisibleMobileCount] = useState(10);
   <div className="mt-4 flex justify-center md:hidden">
     <button
       type="button"
-      onClick={() => setVisibleMobileCount((count) => count + 10)}
+      onClick={() =>
+        setVisibleMobileCount((count) => count + 5)
+      }
       className="w-full rounded-xl border border-blue-200 bg-blue-50 px-5 py-3 text-xs font-black text-blue-700 transition hover:bg-blue-100"
     >
-      عرض المزيد ({Math.min(10, reversedHistory.length - visibleMobileCount)} قرارات)
+      عرض المزيد (
+      {Math.min(
+        5,
+        reversedHistory.length - visibleMobileCount
+      )}{" "}
+      قرارات)
     </button>
   </div>
 )}

@@ -396,62 +396,132 @@ function getNextMeeting(bank: Bank, today: string) {
     )[0];
 }
 
+
 function getHistory(bank: Bank): HistoryRow[] {
   const rows: HistoryRow[] = [];
 
+  const completedMeetings = (
+    Array.isArray(bank.meetings) ? bank.meetings : []
+  ).filter(
+    (meeting) =>
+      meeting.status === "completed" &&
+      !!dateOnly(meeting.meeting_date) &&
+      numeric(meeting.decision_rate) !== null
+  );
+
+  // Match historical records with completed meetings.
+  // A meeting date and an effective date may differ by one day.
+  const matchedMeetings = new Set<number>();
+
   if (Array.isArray(bank.rate_history)) {
     for (const item of bank.rate_history) {
-      const date = dateOnly(
+      const historyDate = dateOnly(
         item.decision_date ||
           item.meeting_date ||
           item.date ||
           item.effective_date
       );
 
-      const rate = numeric(item.decision_rate ?? item.rate);
+      const historyRate = numeric(
+        item.decision_rate ?? item.rate
+      );
 
-      if (!date || rate === null) continue;
+      if (!historyDate || historyRate === null) continue;
 
-      rows.push({
-        date,
-        rate,
-        previousRate: numeric(item.previous_rate),
-        changeBps: numeric(item.change_bps),
-        type: item.decision_type || null,
-        source: "history",
-      });
+      const matchIndex = completedMeetings.findIndex(
+        (meeting, index) => {
+          if (matchedMeetings.has(index)) return false;
+
+          const meetingRate = numeric(meeting.decision_rate);
+          if (meetingRate === null) return false;
+
+          const sameRate =
+            Math.abs(meetingRate - historyRate) < 0.000001;
+
+          const possibleDates = [
+            dateOnly(meeting.meeting_date),
+            dateOnly(meeting.effective_date),
+          ].filter(Boolean);
+
+          const historyDates = [
+            dateOnly(item.decision_date),
+            dateOnly(item.meeting_date),
+            dateOnly(item.date),
+            dateOnly(item.effective_date),
+          ].filter(Boolean);
+
+          return (
+            sameRate &&
+            historyDates.some((date) =>
+              possibleDates.includes(date)
+            )
+          );
+        }
+      );
+
+      if (matchIndex !== -1) {
+        matchedMeetings.add(matchIndex);
+
+        const meeting = completedMeetings[matchIndex];
+
+        rows.push({
+          date:
+            dateOnly(meeting.meeting_date) ||
+            historyDate,
+          rate: historyRate,
+          previousRate:
+            numeric(meeting.previous_rate) ??
+            numeric(item.previous_rate),
+          changeBps:
+            numeric(meeting.change_bps) ??
+            numeric(item.change_bps),
+          type:
+            meeting.decision_type ||
+            item.decision_type ||
+            null,
+          source: "meeting",
+        });
+      } else {
+        rows.push({
+          date: historyDate,
+          rate: historyRate,
+          previousRate: numeric(item.previous_rate),
+          changeBps: numeric(item.change_bps),
+          type: item.decision_type || null,
+          source: "history",
+        });
+      }
     }
   }
 
-  if (Array.isArray(bank.meetings)) {
-    for (const meeting of bank.meetings) {
-      if (meeting.status !== "completed") continue;
+  // Add completed meetings not already represented in history.
+  completedMeetings.forEach((meeting, index) => {
+    if (matchedMeetings.has(index)) return;
 
-      const date = dateOnly(meeting.meeting_date);
-      const rate = numeric(meeting.decision_rate);
+    const date = dateOnly(meeting.meeting_date);
+    const rate = numeric(meeting.decision_rate);
 
-      if (!date || rate === null) continue;
+    if (!date || rate === null) return;
 
-      rows.push({
-        date,
-        rate,
-        previousRate: numeric(meeting.previous_rate),
-        changeBps: numeric(meeting.change_bps),
-        type: meeting.decision_type || null,
-        source: "meeting",
-      });
-    }
-  }
+    rows.push({
+      date,
+      rate,
+      previousRate: numeric(meeting.previous_rate),
+      changeBps: numeric(meeting.change_bps),
+      type: meeting.decision_type || null,
+      source: "meeting",
+    });
+  });
 
-  // Prevent duplicate historical decisions when the same event
-  // exists in both rate_history and completed meetings.
+  // Remove exact duplicates, preferring meeting records.
   const unique = new Map<string, HistoryRow>();
 
   for (const row of rows) {
-    const existing = unique.get(row.date);
+    const key = `${row.date}|${row.rate.toFixed(6)}`;
+    const existing = unique.get(key);
 
     if (!existing || row.source === "meeting") {
-      unique.set(row.date, row);
+      unique.set(key, row);
     }
   }
 
@@ -478,6 +548,7 @@ function getHistory(bank: Bank): HistoryRow[] {
     };
   });
 }
+
 
 async function loadData(): Promise<{
   banks: Bank[];
@@ -589,21 +660,16 @@ const description =
 }
 
 function SectionHeading({
-  eyebrow,
   title,
   description,
 }: {
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
   description?: string | null;
 }) {
   return (
-    <div className="mb-6 text-right sm:mb-8">
-      <span className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-[10px] font-black text-[#1e5bb8] sm:text-xs">
-        {eyebrow}
-      </span>
-
-      <h2 className="mt-3 text-[24px] font-black leading-[1.35] tracking-tight text-[#091b32] sm:text-[32px] lg:text-[36px]">
+    <div className="mb-5 text-right sm:mb-6">
+      <h2 className="m-0 text-[24px] font-black leading-[1.35] tracking-tight text-[#091b32] sm:text-[32px] lg:text-[36px]">
         {title}
       </h2>
 
@@ -616,6 +682,18 @@ function SectionHeading({
   );
 }
 
+
+const BANK_FLAG_CODES: Record<string, string> = {
+  fed: "us",
+  ecb: "eu",
+  boe: "gb",
+  boj: "jp",
+  boc: "ca",
+  rba: "au",
+  snb: "ch",
+  rbnz: "nz",
+};
+
 function BankMark({
   bank,
   large = false,
@@ -623,29 +701,43 @@ function BankMark({
   bank: Bank;
   large?: boolean;
 }) {
+  const currencyFlags: Record<string, string> = {
+    USD: "us",
+    EUR: "eu",
+    GBP: "gb",
+    JPY: "jp",
+    CAD: "ca",
+    AUD: "au",
+    CHF: "ch",
+    NZD: "nz",
+  };
+
+  const code =
+    BANK_FLAG_CODES[bank.slug] ||
+    currencyFlags[bankCurrency(bank).toUpperCase()];
+
   return (
     <div
-      className={`flex shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm ${
-        large ? "h-12 w-12 text-2xl" : "h-10 w-10 text-xl"
+      className={`flex shrink-0 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm ${
+        large ? "h-10 w-12" : "h-9 w-11"
       }`}
     >
-      {safeUrl(bank.bank_logo_url) ? (
+      {code ? (
         <img
-          src={bank.bank_logo_url!}
-          alt={`شعار ${bankName(bank)}`}
-          className="h-full w-full object-contain p-1.5"
+          src={`https://flagcdn.com/${code}.svg`}
+          alt={`علم ${bank.country_ar || bankName(bank)}`}
           loading="lazy"
+          className="h-full w-full object-cover"
         />
       ) : (
-        bank.flag_emoji || (
-          <span className="text-xs font-black text-blue-700">
-            {bankCurrency(bank)}
-          </span>
-        )
+        <span className="text-xl" aria-hidden="true">
+          🏦
+        </span>
       )}
     </div>
   );
 }
+
 
 function BankIdentity({
   bank,
@@ -951,6 +1043,7 @@ function SelectField({
   );
 }
 
+
 function RateTable({
   banks,
   today,
@@ -960,11 +1053,14 @@ function RateTable({
 }) {
   return (
     <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_14px_38px_rgba(15,23,42,0.055)] sm:rounded-[28px]">
+
+      {/* HEADER */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-gradient-to-l from-white to-blue-50 px-4 py-5 sm:px-7">
         <div>
           <span className="rounded-full bg-[#2471df] px-3 py-1 text-[10px] font-black text-white">
             بيانات أسعار الفائدة
           </span>
+
           <h3 className="mt-2 text-lg font-black text-slate-950 sm:text-2xl">
             مقارنة البنوك المركزية العالمية
           </h3>
@@ -975,6 +1071,7 @@ function RateTable({
         </span>
       </div>
 
+      {/* DESKTOP TABLE */}
       <div className="hidden p-5 lg:block">
         <div className="overflow-hidden rounded-[18px] border border-slate-200">
           <table className="w-full table-fixed text-center">
@@ -983,18 +1080,23 @@ function RateTable({
                 <th className="w-[25%] px-4 py-4 text-center">
                   البنك المركزي
                 </th>
+
                 <th className="w-[14%] px-3 py-4 text-center">
                   الفائدة الحالية
                 </th>
+
                 <th className="w-[17%] px-3 py-4 text-center">
                   نوع السعر
                 </th>
+
                 <th className="w-[16%] px-3 py-4 text-center">
                   آخر قرار
                 </th>
+
                 <th className="w-[17%] px-3 py-4 text-center">
                   الاجتماع القادم
                 </th>
+
                 <th className="w-[11%] px-3 py-4 text-center">
                   المصدر
                 </th>
@@ -1014,10 +1116,23 @@ function RateTable({
                         : "bg-white"
                     }`}
                   >
+                    {/* CLICKABLE BANK NAME */}
                     <td className="px-4 py-4 text-right">
-                      <BankIdentity bank={bank} />
+                      <Link
+                        href={`/interest-rates/${bank.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`عرض تفاصيل أسعار الفائدة لدى ${bankName(bank)} في تبويب جديد`}
+                        title={`عرض صفحة ${bankName(bank)}`}
+                        className="group inline-flex max-w-full items-center rounded-xl p-1 transition hover:bg-blue-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
+                      >
+                        <div className="transition group-hover:text-[#2471df] [&_.font-black]:group-hover:text-[#2471df]">
+                          <BankIdentity bank={bank} />
+                        </div>
+                      </Link>
                     </td>
 
+                    {/* CURRENT RATE */}
                     <td className="px-3 py-4 text-center">
                       <span
                         dir="ltr"
@@ -1027,11 +1142,12 @@ function RateTable({
                       </span>
                     </td>
 
+                    {/* RATE TYPE */}
                     <td className="px-3 py-4 text-center text-[11px] font-bold leading-6 text-slate-600">
-                      {bank.rate_type_ar ||
-                        "السعر المرجعي"}
+                      {bank.rate_type_ar || "السعر المرجعي"}
                     </td>
 
+                    {/* LAST DECISION */}
                     <td className="px-3 py-4 text-center">
                       <div
                         className={`text-[11px] font-black ${changeClass(
@@ -1040,17 +1156,20 @@ function RateTable({
                       >
                         {changeLabel(bank.last_change_bps)}
                       </div>
+
                       <div className="mt-1 text-[10px] text-slate-500">
                         {dateAr(bank.last_decision_date)}
                       </div>
                     </td>
 
+                    {/* NEXT MEETING */}
                     <td className="px-3 py-4 text-center text-xs font-black">
                       {next
                         ? dateAr(next.meeting_date)
                         : "لم يُعلن"}
                     </td>
 
+                    {/* OFFICIAL SOURCE */}
                     <td className="px-3 py-4 text-center">
                       <SourceLink
                         href={officialSource(bank)}
@@ -1065,6 +1184,7 @@ function RateTable({
         </div>
       </div>
 
+      {/* MOBILE AND TABLET CARDS */}
       <div className="grid gap-3 p-3 sm:grid-cols-2 sm:p-5 lg:hidden">
         {banks.map((bank) => {
           const next = getNextMeeting(bank, today);
@@ -1075,8 +1195,21 @@ function RateTable({
               className="overflow-hidden rounded-[18px] border border-slate-200 bg-white shadow-sm"
             >
               <div className="flex items-start justify-between gap-2 p-3.5">
-                <BankIdentity bank={bank} compact />
 
+                {/* CLICKABLE BANK IDENTITY */}
+                <Link
+                  href={`/interest-rates/${bank.slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`عرض تفاصيل ${bankName(bank)} في تبويب جديد`}
+                  className="group min-w-0 rounded-lg transition hover:bg-blue-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
+                >
+                  <div className="[&_.font-black]:group-hover:text-[#2471df]">
+                    <BankIdentity bank={bank} compact />
+                  </div>
+                </Link>
+
+                {/* CURRENT RATE */}
                 <div className="shrink-0 text-left">
                   <div
                     dir="ltr"
@@ -1084,17 +1217,20 @@ function RateTable({
                   >
                     {rateLabel(bank)}
                   </div>
+
                   <p className="mt-1 text-[9px] text-slate-500">
                     الفائدة الحالية
                   </p>
                 </div>
               </div>
 
+              {/* DECISION AND NEXT MEETING */}
               <div className="mx-3.5 grid grid-cols-2 rounded-xl border border-slate-200 bg-slate-50 text-center">
                 <div className="border-l border-slate-200 p-3">
                   <p className="text-[10px] text-slate-500">
                     آخر قرار
                   </p>
+
                   <p
                     className={`mt-1 text-[11px] font-black ${changeClass(
                       bank.last_change_bps
@@ -1108,6 +1244,7 @@ function RateTable({
                   <p className="text-[10px] text-slate-500">
                     الاجتماع القادم
                   </p>
+
                   <p className="mt-1 text-[11px] font-black">
                     {next
                       ? dateAr(next.meeting_date)
@@ -1116,10 +1253,10 @@ function RateTable({
                 </div>
               </div>
 
+              {/* RATE TYPE AND SOURCE */}
               <div className="flex items-center justify-between gap-2 px-3.5 py-3">
                 <p className="line-clamp-2 text-[10px] leading-5 text-slate-500">
-                  {bank.rate_type_ar ||
-                    "السعر المرجعي"}
+                  {bank.rate_type_ar || "السعر المرجعي"}
                 </p>
 
                 <SourceLink
@@ -1132,12 +1269,14 @@ function RateTable({
         })}
       </div>
 
+      {/* EMPTY STATE */}
       {!banks.length && (
         <div className="p-5">
           <EmptyState text="لا توجد بيانات منشورة للعرض حاليًا." />
         </div>
       )}
 
+      {/* DISCLAIMER */}
       <div className="border-t border-amber-100 bg-amber-50 px-4 py-3 text-[11px] leading-7 text-amber-900 sm:px-7">
         <strong>ملاحظة مهمة:</strong> لا تمثل جميع
         الأسعار النوع نفسه من أدوات السياسة النقدية.
@@ -1148,6 +1287,7 @@ function RateTable({
     </div>
   );
 }
+
 
 export default async function InterestRatesPage({
   searchParams,
@@ -1178,25 +1318,50 @@ export default async function InterestRatesPage({
 
   const today = new Date().toISOString().slice(0, 10);
 
-  const allMeetings: EventRow[] = banks
-    .flatMap((bank) =>
-      (Array.isArray(bank.meetings)
-        ? bank.meetings
-        : []
+  
+const allMeetings: EventRow[] = banks
+  .flatMap((bank) =>
+    (Array.isArray(bank.meetings) ? bank.meetings : [])
+      .filter(
+        (meeting) =>
+          meeting.status === "scheduled" &&
+          !!dateOnly(meeting.meeting_date) &&
+          dateOnly(meeting.meeting_date)! >= today
       )
-        .filter(
-          (meeting) =>
-            meeting.status === "scheduled" &&
-            !!dateOnly(meeting.meeting_date) &&
-            dateOnly(meeting.meeting_date)! >= today
-        )
-        .map((meeting) => ({ bank, meeting }))
-    )
-    .sort((a, b) =>
-      (a.meeting.meeting_date || "").localeCompare(
-        b.meeting.meeting_date || ""
-      )
-    );
+      .map((meeting) => ({ bank, meeting }))
+  )
+  .sort((a, b) => {
+    const dateA = dateOnly(a.meeting.meeting_date) || "";
+    const dateB = dateOnly(b.meeting.meeting_date) || "";
+
+    const dateComparison = dateA.localeCompare(dateB);
+
+    if (dateComparison !== 0) {
+      return dateComparison;
+    }
+
+    const getAnnouncementTime = (meeting: Meeting) => {
+      if (!meeting.announcement_at) {
+        return Number.POSITIVE_INFINITY;
+      }
+
+      const timestamp = Date.parse(meeting.announcement_at);
+
+      return Number.isFinite(timestamp)
+        ? timestamp
+        : Number.POSITIVE_INFINITY;
+    };
+
+    const timeA = getAnnouncementTime(a.meeting);
+    const timeB = getAnnouncementTime(b.meeting);
+
+    if (timeA !== timeB) {
+      return timeA - timeB;
+    }
+
+    return a.bank.slug.localeCompare(b.bank.slug);
+  });
+
 
   const calendarYears = [
     ...new Set(
@@ -1216,11 +1381,15 @@ export default async function InterestRatesPage({
         meeting.meeting_date?.startsWith(selectedYear))
   );
 
-    const showAllMeetings = params.show_all === "1";
+   const showAllMeetings = params.show_all === "1";
 
-  const visibleMeetings = showAllMeetings
-    ? filteredMeetings
-    : filteredMeetings.slice(0, 15);
+const visibleMeetings = showAllMeetings
+  ? filteredMeetings
+  : filteredMeetings.slice(0, 15);
+
+const mobileVisibleMeetings = showAllMeetings
+  ? filteredMeetings
+  : filteredMeetings.slice(0, 5);
   
   const allHistory = banks.flatMap((bank) =>
     getHistory(bank).map((row) => ({ bank, row }))
@@ -1248,8 +1417,9 @@ export default async function InterestRatesPage({
         );
 
   const recentDecisions = [...allHistory]
-    .sort((a, b) => b.row.date.localeCompare(a.row.date))
-    .slice(0, 12);
+  .filter(({ row }) => row.date <= today)
+  .sort((a, b) => b.row.date.localeCompare(a.row.date))
+  .slice(0, 5);
 
   const latestPerBank = banks
     .map((bank) => ({
@@ -1329,62 +1499,99 @@ export default async function InterestRatesPage({
     hub?.data_disclaimer_ar?.trim() ||
     "قد تتغير أسعار الفائدة ومواعيد الاجتماعات أو أوقات الإعلان دون إشعار مسبق. يرجى مراجعة الموقع الرسمي للبنك المركزي قبل اتخاذ قرارات مالية. المحتوى معلوماتي ولا يمثل توصية استثمارية.";
 
-  const structuredData = [
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        {
-          "@type": "ListItem",
-          position: 1,
-          name: "الرئيسية",
-          item: SITE,
-        },
-        {
-          "@type": "ListItem",
-          position: 2,
-          name: "أسعار الفائدة",
-          item: `${SITE}${PAGE}`,
-        },
-      ],
-    },
-    {
-      "@context": "https://schema.org",
-      "@type": "CollectionPage",
-      name: hubTitle,
-      description: intro,
-      url: `${SITE}${PAGE}`,
-      inLanguage: "ar",
-      isPartOf: {
-        "@type": "WebSite",
-        name: "بروكر العرب",
-        url: SITE,
+  
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "@id": `${SITE}${PAGE}#breadcrumb`,
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "الرئيسية",
+        item: SITE,
       },
-      mainEntity: {
-        "@type": "ItemList",
-        numberOfItems: banks.length,
-        itemListElement: banks.map((bank, index) => ({
-          "@type": "ListItem",
-          position: index + 1,
-          name: bankName(bank),
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "أسعار الفائدة العالمية",
+        item: `${SITE}${PAGE}`,
+      },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": `${SITE}${PAGE}#webpage`,
+    name: hubTitle,
+    description: intro,
+    url: `${SITE}${PAGE}`,
+    inLanguage: "ar",
+    isPartOf: {
+      "@type": "WebSite",
+      "@id": `${SITE}/#website`,
+      name: "بروكر العرب",
+      url: SITE,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "بروكر العرب",
+      url: SITE,
+    },
+    breadcrumb: {
+      "@id": `${SITE}${PAGE}#breadcrumb`,
+    },
+    about: [
+      {
+        "@type": "Thing",
+        name: "أسعار الفائدة العالمية",
+      },
+      {
+        "@type": "Thing",
+        name: "السياسة النقدية للبنوك المركزية",
+      },
+      {
+        "@type": "Thing",
+        name: "اجتماعات وقرارات البنوك المركزية",
+      },
+    ],
+    mainEntity: {
+      "@type": "ItemList",
+      "@id": `${SITE}${PAGE}#central-banks`,
+      name: "البنوك المركزية العالمية وأسعار الفائدة",
+      numberOfItems: banks.length,
+      itemListElement: banks.map((bank, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: bankName(bank),
+        url: `${SITE}${PAGE}/${bank.slug}`,
+        item: {
+          "@type": "WebPage",
+          "@id": `${SITE}${PAGE}/${bank.slug}#webpage`,
+          url: `${SITE}${PAGE}/${bank.slug}`,
+          name: `سعر الفائدة لدى ${bankName(bank)}`,
           description:
             BANK_DETAILS[bank.slug]?.description || "",
-        })),
-      },
-    },
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      mainEntity: faqs.map((faq) => ({
-        "@type": "Question",
-        name: faq.q,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: faq.a,
         },
       })),
     },
-  ];
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `${SITE}${PAGE}#faq`,
+    mainEntity: faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.a,
+      },
+    })),
+  },
+];
+
 
   return (
     <main
@@ -1402,200 +1609,261 @@ export default async function InterestRatesPage({
         }}
       />
 
-      {/* HERO */}
-      <section className="relative isolate overflow-hidden border-b border-[#174373] bg-[#071a31] text-white">
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute inset-0 bg-[linear-gradient(115deg,#061326_0%,#092746_55%,#0c4279_100%)]" />
-          <div className="absolute -right-32 -top-52 h-[460px] w-[460px] rounded-full bg-blue-500/20 blur-[120px]" />
-          <div className="absolute -bottom-72 left-[12%] h-[440px] w-[440px] rounded-full bg-cyan-400/10 blur-[120px]" />
-          <div className="absolute inset-0 opacity-[0.05] [background-image:linear-gradient(rgba(147,197,253,0.55)_1px,transparent_1px),linear-gradient(90deg,rgba(147,197,253,0.55)_1px,transparent_1px)] [background-size:56px_56px]" />
+      
+
+
+{/* HERO — MOBILE OPTIMIZED / DESKTOP PRESERVED */}
+<section className="relative overflow-hidden border-b border-[#d6e5f8] bg-gradient-to-bl from-[#eef5fd] via-[#f7faff] to-white">
+  <div className="pointer-events-none absolute -right-32 -top-40 h-[300px] w-[300px] rounded-full bg-blue-100/60 blur-[90px]" />
+  <div className="pointer-events-none absolute -bottom-32 left-0 h-[240px] w-[240px] rounded-full bg-sky-100/50 blur-[80px]" />
+
+  <div className="relative mx-auto max-w-[1520px] px-4 pb-5 pt-3 sm:px-6 sm:pb-5 sm:pt-4 lg:px-10 lg:pb-5 lg:pt-3">
+
+    {/* BREADCRUMB */}
+    <nav
+      aria-label="مسار الصفحة"
+      className="mb-2 flex items-center gap-2 text-[10px] font-bold text-slate-500"
+    >
+      <Link href="/" className="transition hover:text-[#2471df]">
+        الرئيسية
+      </Link>
+      <span className="text-slate-300">/</span>
+      <span className="text-[#1e5bb8]">أسعار الفائدة</span>
+    </nav>
+
+    <div className="grid items-stretch gap-4 lg:grid-cols-[1.15fr_0.85fr] lg:gap-8">
+
+      {/* MAIN CONTENT */}
+      <div className="flex min-w-0 flex-col lg:justify-between">
+
+        {/* TITLE AND DESCRIPTION */}
+        <div>
+          <h1 className="mt-2 max-w-[850px] text-[30px] font-black leading-[1.22] tracking-tight text-[#091b32] sm:mt-4 sm:text-[44px] lg:mt-6 lg:text-[52px] lg:leading-[1.15]">
+            {hubTitle === "أسعار الفائدة العالمية والبنوك المركزية" ? (
+              <>
+                أسعار الفائدة العالمية
+                <span className="block text-[#2471df]">
+                  والبنوك المركزية
+                </span>
+              </>
+            ) : (
+              hubTitle
+            )}
+          </h1>
+
+          {/* MOBILE DESCRIPTION */}
+          <p className="mt-3 text-[12px] font-medium leading-[1.9] text-slate-600 sm:hidden">
+            تابع أسعار الفائدة لدى أهم البنوك المركزية
+            العالمية، وقارن القرارات ومواعيد الاجتماعات
+            القادمة والسجل التاريخي للفائدة.
+          </p>
+
+          {/* TABLET AND DESKTOP DESCRIPTION */}
+          <p className="mt-4 hidden max-w-[790px] text-[12px] font-medium leading-7 text-slate-600 sm:block sm:text-[13px] sm:leading-8">
+            {intro}
+          </p>
         </div>
 
-        <div className="relative mx-auto max-w-[1520px] px-4 pb-5 pt-4 sm:px-6 sm:pb-12 sm:pt-8 lg:px-10 lg:pb-16">
-          <nav
-            aria-label="مسار الصفحة"
-            className="mb-7 hidden items-center gap-2 text-xs font-bold text-blue-200/80 sm:flex"
-          >
-            <Link href="/" className="hover:text-white">
-              الرئيسية
-            </Link>
-            <span>/</span>
-            <span className="text-white">
-              أسعار الفائدة
-            </span>
-          </nav>
+        {/* STATISTICS AND BUTTONS */}
+        <div className="mt-4 flex flex-col gap-3 lg:mt-auto lg:gap-4 lg:pt-5">
 
-          <div className="grid items-center gap-4 sm:gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:gap-12">
-            <div>
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.07] px-3 py-1.5 text-[10px] font-black text-blue-100 sm:text-xs">
-                <span className="h-2 w-2 rounded-full bg-cyan-400" />
-                مركز السياسة النقدية العالمية
-              </span>
-
-              <h1 className="mt-3 max-w-[850px] text-[27px] font-black leading-[1.25] tracking-tight sm:mt-5 sm:text-[45px] lg:text-[53px] xl:text-[59px]">
-                {hubTitle ===
-"أسعار الفائدة العالمية والبنوك المركزية" ? (
-  <>
-    أسعار الفائدة العالمية
-    <span className="block text-[#59c0ff]">
-      والبنوك المركزية
-    </span>
-  </>
-) : (
-  hubTitle
-)}
-              </h1>
-
-              <p className="mt-3 max-w-[800px] text-[12px] font-medium leading-6 text-slate-200 sm:mt-5 sm:text-[16px] sm:leading-9">
-                {intro}
-              </p>
-
-              <div className="mt-4 grid max-w-[660px] grid-cols-3 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.06] p-1 sm:mt-6">
-                {[
-                  {
-                    value: String(banks.length),
-                    label: "بنوك مركزية",
-                  },
-                  {
-                    value: String(allMeetings.length),
-                    label: "اجتماعات قادمة",
-                  },
-                  {
-                    value: String(allHistory.length),
-                    label: "قرارات تاريخية",
-                  },
-                ].map((item, index) => (
-                  <div
-                    key={item.label}
-                    className={`px-1 py-2 text-center sm:py-3 ${
-                      index === 1
-                        ? "border-x border-white/10"
-                        : ""
-                    }`}
-                  >
-                    <div
-                      dir="ltr"
-                      className="text-lg font-black text-[#66c8ff] sm:text-2xl"
-                    >
-                      {item.value}
-                    </div>
-                    <div className="mt-1 text-[9px] font-bold text-slate-300 sm:text-xs">
-                      {item.label}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-4 grid grid-cols-3 gap-1.5 sm:mt-6 sm:flex sm:flex-wrap sm:gap-3">
-                <a
-                  href="#rates"
-                  className="inline-flex min-h-10 items-center justify-center rounded-xl bg-[#2471df] px-1 text-center text-[10px] font-black leading-4 text-white transition hover:bg-[#2e7cea] sm:min-h-11 sm:px-5 sm:text-sm"
-                >
-                  مقارنة أسعار الفائدة ←
-                </a>
-
-                <a
-                  href="#calendar"
-                  className="inline-flex min-h-10 items-center justify-center rounded-xl border border-white/20 bg-white/[0.07] px-1 text-center text-[10px] font-black leading-4 text-white transition hover:bg-white/15 sm:min-h-11 sm:px-5 sm:text-sm"
-                >
-                  تقويم الاجتماعات ←
-                </a>
-
-                <a
-                  href="#history"
-                  className="inline-flex min-h-10 items-center justify-center rounded-xl border border-white/20 bg-white/[0.07] px-1 text-center text-[10px] font-black leading-4 text-white transition hover:bg-white/15 sm:min-h-11 sm:px-5 sm:text-sm"
-                >
-                  سجل القرارات ←
-                </a>
-              </div>
-            </div>
-
-            
-
-<aside className="w-full max-w-[470px] justify-self-end overflow-hidden rounded-[18px] border border-blue-200 bg-[#eef5fd] p-3 text-slate-900 shadow-2xl sm:rounded-[22px] sm:p-6">
-  <div className="flex items-center justify-between gap-3">
-    <div>
-      <p className="text-[10px] font-bold text-blue-600 sm:text-xs">
-        لوحة متابعة السياسة النقدية
-      </p>
-      <h2 className="mt-1 text-lg font-black text-slate-900 sm:text-xl">
-        أسعار البنوك الرئيسية
-      </h2>
-    </div>
-
-    <span className="rounded-full border border-blue-200 bg-blue-100 px-3 py-1 text-[10px] font-black text-blue-700">
-      بيانات منشورة
-    </span>
-  </div>
-
-  <div className="mt-3 space-y-2 sm:mt-4 sm:space-y-2.5">
-    {["fed", "ecb", "boe", "boj"]
-      .map((slug) => banks.find((bank) => bank.slug === slug))
-      .filter((bank): bank is Bank => !!bank)
-      .map((bank) => (
-        <div
-          key={bank.slug}
-          className="flex items-center justify-between gap-3 rounded-xl border border-blue-100 bg-white px-3 py-2.5 shadow-sm sm:py-3"
-        >
-          <div className="flex min-w-0 items-center gap-2.5">
-            <span className="text-lg">
-              {bank.flag_emoji || "🌐"}
-            </span>
-
-            <div className="min-w-0">
-              <div className="text-xs font-black text-slate-900 sm:text-sm">
-                {bankShortName(bank)}
-              </div>
-
+          {/* QUICK STATISTICS */}
+          <div className="grid max-w-[630px] grid-cols-3 gap-2">
+            {[
+              {
+                value: String(banks.length),
+                label: "بنوك مركزية",
+              },
+              {
+                value: String(allMeetings.length),
+                label: "اجتماعات قادمة",
+              },
+              {
+                value: String(allHistory.length),
+                label: "قرارات تاريخية",
+              },
+            ].map((item) => (
               <div
-                dir="ltr"
-                className="mt-0.5 text-right text-[10px] text-slate-500"
+                key={item.label}
+                className="rounded-xl border border-[#d6e5f8] bg-white/90 px-1.5 py-3 text-center shadow-sm sm:px-3 sm:py-2.5 lg:px-2 lg:py-2.5"
               >
-                {bankCurrency(bank)}
+                <div
+                  dir="ltr"
+                  className="text-[22px] font-black leading-7 text-[#2471df] sm:text-xl sm:leading-6"
+                >
+                  {item.value}
+                </div>
+
+                <div className="mt-1 text-[10px] font-bold leading-4 text-slate-500">
+                  {item.label}
+                </div>
               </div>
-            </div>
+            ))}
           </div>
 
-          <span
-            dir="ltr"
-            className="shrink-0 text-[15px] font-black text-[#1e5bb8] sm:text-lg"
-          >
-            {rateLabel(bank)}
+          {/* MOBILE QUICK NAVIGATION */}
+          <div className="grid grid-cols-2 gap-2 sm:hidden">
+            <a
+              href="#rates"
+              className="inline-flex min-h-11 items-center justify-center rounded-xl bg-[#2471df] px-2 py-2 text-center text-[11px] font-black text-white shadow-sm transition hover:bg-[#1e5bb8]"
+            >
+              مقارنة أسعار الفائدة ←
+            </a>
+
+            <a
+              href="#calendar"
+              className="inline-flex min-h-11 items-center justify-center rounded-xl border border-blue-200 bg-white px-2 py-2 text-center text-[11px] font-black text-[#1e5bb8] transition hover:bg-blue-50"
+            >
+              تقويم الاجتماعات ←
+            </a>
+
+            <a
+              href="#history"
+              className="col-span-2 inline-flex min-h-9 items-center justify-center gap-2 rounded-xl border border-[#d6e5f8] bg-[#eef5fd]/70 px-3 py-2 text-[11px] font-black text-[#1e5bb8] transition hover:bg-blue-100"
+            >
+              استعراض السجل التاريخي
+              <span aria-hidden="true">←</span>
+            </a>
+          </div>
+
+          {/* TABLET AND DESKTOP QUICK NAVIGATION — ORIGINAL */}
+          <div className="hidden flex-wrap items-center gap-2 sm:flex">
+            <a
+              href="#rates"
+              className="inline-flex min-h-9 items-center justify-center rounded-lg bg-[#2471df] px-4 py-1.5 text-center text-[11px] font-black text-white transition hover:bg-[#1e5bb8]"
+            >
+              مقارنة أسعار الفائدة ←
+            </a>
+
+            <a
+              href="#calendar"
+              className="inline-flex min-h-9 items-center justify-center rounded-lg border border-blue-200 bg-white px-4 py-1.5 text-center text-[11px] font-black text-[#1e5bb8] transition hover:bg-blue-50"
+            >
+              تقويم الاجتماعات ←
+            </a>
+
+            <a
+              href="#history"
+              className="inline-flex min-h-9 items-center justify-center rounded-lg border border-blue-200 bg-white px-4 py-1.5 text-center text-[11px] font-black text-[#1e5bb8] transition hover:bg-blue-50"
+            >
+              سجل القرارات ←
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* CENTRAL BANK RATES PANEL */}
+      <aside className="w-full max-w-[510px] justify-self-center overflow-hidden rounded-[18px] border border-[#d6e5f8] bg-white p-3 shadow-[0_10px_30px_rgba(30,91,184,0.07)] lg:justify-self-end">
+
+        {/* PANEL HEADER */}
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <p className="text-[9px] font-black text-[#2471df]">
+              لوحة متابعة السياسة النقدية
+            </p>
+
+            <h2 className="mt-0.5 text-base font-black text-[#091b32]">
+              أسعار البنوك الرئيسية
+            </h2>
+          </div>
+
+          <span className="rounded-full border border-blue-100 bg-[#eef5fd] px-2.5 py-1 text-[9px] font-black text-[#1e5bb8]">
+            بيانات منشورة
           </span>
         </div>
-      ))}
-  </div>
 
-  {nextEvent && (
-    <div className="mt-3 rounded-xl border border-blue-200 bg-[#dceafb] p-3 sm:mt-4">
-      <p className="text-[10px] font-black text-blue-700">
-        أقرب إعلان مجدول
-      </p>
+        {/* BANK RATES */}
+        <div className="mt-3 space-y-2 lg:mt-2 lg:space-y-1.5">
+          {["fed", "ecb", "boe", "boj"]
+            .map((slug) => banks.find((bank) => bank.slug === slug))
+            .filter((bank): bank is Bank => !!bank)
+            .map((bank) => (
+              <Link
+                key={bank.slug}
+                href={`/interest-rates/${bank.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex min-h-[49px] items-center justify-between gap-2 rounded-xl border border-slate-200 bg-[#f8fbff] px-3 py-2 transition hover:border-blue-300 hover:bg-[#eef5fd] hover:shadow-sm lg:min-h-0 lg:rounded-lg lg:px-2.5 lg:py-1.5"
+              >
+                <div className="flex min-w-0 items-center gap-2">
 
-      <div className="mt-2 flex items-center justify-between gap-2">
-        <span className="text-xs font-bold text-slate-900">
-          {bankShortName(nextEvent.bank)}
-        </span>
+                  {/* MOBILE: REAL FLAG / DESKTOP: ORIGINAL MARK */}
+                  <div className="lg:hidden">
+                    <BankMark bank={bank} />
+                  </div>
 
-        <time
-          dateTime={nextEvent.meeting.meeting_date}
-          className="text-xs font-black text-blue-800"
-        >
-          {dateAr(nextEvent.meeting.meeting_date)}
-        </time>
-      </div>
-    </div>
-  )}
+                  <div className="hidden h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-blue-100 bg-white text-xs font-black text-[#1e5bb8] lg:flex">
+                    {bank.flag_emoji || bankCurrency(bank)}
+                  </div>
 
-  <p className="mt-3 text-[10px] leading-5 text-slate-500 sm:leading-6">
-    الأسعار مأخوذة من السجلات المنشورة وليست بثًا مباشرًا لحظيًا.
-  </p>
-</aside>
+                  <div className="min-w-0">
+                    <div className="text-[11px] font-black leading-5 text-[#091b32] transition group-hover:text-[#2471df] sm:text-xs">
+                      {bankShortName(bank)}
+                    </div>
 
+                    <div
+                      dir="ltr"
+                      className="text-right text-[9px] leading-4 text-slate-400"
+                    >
+                      {bankCurrency(bank)}
+                    </div>
+                  </div>
+                </div>
 
-          </div>
+                <div className="flex shrink-0 items-center gap-1.5">
+                  <span
+                    dir="ltr"
+                    className="text-[15px] font-black text-[#2471df] sm:text-base lg:text-sm"
+                  >
+                    {rateLabel(bank)}
+                  </span>
+
+                  <span className="text-[10px] text-blue-400 transition group-hover:-translate-x-1">
+                    ↗
+                  </span>
+                </div>
+              </Link>
+            ))}
         </div>
-      </section>
+
+        {/* NEXT MEETING */}
+        {nextEvent && (
+          <div className="mt-3 flex items-center justify-between gap-2 rounded-xl border border-blue-100 bg-[#eef5fd] px-3 py-3 lg:mt-2 lg:flex-wrap lg:rounded-lg lg:px-2.5 lg:py-2">
+            <div className="min-w-0">
+              <p className="text-[9px] font-black text-[#2471df]">
+                أقرب إعلان مجدول
+              </p>
+
+              <p className="mt-1 text-[11px] font-bold text-[#091b32] lg:mt-0.5">
+                {bankShortName(nextEvent.bank)}
+              </p>
+            </div>
+
+            <time
+              dateTime={nextEvent.meeting.meeting_date}
+              className="shrink-0 text-[11px] font-black text-[#1e5bb8]"
+            >
+              {dateAr(nextEvent.meeting.meeting_date)}
+            </time>
+          </div>
+        )}
+
+        {/* DATA NOTE */}
+        <div className="mt-3 flex items-start gap-2 border-t border-slate-100 pt-3 lg:mt-2 lg:pt-2">
+          <span className="shrink-0 text-[12px] text-blue-500 lg:text-[10px]">
+            ⓘ
+          </span>
+
+          <p className="text-[10px] leading-[1.8] text-slate-500 lg:text-[9px] lg:leading-4">
+            الأسعار مستمدة من البيانات المنشورة وليست بثًا مباشرًا لحظيًا.
+            يمكن الضغط على اسم أي بنك للاطلاع على التفاصيل.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
 
       {/* SECTION NAVIGATION */}
       <nav
@@ -1633,314 +1901,449 @@ export default async function InterestRatesPage({
         </div>
       )}
 
-      {/* CURRENT RATES */}
-      <section
-        id="rates"
-        className="scroll-mt-20 bg-[#f4f7fb] py-10 sm:py-14"
-      >
-        <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-10">
-          <SectionHeading
-            eyebrow="المقارنة الرئيسية"
-            title="أسعار الفائدة الحالية حسب البنك المركزي"
-            description={comparisonIntro}
-          />
+      
+{/* CURRENT RATES */}
+<section
+  id="rates"
+  className="scroll-mt-20 bg-[#f4f7fb] pb-7 pt-4 sm:pb-12 sm:pt-7"
+>
+  <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-10">
 
-          <RateTable banks={banks} today={today} />
+    {/* SECTION INTRO */}
+    <div className="mb-4 text-right sm:mb-6">
+      <h2 className="text-[22px] font-black leading-[1.4] tracking-tight text-[#091b32] sm:text-[32px] sm:leading-[1.35] lg:text-[36px]">
+        أسعار الفائدة الحالية حسب البنك المركزي
+      </h2>
 
-          <div className="mt-5 hidden gap-3 md:grid md:grid-cols-3">
-            {[
-              {
-                title: "الفائدة الأمريكية",
-                text: "يعتمد الاحتياطي الفيدرالي نطاقًا مستهدفًا بدل سعر واحد.",
-              },
-              {
-                title: "الفائدة الأوروبية",
-                text: "يجب تحديد السعر الأوروبي المستخدم، مثل سعر تسهيلات الإيداع.",
-              },
-              {
-                title: "اختلاف الأسعار المرجعية",
-                text: "اختلاف النسب لا يعني وحده اختلاف مستوى التشدد النقدي.",
-              },
-            ].map((item) => (
-              <div
-                key={item.title}
-                className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5"
-              >
-                <h3 className="text-sm font-black text-slate-900">
-                  {item.title}
-                </h3>
-                <p className="mt-2 text-xs leading-7 text-slate-600">
-                  {item.text}
-                </p>
-              </div>
-            ))}
+      {/* MOBILE DESCRIPTION */}
+      <p className="mt-2 text-right text-[12px] font-medium leading-[1.9] text-slate-600 sm:hidden">
+        قارن أسعار الفائدة لدى 8 بنوك مركزية عالمية،
+        وتعرّف على آخر قراراتها ومواعيد اجتماعاتها
+        القادمة، مع روابط المصادر الرسمية.
+      </p>
+
+      {/* TABLET AND DESKTOP DESCRIPTION — UNCHANGED */}
+      <p className="mt-2 hidden text-justify text-[13px] font-medium leading-7 text-slate-600 sm:block sm:text-[15px] sm:leading-8">
+        {comparisonIntro}
+      </p>
+    </div>
+
+    {/* CENTRAL BANK COMPARISON TABLE */}
+    <RateTable banks={banks} today={today} />
+
+    {/* ADDITIONAL INFORMATION — DESKTOP UNCHANGED */}
+    <div className="mt-5 hidden gap-3 md:grid md:grid-cols-3">
+      {[
+        {
+          title: "الفائدة الأمريكية",
+          text: "يعتمد الاحتياطي الفيدرالي نطاقًا مستهدفًا بدل سعر واحد.",
+        },
+        {
+          title: "الفائدة الأوروبية",
+          text: "يجب تحديد السعر الأوروبي المستخدم، مثل سعر تسهيلات الإيداع.",
+        },
+        {
+          title: "اختلاف الأسعار المرجعية",
+          text: "اختلاف النسب لا يعني وحده اختلاف مستوى التشدد النقدي.",
+        },
+      ].map((item) => (
+        <div
+          key={item.title}
+          className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5"
+        >
+          <h3 className="text-sm font-black text-slate-900">
+            {item.title}
+          </h3>
+
+          <p className="mt-2 text-xs leading-7 text-slate-600">
+            {item.text}
+          </p>
+        </div>
+      ))}
+    </div>
+
+  </div>
+</section>
+
+
+     
+{/* COMPLETE CALENDAR */}
+<section
+  id="calendar"
+  className="scroll-mt-20 bg-white pt-5 pb-8 sm:pt-7 sm:pb-10"
+>
+  <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-10">
+
+    
+{/* MOBILE HEADING ONLY */}
+<div className="mb-4 text-right sm:hidden">
+  <h2 className="text-[22px] font-black leading-[1.4] tracking-tight text-[#091b32]">
+    مواعيد اجتماعات البنوك المركزية
+  </h2>
+
+  <p className="mt-2 text-[12px] leading-[1.85] text-slate-600">
+    تابع مواعيد قرارات الفائدة القادمة للبنوك المركزية
+    العالمية، مع توقيت الإعلان وروابط التقويم الرسمي.
+  </p>
+</div>
+
+{/* TABLET AND DESKTOP — UNCHANGED */}
+<div className="hidden sm:block">
+  <SectionHeading
+    eyebrow="التقويم الاقتصادي"
+    title="جدول اجتماعات البنوك المركزية 2026–2027"
+    description={meetingsIntro}
+  />
+</div>
+
+
+    <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_12px_30px_rgba(15,23,42,0.055)] sm:rounded-[28px]">
+
+      {/* HEADER AND FILTERS */}
+      <div className="border-b border-slate-200 bg-gradient-to-l from-white to-blue-50 p-4 sm:p-6">
+
+        <div className="flex flex-wrap items-center justify-between gap-3">
+
+          <div>
+            <h3 className="text-lg font-black sm:text-2xl">
+              تقويم قرارات أسعار الفائدة
+            </h3>
+
+            <p className="mt-1 text-xs text-slate-500">
+              جميع الإعلانات المستقبلية المسجلة حتى آخر تاريخ متاح
+            </p>
+          </div>
+
+          {/* DYNAMIC COUNTER */}
+          <div className="flex flex-wrap items-center gap-2">
+
+            <span className="rounded-full bg-[#2471df] px-3 py-2 text-[11px] font-black text-white">
+              عرض {visibleMeetings.length} من أصل{" "}
+              {filteredMeetings.length} اجتماعًا
+            </span>
+
+            {(selectedBank !== "all" ||
+              selectedYear !== "all") && (
+              <span className="rounded-full border border-blue-200 bg-white px-3 py-2 text-[10px] font-black text-[#1e5bb8]">
+                إجمالي التقويم: {allMeetings.length}
+              </span>
+            )}
+
           </div>
         </div>
-      </section>
 
-      {/* COMPLETE CALENDAR */}
-      <section
-        id="calendar"
-        className="scroll-mt-20 bg-white py-10 sm:py-14"
-      >
-        <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-10">
-          <SectionHeading
-            eyebrow="التقويم الاقتصادي"
-            title="جدول اجتماعات البنوك المركزية 2026–2027"
-            description={meetingsIntro}
-          />
+        {/* EXISTING FILTER COMPONENT */}
+        <CalendarFilters
+          key={`${selectedBank}-${selectedYear}`}
+          selectedBank={selectedBank}
+          selectedYear={selectedYear}
+          bankOptions={bankOptions}
+          yearOptions={calendarYearOptions}
+        />
 
-          <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_12px_30px_rgba(15,23,42,0.055)] sm:rounded-[28px]">
-            <div className="border-b border-slate-200 bg-gradient-to-l from-white to-blue-50 p-4 sm:p-6">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <h3 className="text-lg font-black sm:text-2xl">
-                    تقويم قرارات أسعار الفائدة
-                  </h3>
-                  <p className="mt-1 text-xs text-slate-500">
-                    جميع الإعلانات المستقبلية المسجلة
-                    حتى آخر تاريخ متاح
+        {(selectedBank !== "all" ||
+          selectedYear !== "all") && (
+          <Link
+            href={`${PAGE}#calendar`}
+            className="mt-3 inline-block text-xs font-black text-blue-700 underline underline-offset-4"
+          >
+            إعادة عرض جميع الاجتماعات
+          </Link>
+        )}
+
+      </div>
+
+      {/* DESKTOP TABLE */}
+      <div className="hidden md:block">
+
+        <table className="w-full table-fixed text-center">
+
+          <thead className="bg-[#0b2949] text-white">
+            <tr className="text-xs">
+
+              <th className="w-[27%] px-4 py-4 text-right">
+                البنك المركزي
+              </th>
+
+              <th className="w-[10%] px-3 py-4">
+                العملة
+              </th>
+
+              <th className="w-[19%] px-3 py-4">
+                تاريخ الإعلان
+              </th>
+
+              <th className="w-[14%] px-3 py-4">
+                الوقت UTC
+              </th>
+
+              <th className="w-[12%] px-3 py-4">
+                حالة الموعد
+              </th>
+
+              <th className="w-[18%] px-3 py-4">
+                التقويم الرسمي
+              </th>
+
+            </tr>
+          </thead>
+
+          <tbody>
+            {visibleMeetings.map(
+              ({ bank, meeting }, index) => (
+                <tr
+                  key={`${bank.slug}-${
+                    meeting.id || meeting.meeting_date
+                  }`}
+                  className={`border-t border-slate-200 transition hover:bg-blue-50/60 ${
+                    index % 2
+                      ? "bg-slate-50"
+                      : "bg-white"
+                  }`}
+                >
+
+                  {/* CLICKABLE BANK IDENTITY */}
+                  <td className="px-4 py-3.5 text-right">
+
+                    <Link
+                      href={`/interest-rates/${bank.slug}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title={`عرض صفحة ${bankName(bank)}`}
+                      aria-label={`عرض تفاصيل ${bankName(bank)} في تبويب جديد`}
+                      className="group inline-flex max-w-full items-center rounded-xl p-1 transition hover:bg-blue-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
+                    >
+                      <div className="[&_.font-black]:group-hover:text-[#2471df]">
+                        <BankIdentity bank={bank} compact />
+                      </div>
+                    </Link>
+
+                  </td>
+
+                  {/* CURRENCY */}
+                  <td
+                    dir="ltr"
+                    className="px-3 py-3.5 text-center text-xs font-black text-slate-600"
+                  >
+                    {bankCurrency(bank)}
+                  </td>
+
+                  {/* ANNOUNCEMENT DATE */}
+                  <td className="px-3 py-3.5 text-center text-xs font-black">
+                    <time dateTime={meeting.meeting_date}>
+                      {dateAr(meeting.meeting_date)}
+                    </time>
+                  </td>
+
+                  {/* ANNOUNCEMENT TIME */}
+                  <td
+                    dir="ltr"
+                    className="px-3 py-3.5 text-center text-xs font-bold text-slate-600"
+                  >
+                    {meeting.announcement_at
+                      ? `${meeting.announcement_at.slice(11, 16)} UTC`
+                      : "غير محدد"}
+                  </td>
+
+                  {/* MEETING STATUS */}
+                  <td className="px-3 py-3.5 text-center">
+                    <span className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-[10px] font-black text-blue-700">
+                      مجدول
+                    </span>
+                  </td>
+
+                  {/* OFFICIAL CALENDAR */}
+                  <td className="px-3 py-3.5 text-center">
+                    <SourceLink
+                      href={
+                        safeUrl(
+                          meeting.reference_calendar_url
+                        ) || calendarSource(bank)
+                      }
+                      label="التقويم الرسمي"
+                    />
+                  </td>
+
+                </tr>
+              )
+            )}
+          </tbody>
+
+        </table>
+      </div>
+
+      {/* MOBILE AND TABLET */}
+      <div className="divide-y divide-slate-200 md:hidden">
+
+        {mobileVisibleMeetings.map(
+          ({ bank, meeting }) => (
+            <article
+              key={`${bank.slug}-${
+                meeting.id || meeting.meeting_date
+              }`}
+              className="p-4"
+            >
+
+              <div className="flex items-start justify-between gap-3">
+
+                {/* CLICKABLE BANK IDENTITY */}
+                <Link
+                  href={`/interest-rates/${bank.slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={`عرض صفحة ${bankName(bank)}`}
+                  aria-label={`عرض تفاصيل ${bankName(bank)} في تبويب جديد`}
+                  className="group min-w-0 rounded-xl p-1 transition hover:bg-blue-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
+                >
+                  <div className="[&_.font-black]:group-hover:text-[#2471df]">
+                    <BankIdentity bank={bank} compact />
+                  </div>
+                </Link>
+
+                {/* DATE AND TIME */}
+                <div className="shrink-0 text-left">
+
+                  <time
+                    dateTime={meeting.meeting_date}
+                    className="text-[11px] font-black text-[#1e5bb8]"
+                  >
+                    {dateAr(meeting.meeting_date)}
+                  </time>
+
+                  <p
+                    dir="ltr"
+                    className="mt-1 text-[10px] text-slate-500"
+                  >
+                    {meeting.announcement_at
+                      ? `${meeting.announcement_at.slice(11, 16)} UTC`
+                      : "الوقت غير محدد"}
                   </p>
-                </div>
 
-                <span className="rounded-full bg-[#2471df] px-3 py-2 text-xs font-black text-white">
-                  {filteredMeetings.length} من{" "}
-                  {allMeetings.length} موعدًا
-                </span>
+                </div>
               </div>
 
-              <CalendarFilters
-  key={`${selectedBank}-${selectedYear}`}
-  selectedBank={selectedBank}
-  selectedYear={selectedYear}
-  bankOptions={bankOptions}
-  yearOptions={calendarYearOptions}
-/>
+              {/* STATUS AND OFFICIAL SOURCE */}
+              <div className="mt-3 flex items-center justify-between gap-2">
 
-              {(selectedBank !== "all" ||
-                selectedYear !== "all") && (
-                <Link
-                  href={`${PAGE}#calendar`}
-                  className="mt-3 inline-block text-xs font-black text-blue-700 underline underline-offset-4"
-                >
-                  إعادة عرض جميع الاجتماعات
-                </Link>
-              )}
-            </div>
+                <span className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-[10px] font-black text-blue-700">
+                  إعلان مجدول
+                </span>
 
-            <div className="hidden md:block">
-              <table className="w-full table-fixed text-center">
-                <thead className="bg-[#0b2949] text-white">
-                  <tr className="text-xs">
-                    <th className="px-5 py-4 text-right">
-                      البنك المركزي
-                    </th>
-                    <th className="px-4 py-4">
-                      العملة
-                    </th>
-                    <th className="px-4 py-4">
-                      تاريخ الإعلان
-                    </th>
-                    <th className="px-4 py-4">
-                      الوقت UTC
-                    </th>
-                    <th className="px-4 py-4">
-                      حالة الموعد
-                    </th>
-                    <th className="px-4 py-4">
-                      التقويم الرسمي
-                    </th>
-                  </tr>
-                </thead>
+                <SourceLink
+                  href={
+                    safeUrl(
+                      meeting.reference_calendar_url
+                    ) || calendarSource(bank)
+                  }
+                  label="التقويم الرسمي"
+                />
 
-                <tbody>
-                  {visibleMeetings.map(
-                    ({ bank, meeting }, index) => (
-                      <tr
-                        key={`${bank.slug}-${
-                          meeting.id ||
-                          meeting.meeting_date
-                        }`}
-                        className={`border-t border-slate-200 ${
-                          index % 2
-                            ? "bg-slate-50"
-                            : "bg-white"
-                        }`}
-                      >
-                        <td className="px-5 py-3.5 text-right">
-                          <div className="flex items-center justify-start gap-2">
-                            <span className="text-lg">
-                              {bank.flag_emoji || "🌐"}
-                            </span>
-                            <span className="text-xs font-black">
-                              {bankName(bank)}
-                            </span>
-                          </div>
-                        </td>
+              </div>
 
-                        <td
-                          dir="ltr"
-                          className="px-4 py-3.5 text-center text-xs font-black text-slate-600"
-                        >
-                          {bankCurrency(bank)}
-                        </td>
+            </article>
+          )
+        )}
 
-                        <td className="px-4 py-3.5 text-xs font-black">
-                          <time
-                            dateTime={
-                              meeting.meeting_date
-                            }
-                          >
-                            {dateAr(
-                              meeting.meeting_date
-                            )}
-                          </time>
-                        </td>
+      </div>
 
-                        <td
-                          dir="ltr"
-                          className="px-4 py-3.5 text-center text-xs font-bold text-slate-600"
-                        >
-                          {meeting.announcement_at
-                            ? `${meeting.announcement_at.slice(
-                                11,
-                                16
-                              )} UTC`
-                            : "غير محدد"}
-                        </td>
+      {/* SHOW MORE / SHOW LESS */}
+      {filteredMeetings.length > 15 && (
+        <div className="flex justify-center border-t border-slate-200 bg-white px-4 py-5">
 
-                        <td className="px-4 py-3.5">
-                          <span className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-[10px] font-black text-blue-700">
-                            مجدول
-                          </span>
-                        </td>
+          
+{/* SHOW MORE / SHOW LESS */}
+{filteredMeetings.length > 5 && (
+  <div className="border-t border-slate-200 bg-white px-4 py-4 sm:px-6">
 
-                        <td className="px-4 py-3.5">
-                          <SourceLink
-                            href={
-                              safeUrl(
-                                meeting.reference_calendar_url
-                              ) ||
-                              calendarSource(bank)
-                            }
-                            label="التقويم"
-                          />
-                        </td>
-                      </tr>
-                    )
-                  )}
-                </tbody>
-              </table>
-            </div>
+    {/* MOBILE: FIRST 5 MEETINGS */}
+    <div className="md:hidden">
+      <Link
+        href={
+          showAllMeetings
+            ? `${PAGE}?bank=${selectedBank}&year=${selectedYear}#calendar`
+            : `${PAGE}?bank=${selectedBank}&year=${selectedYear}&show_all=1#calendar`
+        }
+        className="flex min-h-11 w-full items-center justify-center rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-[12px] font-black text-[#1e5bb8] transition hover:bg-blue-100"
+      >
+        {showAllMeetings
+          ? "عرض أول 5 اجتماعات ↑"
+          : `عرض جميع الاجتماعات (${filteredMeetings.length}) ←`}
+      </Link>
+    </div>
 
-            <div className="divide-y divide-slate-200 md:hidden">
-              {visibleMeetings.map(
-                ({ bank, meeting }) => (
-                  <article
-                    key={`${bank.slug}-${
-                      meeting.id ||
-                      meeting.meeting_date
-                    }`}
-                    className="p-4"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <BankIdentity
-                        bank={bank}
-                        compact
-                      />
+    {/* DESKTOP: KEEP ORIGINAL 15-MEETING LIMIT */}
+    {filteredMeetings.length > 15 && (
+      <div className="hidden justify-center md:flex">
+        <Link
+          href={
+            showAllMeetings
+              ? `${PAGE}?bank=${selectedBank}&year=${selectedYear}#calendar`
+              : `${PAGE}?bank=${selectedBank}&year=${selectedYear}&show_all=1#calendar`
+          }
+          className="rounded-xl bg-[#2471df] px-7 py-3 text-xs font-black text-white transition hover:bg-[#1e5bb8]"
+        >
+          {showAllMeetings
+            ? "عرض أول 15 اجتماعًا"
+            : `عرض جميع الاجتماعات (${filteredMeetings.length})`}
+        </Link>
+      </div>
+    )}
 
-                      <div className="shrink-0 text-left">
-                        <time
-                          dateTime={
-                            meeting.meeting_date
-                          }
-                          className="text-[11px] font-black text-[#1e5bb8]"
-                        >
-                          {dateAr(
-                            meeting.meeting_date
-                          )}
-                        </time>
-
-                        <p
-                          dir="ltr"
-                          className="mt-1 text-[10px] text-slate-500"
-                        >
-                          {meeting.announcement_at
-                            ? `${meeting.announcement_at.slice(
-                                11,
-                                16
-                              )} UTC`
-                            : "الوقت غير محدد"}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="mt-3 flex items-center justify-between gap-2">
-                      <span className="rounded-full bg-blue-50 px-3 py-1 text-[10px] font-black text-blue-700">
-                        إعلان مجدول
-                      </span>
-
-                      <SourceLink
-                        href={
-                          safeUrl(
-                            meeting.reference_calendar_url
-                          ) ||
-                          calendarSource(bank)
-                        }
-                        label="التقويم الرسمي"
-                      />
-                    </div>
-                  </article>
-                )
-              )}
-            </div>
-
-{filteredMeetings.length > 15 && (
-  <div className="flex justify-center border-t border-slate-200 bg-white px-4 py-5">
-    <Link
-      href={
-        showAllMeetings
-          ? `${PAGE}?bank=${selectedBank}&year=${selectedYear}#calendar`
-          : `${PAGE}?bank=${selectedBank}&year=${selectedYear}&show_all=1#calendar`
-      }
-      className="rounded-xl bg-[#2471df] px-7 py-3 text-xs font-black text-white transition hover:bg-[#1e5bb8]"
-    >
-      {showAllMeetings
-        ? "عرض أول 15 اجتماعًا"
-        : `عرض جميع الاجتماعات (${filteredMeetings.length})`}
-    </Link>
   </div>
 )}
 
-            {!filteredMeetings.length && (
-              <div className="p-5">
-                <EmptyState text="لا توجد اجتماعات مطابقة للفلاتر المحددة." />
-              </div>
-            )}
 
-
-            <div className="border-t border-slate-200 bg-slate-50 px-4 py-4 text-[11px] leading-7 text-slate-600 sm:px-7">
-              تعرض الأوقات بتوقيت UTC عند توفرها.
-              مواعيد الاجتماعات المستقبلية قابلة
-              للتغيير، ولا يعني انعقاد الاجتماع بالضرورة
-              تغيير سعر الفائدة. يشير تاريخ الاجتماع
-              المعروض إلى تاريخ القرار المسجل.
-            </div>
-          </div>
         </div>
-      </section>
+      )}
+
+      {/* EMPTY STATE */}
+      {!filteredMeetings.length && (
+        <div className="p-5">
+          <EmptyState text="لا توجد اجتماعات مطابقة للفلاتر المحددة." />
+        </div>
+      )}
+
+      {/* DATA NOTE */}
+      <div className="border-t border-slate-200 bg-slate-50 px-4 py-4 text-[11px] leading-7 text-slate-600 sm:px-7">
+        تعرض الأوقات بتوقيت UTC عند توفرها.
+        مواعيد الاجتماعات المستقبلية قابلة للتغيير،
+        ولا يعني انعقاد الاجتماع بالضرورة تغيير سعر الفائدة.
+        يشير تاريخ الاجتماع المعروض إلى تاريخ القرار المسجل.
+      </div>
+
+    </div>
+  </div>
+</section>
+
 
       {/* HISTORY + CHART */}
 <section
   id="history"
-  className="scroll-mt-20 bg-[#f4f7fb] py-10 sm:py-14"
+  className="scroll-mt-20 bg-[#f4f7fb] pt-5 pb-8 sm:pt-7 sm:pb-10"
 >
   <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-10">
-    <SectionHeading
-      eyebrow="البيانات التاريخية"
-      title="تاريخ تغير أسعار الفائدة للبنوك المركزية"
-      description={historyIntro}
-    />
+    
+{/* MOBILE HEADING ONLY */}
+<div className="mb-4 text-right sm:hidden">
+  <h2 className="text-[22px] font-black leading-[1.4] tracking-tight text-[#091b32]">
+    تاريخ أسعار الفائدة
+  </h2>
+
+  <p className="mt-2 text-[12px] leading-[1.85] text-slate-600">
+    استعرض تطور أسعار الفائدة وقرارات الرفع والخفض
+    والتثبيت عبر الرسم البياني والسجل التاريخي.
+  </p>
+</div>
+
+{/* TABLET AND DESKTOP — UNCHANGED */}
+<div className="hidden sm:block">
+  <SectionHeading
+    eyebrow="البيانات التاريخية"
+    title="تاريخ تغير أسعار الفائدة للبنوك المركزية"
+    description={historyIntro}
+  />
+</div>
+
 
     <HistoryExplorer
       banks={banks.map((bank) => ({
@@ -1959,580 +2362,1523 @@ export default async function InterestRatesPage({
   </div>
 </section>
 
-      {/* RECENT DECISIONS */}
-      <section
-        id="decisions"
-        className="scroll-mt-20 bg-white py-10 sm:py-14"
-      >
-        <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-10">
-          <SectionHeading
-            eyebrow="آخر تطورات السياسة النقدية"
-            title="أحدث قرارات رفع وخفض وتثبيت الفائدة"
-            description="آخر القرارات التاريخية المتاحة مرتبة حسب تاريخ الإعلان، مع سعر الفائدة الناتج عن القرار وحجم التغير بالنقاط الأساسية."
-          />
+      {/* RECENT DECISIONS — LAST 5 */}
+<section
+  id="decisions"
+  className="scroll-mt-20 bg-white pb-8 pt-5 sm:pb-10 sm:pt-7"
+>
+  <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-10">
+    <SectionHeading
+      title="آخر 5 قرارات لأسعار الفائدة"
+      description="تابع أحدث خمسة قرارات مسجلة لدى البنوك المركزية العالمية، مرتبة من الأحدث إلى الأقدم، مع مقارنة سعر الفائدة قبل القرار وبعده."
+    />
 
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-            {recentDecisions.map(({ bank, row }) => (
-              <article
-                key={`${bank.slug}-${row.date}`}
-                className="rounded-[20px] border border-slate-200 bg-white p-4 shadow-[0_8px_25px_rgba(15,23,42,0.045)] transition hover:border-blue-200 sm:p-5"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <BankIdentity bank={bank} compact />
+    {recentDecisions.length > 0 ? (
+      <div className="overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-[0_8px_28px_rgba(15,23,42,0.04)]">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-slate-50/70 px-4 py-3 sm:px-5">
+          <span className="text-xs font-black text-slate-700">
+            أحدث القرارات المسجلة
+          </span>
 
-                  <span
-                    dir="ltr"
-                    className="shrink-0 text-lg font-black text-[#1e5bb8]"
-                  >
-                    {formatRate(row.rate)}
-                  </span>
+          <span className="rounded-full bg-blue-50 px-3 py-1.5 text-[11px] font-black text-blue-700">
+            {recentDecisions.length} قرارات
+          </span>
+        </div>
+
+        <div className="divide-y divide-slate-200">
+          {recentDecisions.map(({ bank, row }) => (
+            <article
+              key={`${bank.slug}-${row.date}`}
+              className="px-4 py-4 transition hover:bg-blue-50/40 sm:px-5"
+            >
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <Link
+                  href={`/interest-rates/${bank.slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group min-w-0 rounded-lg transition hover:text-blue-700"
+                >
+                  <div className="[&_.font-black]:group-hover:text-blue-700">
+                    <BankIdentity bank={bank} compact />
+                  </div>
+                </Link>
+
+                <span
+                  className={`inline-flex shrink-0 items-center rounded-lg border px-3 py-1.5 text-[11px] font-black ${
+                    row.changeBps == null
+                      ? "border-slate-200 bg-slate-50 text-slate-600"
+                      : row.changeBps > 0
+                      ? "border-rose-200 bg-rose-50 text-rose-700"
+                      : row.changeBps < 0
+                      ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                      : "border-blue-200 bg-blue-50 text-blue-700"
+                  }`}
+                >
+                  {changeLabel(row.changeBps)}
+                </span>
+              </div>
+
+              <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                <div className="rounded-xl bg-slate-50 p-3 text-center">
+                  <p className="text-[10px] font-bold text-slate-500">
+                    تاريخ القرار
+                  </p>
+                  <p className="mt-1 text-[11px] font-black text-slate-900">
+                    {dateAr(row.date)}
+                  </p>
                 </div>
 
-                <div className="mt-4 flex items-center justify-between gap-2 rounded-xl border border-slate-100 bg-slate-50 p-3">
-                  <div>
-                    <p className="text-[10px] text-slate-500">
-                      تاريخ القرار
-                    </p>
-                    <p className="mt-1 text-xs font-black">
-                      {dateAr(row.date)}
-                    </p>
-                  </div>
+                <div className="rounded-xl bg-slate-50 p-3 text-center">
+                  <p className="text-[10px] font-bold text-slate-500">
+                    السعر السابق
+                  </p>
+                  <p
+                    dir="ltr"
+                    className="mt-1 text-sm font-black text-slate-700"
+                  >
+                    {formatRate(row.previousRate)}
+                  </p>
+                </div>
 
-                  <span
-                    className={`text-xs font-black ${changeClass(
+                <div className="rounded-xl bg-blue-50/70 p-3 text-center">
+                  <p className="text-[10px] font-bold text-slate-500">
+                    السعر الجديد
+                  </p>
+                  <p
+                    dir="ltr"
+                    className="mt-1 text-sm font-black text-[#1e5bb8]"
+                  >
+                    {formatRate(row.rate)}
+                  </p>
+                </div>
+
+                <div className="rounded-xl bg-slate-50 p-3 text-center">
+                  <p className="text-[10px] font-bold text-slate-500">
+                    مقدار التغيير
+                  </p>
+                  <p
+                    dir="ltr"
+                    className={`mt-1 text-sm font-black ${changeClass(
                       row.changeBps
                     )}`}
                   >
-                    {changeLabel(row.changeBps)}
-                  </span>
+                    {row.changeBps == null
+                      ? "—"
+                      : `${row.changeBps > 0 ? "+" : ""}${row.changeBps} bps`}
+                  </p>
                 </div>
-              </article>
-            ))}
-          </div>
-
-          {!recentDecisions.length && (
-            <EmptyState text="لا توجد قرارات تاريخية منشورة حاليًا." />
-          )}
+              </div>
+            </article>
+          ))}
         </div>
-      </section>
 
-      {/* BANK DIRECTORY */}
-      <section
-        id="banks"
-        className="scroll-mt-20 bg-[#f4f7fb] py-10 sm:py-14"
-      >
-        <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-10">
-          <SectionHeading
-            eyebrow="دليل البنوك المركزية"
-            title="دليل البنوك المركزية العالمية وأسعار الفائدة"
-            description="تعرف على أهم البنوك المركزية العالمية، بما فيها الاحتياطي الفيدرالي الأمريكي والبنك المركزي الأوروبي وبنك إنجلترا وبنك اليابان. استعرض أسعار الفائدة الحالية، وأهداف السياسة النقدية، ومواعيد الاجتماعات القادمة لكل بنك مركزي."
-          />
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 bg-slate-50/60 px-4 py-3 sm:px-5">
+          <p className="text-[11px] leading-6 text-slate-500">
+            تعرض هذه القائمة آخر القرارات التاريخية المتاحة في قاعدة البيانات.
+          </p>
 
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {banks.map((bank) => {
-              const next = getNextMeeting(bank, today);
-              const details = BANK_DETAILS[bank.slug];
+          <a
+            href="#history"
+            className="text-[11px] font-black text-[#1e5bb8] transition hover:underline"
+          >
+            استعراض السجل التاريخي الكامل ←
+          </a>
+        </div>
+      </div>
+    ) : (
+      <EmptyState text="لا توجد قرارات تاريخية منشورة حاليًا." />
+    )}
+  </div>
+</section>
 
-              return (
-                <article
-                  key={bank.slug}
-                  className="flex h-full flex-col rounded-[20px] border border-slate-200 bg-white p-5 shadow-sm transition hover:border-blue-200 hover:shadow-md"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <BankMark bank={bank} large />
+      
 
-                    <span
-                      dir="ltr"
-                      className="rounded-xl bg-blue-50 px-3 py-2 text-lg font-black text-blue-700"
-                    >
-                      {rateLabel(bank)}
-                    </span>
-                  </div>
 
-                  
-<h3 className="mt-4 text-base font-black leading-7">
-  <Link
-    href={`/interest-rates/${bank.slug}`}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="transition-colors hover:text-[#2471df] hover:underline"
-  >
-    {bankName(bank)}
-  </Link>
-</h3>
+{/* BANK DIRECTORY */}
+<section
+  id="banks"
+  className="scroll-mt-20 bg-[#f4f7fb] pb-7 pt-4 sm:pb-10 sm:pt-7"
+>
+  <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-10">
 
+    {/* SECTION HEADING */}
+    <div className="md:hidden mb-4 text-right">
+      <h2 className="text-[21px] font-black leading-[1.45] tracking-tight text-[#071c34]">
+        دليل البنوك المركزية
+        <span className="block text-[#2471df]">
+          وأسعار الفائدة العالمية
+        </span>
+      </h2>
+
+      <p className="mt-2 text-[12px] leading-[1.85] text-slate-600">
+        تعرف على أسعار الفائدة الحالية لدى 8 بنوك مركزية،
+        ومواعيد قراراتها القادمة، مع إمكانية استعراض
+        التفاصيل والسجل التاريخي لكل بنك.
+      </p>
+    </div>
+
+    <div className="hidden md:block">
+      <SectionHeading
+        title="دليل البنوك المركزية العالمية وأسعار الفائدة"
+        description="تعرف على أهم البنوك المركزية العالمية، بما فيها الاحتياطي الفيدرالي الأمريكي والبنك المركزي الأوروبي وبنك إنجلترا وبنك اليابان. استعرض أسعار الفائدة الحالية، وأهداف السياسة النقدية، ومواعيد الاجتماعات القادمة لكل بنك مركزي."
+      />
+    </div>
+
+    <div className="grid gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-4">
+      {banks.map((bank) => {
+        const next = getNextMeeting(bank, today);
+        const details = BANK_DETAILS[bank.slug];
+
+        return (
+          <article
+            key={bank.slug}
+            className="flex h-full min-w-0 flex-col rounded-[17px] border border-slate-200 bg-white p-3 shadow-sm transition hover:border-blue-200 hover:shadow-md sm:rounded-[18px] sm:p-4"
+          >
+            {/* HEADER */}
+            <div className="flex min-h-[42px] items-center justify-between gap-2 sm:min-h-[48px]">
+              <Link
+                href={`/interest-rates/${bank.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex min-w-0 flex-1 items-center gap-2"
+              >
+                <BankMark bank={bank} large />
+
+                <div className="min-w-0 flex-1 text-right">
+                  <h3
+                    className="text-[12px] font-black leading-[1.5] text-slate-950 transition group-hover:text-[#2471df] sm:truncate sm:text-[12px] sm:leading-5"
+                    title={bankName(bank)}
+                  >
+                    {bankName(bank)}
+                  </h3>
 
                   <p
                     dir="ltr"
-                    className="mt-1 text-right text-[11px] font-medium text-slate-500"
+                    className="mt-0.5 truncate text-right text-[9px] text-slate-500"
                   >
                     {details?.english}
                   </p>
+                </div>
+              </Link>
 
-                  <p className="mt-3 flex-1 text-xs leading-7 text-slate-600">
-                    {details?.description}
-                  </p>
-
-                  <div className="mt-4 rounded-xl bg-slate-50 p-3">
-                    <p className="text-[10px] text-slate-500">
-                      موعد القرار القادم
-                    </p>
-                    <p className="mt-1 text-xs font-black text-slate-900">
-                      {next
-                        ? dateAr(next.meeting_date)
-                        : "لم يُعلن"}
-                    </p>
-                  </div>
-
-                  
-
-<div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-  <Link
-    href={`/interest-rates/${bank.slug}`}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="inline-flex min-h-9 items-center justify-center rounded-lg bg-[#2471df] px-4 py-2 text-center text-[11px] font-black text-white transition hover:bg-[#1e5bb8]"
-  >
-    تفاصيل البنك ↗
-  </Link>
-
-  <Link
-    href={`${PAGE}?history_bank=${bank.slug}#history`}
-    className="inline-flex min-h-9 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-center text-[11px] font-black text-blue-700 transition hover:bg-blue-100"
-  >
-    تاريخ الفائدة ←
-  </Link>
-</div>
-
-
-                </article>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* EDUCATIONAL GUIDE */}
-      <section
-        id="guide"
-        className="scroll-mt-20 bg-white py-10 sm:py-14"
-      >
-        <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-10">
-          <SectionHeading
-            eyebrow="دليل السياسة النقدية"
-            title="ما هي أسعار الفائدة وكيف تحددها البنوك المركزية؟"
-            description="فهم أسعار الفائدة لا يقتصر على معرفة النسبة الحالية، بل يشمل طريقة اتخاذ القرار وتوقعات الأسواق ومسار السياسة النقدية."
-          />
-
-          <div className="grid gap-5 lg:grid-cols-[1.45fr_0.55fr]">
-            <article className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm">
-              <div className="border-b border-slate-200 bg-gradient-to-l from-white to-blue-50 p-5 sm:p-7">
-                <h3 className="text-xl font-black sm:text-2xl">
-                  كيف يعمل سعر الفائدة المرجعي؟
-                </h3>
-
-                <p className="mt-4 text-[13px] leading-8 text-slate-600 sm:text-[15px]">
-                  تستخدم البنوك المركزية أسعار الفائدة
-                  للتأثير في تكلفة الاقتراض والسيولة
-                  والطلب داخل الاقتصاد. وقد يؤدي تشديد
-                  السياسة النقدية إلى إبطاء النشاط
-                  الاقتصادي والحد من الضغوط التضخمية،
-                  بينما قد يهدف خفض الفائدة إلى دعم
-                  التمويل والإنفاق عندما تسمح الظروف
-                  الاقتصادية بذلك.
-                </p>
-
-                <p className="mt-4 text-[13px] leading-8 text-slate-600 sm:text-[15px]">
-                  لكن البنوك المركزية لا تتخذ قراراتها
-                  بناءً على التضخم وحده؛ إذ تتابع
-                  التوظيف والأجور والنمو والائتمان
-                  والتوقعات الاقتصادية. كما تختلف
-                  الأدوات النقدية بين الولايات المتحدة
-                  ومنطقة اليورو واليابان وغيرها من
-                  الاقتصادات.
-                </p>
-              </div>
-
-              <div className="grid gap-3 p-4 sm:grid-cols-2 sm:p-6">
-                {[
-                  {
-                    n: "01",
-                    title: "تقييم التضخم",
-                    text: "تراجع البنوك اتجاه الأسعار والتضخم الأساسي والتوقعات المستقبلية.",
-                  },
-                  {
-                    n: "02",
-                    title: "تحليل النمو والتوظيف",
-                    text: "تدرس بيانات سوق العمل والإنفاق والإنتاج والظروف المالية.",
-                  },
-                  {
-                    n: "03",
-                    title: "اتخاذ قرار الفائدة",
-                    text: "قد يكون القرار رفعًا أو خفضًا أو تثبيتًا، وفق أهداف السياسة النقدية.",
-                  },
-                  {
-                    n: "04",
-                    title: "إعلان التوجيه المستقبلي",
-                    text: "تتابع الأسواق البيان والتوقعات والمؤتمر الصحفي لفهم المسار القادم.",
-                  },
-                ].map((item) => (
-                  <div
-  key={item.n}
-  className="rounded-[17px] border border-slate-200 bg-slate-50 p-4"
->
-  <div className="flex items-center gap-3">
-    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-xs font-black text-[#2471df]">
-      {item.n}
-    </span>
-    <h4 className="text-[15px] font-black text-slate-950">
-      {item.title}
-    </h4>
-  </div>
-
-  <p className="mt-3 text-xs leading-7 text-slate-600">
-    {item.text}
-  </p>
-</div>
-                ))}
-              </div>
-            </article>
-
-            <aside className="rounded-[22px] bg-[#071c34] p-5 text-white shadow-lg sm:p-7">
-              <span className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-3 py-1 text-[10px] font-black text-cyan-200">
-                دليل المتداول
+              <span
+                dir="ltr"
+                className="shrink-0 rounded-lg bg-blue-50 px-2 py-1.5 text-[12px] font-black text-[#1e5bb8] sm:py-2"
+              >
+                {rateLabel(bank)}
               </span>
+            </div>
 
-              <h3 className="mt-4 text-xl font-black leading-8">
-                ماذا تراجع قبل صدور قرار الفائدة؟
-              </h3>
-
-              <p className="mt-3 text-xs leading-7 text-slate-300">
-                لا تعتمد على السعر المعلن وحده.
-                قارن النتيجة بالتوقعات وانتبه إلى
-                الرسائل المصاحبة للقرار.
-              </p>
-
-              <div className="mt-5 space-y-3">
-                {[
-                  "السعر الحالي قبل الاجتماع",
-                  "توقعات السوق قبل الإعلان",
-                  "القرار الفعلي وحجم التغيير",
-                  "بيان البنك وتوقعات التضخم",
-                  "المؤتمر الصحفي للمحافظ",
-                  "توقعات الاجتماعات التالية",
-                  "التقلبات وفروق الأسعار وقت الخبر",
-                ].map((item) => (
-                  <div
-                    key={item}
-                    className="flex items-start gap-2.5 border-b border-white/10 pb-3 last:border-0"
-                  >
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-cyan-300/10 text-xs font-black text-cyan-300">
-                      ✓
-                    </span>
-                    <span className="text-xs font-bold leading-6 text-slate-200">
-                      {item}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </aside>
-          </div>
-
-          <div className="mt-6 grid gap-4 lg:grid-cols-2">
-            <article className="rounded-[22px] border border-slate-200 bg-[#f8fafc] p-5 sm:p-7">
-              <h3 className="text-xl font-black">
-                ما الفرق بين رفع الفائدة وخفضها وتثبيتها؟
-              </h3>
-
-              <p className="mt-3 text-[13px] leading-8 text-slate-600">
-                <strong className="text-slate-900">
-                  رفع الفائدة:
-                </strong>{" "}
-                يشير غالبًا إلى تشديد السياسة النقدية
-                وزيادة تكلفة الاقتراض.{" "}
-                <strong className="text-slate-900">
-                  خفض الفائدة:
-                </strong>{" "}
-                يشير غالبًا إلى تيسير الظروف النقدية.
-                أما{" "}
-                <strong className="text-slate-900">
-                  التثبيت
-                </strong>{" "}
-                فلا يعني بالضرورة الحياد، فقد يبقي
-                البنك الفائدة مرتفعة مع التحذير من
-                التضخم أو يلمح إلى خفض قادم.
-              </p>
-            </article>
-
-            <article className="rounded-[22px] border border-slate-200 bg-[#f8fafc] p-5 sm:p-7">
-              <h3 className="text-xl font-black">
-                لماذا تكون توقعات السوق أهم من القرار أحيانًا؟
-              </h3>
-
-              <p className="mt-3 text-[13px] leading-8 text-slate-600">
-                عندما تتوقع الأسواق خفض الفائدة بمقدار
-                25 نقطة أساس ويأتي القرار مطابقًا،
-                قد يكون أثره محدودًا. أما إذا فاجأ
-                البنك الأسواق بقرار مختلف أو بتوجيه
-                غير متوقع، فقد تتحرك العملات والسندات
-                والذهب بقوة حتى دون تغيير كبير في
-                السعر المعلن.
-              </p>
-            </article>
-          </div>
-
-          {hub?.hub_educational_content_ar?.trim() && (
-            <div className="mt-6 rounded-[22px] border border-slate-200 bg-blue-50/40 p-5 sm:p-7">
-              <h3 className="text-lg font-black">
-                معلومات إضافية عن السياسة النقدية
-              </h3>
-
-              <p className="mt-3 whitespace-pre-line text-[13px] leading-8 text-slate-700">
-                {hub.hub_educational_content_ar}
+            {/* DESCRIPTION */}
+            <div className="mt-2 min-h-[38px] overflow-hidden sm:mt-3 sm:h-[63px] sm:min-h-0">
+              <p
+                className="text-[11px] leading-[19px] text-slate-600 sm:leading-[21px]"
+                style={{
+                  display: "-webkit-box",
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
+                }}
+              >
+                <span className="sm:hidden">
+                  {details?.description}
+                </span>
+                <span className="hidden sm:inline">
+                  {details?.description}
+                </span>
               </p>
             </div>
-          )}
-        </div>
-      </section>
 
-      {/* MARKET IMPACT */}
-      <section
-        id="impact"
-        className="scroll-mt-20 bg-[#f4f7fb] py-10 sm:py-14"
-      >
-        <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-10">
-          <SectionHeading
-            eyebrow="تأثير السياسة النقدية"
-            title="كيف تؤثر أسعار الفائدة على الفوركس والذهب والأسهم؟"
-            description="تؤثر القرارات النقدية على توقعات المستثمرين وتكلفة التمويل والعوائد، لكن اتجاه السوق يعتمد على الظروف الاقتصادية ومدى مفاجأة القرار."
-          />
+            {/* NEXT MEETING */}
+            <div className="mt-2.5 flex items-center justify-between gap-2 rounded-xl bg-slate-50 px-3 py-2.5 sm:mt-3 sm:py-3">
+              <div className="min-w-0">
+                <p className="text-[10px] text-slate-500">
+                  موعد القرار القادم
+                </p>
 
-          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-            {[
-              {
-                icon: "↗",
-                title: "الفوركس والعملات",
-                text: "تؤثر فروق الفائدة المتوقعة بين الاقتصادات على جاذبية العملات وتدفقات رؤوس الأموال. وتظل توقعات القرارات القادمة عاملًا أساسيًا.",
-              },
-              {
-                icon: "◇",
-                title: "الذهب والمعادن",
-                text: "يتأثر الذهب بالعوائد الحقيقية والدولار والتضخم والمخاطر العالمية. لذلك لا توجد علاقة ثابتة ومضمونة بين الفائدة وسعر الذهب.",
-              },
-              {
-                icon: "▥",
-                title: "الأسهم والمؤشرات",
-                text: "قد تؤثر تكلفة الاقتراض ومعدلات الخصم وتوقعات الأرباح في تقييم الأسهم، مع اختلاف التأثير بين القطاعات.",
-              },
-              {
-                icon: "≋",
-                title: "السندات والعوائد",
-                text: "تعكس عوائد السندات توقعات الفائدة والتضخم والمخاطر. وتتفاعل الآجال القصيرة والطويلة بصورة مختلفة.",
-              },
-            ].map((item) => (
-              <article
-                key={item.title}
-                className="rounded-[19px] border border-slate-200 bg-white p-5 shadow-sm"
+                <p className="mt-0.5 text-[11px] font-black text-slate-900 sm:mt-1">
+                  {next
+                    ? dateAr(next.meeting_date)
+                    : "لم يُعلن"}
+                </p>
+              </div>
+
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-blue-100 bg-white text-[#2471df] sm:h-8 sm:w-8">
+                ◷
+              </span>
+            </div>
+
+            {/* BUTTONS */}
+            <div className="mt-2.5 grid grid-cols-2 gap-2 sm:mt-3">
+              <Link
+                href={`/interest-rates/${bank.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex min-h-9 items-center justify-center rounded-lg bg-[#2471df] px-2 py-2 text-center text-[11px] font-black text-white transition hover:bg-[#1e5bb8] sm:text-[10px]"
               >
-                <div className="flex items-center gap-3">
-  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-xl font-black text-[#2471df]">
+                تفاصيل البنك ↗
+              </Link>
+
+              <Link
+                href={`${PAGE}?history_bank=${bank.slug}#history`}
+                className="flex min-h-9 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 px-2 py-2 text-center text-[11px] font-black text-blue-700 transition hover:bg-blue-100 sm:text-[10px]"
+              >
+                تاريخ الفائدة ←
+              </Link>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  </div>
+</section>
+
+      
+{/* EDUCATIONAL GUIDE */}
+
+<section
+
+  id="guide"
+
+  className="scroll-mt-20 bg-white pb-6 pt-4 sm:pb-10 sm:pt-7"
+
+>
+
+  <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-10">
+    <div className="hidden md:block">
+
+
+    <SectionHeading
+
+      title="ما هي أسعار الفائدة وكيف تحددها البنوك المركزية؟"
+
+      description="فهم أسعار الفائدة لا يقتصر على معرفة النسبة الحالية، بل يشمل طريقة اتخاذ القرار وتوقعات الأسواق ومسار السياسة النقدية."
+
+    />
+
+
+
+    {/* MAIN EDUCATIONAL CONTENT */}
+
+    <div className="grid items-stretch gap-5 lg:grid-cols-[1.45fr_0.55fr]">
+
+      <article className="flex min-w-0 flex-col overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-sm">
+
+        <div className="border-b border-slate-200 bg-gradient-to-l from-white to-blue-50 p-5 sm:p-6">
+
+          <h3 className="text-[19px] font-black leading-8 text-slate-950 sm:text-[22px]">
+
+            كيف يعمل سعر الفائدة المرجعي؟
+
+          </h3>
+
+
+
+          <p className="mt-3 text-[13px] leading-7 text-slate-700 sm:text-[14px] sm:leading-8">
+
+            سعر الفائدة هو النسبة التي تُستخدم لتحديد تكلفة
+
+            الاقتراض أو العائد على بعض أنواع الادخار. وتحدد
+
+            البنوك المركزية أسعارًا مرجعية تؤثر في تكلفة
+
+            التمويل داخل الاقتصاد، لكنها لا تعني بالضرورة
+
+            أن جميع القروض والودائع تُسعّر بالنسبة نفسها.
+
+          </p>
+
+
+
+          <p className="mt-3 text-[13px] leading-7 text-slate-600 sm:text-[14px] sm:leading-8">
+
+            تستخدم البنوك المركزية أسعار الفائدة للتأثير
+
+            في تكلفة الاقتراض والسيولة والطلب داخل الاقتصاد.
+
+            وقد يؤدي تشديد السياسة النقدية إلى إبطاء النشاط
+
+            الاقتصادي والحد من الضغوط التضخمية، بينما قد
+
+            يهدف خفض الفائدة إلى دعم التمويل والإنفاق عندما
+
+            تسمح الظروف الاقتصادية بذلك.
+
+          </p>
+
+
+
+          <p className="mt-3 text-[13px] leading-7 text-slate-600 sm:text-[14px] sm:leading-8">
+
+            لكن البنوك المركزية لا تتخذ قراراتها بناءً على
+
+            التضخم وحده؛ إذ تتابع التوظيف والأجور والنمو
+
+            والائتمان والتوقعات الاقتصادية. كما تختلف
+
+            الأدوات النقدية بين الولايات المتحدة ومنطقة
+
+            اليورو واليابان وغيرها من الاقتصادات.
+
+          </p>
+
+        </div>
+
+
+
+        {/* FOUR DECISION STAGES */}
+
+        <div className="grid flex-1 auto-rows-fr gap-3 p-4 sm:grid-cols-2 sm:p-5">
+
+          {[
+
+            {
+
+              n: "01",
+
+              title: "تقييم التضخم",
+
+              text: "تراجع البنوك اتجاه الأسعار والتضخم الأساسي والتوقعات المستقبلية.",
+
+            },
+
+            {
+
+              n: "02",
+
+              title: "تحليل النمو والتوظيف",
+
+              text: "تدرس بيانات سوق العمل والإنفاق والإنتاج والظروف المالية.",
+
+            },
+
+            {
+
+              n: "03",
+
+              title: "اتخاذ قرار الفائدة",
+
+              text: "قد يكون القرار رفعًا أو خفضًا أو تثبيتًا، وفق أهداف السياسة النقدية.",
+
+            },
+
+            {
+
+              n: "04",
+
+              title: "إعلان التوجيه المستقبلي",
+
+              text: "تتابع الأسواق البيان والتوقعات والمؤتمر الصحفي لفهم المسار القادم.",
+
+            },
+
+          ].map((item) => (
+
+            <div
+
+              key={item.n}
+
+              className="flex h-full flex-col rounded-[15px] border border-slate-200 bg-slate-50 p-4"
+
+            >
+
+              <div className="flex items-center gap-3">
+
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-xs font-black text-[#2471df]">
+
+                  {item.n}
+
+                </span>
+
+
+
+                <h4 className="text-[14px] font-black leading-6 text-slate-950 sm:text-[15px]">
+
+                  {item.title}
+
+                </h4>
+
+              </div>
+
+
+
+              <p className="mt-2 text-[12px] leading-6 text-slate-600 sm:text-[13px] sm:leading-7">
+
+                {item.text}
+
+              </p>
+
+            </div>
+
+          ))}
+
+        </div>
+
+      </article>
+
+
+
+      {/* TRADER CHECKLIST */}
+
+      <aside className="flex h-full min-w-0 flex-col rounded-[20px] bg-[#071c34] p-5 text-white shadow-lg sm:p-6">
+
+        <h3 className="text-[19px] font-black leading-8 sm:text-[21px]">
+
+          ماذا تراجع قبل صدور قرار الفائدة؟
+
+        </h3>
+
+
+
+        <p className="mt-2 text-[12px] leading-7 text-slate-300 sm:text-[13px]">
+
+          لا تعتمد على السعر المعلن وحده. قارن النتيجة
+
+          بالتوقعات وانتبه إلى الرسائل المصاحبة للقرار.
+
+        </p>
+
+
+
+        <div className="mt-4 flex-1">
+
+          {[
+
+            "السعر الحالي قبل الاجتماع",
+
+            "توقعات السوق قبل الإعلان",
+
+            "القرار الفعلي وحجم التغيير",
+
+            "بيان البنك وتوقعات التضخم",
+
+            "المؤتمر الصحفي للمحافظ",
+
+            "توقعات الاجتماعات التالية",
+
+            "التقلبات وفروق الأسعار وقت الخبر",
+
+          ].map((item) => (
+
+            <div
+
+              key={item}
+
+              className="flex items-center gap-2.5 border-b border-white/10 py-2.5 last:border-0"
+
+            >
+
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-cyan-300/10 text-[11px] font-black text-cyan-300">
+
+                ✓
+
+              </span>
+
+
+
+              <span className="text-[12px] font-bold leading-6 text-slate-200 sm:text-[13px]">
+
+                {item}
+
+              </span>
+
+            </div>
+
+          ))}
+
+        </div>
+
+      </aside>
+
+    </div>
+
+
+
+    {/* EDUCATIONAL QUESTIONS */}
+
+    <div className="mt-5 grid items-stretch gap-4 lg:grid-cols-2">
+
+      <article className="h-full rounded-[20px] border border-slate-200 bg-[#f8fafc] p-5 sm:p-6">
+
+        <h3 className="text-[17px] font-black leading-7 text-slate-950 sm:text-[19px]">
+
+          ما الفرق بين رفع الفائدة وخفضها وتثبيتها؟
+
+        </h3>
+
+
+
+        <p className="mt-3 text-[13px] leading-8 text-slate-600 sm:text-[14px]">
+
+          <strong className="text-slate-900">
+
+            رفع الفائدة:
+
+          </strong>{" "}
+
+          يشير غالبًا إلى تشديد السياسة النقدية وزيادة
+
+          تكلفة الاقتراض.{" "}
+
+          <strong className="text-slate-900">
+
+            خفض الفائدة:
+
+          </strong>{" "}
+
+          يشير غالبًا إلى تيسير الظروف النقدية. أما{" "}
+
+          <strong className="text-slate-900">
+
+            التثبيت
+
+          </strong>{" "}
+
+          فلا يعني بالضرورة الحياد، فقد يبقي البنك
+
+          الفائدة مرتفعة مع التحذير من التضخم أو يلمح
+
+          إلى خفض قادم.
+
+        </p>
+
+      </article>
+
+
+
+      <article className="h-full rounded-[20px] border border-slate-200 bg-[#f8fafc] p-5 sm:p-6">
+
+        <h3 className="text-[17px] font-black leading-7 text-slate-950 sm:text-[19px]">
+
+          لماذا تكون توقعات السوق أهم من القرار أحيانًا؟
+
+        </h3>
+
+
+
+        <p className="mt-3 text-[13px] leading-8 text-slate-600 sm:text-[14px]">
+
+          عندما تتوقع الأسواق خفض الفائدة بمقدار 25 نقطة
+
+          أساس ويأتي القرار مطابقًا، قد يكون أثره محدودًا.
+
+          أما إذا فاجأ البنك الأسواق بقرار مختلف أو بتوجيه
+
+          غير متوقع، فقد تتحرك العملات والسندات والذهب
+
+          بقوة حتى دون تغيير كبير في السعر المعلن.
+
+        </p>
+
+      </article>
+
+    </div>
+
+
+
+    {/* ADDITIONAL SUPABASE CONTENT */}
+
+    {hub?.hub_educational_content_ar?.trim() && (
+
+      <div className="mt-5 rounded-[20px] border border-slate-200 bg-blue-50/40 p-5 sm:p-6">
+
+        <h3 className="text-[18px] font-black leading-8 text-slate-950">
+
+          معلومات إضافية عن السياسة النقدية
+
+        </h3>
+
+
+
+        <div className="mt-3 space-y-3">
+
+          {hub.hub_educational_content_ar
+
+            .trim()
+
+            .split(/\n\s*\n/)
+
+            .filter((paragraph) => paragraph.trim())
+
+            .map((paragraph, index) => (
+
+              <p
+
+                key={index}
+
+                className="whitespace-pre-line text-[13px] leading-8 text-slate-700 sm:text-[14px]"
+
+              >
+
+                {paragraph.trim()}
+
+              </p>
+
+            ))}
+
+        </div>
+
+      </div>
+
+    )}
+
+  
+    </div>
+
+    {/* MOBILE EDUCATIONAL GUIDE */}
+    <div className="md:hidden" dir="rtl">
+      <header className="mb-4 text-right">
+        <h2 className="text-[21px] font-black leading-[1.45] text-[#071c34]">
+          ما هي أسعار الفائدة وكيف تحددها البنوك المركزية؟
+        </h2>
+        <p className="mt-2 text-[12px] leading-6 text-slate-600">
+          تعرف على آلية قرارات الفائدة والعوامل التي تراقبها البنوك المركزية.
+        </p>
+      </header>
+
+      <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="bg-blue-50/60 p-4">
+          <h3 className="text-[16px] font-black text-slate-950">كيف يعمل سعر الفائدة المرجعي؟</h3>
+          <p className="mt-2 text-[12px] leading-7 text-slate-700">
+            سعر الفائدة هو النسبة التي تؤثر في تكلفة الاقتراض وعوائد الادخار.
+            وتستخدمه البنوك المركزية للمساعدة في ضبط التضخم والنشاط الاقتصادي.
+          </p>
+          <details className="group mt-2 border-t border-blue-100 pt-2">
+            <summary className="flex cursor-pointer list-none items-center justify-between text-[12px] font-black text-[#2471df] [&::-webkit-details-marker]:hidden">
+              <span className="group-open:hidden">عرض الشرح الكامل</span>
+              <span className="hidden group-open:inline">عرض أقل</span>
+              <span className="transition group-open:rotate-180">⌄</span>
+            </summary>
+            <div className="mt-3 space-y-3 text-[12px] leading-7 text-slate-600">
+              <p>تحدد البنوك المركزية أسعارًا مرجعية تؤثر في تكلفة التمويل داخل الاقتصاد، لكنها لا تعني بالضرورة أن جميع القروض والودائع تُسعّر بالنسبة نفسها.</p>
+              <p>قد يؤدي تشديد السياسة النقدية إلى إبطاء النشاط الاقتصادي والحد من الضغوط التضخمية، بينما قد يهدف خفض الفائدة إلى دعم التمويل والإنفاق عندما تسمح الظروف الاقتصادية بذلك.</p>
+              <p>لا تعتمد القرارات على التضخم وحده؛ إذ تتابع البنوك التوظيف والأجور والنمو والائتمان والتوقعات الاقتصادية، وتختلف أدواتها بين الاقتصادات.</p>
+            </div>
+          </details>
+        </div>
+        <div className="p-3">
+          <h4 className="mb-3 text-[13px] font-black text-slate-900">كيف يُتخذ قرار الفائدة؟</h4>
+          <div className="grid grid-cols-2 gap-2">
+            {[
+              { n: "01", title: "تقييم التضخم", text: "مراجعة الأسعار والتوقعات." },
+              { n: "02", title: "النمو والتوظيف", text: "تحليل سوق العمل والنشاط." },
+              { n: "03", title: "قرار الفائدة", text: "رفع أو خفض أو تثبيت." },
+              { n: "04", title: "التوجيه القادم", text: "قراءة البيان والتوقعات." },
+            ].map((item) => (
+              <div key={item.n} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                <div className="flex items-center gap-2">
+                  <span className="rounded-md bg-blue-100 px-1.5 py-1 text-[10px] font-black text-blue-700">{item.n}</span>
+                  <span className="text-[11px] font-black text-slate-900">{item.title}</span>
+                </div>
+                <p className="mt-2 text-[10px] leading-5 text-slate-600">{item.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </article>
+
+      <aside className="mt-3 rounded-2xl bg-[#071c34] p-4 text-white shadow-sm">
+        <h3 className="text-[15px] font-black">ماذا تراجع قبل قرار الفائدة؟</h3>
+        <p className="mt-1 text-[11px] leading-6 text-slate-300">قارن القرار بتوقعات السوق، وليس بالسعر السابق فقط.</p>
+        <div className="mt-3 grid grid-cols-2 gap-2">
+          {["السعر قبل الاجتماع", "توقعات السوق", "القرار وحجم التغيير", "بيان البنك"].map((item) => (
+            <div key={item} className="flex items-start gap-1.5 rounded-lg bg-white/5 p-2 text-[10px] font-bold leading-5 text-slate-100">
+              <span className="text-cyan-300">✓</span><span>{item}</span>
+            </div>
+          ))}
+        </div>
+        <details className="group mt-3 border-t border-white/15 pt-3">
+          <summary className="flex cursor-pointer list-none items-center justify-between text-[11px] font-black text-cyan-200 [&::-webkit-details-marker]:hidden">
+            <span className="group-open:hidden">عرض بقية نقاط المتابعة</span>
+            <span className="hidden group-open:inline">عرض أقل</span>
+            <span>⌄</span>
+          </summary>
+          <div className="mt-3 space-y-2 text-[11px] leading-6 text-slate-200">
+            {["توقعات التضخم", "المؤتمر الصحفي للمحافظ", "توقعات الاجتماعات التالية", "التقلبات وفروق الأسعار وقت الخبر"].map((item) => (
+              <p key={item}><span className="ml-2 text-cyan-300">✓</span>{item}</p>
+            ))}
+          </div>
+        </details>
+      </aside>
+
+      <div className="mt-3 space-y-2">
+        <details className="group rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-2 text-[13px] font-black text-slate-950 [&::-webkit-details-marker]:hidden">
+            <span>ما الفرق بين رفع الفائدة وخفضها وتثبيتها؟</span>
+            <span className="shrink-0 text-blue-700 group-open:rotate-45">+</span>
+          </summary>
+          <p className="mt-3 border-t border-slate-200 pt-3 text-[12px] leading-7 text-slate-600">
+            <strong>رفع الفائدة</strong> يشير غالبًا إلى تشديد السياسة النقدية وزيادة تكلفة الاقتراض.
+            <strong> خفض الفائدة</strong> يشير غالبًا إلى تيسير الظروف النقدية.
+            أما <strong>التثبيت</strong> فلا يعني بالضرورة الحياد؛ فقد يبقي البنك الفائدة مرتفعة أو يلمح إلى خفض قادم.
+          </p>
+        </details>
+        <details className="group rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-2 text-[13px] font-black text-slate-950 [&::-webkit-details-marker]:hidden">
+            <span>لماذا تكون توقعات السوق أهم من القرار أحيانًا؟</span>
+            <span className="shrink-0 text-blue-700 group-open:rotate-45">+</span>
+          </summary>
+          <p className="mt-3 border-t border-slate-200 pt-3 text-[12px] leading-7 text-slate-600">
+            إذا جاء القرار مطابقًا لتوقعات السوق فقد يكون أثره محدودًا، بينما قد تؤدي مفاجأة في القرار أو التوجيه المستقبلي إلى تحركات قوية في العملات والسندات والذهب.
+          </p>
+        </details>
+        {hub?.hub_educational_content_ar?.trim() && (
+          <details className="group rounded-xl border border-blue-100 bg-blue-50/50 p-4">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-2 text-[13px] font-black text-slate-950 [&::-webkit-details-marker]:hidden">
+              <span>معلومات إضافية عن السياسة النقدية</span>
+              <span className="shrink-0 text-blue-700 group-open:rotate-45">+</span>
+            </summary>
+            <div className="mt-3 whitespace-pre-line border-t border-blue-100 pt-3 text-[12px] leading-7 text-slate-600">
+              {hub.hub_educational_content_ar}
+            </div>
+          </details>
+        )}
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+
+
+
+
+
+
+
+
+{/* MARKET IMPACT + RELATED CONTENT */}
+
+<section
+
+  id="impact"
+
+  className="scroll-mt-20 bg-[#f4f7fb] pb-7 pt-4 sm:pb-12 sm:pt-7"
+
+>
+
+  <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-10">
+    <div className="hidden md:block">
+
+
+    <SectionHeading
+
+      title="كيف تؤثر أسعار الفائدة على الفوركس والذهب والأسهم؟"
+
+      description="تؤثر قرارات البنوك المركزية في العملات والمعادن والأسهم والسندات من خلال توقعات المستثمرين وتكلفة التمويل والعوائد. لكن اتجاه الأسواق يعتمد أيضًا على الظروف الاقتصادية ومدى مفاجأة القرار."
+
+    />
+
+
+
+    {/* FOUR MARKET CATEGORIES */}
+
+    <div className="grid auto-rows-fr gap-3 md:grid-cols-2 xl:grid-cols-4">
+
+      {[
+
+        {
+
+          icon: "↗",
+
+          title: "الفوركس والعملات",
+
+          text: "تؤثر فروق الفائدة المتوقعة بين الاقتصادات في جاذبية العملات وتدفقات رؤوس الأموال، وتظل توقعات القرارات القادمة عاملًا أساسيًا في تحركات السوق.",
+
+          accent: "blue",
+
+        },
+
+        {
+
+          icon: "◇",
+
+          title: "الذهب والمعادن",
+
+          text: "يتأثر الذهب بالعوائد الحقيقية والدولار والتضخم والمخاطر العالمية. لذلك لا توجد علاقة ثابتة ومضمونة بين قرارات الفائدة واتجاه سعر الذهب.",
+
+          accent: "amber",
+
+        },
+
+        {
+
+          icon: "▥",
+
+          title: "الأسهم والمؤشرات",
+
+          text: "قد تؤثر تكلفة الاقتراض ومعدلات الخصم وتوقعات الأرباح في تقييم الأسهم والمؤشرات، مع اختلاف التأثير بين الشركات والقطاعات الاقتصادية.",
+
+          accent: "indigo",
+
+        },
+
+        {
+
+          icon: "≋",
+
+          title: "السندات والعوائد",
+
+          text: "تعكس عوائد السندات توقعات أسعار الفائدة والتضخم والمخاطر. وقد تتفاعل السندات قصيرة الأجل وطويلة الأجل بصورة مختلفة مع القرار.",
+
+          accent: "cyan",
+
+        },
+
+      ].map((item) => {
+
+        const accentClasses: Record<string, string> = {
+
+          blue: "bg-blue-50 text-blue-700 border-blue-100",
+
+          amber: "bg-amber-50 text-amber-700 border-amber-100",
+
+          indigo: "bg-indigo-50 text-indigo-700 border-indigo-100",
+
+          cyan: "bg-cyan-50 text-cyan-700 border-cyan-100",
+
+        };
+
+
+
+        return (
+
+          <article
+
+            key={item.title}
+
+            className="flex h-full min-w-0 flex-col rounded-[18px] border border-slate-200 bg-white p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-md sm:p-5"
+
+          >
+
+            <div className="flex items-center gap-3">
+
+              <span
+
+                aria-hidden="true"
+
+                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border text-[22px] font-black ${
+
+                  accentClasses[item.accent]
+
+                }`}
+
+              >
+
+                {item.icon}
+
+              </span>
+
+
+
+              <h3 className="text-[15px] font-black leading-6 text-slate-950 sm:text-[16px]">
+
+                {item.title}
+
+              </h3>
+
+            </div>
+
+
+
+            <p className="mt-3 text-[12px] leading-7 text-slate-600 sm:text-[13px]">
+
+              {item.text}
+
+            </p>
+
+          </article>
+
+        );
+
+      })}
+
+    </div>
+
+
+
+    {/* DEEPER ANALYSIS */}
+
+    <div className="mt-4 grid items-stretch gap-4 lg:grid-cols-2">
+
+      <article className="h-full rounded-[18px] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+
+        <div className="mb-3 flex items-center gap-2.5">
+
+          <span
+
+            aria-hidden="true"
+
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-lg font-black text-[#2471df]"
+
+          >
+
+            $
+
+          </span>
+
+
+
+          <h3 className="text-[16px] font-black leading-7 text-slate-950 sm:text-[18px]">
+
+            كيف تؤثر الفائدة الأمريكية على الدولار؟
+
+          </h3>
+
+        </div>
+
+
+
+        <p className="text-[13px] leading-8 text-slate-600 sm:text-[14px]">
+
+          تؤثر توقعات الفائدة الأمريكية في عوائد الأصول
+
+          المقومة بالدولار. وقد يستفيد الدولار من ارتفاع
+
+          العوائد المتوقعة، لكن النتيجة تعتمد على المقارنة
+
+          مع الاقتصادات الأخرى وعلى شهية المخاطرة وتوقعات
+
+          النمو. لذلك فإن قرار الفيدرالي وحده لا يكفي
+
+          لتحديد اتجاه الدولار.
+
+        </p>
+
+      </article>
+
+
+
+      <article className="h-full rounded-[18px] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+
+        <div className="mb-3 flex items-center gap-2.5">
+
+          <span
+
+            aria-hidden="true"
+
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-lg font-black text-[#2471df]"
+
+          >
+
+            ⇄
+
+          </span>
+
+
+
+          <h3 className="text-[16px] font-black leading-7 text-slate-950 sm:text-[18px]">
+
+            كيف تؤثر فروق الفائدة على أزواج العملات؟
+
+          </h3>
+
+        </div>
+
+
+
+        <p className="text-[13px] leading-8 text-slate-600 sm:text-[14px]">
+
+          يقارن المتداولون أحيانًا مسار الفائدة المتوقع
+
+          بين بنكين مركزيين، مثل الفيدرالي والأوروبي،
+
+          لفهم اتجاه زوج EUR/USD. لكن الفرق الحالي بين
+
+          السعرين لا يحدد حركة الزوج وحده؛ فالتوقعات
+
+          المستقبلية والتضخم والنمو والمخاطر العالمية
+
+          عناصر مؤثرة أيضًا.
+
+        </p>
+
+      </article>
+
+    </div>
+
+
+
+    {/* RELATED CONTENT - INTEGRATED */}
+
+    <div className="mt-5 overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-sm">
+
+      <div className="flex flex-col gap-2 border-b border-slate-100 px-4 py-4 sm:px-6 sm:py-5">
+
+        <h2 className="text-[18px] font-black leading-7 text-slate-950 sm:text-[20px]">
+
+          واصل استكشاف الأسواق مع بروكر العرب
+
+        </h2>
+
+
+
+        <p className="text-[12px] leading-6 text-slate-500 sm:text-[13px]">
+
+          انتقل من فهم تأثير أسعار الفائدة إلى تعلم التداول
+
+          ومقارنة الوسطاء حسب الأسواق التي تتابعها.
+
+        </p>
+
+      </div>
+
+
+
+      <div className="grid gap-3 p-3 sm:grid-cols-2 sm:p-4 lg:grid-cols-3 xl:grid-cols-5">
+
+        {INTERNAL_LINKS.map((item) => (
+
+          <Link
+
+            key={item.href}
+
+            href={item.href}
+
+            className="group flex h-full min-w-0 flex-col rounded-[14px] border border-slate-200 bg-[#f8fafc] p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-50 hover:shadow-sm"
+
+          >
+
+            <div className="flex items-center justify-between gap-2">
+
+              <span className="text-[10px] font-bold text-slate-400">
+
+                دليل بروكر العرب
+
+              </span>
+
+
+
+              <span
+
+                aria-hidden="true"
+
+                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white text-[16px] font-bold text-[#2471df] ring-1 ring-slate-200 transition group-hover:bg-[#2471df] group-hover:text-white"
+
+              >
+
+                ←
+
+              </span>
+
+            </div>
+
+
+
+            <h3 className="mt-3 text-[14px] font-black leading-6 text-slate-950 transition group-hover:text-[#1e5bb8]">
+
+              {item.title}
+
+            </h3>
+
+
+
+            <p className="mt-2 flex-1 text-[12px] leading-6 text-slate-600">
+
+              {item.description}
+
+            </p>
+
+
+
+            <span className="mt-3 text-[11px] font-black text-[#2471df]">
+
+              اكتشف المزيد ←
+
+            </span>
+
+          </Link>
+
+        ))}
+
+      </div>
+
+    </div>
+
+  
+    </div>
+
+    {/* MOBILE MARKET IMPACT */}
+    <div className="md:hidden" dir="rtl">
+      <header className="mb-4 text-right">
+        <h2 className="text-[21px] font-black leading-[1.45] text-[#071c34]">
+          كيف تؤثر الفائدة على الأسواق؟
+        </h2>
+        <p className="mt-2 text-[12px] leading-6 text-slate-600">
+          تعرف على تأثير قرارات البنوك المركزية في العملات والذهب والأسهم والسندات.
+        </p>
+      </header>
+
+      <div className="grid grid-cols-2 gap-2.5">
+        {[
+          { icon: "↗", title: "الفوركس والعملات", short: "فروق الفائدة وتوقعات العملات", text: "تؤثر فروق الفائدة المتوقعة بين الاقتصادات في جاذبية العملات وتدفقات رؤوس الأموال، وتظل توقعات القرارات القادمة عاملًا أساسيًا في تحركات السوق.", color: "bg-blue-50 text-blue-700" },
+          { icon: "◇", title: "الذهب والمعادن", short: "العوائد الحقيقية والدولار", text: "يتأثر الذهب بالعوائد الحقيقية والدولار والتضخم والمخاطر العالمية. لذلك لا توجد علاقة ثابتة ومضمونة بين قرارات الفائدة واتجاه سعر الذهب.", color: "bg-amber-50 text-amber-700" },
+          { icon: "▥", title: "الأسهم والمؤشرات", short: "تكلفة التمويل وتقييم الأسهم", text: "قد تؤثر تكلفة الاقتراض ومعدلات الخصم وتوقعات الأرباح في تقييم الأسهم والمؤشرات، مع اختلاف التأثير بين الشركات والقطاعات الاقتصادية.", color: "bg-indigo-50 text-indigo-700" },
+          { icon: "≋", title: "السندات والعوائد", short: "توقعات الفائدة والتضخم", text: "تعكس عوائد السندات توقعات أسعار الفائدة والتضخم والمخاطر. وقد تتفاعل السندات قصيرة الأجل وطويلة الأجل بصورة مختلفة مع القرار.", color: "bg-cyan-50 text-cyan-700" },
+        ].map((item) => (
+          <details key={item.title} className="group min-w-0 self-start rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+            <summary className="cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              <div className="flex min-h-9 items-center gap-2">
+  <span
+    aria-hidden="true"
+    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-lg font-black ${item.color}`}
+  >
     {item.icon}
   </span>
 
-  <h3 className="text-base font-black text-slate-950">
+  <span className="min-w-0 flex-1 text-[11px] font-black leading-5 text-slate-950">
     {item.title}
-  </h3>
+  </span>
 </div>
-
-                <p className="mt-3 text-xs leading-7 text-slate-600">
-                  {item.text}
-                </p>
-              </article>
-            ))}
-          </div>
-
-          <div className="mt-5 grid gap-4 lg:grid-cols-2">
-            <article className="rounded-[22px] border border-slate-200 bg-white p-5 sm:p-7">
-              <h3 className="text-lg font-black sm:text-xl">
-                كيف تؤثر الفائدة الأمريكية على الدولار؟
-              </h3>
-
-              <p className="mt-3 text-[13px] leading-8 text-slate-600">
-                تؤثر توقعات الفائدة الأمريكية في عوائد
-                الأصول المقومة بالدولار. وقد يستفيد
-                الدولار من ارتفاع العوائد المتوقعة،
-                لكن النتيجة تعتمد على المقارنة مع
-                الاقتصادات الأخرى وعلى شهية المخاطرة
-                وتوقعات النمو. لذلك فإن قرار الفيدرالي
-                وحده لا يكفي لتحديد اتجاه الدولار.
-              </p>
-            </article>
-
-            <article className="rounded-[22px] border border-slate-200 bg-white p-5 sm:p-7">
-              <h3 className="text-lg font-black sm:text-xl">
-                كيف تؤثر فروق الفائدة على أزواج العملات؟
-              </h3>
-
-              <p className="mt-3 text-[13px] leading-8 text-slate-600">
-                يقارن المتداولون أحيانًا مسار الفائدة
-                المتوقع بين بنكين مركزيين، مثل
-                الفيدرالي والأوروبي، لفهم اتجاه
-                زوج EUR/USD. لكن الفرق الحالي بين
-                السعرين لا يحدد حركة الزوج وحده؛
-                فالتوقعات المستقبلية والتضخم والنمو
-                والمخاطر العالمية عناصر مؤثرة أيضًا.
-              </p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      {/* INTERNAL LINKS */}
-      <section className="bg-white py-10 sm:py-14">
-        <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-10">
-          <SectionHeading
-            eyebrow="مقالات وأدوات ذات صلة"
-            title="استكمل تحليل الأسواق مع بروكر العرب"
-            description="اربط قرارات السياسة النقدية بفهم الأسواق وإدارة المخاطر ومقارنة شركات الوساطة."
-          />
-
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-            {INTERNAL_LINKS.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="group flex flex-col rounded-[18px] border border-slate-200 bg-[#f8fafc] p-5 transition hover:border-blue-300 hover:bg-blue-50"
-              >
-                <span className="text-xs font-black text-[#2471df]">
-                  اكتشف المزيد ←
-                </span>
-
-                <h3 className="mt-3 text-base font-black text-slate-900 group-hover:text-blue-700">
-                  {item.title}
-                </h3>
-
-                <p className="mt-2 flex-1 text-xs leading-7 text-slate-600">
-                  {item.description}
-                </p>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section
-        id="faq"
-        className="scroll-mt-20 bg-[#f4f7fb] py-10 sm:py-14"
-      >
-        <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-10">
-          <SectionHeading
-            eyebrow="أسئلة شائعة"
-            title="الأسئلة الشائعة حول أسعار الفائدة"
-            description="إجابات مباشرة عن أسعار الفائدة العالمية ومواعيد قرارات البنوك المركزية وتأثيرها على الأسواق."
-          />
-
-          <div className="space-y-2.5">
-            {faqs.map((faq) => (
-              <details
-                key={faq.q}
-                className="group overflow-hidden rounded-[15px] border border-slate-200 bg-white open:shadow-sm"
-              >
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4 text-xs font-black text-slate-900 marker:hidden sm:px-6 sm:text-sm [&::-webkit-details-marker]:hidden">
-                  <span>{faq.q}</span>
-
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-lg font-black text-blue-700 transition group-open:rotate-45">
-                    +
-                  </span>
-                </summary>
-
-                <p className="border-t border-slate-200 px-4 py-4 text-xs leading-8 text-slate-600 sm:px-6 sm:text-sm">
-                  {faq.a}
-                </p>
-              </details>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* METHODOLOGY AND SOURCES */}
-      <section className="bg-white py-10 sm:py-14">
-        <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-10">
-          <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm">
-            <div className="border-b border-slate-200 bg-gradient-to-l from-white to-blue-50 p-5 sm:p-7">
-              <span className="rounded-full border border-blue-200 bg-white px-3 py-1 text-[10px] font-black text-blue-700">
-                الشفافية والمصادر
+              <span className="mt-1 block text-[10px] leading-5 text-slate-500">{item.short}</span>
+              <span className="mt-2 block border-t border-slate-100 pt-2 text-[10px] font-black text-blue-700">
+                <span className="group-open:hidden">عرض التفاصيل ←</span>
+                <span className="hidden group-open:inline">عرض أقل ↑</span>
               </span>
+            </summary>
+            <p className="mt-2 text-[11px] leading-6 text-slate-600">{item.text}</p>
+          </details>
+        ))}
+      </div>
 
-              <h2 className="mt-3 text-xl font-black sm:text-2xl">
-                مصادر أسعار الفائدة ومنهجية عرض البيانات
-              </h2>
+      <div className="mt-3 space-y-2">
+        <details className="group rounded-xl border border-slate-200 bg-white p-4">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-2 text-[13px] font-black text-slate-950 [&::-webkit-details-marker]:hidden">
+            <span>كيف تؤثر الفائدة الأمريكية على الدولار؟</span>
+            <span className="shrink-0 text-blue-700 group-open:rotate-45">+</span>
+          </summary>
+          <p className="mt-3 border-t border-slate-100 pt-3 text-[12px] leading-7 text-slate-600">
+            تؤثر توقعات الفائدة الأمريكية في عوائد الأصول المقومة بالدولار. وقد يستفيد الدولار من ارتفاع العوائد المتوقعة، لكن النتيجة تعتمد على المقارنة مع الاقتصادات الأخرى وشهية المخاطرة وتوقعات النمو. لذلك لا يكفي قرار الفيدرالي وحده لتحديد اتجاه الدولار.
+          </p>
+        </details>
+        <details className="group rounded-xl border border-slate-200 bg-white p-4">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-2 text-[13px] font-black text-slate-950 [&::-webkit-details-marker]:hidden">
+            <span>كيف تؤثر فروق الفائدة على أزواج العملات؟</span>
+            <span className="shrink-0 text-blue-700 group-open:rotate-45">+</span>
+          </summary>
+          <p className="mt-3 border-t border-slate-100 pt-3 text-[12px] leading-7 text-slate-600">
+            يقارن المتداولون مسار الفائدة المتوقع بين بنكين مركزيين، مثل الفيدرالي والأوروبي، لفهم اتجاه EUR/USD. لكن فرق السعر الحالي لا يحدد حركة الزوج وحده؛ فالتوقعات والتضخم والنمو والمخاطر العالمية مؤثرة أيضًا.
+          </p>
+        </details>
+      </div>
 
-              <p className="mt-3 whitespace-pre-line text-[13px] leading-8 text-slate-600">
-                {methodology}
-              </p>
-            </div>
-
-            <div className="p-3 sm:p-7">
-  <h3 className="text-sm font-black sm:text-base">
-    المصادر الرسمية للبنوك المركزية
-  </h3>
-
-  <div className="mt-3 grid grid-cols-2 gap-2 sm:mt-4 sm:gap-3 lg:grid-cols-4">
-    {banks.map((bank) => (
-      <div
-        key={bank.slug}
-        className="min-w-0 rounded-xl border border-slate-200 bg-slate-50 p-2.5 sm:p-4"
-      >
-        <div className="flex min-h-[38px] items-center justify-center">
-  <h4 className="min-w-0 text-center text-[10px] font-black leading-4 sm:text-xs">
-    {bankShortName(bank)}
-  </h4>
-</div>
-
-        <div className="mt-2 grid grid-cols-2 gap-1 sm:mt-3 sm:flex sm:flex-wrap sm:justify-center sm:gap-2">
-          <div className="min-w-0 [&>a]:w-full [&>a]:!px-1 [&>a]:!py-2 [&>a]:!text-[9px] sm:[&>a]:!w-auto sm:[&>a]:!px-3 sm:[&>a]:!text-[11px]">
-            <SourceLink
-              href={officialSource(bank)}
-              label="الفائدة"
-            />
-          </div>
-
-          <div className="min-w-0 [&>a]:w-full [&>a]:!px-1 [&>a]:!py-2 [&>a]:!text-[9px] sm:[&>a]:!w-auto sm:[&>a]:!px-3 sm:[&>a]:!text-[11px]">
-            <SourceLink
-              href={calendarSource(bank)}
-              label="الاجتماعات"
-            />
-          </div>
+      <div className="mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="border-b border-slate-100 p-4">
+          <h2 className="text-[16px] font-black text-slate-950">واصل استكشاف الأسواق مع بروكر العرب</h2>
+          <p className="mt-1 text-[11px] leading-6 text-slate-500">أدلة ومقارنات تساعدك على فهم الأسواق واختيار الوسيط.</p>
+        </div>
+        <div className="divide-y divide-slate-100 px-3">
+          {INTERNAL_LINKS.slice(0, 3).map((item) => (
+            <Link key={item.href} href={item.href} className="flex items-center justify-between gap-3 py-3">
+              <div className="min-w-0">
+                <h3 className="text-[12px] font-black text-slate-950">{item.title}</h3>
+                <p className="mt-1 line-clamp-1 text-[10px] text-slate-500">{item.description}</p>
+              </div>
+              <span className="shrink-0 rounded-lg bg-blue-50 px-2 py-1 text-sm font-black text-blue-700">←</span>
+            </Link>
+          ))}
+          {INTERNAL_LINKS.length > 3 && (
+            <details className="group py-3">
+              <summary className="cursor-pointer list-none text-center text-[11px] font-black text-blue-700 [&::-webkit-details-marker]:hidden">
+                <span className="group-open:hidden">عرض بقية الأدلة ←</span>
+                <span className="hidden group-open:inline">عرض أقل ↑</span>
+              </summary>
+              <div className="mt-2 divide-y divide-slate-100">
+                {INTERNAL_LINKS.slice(3).map((item) => (
+                  <Link key={item.href} href={item.href} className="flex items-center justify-between gap-2 py-3">
+                    <div className="min-w-0">
+                      <h3 className="text-[12px] font-black text-slate-950">{item.title}</h3>
+                      <p className="mt-1 line-clamp-1 text-[10px] text-slate-500">{item.description}</p>
+                    </div>
+                    <span className="text-blue-700">←</span>
+                  </Link>
+                ))}
+              </div>
+            </details>
+          )}
         </div>
       </div>
-    ))}
+    </div>
+
   </div>
 
-              <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4">
-                <h3 className="text-sm font-black text-amber-950">
-                  تنبيه بشأن دقة البيانات
-                </h3>
+</section>
 
-                <p className="mt-2 whitespace-pre-line text-xs leading-7 text-amber-900">
-                  {disclaimer}
-                </p>
-              </div>
 
-              <p className="mt-4 text-[11px] leading-7 text-slate-500">
-                يتم تخزين الأسعار والاجتماعات
-                والقرارات في قاعدة بيانات الموقع.
-                تُراجع المواعيد والقرارات بالرجوع إلى
-                الجهات الرسمية، وقد تظهر تحديثات
-                جديدة بعد إعادة توليد الصفحة.
-                مدة إعادة التحقق التقني من البيانات
-                المخزنة مؤقتًا هي 15 دقيقة، ولا تعني
-                مراجعة بشرية للمصادر كل 15 دقيقة.
+
+
+
+{/* FAQ */}
+<section
+  id="faq"
+  className="scroll-mt-20 bg-[#f4f7fb] pb-7 pt-0 sm:pb-10 sm:pt-0"
+>
+  <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-10">
+
+    {/* MOBILE FAQ */}
+    <div className="md:hidden">
+      <div className="mb-4 text-right">
+        <h2 className="text-[21px] font-black leading-[1.5] text-slate-950">
+          الأسئلة الشائعة حول أسعار الفائدة
+        </h2>
+        <p className="mt-1.5 text-[11px] leading-6 text-slate-500">
+          إجابات لأهم الأسئلة حول قرارات البنوك المركزية وتأثيرها على الأسواق.
+        </p>
+      </div>
+
+      <div className="space-y-2">
+        {faqs.map((faq, index) => (
+          <details
+            key={`${index}-${faq.q}`}
+            className="group overflow-hidden rounded-xl border border-slate-200 bg-white open:border-blue-200 open:shadow-sm"
+          >
+            <summary className="flex min-h-[53px] cursor-pointer list-none items-center justify-between gap-3 px-3.5 py-3 text-right marker:hidden [&::-webkit-details-marker]:hidden">
+              <span className="min-w-0 flex-1 text-[11.5px] font-black leading-5 text-slate-900 group-open:text-[#1e5bb8]">
+                {faq.q}
+              </span>
+              <span
+                aria-hidden="true"
+                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-blue-100 bg-blue-50 text-lg font-bold text-[#2471df] transition-transform group-open:rotate-45"
+              >
+                +
+              </span>
+            </summary>
+            <div className="border-t border-slate-100 bg-[#fbfdff] px-3.5 py-3.5">
+              <p className="text-[12px] leading-7 text-slate-600">
+                {faq.a}
               </p>
             </div>
+          </details>
+        ))}
+      </div>
+    </div>
+
+    {/* DESKTOP FAQ — ORIGINAL */}
+    <div className="hidden md:block">
+      <div className="mb-5 text-right sm:mb-6">
+        <h2 className="text-[23px] font-black leading-tight text-slate-950 sm:text-[29px]">
+          الأسئلة الشائعة حول أسعار الفائدة
+        </h2>
+
+        <p className="mt-2 text-[12px] leading-7 text-slate-500 sm:text-[14px]">
+          إجابات مباشرة عن أسعار الفائدة العالمية ومواعيد قرارات
+          البنوك المركزية وتأثيرها على الأسواق.
+        </p>
+      </div>
+
+      <div className="grid items-start gap-3 lg:grid-cols-2">
+        {faqs.map((faq, index) => (
+          <details
+            key={`${index}-${faq.q}`}
+            className="group min-w-0 overflow-hidden rounded-[16px] border border-slate-200 bg-white shadow-sm transition-colors duration-200 open:border-blue-200 open:shadow-md"
+          >
+            <summary className="flex min-h-[66px] cursor-pointer list-none items-center justify-between gap-4 px-4 py-4 text-right marker:hidden sm:px-5 [&::-webkit-details-marker]:hidden">
+              <span className="text-[13px] font-black leading-6 text-slate-900 transition-colors group-open:text-[#1e5bb8] sm:text-[14px]">
+                {faq.q}
+              </span>
+
+              <span
+                aria-hidden="true"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-blue-100 bg-blue-50 text-[19px] font-medium leading-none text-[#2471df] transition-transform duration-200 group-open:rotate-45 group-open:bg-blue-100"
+              >
+                +
+              </span>
+            </summary>
+
+            <div className="border-t border-slate-100 bg-[#fbfdff] px-4 py-4 sm:px-5 sm:py-5">
+              <p className="text-[13px] leading-8 text-slate-600 sm:text-[14px]">
+                {faq.a}
+              </p>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+
+{/* METHODOLOGY AND SOURCES */}
+<section className="bg-white pb-8 pt-4 sm:pb-10 sm:pt-7">
+  <div className="mx-auto max-w-[1520px] px-3 sm:px-6 lg:px-10">
+
+    {/* MOBILE SOURCES */}
+    <div className="md:hidden overflow-hidden rounded-[18px] border border-slate-200 bg-white shadow-sm">
+
+      {/* MOBILE HEADER */}
+      <div className="border-b border-slate-200 bg-blue-50/70 px-4 py-5">
+        <h2 className="text-[19px] font-black leading-7 text-slate-950">
+          مصادر أسعار الفائدة
+          <span className="block text-[#2471df]">
+            ومنهجية البيانات
+          </span>
+        </h2>
+
+        <p className="mt-2 text-[11.5px] leading-6 text-slate-600">
+          نعتمد على بيانات البنوك المركزية الرسمية لعرض أسعار الفائدة
+          ومواعيد الاجتماعات والقرارات النقدية.
+        </p>
+
+        <details className="group mt-3 rounded-xl border border-blue-100 bg-white">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-2 px-3 py-3 marker:hidden [&::-webkit-details-marker]:hidden">
+            <span className="text-[11px] font-black text-[#1e5bb8]">
+              عرض منهجية البيانات كاملة
+            </span>
+            <span className="text-sm font-black text-[#2471df] transition-transform group-open:rotate-180">
+              ⌄
+            </span>
+          </summary>
+
+          <div className="border-t border-blue-100 px-3 pb-3 pt-2">
+            <p className="whitespace-pre-line text-[11.5px] leading-7 text-slate-600">
+              {methodology}
+            </p>
           </div>
+        </details>
+      </div>
+
+      {/* MOBILE BANK SOURCES */}
+      <div className="px-3.5 py-4">
+        <div className="mb-3 flex items-center justify-between gap-2">
+          <h3 className="text-[13px] font-black text-slate-950">
+            المصادر الرسمية للبنوك المركزية
+          </h3>
+
+          <span className="shrink-0 rounded-lg bg-blue-50 px-2 py-1 text-[10px] font-black text-blue-700">
+            {banks.length} بنوك
+          </span>
         </div>
-      </section>
+
+        <div className="space-y-2">
+          {banks.map((bank) => (
+            <div
+              key={bank.slug}
+              className="flex min-w-0 items-center justify-between gap-2 rounded-xl border border-slate-200 bg-[#f8fafc] px-3 py-2.5"
+            >
+              <h4 className="min-w-0 flex-1 text-right text-[11px] font-black leading-5 text-slate-900">
+                {bankShortName(bank)}
+              </h4>
+
+              <div className="flex shrink-0 items-center gap-1.5 [&_a]:!inline-flex [&_a]:!min-h-8 [&_a]:!items-center [&_a]:!justify-center [&_a]:!rounded-lg [&_a]:!px-2 [&_a]:!py-1.5 [&_a]:!text-[10px]">
+                <SourceLink
+                  href={officialSource(bank)}
+                  label="الفائدة"
+                />
+                <SourceLink
+                  href={calendarSource(bank)}
+                  label="الاجتماعات"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* MOBILE DISCLAIMER */}
+        <details className="group mt-4 overflow-hidden rounded-xl border border-amber-200 bg-amber-50">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-2 px-3.5 py-3.5 marker:hidden [&::-webkit-details-marker]:hidden">
+            <span className="text-[12px] font-black text-amber-950">
+              تنبيه بشأن دقة البيانات
+            </span>
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-amber-100 text-sm font-black text-amber-800 transition-transform group-open:rotate-45">
+              +
+            </span>
+          </summary>
+
+          <div className="border-t border-amber-200 px-3.5 py-3">
+            <p className="whitespace-pre-line text-[11.5px] leading-7 text-amber-900">
+              {disclaimer}
+            </p>
+          </div>
+        </details>
+
+        <p className="mt-3 text-[10.5px] leading-6 text-slate-500">
+          البيانات محفوظة في قاعدة بيانات الموقع وتُراجع بالرجوع
+          إلى المصادر الرسمية. قد تتأخر التحديثات عن وقت صدور
+          القرارات، ولا تعني مدة التحديث التقني مراجعة بشرية فورية.
+        </p>
+      </div>
+    </div>
+
+    {/* DESKTOP SOURCES — ORIGINAL */}
+    <div className="hidden md:block">
+      <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm">
+        <div className="border-b border-slate-200 bg-gradient-to-l from-white to-blue-50 p-5 sm:p-7">
+          <span className="rounded-full border border-blue-200 bg-white px-3 py-1 text-[10px] font-black text-blue-700">
+            الشفافية والمصادر
+          </span>
+
+          <h2 className="mt-3 text-xl font-black sm:text-2xl">
+            مصادر أسعار الفائدة ومنهجية عرض البيانات
+          </h2>
+
+          <p className="mt-3 whitespace-pre-line text-[13px] leading-8 text-slate-600">
+            {methodology}
+          </p>
+        </div>
+
+        <div className="p-3 sm:p-7">
+          <h3 className="text-sm font-black sm:text-base">
+            المصادر الرسمية للبنوك المركزية
+          </h3>
+
+          <div className="mt-3 grid grid-cols-2 gap-2 sm:mt-4 sm:gap-3 lg:grid-cols-4">
+            {banks.map((bank) => (
+              <div
+                key={bank.slug}
+                className="min-w-0 rounded-xl border border-slate-200 bg-slate-50 p-2.5 sm:p-4"
+              >
+                <div className="flex min-h-[38px] items-center justify-center">
+                  <h4 className="min-w-0 text-center text-[10px] font-black leading-4 sm:text-xs">
+                    {bankShortName(bank)}
+                  </h4>
+                </div>
+
+                <div className="mt-2 grid grid-cols-2 gap-1 sm:mt-3 sm:flex sm:flex-wrap sm:justify-center sm:gap-2">
+                  <div className="min-w-0 [&>a]:w-full [&>a]:!px-1 [&>a]:!py-2 [&>a]:!text-[9px] sm:[&>a]:!w-auto sm:[&>a]:!px-3 sm:[&>a]:!text-[11px]">
+                    <SourceLink
+                      href={officialSource(bank)}
+                      label="الفائدة"
+                    />
+                  </div>
+
+                  <div className="min-w-0 [&>a]:w-full [&>a]:!px-1 [&>a]:!py-2 [&>a]:!text-[9px] sm:[&>a]:!w-auto sm:[&>a]:!px-3 sm:[&>a]:!text-[11px]">
+                    <SourceLink
+                      href={calendarSource(bank)}
+                      label="الاجتماعات"
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4">
+            <h3 className="text-sm font-black text-amber-950">
+              تنبيه بشأن دقة البيانات
+            </h3>
+
+            <p className="mt-2 whitespace-pre-line text-xs leading-7 text-amber-900">
+              {disclaimer}
+            </p>
+          </div>
+
+          <p className="mt-4 text-[11px] leading-7 text-slate-500">
+            يتم تخزين الأسعار والاجتماعات
+            والقرارات في قاعدة بيانات الموقع.
+            تُراجع المواعيد والقرارات بالرجوع إلى
+            الجهات الرسمية، وقد تظهر تحديثات
+            جديدة بعد إعادة توليد الصفحة.
+            مدة إعادة التحقق التقني من البيانات
+            المخزنة مؤقتًا هي 15 دقيقة، ولا تعني
+            مراجعة بشرية للمصادر كل 15 دقيقة.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
     </main>
   );
 }
