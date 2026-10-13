@@ -1369,7 +1369,7 @@ allTools: isEnglish ? "View All Tools" : "عرض جميع الأدوات",
 </Section>
 
                   <Link
-                    href={withLangHref("/about", isEnglish)}
+                    href={withLangHref("/contact", isEnglish)}
                     onClick={closeMenu}
                     className="block rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-[14px] font-extrabold text-slate-900 transition hover:border-blue-300 hover:bg-white"
                   >
