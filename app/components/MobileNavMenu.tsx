@@ -1246,6 +1246,47 @@ allTools: isEnglish ? "View All Tools" : "عرض جميع الأدوات",
                         ))}
                       </div>
 
+
+{/* ECONOMIC DATA */}
+<div className="border-t border-slate-100 pt-3">
+  <div className="mb-2 flex items-center justify-between px-1">
+    <h4 className="text-[11px] font-black text-slate-800">
+      {isEnglish ? "Economic Data" : "البيانات الاقتصادية"}
+    </h4>
+
+    <span className="text-[9px] font-bold text-slate-400">
+      {isEnglish ? "Central Banks" : "البنوك المركزية"}
+    </span>
+  </div>
+
+  <Link
+    href={withLangHref("/interest-rates", isEnglish)}
+    onClick={closeMenu}
+    className="group/rates flex min-h-[62px] items-center gap-2.5 rounded-[14px] border border-slate-200 bg-slate-50 px-3 py-2.5 transition hover:border-brand-200 hover:bg-brand-50"
+  >
+    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] border border-brand-100 bg-white text-[17px] font-black text-brand-600 shadow-sm transition group-hover/rates:bg-brand-600 group-hover/rates:text-white">
+      %
+    </span>
+
+    <div className="min-w-0 flex-1">
+      <div className="text-[11px] font-black leading-5 text-slate-800 transition group-hover/rates:text-brand-600">
+        {isEnglish ? "Global Interest Rates" : "أسعار الفائدة العالمية"}
+      </div>
+
+      <div className="mt-0.5 text-[9px] font-semibold leading-4 text-slate-500">
+        {isEnglish
+          ? "8 Central Banks · Decisions & Meetings"
+          : "8 بنوك مركزية · القرارات والاجتماعات"}
+      </div>
+    </div>
+
+    <span className="shrink-0 text-[12px] font-black text-brand-600 transition group-hover/rates:text-brand-700">
+      {isEnglish ? "→" : "←"}
+    </span>
+  </Link>
+</div>
+
+
                       <Link
                         href={withLangHref("/tools", isEnglish)}
                         onClick={closeMenu}

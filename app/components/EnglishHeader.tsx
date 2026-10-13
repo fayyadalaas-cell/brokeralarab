@@ -937,40 +937,43 @@ export default function EnglishHeader({
                   </div>
                 </div>
 
-                {/* QUICK GROUPS */}
-                <div className="mt-4 border-t border-slate-100 pt-3">
-                  <div className="grid grid-cols-3 gap-2">
-                    <div className="rounded-[12px] bg-slate-50 px-2 py-2.5 text-center">
-                      <span className="block text-[9px] font-black text-slate-700">
-                        Risk Management
-                      </span>
+                
+{/* ECONOMIC DATA */}
+<div className="mt-4 border-t border-slate-100 pt-3">
+  <div className="mb-2 flex items-center justify-between px-1">
+    <h4 className="text-[11px] font-black text-slate-800">
+      Economic Data
+    </h4>
 
-                      <span className="mt-0.5 block text-[8px] font-semibold text-slate-400">
-                        Position Sizing
-                      </span>
-                    </div>
+    <span className="text-[9px] font-bold text-slate-400">
+      Central Banks
+    </span>
+  </div>
 
-                    <div className="rounded-[12px] bg-slate-50 px-2 py-2.5 text-center">
-                      <span className="block text-[9px] font-black text-slate-700">
-                        Profit Planning
-                      </span>
+  <Link
+    href="/en/interest-rates"
+    className="group/rates flex min-h-[62px] items-center gap-3 rounded-[14px] border border-slate-200 bg-slate-50 px-3 py-2.5 transition hover:border-brand-200 hover:bg-brand-50"
+  >
+    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[11px] border border-brand-100 bg-white text-[19px] font-black text-brand-600 shadow-sm transition group-hover/rates:border-brand-200 group-hover/rates:bg-brand-600 group-hover/rates:text-white">
+      %
+    </span>
 
-                      <span className="mt-0.5 block text-[8px] font-semibold text-slate-400">
-                        Before Trading
-                      </span>
-                    </div>
+    <div className="min-w-0 flex-1 text-left">
+      <div className="text-[12px] font-black text-slate-800 transition group-hover/rates:text-brand-600">
+        Global Interest Rates
+      </div>
 
-                    <div className="rounded-[12px] bg-slate-50 px-2 py-2.5 text-center">
-                      <span className="block text-[9px] font-black text-slate-700">
-                        Margin
-                      </span>
+      <div className="mt-1 text-[9px] font-semibold text-slate-500">
+        8 Central Banks · Decisions & Meetings
+      </div>
+    </div>
 
-                      <span className="mt-0.5 block text-[8px] font-semibold text-slate-400">
-                        & Leverage
-                      </span>
-                    </div>
-                  </div>
-                </div>
+    <span className="shrink-0 text-[13px] font-black text-slate-400 transition group-hover/rates:translate-x-0.5 group-hover/rates:text-brand-600">
+      →
+    </span>
+  </Link>
+</div>
+
 
                 {/* FOOTER CTA */}
                 <Link
