@@ -534,7 +534,7 @@ export default function EconomicIndicatorsPage() {
 
       {/* HERO */}
       <section className="border-b border-slate-200 bg-white">
-        <div className="mx-auto max-w-7xl px-3 py-4 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
+        <div className="mx-auto max-w-[1520px] px-3 py-4 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
           <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] shadow-[0_18px_55px_rgba(15,23,42,0.06)] sm:rounded-[32px]">
             <div className="grid gap-5 p-5 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-center lg:gap-8 lg:p-8">
               <div className="text-center lg:text-left">
@@ -627,7 +627,7 @@ export default function EconomicIndicatorsPage() {
         </div>
       </section>
       {/* INTRO */}
-<section className="mx-auto max-w-7xl px-3 py-3 sm:px-6 sm:py-4 lg:px-8">
+<section className="mx-auto max-w-[1520px] px-3 py-3 sm:px-6 sm:py-4 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)] sm:rounded-[32px]">
     <SectionHeader
       badge="Learn"
@@ -681,7 +681,7 @@ export default function EconomicIndicatorsPage() {
 </section>
 
 {/* INDICATORS */}
-<section className="mx-auto max-w-7xl px-3 py-3 sm:px-6 sm:py-4 lg:px-8">
+<section className="mx-auto max-w-[1520px] px-3 py-3 sm:px-6 sm:py-4 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)] sm:rounded-[32px]">
     <SectionHeader
       badge="Key Reports"
@@ -698,7 +698,7 @@ export default function EconomicIndicatorsPage() {
 </section>
 
 {/* MARKET IMPACT */}
-<section className="mx-auto max-w-7xl px-3 py-3 sm:px-6 sm:py-4 lg:px-8">
+<section className="mx-auto max-w-[1520px] px-3 py-3 sm:px-6 sm:py-4 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)] sm:rounded-[32px]">
     <SectionHeader
       badge="Market Impact"
@@ -774,7 +774,7 @@ export default function EconomicIndicatorsPage() {
 </section>
 
 {/* TRADING RULES */}
-<section className="mx-auto max-w-7xl px-3 py-3 sm:px-6 sm:py-4 lg:px-8">
+<section className="mx-auto max-w-[1520px] px-3 py-3 sm:px-6 sm:py-4 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)] sm:rounded-[32px]">
     <SectionHeader
       badge="Trading Guide"
@@ -847,7 +847,7 @@ export default function EconomicIndicatorsPage() {
 </section>
 
 {/* COMMON MISTAKES */}
-<section className="mx-auto max-w-7xl px-3 py-3 sm:px-6 sm:py-4 lg:px-8">
+<section className="mx-auto max-w-[1520px] px-3 py-3 sm:px-6 sm:py-4 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)] sm:rounded-[32px]">
     <SectionHeader
       badge="Common Mistakes"
@@ -898,7 +898,7 @@ export default function EconomicIndicatorsPage() {
 </section>
 
 {/* FAQ */}
-<section className="mx-auto max-w-7xl px-3 py-3 pb-4 sm:px-6 sm:py-4 sm:pb-6 lg:px-8">
+<section className="mx-auto max-w-[1520px] px-3 py-3 pb-4 sm:px-6 sm:py-4 sm:pb-6 lg:px-8">
   <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)]">
     <SectionHeader
       badge="FAQ"
@@ -943,7 +943,7 @@ export default function EconomicIndicatorsPage() {
   </div>
 </section>
 {/* RELATED GUIDES */}
-<section className="mx-auto max-w-7xl px-3 py-3 pb-6 sm:px-6 sm:py-4 sm:pb-8 lg:px-8">
+<section className="mx-auto max-w-[1520px] px-3 py-3 pb-6 sm:px-6 sm:py-4 sm:pb-8 lg:px-8">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)] sm:rounded-[32px]">
     <SectionHeader
       badge="Related Guides"
