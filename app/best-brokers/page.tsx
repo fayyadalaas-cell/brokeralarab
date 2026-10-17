@@ -138,6 +138,10 @@ type UseCasePick = {
 
 const SITE_URL = "https://brokeralarab.com";
 
+// آخر مراجعة تحريرية فعلية للترتيب ومعلومات الوسطاء.
+// غيّر التاريخ فقط عند إجراء مراجعة حقيقية.
+const BEST_BROKERS_LAST_REVIEWED = "2026-10-16";
+
 function cleanText(
   value: string | null | undefined,
   fallback = "غير متوفر"
@@ -682,13 +686,13 @@ const comparisons = (comparisonsResult.data || []) as ComparisonRow[];
     });
   });
 
- const uniqueRegulatorCount = regulatorMap.size;
+
+const uniqueRegulatorCount = regulatorMap.size;
 
 const regulatorSummaries = Array.from(
   regulatorMap.values()
-)
-  .sort((a, b) => b.brokerCount - a.brokerCount)
-  .slice(0, 8);
+).sort((a, b) => b.brokerCount - a.brokerCount);
+
 
   const brokerById = new Map(
     brokers.map((broker) => [broker.id, broker])
@@ -766,32 +770,47 @@ const mobileComparisons = preparedComparisons.map((comparison) => ({
   ).length;
 
   const faqItems = [
-    {
-      question: "ما هي أفضل شركة تداول في 2026؟",
-      answer:
-        "لا توجد شركة واحدة مناسبة لجميع المتداولين. يعتمد الاختيار على قوة الترخيص والتكاليف والمنصات ونوع الحساب وبلد الإقامة.",
-    },
-    {
-      question: "كيف أتأكد أن شركة التداول مرخصة؟",
-      answer:
-        "تحقق من اسم الكيان القانوني ورقم الترخيص في السجل الرسمي للجهة الرقابية، ولا تعتمد فقط على الشعار الموجود في موقع الوسيط.",
-    },
-    {
-      question: "هل تختلف أفضل شركة تداول حسب الدولة؟",
-      answer:
-        "نعم، لأن الكيان القانوني وطرق الدفع والحسابات والتراخيص المتاحة قد تختلف حسب بلد الإقامة.",
-    },
-    {
-      question: "هل الحساب الإسلامي متوفر لدى جميع الوسطاء؟",
-      answer:
-        "لا. بعض الوسطاء يوفرونه مباشرة، بينما يطبق آخرون شروطًا أو رسومًا إدارية على بعض الأدوات أو بعد مدة معينة.",
-    },
-    {
-      question: "ما أهم معيار عند اختيار الوسيط؟",
-      answer:
-        "ابدأ بقوة التنظيم وسلامة الأموال، ثم قارن الرسوم والتنفيذ والسحب والمنصات والدعم.",
-    },
-  ];
+  {
+    question: "ما أفضل شركة تداول في 2026؟",
+    answer:
+      "لا توجد شركة واحدة هي الأفضل لجميع المتداولين. يعتمد الاختيار على بلد الإقامة والترخيص المتاح ونوع الحساب وتكاليف التداول والمنصة والأدوات المالية المطلوبة.",
+  },
+  {
+    question: "كيف أعرف أن شركة التداول مرخصة؟",
+    answer:
+      "تحقق من رقم الترخيص واسم الكيان القانوني في الموقع الرسمي للجهة الرقابية، وتأكد أن الكيان الذي ستتعاقد معه هو نفسه الكيان المرخص.",
+  },
+  {
+    question: "هل يمكن فتح حساب تداول بمبلغ 100 دولار؟",
+    answer:
+      "تتيح بعض الشركات حسابات بإيداع منخفض، لكن الحد الأدنى يختلف بحسب الوسيط ونوع الحساب ووسيلة الدفع. كما أن إمكانية فتح الحساب لا تعني أن المبلغ كافٍ لإدارة المخاطر.",
+  },
+  {
+    question: "ما الفرق بين السبريد والعمولة؟",
+    answer:
+      "السبريد هو الفرق بين سعر الشراء وسعر البيع، بينما العمولة رسم قد يفرضه الوسيط على تنفيذ الصفقات. وقد يجمع الحساب بين السبريد والعمولة معًا.",
+  },
+  {
+    question: "هل الحساب الإسلامي خالٍ من جميع الرسوم؟",
+    answer:
+      "ليس بالضرورة. قد تلغي بعض الحسابات رسوم التبييت التقليدية مع تطبيق رسوم أو شروط بديلة. لذلك يجب مراجعة الشروط الخاصة بكل وسيط وحساب.",
+  },
+  {
+    question: "هل أختار MT4 أم MT5؟",
+    answer:
+      "يعتمد الاختيار على الأدوات المتاحة واستراتيجيتك وتوافق المنصة مع الوسيط. راجع الأسواق والأوامر والمؤشرات التي تحتاجها قبل تحديد المنصة.",
+  },
+  {
+    question: "هل يمكن مقارنة حسابات شركتين مختلفتين؟",
+    answer:
+      "نعم، يمكنك استخدام صفحات مقارنة الحسابات في بروكر العرب لمراجعة الفروقات بين أنواع الحسابات وشروط التداول المتاحة.",
+  },
+  {
+    question: "هل الترخيص يضمن عدم خسارة الأموال؟",
+    answer:
+      "لا. الترخيص يتعلق بالإشراف التنظيمي ولا يضمن تحقيق الأرباح أو يمنع خسائر التداول. التداول بالرافعة المالية وعقود الفروقات ينطوي على مخاطر مرتفعة.",
+  },
+];
 
     /* =========================================================
      STRUCTURED DATA — BEST FOREX BROKERS 2026
@@ -807,7 +826,8 @@ const mobileComparisons = preparedComparisons.map((comparison) => ({
         "دليل شامل لمقارنة أفضل شركات تداول الفوركس في 2026، مع تقييم شركات الفوركس المرخصة والموثوقة حسب قوة التراخيص والأمان والسبريد والمنصات وأنواع الحسابات، ومساعدة المتداولين في الدول العربية على اختيار الوسيط المناسب.",
       inLanguage: "ar",
 
-      datePublished: "2026-03-01",
+           datePublished: "2026-03-01",
+      dateModified: BEST_BROKERS_LAST_REVIEWED,
 
       author: {
         "@type": "Organization",
@@ -987,15 +1007,15 @@ const mobileComparisons = preparedComparisons.map((comparison) => ({
         واختر الوسيط المناسب لبلدك.
       </p>
 
-      {/* Desktop description */}
-      <p className="mt-3 hidden max-w-[1180px] text-[15px] font-medium leading-8 text-slate-200 sm:block lg:text-[16px]">
-        تبحث عن أفضل شركة تداول فوركس آمنة ومرخصة؟
-        قارن شركات تداول الفوركس في 2026 حسب قوة
-        التراخيص وتقييم الأمان والسبريد ومنصات التداول
-        وأنواع الحسابات. تعرّف على أفضل الخيارات
-        للمتداولين في الدول العربية، واختر الوسيط
-        الأنسب لاحتياجاتك وبلد إقامتك.
-      </p>
+      
+{/* Desktop description — concise and focused */}
+<p className="mt-4 hidden max-w-[950px] text-[15px] font-medium leading-8 text-slate-200 sm:block lg:text-[17px]">
+  اكتشف أفضل شركات تداول الفوركس في 2026، وقارن الوسطاء
+  حسب التراخيص والأمان وتكاليف التداول وأنواع الحسابات.
+  تصفّح التقييمات المستقلة واختر الشركة المناسبة لاحتياجاتك
+  وبلد إقامتك.
+</p>
+
 
       {/* Trust information */}
       <div className="mt-2.5 flex flex-wrap items-center justify-start gap-x-3 gap-y-1.5 text-[8px] font-bold text-blue-100/85 sm:mt-3 sm:gap-x-4 sm:text-[11px]">
@@ -1020,70 +1040,65 @@ const mobileComparisons = preparedComparisons.map((comparison) => ({
         </span>
       </div>
 
-      {/* Stats + Buttons */}
-      <div className="mt-3.5 flex flex-col gap-3 sm:mt-5 sm:gap-4 lg:flex-row lg:items-center lg:justify-start lg:gap-6">
+      
+{/* Stats + Buttons — DESKTOP REFINED */}
+<div className="mt-3.5 flex flex-col gap-3 sm:mt-5 sm:gap-4 lg:flex-row lg:items-center lg:justify-start lg:gap-6">
 
-        {/* Dynamic stats */}
-        <div className="grid w-full grid-cols-3 overflow-hidden rounded-[15px] border border-white/10 bg-white/[0.06] p-1 backdrop-blur-sm lg:w-[620px]">
+  {/* Dynamic stats */}
+  <div className="grid w-full grid-cols-3 overflow-hidden rounded-[15px] border border-white/10 bg-white/[0.06] p-1 backdrop-blur-sm lg:w-[460px] lg:shrink-0">
 
-          <div className="px-1 py-2 text-center sm:px-2 sm:py-2.5">
-            <div className="text-base font-black text-[#66c8ff] sm:text-xl">
-              {brokers.length}
-            </div>
-            <div className="mt-0.5 text-[7px] font-bold text-slate-300 sm:text-[10px]">
-              شركة ضمن الدليل
-            </div>
-          </div>
+    <div className="px-1 py-2 text-center sm:px-2 sm:py-2.5">
+      <div className="text-base font-black text-[#66c8ff] sm:text-xl">
+        {brokers.length}
+      </div>
+      <div className="mt-0.5 text-[7px] font-bold text-slate-300 sm:text-[10px]">
+        شركة ضمن الدليل
+      </div>
+    </div>
 
-          <div className="border-x border-white/10 px-1 py-2 text-center sm:px-2 sm:py-2.5">
-            <div className="text-base font-black text-[#66c8ff] sm:text-xl">
-              {accounts.length}
-            </div>
-            <div className="mt-0.5 text-[7px] font-bold text-slate-300 sm:text-[10px]">
-              حساب تداول
-            </div>
-          </div>
+    <div className="border-x border-white/10 px-1 py-2 text-center sm:px-2 sm:py-2.5">
+      <div className="text-base font-black text-[#66c8ff] sm:text-xl">
+        {accounts.length}
+      </div>
+      <div className="mt-0.5 text-[7px] font-bold text-slate-300 sm:text-[10px]">
+        حساب تداول
+      </div>
+    </div>
 
-          <div className="px-1 py-2 text-center sm:px-2 sm:py-2.5">
-            <div className="text-base font-black text-[#66c8ff] sm:text-xl">
-              {uniqueRegulatorCount}
-            </div>
-            <div className="mt-0.5 text-[7px] font-bold text-slate-300 sm:text-[10px]">
-              جهة رقابية مسجلة
-            </div>
-          </div>
-        </div>
-
-        {/* CTA Buttons */}
-        <div className="grid w-full grid-cols-2 gap-2.5 sm:w-auto sm:gap-3">
-
-          <a
-            href="#comparison-table"
-            className="inline-flex min-h-[43px] items-center justify-center gap-2 rounded-[12px] bg-[#2471df] px-2 text-[10px] font-black text-white shadow-[0_12px_30px_rgba(37,99,235,0.28)] transition hover:-translate-y-0.5 hover:bg-[#2e7cea] sm:min-h-[46px] sm:min-w-[210px] sm:px-5 sm:text-sm"
-          >
-            <span className="sm:hidden">
-              قارن الشركات
-            </span>
-
-            <span className="hidden sm:inline">
-              مقارنة شركات الفوركس
-            </span>
-
-            <span aria-hidden="true">←</span>
-          </a>
-
-          <a
-            href="#top-brokers"
-            className="inline-flex min-h-[43px] items-center justify-center gap-2 rounded-[12px] border border-white/20 bg-white/[0.07] px-2 text-[10px] font-black text-white backdrop-blur-sm transition hover:-translate-y-0.5 hover:bg-white/[0.12] sm:min-h-[46px] sm:min-w-[190px] sm:px-5 sm:text-sm"
-          >
-            <span>أفضل 3 شركات</span>
-            <span aria-hidden="true">←</span>
-          </a>
-
-        </div>
+    <div className="px-1 py-2 text-center sm:px-2 sm:py-2.5">
+      <div className="text-base font-black text-[#66c8ff] sm:text-xl">
+        {uniqueRegulatorCount}
+      </div>
+      <div className="mt-0.5 text-[7px] font-bold text-slate-300 sm:text-[10px]">
+        جهة رقابية مسجلة
       </div>
     </div>
   </div>
+
+  {/* CTA Buttons */}
+  <div className="grid w-full grid-cols-2 gap-2.5 sm:w-auto sm:gap-3 lg:shrink-0">
+
+    <a
+      href="#comparison-table"
+      className="inline-flex min-h-[43px] items-center justify-center gap-2 rounded-[12px] bg-[#2471df] px-2 text-[10px] font-black text-white shadow-[0_12px_30px_rgba(37,99,235,0.28)] transition hover:-translate-y-0.5 hover:bg-[#2e7cea] sm:min-h-[46px] sm:min-w-[210px] sm:px-5 sm:text-sm"
+    >
+      <span className="sm:hidden">قارن الشركات</span>
+      <span className="hidden sm:inline">مقارنة شركات الفوركس</span>
+      <span aria-hidden="true">←</span>
+    </a>
+
+    <a
+      href="#top-brokers"
+      className="inline-flex min-h-[43px] items-center justify-center gap-2 rounded-[12px] border border-white/20 bg-white/[0.07] px-2 text-[10px] font-black text-white backdrop-blur-sm transition hover:-translate-y-0.5 hover:bg-white/[0.12] sm:min-h-[46px] sm:min-w-[190px] sm:px-5 sm:text-sm"
+    >
+      <span>أفضل 3 شركات</span>
+      <span aria-hidden="true">←</span>
+    </a>
+
+  </div>
+</div>
+</div>
+</div>
 </section>
 
 
@@ -1100,7 +1115,8 @@ const mobileComparisons = preparedComparisons.map((comparison) => ({
   <div className="mx-auto max-w-[1520px] px-4 sm:px-6 lg:px-8 xl:px-10">
 
     
-{/* SECTION INTRO */}
+
+{/* SECTION INTRO — DESKTOP OPTIMIZED */}
 <div className="max-w-[1100px] text-right">
 
   <h2
@@ -1108,11 +1124,14 @@ const mobileComparisons = preparedComparisons.map((comparison) => ({
     className="text-[27px] font-black leading-[1.3] tracking-tight text-[#081a33] sm:text-[36px] lg:text-[43px]"
   >
     ما هي أفضل
-    <span className="text-[#2b6fd0]"> شركات تداول الفوركس </span>
+    <span className="text-[#2b6fd0]">
+      {" "}شركات تداول الفوركس{" "}
+    </span>
     في 2026؟
   </h2>
 
-  <p className="mt-3 max-w-[1050px] text-[13px] font-medium leading-7 text-slate-600 sm:text-[15px] sm:leading-8">
+  {/* Mobile description — unchanged */}
+  <p className="mt-3 text-[13px] font-medium leading-7 text-slate-600 sm:hidden">
     إذا كنت تبحث عن أفضل شركة تداول فوركس، فإن المقارنة
     لا تعتمد على شهرة الشركة وحدها. يراجع بروكر العرب
     التقييم العام والتراخيص وتكاليف التداول والمنصات
@@ -1120,7 +1139,15 @@ const mobileComparisons = preparedComparisons.map((comparison) => ({
     وفيما يلي الشركات الثلاث الأعلى ترتيبًا في دليلنا.
   </p>
 
+  {/* Desktop description */}
+  <p className="mt-3 hidden max-w-[1050px] text-[15px] font-medium leading-8 text-slate-600 sm:block">
+    تعرّف على الشركات الثلاث الأعلى تقييمًا في دليل بروكر العرب،
+    واكتشف أبرز مزايا كل وسيط، والتراخيص المسجلة لديه،
+    والحد الأدنى للإيداع قبل اتخاذ قرارك.
+  </p>
+
 </div>
+
 
 
     {/* DIRECT ANSWER — SEO + USER EXPERIENCE */}
@@ -1181,259 +1208,239 @@ const mobileComparisons = preparedComparisons.map((comparison) => ({
       </div>
     )}
 
-    {/* =====================================================
-        BROKER CARDS
-    ===================================================== */}
+    
+{/* =====================================================
+    BROKER CARDS — REFINED DESKTOP DESIGN
+===================================================== */}
 
-    <div className="mt-5 grid grid-cols-1 gap-3 lg:mt-9 lg:grid-cols-3 lg:gap-5">
-
-      {topThree.map((broker, index) => {
-
-        const licenseCodes = Array.from(
-          new Set(
-            broker.licenses
-              .map((license) =>
-                license.regulator_code?.trim().toUpperCase()
-              )
-              .filter(
-                (code): code is string => Boolean(code)
-              )
+<div className="mt-5 grid grid-cols-1 gap-3 lg:mt-8 lg:grid-cols-3 lg:gap-5">
+  {topThree.map((broker, index) => {
+    const licenseCodes = Array.from(
+      new Set(
+        broker.licenses
+          .map((license) =>
+            license.regulator_code?.trim().toUpperCase()
           )
-        ).slice(0, 5);
+          .filter((code): code is string => Boolean(code))
+      )
+    ).slice(0, 5);
 
-        const brokerName = cleanText(broker.name);
+    const brokerName = cleanText(broker.name);
 
-        const bestFor = cleanText(
-  broker.best_for,
-  "راجع تفاصيل الحسابات والمنصات لمعرفة مدى ملاءمة الوسيط"
-);
+    const bestFor = cleanText(
+      broker.best_for,
+      "راجع أنواع الحسابات والمنصات وشروط التداول لمعرفة مدى ملاءمة الوسيط."
+    );
 
-const keyStrength = cleanText(
-  broker.key_strength_ar,
-  "اطلع على تقييم الوسيط ومزاياه وشروط التداول"
-);
+    const keyStrength = cleanText(
+      broker.key_strength_ar,
+      "اطلع على أبرز مزايا الوسيط وشروط التداول في التقييم الكامل."
+    );
 
-        const isFirst = index === 0;
+    const isFirst = index === 0;
 
-        return (
-          <article
-            key={broker.id}
-            className={`group relative flex h-full flex-col overflow-hidden rounded-[24px] border bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_rgba(15,23,42,0.10)] ${
-              isFirst
-                ? "border-[#e7c66a] shadow-[0_10px_35px_rgba(180,135,30,0.09)]"
-                : "border-slate-200 shadow-[0_8px_28px_rgba(15,23,42,0.045)]"
-            }`}
-          >
-
-            {/* TOP ACCENT */}
-            <div
-              className={`h-1 ${
-                isFirst
-                  ? "bg-gradient-to-l from-amber-400 to-amber-500"
-                  : "bg-gradient-to-l from-[#2b6fd0] to-[#59c0ff]"
-              }`}
-            />
-
-            <div className="flex flex-1 flex-col p-3.5 sm:p-5 lg:p-6">
-
-              {/* RANK + RATING */}
-              <div className="flex items-center justify-between gap-2">
-
-                <span
-                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[10px] font-black sm:text-[11px] ${
-                    isFirst
-                      ? "bg-amber-100 text-amber-900"
-                      : "bg-[#eef5fd] text-[#1e5bb8]"
-                  }`}
-                >
-                  {isFirst
-                    ? "★ الأفضل إجمالًا"
-                    : `المركز ${index + 1}`}
-                </span>
-
-                <span className="inline-flex items-center gap-1 rounded-full border border-amber-100 bg-amber-50 px-3 py-1.5 text-[11px] font-black text-amber-800">
-                  <span>★</span>
-                  {ratingLabel(broker.rating)}
-                  <span className="text-amber-700/70">/ 5</span>
-                </span>
-
-              </div>
-
-              {/* BROKER IDENTITY */}
-<div className="mt-3 flex items-center gap-3 sm:gap-4 lg:mt-5">
-
-  <Link
-    href={broker.slug ? `/brokers/${broker.slug}` : "/brokers"}
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label={`افتح تقييم ${brokerName} في تبويب جديد`}
-    title={`قراءة تقييم ${brokerName}`}
-    className="shrink-0 rounded-[20px] transition-transform duration-200 hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#2b6fd0]"
-  >
-    <BrokerLogo
-      broker={broker}
-      size="large"
-    />
-  </Link>
-
-  <div className="min-w-0 flex-1">
-
-    <h3 className="break-words text-[21px] font-black leading-tight text-[#0c1c34] sm:text-[24px]">
-      <Link
-        href={broker.slug ? `/brokers/${broker.slug}` : "/brokers"}
-        target="_blank"
-        rel="noopener noreferrer"
-        title={`قراءة تقييم ${brokerName}`}
-        className="transition-colors hover:text-[#2b6fd0] hover:underline focus-visible:rounded focus-visible:outline-2 focus-visible:outline-[#2b6fd0]"
+    return (
+      <article
+        key={broker.id}
+        className={`group relative flex h-full flex-col overflow-hidden rounded-[20px] border bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${
+          isFirst
+            ? "border-amber-400 shadow-[0_8px_28px_rgba(180,135,30,0.08)]"
+            : "border-[#d6e5f8] shadow-sm"
+        }`}
       >
-        {brokerName}
-      </Link>
-    </h3>
+        {/* Top accent */}
+        <div
+          className={`h-[3px] ${
+            isFirst
+              ? "bg-amber-400"
+              : "bg-[#2b6fd0]"
+          }`}
+        />
 
-    <p className="mt-1.5 text-[11px] font-semibold leading-5 text-slate-500 sm:text-xs">
-      {keyStrength}
-    </p>
+        <div className="flex flex-1 flex-col p-4 sm:p-5 lg:p-5 xl:p-6">
 
-  </div>
-</div>
+          {/* Rank and rating */}
+          <div className="flex items-center justify-between gap-2">
+            <span
+              className={`rounded-full px-3 py-1.5 text-[10px] font-black lg:text-[12px] ${
+                isFirst
+                  ? "bg-amber-100 text-amber-900"
+                  : "bg-[#eef5fd] text-[#1e5bb8]"
+              }`}
+            >
+              {isFirst
+                ? "★ الأفضل إجمالًا"
+                : `المركز ${index + 1}`}
+            </span>
 
-              {/* WHY THIS BROKER */}
-              <div className="mt-5 rounded-2xl border border-[#dce9f9] bg-[#f3f8ff] p-3.5">
+            <span className="inline-flex items-center gap-1 rounded-full border border-amber-100 bg-amber-50 px-3 py-1.5 text-[11px] font-black text-amber-800 lg:text-[13px]">
+              <span>★</span>
+              {ratingLabel(broker.rating)}
+              <span className="text-amber-700/70">/ 5</span>
+            </span>
+          </div>
 
-                <div className="flex items-center gap-2">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-[#dceafb] text-[12px] font-black text-[#1e5bb8]">
-                    ✓
-                  </span>
+          {/* Broker identity */}
+          <div className="mt-4 flex items-center gap-3 lg:mt-5 lg:gap-4">
+            <Link
+              href={broker.slug ? `/brokers/${broker.slug}` : "/brokers"}
+              aria-label={`قراءة تقييم ${brokerName}`}
+              className="shrink-0 transition-transform hover:scale-105"
+            >
+              <BrokerLogo broker={broker} size="large" />
+            </Link>
 
-                  <h4 className="text-[11px] font-black text-[#123b72] sm:text-xs">
-                    لمن يناسب هذا الوسيط؟
-                  </h4>
-                </div>
+            <div className="min-w-0 flex-1">
+              <h3 className="break-words text-[20px] font-black leading-tight text-[#081a33] lg:text-[23px] xl:text-[25px]">
+                <Link
+                  href={broker.slug ? `/brokers/${broker.slug}` : "/brokers"}
+                  className="transition hover:text-[#2b6fd0]"
+                >
+                  {brokerName}
+                </Link>
+              </h3>
 
-                <p className="mt-2 text-[12px] font-medium leading-6 text-slate-700">
-                  {bestFor}
-                </p>
+              <p className="mt-1.5 text-[11px] font-semibold leading-5 text-slate-500 lg:text-[12px]">
+                {keyStrength}
+              </p>
+            </div>
+          </div>
 
-              </div>
+          {/* Why choose this broker */}
+          <div className="mt-4 rounded-xl border border-[#d6e5f8] bg-[#f3f8ff] p-3.5 lg:mt-5 lg:p-4">
+            <div className="flex items-center gap-2">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-[#dceafb] text-[12px] font-black text-[#1e5bb8]">
+                ✓
+              </span>
 
-              {/* CORE FACTS */}
-              <div className="mt-4 grid grid-cols-3 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
+              <h4 className="text-[12px] font-black text-[#123b72] lg:text-[14px]">
+                لمن يناسب هذا الوسيط؟
+              </h4>
+            </div>
 
-                <div className="border-l border-slate-200 px-1.5 py-3 text-center sm:px-2">
+            <p className="mt-2 text-[12px] font-medium leading-6 text-slate-700 lg:text-[13px] lg:leading-7">
+              {bestFor}
+            </p>
+          </div>
 
-                  <p className="text-[9px] font-bold text-slate-500">
-                    الحد الأدنى
-                  </p>
-
-                  <p className="mt-1.5 text-[12px] font-black text-[#102442] sm:text-sm">
-                    {formatDeposit(
-                      getDisplayDeposit(broker)
-                    )}
-                  </p>
-
-                </div>
-
-                <div className="border-l border-slate-200 px-1.5 py-3 text-center sm:px-2">
-
-                  <p className="text-[9px] font-bold text-slate-500">
-  تراخيص مسجلة
-</p>
-
-                  <p className="mt-1.5 text-[12px] font-black text-[#102442] sm:text-sm">
-                    {broker.active_license_count}
-                  </p>
-
-                </div>
-
-                <div className="px-1.5 py-3 text-center sm:px-2">
-
-                  <p className="text-[9px] font-bold text-slate-500">
-                    حساب إسلامي
-                  </p>
-
-                  <p
-                    className={`mt-1.5 text-[11px] font-black sm:text-xs ${
-                      broker.has_islamic_account
-                        ? "text-emerald-700"
-                        : "text-slate-600"
-                    }`}
-                  >
-                    {broker.has_islamic_account
-                      ? "متوفر"
-                      : "تحقق"}
-                  </p>
-
-                </div>
-              </div>
-
-              {/* LICENSE INFORMATION */}
-              <div className="mt-4">
-
-                <div className="flex items-center justify-between gap-2">
-
-                  <p className="text-[11px] font-black text-[#142844]">
-                    الجهات الرقابية المسجلة
-                  </p>
-
-                  <span className="text-[9px] font-semibold text-slate-400">
-                   وفق بيانات بروكر العرب
-                  </span>
-
-                </div>
-
-                {licenseCodes.length > 0 ? (
-
-                  <div className="mt-2.5 flex min-h-[28px] flex-wrap gap-1.5">
-
-                    {licenseCodes.map((code) => (
-
-                      <span
-                        key={`${broker.id}-${code}`}
-                        className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[10px] font-black text-slate-700"
-                      >
-                        {code}
-                      </span>
-
-                    ))}
-
-                  </div>
-
-                ) : (
-
-                  <p className="mt-2 text-[11px] text-slate-500">
-                    راجع تفاصيل التراخيص في تقييم الشركة.
-                  </p>
-
-                )}
-
-              </div>
-
-              {/* TRANSPARENCY NOTE */}
-              <p className="mt-3 text-[10px] font-medium leading-5 text-slate-500">
-                قد تختلف الجهة الرقابية وشروط الحساب
-                بحسب الكيان القانوني وبلد إقامة العميل.
+          {/* Core facts */}
+          <div className="mt-4 grid grid-cols-3 overflow-hidden rounded-xl border border-[#dce6f2] bg-[#f8fafc]">
+            <div className="border-l border-[#dce6f2] px-1.5 py-3 text-center lg:py-4">
+              <p className="text-[10px] font-semibold text-slate-500 lg:text-[11px]">
+                الحد الأدنى للإيداع
               </p>
 
-              {/* BUTTONS */}
-              <div className="mt-auto pt-5">
-                <BrokerButtons broker={broker} />
-              </div>
-
+              <p className="mt-1.5 text-[14px] font-black text-[#102442] lg:text-[17px]">
+                {formatDeposit(getDisplayDeposit(broker))}
+              </p>
             </div>
-          </article>
-        );
-      })}
 
-    </div>
+            <div className="border-l border-[#dce6f2] px-1.5 py-3 text-center lg:py-4">
+              <p className="text-[10px] font-semibold text-slate-500 lg:text-[11px]">
+                تراخيص مسجلة
+              </p>
 
-    
-{/* SAFETY + COUNTRIES — MOBILE OPTIMIZED */}
+              <p className="mt-1.5 text-[14px] font-black text-[#102442] lg:text-[17px]">
+                {broker.active_license_count}
+              </p>
+            </div>
+
+            <div className="px-1.5 py-3 text-center lg:py-4">
+              <p className="text-[10px] font-semibold text-slate-500 lg:text-[11px]">
+                حساب إسلامي
+              </p>
+
+              <p
+                className={`mt-1.5 text-[12px] font-black lg:text-[14px] ${
+                  broker.has_islamic_account
+                    ? "text-emerald-700"
+                    : "text-slate-600"
+                }`}
+              >
+                {broker.has_islamic_account ? "متوفر" : "تحقق"}
+              </p>
+            </div>
+          </div>
+
+          {/* Regulations */}
+          <div className="mt-4">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h4 className="text-[12px] font-black text-[#142844] lg:text-[14px]">
+                الجهات الرقابية المسجلة
+              </h4>
+
+              <span className="text-[10px] font-medium text-slate-400">
+                وفق بيانات بروكر العرب
+              </span>
+            </div>
+
+            {licenseCodes.length > 0 ? (
+              <div className="mt-2.5 flex flex-wrap gap-1.5">
+                {licenseCodes.map((code) => (
+                  <span
+                    key={`${broker.id}-${code}`}
+                    className="inline-flex items-center rounded-lg border border-[#d6e5f8] bg-white px-2.5 py-1.5 text-[10px] font-black text-[#123b72] lg:text-[11px]"
+                  >
+                    {code}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <p className="mt-2 text-[11px] text-slate-500">
+                راجع تفاصيل التراخيص في تقييم الشركة.
+              </p>
+            )}
+          </div>
+
+          {/* Transparency note */}
+          <p className="mt-3 text-[10px] font-medium leading-5 text-slate-500 lg:text-[11px] lg:leading-6">
+            قد تختلف الجهة الرقابية وشروط الحساب حسب الكيان القانوني وبلد إقامة العميل.
+          </p>
+
+          {/* Buttons */}
+          <div className="mt-auto pt-5">
+            <div className="grid grid-cols-2 gap-2.5">
+              <Link
+                href={broker.slug ? `/brokers/${broker.slug}` : "/brokers"}
+                className="inline-flex min-h-[43px] items-center justify-center rounded-xl border border-[#b8cce8] bg-white px-3 text-[12px] font-black text-[#184a97] transition hover:bg-[#eef5fd] lg:min-h-[46px] lg:text-[13px]"
+              >
+                قراءة التقييم
+              </Link>
+
+              {broker.real_account_url && broker.slug ? (
+                <a
+                  href={`/go/${broker.slug}?type=real`}
+                  target="_blank"
+                  rel="noopener noreferrer sponsored"
+                  className="inline-flex min-h-[43px] items-center justify-center rounded-xl bg-[#1e5bb8] px-3 text-[12px] font-black text-white transition hover:bg-[#184a97] lg:min-h-[46px] lg:text-[13px]"
+                >
+                  فتح حساب
+                </a>
+              ) : (
+                <Link
+                  href={broker.slug ? `/brokers/${broker.slug}` : "/brokers"}
+                  className="inline-flex min-h-[43px] items-center justify-center rounded-xl bg-[#1e5bb8] px-3 text-[12px] font-black text-white transition hover:bg-[#184a97] lg:min-h-[46px] lg:text-[13px]"
+                >
+                  تفاصيل الوسيط
+                </Link>
+              )}
+            </div>
+          </div>
+
+        </div>
+      </article>
+    );
+  })}
+</div>
+
+
+{/* SAFETY + COUNTRIES — REFINED */}
 <div className="mt-5 grid grid-cols-1 gap-3 sm:mt-8 lg:grid-cols-2 lg:gap-5">
 
-  {/* LICENSED BROKERS */}
-  <div className="rounded-[20px] border border-slate-200 bg-[#f8fafc] p-4 sm:rounded-[22px] sm:p-6">
+  {/* SAFETY AND REGULATION */}
+  <article className="flex h-full flex-col rounded-[20px] border border-slate-200 bg-[#f8fafc] p-4 sm:rounded-[22px] sm:p-6 lg:p-7">
 
-    <span className="inline-flex rounded-full bg-[#e8f1fc] px-3 py-1.5 text-[10px] font-black text-[#1e5bb8]">
+    <span className="w-fit rounded-full bg-[#e8f1fc] px-3 py-1.5 text-[10px] font-black text-[#1e5bb8]">
       التراخيص وحماية المتداول
     </span>
 
@@ -1441,69 +1448,78 @@ const keyStrength = cleanText(
       كيف تختار شركة تداول فوركس آمنة ومرخصة؟
     </h3>
 
-    <p className="mt-2 text-[12px] font-medium leading-6 text-slate-600 sm:mt-3 sm:text-[13px] sm:leading-7">
-      قبل فتح حساب تداول، تحقق من اسم الكيان القانوني
-      ورقم ترخيصه في السجل الرسمي للجهة الرقابية.
-      فالترخيص وشروط الحماية قد تختلف حسب بلد الإقامة.
+    <p className="mt-3 text-[12px] font-medium leading-7 text-slate-600 sm:text-[13px]">
+      ابدأ بالتحقق من اسم الكيان القانوني ورقم الترخيص
+      في السجل الرسمي للجهة الرقابية، وليس من شعار
+      الترخيص الموجود على موقع الشركة فقط.
     </p>
 
-    {/* MOBILE DETAILS */}
+    {/* Mobile additional information */}
     <details className="group mt-2 sm:hidden">
-      <summary className="inline-flex cursor-pointer list-none items-center gap-1.5 py-2 text-[11px] font-black text-[#1e5bb8] [&::-webkit-details-marker]:hidden">
-        <span>اقرأ التفاصيل</span>
-        <span className="transition-transform group-open:rotate-180">⌄</span>
+      <summary className="cursor-pointer py-2 text-[11px] font-black text-[#1e5bb8]">
+        اقرأ المزيد عن حماية أموالك
       </summary>
-
-      <div className="space-y-2 border-t border-slate-200 pt-3 text-[12px] font-medium leading-7 text-slate-600">
-        <p>
-          لا يكفي وجود شعار جهة رقابية على موقع الشركة؛
-          فقد تعمل العلامة التجارية من خلال عدة كيانات
-          تختلف في مستوى الحماية وشروط التداول.
-        </p>
-        <p>
-          راجع سياسة سحب الأموال، وفصل أموال العملاء،
-          والحماية من الرصيد السلبي إن كانت متاحة،
-          وتكاليف التداول. الترخيص لا يلغي مخاطر الخسارة.
-        </p>
-      </div>
+      <p className="border-t border-slate-200 pt-3 text-[12px] leading-7 text-slate-600">
+        راجع فصل أموال العملاء، والحماية من الرصيد السلبي،
+        وسياسة السحب. فقد تختلف هذه الحماية بحسب
+        الكيان القانوني وبلد الإقامة، ولا يلغي الترخيص
+        مخاطر خسارة رأس المال.
+      </p>
     </details>
 
-    {/* DESKTOP DETAILS */}
-    <div className="mt-2 hidden space-y-2 text-[13px] font-medium leading-7 text-slate-600 sm:block">
-      <p>
-        لا يكفي وجود شعار جهة رقابية على موقع الشركة؛
-        فقد تعمل العلامة التجارية من خلال عدة كيانات
-        تختلف في مستوى الحماية وشروط التداول.
-      </p>
-      <p>
-        راجع أيضًا سياسة سحب الأموال، وفصل أموال
-        العملاء، والحماية من الرصيد السلبي إن كانت
-        متاحة، وتكاليف التداول قبل اتخاذ القرار.
-        والترخيص لا يلغي مخاطر الخسارة في الفوركس.
-      </p>
+    {/* Desktop additional information */}
+    <div className="mt-3 hidden rounded-xl border border-[#dce9f9] bg-white p-4 sm:block">
+      <h4 className="text-[12px] font-black text-[#123b72]">
+        ما الذي يجب التحقق منه قبل فتح الحساب؟
+      </h4>
+
+      <div className="mt-3 grid gap-2 text-[12px] font-medium text-slate-600 lg:grid-cols-2">
+        <div className="flex items-start gap-2">
+          <span className="font-black text-[#2b6fd0]">✓</span>
+          <span>الكيان القانوني ورقم الترخيص</span>
+        </div>
+        <div className="flex items-start gap-2">
+          <span className="font-black text-[#2b6fd0]">✓</span>
+          <span>فصل أموال العملاء</span>
+        </div>
+        <div className="flex items-start gap-2">
+          <span className="font-black text-[#2b6fd0]">✓</span>
+          <span>شروط السحب والإيداع</span>
+        </div>
+        <div className="flex items-start gap-2">
+          <span className="font-black text-[#2b6fd0]">✓</span>
+          <span>الحماية من الرصيد السلبي إن توفرت</span>
+        </div>
+      </div>
     </div>
 
-    <div className="mt-3 flex flex-wrap gap-2 sm:mt-5 sm:gap-3">
+    <p className="mt-3 hidden text-[11px] leading-6 text-slate-500 sm:block">
+      قد تختلف شروط الحماية حسب الكيان القانوني وبلد الإقامة.
+      الترخيص لا يضمن عدم خسارة الأموال.
+    </p>
+
+    <div className="mt-auto flex flex-wrap gap-2 pt-5">
       <Link
         href="/licenses"
-        className="inline-flex min-h-10 items-center justify-center rounded-xl bg-[#1e5bb8] px-3 py-2 text-[11px] font-black text-white transition hover:bg-[#184a97] sm:min-h-11 sm:px-5 sm:text-xs"
+        className="inline-flex min-h-10 items-center justify-center rounded-xl bg-[#1e5bb8] px-4 py-2 text-[11px] font-black text-white transition hover:bg-[#184a97]"
       >
         دليل تراخيص التداول ←
       </Link>
 
       <Link
         href="/how-we-review-brokers"
-        className="inline-flex min-h-10 items-center justify-center rounded-xl border border-blue-200 bg-white px-3 py-2 text-[11px] font-black text-[#1e5bb8] transition hover:bg-blue-50 sm:min-h-11 sm:px-5 sm:text-xs"
+        className="inline-flex min-h-10 items-center justify-center rounded-xl border border-blue-200 bg-white px-4 py-2 text-[11px] font-black text-[#1e5bb8] transition hover:bg-blue-50"
       >
         كيف نقيّم الوسطاء؟
       </Link>
     </div>
-  </div>
 
-  {/* ARAB COUNTRIES */}
-  <div className="rounded-[20px] border border-slate-200 bg-[#f8fafc] p-4 sm:rounded-[22px] sm:p-6">
+  </article>
 
-    <span className="inline-flex rounded-full bg-[#e8f1fc] px-3 py-1.5 text-[10px] font-black text-[#1e5bb8]">
+  {/* BROKERS BY COUNTRY */}
+  <article className="flex h-full flex-col rounded-[20px] border border-slate-200 bg-[#f8fafc] p-4 sm:rounded-[22px] sm:p-6 lg:p-7">
+
+    <span className="w-fit rounded-full bg-[#e8f1fc] px-3 py-1.5 text-[10px] font-black text-[#1e5bb8]">
       اختيار الوسيط حسب بلد الإقامة
     </span>
 
@@ -1511,64 +1527,84 @@ const keyStrength = cleanText(
       هل تختلف أفضل شركات الفوركس بين الدول العربية؟
     </h3>
 
-    <p className="mt-2 text-[12px] font-medium leading-6 text-slate-600 sm:mt-3 sm:text-[13px] sm:leading-7">
-      نعم. تختلف الشركات والكيانات المرخصة وطرق الإيداع
-      والسحب حسب الدولة، لذلك اختر وسيطًا يناسب بلد
-      إقامتك بدل الاعتماد على ترتيب عالمي فقط.
+    <p className="mt-3 text-[12px] font-medium leading-7 text-slate-600 sm:text-[13px]">
+      نعم، فقد تختلف أهلية فتح الحساب والكيانات القانونية
+      وطرق الدفع والتراخيص المتاحة من دولة إلى أخرى.
+      لذلك لا يوجد ترتيب واحد يناسب جميع المتداولين العرب.
     </p>
 
-    {/* MOBILE DETAILS */}
+    {/* Mobile additional information */}
     <details className="group mt-2 sm:hidden">
-      <summary className="inline-flex cursor-pointer list-none items-center gap-1.5 py-2 text-[11px] font-black text-[#1e5bb8] [&::-webkit-details-marker]:hidden">
-        <span>لماذا يختلف الاختيار حسب الدولة؟</span>
-        <span className="transition-transform group-open:rotate-180">⌄</span>
+      <summary className="cursor-pointer py-2 text-[11px] font-black text-[#1e5bb8]">
+        لماذا يختلف الاختيار حسب الدولة؟
       </summary>
-
-      <p className="border-t border-slate-200 pt-3 text-[12px] font-medium leading-7 text-slate-600">
-        قد تختلف أهلية فتح الحساب، والدعم المحلي،
-        والجهة الرقابية، وطرق الدفع بين السعودية
-        والإمارات والكويت وقطر ومصر وغيرها.
-        تحقق من شروط الوسيط قبل التسجيل.
+      <p className="border-t border-slate-200 pt-3 text-[12px] leading-7 text-slate-600">
+        بعض الوسطاء يقدمون حسابات وخدمات مختلفة حسب
+        بلد الإقامة. راجع تصنيف بلدك وتحقق من شروط
+        التسجيل والجهة الرقابية قبل فتح الحساب.
       </p>
     </details>
 
-    {/* DESKTOP DETAILS */}
-    <div className="mt-2 hidden space-y-2 text-[13px] font-medium leading-7 text-slate-600 sm:block">
-      <p>
-        فقد تختلف الشركات المتاحة والكيانات القانونية
-        وطرق الإيداع والسحب والدعم المحلي حسب بلد
-        إقامة المتداول. لذلك لا توجد شركة واحدة يمكن
-        اعتبارها الأفضل لجميع المتداولين في الدول العربية.
-      </p>
-      <p>
-        استخدم تصنيفات بروكر العرب حسب الدولة لمقارنة
-        الوسطاء المناسبين لسوقك، ثم تحقق من أهلية
-        فتح الحساب والتراخيص وشروط الخدمة قبل التسجيل.
-      </p>
+    {/* Desktop additional information */}
+    <div className="mt-3 hidden rounded-xl border border-[#dce9f9] bg-white p-4 sm:block">
+      <h4 className="text-[12px] font-black text-[#123b72]">
+        لماذا تختار وسيطًا حسب دولتك؟
+      </h4>
+
+      <div className="mt-3 grid gap-2 text-[12px] font-medium text-slate-600 lg:grid-cols-2">
+        <div className="flex items-start gap-2">
+          <span className="font-black text-[#2b6fd0]">✓</span>
+          <span>التحقق من أهلية فتح الحساب</span>
+        </div>
+        <div className="flex items-start gap-2">
+          <span className="font-black text-[#2b6fd0]">✓</span>
+          <span>معرفة الكيان الرقابي المتاح</span>
+        </div>
+        <div className="flex items-start gap-2">
+          <span className="font-black text-[#2b6fd0]">✓</span>
+          <span>مقارنة طرق الإيداع والسحب</span>
+        </div>
+        <div className="flex items-start gap-2">
+          <span className="font-black text-[#2b6fd0]">✓</span>
+          <span>مراجعة الحسابات والخدمات المحلية</span>
+        </div>
+      </div>
     </div>
 
-    {/* COUNTRY LINKS */}
-    <div className="mt-3 flex flex-wrap gap-2 sm:mt-5 sm:gap-2.5">
-      {countries
-        .filter((country) =>
-          ["saudi-arabia", "uae", "kuwait", "qatar", "egypt"].includes(
-            country.slug
+    {/* Country links — Supabase */}
+    <div className="mt-auto pt-5">
+      <p className="mb-2 text-[11px] font-black text-[#123b72]">
+        استكشف أفضل الوسطاء في بلدك
+      </p>
+
+      <div className="flex flex-wrap gap-2">
+        {countries
+          .filter((country) =>
+            [
+              "saudi-arabia",
+              "uae",
+              "kuwait",
+              "qatar",
+              "egypt",
+            ].includes(country.slug)
           )
-        )
-        .map((country) => (
-          <Link
-            key={country.id}
-            href={`/best-brokers/${country.slug}`}
-            className="inline-flex min-h-9 items-center gap-1.5 rounded-xl border border-blue-200 bg-white px-2.5 py-1.5 text-[11px] font-bold text-[#184a97] transition hover:bg-blue-50 sm:min-h-10 sm:gap-2 sm:px-3 sm:py-2 sm:text-xs"
-          >
-            <span>{country.flag_emoji || "🌍"}</span>
-            <span>{country.country_name_ar}</span>
-            <span aria-hidden="true">←</span>
-          </Link>
-        ))}
+          .map((country) => (
+            <Link
+              key={country.id}
+              href={`/best-brokers/${country.slug}`}
+              className="inline-flex min-h-9 items-center gap-1.5 rounded-xl border border-blue-200 bg-white px-3 py-2 text-[11px] font-bold text-[#184a97] transition hover:border-[#2b6fd0] hover:bg-blue-50"
+            >
+              <span>{country.flag_emoji || "🌍"}</span>
+              <span>{country.country_name_ar}</span>
+              <span aria-hidden="true">←</span>
+            </Link>
+          ))}
+      </div>
     </div>
-  </div>
+
+  </article>
 </div>
+
 
 
     {/* METHODOLOGY NOTE */}
@@ -1582,38 +1618,36 @@ const keyStrength = cleanText(
 </section>
 
 
-{/* FOREX TRADING PLATFORMS — MOBILE OPTIMIZED */}
+
+{/* FOREX TRADING PLATFORMS — REFINED */}
 <section
   id="forex-platforms"
   aria-labelledby="forex-platforms-title"
- className="border-b border-slate-200 bg-[#f5f8fd] py-6 sm:py-9"
+  className="border-b border-[#dce6f2] bg-[#f5f8fd] py-7 sm:py-10"
 >
-  <div className="mx-auto max-w-[1520px] px-4 sm:px-6 lg:px-10">
+  <div className="mx-auto max-w-[1520px] px-4 sm:px-6 lg:px-8">
     <div className="max-w-[1050px]">
-      
-
-     <h2
-  id="forex-platforms-title"
-  className="text-[23px] font-black leading-[1.35] text-[#081a33] sm:text-[38px]"
->
+      <h2
+        id="forex-platforms-title"
+        className="text-[24px] font-black leading-[1.35] text-[#081a33] sm:text-[36px] lg:text-[40px]"
+      >
         ما أفضل منصة تداول فوركس للمبتدئين والمحترفين؟
       </h2>
 
-      <p className="mt-3 text-[12px] font-medium leading-6 text-slate-700 sm:mt-4 sm:text-base sm:leading-8">
-        تختلف أفضل منصة تداول فوركس حسب خبرة المتداول
-        واحتياجاته. تعرّف على أشهر ثلاث منصات، وقارن
-        أدوات التحليل وسهولة الاستخدام والتداول الآلي.
+      <p className="mt-3 text-[13px] font-medium leading-7 text-slate-600 sm:text-[15px] sm:leading-8">
+        تختلف أفضل منصة تداول فوركس حسب خبرة المتداول واحتياجاته.
+        تعرّف على أشهر ثلاث منصات وقارن أدوات التحليل وسهولة
+        الاستخدام وإمكانات التداول الآلي.
       </p>
 
-      <p className="mt-3 hidden text-sm font-medium leading-8 text-slate-700 sm:block">
-        من المهم التمييز بين شركة الوساطة التي توفر حساب
-        التداول وبين البرنامج المستخدم لتحليل الأسعار
-        وتنفيذ الأوامر. كما تختلف المنصات المتاحة من
-        وسيط إلى آخر.
+      <p className="mt-2 hidden text-[14px] leading-7 text-slate-600 sm:block">
+        شركة الوساطة توفر حساب التداول، بينما المنصة هي البرنامج
+        المستخدم لتحليل الأسعار وتنفيذ الأوامر. وتختلف المنصات
+        المتاحة من وسيط إلى آخر.
       </p>
     </div>
 
-    <div className="mt-5 grid grid-cols-1 gap-2.5 md:mt-7 md:grid-cols-3 md:gap-4">
+    <div className="mt-6 grid grid-cols-1 gap-3 md:grid-cols-3 md:gap-4">
       {[
         {
           name: "MetaTrader 4",
@@ -1621,6 +1655,7 @@ const keyStrength = cleanText(
           title: "منصة معروفة لتداول الفوركس",
           description:
             "توفر الرسوم البيانية والمؤشرات الفنية وأوامر التداول ودعم المستشارين الخبراء، وتناسب من يريد بيئة مألوفة لتداول العملات.",
+          features: ["التحليل الفني", "التداول الآلي", "واجهة مألوفة"],
         },
         {
           name: "MetaTrader 5",
@@ -1628,6 +1663,7 @@ const keyStrength = cleanText(
           title: "أدوات تحليل وتداول أوسع",
           description:
             "توفر أدوات تحليل إضافية وأطرًا زمنية متعددة وإمكانات للتداول الآلي. تختلف الأدوات المالية المتاحة بحسب شركة الوساطة.",
+          features: ["أطر زمنية متعددة", "مؤشرات إضافية", "تداول آلي"],
         },
         {
           name: "cTrader",
@@ -1635,125 +1671,222 @@ const keyStrength = cleanText(
           title: "واجهة متقدمة للتداول",
           description:
             "تقدم أدوات للرسوم البيانية وإدارة الأوامر وتحليل السوق، وقد تناسب المتداولين الذين يهتمون بتفاصيل التنفيذ وتجربة المنصة.",
+          features: ["إدارة الأوامر", "رسوم بيانية", "تحليل السوق"],
         },
       ].map((platform) => (
         <article
           key={platform.short}
-          className="rounded-[18px] border border-slate-200 bg-white p-3.5 shadow-sm sm:p-6 md:rounded-[22px]"
+          className="overflow-hidden rounded-[18px] border border-[#d6e5f8] bg-white shadow-sm transition hover:border-[#9fc2f0] hover:shadow-md"
         >
-          {/* MOBILE */}
           <details className="group md:hidden">
-            <summary className="flex cursor-pointer list-none items-center gap-3 [&::-webkit-details-marker]:hidden">
-              <span className="inline-flex min-w-[54px] shrink-0 items-center justify-center rounded-lg bg-blue-50 px-2 py-2 text-[11px] font-black text-[#1e5bb8]">
+            <summary className="flex cursor-pointer list-none items-center gap-3 p-4 [&::-webkit-details-marker]:hidden">
+              <span className="inline-flex min-w-[54px] items-center justify-center rounded-lg bg-[#eef5fd] px-3 py-2 text-[12px] font-black text-[#1e5bb8]">
                 {platform.short}
               </span>
 
-              <span className="min-w-0 flex-1">
-                <span className="block text-[15px] font-black text-slate-950">
+              <div className="min-w-0 flex-1">
+                <h3 className="text-[15px] font-black text-[#081a33]">
                   {platform.name}
-                </span>
-                <span className="mt-0.5 block text-[11px] font-medium text-slate-600">
+                </h3>
+                <p className="mt-1 text-[11px] text-slate-600">
                   {platform.title}
-                </span>
-              </span>
+                </p>
+              </div>
 
-              <span className="shrink-0 text-lg font-black text-[#1e5bb8] transition-transform group-open:rotate-180">
+              <span className="text-lg font-bold text-[#1e5bb8] group-open:rotate-180">
                 ⌄
               </span>
             </summary>
 
-            <p className="mt-3 border-t border-slate-100 pt-3 text-[12px] font-medium leading-7 text-slate-600">
+            <p className="border-t border-slate-100 px-4 py-3 text-[12px] leading-7 text-slate-600">
               {platform.description}
             </p>
           </details>
 
-          {/* DESKTOP */}
-          <div className="hidden md:block">
-            <div className="inline-flex rounded-lg bg-blue-50 px-3 py-2 text-sm font-black text-[#1e5bb8]">
-              {platform.short}
+          <div className="hidden h-full flex-col p-5 md:flex lg:p-6">
+            <div className="flex items-center justify-between gap-3">
+              <span className="rounded-lg bg-[#eef5fd] px-3 py-2 text-[12px] font-black text-[#1e5bb8]">
+                {platform.short}
+              </span>
+              <span className="text-[11px] font-bold text-slate-400">
+                منصة تداول
+              </span>
             </div>
 
-            <h3 className="mt-4 text-xl font-black text-slate-950">
+            <h3 className="mt-5 text-[21px] font-black text-[#081a33]">
               {platform.name}
             </h3>
 
-            <p className="mt-2 text-sm font-bold text-[#1e5bb8]">
+            <p className="mt-1.5 text-[13px] font-bold text-[#1e5bb8]">
               {platform.title}
             </p>
 
-            <p className="mt-3 text-sm font-medium leading-7 text-slate-600">
+            <p className="mt-3 flex-1 text-[13px] font-medium leading-7 text-slate-600">
               {platform.description}
             </p>
+
+            <div className="mt-5 flex flex-wrap gap-2 border-t border-slate-100 pt-4">
+              {platform.features.map((feature) => (
+                <span
+                  key={feature}
+                  className="rounded-lg bg-[#f3f7fc] px-2.5 py-1.5 text-[11px] font-bold text-[#31577f]"
+                >
+                  {feature}
+                </span>
+              ))}
+            </div>
           </div>
         </article>
       ))}
     </div>
 
-    <div className="mt-4 rounded-2xl border border-blue-100 bg-white p-4 sm:mt-6 sm:p-6">
-      <h3 className="text-[15px] font-black leading-6 text-[#081a33] sm:text-lg">
-        هل أفضل منصة فوركس تعني أفضل شركة تداول؟
-      </h3>
-
-      <p className="mt-2 text-[12px] font-medium leading-7 text-slate-700 sm:mt-3 sm:text-sm sm:leading-8">
-        لا. قد تقدم شركتان منصة MetaTrader 5 نفسها،
-        لكن تختلفان في التراخيص والسبريد والعمولات
-        وسرعة التنفيذ. لذلك قارن الوسيط وشروط حسابه،
-        وليس برنامج التداول وحده.
-      </p>
+    <div className="mt-5 flex flex-col gap-4 rounded-[18px] border border-[#d6e5f8] bg-white p-4 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+      <div className="max-w-[1050px]">
+        <h3 className="text-[16px] font-black text-[#081a33] sm:text-[19px]">
+          هل أفضل منصة فوركس تعني أفضل شركة تداول؟
+        </h3>
+        <p className="mt-2 text-[12px] leading-7 text-slate-600 sm:text-[13px]">
+          لا. قد تقدم شركتان منصة MetaTrader 5 نفسها، لكن تختلفان
+          في التراخيص والسبريد والعمولات وشروط التنفيذ.
+          لذلك قارن الوسيط وشروط حسابه، وليس المنصة وحدها.
+        </p>
+      </div>
 
       <a
         href="#comparison-table"
-        className="mt-3 inline-flex min-h-10 w-full items-center justify-center rounded-xl bg-[#1e5bb8] px-4 py-2.5 text-[11px] font-black text-white transition hover:bg-[#184a97] sm:mt-4 sm:min-h-11 sm:w-auto sm:px-5 sm:text-xs"
+        className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-xl bg-[#1e5bb8] px-5 text-[12px] font-black text-white transition hover:bg-[#184a97]"
       >
-        قارن شركات الفوركس والمنصات المتاحة ←
+        مقارنة شركات الفوركس ←
       </a>
     </div>
   </div>
 </section>
 
-
           
-{/* TOP TEN — BROKER COMPARISON CARDS */}
+
+{/* TOP TEN — PROFESSIONAL BROKER COMPARISON */}
 <section
   id="comparison-table"
   aria-labelledby="broker-comparison-heading"
-  className="scroll-mt-20 border-b border-slate-200 bg-white pt-5 pb-9 sm:pt-7 sm:pb-12 lg:pt-8 lg:pb-14"
+  className="scroll-mt-20 border-b border-slate-200 bg-white py-8 sm:py-11"
 >
   <div className="mx-auto max-w-[1520px] px-4 sm:px-6 lg:px-8">
+    <div className="mb-6">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h2
+          id="broker-comparison-heading"
+          className="text-[25px] font-black leading-[1.35] text-[#081a33] sm:text-[36px] lg:text-[40px]"
+        >
+          مقارنة أفضل 10 شركات تداول فوركس في 2026
+        </h2>
+
+        <span className="rounded-full bg-[#eef5fd] px-3 py-1.5 text-[11px] font-bold text-[#1e5bb8]">
+          {topTen.length} شركات حسب التقييم العام
+        </span>
+      </div>
+
+      
+      <p className="mt-3 max-w-[1100px] text-[13px] font-medium leading-7 text-slate-600 sm:text-[15px]">
+        قارن شركات الفوركس جنبًا إلى جنب حسب التقييم العام،
+        الحد الأدنى للإيداع، التراخيص، منصات التداول والحساب الإسلامي.
+      </p>
+    </div>
+
+    {/* EDITORIAL METHODOLOGY — TOP 10 */}
+    <div className="mb-5 mt-5 rounded-[18px] border border-[#d6e5f8] bg-[#f3f8ff] p-4 sm:mb-6 sm:mt-6 sm:p-5 lg:p-6">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
+
+        <div className="min-w-0 flex-1">
+          <h3 className="text-[16px] font-black leading-7 text-[#081a33] sm:text-[19px]">
+            كيف نحدد ترتيب أفضل شركات تداول الفوركس؟
+          </h3>
+
+          <p className="mt-2 text-[13px] font-medium leading-7 text-slate-700 sm:text-[14px] sm:leading-8">
+            يرتب بروكر العرب الشركات وفق التقييم التحريري العام
+            لكل وسيط، مع الاسترشاد بمعايير منهجية التقييم المنشورة،
+            والتي تشمل التراخيص والرقابة المالية، وتكاليف التداول،
+            والمنصات، وأنواع الحسابات، وجودة الخدمات.
+            ويعكس ترتيب الجدول التقييم النهائي المسجل لكل شركة،
+            وليس حسابًا آليًا مباشرًا لهذه المعايير.
+          </p>
+
+          <p className="mt-2 text-[12px] leading-6 text-slate-600 sm:text-[13px]">
+            قد تختلف شروط التداول والجهة الرقابية بحسب بلد الإقامة
+            والكيان القانوني الذي يفتح المتداول حسابه من خلاله.
+          </p>
+        </div>
+
+        <div className="flex shrink-0 flex-col items-start gap-2 lg:items-center">
+          <Link
+            href="/how-we-review-brokers"
+            className="inline-flex min-h-11 items-center justify-center rounded-xl bg-[#1e5bb8] px-5 py-2.5 text-center text-[13px] font-black text-white transition hover:bg-[#184a97]"
+          >
+            اطلع على منهجية التقييم
+          </Link>
+
+          <div className="text-[11px] font-medium leading-6 text-slate-500 lg:text-center">
+  <p>
+    آخر مراجعة تحريرية:{" "}
+    <time dateTime={BEST_BROKERS_LAST_REVIEWED}>
+      {new Intl.DateTimeFormat("ar", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        timeZone: "UTC",
+      }).format(
+        new Date(`${BEST_BROKERS_LAST_REVIEWED}T12:00:00Z`)
+      )}
+    </time>
+  </p>
+  <p>يخضع الترتيب للمراجعة عند تحديث التقييمات.</p>
+</div>
+        </div>
+
+      </div>
+    </div>
+
 
     
-{/* HEADING */}
-<div className="mb-4 lg:mb-6">
+{/* DESKTOP COMPARISON TABLE — PREMIUM READABLE DESIGN */}
+<div className="hidden overflow-x-auto rounded-[20px] border border-[#d6e5f8] bg-white shadow-[0_8px_30px_rgba(15,40,75,0.05)] lg:block">
+  <table className="w-full min-w-[1150px] table-fixed border-collapse text-right">
+    <colgroup>
+      <col style={{ width: "21%" }} />
+      <col style={{ width: "10%" }} />
+      <col style={{ width: "10%" }} />
+      <col style={{ width: "9%" }} />
+      <col style={{ width: "16%" }} />
+      <col style={{ width: "15%" }} />
+      <col style={{ width: "9%" }} />
+      <col style={{ width: "10%" }} />
+    </colgroup>
 
-  <div className="flex flex-wrap items-center justify-between gap-2">
+    <thead>
+      <tr className="bg-[#123b70] text-white">
+        {[
+          "الشركة والترتيب",
+          "التقييم",
+          "أقل إيداع",
+          "التراخيص",
+          "الجهات الرقابية",
+          "منصات التداول",
+          "حساب إسلامي",
+          "الإجراءات",
+        ].map((heading) => (
+          <th
+            key={heading}
+            scope="col"
+            className="border-l border-white/10 px-3 py-[19px] text-center text-[13px] font-black last:border-l-0"
+          >
+            {heading}
+          </th>
+        ))}
+      </tr>
+    </thead>
 
-    <h2
-      id="broker-comparison-heading"
-      className="text-[24px] font-black leading-[1.35] text-[#081a33] sm:text-[32px] lg:text-[38px]"
-    >
-      مقارنة أفضل 10 شركات تداول فوركس في 2026
-    </h2>
-
-    <span className="text-[11px] font-bold text-slate-500">
-      {topTen.length} شركات حسب التقييم العام
-    </span>
-
-  </div>
-
-  <p className="mt-2 max-w-[1050px] text-[12px] font-medium leading-7 text-slate-600 sm:text-[14px]">
-    اكتشف الفروقات بين شركات الفوركس من حيث التقييم،
-    التراخيص، الحد الأدنى للإيداع ومنصات التداول،
-    واختر الوسيط الذي يناسب احتياجاتك.
-  </p>
-
-</div>
-
-
-    {/* BROKER CARDS */}
-    <div className="space-y-3 lg:space-y-4">
+    <tbody>
       {topTen.map((broker, index) => {
         const brokerName = cleanText(broker.name);
-
         const reviewHref = broker.slug
           ? `/brokers/${broker.slug}`
           : "/brokers";
@@ -1764,9 +1897,192 @@ const keyStrength = cleanText(
               .map((license) =>
                 license.regulator_code?.trim().toUpperCase()
               )
-              .filter(
-                (code): code is string => Boolean(code)
+              .filter((code): code is string => Boolean(code))
+          )
+        ).slice(0, 4);
+
+        const platforms = Array.from(
+          new Set(splitItems(broker.platforms, 5))
+        ).slice(0, 4);
+
+        return (
+          <tr
+            key={broker.id}
+            className={`h-[94px] border-b border-[#e3ebf5] transition-colors hover:bg-[#edf5ff] last:border-b-0 ${
+              index === 0
+                ? "bg-[#fffaf0]"
+                : index % 2 === 0
+                  ? "bg-[#f8fafd]"
+                  : "bg-white"
+            }`}
+          >
+            {/* BROKER */}
+            <th scope="row" className="px-4 py-4 text-right">
+              <div className="flex items-center gap-3">
+                <span
+                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] text-[12px] font-black ${
+                    index === 0
+                      ? "bg-amber-100 text-amber-800"
+                      : "bg-[#e8f1fc] text-[#1e5bb8]"
+                  }`}
+                >
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+
+                <BrokerLogo broker={broker} size="small" />
+
+                <div className="min-w-0">
+                  <Link
+                    href={reviewHref}
+                    className="block text-[15px] font-black leading-6 text-[#081a33] transition hover:text-[#1e5bb8]"
+                  >
+                    {brokerName}
+                  </Link>
+
+                  {index === 0 && (
+                    <span className="mt-1.5 inline-flex rounded-md bg-amber-100 px-2.5 py-1 text-[10px] font-black text-amber-800">
+                      ★ الأعلى تقييمًا
+                    </span>
+                  )}
+                </div>
+              </div>
+            </th>
+
+            {/* RATING */}
+            <td className="px-2 py-4 text-center">
+              <div className="inline-flex items-center gap-1.5 rounded-lg bg-amber-50 px-3 py-2">
+                <span className="text-[15px] text-amber-500">★</span>
+                <span className="text-[15px] font-black tabular-nums text-amber-800">
+                  {ratingLabel(broker.rating)}
+                </span>
+                <span className="text-[11px] font-bold text-amber-600">
+                  / 5
+                </span>
+              </div>
+            </td>
+
+            {/* MINIMUM DEPOSIT */}
+            <td className="px-2 py-4 text-center">
+              <span className="text-[16px] font-black tabular-nums text-[#081a33]">
+                {formatDeposit(getDisplayDeposit(broker))}
+              </span>
+            </td>
+
+            {/* LICENSE COUNT */}
+            <td className="px-2 py-4 text-center">
+              <span className="block text-[17px] font-black text-[#123b72]">
+                {broker.active_license_count}
+              </span>
+              <span className="mt-1 block text-[11px] font-medium text-slate-500">
+                تراخيص مسجلة
+              </span>
+            </td>
+
+            {/* REGULATORS */}
+            <td className="px-2 py-4">
+              <div className="flex flex-wrap items-center justify-center gap-1.5">
+                {licenseCodes.length > 0 ? (
+                  licenseCodes.map((code) => (
+                    <span
+                      key={`${broker.id}-${code}`}
+                      className="inline-flex min-h-[26px] items-center justify-center rounded-md border border-[#cbdcf2] bg-white px-2.5 text-[11px] font-black text-[#184a97]"
+                    >
+                      {code}
+                    </span>
+                  ))
+                ) : (
+                  <span className="text-[12px] text-slate-500">
+                    غير محدد
+                  </span>
+                )}
+              </div>
+            </td>
+
+            {/* PLATFORMS */}
+            <td className="px-2 py-4">
+              <div className="flex flex-wrap items-center justify-center gap-1.5">
+                {platforms.length > 0 ? (
+                  platforms.map((platform) => (
+                    <span
+                      key={`${broker.id}-${platform}`}
+                      className="inline-flex min-h-[26px] items-center justify-center rounded-md bg-[#eaf2fd] px-2.5 text-[11px] font-bold text-[#1e5bb8]"
+                    >
+                      {platform}
+                    </span>
+                  ))
+                ) : (
+                  <span className="text-[12px] text-slate-500">
+                    غير محدد
+                  </span>
+                )}
+              </div>
+            </td>
+
+            {/* ISLAMIC ACCOUNT */}
+            <td className="px-2 py-4 text-center">
+              <span
+                className={`inline-flex min-h-[30px] items-center justify-center rounded-lg px-3 text-[12px] font-black ${
+                  broker.has_islamic_account
+                    ? "bg-emerald-50 text-emerald-700"
+                    : "bg-slate-100 text-slate-600"
+                }`}
+              >
+                {broker.has_islamic_account ? "✓ متوفر" : "تحقق"}
+              </span>
+            </td>
+
+            {/* ACTIONS */}
+            <td className="px-3 py-3">
+              <div className="mx-auto flex w-full max-w-[130px] flex-col gap-2">
+                <Link
+                  href={reviewHref}
+                  className="inline-flex min-h-[38px] items-center justify-center rounded-lg border border-[#a9c5e9] bg-white px-2 text-center text-[12px] font-black text-[#184a97] transition hover:bg-[#eef5fd]"
+                >
+                  قراءة التقييم
+                </Link>
+
+                {broker.real_account_url && broker.slug ? (
+                  <a
+                    href={`/go/${broker.slug}?type=real`}
+                    target="_blank"
+                    rel="noopener noreferrer sponsored"
+                    className="inline-flex min-h-[38px] items-center justify-center rounded-lg bg-[#1e5bb8] px-2 text-center text-[12px] font-black text-white transition hover:bg-[#184a97]"
+                  >
+                    فتح حساب
+                  </a>
+                ) : (
+                  <Link
+                    href={reviewHref}
+                    className="inline-flex min-h-[38px] items-center justify-center rounded-lg bg-[#1e5bb8] px-2 text-center text-[12px] font-black text-white transition hover:bg-[#184a97]"
+                  >
+                    تفاصيل الوسيط
+                  </Link>
+                )}
+              </div>
+            </td>
+          </tr>
+        );
+      })}
+    </tbody>
+  </table>
+</div>
+
+
+    {/* MOBILE AND TABLET — COMPACT BROKER CARDS */}
+    <div className="space-y-3 lg:hidden">
+      {topTen.map((broker, index) => {
+        const brokerName = cleanText(broker.name);
+        const reviewHref = broker.slug
+          ? `/brokers/${broker.slug}`
+          : "/brokers";
+
+        const licenseCodes = Array.from(
+          new Set(
+            broker.licenses
+              .map((license) =>
+                license.regulator_code?.trim().toUpperCase()
               )
+              .filter((code): code is string => Boolean(code))
           )
         ).slice(0, 5);
 
@@ -1777,397 +2093,153 @@ const keyStrength = cleanText(
         return (
           <article
             key={broker.id}
-            className={`relative overflow-hidden rounded-[20px] border bg-white transition-shadow hover:shadow-[0_12px_35px_rgba(15,23,42,0.07)] ${
+            className={`overflow-hidden rounded-2xl border bg-white ${
               index === 0
-                ? "border-[#e8c66a] shadow-[0_4px_20px_rgba(180,130,20,0.06)]"
-                : "border-[#dfe7f1] shadow-[0_3px_14px_rgba(15,23,42,0.025)]"
+                ? "border-amber-400"
+                : "border-[#d6e5f8]"
             }`}
           >
-            {/* LEFT/RIGHT ACCENT */}
-            <div
-              className={`absolute inset-y-0 right-0 w-[3px] ${
-                index === 0
-                  ? "bg-amber-400"
-                  : "bg-[#2b6fd0]"
-              }`}
-            />
+            <details className="group">
+              <summary className="cursor-pointer list-none p-3.5 [&::-webkit-details-marker]:hidden">
+                <div className="flex items-center gap-3">
+                  <span
+                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[11px] font-black ${
+                      index === 0
+                        ? "bg-amber-100 text-amber-800"
+                        : "bg-[#eef5fd] text-[#1e5bb8]"
+                    }`}
+                  >
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
 
-            
-<div className="p-3 sm:p-4 lg:px-6 lg:py-5">
+                  <BrokerLogo broker={broker} size="small" />
 
-  {/* =====================================================
-      MOBILE — COMPACT EXPANDABLE BROKER CARD
-  ===================================================== */}
-  <div className="lg:hidden">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="truncate text-[14px] font-black text-[#081a33]">
+                      {brokerName}
+                    </h3>
+                    <p className="mt-1 truncate text-[10px] text-slate-500">
+                      {cleanText(broker.best_for, "وسيط تداول فوركس")}
+                    </p>
+                  </div>
 
-    <details className="group">
+                  <span className="text-lg font-black text-[#1e5bb8] group-open:rotate-180">
+                    ⌄
+                  </span>
+                </div>
 
-      {/* COMPACT SUMMARY */}
-      <summary className="cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div className="mt-3 grid grid-cols-3 overflow-hidden rounded-xl border border-[#e2eaf4] bg-[#f7faff] text-center">
+                  <div className="px-1 py-2">
+                    <span className="block text-[10px] text-slate-500">
+                      التقييم
+                    </span>
+                    <strong className="mt-1 block text-[12px] text-amber-700">
+                      ★ {ratingLabel(broker.rating)}
+                    </strong>
+                  </div>
 
-        {/* BROKER HEADER */}
-        <div className="flex items-center gap-2.5">
+                  <div className="border-x border-[#e2eaf4] px-1 py-2">
+                    <span className="block text-[10px] text-slate-500">
+                      أقل إيداع
+                    </span>
+                    <strong className="mt-1 block text-[12px] text-[#081a33]">
+                      {formatDeposit(getDisplayDeposit(broker))}
+                    </strong>
+                  </div>
 
-          <span
-            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[11px] font-black ${
-              index === 0
-                ? "bg-amber-100 text-amber-800"
-                : "bg-[#edf4fd] text-[#1e5bb8]"
-            }`}
-          >
-            {String(index + 1).padStart(2, "0")}
-          </span>
+                  <div className="px-1 py-2">
+                    <span className="block text-[10px] text-slate-500">
+                      التراخيص
+                    </span>
+                    <strong className="mt-1 block text-[12px] text-[#081a33]">
+                      {broker.active_license_count}
+                    </strong>
+                  </div>
+                </div>
 
-          <div className="shrink-0">
-            <BrokerLogo broker={broker} size="small" />
-          </div>
+                <p className="mt-2 text-center text-[11px] font-black text-[#1e5bb8]">
+                  <span className="group-open:hidden">عرض التفاصيل ⌄</span>
+                  <span className="hidden group-open:inline">إخفاء التفاصيل ⌃</span>
+                </p>
+              </summary>
 
-          <div className="min-w-0 flex-1">
-            <h3 className="truncate text-[14px] font-black text-[#081a33]">
-              {brokerName}
-            </h3>
+              <div className="space-y-4 border-t border-[#e2eaf4] p-4">
+                <div>
+                  <h4 className="mb-2 text-[12px] font-black text-[#081a33]">
+                    الجهات الرقابية المسجلة
+                  </h4>
+                  <div className="flex flex-wrap gap-1.5">
+                    {licenseCodes.length ? (
+                      licenseCodes.map((code) => (
+                        <span
+                          key={`${broker.id}-${code}`}
+                          className="rounded-md border border-[#d6e5f8] px-2 py-1 text-[10px] font-bold text-[#184a97]"
+                        >
+                          {code}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-[11px] text-slate-500">
+                        غير محدد
+                      </span>
+                    )}
+                  </div>
+                </div>
 
-            <p className="mt-0.5 truncate text-[10px] font-medium text-slate-500">
-              {cleanText(
-                broker.best_for,
-                "وسيط تداول فوركس"
-              )}
-            </p>
-          </div>
+                <div>
+                  <h4 className="mb-2 text-[12px] font-black text-[#081a33]">
+                    منصات التداول
+                  </h4>
+                  <div className="flex flex-wrap gap-1.5">
+                    {platforms.length ? (
+                      platforms.map((platform) => (
+                        <span
+                          key={`${broker.id}-${platform}`}
+                          className="rounded-md bg-[#eef5fd] px-2 py-1 text-[10px] font-bold text-[#1e5bb8]"
+                        >
+                          {platform}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-[11px] text-slate-500">
+                        غير محدد
+                      </span>
+                    )}
+                  </div>
+                </div>
 
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-50 text-[16px] font-bold text-[#1e5bb8] transition-transform group-open:rotate-180">
-            ⌄
-          </span>
-        </div>
+                <div className="flex items-center justify-between rounded-xl bg-[#f5f8fd] px-3 py-2.5">
+                  <span className="text-[12px] font-bold text-slate-700">
+                    الحساب الإسلامي
+                  </span>
+                  <strong className="text-[12px] text-[#184a97]">
+                    {broker.has_islamic_account ? "متوفر" : "تحقق من الشروط"}
+                  </strong>
+                </div>
 
-        {/* QUICK METRICS */}
-        <div className="mt-3 grid grid-cols-3 overflow-hidden rounded-xl border border-[#e2eaf4] bg-[#f7faff]">
+                <BrokerButtons broker={broker} compact />
 
-          <div className="px-1 py-2 text-center">
-            <p className="text-[9px] font-bold text-slate-500">
-              التقييم
-            </p>
-
-            <div className="mt-1 flex justify-center">
-              <RatingBadge rating={broker.rating} />
-            </div>
-          </div>
-
-          <div className="border-x border-[#e2eaf4] px-1 py-2 text-center">
-            <p className="text-[9px] font-bold text-slate-500">
-              أقل إيداع
-            </p>
-
-            <p className="mt-1 text-[12px] font-black text-[#081a33]">
-              {formatDeposit(getDisplayDeposit(broker))}
-            </p>
-          </div>
-
-          <div className="px-1 py-2 text-center">
-            <p className="text-[9px] font-bold text-slate-500">
-              تراخيص مسجلة
-            </p>
-
-            <p className="mt-1 text-[12px] font-black text-[#081a33]">
-              {broker.active_license_count}
-            </p>
-          </div>
-
-        </div>
-
-        {/* EXPAND ACTION */}
-        <div className="mt-2.5 flex items-center justify-center gap-1.5 border-t border-slate-100 pt-2 text-[11px] font-black text-[#1e5bb8]">
-          <span className="group-open:hidden">
-            عرض تفاصيل الشركة
-          </span>
-
-          <span className="hidden group-open:inline">
-            إخفاء التفاصيل
-          </span>
-
-          <span className="transition-transform group-open:rotate-180">
-            ⌄
-          </span>
-        </div>
-
-      </summary>
-
-      {/* EXPANDED CONTENT */}
-      <div className="mt-3 space-y-3 border-t border-[#e2eaf4] pt-3">
-
-        {/* RANKING LABEL */}
-        {index === 0 && (
-          <div className="rounded-lg bg-amber-50 px-3 py-2 text-center text-[10px] font-black text-amber-800">
-            ★ الأفضل حسب التقييم العام
-          </div>
-        )}
-
-        {/* ISLAMIC ACCOUNT */}
-        <div className="flex items-center justify-between rounded-xl bg-[#f3f8ff] px-3 py-2.5">
-          <span className="text-[11px] font-bold text-slate-700">
-            الحساب الإسلامي
-          </span>
-
-          <span
-            className={`text-[11px] font-black ${
-              broker.has_islamic_account
-                ? "text-emerald-700"
-                : "text-slate-600"
-            }`}
-          >
-            {broker.has_islamic_account
-              ? "متوفر"
-              : "تحقق من الشروط"}
-          </span>
-        </div>
-
-        {/* LICENSES */}
-        <div>
-          <p className="mb-2 text-[11px] font-black text-[#081a33]">
-            الجهات الرقابية المسجلة
-          </p>
-
-          <div className="flex flex-wrap gap-1.5">
-            {licenseCodes.length > 0 ? (
-              licenseCodes.map((code) => (
-                <span
-                  key={`${broker.id}-mobile-license-${code}`}
-                  className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[10px] font-bold text-slate-700"
+                <Link
+                  href={reviewHref}
+                  className="block text-center text-[11px] font-bold text-[#1e5bb8] hover:underline"
                 >
-                  {code}
-                </span>
-              ))
-            ) : (
-              <span className="text-[11px] text-slate-500">
-                غير محدد
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* PLATFORMS */}
-        <div>
-          <p className="mb-2 text-[11px] font-black text-[#081a33]">
-            منصات التداول
-          </p>
-
-          <div className="flex flex-wrap gap-1.5">
-            {platforms.length > 0 ? (
-              platforms.map((platform) => (
-                <span
-                  key={`${broker.id}-mobile-platform-${platform}`}
-                  className="rounded-lg bg-blue-50 px-2.5 py-1.5 text-[10px] font-bold text-[#1e5bb8]"
-                >
-                  {platform}
-                </span>
-              ))
-            ) : (
-              <span className="text-[11px] text-slate-500">
-                غير محدد
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* ACTIONS */}
-        <div className="pt-1">
-          <BrokerButtons broker={broker} compact />
-        </div>
-
-        <Link
-          href={reviewHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex min-h-9 items-center justify-center text-[11px] font-black text-[#1e5bb8] hover:underline"
-        >
-          اقرأ تقييم {brokerName} الكامل ←
-        </Link>
-
-      </div>
-    </details>
-  </div>
-
-  {/* =====================================================
-      DESKTOP — KEEP EXISTING DESIGN
-  ===================================================== */}
-  <div className="hidden lg:block">
-
-    <div className="grid grid-cols-[minmax(0,1.3fr)_minmax(0,1.2fr)_minmax(0,1.1fr)_170px] items-center gap-5">
-
-      {/* BROKER IDENTITY */}
-      <div className="min-w-0 w-full justify-self-center">
-        <div className="flex items-center justify-center gap-3">
-
-          <span
-            className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-[12px] font-black ${
-              index === 0
-                ? "bg-amber-100 text-amber-800"
-                : "bg-[#edf4fd] text-[#1e5bb8]"
-            }`}
-          >
-            {String(index + 1).padStart(2, "0")}
-          </span>
-
-          <Link
-            href={reviewHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`تقييم ${brokerName}`}
-            className="shrink-0 transition-transform hover:scale-105"
-          >
-            <BrokerLogo broker={broker} size="small" />
-          </Link>
-
-          <div className="min-w-0 flex-1">
-            <h3 className="text-[16px] font-black leading-6 text-[#081a33]">
-              <Link
-                href={reviewHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-[#1e5bb8] hover:underline"
-              >
-                {brokerName}
-              </Link>
-            </h3>
-
-            <p className="mt-0.5 line-clamp-2 text-[11px] font-medium leading-5 text-slate-500">
-              {cleanText(
-                broker.best_for,
-                "وسيط تداول متعدد الاستخدامات"
-              )}
-            </p>
-          </div>
-        </div>
-
-        {index === 0 && (
-          <span className="mt-3 inline-flex rounded-lg bg-amber-50 px-2.5 py-1 text-[10px] font-black text-amber-800">
-            ★ الأفضل حسب التقييم العام
-          </span>
-        )}
-      </div>
-
-      {/* MAIN METRICS */}
-      <div className="grid w-full max-w-[360px] grid-cols-3 items-center justify-self-center overflow-hidden rounded-[14px] border border-[#e2eaf4] bg-[#f7faff]">
-
-        <div className="px-2 py-3 text-center">
-          <p className="text-[10px] font-bold text-slate-500">
-            التقييم
-          </p>
-
-          <div className="mt-1.5 flex justify-center">
-            <RatingBadge rating={broker.rating} />
-          </div>
-        </div>
-
-        <div className="border-x border-[#e2eaf4] px-2 py-3 text-center">
-          <p className="text-[10px] font-bold text-slate-500">
-            أقل إيداع
-          </p>
-
-          <p className="mt-1 text-[14px] font-black text-[#081a33]">
-            {formatDeposit(getDisplayDeposit(broker))}
-          </p>
-        </div>
-
-        <div className="px-2 py-3 text-center">
-          <p className="text-[10px] font-bold text-slate-500">
-            تراخيص مسجلة
-          </p>
-
-          <p className="mt-1 text-[14px] font-black text-[#081a33]">
-            {broker.active_license_count ?? "—"}
-          </p>
-        </div>
-
-      </div>
-
-      {/* DESKTOP DETAILS */}
-      <div className="min-w-0 w-full space-y-3 justify-self-center text-center">
-
-        <div>
-          <p className="mb-1.5 text-[10px] font-black text-slate-500">
-            الجهات الرقابية
-          </p>
-
-          <div className="flex flex-wrap items-center justify-center gap-1.5">
-            {licenseCodes.length > 0 ? (
-              licenseCodes.map((code) => (
-                <span
-                  key={`${broker.id}-license-${code}`}
-                  className="rounded-md border border-[#dfe7f1] bg-white px-2 py-1 text-[9px] font-black text-[#334b68]"
-                >
-                  {code}
-                </span>
-              ))
-            ) : (
-              <span className="text-[10px] text-slate-500">
-                غير محدد
-              </span>
-            )}
-          </div>
-        </div>
-
-        <div>
-          <p className="mb-1.5 text-[10px] font-black text-slate-500">
-            منصات التداول
-          </p>
-
-          <div className="flex flex-wrap items-center justify-center gap-1.5">
-            {platforms.length > 0 ? (
-              platforms.map((platform) => (
-                <span
-                  key={`${broker.id}-platform-${platform}`}
-                  className="rounded-md bg-[#eef5fd] px-2 py-1 text-[9px] font-bold text-[#1e5bb8]"
-                >
-                  {platform}
-                </span>
-              ))
-            ) : (
-              <span className="text-[10px] text-slate-500">
-                غير محدد
-              </span>
-            )}
-          </div>
-        </div>
-
-      </div>
-
-      {/* DESKTOP ACTIONS */}
-      <div className="w-[170px] justify-self-center text-center">
-        <BrokerButtons broker={broker} compact />
-
-        <Link
-          href={reviewHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-2 block text-center text-[10px] font-bold text-[#1e5bb8] hover:underline"
-        >
-          التفاصيل الكاملة ←
-        </Link>
-      </div>
-
-    </div>
-  </div>
-
-</div>
-
+                  اقرأ تقييم {brokerName} الكامل ←
+                </Link>
+              </div>
+            </details>
           </article>
         );
       })}
     </div>
 
-    {/* DISCLAIMER */}
     <p className="mt-5 text-[11px] font-medium leading-6 text-slate-500">
-      الترتيب وفق التقييم العام في بروكر العرب، وليس
-      توصية استثمارية. تختلف شروط التداول والتراخيص
-      والحسابات المتاحة حسب بلد الإقامة والكيان القانوني.
-      تحقق من التفاصيل الرسمية قبل فتح حساب.
+      الترتيب وفق التقييم العام في بروكر العرب، وليس توصية استثمارية.
+      تختلف شروط التداول والتراخيص والحسابات المتاحة حسب بلد الإقامة
+      والكيان القانوني. تحقق من التفاصيل الرسمية قبل فتح الحساب.
     </p>
   </div>
 </section>
 
-
-         
 
 {/* BROKER FINDER — NEW DESIGN */}
 <section
@@ -2482,402 +2554,515 @@ const keyStrength = cleanText(
 
   
 
+
 {/* 2 — BROKERS BY FINANCIAL MARKET */}
 <section
   id="trading-markets"
   aria-labelledby="trading-markets-title"
-  className="scroll-mt-24 border-b border-[#dce7f5] bg-white py-6 sm:py-14 [&_a]:text-center [&_article]:text-center [&_a>div]:text-center [&_article>div]:text-center [&_a>div:first-child]:mx-auto [&_article>div:first-child]:mx-auto [&_a>h3]:text-center [&_article>h3]:text-center [&_a>p]:text-center [&_article>p]:text-center"
+  className="scroll-mt-24 border-b border-[#dce7f5] bg-white py-8 sm:py-12"
 >
   <div className="mx-auto max-w-[1520px] px-4 sm:px-6 lg:px-8">
-    <div className="mx-auto max-w-[850px] text-center">
-      <span className="text-[10px] font-black text-[#2B6FD0] sm:text-[11px]">
-        تصنيفات حسب الأسواق المالية
-      </span>
-
+    <div className="mx-auto max-w-[900px] text-center">
       <h2
         id="trading-markets-title"
-        className="mt-2 text-[21px] font-black leading-[1.4] text-[#081a33] sm:mt-3 sm:text-[34px]"
+        className="text-[23px] font-black leading-tight text-[#081a33] sm:text-[34px]"
       >
         أفضل شركات التداول حسب السوق المالي
       </h2>
-
-      <p className="mt-2 text-[11px] leading-6 text-slate-600 sm:mt-3 sm:text-[15px] sm:leading-7">
-        <span className="sm:hidden">
-          اختر السوق الذي ترغب في تداوله واستكشف أفضل الوسطاء.
-        </span>
-        <span className="hidden sm:inline">
-          تختلف تكلفة التداول والأدوات المتاحة من وسيط لآخر.
-          استكشف أدلتنا المتخصصة لمقارنة شركات تداول الفوركس
-          والأسهم والمؤشرات والسلع، واختيار الوسيط وفق السوق
-          الذي ترغب في التداول فيه.
-        </span>
+      <p className="mt-3 text-[13px] leading-7 text-slate-600 sm:text-[15px]">
+        تختلف الأدوات والرسوم وطريقة تنفيذ الصفقات من سوق إلى آخر.
+        اختر السوق الذي يهمك لتتعرف على معايير المقارنة والوسطاء المناسبين له.
       </p>
     </div>
 
-    <div className="mt-5 grid grid-cols-2 gap-2 sm:mt-8 sm:gap-4 lg:grid-cols-4">
+    <div className="mt-7 grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-5">
       {[
         {
-          title: "أفضل شركات تداول الفوركس",
-          mobileTitle: "تداول الفوركس",
-          description:
-            "قارن وسطاء سوق العملات من حيث السبريد والتنفيذ والمنصات وشروط الحساب.",
+          number: "01",
+          title: "شركات تداول الفوركس",
+          shortTitle: "تداول الفوركس",
+          description: "قارن وسطاء أزواج العملات من حيث السبريد وسرعة التنفيذ والمنصات.",
+          criteria: ["السبريد", "التنفيذ", "أزواج العملات"],
           href: "/best-brokers",
-          icon: "💱",
-          keyword: "وسطاء الفوركس",
         },
         {
-          title: "أفضل شركات تداول الأسهم",
-          mobileTitle: "تداول الأسهم",
-          description:
-            "اكتشف وسطاء تداول الأسهم وقارن الأدوات المتاحة والرسوم وطبيعة المنتجات.",
+          number: "02",
+          title: "شركات تداول الأسهم",
+          shortTitle: "تداول الأسهم",
+          description: "تعرف على نوع الأسهم المتاحة والفرق بين امتلاك السهم وتداول عقود الفروقات.",
+          criteria: ["نوع المنتج", "العمولات", "الأسواق"],
           href: "/best-brokers/stocks",
-          icon: "📈",
-          keyword: "تداول الأسهم",
         },
         {
-          title: "أفضل شركات تداول المؤشرات",
-          mobileTitle: "تداول المؤشرات",
-          description:
-            "تعرف على وسطاء المؤشرات العالمية وشروط التداول والرافعة والرسوم.",
+          number: "03",
+          title: "شركات تداول المؤشرات",
+          shortTitle: "تداول المؤشرات",
+          description: "راجع المؤشرات العالمية المتاحة وتكاليف الاحتفاظ بالصفقات وأوقات التداول.",
+          criteria: ["المؤشرات", "السبريد", "ساعات التداول"],
           href: "/best-brokers/indices",
-          icon: "📊",
-          keyword: "تداول المؤشرات",
         },
         {
-          title: "أفضل شركات تداول السلع",
-          mobileTitle: "تداول السلع والذهب",
-          description:
-            "قارن شركات تداول السلع مثل الذهب والنفط من حيث التكلفة والأدوات المتاحة.",
+          number: "04",
+          title: "شركات تداول السلع والذهب",
+          shortTitle: "تداول الذهب والسلع",
+          description: "قارن شروط تداول الذهب والنفط والسلع من حيث فروقات الأسعار وأحجام العقود.",
+          criteria: ["الذهب والنفط", "تكلفة التداول", "حجم العقد"],
           href: "/best-brokers/commodities",
-          icon: "🥇",
-          keyword: "تداول السلع والذهب",
         },
       ].map((item) => (
         <Link
-          key={item.href}
+          key={item.number}
           href={item.href}
-          className="group flex min-w-0 flex-col rounded-xl border border-[#d6e5f8] bg-[#f9fbff] p-3 transition hover:border-[#2B6FD0] hover:bg-[#eef5fd] sm:rounded-[22px] sm:p-5 sm:hover:-translate-y-1 sm:hover:shadow-lg"
+          className="group flex min-w-0 flex-col overflow-hidden rounded-2xl border border-[#d6e5f8] bg-white transition-all duration-200 hover:-translate-y-1 hover:border-[#2b6fd0] hover:shadow-[0_12px_30px_rgba(24,74,151,0.10)]"
         >
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-[20px] shadow-sm sm:h-12 sm:w-12 sm:rounded-2xl sm:text-[27px]">
-            {item.icon}
-          </div>
+          <div className="h-[3px] bg-[#d6e5f8] transition-colors group-hover:bg-[#2b6fd0]" />
 
-          <h3 className="mt-2.5 text-[12px] font-black leading-5 text-[#081a33] sm:mt-5 sm:text-[16px] sm:leading-7">
-            <span className="sm:hidden">{item.mobileTitle}</span>
-            <span className="hidden sm:inline">{item.title}</span>
-          </h3>
+          <div className="flex flex-1 flex-col p-4 sm:p-5">
+            <div className="flex items-center justify-between">
+              <span className="text-[12px] font-black text-[#2b6fd0]">
+                {item.number}
+              </span>
+              <span className="text-[10px] font-semibold text-slate-400">
+                دليل متخصص
+              </span>
+            </div>
 
-          <p className="mt-2 hidden flex-1 text-[12px] leading-7 text-slate-600 sm:block">
-            {item.description}
-          </p>
+            <h3 className="mt-4 text-[13px] font-black leading-6 text-[#081a33] sm:text-[18px]">
+              <span className="sm:hidden">{item.shortTitle}</span>
+              <span className="hidden sm:inline">{item.title}</span>
+            </h3>
 
-          <div className="mt-auto pt-3 sm:mt-5 sm:flex sm:items-center sm:justify-between sm:border-t sm:border-[#dce7f5] sm:pt-4">
-            <span className="hidden text-[10px] font-bold text-slate-500 sm:block">
-              {item.keyword}
-            </span>
-            <span className="text-[10px] font-black text-[#1E5BB8] sm:text-[12px]">
-              استكشف الدليل ←
-            </span>
+            <p className="mt-2 hidden flex-1 text-[13px] leading-7 text-slate-600 sm:block">
+              {item.description}
+            </p>
+
+            <div className="mt-4 hidden flex-wrap gap-1.5 sm:flex">
+              {item.criteria.map((criterion) => (
+                <span
+                  key={criterion}
+                  className="rounded-md bg-[#eef5fd] px-2.5 py-1.5 text-[11px] font-bold text-[#184a97]"
+                >
+                  {criterion}
+                </span>
+              ))}
+            </div>
+
+            <div className="mt-auto flex items-center justify-between border-t border-[#e5edf7] pt-3 sm:mt-5 sm:pt-4">
+              <span className="text-[11px] font-black text-[#1e5bb8] sm:text-[13px]">
+                استكشف الدليل
+              </span>
+              <span className="text-[16px] font-black text-[#2b6fd0]">
+                ←
+              </span>
+            </div>
           </div>
         </Link>
       ))}
     </div>
 
-    <p className="mt-4 text-center text-[10px] leading-5 text-slate-500 sm:mt-5 sm:text-[11px] sm:leading-6">
-      تختلف ملكية الأصل المالي عن التداول على عقود الفروقات.
-      راجع نوع المنتج والرسوم والمخاطر قبل فتح الحساب.
+    <p className="mt-5 text-center text-[11px] leading-6 text-slate-500 sm:text-[12px]">
+      تنبيه: قد تختلف ملكية الأصل عن التداول عبر عقود الفروقات، كما تختلف الرسوم والمخاطر حسب المنتج والوسيط.
     </p>
   </div>
 </section>
 
 
-  
+
 {/* 3 — TRADING CONDITIONS */}
 <section
   id="trading-conditions"
   aria-labelledby="trading-conditions-title"
-  className="scroll-mt-24 border-b border-[#dce7f5] bg-[#f5f8fd] py-6 sm:py-14 [&_a]:text-center [&_article]:text-center [&_a>div]:text-center [&_article>div]:text-center [&_a>div:first-child]:mx-auto [&_article>div:first-child]:mx-auto [&_a>h3]:text-center [&_article>h3]:text-center [&_a>p]:text-center [&_article>p]:text-center"
+  className="scroll-mt-24 border-b border-[#dce7f5] bg-[#f5f8fd] py-8 sm:py-12"
 >
   <div className="mx-auto max-w-[1520px] px-4 sm:px-6 lg:px-8">
-    <div className="mx-auto max-w-[850px] text-center">
-      <span className="text-[10px] font-black text-[#2B6FD0] sm:text-[11px]">
-        الحسابات وتكاليف التداول
-      </span>
-
+    {/* SECTION HEADING */}
+    <div className="mx-auto max-w-[900px] text-center">
       <h2
         id="trading-conditions-title"
-        className="mt-2 text-[21px] font-black leading-[1.4] text-[#081a33] sm:mt-3 sm:text-[34px]"
+        className="text-[23px] font-black leading-tight text-[#081a33] sm:text-[34px]"
       >
         كيف تختار شركة تداول حسب شروط الحساب؟
       </h2>
 
-      <p className="mt-2 text-[11px] leading-6 text-slate-600 sm:mt-3 sm:text-[15px] sm:leading-7">
-        <span className="sm:hidden">
-          قارن الحسابات والسبريد والإيداع والمنصات قبل التسجيل.
-        </span>
-        <span className="hidden sm:inline">
-          لا تعتمد على التقييم العام وحده. افحص السبريد والعمولات
-          والإيداع المطلوب ونوع الحساب قبل اختيار شركة التداول.
-          وقد تختلف الشروط بين الحسابات داخل الشركة نفسها.
-        </span>
+      <p className="mt-3 text-[13px] leading-7 text-slate-600 sm:text-[15px]">
+        قد يقدم الوسيط أكثر من نوع حساب، ولكل حساب شروط مختلفة.
+        استخدم المعايير التالية لمقارنة التكاليف ومتطلبات الإيداع
+        وشروط التداول قبل فتح حساب حقيقي.
       </p>
     </div>
 
-    <div className="mt-5 grid grid-cols-2 gap-2 sm:mt-8 sm:gap-4 lg:grid-cols-3">
+    {/* COMPARISON TABLE */}
+    <div className="mt-7 overflow-hidden rounded-[20px] border border-[#d6e5f8] bg-white shadow-sm">
+
+      {/* DESKTOP TABLE HEADER */}
+      <div className="hidden grid-cols-[1.1fr_1.6fr_1.4fr_150px] items-center bg-[#123b72] px-6 py-[18px] text-center text-[13px] font-black text-white lg:grid">
+        <span className="text-center">
+          معيار المقارنة
+        </span>
+
+        <span className="text-center">
+          ما الذي يجب التحقق منه؟
+        </span>
+
+        <span className="text-center">
+          لماذا يهم المتداول؟
+        </span>
+
+        <span className="text-center">
+          الدليل
+        </span>
+      </div>
+
       {[
         {
-          number: "01",
-          title: "مقارنة أنواع حسابات التداول",
-          mobileTitle: "مقارنة الحسابات",
-          text:
-            "استعرض حسابات الوسطاء وقارن الفروقات بين شروط الإيداع والتداول.",
+          title: "أنواع حسابات التداول",
+          check:
+            "قارن حسابات Standard وRaw وغيرها حسب ما يقدمه كل وسيط.",
+          reason:
+            "قد يختلف السبريد والعمولة والإيداع بين حساب وآخر داخل الشركة نفسها.",
           href: "/compare-accounts",
-          link: "مقارنة الحسابات",
+          link: "قارن الحسابات",
         },
         {
-          number: "02",
           title: "الحد الأدنى للإيداع",
-          mobileTitle: "الحد الأدنى للإيداع",
-          text:
-            "تعرّف على متطلبات فتح الحساب، ثم تحقق من الإيداع الفعلي لكل نوع حساب.",
+          check:
+            "تحقق من الحد المطلوب لفتح الحساب والحد الأدنى لعملية الإيداع.",
+          reason:
+            "بعض الحسابات تتطلب مبالغ أعلى للحصول على شروط تداول مختلفة.",
           href: "/brokers",
-          link: "استكشف تقييمات الوسطاء",
+link: "قارن حدود الإيداع",
         },
         {
-          number: "03",
-          title: "السبريد وعمولات التداول",
-          mobileTitle: "السبريد والعمولات",
-          text:
-            "افهم الفرق بين فروقات الأسعار والعمولة قبل مقارنة تكلفة التداول.",
-          href: "/learn-trading",
-          link: "تعلم أساسيات التداول",
+          title: "السبريد والعمولات",
+          check:
+            "راجع متوسط السبريد والعمولة لكل لوت ورسوم التبييت.",
+          reason:
+            "التكلفة الإجمالية للصفقة أهم من مقارنة السبريد وحده.",
+          href: "/learn-trading/spread",
+          link: "دليل السبريد",
         },
         {
-          number: "04",
-          title: "حسابات التداول الإسلامية",
-          mobileTitle: "الحسابات الإسلامية",
-          text:
-            "تحقق من شروط الحساب الخالي من فوائد التبييت وأي رسوم بديلة.",
+          title: "الحساب الإسلامي",
+          check:
+            "راجع الأدوات المشمولة والإعفاء من التبييت وأي رسوم إدارية.",
+          reason:
+            "تختلف شروط الحساب الإسلامي حسب الوسيط ونوع الحساب وبلد الإقامة.",
           href: "/compare-accounts",
-          link: "راجع شروط الحسابات",
+          link: "شروط الحسابات",
         },
         {
-          number: "05",
-          title: "منصات التداول المتاحة",
-          mobileTitle: "منصات التداول",
-          text:
-            "قارن دعم MetaTrader 4 وMetaTrader 5 والمنصات الأخرى بحسب الوسيط.",
-          href: "/brokers",
-          link: "راجع منصات الوسطاء",
+          title: "مقارنة شركات التداول",
+          check:
+            "قارن شركتين مباشرة من حيث التقييم والتراخيص والحسابات وشروط التداول.",
+          reason:
+            "المقارنة المباشرة تساعدك على تحديد الفروقات قبل اختيار الوسيط.",
+          href: "/compare",
+          link: "قارن شركتين",
         },
         {
-          number: "06",
-          title: "اختيار حساب مناسب للمبتدئين",
-          mobileTitle: "حسابات المبتدئين",
-          text:
-            "ابدأ بفهم المخاطر وحجم الصفقة والهامش قبل الانتقال إلى حساب حقيقي.",
-          href: "/learn-trading",
-          link: "دليل تعلم التداول",
+          title: "الرافعة المالية والهامش",
+          check:
+            "افحص الرافعة المتاحة ومتطلبات الهامش ومستوى إغلاق الصفقات.",
+          reason:
+            "الرافعة المرتفعة تضخم الأرباح والخسائر وتزيد خطر التصفية.",
+          href: "/learn-trading/leverage",
+          link: "دليل الرافعة المالية",
         },
-      ].map((item) => (
-        <article
-          key={item.number}
-          className="flex min-w-0 flex-col rounded-xl border border-[#dce7f5] bg-white p-3 shadow-[0_5px_18px_rgba(24,74,151,0.035)] sm:rounded-[20px] sm:p-5"
+      ].map((item, index) => (
+        <div
+          key={item.title}
+          className={`grid gap-3 border-b border-[#e2eaf5] p-4 last:border-b-0 sm:p-5 lg:grid-cols-[1.1fr_1.6fr_1.4fr_150px] lg:items-center lg:gap-5 lg:px-6 lg:py-5 ${
+            index % 2 === 0
+              ? "bg-white"
+              : "bg-[#f8faff]"
+          }`}
         >
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#e8f1ff] text-[10px] font-black text-[#1E5BB8] sm:h-10 sm:w-10 sm:rounded-xl sm:text-[13px]">
-            {item.number}
+          {/* CRITERION */}
+          <div className="flex w-full items-center justify-start gap-3 text-right">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#e8f1ff] text-[12px] font-black text-[#1e5bb8]">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+
+            <h3 className="text-right text-[14px] font-black leading-6 text-[#081a33] sm:text-[15px]">
+  {item.title}
+</h3>
           </div>
 
-          <h3 className="mt-2.5 text-[12px] font-black leading-5 text-[#081a33] sm:mt-4 sm:text-[16px]">
-            <span className="sm:hidden">{item.mobileTitle}</span>
-            <span className="hidden sm:inline">{item.title}</span>
-          </h3>
-
-          <p className="mt-2 hidden flex-1 text-[12px] leading-7 text-slate-600 sm:block">
-            {item.text}
+          {/* WHAT TO CHECK */}
+          <p className="text-[12px] leading-6 text-slate-700 sm:text-[13px] sm:leading-7 lg:text-center">
+            {item.check}
           </p>
 
-          <Link
-            href={item.href}
-            className="mt-auto pt-3 text-[10px] font-black leading-5 text-[#1E5BB8] hover:underline sm:mt-5 sm:border-t sm:border-[#edf2f9] sm:pt-4 sm:text-[12px]"
-          >
-            <span className="sm:hidden">استكشف ←</span>
-            <span className="hidden sm:inline">{item.link} ←</span>
-          </Link>
-        </article>
+          {/* WHY IT MATTERS */}
+          <p className="hidden text-[13px] leading-7 text-slate-600 sm:block lg:text-center">
+            {item.reason}
+          </p>
+
+          {/* GUIDE LINK */}
+          
+<Link
+  href={item.href}
+  className="inline-flex min-h-[42px] w-fit items-center justify-center rounded-lg bg-[#1e5bb8] px-4 text-center text-[12px] font-black leading-5 text-white transition-all duration-200 hover:bg-[#184a97] hover:shadow-md lg:w-full"
+>
+  {item.link}
+</Link>
+
+        </div>
       ))}
     </div>
+
+    {/* DISCLAIMER */}
+    <p className="mt-4 text-center text-[11px] leading-6 text-slate-500 sm:text-[12px]">
+      تختلف شروط الحساب الفعلية بحسب الكيان القانوني وبلد الإقامة ونوع الحساب.
+      تحقق من أحدث الشروط لدى الوسيط قبل التسجيل.
+    </p>
   </div>
 </section>
 
 
-  
-{/* 4 — BROKER COMPARISONS */}
-<section
-  id="broker-comparisons"
-  aria-labelledby="broker-comparisons-title"
-  className="scroll-mt-24 border-b border-[#dce7f5] bg-white py-6 sm:py-14 [&_a]:text-center [&_a>div]:text-center [&_a>div>h3]:text-center [&_a>div>p]:text-center [&_a>span]:mx-auto"
->
-  <div className="mx-auto max-w-[1520px] px-4 sm:px-6 lg:px-8">
-    <div className="mx-auto max-w-[850px] text-center">
-      <span className="text-[10px] font-black text-[#2B6FD0] sm:text-[11px]">
-        قبل اختيار وسيط التداول
-      </span>
-
-      <h2
-        id="broker-comparisons-title"
-        className="mt-2 text-[21px] font-black leading-[1.4] text-[#081a33] sm:mt-3 sm:text-[34px]"
-      >
-        قارن شركات التداول قبل فتح حساب
-      </h2>
-
-      <p className="mt-2 text-[11px] leading-6 text-slate-600 sm:mt-3 sm:text-[15px] sm:leading-7">
-        <span className="sm:hidden">
-          اكتشف الفروقات بين الوسطاء وحساباتهم قبل اتخاذ القرار.
-        </span>
-        <span className="hidden sm:inline">
-          قد تتشابه شركتان في التقييم العام، لكن تختلفان
-          في أنواع الحسابات والتراخيص والمنصات وتكاليف التداول.
-          استخدم أدلة بروكر العرب لمراجعة التفاصيل قبل اتخاذ القرار.
-        </span>
-      </p>
-    </div>
-
-    <div className="mt-5 grid grid-cols-1 gap-2 sm:mt-8 sm:gap-4 lg:grid-cols-2">
-      <Link
-        href="/compare-accounts"
-        className="group flex items-center gap-3 rounded-xl border border-[#bfd3ee] bg-[#eef5fd] p-3 transition hover:border-[#2B6FD0] sm:block sm:rounded-[22px] sm:p-6 sm:hover:shadow-lg"
-      >
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-[18px] sm:hidden">
-          ⇄
-        </span>
-
-        <div className="min-w-0 flex-1">
-          <span className="hidden text-[11px] font-black text-[#1E5BB8] sm:block">
-            مقارنة تفصيلية
-          </span>
-
-          <h3 className="text-[13px] font-black leading-5 text-[#081a33] sm:mt-3 sm:text-[19px]">
-            مقارنة حسابات شركات التداول
-          </h3>
-
-          <p className="mt-3 hidden text-[13px] leading-7 text-slate-600 sm:block">
-            انتقل إلى أداة مقارنة الحسابات لمراجعة الفروقات
-            بين حسابات الوسطاء، بدل الاكتفاء بمقارنة أسماء الشركات.
-          </p>
-
-          <span className="mt-5 hidden rounded-xl bg-[#1E5BB8] px-5 py-3 text-[12px] font-black text-white sm:inline-flex">
-            ابدأ مقارنة الحسابات ←
-          </span>
-        </div>
-
-        <span className="shrink-0 text-[17px] font-black text-[#1E5BB8] sm:hidden">
-          ←
-        </span>
-      </Link>
-
-      <Link
-        href="/brokers"
-        className="group flex items-center gap-3 rounded-xl border border-[#dce7f5] bg-[#f8fbff] p-3 transition hover:border-[#2B6FD0] sm:block sm:rounded-[22px] sm:p-6 sm:hover:shadow-lg"
-      >
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-[18px] sm:hidden">
-          ★
-        </span>
-
-        <div className="min-w-0 flex-1">
-          <span className="hidden text-[11px] font-black text-[#1E5BB8] sm:block">
-            تقييمات الوسطاء
-          </span>
-
-          <h3 className="text-[13px] font-black leading-5 text-[#081a33] sm:mt-3 sm:text-[19px]">
-            مراجعات وتقييمات شركات التداول
-          </h3>
-
-          <p className="mt-3 hidden text-[13px] leading-7 text-slate-600 sm:block">
-            اقرأ تقييمات الشركات وتعرّف على المميزات والعيوب
-            والتراخيص وأنواع الحسابات المتاحة لكل وسيط.
-          </p>
-
-          <span className="mt-5 hidden rounded-xl border border-[#bfd3ee] bg-white px-5 py-3 text-[12px] font-black text-[#1E5BB8] sm:inline-flex">
-            عرض جميع التقييمات ←
-          </span>
-        </div>
-
-        <span className="shrink-0 text-[17px] font-black text-[#1E5BB8] sm:hidden">
-          ←
-        </span>
-      </Link>
-    </div>
-  </div>
-</section>
 
 
-  
 {/* 5 — REGULATION AND SAFETY */}
 <section
   id="licenses"
   aria-labelledby="licenses-title"
-  className="scroll-mt-24 border-b border-[#dce7f5] bg-[#f5f8fd] py-6 sm:py-14 [&_a]:text-center [&_article]:text-center [&_a>h3]:text-center [&_article_h3]:text-center [&_article_p]:text-center [&_a>div]:text-center [&_a>div:first-child]:justify-center [&_a>div:first-child]:flex-wrap [&_article>span]:mx-auto"
+  className="scroll-mt-24 border-b border-[#dce7f5] bg-[#f5f8fd] py-9 sm:py-14"
 >
   <div className="mx-auto max-w-[1520px] px-4 sm:px-6 lg:px-8">
-    <div className="mx-auto max-w-[850px] text-center">
-      <span className="text-[10px] font-black text-[#2B6FD0] sm:text-[11px]">
-        التراخيص والرقابة المالية
-      </span>
 
+    {/* SECTION HEADING */}
+    <div className="mx-auto max-w-[900px] text-center">
       <h2
         id="licenses-title"
-        className="mt-2 text-[21px] font-black leading-[1.4] text-[#081a33] sm:mt-3 sm:text-[34px]"
+        className="text-[24px] font-black leading-[1.4] text-[#081a33] sm:text-[36px]"
       >
         كيف تتحقق من شركات التداول المرخصة والموثوقة؟
       </h2>
 
-      <p className="mt-2 text-[11px] leading-6 text-slate-600 sm:mt-3 sm:text-[15px] sm:leading-7">
-        <span className="sm:hidden">
-          تحقق من ترخيص الوسيط والكيان القانوني قبل فتح الحساب.
-        </span>
-        <span className="hidden sm:inline">
-          وجود ترخيص لدى شركة تداول لا يعني بالضرورة أن جميع
-          عملائها يخضعون لنفس الجهة الرقابية. تحقق من اسم
-          الكيان القانوني ورقم الترخيص والجهة المسؤولة
-          عن حسابك قبل إيداع الأموال.
-        </span>
+      <p className="mt-3 text-[13px] leading-7 text-slate-600 sm:text-[15px] sm:leading-8">
+        وجود ترخيص لدى شركة تداول لا يعني بالضرورة أن جميع عملائها
+        يخضعون لنفس الجهة الرقابية. تحقق من اسم الكيان القانوني
+        ورقم الترخيص والجهة المسؤولة عن حسابك قبل إيداع الأموال.
       </p>
     </div>
 
-    <div className="mt-5 grid grid-cols-2 gap-2 sm:mt-8 sm:gap-3 lg:grid-cols-4">
-      {regulatorSummaries.map((regulator) => (
-        <Link
-          key={regulator.code}
-          href={`/licenses/${regulator.code.toLowerCase()}`}
-          className="group flex min-w-0 flex-col rounded-xl border border-[#dce7f5] bg-white p-3 transition hover:border-[#2B6FD0] sm:rounded-[19px] sm:p-5 sm:hover:-translate-y-1 sm:hover:shadow-md"
+    {/* PRACTICAL VERIFICATION STEPS */}
+    <div className="mt-7 grid grid-cols-1 gap-3 md:grid-cols-3">
+      {[
+        {
+          number: "01",
+          title: "تحقق من الكيان القانوني",
+          description:
+            "طابق اسم الشركة المسجلة في السجل الرقابي مع الكيان الذي سيقدم لك حساب التداول.",
+        },
+        {
+          number: "02",
+          title: "راجع رقم الترخيص",
+          description:
+            "ابحث عن رقم الترخيص في الموقع الرسمي للجهة الرقابية، ولا تعتمد على شعار الهيئة وحده.",
+        },
+        {
+          number: "03",
+          title: "تأكد من نطاق الحماية",
+          description:
+            "تحقق من حالة الترخيص والخدمات المسموح بها، وما إذا كانت الحماية الرقابية تشمل حسابك.",
+        },
+      ].map((step) => (
+        <div
+          key={step.number}
+          className="flex items-start gap-3 rounded-xl border border-[#d6e5f8] bg-white p-4 sm:p-5"
         >
-          <div className="flex items-center justify-between gap-1.5 sm:gap-3">
-            <span className="rounded-lg bg-[#eef5fd] px-2 py-1.5 text-[11px] font-black text-[#1E5BB8] sm:rounded-xl sm:px-3 sm:py-2 sm:text-[13px]">
-              {regulator.code}
-            </span>
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#e8f1ff] text-[12px] font-black text-[#1e5bb8]">
+            {step.number}
+          </span>
 
-            <span className="text-[9px] font-bold text-slate-500 sm:text-[10px]">
-              {regulator.brokerCount} شركات
-            </span>
+          <div>
+            <h3 className="text-[14px] font-black text-[#081a33] sm:text-[15px]">
+              {step.title}
+            </h3>
+            <p className="mt-1.5 text-[12px] leading-6 text-slate-600 sm:text-[13px]">
+              {step.description}
+            </p>
           </div>
-
-          <h3 className="mt-2 flex-1 text-[11px] font-black leading-5 text-[#081a33] sm:mt-4 sm:min-h-[48px] sm:text-[13px] sm:leading-6">
-            {regulator.name}
-          </h3>
-
-          <div className="mt-2 border-t border-[#edf2f9] pt-2 text-[10px] font-black text-[#1E5BB8] sm:mt-3 sm:pt-3 sm:text-[11px]">
-            دليل الترخيص ←
-          </div>
-        </Link>
+        </div>
       ))}
     </div>
 
-    
+    {/* REGULATOR DIRECTORY */}
+    <div className="mt-9">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <h3 className="text-[18px] font-black text-[#081a33] sm:text-[22px]">
+          دليل الهيئات الرقابية لشركات التداول
+        </h3>
 
+        <span className="rounded-full bg-[#e8f1ff] px-3 py-1.5 text-[11px] font-black text-[#1e5bb8]">
+          {regulatorSummaries.length} جهات رقابية
+        </span>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+        {regulatorSummaries.map((regulator, index) => {
+          const regulatorFlags: Record<string, string> = {
+            FCA: "🇬🇧",
+            ASIC: "🇦🇺",
+            CYSEC: "🇨🇾",
+            FSCA: "🇿🇦",
+            DFSA: "🇦🇪",
+            SCB: "🇧🇸",
+            FSA: "🇸🇨",
+            "FSC BELIZE": "🇧🇿",
+            "FSC BELIZE ": "🇧🇿",
+            "FSC MAURITIUS": "🇲🇺",
+            "ADGM FSRA": "🇦🇪",
+            BAFIN: "🇩🇪",
+            CIRO: "🇨🇦",
+            NFA: "🇺🇸",
+            JSC: "🇯🇴",
+            SCA: "🇦🇪",
+            VFSC: "🇻🇺",
+            MISA: "🇰🇲",
+            CIMA: "🇰🇾",
+            CMWM: "🇳🇱",
+            CVM: "🇧🇷",
+            BACEN: "🇧🇷",
+            "FSC BVI": "🇻🇬",
+          };
+
+          const code = regulator.code.trim().toUpperCase();
+          const flag = regulatorFlags[code] || "🌐";
+
+          return (
+            <Link
+              key={regulator.code}
+              href={`/licenses/${regulator.code.toLowerCase()}`}
+              className={`group flex min-w-0 flex-col overflow-hidden rounded-[17px] border border-[#d6e5f8] bg-white transition-all duration-200 hover:-translate-y-1 hover:border-[#2b6fd0] hover:shadow-[0_10px_25px_rgba(30,91,184,0.10)] ${
+                index >= 8 ? "license-extra-card" : ""
+              }`}
+            >
+              <div className="flex flex-1 flex-col p-3.5 sm:p-5">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-lg bg-[#eef5fd] px-2.5 py-1.5 text-[11px] font-black text-[#1e5bb8]">
+                    {regulator.code}
+                  </span>
+
+                  
+<span
+  aria-hidden="true"
+  className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border-[3px] border-white bg-[#eef5fd] shadow-[0_2px_8px_rgba(0,0,0,0.12)] ring-1 ring-[#d6e5f8]"
+>
+  {(() => {
+    const countryCodes: Record<string, string> = {
+      FCA: "gb",
+      ASIC: "au",
+      CYSEC: "cy",
+      FSCA: "za",
+      DFSA: "ae",
+      SCB: "bs",
+      FSA: "sc",
+      "FSC BELIZE": "bz",
+      "FSC MAURITIUS": "mu",
+      "FSC BVI": "vg",
+      "ADGM FSRA": "ae",
+      BAFIN: "de",
+      CIRO: "ca",
+      NFA: "us",
+      JSC: "jo",
+      SCA: "ae",
+      VFSC: "vu",
+      MISA: "km",
+      CIMA: "ky",
+      CMWM: "nl",
+      CVM: "br",
+      BACEN: "br",
+      LFSA: "lb",
+      CBI: "ie",
+      "MOCI KUWAIT": "kw",
+    };
+
+    const countryCode =
+      countryCodes[regulator.code.trim().toUpperCase()];
+
+    return countryCode ? (
+      <img
+        src={`https://flagcdn.com/w80/${countryCode}.png`}
+        alt=""
+        width={40}
+        height={40}
+        loading="lazy"
+        className="h-full w-full object-cover"
+      />
+    ) : (
+      <span className="text-[18px]">🌐</span>
+    );
+  })()}
+</span>
+
+                </div>
+
+                <h4 className="mt-4 flex-1 text-[12px] font-black leading-6 text-[#081a33] sm:text-[15px] sm:leading-7">
+                  {regulator.name}
+                </h4>
+
+                <div className="mt-4 flex items-center justify-between gap-2 border-t border-[#e8eef7] pt-3">
+                  <span className="text-[10px] font-bold text-slate-500 sm:text-[11px]">
+                    {regulator.brokerCount} وسطاء مرتبطون
+                  </span>
+
+                  <span className="text-[11px] font-black text-[#1e5bb8] group-hover:underline sm:text-[12px]">
+                    دليل الترخيص ←
+                  </span>
+                </div>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+
+      {/* EXPAND / COLLAPSE CONTROL */}
+      {regulatorSummaries.length > 8 && (
+        <div className="mt-6 text-center">
+          <style>{`
+            #licenses .license-extra-card {
+              display: none;
+            }
+            #licenses:has(#show-all-licenses:checked) .license-extra-card {
+              display: flex;
+            }
+            #licenses:has(#show-all-licenses:checked) .show-more-text {
+              display: none;
+            }
+            #licenses:not(:has(#show-all-licenses:checked)) .show-less-text {
+              display: none;
+            }
+          `}</style>
+
+          <input
+            id="show-all-licenses"
+            type="checkbox"
+            className="peer sr-only"
+          />
+
+          <label
+            htmlFor="show-all-licenses"
+            className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-xl bg-[#1e5bb8] px-7 text-[13px] font-black text-white transition hover:bg-[#184a97]"
+          >
+            <span className="show-more-text">
+              عرض جميع الجهات الرقابية ({regulatorSummaries.length})
+            </span>
+            <span className="show-less-text">
+              عرض عدد أقل
+            </span>
+          </label>
+        </div>
+      )}
+    </div>
+
+    <p className="mt-7 text-center text-[11px] leading-6 text-slate-500 sm:text-[12px]">
+      عدد الوسطاء المعروض يعكس البيانات المسجلة في بروكر العرب،
+      ولا يعني أن جميع العملاء يتبعون الكيان القانوني الخاضع لذلك الترخيص.
+    </p>
   </div>
 </section>
-
 
 {/* 6 — EDUCATIONAL CONTENT */}
 <section
@@ -3033,106 +3218,70 @@ const keyStrength = cleanText(
 
 
 
+
 {/* 7 — FAQ */}
 <section
   id="best-brokers-faq"
   aria-labelledby="best-brokers-faq-title"
   dir="rtl"
-  className="scroll-mt-24 border-b border-[#dce7f5] bg-[#f5f8fd] py-7 sm:py-16"
+  className="scroll-mt-24 border-b border-[#dce7f5] bg-[#f5f8fd] py-7 sm:py-14"
 >
   <div className="mx-auto max-w-[1520px] px-4 sm:px-6 lg:px-8">
-    {/* FAQ HEADING */}
-    <div className="mx-auto max-w-[850px] text-center">
-      <span className="inline-flex rounded-full bg-[#e6f0ff] px-3 py-1 text-[10px] font-black text-[#1E5BB8] sm:px-4 sm:py-1.5 sm:text-[11px]">
-        إجابات تساعدك على الاختيار
-      </span>
 
+    {/* FAQ HEADING */}
+    <div className="mx-auto max-w-[900px] text-center">
       <h2
         id="best-brokers-faq-title"
-        className="mt-2.5 text-[21px] font-black leading-[1.4] text-[#081a33] sm:mt-4 sm:text-[35px]"
+        className="text-[23px] font-black leading-[1.4] text-[#081a33] sm:text-[35px]"
       >
         الأسئلة الشائعة حول أفضل شركات التداول
       </h2>
 
       {/* MOBILE DESCRIPTION */}
       <p className="mt-2 text-[12px] leading-6 text-slate-600 sm:hidden">
-        أهم الإجابات عن التراخيص والحسابات وتكاليف التداول.
+        إجابات عن أفضل شركات الفوركس والتراخيص والحسابات
+        وتكاليف التداول.
       </p>
 
       {/* DESKTOP DESCRIPTION */}
       <p className="mt-3 hidden text-[13px] leading-7 text-slate-600 sm:block sm:text-[15px]">
-        إجابات واضحة عن التراخيص والرسوم وأنواع الحسابات
-        وأهم المعايير التي تساعدك على اختيار وسيط التداول المناسب.
+        تعرف على إجابات أهم الأسئلة حول أفضل شركات تداول الفوركس
+        في 2026، وكيفية التحقق من التراخيص، ومقارنة الرسوم
+        والحسابات واختيار وسيط التداول المناسب.
       </p>
     </div>
 
-    {/* FAQ GRID */}
-    <div className="mt-5 grid items-start gap-2 sm:mt-9 sm:gap-4 lg:grid-cols-2">
-      {[
-        {
-          question: "ما أفضل شركة تداول في 2026؟",
-          answer:
-            "لا توجد شركة واحدة هي الأفضل لجميع المتداولين. يعتمد الاختيار على بلد الإقامة والترخيص المتاح ونوع الحساب وتكاليف التداول والمنصة والأدوات المالية المطلوبة.",
-        },
-        {
-          question: "كيف أعرف أن شركة التداول مرخصة؟",
-          answer:
-            "تحقق من رقم الترخيص واسم الكيان القانوني في الموقع الرسمي للجهة الرقابية، وتأكد أن الكيان الذي ستتعاقد معه هو نفسه الكيان المرخص.",
-        },
-        {
-          question: "هل يمكن فتح حساب تداول بمبلغ 100 دولار؟",
-          answer:
-            "تتيح بعض الشركات حسابات بإيداع منخفض، لكن الحد الأدنى يختلف بحسب الوسيط ونوع الحساب ووسيلة الدفع. كما أن إمكانية فتح الحساب لا تعني أن المبلغ كافٍ لإدارة المخاطر.",
-        },
-        {
-          question: "ما الفرق بين السبريد والعمولة؟",
-          answer:
-            "السبريد هو الفرق بين سعر الشراء وسعر البيع، بينما العمولة رسم قد يفرضه الوسيط على تنفيذ الصفقات. وقد يجمع الحساب بين السبريد والعمولة معًا.",
-        },
-        {
-          question: "هل الحساب الإسلامي خالٍ من جميع الرسوم؟",
-          answer:
-            "ليس بالضرورة. قد تلغي بعض الحسابات رسوم التبييت التقليدية مع تطبيق رسوم أو شروط بديلة. لذلك يجب مراجعة الشروط الخاصة بكل وسيط وحساب.",
-        },
-        {
-          question: "هل أختار MT4 أم MT5؟",
-          answer:
-            "يعتمد الاختيار على الأدوات المتاحة واستراتيجيتك وتوافق المنصة مع الوسيط. راجع الأسواق والأوامر والمؤشرات التي تحتاجها قبل تحديد المنصة.",
-        },
-        {
-          question: "هل يمكن مقارنة حسابات شركتين مختلفتين؟",
-          answer:
-            "نعم، يمكنك استخدام صفحات مقارنة الحسابات في بروكر العرب لمراجعة الفروقات بين أنواع الحسابات وشروط التداول المتاحة.",
-        },
-        {
-          question: "هل الترخيص يضمن عدم خسارة الأموال؟",
-          answer:
-            "لا. الترخيص يتعلق بالإشراف التنظيمي ولا يضمن تحقيق الأرباح أو يمنع خسائر التداول. التداول بالرافعة المالية وعقود الفروقات ينطوي على مخاطر مرتفعة.",
-        },
-      ].map((item, index) => (
+    {/* FAQ GRID — SAME DATA AS FAQ SCHEMA */}
+    <div className="mt-6 grid items-start gap-3 sm:mt-9 sm:gap-4 lg:grid-cols-2">
+      {faqItems.map((item, index) => (
         <details
           key={item.question}
           className="group overflow-hidden rounded-xl border border-[#d6e5f8] bg-white shadow-[0_4px_16px_rgba(24,74,151,0.035)] transition-all duration-200 open:border-[#a9c8f1] open:shadow-[0_8px_25px_rgba(24,74,151,0.08)] sm:rounded-[18px]"
         >
           <summary className="flex min-h-[54px] cursor-pointer list-none items-center gap-2.5 px-3 py-2.5 transition hover:bg-[#f7faff] sm:min-h-[76px] sm:gap-4 sm:px-4 sm:py-4 lg:px-6 [&::-webkit-details-marker]:hidden">
-            {/* NUMBER */}
-            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#eef5fd] text-[10px] font-black text-[#1E5BB8] sm:h-9 sm:w-9 sm:rounded-xl sm:text-[12px]">
+
+            {/* QUESTION NUMBER */}
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#eef5fd] text-[10px] font-black text-[#1e5bb8] sm:h-9 sm:w-9 sm:rounded-xl sm:text-[12px]">
               {String(index + 1).padStart(2, "0")}
             </span>
 
             {/* QUESTION */}
-            <h3 className="min-w-0 flex-1 text-[12px] font-black leading-5 text-[#081a33] sm:text-[15px] sm:leading-7">
+            <h3 className="min-w-0 flex-1 text-right text-[12px] font-black leading-5 text-[#081a33] sm:text-[15px] sm:leading-7">
               {item.question}
             </h3>
 
             {/* EXPAND ICON */}
-            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#d6e5f8] bg-[#f4f8ff] text-[17px] font-medium text-[#1E5BB8] transition-transform duration-200 group-open:rotate-45 group-open:border-[#2B6FD0] group-open:bg-[#1E5BB8] group-open:text-white sm:h-9 sm:w-9 sm:text-[20px]">
+            <span
+              aria-hidden="true"
+              className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#d6e5f8] bg-[#f4f8ff] text-[17px] font-medium text-[#1e5bb8] transition-all duration-200 group-open:rotate-45 group-open:border-[#2b6fd0] group-open:bg-[#1e5bb8] group-open:text-white sm:h-9 sm:w-9 sm:text-[20px]"
+            >
               +
             </span>
           </summary>
 
+          {/* ANSWER */}
           <div className="border-t border-[#e5edf8] bg-[#fbfdff] px-3 py-3 sm:px-6 sm:py-5">
-            <p className="text-[12px] leading-6 text-[#526784] sm:leading-8 sm:text-[13px]">
+            <p className="text-right text-[12px] leading-7 text-[#526784] sm:text-[14px] sm:leading-8">
               {item.answer}
             </p>
           </div>
@@ -3141,41 +3290,42 @@ const keyStrength = cleanText(
     </div>
 
     {/* BOTTOM CTA */}
-    <div className="mt-5 flex flex-col items-center justify-between gap-3 rounded-xl border border-[#c7daf3] bg-white p-3 text-center sm:mt-8 sm:gap-4 sm:rounded-[20px] sm:p-5 sm:flex-row sm:text-right lg:p-6">
+    <div className="mt-6 flex flex-col items-center justify-between gap-3 rounded-xl border border-[#c7daf3] bg-white p-4 text-center sm:mt-8 sm:flex-row sm:gap-4 sm:rounded-[20px] sm:p-5 sm:text-right lg:p-6">
+
       <div>
-        <h3 className="text-[13px] font-black text-[#081a33] sm:text-[15px]">
+        <h3 className="text-[14px] font-black text-[#081a33] sm:text-[16px]">
           ما زلت تقارن بين شركات التداول؟
         </h3>
 
-        <p className="mt-1 hidden text-[12px] leading-6 text-slate-600 sm:block">
-          راجع تقييمات الوسطاء وقارن أنواع الحسابات قبل اتخاذ قرارك.
+        <p className="mt-1 hidden text-[12px] leading-6 text-slate-600 sm:block sm:text-[13px]">
+          راجع تقييمات الوسطاء وقارن أنواع الحسابات
+          وشروط التداول قبل اتخاذ قرارك.
         </p>
       </div>
 
       <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-wrap sm:justify-center sm:gap-3">
+
         <Link
           href="/brokers"
-          className="inline-flex min-h-10 items-center justify-center rounded-lg border border-[#bfd3ee] bg-[#f4f8ff] px-2 py-2 text-[11px] font-black text-[#1E5BB8] transition hover:bg-[#e5efff] sm:min-h-11 sm:rounded-xl sm:px-5 sm:py-3 sm:text-[12px]"
+          className="inline-flex min-h-10 items-center justify-center rounded-lg border border-[#bfd3ee] bg-[#f4f8ff] px-2 py-2 text-[11px] font-black text-[#1e5bb8] transition hover:bg-[#e5efff] sm:min-h-11 sm:rounded-xl sm:px-5 sm:py-3 sm:text-[12px]"
         >
           تقييمات الوسطاء
         </Link>
 
         <Link
           href="/compare-accounts"
-          className="inline-flex min-h-10 items-center justify-center rounded-lg bg-[#1E5BB8] px-2 py-2 text-[11px] font-black text-white transition hover:bg-[#184A97] sm:min-h-11 sm:rounded-xl sm:px-5 sm:py-3 sm:text-[12px]"
+          className="inline-flex min-h-10 items-center justify-center rounded-lg bg-[#1e5bb8] px-2 py-2 text-[11px] font-black text-white transition hover:bg-[#184a97] sm:min-h-11 sm:rounded-xl sm:px-5 sm:py-3 sm:text-[12px]"
         >
-          مقارنة الحسابات ←
+          مقارنة الحسابات
         </Link>
+
       </div>
     </div>
+
   </div>
 </section>
 
-
 </div>
-
-
-     
     </main>
   );
 }
