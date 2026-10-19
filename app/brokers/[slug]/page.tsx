@@ -3470,7 +3470,8 @@ const structuredData = {
   </div>
 )}
 
-  {/* Account Availability Note from Supabase */}
+  
+{/* Account Availability Note from Supabase */}
 {broker.account_availability_note_ar?.trim() && (
   <div className="mt-4 rounded-2xl border border-brand-100 bg-brand-50 px-4 py-4 md:px-5">
     <p className="text-[15px] leading-7 text-slate-700 md:text-base">
@@ -3492,8 +3493,27 @@ const structuredData = {
         );
       })()}
     </p>
+
+    {/* Capital.com ONLY - Indicative Spreads */}
+    {broker.slug === "capital-com" && (
+      <p className="mt-3 border-t border-brand-100 pt-3 text-[15px] leading-7 text-slate-700 md:text-base">
+        <span className="font-extrabold text-slate-950">
+          فروقات الأسعار الاسترشادية:
+        </span>{" "}
+        تستند نطاقات فروقات الأسعار لحسابات CFD وSwap-Free
+        وSpread Betting إلى أزواج العملات الرئيسية، وتُقاس
+        بالنقاط السعرية (Pips). أما حساب 1X فلا يتيح تداول
+        الفوركس، ولذلك تستند نطاقات فروقات الأسعار الخاصة
+        به إلى المؤشرات الرئيسية وتُقاس بالنقاط (Points).
+        هذه الأرقام استرشادية، وقد تم احتسابها بتاريخ
+        19 أكتوبر 2026 بناءً على بيانات التداول خلال آخر
+        30 يومًا، وقد تختلف فروقات الأسعار الفعلية حسب
+        الأداة المالية وظروف السوق.
+      </p>
+    )}
   </div>
 )}
+
 
   {/* Account Opening */}
   <div className="mt-5 flex flex-col gap-3 border-t border-slate-200 pt-5 md:flex-row md:items-center md:justify-between md:gap-6">
@@ -4174,6 +4194,23 @@ const structuredData = {
           </Link>
         )}
       </div>
+      
+      {/* Capital.com ONLY - Short Risk Warning */}
+      {broker.slug === "capital-com" && (
+        <div
+          dir="rtl"
+          className="mt-3 rounded-xl border border-amber-200 bg-amber-50/60 px-4 py-3 text-right"
+        >
+          <p className="text-[12px] leading-6 text-slate-700 md:text-[13px]">
+            <strong className="text-amber-800">تحذير مخاطر: </strong>
+            تتراوح نسبة حسابات المستثمرين الأفراد التي تخسر الأموال عند تداول
+            عقود الفروقات مع مجموعة Capital.com بين 65% و89%.
+            يجب عليك التفكير فيما إذا كنت تفهم كيفية عمل عقود الفروقات،
+            وما إذا كنت قادرًا على تحمل المخاطر المرتفعة لخسارة أموالك.
+          </p>
+        </div>
+      )}
+
     </div>
   </div>
 </SectionCard>
@@ -4283,6 +4320,30 @@ const structuredData = {
 )}
   </SectionCard>
 </div>
+
+
+{/* Capital.com ONLY - Long Risk Warning */}
+{broker.slug === "capital-com" && (
+  <div
+    dir="rtl"
+    className="mt-4 rounded-xl border border-amber-200 bg-amber-50/50 px-4 py-4 text-right md:px-5"
+  >
+    <h2 className="mb-2 text-sm font-extrabold text-amber-900">
+      تحذير المخاطر الخاص بشركة Capital.com
+    </h2>
+
+    <p className="text-[13px] leading-7 text-slate-700 md:text-sm">
+      عقود الفروقات (CFDs) هي أدوات مالية معقدة وتنطوي على مخاطر
+      مرتفعة لخسارة الأموال بسرعة بسبب الرافعة المالية.
+      تتراوح نسبة حسابات المستثمرين الأفراد التي تخسر الأموال
+      عند تداول عقود الفروقات مع مجموعة Capital.com بين
+      65% و89%، وذلك بحسب الشركة التابعة للمجموعة.
+      يجب عليك التفكير فيما إذا كنت تفهم كيفية عمل عقود الفروقات،
+      وما إذا كنت قادرًا على تحمل المخاطر المرتفعة لخسارة أموالك.
+    </p>
+  </div>
+)}
+
 
 {/* تحذير المخاطر — آخر محتوى قبل الفوتر */}
 <div

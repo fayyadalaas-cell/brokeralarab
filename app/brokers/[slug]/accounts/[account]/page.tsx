@@ -1777,12 +1777,38 @@ const relatedComparisons = [
         </div>
       </section>
       
+
 {broker.publication_status === "published" && (
   <RelatedAccountComparisons
     currentBrokerName={broker.name}
     currentAccountName={current.account_name}
     comparisons={relatedComparisons}
   />
+)}
+
+{/* Capital.com ONLY - Long Risk Warning */}
+{broker.slug === "capital-com" && (
+  <section
+    dir="rtl"
+    aria-label="تحذير المخاطر الخاص بشركة Capital.com"
+    className="mx-auto max-w-[1520px] px-4 pb-6 pt-4"
+  >
+    <div className="rounded-xl border border-amber-200 bg-amber-50/60 px-4 py-4 text-right md:px-5">
+      <h2 className="mb-2 text-sm font-extrabold text-amber-900">
+        تحذير المخاطر الخاص بشركة Capital.com
+      </h2>
+
+      <p className="text-[13px] leading-7 text-slate-700 md:text-sm">
+        عقود الفروقات (CFDs) هي أدوات مالية معقدة وتنطوي على
+        مخاطر مرتفعة لخسارة الأموال بسرعة بسبب الرافعة المالية.
+        تتراوح نسبة حسابات المستثمرين الأفراد التي تخسر الأموال
+        عند تداول عقود الفروقات مع مجموعة Capital.com بين
+        65% و89%، وذلك بحسب الشركة التابعة للمجموعة.
+        يجب عليك التفكير فيما إذا كنت تفهم كيفية عمل عقود الفروقات،
+        وما إذا كنت قادرًا على تحمل المخاطر المرتفعة لخسارة أموالك.
+      </p>
+    </div>
+  </section>
 )}
 
     </main>

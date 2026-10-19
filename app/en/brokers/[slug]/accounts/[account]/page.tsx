@@ -1875,12 +1875,37 @@ const hasImportantNotes =
         </div>
             </section>
 
-      <RelatedAccountComparisonsEN
-        currentBrokerName={brokerName}
-        currentAccountName={current.account_name}
-        comparisons={relatedComparisons}
-      />
+      
+<RelatedAccountComparisonsEN
+  currentBrokerName={brokerName}
+  currentAccountName={current.account_name}
+  comparisons={relatedComparisons}
+/>
 
-    </main>
-  );
+{/* Capital.com ONLY - Long Risk Warning */}
+{broker.slug === "capital-com" && (
+  <section
+    dir="ltr"
+    aria-label="Capital.com Risk Warning"
+    className="mx-auto max-w-[1520px] px-4 pb-6 pt-4"
+  >
+    <div className="rounded-xl border border-amber-200 bg-amber-50/60 px-4 py-4 text-left md:px-5">
+      <h2 className="mb-2 text-sm font-extrabold text-amber-900">
+        Capital.com Risk Warning
+      </h2>
+
+      <p className="text-[13px] leading-7 text-slate-700 md:text-sm">
+        CFDs are complex instruments and come with a high risk of
+        losing money rapidly due to leverage. Depending on the
+        company, between 65%-89% of retail investor accounts lose
+        money when trading CFDs with Capital.com Group. You should
+        consider whether you understand how CFDs work and whether
+        you can afford to take the high risk of losing your money.
+      </p>
+    </div>
+  </section>
+)}
+
+</main>
+);
 }

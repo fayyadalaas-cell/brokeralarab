@@ -3389,9 +3389,14 @@ return (
   </div>
 )}
 
-  {/* Account Availability Note from Supabase */}
-  {broker.account_availability_note_en?.trim() && (
-    <div className="mt-4 rounded-2xl border border-brand-100 bg-brand-50 px-4 py-4 md:px-5">
+  
+{/* Account Availability Note from Supabase */}
+{(broker.account_availability_note_en?.trim() ||
+  broker.slug === "capital-com") && (
+  <div className="mt-4 space-y-3 rounded-2xl border border-brand-100 bg-brand-50 px-4 py-4 md:px-5">
+
+    {/* Existing account availability note */}
+    {broker.account_availability_note_en?.trim() && (
       <p className="text-[15px] leading-7 text-slate-700 md:text-base">
         {(() => {
           const note =
@@ -3413,8 +3418,26 @@ return (
           );
         })()}
       </p>
-    </div>
-  )}
+    )}
+
+    {/* Capital.com only - Approved indicative spread note */}
+    {broker.slug === "capital-com" && (
+      <p className="border-t border-brand-100 pt-3 text-[15px] leading-7 text-slate-700 md:text-base">
+        <span className="font-extrabold text-slate-950">
+          Indicative spreads:
+        </span>{" "}
+        The CFD, Swap-Free, and Spread Betting ranges are based on
+        the major FX pairs and are in pips. 1X does not offer FX,
+        so its range is based on the major indices and is in
+        points. The figures are indicative, calculated on
+        19 October 2026 from the last 30 days of trading,
+        and actual spreads vary by instrument and market conditions.
+      </p>
+    )}
+
+  </div>
+)}
+
 
   {/* Account Opening */}
   <div className="mt-5 flex flex-col gap-3 border-t border-slate-200 pt-5 md:flex-row md:items-center md:justify-between md:gap-6">
@@ -4158,13 +4181,33 @@ return (
           rel="nofollow sponsored noopener noreferrer"
           className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-lg bg-brand-600 px-5 py-2 text-xs font-bold text-white transition hover:bg-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 md:w-auto"
         >
+          
           Open an account with {broker.name_en || broker.name}
           <span aria-hidden="true">↗</span>
         </a>
       </div>
+
+      {/* Capital.com ONLY - Short Risk Warning */}
+      {broker.slug === "capital-com" && (
+        <div
+          className="mt-3 rounded-xl border border-amber-200 bg-amber-50/60 px-4 py-3 text-left"
+        >
+          <p className="text-[12px] leading-6 text-slate-700 md:text-[13px]">
+            <strong className="text-amber-800">
+              Risk Warning:{" "}
+            </strong>
+            65%-89% of retail investor accounts lose money when trading
+            CFDs with Capital.com Group. You should consider whether
+            you understand how CFDs work and whether you can afford
+            to take the high risk of losing your money.
+          </p>
+        </div>
+      )}
+
     </div>
   </div>
 </SectionCard>
+
 
 
       {faqItems.length > 0 && (
@@ -4280,6 +4323,30 @@ return (
     )}
   </SectionCard>
 </div>
+
+
+{/* Capital.com ONLY - Long Risk Warning */}
+{broker.slug === "capital-com" && (
+  <div
+    className="mt-4 rounded-xl border border-amber-200 bg-amber-50/50 px-4 py-4 text-left md:px-5"
+  >
+    <h2 className="mb-2 text-sm font-extrabold text-amber-900">
+      Capital.com Risk Warning
+    </h2>
+
+    <p className="text-[13px] leading-7 text-slate-700 md:text-sm">
+      CFDs are complex instruments and come with a high risk of losing
+      money rapidly due to leverage. Depending on the company, between
+      65%-89% of retail investor accounts lose money when trading CFDs
+      with Capital.com Group. You should consider whether you
+      understand how CFDs work and whether you can afford to take the
+      high risk of losing your money.
+    </p>
+  </div>
+)}
+
+{/* Risk Warning — final content before the footer */}
+
 
 {/* Risk Warning — final content before the footer */}
 <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3 text-left md:px-4">
