@@ -54,6 +54,9 @@ export const STATIC_PAGES = [
   // Licenses
   "licenses",
 
+    // Technical Analysis Hub
+  "technical-analysis",
+
   // Forex Strategies Hub
   "strategies",
 
@@ -119,6 +122,9 @@ export const STATIC_PAGES_EN = [
   // Licenses
   "en/licenses",
 
+    // Technical Analysis Hub
+  "en/technical-analysis",
+  
   // Forex Strategies Hub
   "en/strategies",
 
