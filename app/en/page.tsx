@@ -3,6 +3,10 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import BrokerFinderEN from "@/app/components/BrokerFinderEN";
 import MarketHoursSidebarEn from "@/app/components/MarketHoursSidebarEn";
+import HomeTechnicalSnapshotEn, {
+  type HomeTechnicalRow,
+  type HomePivotRow,
+} from "@/app/components/HomeTechnicalSnapshotEn";
 
 export const metadata: Metadata = {
   title: {
@@ -403,6 +407,50 @@ export default async function HomePage() {
   .order("start_date", { ascending: true })
   .limit(12),
   ]);
+
+  /* ============================================================
+   EN HOMEPAGE — TECHNICAL ANALYSIS + CLASSIC PIVOT
+   SSR INITIAL DATA
+   Default: Gold XAUUSDc / H1
+============================================================ */
+
+const [
+  { data: homeTechnicalData, error: homeTechnicalError },
+  { data: homePivotData, error: homePivotError },
+] = await Promise.all([
+  supabase
+    .from("broker_technical_analysis_latest")
+    .select("*")
+    .eq("symbol", "XAUUSDc")
+    .eq("timeframe", "H1")
+    .limit(1)
+    .maybeSingle(),
+
+  supabase
+    .from("broker_pivot_levels_latest")
+    .select("*")
+    .eq("symbol", "XAUUSDc")
+    .eq("timeframe", "H1")
+    .eq("method", "classic")
+    .limit(1)
+    .maybeSingle(),
+]);
+
+if (homeTechnicalError) {
+  console.error("EN homepage technical analysis:", homeTechnicalError);
+}
+
+if (homePivotError) {
+  console.error("EN homepage classic pivot:", homePivotError);
+}
+
+const homeTechnical =
+  (homeTechnicalData as HomeTechnicalRow | null) ?? null;
+
+const homePivot =
+  (homePivotData as HomePivotRow | null) ?? null;
+
+/* ================= END EN TECHNICAL DATA ================= */
 
   const brokers = ((data ?? []) as Broker[]).filter((b) => b.slug && b.name);
   const countryRankings = ((rankingData ?? []) as any[])
@@ -1195,35 +1243,17 @@ style={
     </div>
 </section>
 
+{/* ============================================================
+    EN HOMEPAGE TECHNICAL ANALYSIS
+    INSTRUMENT SELECTOR + 7 TIMEFRAMES + CLASSIC PIVOT
+============================================================ */}
+
+<HomeTechnicalSnapshotEn
+  initialTechnical={homeTechnical}
+  initialPivot={homePivot}
+/>
+
 {/* EXNESS PREMIUM BANNER */}
-<div className="mx-auto -my-1 flex w-full max-w-7xl justify-center sm:-my-1.5 sm:py-0">
-  <a
-    href="https://one.exnessonelink.com/intl/en/a/hhmbah9f13"
-    target="_blank"
-    rel="sponsored noopener noreferrer"
-    aria-label="Visit Exness"
-    className="
-      group block w-full max-w-[900px]
-      overflow-hidden rounded-[14px]
-      border border-slate-200/80
-      bg-white p-[5px]
-      shadow-[0_8px_24px_rgba(15,23,42,0.075)]
-      transition duration-300
-      hover:-translate-y-[1px]
-      hover:border-slate-300
-      hover:shadow-[0_12px_30px_rgba(15,23,42,0.10)]
-      sm:max-w-[820px]
-    "
-  >
-    <img
-      src="https://d3dpet1g0ty5ed.cloudfront.net/EN_Choose_Better_Forex_Conditions_v2728x90px.png"
-      width="728"
-      height="90"
-      alt="Exness"
-      className="block h-auto w-full rounded-[10px] object-contain sm:h-[82px] sm:object-cover"
-    />
-  </a>
-</div>
 
 {/* TOP COMPARISONS - PREMIUM RESPONSIVE */}
 <section className="mx-auto w-full max-w-7xl px-0 py-2.5 sm:py-3">

@@ -3,6 +3,10 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import BrokerFinder from "@/app/components/BrokerFinder";
 import MarketHoursSidebar from "@/app/components/MarketHoursSidebar";
+import HomeTechnicalSnapshot, {
+  type HomeTechnicalRow,
+  type HomePivotRow,
+} from "@/app/components/HomeTechnicalSnapshot";
 
 export const metadata: Metadata = {
   title: "أفضل شركات التداول وتقييم الوسطاء | بروكر العرب",
@@ -358,6 +362,58 @@ broker_2:broker_2_id (
       .order("start_date", { ascending: true })
       .limit(12),
   ]);
+
+  
+/* ============================================================
+   HOME — GOLD TECHNICAL ANALYSIS + CLASSIC PIVOT
+   SERVER INITIAL DATA FOR SEO
+   Symbol: XAUUSDc | Timeframe: H1
+============================================================ */
+
+const [
+  { data: homeTechnicalData, error: homeTechnicalError },
+  { data: homePivotData, error: homePivotError },
+] = await Promise.all([
+  supabase
+    .from("broker_technical_analysis_latest")
+    .select("*")
+    .eq("symbol", "XAUUSDc")
+    .eq("timeframe", "H1")
+    .limit(1)
+    .maybeSingle(),
+
+  supabase
+    .from("broker_pivot_levels_latest")
+    .select("*")
+    .eq("symbol", "XAUUSDc")
+    .eq("timeframe", "H1")
+    .eq("method", "classic")
+    .limit(1)
+    .maybeSingle(),
+]);
+
+if (homeTechnicalError) {
+  console.error(
+    "Homepage technical analysis:",
+    homeTechnicalError
+  );
+}
+
+if (homePivotError) {
+  console.error(
+    "Homepage classic pivot:",
+    homePivotError
+  );
+}
+
+const homeTechnical =
+  (homeTechnicalData as HomeTechnicalRow | null) ?? null;
+
+const homePivot =
+  (homePivotData as HomePivotRow | null) ?? null;
+
+/* ================= END HOME TECHNICAL DATA ================= */
+
 
   const brokers = ((data ?? []) as Broker[]).filter(
     (broker) => broker.slug && broker.name
@@ -1160,35 +1216,15 @@ const allHeroBrokers = heroBrokerIds
     </div>
 </section>
 
-{/* EXNESS PREMIUM BANNER */}
-<div className="mx-auto -my-1 flex w-full max-w-7xl justify-center sm:-my-1.5 sm:py-0">
-  <a
-    href="https://one.exnessonelink.com/intl/ar/a/hhmbah9f13"
-    target="_blank"
-    rel="sponsored noopener noreferrer"
-    aria-label="زيارة Exness"
-    className="
-      group block w-full max-w-[900px]
-      overflow-hidden rounded-[14px]
-      border border-slate-200/80
-      bg-white p-[5px]
-      shadow-[0_8px_24px_rgba(15,23,42,0.075)]
-      transition duration-300
-      hover:-translate-y-[1px]
-      hover:border-slate-300
-      hover:shadow-[0_12px_30px_rgba(15,23,42,0.10)]
-      sm:max-w-[820px]
-    "
-  >
-    <img
-      src="https://d3dpet1g0ty5ed.cloudfront.net/AR_Trading_Conditions_728x90.png"
-      width="728"
-      height="90"
-      alt="Exness"
-      className="block h-auto w-full rounded-[10px] object-contain sm:h-[82px] sm:object-cover"
-    />
-  </a>
-</div>
+{/* ============================================================
+    HOME TECHNICAL ANALYSIS PREVIEW
+    GOLD H1 + CLASSIC PIVOT
+============================================================ */}
+
+<HomeTechnicalSnapshot
+  initialTechnical={homeTechnical}
+  initialPivot={homePivot}
+/>
 
 {/* TOP COMPARISONS - PREMIUM RESPONSIVE */}
 <section className="mx-auto w-full max-w-7xl px-0 py-2.5 sm:py-3">
