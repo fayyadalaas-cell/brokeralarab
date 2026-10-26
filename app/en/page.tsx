@@ -1248,10 +1248,13 @@ style={
     INSTRUMENT SELECTOR + 7 TIMEFRAMES + CLASSIC PIVOT
 ============================================================ */}
 
-<HomeTechnicalSnapshotEn
-  initialTechnical={homeTechnical}
-  initialPivot={homePivot}
-/>
+{/* TEMPORARILY DISABLED — TECHNICAL ANALYSIS UNDER REVIEW */}
+{false && (
+  <HomeTechnicalSnapshotEn
+    initialTechnical={homeTechnical}
+    initialPivot={homePivot}
+  />
+)}
 
 {/* EXNESS PREMIUM BANNER */}
 
