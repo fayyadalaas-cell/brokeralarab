@@ -2939,11 +2939,26 @@ const allHeroBrokers = heroBrokerIds
       <div className="flex h-[60px] w-[112px] shrink-0 items-center justify-center overflow-visible rounded-[14px] bg-gradient-to-b from-white to-slate-100 transition duration-300 group-hover:bg-brand-50/50">
   {broker.logo ? (
     <img
-      src={broker.logo}
-      alt={`شعار ${broker.name}`}
-      loading="lazy"
-      className="h-[54px] w-[108px] object-contain scale-[1.35] transition duration-300 group-hover:scale-[1.42]"
-    />
+  src={broker.logo}
+  alt={`شعار ${broker.name}`}
+  loading="lazy"
+  className={
+    broker.name?.toLowerCase().includes("capital")
+      ? "h-[54px] w-[108px] object-contain transition duration-300"
+      : "h-[54px] w-[108px] object-contain scale-[1.35] transition duration-300 group-hover:scale-[1.42]"
+  }
+  style={
+    broker.name?.toLowerCase().includes("capital")
+      ? {
+          width: "75%",
+          height: "auto",
+          maxHeight: "80%",
+          objectFit: "contain",
+          display: "block",
+        }
+      : undefined
+  }
+/>
   ) : (
           <span className="truncate text-[11px] font-black text-slate-700">
             {broker.name}

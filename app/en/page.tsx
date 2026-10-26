@@ -3092,11 +3092,26 @@ const selectedEvents = eventList.slice(0, 3);
                 {broker.logo ? (
 
                   <img
-                    src={broker.logo}
-                    alt={`${brokerName} logo`}
-                    loading="lazy"
-                    className="h-[54px] w-[108px] scale-[1.35] object-contain transition duration-300 group-hover:scale-[1.42]"
-                  />
+  src={broker.logo}
+  alt={`${brokerName} logo`}
+  loading="lazy"
+  className={
+    brokerName.toLowerCase().includes("capital")
+      ? "h-[54px] w-[108px] object-contain transition duration-300"
+      : "h-[54px] w-[108px] scale-[1.35] object-contain transition duration-300 group-hover:scale-[1.42]"
+  }
+  style={
+    brokerName.toLowerCase().includes("capital")
+      ? {
+          width: "75%",
+          height: "auto",
+          maxHeight: "80%",
+          objectFit: "contain",
+          display: "block",
+        }
+      : undefined
+  }
+/>
 
                 ) : (
 
