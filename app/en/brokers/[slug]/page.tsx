@@ -2249,12 +2249,27 @@ return (
         <div className="flex h-32 w-44 shrink-0 items-center justify-center overflow-hidden rounded-[20px] border border-white bg-white shadow-sm sm:h-36 sm:w-48 max-sm:h-[76px] max-sm:w-[76px] max-sm:rounded-2xl">
           {broker.logo ? (
             <img
-              src={broker.logo}
-              alt={`${broker.name_en || broker.name} logo`}
-              width={192}
-              height={144}
-              className="h-full w-full object-contain max-sm:p-2"
-            />
+  src={broker.logo}
+  alt={`${broker.name_en || broker.name} logo`}
+  width={192}
+  height={144}
+  className={
+    (broker.name_en || broker.name)?.toLowerCase().includes("capital")
+      ? "block object-contain"
+      : "h-full w-full object-contain max-sm:p-2"
+  }
+  style={
+    (broker.name_en || broker.name)?.toLowerCase().includes("capital")
+      ? {
+          width: "78%",
+          height: "auto",
+          maxHeight: "80%",
+          objectFit: "contain",
+          display: "block",
+        }
+      : undefined
+  }
+/>
           ) : (
             <span className="px-4 text-center text-2xl font-black text-slate-900 max-sm:px-2 max-sm:text-sm">
               {broker.name_en || broker.name}

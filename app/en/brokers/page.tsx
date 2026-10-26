@@ -643,14 +643,16 @@ function BrokerCard({
             >
               {broker.logo ? (
                 <Image
-                  src={broker.logo}
-                  alt={`${brokerName} logo`}
-                  fill
-                  className={`object-contain transition duration-300 ${getBrokerLogoClass(
-                    brokerName
-                  )}`}
-                  sizes="178px"
-                />
+  src={broker.logo}
+  alt={`${brokerName} logo`}
+  fill
+  className={
+    brokerName.toLowerCase().includes("capital")
+      ? "object-contain !scale-[0.90]"
+      : `object-contain transition duration-300 ${getBrokerLogoClass(brokerName)}`
+  }
+  sizes="178px"
+/>
               ) : (
                 <span className="text-xl font-black text-slate-600">
                   {getInitials(brokerName)}

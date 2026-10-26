@@ -921,7 +921,11 @@ const allHeroBrokers = heroBrokerIds
                   <img
                     src={broker.logo}
                     alt={broker.name}
-                    className="h-[72px] w-[145px] scale-[1.08] object-contain transition duration-300 group-hover:scale-[1.14]"
+                    className={
+  broker.name?.toLowerCase().includes("capital")
+    ? "h-[72px] w-[145px] max-w-[85%] object-contain transition duration-300"
+    : "h-[72px] w-[145px] scale-[1.08] object-contain transition duration-300 group-hover:scale-[1.14]"
+}
                   />
                 ) : (
                   <span className="text-xs font-black text-slate-700">

@@ -249,6 +249,10 @@ function getInitials(name: string | null | undefined) {
 function getBrokerLogoClass(name: string | null | undefined) {
   const brokerName = (name ?? "").trim().toLowerCase();
 
+    if (brokerName.includes("capital")) {
+    return "scale-[0.85]";
+  }
+
   if (brokerName.includes("exness")) {
     return "scale-[1.32]";
   }
@@ -639,14 +643,16 @@ function BrokerCard({
             >
               {broker.logo ? (
                 <Image
-                  src={broker.logo}
-                  alt={`شعار ${broker.name ?? "شركة التداول"}`}
-                  fill
-                  className={`object-contain transition duration-300 ${getBrokerLogoClass(
-                    broker.name
-                  )}`}
-                  sizes="178px"
-                />
+  src={broker.logo}
+  alt={`شعار ${broker.name ?? "شركة التداول"}`}
+  fill
+  className={
+    broker.name?.toLowerCase().includes("capital")
+      ? "!scale-[0.95] object-contain"
+      : `object-contain transition duration-300 ${getBrokerLogoClass(broker.name)}`
+  }
+  sizes="178px"
+/>
               ) : (
                 <span className="text-xl font-black text-slate-600">
                   {getInitials(broker.name)}

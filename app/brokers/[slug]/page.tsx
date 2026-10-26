@@ -2287,21 +2287,36 @@ const structuredData = {
 
       <div className="mt-5 flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-7 max-sm:mt-3 max-sm:grid max-sm:grid-cols-[76px_minmax(0,1fr)] max-sm:items-center max-sm:gap-x-3 max-sm:gap-y-3">
         {/* Prominent Logo */}
-        <div className="flex h-32 w-44 shrink-0 items-center justify-center overflow-hidden rounded-[20px] border border-white bg-white shadow-sm sm:h-36 sm:w-48 max-sm:h-[76px] max-sm:w-[76px] max-sm:rounded-2xl">
-          {broker.logo ? (
-            <img
-              src={broker.logo}
-              alt={`شعار ${broker.name}`}
-              width={192}
-              height={144}
-              className="h-full w-full object-contain max-sm:p-2"
-            />
-          ) : (
-            <span className="px-4 text-center text-2xl font-black text-slate-900 max-sm:px-2 max-sm:text-sm">
-              {broker.name}
-            </span>
-          )}
-        </div>
+<div className="flex h-32 w-44 shrink-0 items-center justify-center overflow-hidden rounded-[20px] border border-white bg-white shadow-sm sm:h-36 sm:w-48 max-sm:h-[76px] max-sm:w-[76px] max-sm:rounded-2xl">
+  {broker.logo ? (
+    <img
+  src={broker.logo}
+  alt={`شعار ${broker.name}`}
+  width={192}
+  height={144}
+  className={
+    broker.name?.toLowerCase().includes("capital")
+      ? "block object-contain"
+      : "h-full w-full object-contain max-sm:p-2"
+  }
+  style={
+    broker.name?.toLowerCase().includes("capital")
+      ? {
+          width: "78%",
+          height: "auto",
+          maxHeight: "80%",
+          objectFit: "contain",
+          display: "block",
+        }
+      : undefined
+  }
+/>
+  ) : (
+    <span className="px-4 text-center text-2xl font-black text-slate-900 max-sm:px-2 max-sm:text-sm">
+      {broker.name}
+    </span>
+  )}
+</div>
 
         <div className="min-w-0 flex-1 max-sm:contents">
           <div className="max-sm:min-w-0">
