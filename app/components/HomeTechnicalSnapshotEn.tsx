@@ -272,35 +272,54 @@ export default function HomeTechnicalSnapshotEn({
           }),
         ]);
 
-        if (!techResponse.ok || !pivotResponse.ok) {
-          throw new Error(
-            "Could not load market analysis"
-          );
-        }
+        const [techResult, pivotResult] = await Promise.allSettled([
+  techResponse.ok
+    ? techResponse.json()
+    : Promise.reject(new Error(`Technical HTTP ${techResponse.status}`)),
 
-        const [
-          techRows,
-          pivotRows,
-        ]: [
-          HomeTechnicalRow[],
-          HomePivotRow[]
-        ] = await Promise.all([
-          techResponse.json(),
-          pivotResponse.json(),
-        ]);
+  pivotResponse.ok
+    ? pivotResponse.json()
+    : Promise.reject(new Error(`Pivot HTTP ${pivotResponse.status}`)),
+]);
 
-        if (
-          cancelled ||
-          currentController.signal.aborted
-        ) {
-          return;
-        }
+if (cancelled || currentController.signal.aborted) return;
 
-        setTechnical(techRows[0] ?? null);
-        setPivot(pivotRows[0] ?? null);
+const technicalOk =
+  techResult.status === "fulfilled" &&
+  Array.isArray(techResult.value);
 
-        setRefreshError(false);
-        setClock(Date.now());
+const pivotOk =
+  pivotResult.status === "fulfilled" &&
+  Array.isArray(pivotResult.value);
+
+if (technicalOk) {
+  const rows = techResult.value as HomeTechnicalRow[];
+  setTechnical(rows[0] ?? null);
+} else {
+  console.error(
+    "HOME TECHNICAL EN ERROR:",
+    techResult.status === "rejected"
+      ? techResult.reason
+      : "Invalid JSON response"
+  );
+  setTechnical(null);
+}
+
+if (pivotOk) {
+  const rows = pivotResult.value as HomePivotRow[];
+  setPivot(rows[0] ?? null);
+} else {
+  console.error(
+    "HOME PIVOT EN ERROR:",
+    pivotResult.status === "rejected"
+      ? pivotResult.reason
+      : "Invalid JSON response"
+  );
+  setPivot(null);
+}
+
+setRefreshError(!technicalOk || !pivotOk);
+setClock(Date.now());
       } catch {
         if (
           !cancelled &&
@@ -318,13 +337,9 @@ export default function HomeTechnicalSnapshotEn({
       }
     }
 
-    // Preserve the initial server-rendered Gold H1 data.
-    if (
-      symbol !== "XAUUSDc" ||
-      timeframe !== "H1"
-    ) {
-      void refresh();
-    }
+    // Refresh latest data immediately when the component mounts
+// or when the selected instrument or timeframe changes.
+void refresh();
 
     const interval = window.setInterval(() => {
       if (document.visibilityState === "visible") {
@@ -1016,6 +1031,38 @@ export default function HomeTechnicalSnapshotEn({
           </div>
 
         </div>
+
+{/* PIVOT AUTO REFERENCE PERIOD NOTE — FULL WIDTH */}
+
+<div className="border-t border-slate-200 bg-[#f8faff] px-4 py-3 sm:px-6">
+
+  <div className="flex items-start gap-2.5">
+
+    <span className="mt-0.5 shrink-0 text-blue-600">
+      ⓘ
+    </span>
+
+    <div className="min-w-0">
+
+      <p className="text-[11px] font-black text-[#153b69]">
+        Why Do Some Timeframes Display Identical Pivot Levels?
+      </p>
+
+      <p className="mt-1 text-[10px] leading-6 text-slate-600 sm:text-[11px]">
+        Pivot Points use automatically selected reference periods:
+        daily for M5 and M15, weekly for M30, H1 and H4,
+        and monthly for D1 and W1. Therefore, multiple
+        timeframes may display identical support and resistance
+        levels when they share the same reference period.
+        This is expected behavior. These levels are mathematical
+        references, not trading recommendations.
+      </p>
+
+    </div>
+
+  </div>
+
+</div>
 
         {/* ==================================================
             FOOTER — SAME AS ARABIC, NO EXTRA BUTTON

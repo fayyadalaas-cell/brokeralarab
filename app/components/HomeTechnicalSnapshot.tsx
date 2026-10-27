@@ -189,24 +189,46 @@ export default function HomeTechnicalSnapshot({
           }),
         ]);
 
-        if (!techResponse.ok || !pivotResponse.ok) {
-          throw new Error("Could not load analysis");
-        }
-
         const [techRows, pivotRows]: [
-          HomeTechnicalRow[],
-          HomePivotRow[]
-        ] = await Promise.all([
-          techResponse.json(),
-          pivotResponse.json(),
-        ]);
+  HomeTechnicalRow[],
+  HomePivotRow[]
+] = await Promise.all([
+  techResponse.ok
+    ? techResponse.json()
+    : Promise.resolve([]),
 
-        if (cancelled || currentController.signal.aborted) return;
+  pivotResponse.ok
+    ? pivotResponse.json()
+    : Promise.resolve([]),
+]);
 
-        setTechnical(techRows[0] ?? null);
-        setPivot(pivotRows[0] ?? null);
-        setRefreshError(false);
-        setClock(Date.now());
+if (cancelled || currentController.signal.aborted) return;
+
+if (techResponse.ok) {
+  setTechnical(techRows[0] ?? null);
+} else {
+  console.error(
+    "Home Technical HTTP:",
+    techResponse.status
+  );
+  setTechnical(null);
+}
+
+if (pivotResponse.ok) {
+  setPivot(pivotRows[0] ?? null);
+} else {
+  console.error(
+    "Home Pivot HTTP:",
+    pivotResponse.status
+  );
+  setPivot(null);
+}
+
+setRefreshError(
+  !techResponse.ok || !pivotResponse.ok
+);
+
+setClock(Date.now());
       } catch {
         if (!cancelled && !currentController.signal.aborted) {
           setRefreshError(true);
@@ -218,11 +240,9 @@ export default function HomeTechnicalSnapshot({
       }
     }
 
-    // Keep server-rendered default visible immediately.
-    // Fetch new data when selection changes or at the next refresh.
-    if (symbol !== "XAUUSDc" || timeframe !== "H1") {
-      void refresh();
-    }
+    // Refresh the latest Supabase data immediately on mount
+// and whenever the selected instrument or timeframe changes.
+void refresh();
 
     const interval = window.setInterval(() => {
       if (document.visibilityState === "visible") void refresh();
@@ -682,9 +702,40 @@ export default function HomeTechnicalSnapshot({
               >
                 عرض جميع طرق حساب النقاط المحورية ←
               </Link>
+              
+
+  
+
+
             </div>
           </div>
         </div>
+
+{/* PIVOT AUTO REFERENCE PERIOD NOTE — FULL WIDTH */}
+
+<div className="border-t border-slate-200 bg-[#f8faff] px-4 py-3 sm:px-6">
+  <div className="flex items-start gap-2.5">
+
+    <span className="mt-0.5 shrink-0 text-blue-600">
+      ⓘ
+    </span>
+
+    <div className="min-w-0">
+      <p className="text-[11px] font-black text-[#153b69]">
+        لماذا تتطابق مستويات بعض الأطر الزمنية؟
+      </p>
+
+      <p className="mt-1 text-[10px] leading-6 text-slate-600 sm:text-[11px]">
+        تعتمد مستويات النقاط المحورية على فترات مرجعية تلقائية:
+        يومية لفريمي M5 وM15، وأسبوعية لفريمات M30 وH1 وH4،
+        وشهرية لفريمي D1 وW1. لذلك قد تظهر مستويات الدعم
+        والمقاومة نفسها في عدة أطر زمنية، وهذا أمر طبيعي.
+        هذه المستويات حسابية وليست توصيات تداول.
+      </p>
+    </div>
+
+  </div>
+</div>
 
         {/* FOOTER */}
 <div className="border-t border-slate-200 bg-[#f8faff] px-4 py-3 sm:px-6">

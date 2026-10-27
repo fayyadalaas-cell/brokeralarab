@@ -1249,12 +1249,12 @@ style={
 ============================================================ */}
 
 {/* TEMPORARILY DISABLED — TECHNICAL ANALYSIS UNDER REVIEW */}
-{false && (
+
   <HomeTechnicalSnapshotEn
     initialTechnical={homeTechnical}
     initialPivot={homePivot}
   />
-)}
+
 
 {/* EXNESS PREMIUM BANNER */}
 

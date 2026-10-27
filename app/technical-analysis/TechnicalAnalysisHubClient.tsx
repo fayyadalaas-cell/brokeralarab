@@ -2115,31 +2115,47 @@ function levelCard(
           </div>
 
           {/* ============================================
-              EDUCATIONAL FOOTER
-          ============================================ */}
+    PIVOT AUTO PERIOD — EDUCATIONAL FOOTER
+============================================ */}
 
-          <div className="border-t border-slate-200 bg-white px-4 py-4 sm:px-7">
+<div className="border-t border-[#dce6f4] bg-[#f8faff] px-4 py-3 sm:px-7 sm:py-4">
 
-            <div className="flex items-start gap-2">
-              <Info
-                size={15}
-                className="mt-1 shrink-0 text-blue-600"
-              />
+  <div className="flex items-start gap-2.5">
 
-              <p className="text-[11px] leading-7 text-slate-500">
-                تعتمد هذه المستويات على معادلات حسابية
-                باستخدام بيانات شموع MT5 المكتملة،
-                وتختلف النتائج بحسب الأداة والإطار الزمني
-                وطريقة الحساب المختارة.
-                المستويات ليست توصيات تداول ولا تضمن
-                ارتداد السعر أو استمراره.
-                الألوان المستخدمة لتسهيل قراءة الجدول فقط.
-              </p>
-            </div>
+    <Info
+      size={16}
+      className="mt-0.5 shrink-0 text-blue-600"
+    />
 
-          </div>
+    <div className="min-w-0 space-y-2">
 
-        </div>
+      <p className="text-[11px] font-black text-[#153b69] sm:text-[12px]">
+        كيف تُحسب مستويات الدعم والمقاومة؟
+      </p>
+
+      <p className="text-[10px] leading-6 text-slate-600 sm:text-[11px] sm:leading-7">
+        تعتمد مستويات النقاط المحورية على بيانات شموع MT5 المكتملة،
+        باستخدام فترة مرجعية تلقائية بحسب الإطار الزمني المختار.
+        تُستخدم الفترة اليومية لفريمي M5 وM15، والأسبوعية
+        لفريمات M30 وH1 وH4، والشهرية لفريمي D1 وW1.
+        لذلك من الطبيعي أن تتطابق مستويات الدعم والمقاومة
+        بين عدة فريمات تشترك في الفترة المرجعية نفسها.
+      </p>
+
+      <p className="text-[10px] leading-6 text-slate-500 sm:text-[11px] sm:leading-7">
+        تختلف النتائج أيضاً بحسب الأداة المالية وطريقة الحساب
+        (التقليدية، فيبوناتشي، كاماريلا، وودي أو ديمارك).
+        هذه المستويات حسابية وليست توصيات تداول،
+        ولا تضمن ارتداد السعر أو استمراره.
+        الألوان المستخدمة لتسهيل قراءة المستويات فقط.
+      </p>
+
+    </div>
+
+  </div>
+
+</div>
+      </div>
       </div>
     </section>
   );

@@ -1221,13 +1221,10 @@ const allHeroBrokers = heroBrokerIds
     GOLD H1 + CLASSIC PIVOT
 ============================================================ */}
 
-{/* إخفاء مؤقت — مراجعة حسابات التحليل الفني */}
-{false && (
-  <HomeTechnicalSnapshot
-    initialTechnical={homeTechnical}
-    initialPivot={homePivot}
-  />
-)}
+<HomeTechnicalSnapshot
+  initialTechnical={homeTechnical}
+  initialPivot={homePivot}
+/>
 
 {/* TOP COMPARISONS - PREMIUM RESPONSIVE */}
 <section className="mx-auto w-full max-w-7xl px-0 py-2.5 sm:py-3">

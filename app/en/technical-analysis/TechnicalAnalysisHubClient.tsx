@@ -2160,24 +2160,50 @@ function levelCard(
             )}
           </div>
 
-          {/* EDUCATIONAL FOOTER */}
-          <div className="border-t border-slate-200 bg-white px-4 py-4 sm:px-7">
-            <div className="flex items-start gap-2">
-              <Info
-                size={15}
-                className="mt-1 shrink-0 text-blue-600"
-              />
+          {/* ============================================
+    PIVOT AUTO PERIOD — EDUCATIONAL FOOTER
+============================================ */}
 
-              <p className="text-[11px] leading-7 text-slate-500">
-                These levels are derived from mathematical pivot
-                calculations using completed MT5 candles.
-                Results vary by instrument, timeframe and method.
-                They are not trading recommendations and do not
-                guarantee price reversals or trend continuation.
-                Colors are used solely for visual distinction.
-              </p>
-            </div>
-          </div>
+<div className="border-t border-[#dce6f4] bg-[#f8faff] px-4 py-3 sm:px-7 sm:py-4">
+
+  <div className="flex items-start gap-2.5">
+
+    <Info
+      size={16}
+      className="mt-0.5 shrink-0 text-blue-600"
+    />
+
+    <div className="min-w-0 space-y-2">
+
+      <p className="text-[11px] font-black text-[#153b69] sm:text-[12px]">
+        How Are Pivot Points Calculated?
+      </p>
+
+      <p className="text-[10px] leading-6 text-slate-600 sm:text-[11px] sm:leading-7">
+        Pivot Point support and resistance levels are calculated
+        using completed MT5 candles and an automatically selected
+        reference period based on the chosen timeframe.
+        M5 and M15 use daily data; M30, H1 and H4 use weekly data;
+        and D1 and W1 use monthly data.
+        As a result, multiple timeframes may display identical
+        support and resistance levels when they share the same
+        reference period. This is expected behavior.
+      </p>
+
+      <p className="text-[10px] leading-6 text-slate-500 sm:text-[11px] sm:leading-7">
+        Levels may also differ by financial instrument and
+        calculation method (Classic, Fibonacci, Camarilla,
+        Woodie or DeMark). These levels are mathematical
+        references, not trading recommendations, and do not
+        guarantee price reversals or trend continuation.
+        Colors are used solely for visual distinction.
+      </p>
+
+    </div>
+
+  </div>
+
+</div>
 
         </div>
       </div>
