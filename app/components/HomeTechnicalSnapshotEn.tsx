@@ -69,7 +69,10 @@ const TIMEFRAMES = [
 
 const BIAS: Record<
   string,
-  { label: string; color: string }
+  {
+    label: string;
+    color: string;
+  }
 > = {
   STRONG_BUY: {
     label: "Strong Buy",
@@ -102,50 +105,266 @@ function numeric(value: unknown): number | null {
     return null;
   }
 
-  const n = Number(value);
-  return Number.isFinite(n) ? n : null;
+  const number = Number(value);
+
+  return Number.isFinite(number)
+    ? number
+    : null;
 }
 
-function priceText(value: unknown) {
-  const n = numeric(value);
+function priceText(value: unknown): string {
+  const number = numeric(value);
 
-  if (n === null) return "—";
+  if (number === null) {
+    return "—";
+  }
 
-  return n.toLocaleString("en-US", {
+  return number.toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 5,
   });
 }
 
-function dateText(value?: string | null) {
-  if (!value) return "Unavailable";
-
-  const time = Date.parse(value);
-
-  if (!Number.isFinite(time)) {
-    return "Unavailable";
+function dateText(value?: string | null): string {
+  if (!value) {
+    return "Not available";
   }
 
-  return new Intl.DateTimeFormat("en-US", {
+  const parsed = Date.parse(value);
+
+  if (!Number.isFinite(parsed)) {
+    return "Not available";
+  }
+
+  return new Intl.DateTimeFormat("en-CA", {
     timeZone: "America/Toronto",
     day: "numeric",
     month: "short",
     hour: "2-digit",
     minute: "2-digit",
-  }).format(new Date(time));
+  }).format(new Date(parsed));
 }
+
+const PIVOT_LEVELS = [
+  { key: "S3", type: "support" },
+  { key: "S2", type: "support" },
+  { key: "S1", type: "support" },
+  { key: "P", type: "pivot" },
+  { key: "R1", type: "resistance" },
+  { key: "R2", type: "resistance" },
+  { key: "R3", type: "resistance" },
+] as const;
+
+/* ============================================================
+   TECHNICAL GAUGE
+   SAME GAUGE AS ARABIC VERSION
+   LEFT = SELL
+   CENTER = NEUTRAL
+   RIGHT = BUY
+============================================================ */
+
+function TechnicalGauge({
+  buy,
+  sell,
+  neutral,
+  label,
+  color,
+}: {
+  buy: number | null;
+  sell: number | null;
+  neutral: number | null;
+  label: string;
+  color: string;
+}) {
+  const total =
+    buy !== null &&
+    sell !== null &&
+    neutral !== null
+      ? buy + sell + neutral
+      : 0;
+
+  const position =
+    total > 0
+      ? Math.max(
+          0,
+          Math.min(
+            1,
+            0.5 +
+              ((buy ?? 0) - (sell ?? 0)) /
+                (2 * total)
+          )
+        )
+      : 0.5;
+
+  const radius = 137;
+  const centerX = 180;
+  const centerY = 170;
+
+  const pointerX =
+    centerX -
+    radius * Math.cos(Math.PI * position);
+
+  const pointerY =
+    centerY -
+    radius * Math.sin(Math.PI * position);
+
+  const arc =
+    "M43 170 A137 137 0 0 1 317 170";
+
+  const segments = [
+    {
+      color: "#e11d48",
+      start: 0,
+      size: 25,
+    },
+    {
+      color: "#fb923c",
+      start: 25,
+      size: 20,
+    },
+    {
+      color: "#cbd5e1",
+      start: 45,
+      size: 10,
+    },
+    {
+      color: "#34d399",
+      start: 55,
+      size: 20,
+    },
+    {
+      color: "#10b981",
+      start: 75,
+      size: 25,
+    },
+  ];
+
+  return (
+    <div
+      dir="ltr"
+      className="flex w-full flex-col items-center justify-center"
+    >
+      <svg
+        viewBox="0 0 360 205"
+        role="img"
+        aria-label={`Technical rating: ${label}`}
+        className="block h-auto w-full max-w-[385px]"
+      >
+        {/* BACKGROUND ARC */}
+        <path
+          d={arc}
+          fill="none"
+          stroke="#e2e8f0"
+          strokeWidth="23"
+          strokeLinecap="round"
+        />
+
+        {/* COLORED SEGMENTS */}
+        {segments.map((segment) => (
+          <path
+            key={segment.start}
+            d={arc}
+            fill="none"
+            stroke={segment.color}
+            strokeWidth="23"
+            strokeLinecap="butt"
+            strokeDasharray={`${segment.size} ${
+              100 - segment.size
+            }`}
+            strokeDashoffset={-segment.start}
+            pathLength="100"
+          />
+        ))}
+
+        {/* POINTER OUTER CIRCLE */}
+        <circle
+          cx={pointerX}
+          cy={pointerY}
+          r="12"
+          fill="#ffffff"
+          stroke="#ffffff"
+          strokeWidth="4"
+        />
+
+        {/* POINTER RING */}
+        <circle
+          cx={pointerX}
+          cy={pointerY}
+          r="8"
+          fill="#ffffff"
+          stroke="#64748b"
+          strokeWidth="4"
+        />
+
+        {/* POINTER CENTER */}
+        <circle
+          cx={pointerX}
+          cy={pointerY}
+          r="2.5"
+          fill="#64748b"
+        />
+
+        {/* CENTER LABEL */}
+        <text
+          x="180"
+          y="113"
+          textAnchor="middle"
+          fill="#64748b"
+          fontSize="15"
+          fontWeight="700"
+        >
+          Technical Rating
+        </text>
+
+        {/* MAIN RATING */}
+        <text
+          x="180"
+          y="151"
+          textAnchor="middle"
+          fill={color}
+          fontSize="30"
+          fontWeight="900"
+        >
+          {label}
+        </text>
+      </svg>
+
+      {/* LEGEND */}
+      <div className="-mt-5 flex w-full max-w-[350px] items-center justify-between px-2 text-[11px] font-black">
+        <span className="text-rose-600">
+          Sell
+        </span>
+
+        <span className="text-slate-500">
+          Neutral
+        </span>
+
+        <span className="text-emerald-600">
+          Buy
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   HOME TECHNICAL SNAPSHOT — ENGLISH
+============================================================ */
 
 export default function HomeTechnicalSnapshotEn({
   initialTechnical,
   initialPivot,
 }: Props) {
-  const [symbol, setSymbol] = useState("XAUUSDc");
-  const [timeframe, setTimeframe] = useState("H1");
+  const [symbol, setSymbol] =
+    useState("XAUUSDc");
+
+  const [timeframe, setTimeframe] =
+    useState("H1");
 
   const [technical, setTechnical] =
     useState<HomeTechnicalRow | null>(
       initialTechnical?.symbol === "XAUUSDc" &&
-      initialTechnical?.timeframe === "H1"
+        initialTechnical.timeframe === "H1"
         ? initialTechnical
         : null
     );
@@ -153,48 +372,58 @@ export default function HomeTechnicalSnapshotEn({
   const [pivot, setPivot] =
     useState<HomePivotRow | null>(
       initialPivot?.symbol === "XAUUSDc" &&
-      initialPivot?.timeframe === "H1"
+        initialPivot.timeframe === "H1" &&
+        initialPivot.method === "classic"
         ? initialPivot
         : null
     );
 
-  const [loading, setLoading] = useState(false);
-  const [refreshError, setRefreshError] = useState(false);
-  const [clock, setClock] = useState<number | null>(null);
+  const [loading, setLoading] =
+    useState(false);
+
+  const [refreshError, setRefreshError] =
+    useState(false);
+
+  const [clock, setClock] =
+    useState<number | null>(null);
 
   const shortSymbol = symbol
     .replace(/c$/, "")
-    .replace(/^(.{3})(.{3})$/, "$1/$2");
+    .replace(
+      /^(.{3})(.{3})$/,
+      "$1/$2"
+    );
 
-  const technicalMatches =
+  const activeTechnical =
     technical?.symbol === symbol &&
-    technical?.timeframe === timeframe;
+    technical?.timeframe === timeframe
+      ? technical
+      : null;
 
-  const pivotMatches =
+  const activePivot =
     pivot?.symbol === symbol &&
     pivot?.timeframe === timeframe &&
-    pivot?.method === "classic";
+    pivot?.method === "classic"
+      ? pivot
+      : null;
 
-  const activeTechnical = technicalMatches
-    ? technical
-    : null;
-
-  const activePivot = pivotMatches
-    ? pivot
-    : null;
-
-  /* ====================================================
-     SUPABASE DATA REFRESH
-  ==================================================== */
+  /* ============================================================
+     DATA REFRESH — SAME SUPABASE TABLES
+  ============================================================ */
 
   useEffect(() => {
     let cancelled = false;
-    let controller: AbortController | null = null;
+
+    let controller:
+      | AbortController
+      | null = null;
 
     async function refresh() {
       controller?.abort();
 
-      const currentController = new AbortController();
+      const currentController =
+        new AbortController();
+
       controller = currentController;
 
       setLoading(true);
@@ -219,35 +448,54 @@ export default function HomeTechnicalSnapshotEn({
           `${base}/rest/v1/broker_technical_analysis_latest`
         );
 
-        technicalUrl.searchParams.set("select", "*");
+        technicalUrl.searchParams.set(
+          "select",
+          "*"
+        );
+
         technicalUrl.searchParams.set(
           "symbol",
           `eq.${symbol}`
         );
+
         technicalUrl.searchParams.set(
           "timeframe",
           `eq.${timeframe}`
         );
-        technicalUrl.searchParams.set("limit", "1");
+
+        technicalUrl.searchParams.set(
+          "limit",
+          "1"
+        );
 
         const pivotUrl = new URL(
           `${base}/rest/v1/broker_pivot_levels_latest`
         );
 
-        pivotUrl.searchParams.set("select", "*");
+        pivotUrl.searchParams.set(
+          "select",
+          "*"
+        );
+
         pivotUrl.searchParams.set(
           "symbol",
           `eq.${symbol}`
         );
+
         pivotUrl.searchParams.set(
           "timeframe",
           `eq.${timeframe}`
         );
+
         pivotUrl.searchParams.set(
           "method",
           "eq.classic"
         );
-        pivotUrl.searchParams.set("limit", "1");
+
+        pivotUrl.searchParams.set(
+          "limit",
+          "1"
+        );
 
         const headers = {
           apikey: key,
@@ -256,75 +504,123 @@ export default function HomeTechnicalSnapshotEn({
         };
 
         const [
-          techResponse,
-          pivotResponse,
-        ] = await Promise.all([
-          fetch(technicalUrl.toString(), {
-            headers,
-            cache: "no-store",
-            signal: currentController.signal,
+          technicalResult,
+          pivotResult,
+        ] = await Promise.allSettled([
+          fetch(
+            technicalUrl.toString(),
+            {
+              headers,
+              cache: "no-store",
+              signal:
+                currentController.signal,
+            }
+          ).then(async (response) => {
+            if (!response.ok) {
+              throw new Error(
+                `Technical HTTP ${response.status}`
+              );
+            }
+
+            const rows: unknown =
+              await response.json();
+
+            if (!Array.isArray(rows)) {
+              throw new Error(
+                "Invalid technical response"
+              );
+            }
+
+            return rows as HomeTechnicalRow[];
           }),
 
-          fetch(pivotUrl.toString(), {
-            headers,
-            cache: "no-store",
-            signal: currentController.signal,
+          fetch(
+            pivotUrl.toString(),
+            {
+              headers,
+              cache: "no-store",
+              signal:
+                currentController.signal,
+            }
+          ).then(async (response) => {
+            if (!response.ok) {
+              throw new Error(
+                `Pivot HTTP ${response.status}`
+              );
+            }
+
+            const rows: unknown =
+              await response.json();
+
+            if (!Array.isArray(rows)) {
+              throw new Error(
+                "Invalid Pivot response"
+              );
+            }
+
+            return rows as HomePivotRow[];
           }),
         ]);
 
-        const [techResult, pivotResult] = await Promise.allSettled([
-  techResponse.ok
-    ? techResponse.json()
-    : Promise.reject(new Error(`Technical HTTP ${techResponse.status}`)),
+        if (
+          cancelled ||
+          currentController.signal.aborted
+        ) {
+          return;
+        }
 
-  pivotResponse.ok
-    ? pivotResponse.json()
-    : Promise.reject(new Error(`Pivot HTTP ${pivotResponse.status}`)),
-]);
+        if (
+          technicalResult.status ===
+          "fulfilled"
+        ) {
+          setTechnical(
+            technicalResult.value[0] ??
+              null
+          );
+        } else {
+          console.error(
+            "Home technical:",
+            technicalResult.reason
+          );
 
-if (cancelled || currentController.signal.aborted) return;
+          setTechnical(null);
+        }
 
-const technicalOk =
-  techResult.status === "fulfilled" &&
-  Array.isArray(techResult.value);
+        if (
+          pivotResult.status ===
+          "fulfilled"
+        ) {
+          setPivot(
+            pivotResult.value[0] ??
+              null
+          );
+        } else {
+          console.error(
+            "Home Pivot:",
+            pivotResult.reason
+          );
 
-const pivotOk =
-  pivotResult.status === "fulfilled" &&
-  Array.isArray(pivotResult.value);
+          setPivot(null);
+        }
 
-if (technicalOk) {
-  const rows = techResult.value as HomeTechnicalRow[];
-  setTechnical(rows[0] ?? null);
-} else {
-  console.error(
-    "HOME TECHNICAL EN ERROR:",
-    techResult.status === "rejected"
-      ? techResult.reason
-      : "Invalid JSON response"
-  );
-  setTechnical(null);
-}
+        setRefreshError(
+          technicalResult.status ===
+            "rejected" ||
+            pivotResult.status ===
+              "rejected"
+        );
 
-if (pivotOk) {
-  const rows = pivotResult.value as HomePivotRow[];
-  setPivot(rows[0] ?? null);
-} else {
-  console.error(
-    "HOME PIVOT EN ERROR:",
-    pivotResult.status === "rejected"
-      ? pivotResult.reason
-      : "Invalid JSON response"
-  );
-  setPivot(null);
-}
-
-setRefreshError(!technicalOk || !pivotOk);
-setClock(Date.now());
-      } catch {
+        setClock(Date.now());
+      } catch (error) {
         if (
           !cancelled &&
           !currentController.signal.aborted
         ) {
+          console.error(
+            "Home analysis refresh:",
+            error
+          );
+
           setRefreshError(true);
         }
       } finally {
@@ -337,18 +633,23 @@ setClock(Date.now());
       }
     }
 
-    // Refresh latest data immediately when the component mounts
-// or when the selected instrument or timeframe changes.
-void refresh();
+    void refresh();
 
-    const interval = window.setInterval(() => {
-      if (document.visibilityState === "visible") {
-        void refresh();
-      }
-    }, 5 * 60 * 1000);
+    const interval =
+      window.setInterval(() => {
+        if (
+          document.visibilityState ===
+          "visible"
+        ) {
+          void refresh();
+        }
+      }, 5 * 60 * 1000);
 
     const onVisible = () => {
-      if (document.visibilityState === "visible") {
+      if (
+        document.visibilityState ===
+        "visible"
+      ) {
         void refresh();
       }
     };
@@ -358,9 +659,10 @@ void refresh();
       onVisible
     );
 
-    const clockInterval = window.setInterval(() => {
-      setClock(Date.now());
-    }, 60 * 1000);
+    const clockInterval =
+      window.setInterval(() => {
+        setClock(Date.now());
+      }, 60 * 1000);
 
     setClock(Date.now());
 
@@ -370,7 +672,10 @@ void refresh();
       controller?.abort();
 
       window.clearInterval(interval);
-      window.clearInterval(clockInterval);
+
+      window.clearInterval(
+        clockInterval
+      );
 
       document.removeEventListener(
         "visibilitychange",
@@ -379,28 +684,38 @@ void refresh();
     };
   }, [symbol, timeframe]);
 
-  /* ====================================================
-     TECHNICAL RATING CALCULATIONS
-  ==================================================== */
+  /* ============================================================
+     TECHNICAL STATE
+  ============================================================ */
 
   const ready =
-    activeTechnical?.data_status === "READY";
+    activeTechnical?.data_status ===
+    "READY";
 
   const bias =
-    ready && activeTechnical?.classification
-      ? BIAS[activeTechnical.classification]
+    ready &&
+    activeTechnical?.classification
+      ? BIAS[
+          activeTechnical.classification
+        ]
       : null;
 
   const buy = ready
-    ? numeric(activeTechnical?.buy_votes)
+    ? numeric(
+        activeTechnical?.buy_votes
+      )
     : null;
 
   const sell = ready
-    ? numeric(activeTechnical?.sell_votes)
+    ? numeric(
+        activeTechnical?.sell_votes
+      )
     : null;
 
   const neutral = ready
-    ? numeric(activeTechnical?.neutral_votes)
+    ? numeric(
+        activeTechnical?.neutral_votes
+      )
     : null;
 
   const total =
@@ -410,152 +725,160 @@ void refresh();
       ? buy + sell + neutral
       : 0;
 
-  const gaugePosition =
-    total > 0 &&
-    buy !== null &&
-    sell !== null
-      ? Math.max(
-          0,
-          Math.min(
-            1,
-            0.5 + (buy - sell) / (2 * total)
-          )
-        )
-      : 0.5;
+  const gaugeLabel =
+    bias?.label ?? "Unavailable";
 
-  const pointerX =
-    180 - 145 * Math.cos(Math.PI * gaugePosition);
-
-  const pointerY =
-    185 - 145 * Math.sin(Math.PI * gaugePosition);
-
-  const levels = activePivot?.levels ?? null;
+  const gaugeColor =
+    bias?.color ?? "#64748b";
 
   const technicalTime =
     activeTechnical?.candle_close_utc ??
     activeTechnical?.calculated_at_utc ??
     null;
 
-  const validTime = technicalTime
-    ? Date.parse(technicalTime)
-    : NaN;
-
   const age =
-    clock !== null ? clock - validTime : NaN;
+    clock !== null && technicalTime
+      ? clock -
+        Date.parse(technicalTime)
+      : NaN;
 
   const isFresh =
     ready &&
     Number.isFinite(age) &&
     age >= -120000 &&
-    age <= 130 * 60000;
+    age <=
+      (timeframe === "M5"
+        ? 15
+        : timeframe === "M15"
+        ? 35
+        : timeframe === "M30"
+        ? 65
+        : timeframe === "H1"
+        ? 130
+        : timeframe === "H4"
+        ? 510
+        : timeframe === "D1"
+        ? 3000
+        : 12000) *
+        60000;
 
-  function changeSelection(
-    nextSymbol: string,
-    nextTimeframe: string
-  ) {
-    setSymbol(nextSymbol);
-    setTimeframe(nextTimeframe);
-    setRefreshError(false);
+  const levels =
+    activePivot?.levels ?? null;
+
+  const pivotPeriod = [
+    "M5",
+    "M15",
+  ].includes(timeframe)
+    ? "Daily"
+    : [
+        "M30",
+        "H1",
+        "H4",
+      ].includes(timeframe)
+    ? "Weekly"
+    : "Monthly";
+
+  function levelStyle(type: string) {
+    if (type === "support") {
+      return {
+        box:
+          "border-rose-100 bg-rose-50/70",
+        label: "text-rose-700",
+      };
+    }
+
+    if (type === "resistance") {
+      return {
+        box:
+          "border-emerald-100 bg-emerald-50/70",
+        label: "text-emerald-700",
+      };
+    }
+
+    return {
+      box:
+        "border-[#b9d1f5] bg-[#eaf3ff]",
+      label: "text-[#1558be]",
+    };
   }
 
-  const voteItems = [
-    {
-      label: "Buy",
-      value: buy,
-      color: "emerald",
-    },
-    {
-      label: "Neutral",
-      value: neutral,
-      color: "slate",
-    },
-    {
-      label: "Sell",
-      value: sell,
-      color: "rose",
-    },
-  ];
-
-  /* ====================================================
-     RENDER — SAME SIZE AND DESIGN AS ARABIC
-  ==================================================== */
+  /* ============================================================
+     RENDER
+  ============================================================ */
 
   return (
     <section
-      id="home-technical-analysis"
-      aria-labelledby="home-technical-title"
+      id="home-technical-analysis-en"
+      aria-labelledby="home-technical-title-en"
       dir="ltr"
       className="mx-auto w-full max-w-7xl px-0 py-2.5 sm:py-3"
     >
-      <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_14px_40px_rgba(15,23,42,0.055)]">
+      <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_14px_40px_rgba(15,23,42,0.055)]">
 
-        {/* ==================================================
-            HEADER — IDENTICAL ARABIC DIMENSIONS
-        ================================================== */}
+        {/* =====================================================
+            HEADER — SAME AS ARABIC
+        ====================================================== */}
 
-        <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-4 sm:px-6 lg:py-5">
+        <div className="border-b border-slate-100 bg-gradient-to-r from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3 sm:px-6 sm:py-4">
 
-          <div className="flex flex-col items-center justify-between gap-4 lg:flex-row">
+          <div className="flex flex-col items-center justify-between gap-3 lg:flex-row">
 
             <div className="min-w-0 flex-1 text-center lg:text-left">
 
-              <span className="inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-[11px] font-black text-blue-600 shadow-sm">
-                Financial Market Technical Analysis
+              <span className="inline-flex rounded-full border border-blue-200 bg-white px-3 py-1 text-[11px] font-black text-blue-700 shadow-sm">
+                Technical Analysis Hub
               </span>
 
               <h2
-                id="home-technical-title"
-                className="mt-2.5 text-[26px] font-black leading-tight text-[#07111f] sm:text-[34px] lg:text-[36px]"
+                id="home-technical-title-en"
+                className="mt-2 text-[24px] font-black leading-tight text-[#07111f] sm:text-[29px]"
               >
-                Technical Analysis for Forex & Markets
+                Technical Analysis for Markets & Currencies
               </h2>
 
-              <p className="mt-2 text-[12px] font-semibold leading-6 text-slate-600 sm:text-[14px]">
-                Explore technical ratings, buy and sell signals,
-                support and resistance levels for gold, silver
-                and forex pairs across seven timeframes.
+              <p className="mt-1.5 max-w-[850px] text-[11px] leading-6 text-slate-600 sm:text-[12px]">
+                Explore technical indicator ratings,
+                support and resistance levels for
+                gold, silver and forex pairs across
+                seven timeframes.
               </p>
 
             </div>
 
             <Link
               href="/en/technical-analysis"
-              className="hidden h-11 min-w-[180px] items-center justify-center rounded-xl bg-brand-500 px-5 text-[13px] font-black text-white shadow-lg transition hover:bg-brand-600 lg:inline-flex"
+              className="hidden min-h-10 shrink-0 items-center justify-center rounded-lg bg-brand-500 px-4 text-[12px] font-black text-white shadow-sm transition hover:bg-brand-600 lg:inline-flex"
             >
-              Explore Analysis →
+              Explore Analysis Hub →
             </Link>
 
           </div>
-
         </div>
 
-        {/* ==================================================
-            SELECTORS — SAME ARABIC LAYOUT
-        ================================================== */}
+        {/* =====================================================
+            INSTRUMENT / TIMEFRAME SELECTORS
+        ====================================================== */}
 
-        <div className="border-b border-[#dce7f5] bg-[#f7faff] px-4 py-4 sm:px-6">
+        <div className="border-b border-[#dce7f5] bg-[#f7faff] px-4 py-3 sm:px-6">
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div className="flex flex-wrap items-end justify-between gap-3">
 
-            <div className="flex w-full min-w-0 flex-col gap-3 sm:max-w-[550px] sm:flex-row">
+            <div className="flex w-full flex-wrap items-end gap-3 sm:w-auto">
 
               {/* INSTRUMENT */}
-              <label className="block min-w-0 flex-1">
+              <label className="min-w-0 flex-1 sm:w-[255px] sm:flex-none">
 
-                <span className="mb-1.5 block text-[11px] font-black text-[#173b70]">
-                  Select Financial Instrument
+                <span className="mb-1 block text-[10px] font-black text-[#173b70]">
+                  Financial Instrument
                 </span>
 
                 <select
                   aria-label="Select financial instrument"
                   value={symbol}
                   onChange={(e) =>
-                    changeSelection(
-                      e.target.value,
-                      timeframe
-                    )
+                    setSymbol(e.target.value)
                   }
-                  className="h-11 w-full rounded-xl border border-blue-200 bg-white px-3 text-[12px] font-bold text-[#102b50] outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  className="h-10 w-full rounded-lg border border-blue-200 bg-white px-3 text-[11px] font-bold text-[#102b50] outline-none focus:border-blue-500"
                 >
                   {INSTRUMENTS.map((item) => (
                     <option
@@ -570,9 +893,9 @@ void refresh();
               </label>
 
               {/* TIMEFRAME */}
-<label className="block w-full shrink-0 sm:w-[155px]">
+              <label className="w-[115px] shrink-0">
 
-                <span className="mb-1.5 block text-[11px] font-black text-[#173b70]">
+                <span className="mb-1 block text-[10px] font-black text-[#173b70]">
                   Timeframe
                 </span>
 
@@ -581,15 +904,17 @@ void refresh();
                   dir="ltr"
                   value={timeframe}
                   onChange={(e) =>
-                    changeSelection(
-                      symbol,
+                    setTimeframe(
                       e.target.value
                     )
                   }
-                  className="h-11 w-full rounded-xl border border-blue-200 bg-white px-3 text-center text-[12px] font-black text-[#102b50] outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  className="h-10 w-full rounded-lg border border-blue-200 bg-white px-2 text-center text-[11px] font-black text-[#102b50] outline-none focus:border-blue-500"
                 >
                   {TIMEFRAMES.map((tf) => (
-                    <option key={tf} value={tf}>
+                    <option
+                      key={tf}
+                      value={tf}
+                    >
                       {tf}
                     </option>
                   ))}
@@ -599,15 +924,15 @@ void refresh();
 
             </div>
 
-            {/* SELECTED SYMBOL + STATUS */}
-            <div className="flex flex-wrap items-center gap-2 pb-1">
+            {/* STATUS */}
+            <div className="flex items-center gap-2">
 
-              <span className="rounded-lg border border-blue-100 bg-white px-3 py-2 text-[11px] font-black text-blue-700">
+              <span className="rounded-md border border-blue-100 bg-white px-2.5 py-1.5 text-[10px] font-black text-blue-700">
                 {shortSymbol}
               </span>
 
               <span
-                className={`rounded-full border px-3 py-1.5 text-[10px] font-black ${
+                className={`rounded-md border px-2.5 py-1.5 text-[10px] font-bold ${
                   loading
                     ? "border-blue-200 bg-blue-50 text-blue-700"
                     : refreshError
@@ -618,12 +943,12 @@ void refresh();
                 }`}
               >
                 {loading
-                  ? "Updating analysis..."
+                  ? "Updating"
                   : refreshError
-                  ? "Update unavailable"
+                  ? "Partial update failed"
                   : isFresh
-                  ? "● Recent data"
-                  : "Periodic market data"}
+                  ? "Recent Data"
+                  : "Periodic Data"}
               </span>
 
             </div>
@@ -632,399 +957,340 @@ void refresh();
 
         </div>
 
-        {/* ==================================================
-            TWO EQUAL COLUMNS
-        ================================================== */}
+        {/* =====================================================
+            COMPACT TECHNICAL RATING
+            SAME LAYOUT AS FINAL ARABIC VERSION
+        ====================================================== */}
 
-        <div dir="ltr" className="grid lg:grid-cols-2">
+        <div className="border-b border-slate-200 bg-white px-4 py-4 sm:px-6">
 
-          {/* ==================================================
-              TECHNICAL RATING — LEFT
-          ================================================== */}
+          {/* SECTION HEADER */}
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
 
-         <div
-  dir="ltr"
-  className="min-w-0 border-b border-slate-200 bg-white p-3 sm:p-5 lg:border-b-0 lg:border-r lg:p-6"
->
+            <div>
+              <h3 className="text-[16px] font-black text-[#102b50] sm:text-[18px]">
+                Technical Rating Summary
+              </h3>
 
-            <div className="flex h-full flex-col rounded-[20px] border border-[#dce7f5] bg-[#fbfdff] p-3 sm:p-5">
+              <p className="mt-1 text-[10px] text-slate-500">
+                Technical indicator signals
+                on the {timeframe} timeframe
+              </p>
+            </div>
 
-              {/* CARD HEADING */}
-              <div className="flex items-start justify-between gap-3">
+            <span className="rounded-md border border-blue-100 bg-blue-50 px-2.5 py-1 text-[10px] font-black text-blue-700">
+              {shortSymbol} · {timeframe}
+            </span>
 
-                <div>
-                  <h3 className="text-[18px] font-black text-[#102b50] sm:text-[21px]">
-                    Technical Rating Overview
-                  </h3>
+          </div>
 
-                  <p className="mt-1 text-[11px] text-slate-500">
-                    Technical indicators on the {timeframe} timeframe
+          {/* TWO-COLUMN CONTENT */}
+          <div className="grid items-center gap-4 md:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
+
+            {/* GAUGE */}
+            <div className="flex items-center justify-center">
+
+              <TechnicalGauge
+                buy={buy}
+                sell={sell}
+                neutral={neutral}
+                label={gaugeLabel}
+                color={gaugeColor}
+              />
+
+            </div>
+
+            {/* INDICATOR VOTES */}
+            <div className="min-w-0 space-y-3">
+
+              {/* TOTAL INDICATORS */}
+              <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5">
+
+                <div className="flex items-center justify-between gap-3">
+
+                  <p className="text-[11px] font-bold text-slate-600">
+                    Total Indicator Signals
                   </p>
-                </div>
 
-                <span className="rounded-lg border border-blue-100 bg-blue-50 px-2.5 py-1.5 text-[10px] font-black text-blue-700">
-                  {timeframe}
-                </span>
+                  <p className="text-[22px] font-black tabular-nums text-[#103c77]">
+                    {total > 0
+                      ? total
+                      : "—"}
+                  </p>
 
-              </div>
-
-              {/* ==================================================
-                  LARGE GAUGE — SAME AS ARABIC
-              ================================================== */}
-
-              <div className="mx-auto mt-4 w-full max-w-[440px]">
-
-                <svg
-                  viewBox="0 0 360 230"
-                  role="img"
-                  aria-label={`Technical rating: ${
-                    bias?.label ?? "Unavailable"
-                  }`}
-                  className="block h-auto w-full"
-                >
-                  {/* BASE ARC */}
-                  <path
-                    d="M35 185 A145 145 0 0 1 325 185"
-                    fill="none"
-                    stroke="#e2e8f0"
-                    strokeWidth="24"
-                    strokeLinecap="round"
-                  />
-
-                  {/* RATING COLORS */}
-                  {[
-                    ["#e11d48", "25 75", "0"],
-                    ["#fb923c", "20 80", "-25"],
-                    ["#cbd5e1", "20 80", "-45"],
-                    ["#10b981", "35 65", "-65"],
-                  ].map(([color, dash, offset]) => (
-                    <path
-                      key={color}
-                      d="M35 185 A145 145 0 0 1 325 185"
-                      fill="none"
-                      stroke={color}
-                      strokeWidth="24"
-                      strokeDasharray={dash}
-                      strokeDashoffset={offset}
-                      pathLength="100"
-                    />
-                  ))}
-
-                  {/* GAUGE POINTER */}
-                  <circle
-                    cx={pointerX}
-                    cy={pointerY}
-                    r="13"
-                    fill="white"
-                    stroke="#64748b"
-                    strokeWidth="5"
-                  />
-
-                  <circle
-                    cx={pointerX}
-                    cy={pointerY}
-                    r="4"
-                    fill="#64748b"
-                  />
-
-                  {/* CENTER LABEL */}
-                  <text
-                    x="180"
-                    y="128"
-                    textAnchor="middle"
-                    fontSize="14"
-                    fontWeight="700"
-                    fill="#64748b"
-                  >
-                    Technical Rating
-                  </text>
-
-                  <text
-                    x="180"
-                    y="163"
-                    textAnchor="middle"
-                    fontSize="30"
-                    fontWeight="900"
-                    fill={bias?.color ?? "#64748b"}
-                  >
-                    {loading
-                      ? "Loading"
-                      : bias?.label ?? "Unavailable"}
-                  </text>
-
-                </svg>
-
-                {/* LABELS */}
-                <div className="-mt-2 flex justify-between px-3 text-[10px] font-bold">
-                  <span className="text-rose-600">
-                    ● Sell
-                  </span>
-
-                  <span className="text-slate-500">
-                    ● Neutral
-                  </span>
-
-                  <span className="text-emerald-600">
-                    ● Buy
-                  </span>
                 </div>
 
               </div>
 
-              {/* ==================================================
-                  BUY / NEUTRAL / SELL VOTES
-              ================================================== */}
+              {/* BUY / NEUTRAL / SELL */}
+              <div className="grid grid-cols-3 gap-2">
 
-              <div className="mt-4 grid grid-cols-3 gap-2">
+                {[
+                  {
+                    label: "Buy",
+                    value: buy,
+                    style:
+                      "border-emerald-100 bg-emerald-50 text-emerald-700",
+                  },
+                  {
+                    label: "Neutral",
+                    value: neutral,
+                    style:
+                      "border-slate-200 bg-slate-50 text-slate-600",
+                  },
+                  {
+                    label: "Sell",
+                    value: sell,
+                    style:
+                      "border-rose-100 bg-rose-50 text-rose-700",
+                  },
+                ].map((item) => (
 
-                {voteItems.map((item) => (
                   <div
                     key={item.label}
-                    className={`rounded-xl border px-2 py-3 text-center ${
-                      item.color === "emerald"
-                        ? "border-emerald-100 bg-emerald-50 text-emerald-700"
-                        : item.color === "rose"
-                        ? "border-rose-100 bg-rose-50 text-rose-700"
-                        : "border-slate-200 bg-slate-100 text-slate-700"
-                    }`}
+                    className={`rounded-lg border px-2 py-2 text-center ${item.style}`}
                   >
-                    <p className="text-[25px] font-black tabular-nums">
+
+                    <p className="text-[19px] font-black tabular-nums">
                       {item.value ?? "—"}
                     </p>
 
-                    <p className="text-[11px] font-bold">
+                    <p className="text-[10px] font-bold">
                       {item.label}
                     </p>
+
                   </div>
+
                 ))}
 
               </div>
 
-              {/* VOTE DISTRIBUTION */}
-              <div className="mt-3 flex h-2.5 overflow-hidden rounded-full bg-slate-100">
+              {/* DISTRIBUTION BAR */}
+              <div className="flex h-2 overflow-hidden rounded-full bg-slate-100">
 
                 {total > 0 && (
                   <>
+
                     <div
-                      className="bg-rose-500"
+                      className="bg-emerald-500"
                       style={{
-                        width: `${((sell ?? 0) / total) * 100}%`,
+                        width: `${
+                          ((buy ?? 0) / total) *
+                          100
+                        }%`,
                       }}
                     />
 
                     <div
                       className="bg-slate-300"
                       style={{
-                        width: `${((neutral ?? 0) / total) * 100}%`,
+                        width: `${
+                          ((neutral ?? 0) /
+                            total) *
+                          100
+                        }%`,
                       }}
                     />
 
                     <div
-                      className="bg-emerald-500"
+                      className="bg-rose-500"
                       style={{
-                        width: `${((buy ?? 0) / total) * 100}%`,
+                        width: `${
+                          ((sell ?? 0) / total) *
+                          100
+                        }%`,
                       }}
                     />
+
                   </>
                 )}
 
               </div>
 
-              
-{/* ==================================================
-    REFERENCE PRICE + TOTAL VOTES
-================================================== */}
+            </div>
 
-<div className="mt-4 grid grid-cols-2 gap-3 rounded-xl border border-blue-100 bg-[#eef5ff] p-3.5">
+          </div>
 
-  {/* REFERENCE PRICE */}
-  <div className="min-w-0 text-center sm:text-left">
+          {/* LAST CALCULATED CANDLE */}
+          <p className="mt-2 text-[10px] leading-5 text-slate-500">
+            Last calculated candle:{" "}
+            {clock === null
+              ? "—"
+              : dateText(technicalTime)}
+          </p>
 
-    <p className="text-[10px] font-bold text-slate-500">
-      Reference Price — {shortSymbol}
-    </p>
+        </div>
 
-    <p className="mt-1 text-center text-[20px] font-black tabular-nums text-[#103c77] sm:text-left sm:text-[clamp(16px,2vw,27px)]">
-      {ready ? priceText(activeTechnical?.price) : "—"}
-    </p>
+        {/* =====================================================
+            HORIZONTAL PIVOT — SUPPORT & RESISTANCE
+        ====================================================== */}
 
-  </div>
+        <div className="bg-white px-4 py-4 sm:px-6">
 
-  {/* INDICATOR SIGNALS */}
-  <div className="min-w-0 border-l border-blue-200 pl-2 text-center sm:pl-3 sm:text-left">
+          {/* HEADER */}
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
 
-    <p className="text-[10px] font-bold text-slate-500">
-      Indicator Signals
-    </p>
+            <div>
 
-    <p className="mt-1 text-center text-[24px] font-black tabular-nums text-[#103c77] sm:text-left sm:text-[26px]">
-      {total > 0 ? total : "—"}
-    </p>
+              <h3 className="text-[16px] font-black text-[#102b50] sm:text-[18px]">
+                Support & Resistance Levels
+              </h3>
 
-  </div>
-
-</div>
-
-
-              {/* DATA TIME */}
-              <p className="mt-3 text-[10px] leading-5 text-slate-500">
-                Latest calculated candle: {dateText(technicalTime)}
+              <p className="mt-1 text-[10px] text-slate-500">
+                Classic Pivot Points ·{" "}
+                {pivotPeriod} reference period
               </p>
 
             </div>
+
+            <Link
+              href="/en/technical-analysis"
+              className="rounded-lg border border-blue-200 bg-white px-3 py-2 text-[10px] font-black text-blue-700 transition hover:bg-blue-50"
+            >
+              View All Calculation Methods →
+            </Link>
+
           </div>
 
-          {/* ==================================================
-              CLASSIC PIVOT — RIGHT
-          ================================================== */}
+          {/* PIVOT LEVELS TABLE */}
+          <div className="overflow-x-auto rounded-xl border border-[#dbe5f2]">
 
-          <div className="min-w-0 bg-white p-3 sm:p-5 lg:p-6">
+            <div
+              className="min-w-[610px]"
+              dir="ltr"
+            >
 
-            <div className="h-full rounded-[20px] border border-[#dce7f5] bg-[#fbfdff] p-3 sm:p-5">
+              {/* HEADINGS */}
+              <div className="grid grid-cols-7 border-b border-[#dbe5f2] bg-[#f2f6fc]">
 
-              {/* CARD HEADING */}
-              <div className="flex items-start justify-between gap-3">
+                {PIVOT_LEVELS.map(
+                  (item) => (
 
-                <div>
-                  <h3 className="text-[18px] font-black text-[#102b50] sm:text-[21px]">
-                    Support & Resistance Levels
-                  </h3>
+                    <div
+                      key={item.key}
+                      className={`border-r border-[#e4eaf3] px-2 py-2 text-center last:border-r-0 ${
+                        item.type ===
+                        "support"
+                          ? "text-rose-700"
+                          : item.type ===
+                            "resistance"
+                          ? "text-emerald-700"
+                          : "text-[#1558be]"
+                      }`}
+                    >
 
-                  <p className="mt-1 text-[11px] text-slate-500">
-                    Classic Pivot Point calculations
-                  </p>
-                </div>
+                      <span className="text-[11px] font-black">
+                        {item.key}
+                      </span>
 
-                <span className="rounded-lg bg-blue-50 px-3 py-1.5 text-[10px] font-black text-blue-700">
-                  {timeframe}
-                </span>
+                    </div>
 
-              </div>
-
-              {/* ==================================================
-                  CENTRAL PIVOT
-              ================================================== */}
-
-              <div className="mt-5 rounded-2xl border border-blue-200 bg-[#eaf3ff] px-4 py-5 text-center">
-
-                <p className="text-[11px] font-black text-[#205895]">
-                  Central Pivot Point (P)
-                </p>
-
-                <p className="mt-2 text-[clamp(24px,3vw,35px)] font-black tabular-nums text-[#154a87]">
-                  {priceText(levels?.P)}
-                </p>
-
-                <p className="mt-2 text-[10px] text-slate-500">
-                  Classic Pivot · {shortSymbol} · {timeframe}
-                </p>
+                  )
+                )}
 
               </div>
 
-              {/* ==================================================
-                  SUPPORT + RESISTANCE
-                  LTR MIRROR OF ARABIC
-              ================================================== */}
+              {/* LEVEL VALUES */}
+              <div className="grid grid-cols-7">
 
-              <div className="mt-5 grid grid-cols-2 gap-2.5 sm:gap-4">
+                {PIVOT_LEVELS.map(
+                  (item) => {
+                    const style =
+                      levelStyle(
+                        item.type
+                      );
 
-                {/* SUPPORT — LEFT */}
-                <div className="min-w-0">
-
-                  <h4 className="mb-3 text-[12px] font-black text-rose-700">
-                    ● Support
-                  </h4>
-
-                  <div className="space-y-2.5">
-
-                    {(["S1", "S2", "S3"] as const).map((key) => (
+                    return (
                       <div
-                        key={key}
-                        className="flex min-h-[55px] min-w-0 items-center justify-between gap-1 rounded-xl border border-rose-100 bg-rose-50 px-2 py-3 sm:px-3"
+                        key={item.key}
+                        className={`min-w-0 border-r border-[#e4eaf3] px-2 py-3 text-center last:border-r-0 ${style.box}`}
                       >
-                        <span className="rounded-md bg-rose-100 px-1.5 py-1 text-[10px] font-black text-rose-800">
-                          {key}
-                        </span>
 
                         <span
                           dir="ltr"
-                          className="min-w-0 text-[13px] font-black tabular-nums text-rose-700 sm:text-[clamp(9px,1.4vw,15px)]"
+                          className={`block whitespace-nowrap text-[12px] font-black tabular-nums sm:text-[13px] ${style.label}`}
                         >
-                          {priceText(levels?.[key])}
+                          {priceText(
+                            levels?.[
+                              item.key
+                            ]
+                          )}
                         </span>
+
                       </div>
-                    ))}
-
-                  </div>
-
-                </div>
-
-                {/* RESISTANCE — RIGHT */}
-                <div className="min-w-0">
-
-                  <h4 className="mb-3 text-[12px] font-black text-emerald-700">
-                    ● Resistance
-                  </h4>
-
-                  <div className="space-y-2.5">
-
-                    {(["R1", "R2", "R3"] as const).map((key) => (
-                      <div
-                        key={key}
-                        className="flex min-h-[55px] min-w-0 items-center justify-between gap-1 rounded-xl border border-emerald-100 bg-emerald-50 px-2 py-3 sm:px-3"
-                      >
-                        <span className="rounded-md bg-emerald-100 px-1.5 py-1 text-[10px] font-black text-emerald-800">
-                          {key}
-                        </span>
-
-                        <span
-                          dir="ltr"
-                          className="min-w-0 text-[13px] font-black tabular-nums text-emerald-700 sm:text-[clamp(9px,1.4vw,15px)]"
-                        >
-                          {priceText(levels?.[key])}
-                        </span>
-                      </div>
-                    ))}
-
-                  </div>
-
-                </div>
+                    );
+                  }
+                )}
 
               </div>
 
-              {/* ==================================================
-                  PIVOT REFERENCE TIME
-              ================================================== */}
+            </div>
 
-              <div className="mt-4 rounded-xl border border-slate-200 bg-white px-3 py-3 text-[10px] leading-5 text-slate-500">
+          </div>
 
-                <div className="flex flex-wrap justify-between gap-2">
+          {/* PIVOT TIMESTAMPS */}
+          <div className="mt-2 flex flex-wrap justify-between gap-x-4 gap-y-1 text-[10px] text-slate-500">
 
-                  <span>
-                    Reference candle:{" "}
-                    {dateText(
-                      activePivot?.reference_candle_time_utc
-                    )}
-                  </span>
+            <span>
+              Reference candle:{" "}
+              {clock === null
+                ? "—"
+                : dateText(
+                    activePivot?.reference_candle_time_utc
+                  )}
+            </span>
 
-                  <span>
-                    Calculated:{" "}
-                    {dateText(activePivot?.calculated_at)}
-                  </span>
+            <span>
+              Last calculated:{" "}
+              {clock === null
+                ? "—"
+                : dateText(
+                    activePivot?.calculated_at
+                  )}
+            </span>
 
-                </div>
+          </div>
 
-              </div>
+        </div>
 
-             {/* ALL PIVOT METHODS LINK */}
-<div className="mt-4">
-  <Link
-    href="/en/technical-analysis"
-    className="flex min-h-11 w-full items-center justify-center rounded-xl border border-blue-200 bg-white px-3 text-center text-[11px] font-black text-blue-700 transition hover:bg-blue-50"
-  >
-    View All Pivot Calculation Methods →
-  </Link>
-</div>
+        {/* =====================================================
+            HISTORICAL REFERENCE PRICE
+            NOT A LIVE MARKET PRICE
+        ====================================================== */}
+
+        <div className="border-t border-slate-200 bg-white px-4 py-3 sm:px-6">
+
+          <div className="flex flex-wrap items-center justify-between gap-3">
+
+            <div className="min-w-0">
+
+              <p className="text-[11px] font-black text-[#153b69]">
+                Calculated Candle Reference Price —{" "}
+                {shortSymbol}
+              </p>
+
+              <p className="mt-1 text-[10px] leading-5 text-slate-500">
+                This historical price was used
+                by the technical analysis
+                engine to calculate indicators.
+                It is not the current or
+                live market price.
+              </p>
+
+            </div>
+
+            <div className="shrink-0 text-right">
+
+              <p
+                dir="ltr"
+                className="text-[17px] font-black tabular-nums text-[#103c77]"
+              >
+                {ready
+                  ? priceText(
+                      activeTechnical?.price
+                    )
+                  : "—"}
+              </p>
 
             </div>
 
@@ -1032,50 +1298,42 @@ void refresh();
 
         </div>
 
-{/* PIVOT AUTO REFERENCE PERIOD NOTE — FULL WIDTH */}
+        {/* =====================================================
+            COMPACT EXPLANATORY NOTE
+        ====================================================== */}
 
-<div className="border-t border-slate-200 bg-[#f8faff] px-4 py-3 sm:px-6">
+        <div className="border-t border-slate-200 bg-[#f8faff] px-4 py-2.5 sm:px-6">
 
-  <div className="flex items-start gap-2.5">
+          <div className="flex items-start gap-2">
 
-    <span className="mt-0.5 shrink-0 text-blue-600">
-      ⓘ
-    </span>
+            <span className="shrink-0 text-[12px] text-blue-600">
+              ⓘ
+            </span>
 
-    <div className="min-w-0">
+            <p className="text-[10px] leading-5 text-slate-600 sm:text-[11px]">
 
-      <p className="text-[11px] font-black text-[#153b69]">
-        Why Do Some Timeframes Display Identical Pivot Levels?
-      </p>
+              <strong className="text-[#153b69]">
+                Note on Pivot Reference Periods:
+              </strong>{" "}
 
-      <p className="mt-1 text-[10px] leading-6 text-slate-600 sm:text-[11px]">
-        Pivot Points use automatically selected reference periods:
-        daily for M5 and M15, weekly for M30, H1 and H4,
-        and monthly for D1 and W1. Therefore, multiple
-        timeframes may display identical support and resistance
-        levels when they share the same reference period.
-        This is expected behavior. These levels are mathematical
-        references, not trading recommendations.
-      </p>
+              Pivot levels use daily reference
+              periods for M5 and M15,
+              weekly reference periods for
+              M30, H1 and H4,
+              and monthly reference periods
+              for D1 and W1.
 
-    </div>
+              {" "}Therefore, multiple
+              timeframes may naturally share
+              identical Pivot levels.
 
-  </div>
+              {" "}The analysis is
+              descriptive and does not
+              constitute trading advice.
 
-</div>
+            </p>
 
-        {/* ==================================================
-            FOOTER — SAME AS ARABIC, NO EXTRA BUTTON
-        ================================================== */}
-
-        <div className="border-t border-slate-200 bg-[#f8faff] px-4 py-3 sm:px-6">
-
-          <p className="text-center text-[11px] leading-6 text-slate-500">
-            Technical readings are descriptive and based on
-            completed market candles, not trading recommendations.
-            Results change when selecting a different instrument
-            or timeframe.
-          </p>
+          </div>
 
         </div>
 
