@@ -81,6 +81,16 @@ const BIAS: Record<string, {
   },
 };
 
+const PIVOT_LEVELS = [
+  { key: "S3", type: "support" },
+  { key: "S2", type: "support" },
+  { key: "S1", type: "support" },
+  { key: "P", type: "pivot" },
+  { key: "R1", type: "resistance" },
+  { key: "R2", type: "resistance" },
+  { key: "R3", type: "resistance" },
+] as const;
+
 function numeric(value: unknown): number | null {
   if (value === null || value === undefined || value === "") {
     return null;
@@ -92,7 +102,6 @@ function numeric(value: unknown): number | null {
 
 function priceText(value: unknown): string {
   const number = numeric(value);
-
   if (number === null) return "—";
 
   return number.toLocaleString("en-US", {
@@ -101,6 +110,7 @@ function priceText(value: unknown): string {
   });
 }
 
+
 function dateText(value?: string | null): string {
   if (!value) return "غير متاح";
 
@@ -108,24 +118,18 @@ function dateText(value?: string | null): string {
   if (!Number.isFinite(parsed)) return "غير متاح";
 
   return new Intl.DateTimeFormat("ar", {
-    timeZone: "America/Toronto",
     day: "numeric",
     month: "short",
     hour: "2-digit",
     minute: "2-digit",
+    hour12: true,
   }).format(new Date(parsed));
 }
 
-const PIVOT_LEVELS = [
-  { key: "S3", type: "support" },
-  { key: "S2", type: "support" },
-  { key: "S1", type: "support" },
-  { key: "P", type: "pivot" },
-  { key: "R1", type: "resistance" },
-  { key: "R2", type: "resistance" },
-  { key: "R3", type: "resistance" },
-] as const;
 
+/* ==========================================
+   COMPACT PROFESSIONAL TECHNICAL GAUGE
+========================================== */
 
 function TechnicalGauge({
   buy,
@@ -145,7 +149,6 @@ function TechnicalGauge({
       ? buy + sell + neutral
       : 0;
 
-  // Left = Sell, center = Neutral, right = Buy
   const position =
     total > 0
       ? Math.max(
@@ -157,9 +160,9 @@ function TechnicalGauge({
         )
       : 0.5;
 
-  const radius = 137;
-  const centerX = 180;
-  const centerY = 170;
+  const radius = 92;
+  const centerX = 130;
+  const centerY = 115;
 
   const pointerX =
     centerX - radius * Math.cos(Math.PI * position);
@@ -167,109 +170,111 @@ function TechnicalGauge({
   const pointerY =
     centerY - radius * Math.sin(Math.PI * position);
 
-  const arc = "M43 170 A137 137 0 0 1 317 170";
+  const arc = "M38 115 A92 92 0 0 1 222 115";
 
   const segments = [
     { color: "#e11d48", start: 0, size: 25 },
     { color: "#fb923c", start: 25, size: 20 },
     { color: "#cbd5e1", start: 45, size: 10 },
     { color: "#34d399", start: 55, size: 20 },
-    { color: "#10b981", start: 75, size: 25 },
+    { color: "#059669", start: 75, size: 25 },
   ];
 
   return (
-    <div className="flex w-full flex-col items-center justify-center">
-
+    <div className="mx-auto w-full max-w-[310px]">
       <svg
-        viewBox="0 0 360 205"
+        viewBox="0 0 260 150"
         role="img"
         aria-label={`التقييم الفني: ${label}`}
-        className="block h-auto w-full max-w-[385px]"
+        className="block h-auto w-full"
       >
         <path
           d={arc}
           fill="none"
           stroke="#e2e8f0"
-          strokeWidth="23"
-          strokeLinecap="round"
+          strokeWidth="15"
         />
 
         {segments.map((segment) => (
           <path
-  key={segment.start}
-  d={arc}
-  fill="none"
-  stroke={segment.color}
-  strokeWidth="23"
-  strokeLinecap="butt"
-  strokeDasharray={`${segment.size} ${100 - segment.size}`}
-  strokeDashoffset={-segment.start}
-  pathLength="100"
-/>
+            key={segment.start}
+            d={arc}
+            fill="none"
+            stroke={segment.color}
+            strokeWidth="15"
+            strokeDasharray={`${segment.size} ${100 - segment.size}`}
+            strokeDashoffset={-segment.start}
+            pathLength="100"
+          />
         ))}
 
-        {/* POINTER */}
-        <circle
-          cx={pointerX}
-          cy={pointerY}
-          r="12"
-          fill="#ffffff"
-          stroke="#ffffff"
-          strokeWidth="4"
-        />
+        {total > 0 && (
+          <>
+            <circle
+              cx={pointerX}
+              cy={pointerY}
+              r="9"
+              fill="white"
+              stroke="white"
+              strokeWidth="3"
+            />
+            <circle
+              cx={pointerX}
+              cy={pointerY}
+              r="5"
+              fill={color}
+              stroke="white"
+              strokeWidth="2"
+            />
+          </>
+        )}
 
-        <circle
-          cx={pointerX}
-          cy={pointerY}
-          r="8"
-          fill="#ffffff"
-          stroke="#64748b"
-          strokeWidth="4"
-        />
-
-        <circle
-          cx={pointerX}
-          cy={pointerY}
-          r="2.5"
-          fill="#64748b"
-        />
-
-        {/* CENTER LABEL */}
         <text
-          x="180"
-          y="113"
+          x="130"
+          y="69"
           textAnchor="middle"
           fill="#64748b"
-          fontSize="15"
+          fontSize="11"
           fontWeight="700"
         >
           التقييم الفني
         </text>
 
-        {/* MAIN RATING */}
         <text
-          x="180"
-          y="151"
+          x="130"
+          y="98"
           textAnchor="middle"
           fill={color}
-          fontSize="34"
+          fontSize={label.length > 7 ? "22" : "26"}
           fontWeight="900"
         >
           {label}
         </text>
+
+        <text
+          x="130"
+          y="119"
+          textAnchor="middle"
+          fill="#94a3b8"
+          fontSize="10"
+          fontWeight="600"
+        >
+          {total > 0 ? `${total} إشارة فنية` : "لا توجد إشارات"}
+        </text>
       </svg>
 
-      {/* LEGEND */}
-      <div className="-mt-5 flex w-full max-w-[350px] items-center justify-between px-2 text-[11px] font-black">
+      <div className="-mt-1 flex items-center justify-between px-4 text-[10px] font-black">
         <span className="text-rose-600">بيع</span>
-        <span className="text-slate-500">محايد</span>
+        <span className="text-slate-400">محايد</span>
         <span className="text-emerald-600">شراء</span>
       </div>
-
     </div>
   );
 }
 
+/* ==========================================
+   MAIN COMPONENT
+========================================== */
 
 export default function HomeTechnicalSnapshot({
   initialTechnical,
@@ -298,6 +303,7 @@ export default function HomeTechnicalSnapshot({
   const [loading, setLoading] = useState(false);
   const [refreshError, setRefreshError] = useState(false);
   const [clock, setClock] = useState<number | null>(null);
+  const [pivotExpanded, setPivotExpanded] = useState(false);
 
   const shortSymbol = symbol
     .replace(/c$/, "")
@@ -316,6 +322,10 @@ export default function HomeTechnicalSnapshot({
       ? pivot
       : null;
 
+  /* ==========================================
+     SUPABASE DATA REFRESH
+  ========================================== */
+
   useEffect(() => {
     let cancelled = false;
     let controller: AbortController | null = null;
@@ -327,9 +337,11 @@ export default function HomeTechnicalSnapshot({
       controller = currentController;
 
       setLoading(true);
+      setRefreshError(false);
 
       try {
         const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+
         const key =
           process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
           process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
@@ -373,10 +385,13 @@ export default function HomeTechnicalSnapshot({
               signal: currentController.signal,
             }).then(async (response) => {
               if (!response.ok) {
-                throw new Error(`Technical HTTP ${response.status}`);
+                throw new Error(
+                  `Technical HTTP ${response.status}`
+                );
               }
 
               const rows: unknown = await response.json();
+
               if (!Array.isArray(rows)) {
                 throw new Error("Invalid technical response");
               }
@@ -390,10 +405,13 @@ export default function HomeTechnicalSnapshot({
               signal: currentController.signal,
             }).then(async (response) => {
               if (!response.ok) {
-                throw new Error(`Pivot HTTP ${response.status}`);
+                throw new Error(
+                  `Pivot HTTP ${response.status}`
+                );
               }
 
               const rows: unknown = await response.json();
+
               if (!Array.isArray(rows)) {
                 throw new Error("Invalid Pivot response");
               }
@@ -402,19 +420,27 @@ export default function HomeTechnicalSnapshot({
             }),
           ]);
 
-        if (cancelled || currentController.signal.aborted) return;
+        if (cancelled || currentController.signal.aborted) {
+          return;
+        }
 
         if (technicalResult.status === "fulfilled") {
           setTechnical(technicalResult.value[0] ?? null);
         } else {
-          console.error("Home technical:", technicalResult.reason);
+          console.error(
+            "Home technical:",
+            technicalResult.reason
+          );
           setTechnical(null);
         }
 
         if (pivotResult.status === "fulfilled") {
           setPivot(pivotResult.value[0] ?? null);
         } else {
-          console.error("Home Pivot:", pivotResult.reason);
+          console.error(
+            "Home Pivot:",
+            pivotResult.reason
+          );
           setPivot(null);
         }
 
@@ -425,12 +451,21 @@ export default function HomeTechnicalSnapshot({
 
         setClock(Date.now());
       } catch (error) {
-        if (!cancelled && !currentController.signal.aborted) {
-          console.error("Home analysis refresh:", error);
+        if (
+          !cancelled &&
+          !currentController.signal.aborted
+        ) {
+          console.error(
+            "Home analysis refresh:",
+            error
+          );
           setRefreshError(true);
         }
       } finally {
-        if (!cancelled && !currentController.signal.aborted) {
+        if (
+          !cancelled &&
+          !currentController.signal.aborted
+        ) {
           setLoading(false);
         }
       }
@@ -450,7 +485,10 @@ export default function HomeTechnicalSnapshot({
       }
     };
 
-    document.addEventListener("visibilitychange", onVisible);
+    document.addEventListener(
+      "visibilitychange",
+      onVisible
+    );
 
     const clockInterval = window.setInterval(() => {
       setClock(Date.now());
@@ -461,25 +499,45 @@ export default function HomeTechnicalSnapshot({
     return () => {
       cancelled = true;
       controller?.abort();
+
       window.clearInterval(interval);
       window.clearInterval(clockInterval);
-      document.removeEventListener("visibilitychange", onVisible);
+
+      document.removeEventListener(
+        "visibilitychange",
+        onVisible
+      );
     };
   }, [symbol, timeframe]);
 
-  const ready = activeTechnical?.data_status === "READY";
+  /* ==========================================
+     DATA INTERPRETATION
+  ========================================== */
+
+  const ready =
+    activeTechnical?.data_status === "READY";
 
   const bias =
     ready && activeTechnical?.classification
       ? BIAS[activeTechnical.classification]
       : null;
 
-  const buy = ready ? numeric(activeTechnical?.buy_votes) : null;
-  const sell = ready ? numeric(activeTechnical?.sell_votes) : null;
-  const neutral = ready ? numeric(activeTechnical?.neutral_votes) : null;
+  const buy = ready
+    ? numeric(activeTechnical?.buy_votes)
+    : null;
+
+  const sell = ready
+    ? numeric(activeTechnical?.sell_votes)
+    : null;
+
+  const neutral = ready
+    ? numeric(activeTechnical?.neutral_votes)
+    : null;
 
   const total =
-    buy !== null && sell !== null && neutral !== null
+    buy !== null &&
+    sell !== null &&
+    neutral !== null
       ? buy + sell + neutral
       : 0;
 
@@ -518,26 +576,63 @@ export default function HomeTechnicalSnapshot({
       ? "الأسبوعية"
       : "الشهرية";
 
-  function levelStyle(type: string) {
+  const signalItems = [
+    {
+      label: "شراء",
+      value: buy,
+      color: "text-emerald-700",
+      background: "bg-emerald-50",
+      border: "border-emerald-100",
+      bar: "bg-emerald-500",
+    },
+    {
+      label: "محايد",
+      value: neutral,
+      color: "text-slate-600",
+      background: "bg-slate-50",
+      border: "border-slate-200",
+      bar: "bg-slate-400",
+    },
+    {
+      label: "بيع",
+      value: sell,
+      color: "text-rose-700",
+      background: "bg-rose-50",
+      border: "border-rose-100",
+      bar: "bg-rose-500",
+    },
+  ];
+
+  function pivotClasses(type: string) {
     if (type === "support") {
       return {
-        box: "border-rose-100 bg-rose-50/70",
-        label: "text-rose-700",
+        background: "bg-rose-50/80",
+        border: "border-rose-100",
+        label: "text-rose-600",
+        value: "text-rose-800",
       };
     }
 
     if (type === "resistance") {
       return {
-        box: "border-emerald-100 bg-emerald-50/70",
-        label: "text-emerald-700",
+        background: "bg-emerald-50/80",
+        border: "border-emerald-100",
+        label: "text-emerald-600",
+        value: "text-emerald-800",
       };
     }
 
     return {
-      box: "border-[#b9d1f5] bg-[#eaf3ff]",
-      label: "text-[#1558be]",
+      background: "bg-blue-50",
+      border: "border-blue-200",
+      label: "text-blue-600",
+      value: "text-[#104b9b]",
     };
   }
+
+  /* ==========================================
+     RENDER
+  ========================================== */
 
   return (
     <section
@@ -548,7 +643,10 @@ export default function HomeTechnicalSnapshot({
     >
       <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_14px_40px_rgba(15,23,42,0.055)]">
 
-        {/* HEADER — ORIGINAL BRAND STYLE */}
+        {/* ======================================
+            HEADER — ORIGINAL BRAND STYLE
+        ====================================== */}
+
         <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3 sm:px-6 sm:py-4">
           <div className="flex flex-col items-center justify-between gap-3 lg:flex-row">
 
@@ -559,7 +657,7 @@ export default function HomeTechnicalSnapshot({
 
               <h2
                 id="home-technical-title"
-                className="mt-2 text-[24px] font-black leading-tight text-[#07111f] sm:text-[29px]"
+                className="mt-1.5 text-[20px] font-black leading-tight text-[#07111f] sm:mt-2 sm:text-[29px]"
               >
                 التحليل الفني للأسواق والعملات
               </h2>
@@ -576,62 +674,66 @@ export default function HomeTechnicalSnapshot({
             >
               استكشف مركز التحليل ←
             </Link>
-
           </div>
         </div>
 
-        {/* INSTRUMENT / TIMEFRAME SELECTORS */}
-        <div className="border-b border-[#dce7f5] bg-[#f7faff] px-4 py-3 sm:px-6">
-          <div className="flex flex-wrap items-end justify-between gap-3">
+        {/* ======================================
+            COMPACT MARKET TOOLBAR
+        ====================================== */}
 
-            <div className="flex w-full flex-wrap items-end gap-3 sm:w-auto">
+        <div className="border-b border-[#dce7f5] bg-[#f7faff] px-3 py-2 sm:px-5 sm:py-2.5">
+          <div className="flex flex-wrap items-end gap-2.5">
 
-              <label className="min-w-0 flex-1 sm:w-[255px] sm:flex-none">
-                <span className="mb-1 block text-[10px] font-black text-[#173b70]">
-                  الأداة المالية
-                </span>
+            <label className="min-w-[145px] flex-[1_1_190px] lg:max-w-[270px]">
+              <span className="mb-1 block text-[10px] font-black text-[#173b70]">
+                الأداة المالية
+              </span>
 
-                <select
-                  aria-label="اختر الأداة المالية"
-                  value={symbol}
-                  onChange={(e) => setSymbol(e.target.value)}
-                  className="h-10 w-full rounded-lg border border-blue-200 bg-white px-3 text-[11px] font-bold text-[#102b50] outline-none focus:border-blue-500"
-                >
-                  {INSTRUMENTS.map((item) => (
-                    <option key={item.symbol} value={item.symbol}>
-                      {item.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              <select
+                aria-label="اختر الأداة المالية"
+                value={symbol}
+                onChange={(e) => setSymbol(e.target.value)}
+                className="h-9 w-full rounded-lg border border-blue-200 bg-white px-2.5 text-[11px] font-bold text-[#102b50] outline-none focus:border-blue-500"
+              >
+                {INSTRUMENTS.map((item) => (
+                  <option key={item.symbol} value={item.symbol}>
+                    {item.label}
+                  </option>
+                ))}
+              </select>
+            </label>
 
-              <label className="w-[115px] shrink-0">
-                <span className="mb-1 block text-[10px] font-black text-[#173b70]">
-                  الإطار الزمني
-                </span>
+            <label className="w-[100px] shrink-0">
+              <span className="mb-1 block text-[10px] font-black text-[#173b70]">
+                الإطار الزمني
+              </span>
 
-                <select
-                  aria-label="اختر الإطار الزمني"
-                  dir="ltr"
-                  value={timeframe}
-                  onChange={(e) => setTimeframe(e.target.value)}
-                  className="h-10 w-full rounded-lg border border-blue-200 bg-white px-2 text-center text-[11px] font-black text-[#102b50] outline-none focus:border-blue-500"
-                >
-                  {TIMEFRAMES.map((tf) => (
-                    <option key={tf} value={tf}>{tf}</option>
-                  ))}
-                </select>
-              </label>
+              <select
+                aria-label="اختر الإطار الزمني"
+                dir="ltr"
+                value={timeframe}
+                onChange={(e) => setTimeframe(e.target.value)}
+                className="h-9 w-full rounded-lg border border-blue-200 bg-white px-2 text-center text-[11px] font-black text-[#102b50] outline-none focus:border-blue-500"
+              >
+                {TIMEFRAMES.map((tf) => (
+                  <option key={tf} value={tf}>
+                    {tf}
+                  </option>
+                ))}
+              </select>
+            </label>
 
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="rounded-md border border-blue-100 bg-white px-2.5 py-1.5 text-[10px] font-black text-blue-700">
+            <div className="flex h-9 flex-wrap items-center gap-2 self-end lg:ms-auto">
+              <span
+                dir="ltr"
+                className="rounded-md border border-blue-100 bg-white px-2.5 py-1.5 text-[11px] font-black text-[#17498c]"
+              >
                 {shortSymbol}
               </span>
 
               <span
-                className={`rounded-md border px-2.5 py-1.5 text-[10px] font-bold ${
+                role="status"
+                className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-[10px] font-bold ${
                   loading
                     ? "border-blue-200 bg-blue-50 text-blue-700"
                     : refreshError
@@ -641,6 +743,18 @@ export default function HomeTechnicalSnapshot({
                     : "border-amber-200 bg-amber-50 text-amber-700"
                 }`}
               >
+                <span
+                  className={`h-1.5 w-1.5 rounded-full ${
+                    loading
+                      ? "animate-pulse bg-blue-500"
+                      : refreshError
+                      ? "bg-rose-500"
+                      : isFresh
+                      ? "bg-emerald-500"
+                      : "bg-amber-500"
+                  }`}
+                />
+
                 {loading
                   ? "جاري التحديث"
                   : refreshError
@@ -651,30 +765,35 @@ export default function HomeTechnicalSnapshot({
               </span>
             </div>
 
+           
+
+            
+
           </div>
         </div>
 
-        {/* COMPACT TECHNICAL RATING */}
-        <div className="border-b border-slate-200 bg-white px-4 py-4 sm:px-6">
+        {/* ======================================
+            SINGLE ROW ANALYTICS DASHBOARD
+        ====================================== */}
 
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-            <div>
-              <h3 className="text-[16px] font-black text-[#102b50] sm:text-[18px]">
-                ملخص التقييم الفني
-              </h3>
-              <p className="mt-1 text-[10px] text-slate-500">
-                إشارات المؤشرات على الإطار الزمني {timeframe}
-              </p>
-            </div>
+        <div className="bg-white px-2.5 py-2 sm:px-5 sm:py-3">
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-3 xl:grid-cols-12">
 
-            <span className="rounded-md border border-blue-100 bg-blue-50 px-2.5 py-1 text-[10px] font-black text-blue-700">
-              {shortSymbol} · {timeframe}
-            </span>
-          </div>
+            {/* ==================================
+                PANEL 1 — MARKET SENTIMENT
+            ================================== */}
 
-          <div className="grid items-center gap-4 md:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
+            <div className="min-w-0 rounded-xl border border-[#dce6f3] bg-gradient-to-b from-white to-[#f9fbff] p-3 md:col-span-1 xl:col-span-4 flex h-full flex-col">
+              <div className="mb-1 flex items-center justify-between gap-2">
+                <h3 className="text-[13px] font-black text-[#102b50]">
+                  ملخص التقييم الفني
+                </h3>
 
-            <div className="flex items-center justify-center">
+                <span className="rounded-md bg-blue-50 px-2 py-1 text-[10px] font-black text-blue-700">
+                  {timeframe}
+                </span>
+              </div>
+
               <TechnicalGauge
                 buy={buy}
                 sell={sell}
@@ -682,245 +801,534 @@ export default function HomeTechnicalSnapshot({
                 label={gaugeLabel}
                 color={gaugeColor}
               />
+
+              <div className="mt-1 border-t border-[#e6edf5] pt-2 text-center text-[10px] text-slate-500">
+                الاتجاه العام بناءً على إشارات المؤشرات
+              </div>
             </div>
 
-            <div className="min-w-0 space-y-3">
+            {/* ==================================
+                PANEL 2 — SIGNAL DISTRIBUTION
+            ================================== */}
 
-              {/* TOTAL INDICATOR SIGNALS */}
+            <div className="min-w-0 rounded-xl border border-[#dce6f3] bg-white p-3 md:col-span-1 xl:col-span-3 flex h-full flex-col">
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="text-[13px] font-black text-[#102b50]">
+                  إشارات المؤشرات
+                </h3>
 
-<div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5">
-  <div className="flex items-center justify-between gap-3">
-    <p className="text-[11px] font-bold text-slate-600">
-      إجمالي إشارات المؤشرات
-    </p>
+                <span className="text-[10px] font-bold text-slate-500">
+                  الإجمالي:{" "}
+                  <strong className="text-[#103c77]">
+                    {total > 0 ? total : "—"}
+                  </strong>
+                </span>
+              </div>
 
-    <p className="text-[22px] font-black tabular-nums text-[#103c77]">
-      {total > 0 ? total : "—"}
-    </p>
-  </div>
-</div>
-
-              <div className="grid grid-cols-3 gap-2">
-                {[
-                  {
-                    label: "شراء",
-                    value: buy,
-                    style: "border-emerald-100 bg-emerald-50 text-emerald-700",
-                  },
-                  {
-                    label: "محايد",
-                    value: neutral,
-                    style: "border-slate-200 bg-slate-50 text-slate-600",
-                  },
-                  {
-                    label: "بيع",
-                    value: sell,
-                    style: "border-rose-100 bg-rose-50 text-rose-700",
-                  },
-                ].map((item) => (
+              <div className="mt-3 grid grid-cols-3 gap-1.5">
+                {signalItems.map((item) => (
                   <div
                     key={item.label}
-                    className={`rounded-lg border px-2 py-2 text-center ${item.style}`}
+                    className={`rounded-lg border px-1 py-2 text-center ${item.background} ${item.border}`}
                   >
-                    <p className="text-[19px] font-black tabular-nums">
+                    <p
+                      className={`text-[22px] font-black leading-none tabular-nums ${item.color}`}
+                    >
                       {item.value ?? "—"}
                     </p>
-                    <p className="text-[10px] font-bold">
+
+                    <p
+                      className={`mt-1.5 text-[10px] font-bold ${item.color}`}
+                    >
                       {item.label}
                     </p>
                   </div>
                 ))}
               </div>
 
-              <div className="flex h-2 overflow-hidden rounded-full bg-slate-100">
-                {total > 0 && (
-                  <>
-                    <div
-                      className="bg-emerald-500"
-                      style={{
-                        width: `${((buy ?? 0) / total) * 100}%`,
-                      }}
-                    />
-                    <div
-                      className="bg-slate-300"
-                      style={{
-                        width: `${((neutral ?? 0) / total) * 100}%`,
-                      }}
-                    />
-                    <div
-                      className="bg-rose-500"
-                      style={{
-                        width: `${((sell ?? 0) / total) * 100}%`,
-                      }}
-                    />
-                  </>
-                )}
+              <div className="mt-4">
+                <div className="flex h-2.5 overflow-hidden rounded-full bg-slate-100">
+                  {total > 0 && (
+                    <>
+                      <div
+                        className="bg-emerald-500"
+                        style={{
+                          width: `${((buy ?? 0) / total) * 100}%`,
+                        }}
+                      />
+                      <div
+                        className="bg-slate-400"
+                        style={{
+                          width: `${((neutral ?? 0) / total) * 100}%`,
+                        }}
+                      />
+                      <div
+                        className="bg-rose-500"
+                        style={{
+                          width: `${((sell ?? 0) / total) * 100}%`,
+                        }}
+                      />
+                    </>
+                  )}
+                </div>
               </div>
 
+              <div className="mt-4 flex flex-1 flex-col justify-evenly gap-3 pb-2">
+                {signalItems.map((item) => (
+                  <div
+                    key={item.label}
+                    className="flex min-h-[28px] items-center gap-2"
+                  >
+                    <span
+                      className={`w-10 shrink-0 text-[10px] font-bold ${item.color}`}
+                    >
+                      {item.label}
+                    </span>
+
+                    <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100">
+                      <div
+                        className={`h-full rounded-full ${item.bar}`}
+                        style={{
+                          width:
+                            total > 0
+                              ? `${((item.value ?? 0) / total) * 100}%`
+                              : "0%",
+                        }}
+                      />
+                    </div>
+
+                    <span className="w-9 shrink-0 text-left text-[10px] font-black tabular-nums text-slate-600">
+                      {total > 0
+                        ? `${Math.round(
+                            ((item.value ?? 0) / total) * 100
+                          )}%`
+                        : "—"}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
 
-          
-{/* LAST TECHNICAL CANDLE */}
-<p className="mt-2 text-[10px] leading-5 text-slate-500">
-  آخر شمعة محسوبة:{" "}
-  {clock === null ? "—" : dateText(technicalTime)}
-</p>
+            {/* ==================================
+                PANEL 3 — SUPPORT & RESISTANCE
+            ================================== */}
 
-</div>
+            
+{/* ==========================================
+    PANEL 3 — SUPPORT & RESISTANCE
+    MOBILE COLLAPSIBLE / DESKTOP ALWAYS OPEN
+========================================== */}
 
-{/* ============================================================
-    HORIZONTAL PIVOT — SUPPORT & RESISTANCE
-============================================================ */}
-<div className="bg-white px-4 py-4 sm:px-6">
+<div className="min-w-0 rounded-xl border border-[#dce6f3] bg-white p-3 md:col-span-2 xl:col-span-5">
 
-  <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-    <div>
-      <h3 className="text-[16px] font-black text-[#102b50] sm:text-[18px]">
+  {/* SECTION HEADER */}
+  <div className="flex items-center justify-between gap-2">
+
+    <div className="min-w-0">
+      <h3 className="text-[13px] font-black text-[#102b50]">
         مستويات الدعم والمقاومة
       </h3>
 
-      <p className="mt-1 text-[10px] text-slate-500">
-        النقاط المحورية الكلاسيكية · الفترة المرجعية {pivotPeriod}
+      <p className="mt-0.5 text-[10px] text-slate-500">
+        النقاط المحورية الكلاسيكية · {pivotPeriod}
       </p>
     </div>
 
-    <Link
-      href="/technical-analysis"
-      className="rounded-lg border border-blue-200 bg-white px-3 py-2 text-[10px] font-black text-blue-700 transition hover:bg-blue-50"
+    {/* DESKTOP BADGE */}
+    <span className="hidden shrink-0 rounded-md border border-blue-100 bg-blue-50 px-2 py-1 text-[10px] font-black text-blue-700 lg:inline-flex">
+      Classic Pivot
+    </span>
+
+    {/* MOBILE TOGGLE BUTTON */}
+    <button
+      type="button"
+      aria-expanded={pivotExpanded}
+      aria-controls="mobile-pivot-details"
+      onClick={() => setPivotExpanded((prev) => !prev)}
+      className="inline-flex min-h-[34px] shrink-0 items-center justify-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-2.5 text-[10px] font-black text-blue-700 transition-colors hover:bg-blue-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 lg:hidden"
     >
-      عرض جميع طرق الحساب ←
-    </Link>
+      <span>
+        {pivotExpanded ? "إخفاء المستويات" : "عرض المستويات"}
+      </span>
+
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className={`transition-transform duration-200 ${
+          pivotExpanded ? "rotate-180" : ""
+        }`}
+        aria-hidden="true"
+      >
+        <path d="m6 9 6 6 6-6" />
+      </svg>
+    </button>
+
   </div>
 
-  {/* PIVOT LEVELS TABLE */}
-  <div className="overflow-x-auto rounded-xl border border-[#dbe5f2]">
+  {/* ======================================
+      MOBILE — ALWAYS VISIBLE PIVOT
+  ====================================== */}
 
-    <div className="min-w-[610px]" dir="ltr">
+  <div className="mt-3 lg:hidden">
 
-      {/* HEADINGS */}
-      <div className="grid grid-cols-7 border-b border-[#dbe5f2] bg-[#f2f6fc]">
-        {PIVOT_LEVELS.map((item) => (
-          <div
-            key={item.key}
-            className={`border-r border-[#e4eaf3] px-2 py-2 text-center last:border-r-0 ${
-              item.type === "support"
-                ? "text-rose-700"
-                : item.type === "resistance"
-                ? "text-emerald-700"
-                : "text-[#1558be]"
-            }`}
-          >
-            <span className="text-[11px] font-black">
-              {item.key}
-            </span>
-          </div>
-        ))}
+    <div className="relative flex min-h-[48px] w-full items-center justify-center overflow-hidden rounded-lg border border-[#bfd7fa] bg-gradient-to-l from-[#f1f7ff] via-[#e5f0ff] to-[#f1f7ff]">
+
+      {/* SIDE ACCENTS */}
+      <div className="absolute right-0 top-0 h-full w-[3px] bg-[#2563eb]" />
+      <div className="absolute left-0 top-0 h-full w-[3px] bg-[#2563eb]" />
+
+      <div className="relative z-10 flex min-w-0 items-center justify-center gap-2.5 px-2">
+
+        <span className="text-[11px] font-black text-[#2563eb]">
+          النقطة المحورية
+        </span>
+
+        <span className="h-4 w-px shrink-0 bg-[#bfd7fa]" />
+
+        <span
+          dir="ltr"
+          className="whitespace-nowrap text-[16px] font-black tabular-nums text-[#104b9b]"
+        >
+          {priceText(levels?.P)}
+        </span>
+
+        <span className="rounded bg-white/80 px-1.5 py-0.5 text-[10px] font-black text-blue-600">
+          P
+        </span>
+
+      </div>
+    </div>
+
+  </div>
+
+  {/* ======================================
+      RESPONSIVE LEVEL DETAILS
+
+      MOBILE: COLLAPSED BY DEFAULT
+      DESKTOP: ALWAYS VISIBLE
+  ====================================== */}
+
+  <div
+    id="mobile-pivot-details"
+    className={pivotExpanded ? "block" : "hidden lg:block"}
+  >
+
+    {/* ======================================
+        RESISTANCE LEVELS — R1 / R2 / R3
+    ====================================== */}
+
+    <div className="mt-3">
+
+      <div className="mb-1.5 flex items-center justify-between">
+
+        <span className="text-[10px] font-black text-emerald-700">
+          مستويات المقاومة
+        </span>
+
+        <span className="text-[9px] text-slate-400">
+          R1 – R3
+        </span>
+
       </div>
 
-      {/* VALUES */}
-      <div className="grid grid-cols-7">
-        {PIVOT_LEVELS.map((item) => {
-          const style = levelStyle(item.type);
+      <div className="grid grid-cols-3 gap-1.5">
+
+        {PIVOT_LEVELS.filter(
+          (item) => item.type === "resistance"
+        ).map((item) => {
+
+          const style = pivotClasses(item.type);
 
           return (
             <div
               key={item.key}
-              className={`min-w-0 border-r border-[#e4eaf3] px-2 py-3 text-center last:border-r-0 ${style.box}`}
+              className={`min-w-0 rounded-lg border px-1 py-1.5 text-center sm:px-1.5 sm:py-2 ${style.background} ${style.border}`}
             >
-              <span
+              <p
+                className={`text-[10px] font-black ${style.label}`}
+              >
+                {item.key}
+              </p>
+
+              <p
                 dir="ltr"
-                className={`block whitespace-nowrap text-[12px] font-black tabular-nums sm:text-[13px] ${style.label}`}
+                className={`mt-1 whitespace-nowrap text-[clamp(9px,0.85vw,12px)] font-black tabular-nums ${style.value}`}
               >
                 {priceText(levels?.[item.key])}
-              </span>
+              </p>
             </div>
           );
         })}
+
+      </div>
+    </div>
+
+    {/* ======================================
+        DESKTOP — CENTER PIVOT
+        ALWAYS VISIBLE ON DESKTOP
+    ====================================== */}
+
+    <div className="my-3 hidden w-full lg:block">
+
+      <div className="relative flex min-h-[40px] w-full items-center justify-center overflow-hidden rounded-lg border border-[#bfd7fa] bg-gradient-to-l from-[#f1f7ff] via-[#e5f0ff] to-[#f1f7ff]">
+
+        {/* RIGHT DECORATION */}
+        <div className="absolute right-0 top-0 h-full w-[3px] bg-[#2563eb]" />
+
+        {/* CENTER PIVOT */}
+        <div className="relative z-10 flex items-center justify-center gap-3">
+
+          <span className="text-[11px] font-black text-[#2563eb]">
+            النقطة المحورية
+          </span>
+
+          <span className="h-4 w-px bg-[#bfd7fa]" />
+
+          <span
+            dir="ltr"
+            className="text-[16px] font-black tabular-nums text-[#104b9b]"
+          >
+            {priceText(levels?.P)}
+          </span>
+
+          <span className="rounded bg-white/80 px-1.5 py-0.5 text-[10px] font-black text-blue-600">
+            P
+          </span>
+
+        </div>
+
+        {/* LEFT DECORATION */}
+        <div className="absolute left-0 top-0 h-full w-[3px] bg-[#2563eb]" />
+
       </div>
 
     </div>
+
+    {/* ======================================
+        SUPPORT LEVELS — S1 / S2 / S3
+    ====================================== */}
+
+    <div className="mt-3 lg:mt-0">
+
+      <div className="mb-1.5 flex items-center justify-between">
+
+        <span className="text-[10px] font-black text-rose-700">
+          مستويات الدعم
+        </span>
+
+        <span className="text-[9px] text-slate-400">
+          S1 – S3
+        </span>
+
+      </div>
+
+      <div className="grid grid-cols-3 gap-1.5">
+
+        {PIVOT_LEVELS.filter(
+          (item) => item.type === "support"
+        ).map((item) => {
+
+          const style = pivotClasses(item.type);
+
+          return (
+            <div
+              key={item.key}
+              className={`min-w-0 rounded-lg border px-1 py-1.5 text-center sm:px-1.5 sm:py-2 ${style.background} ${style.border}`}
+            >
+              <p
+                className={`text-[10px] font-black ${style.label}`}
+              >
+                {item.key}
+              </p>
+
+              <p
+                dir="ltr"
+                className={`mt-1 whitespace-nowrap text-[clamp(9px,0.85vw,12px)] font-black tabular-nums ${style.value}`}
+              >
+                {priceText(levels?.[item.key])}
+              </p>
+            </div>
+          );
+        })}
+
+      </div>
+    </div>
+
   </div>
 
-  {/* PIVOT TIMESTAMPS */}
-  <div className="mt-2 flex flex-wrap justify-between gap-x-4 gap-y-1 text-[10px] text-slate-500">
-    <span>
-      شمعة المرجع:{" "}
-      {clock === null
-        ? "—"
-        : dateText(activePivot?.reference_candle_time_utc)}
-    </span>
 
-    <span>
-      آخر حساب:{" "}
-      {clock === null
-        ? "—"
-        : dateText(activePivot?.calculated_at)}
+
+
+            </div>
+          </div>
+        </div>
+
+        {/* ======================================
+            COMPACT BOTTOM INFORMATION BAR
+        ====================================== */}
+
+        
+{/* ======================================
+    RESPONSIVE BOTTOM INFORMATION BAR
+====================================== */}
+
+<div className="border-t border-[#e2eaf4] bg-[#f7faff] px-3 py-3 sm:px-5">
+
+  
+{/* MOBILE ONLY */}
+<div className="space-y-3 lg:hidden">
+
+  {/* Header */}
+  <div className="flex items-center justify-between">
+    <h3 className="text-[12px] font-black text-[#102b50]">
+      معلومات آخر تحديث
+    </h3>
+
+    <span className="rounded-md border border-blue-100 bg-white px-2 py-1 text-[10px] font-black text-blue-700">
+      {timeframe}
     </span>
   </div>
 
-</div>
+  {/* Essential information — 2 cards only */}
+  <div className="grid grid-cols-2 gap-2">
 
-{/* ============================================================
-    HISTORICAL REFERENCE PRICE — BOTTOM OF SECTION
-    THIS IS NOT A LIVE MARKET PRICE
-============================================================ */}
-<div className="border-t border-slate-200 bg-white px-4 py-3 sm:px-6">
-
-  <div className="flex flex-wrap items-center justify-between gap-3">
-
-    <div className="min-w-0">
-      <p className="text-[11px] font-black text-[#153b69]">
-        السعر المرجعي للشمعة المحسوبة — {shortSymbol}
+    {/* Last calculated candle */}
+    <div className="min-w-0 rounded-lg border border-[#e0e9f5] bg-white px-2.5 py-2">
+      <p className="text-[10px] font-bold text-slate-500">
+        آخر شمعة محسوبة
       </p>
 
-      <p className="mt-1 text-[10px] leading-5 text-slate-500">
-        سعر تاريخي استخدمه نظام التحليل الفني عند حساب المؤشرات،
-        وليس السعر الحالي أو المباشر للأداة المالية.
+      <p className="mt-1 text-[11px] font-black leading-5 text-[#153b69]">
+        {clock === null
+          ? "—"
+          : dateText(technicalTime)}
       </p>
     </div>
 
-    <div className="shrink-0 text-left">
+    {/* Historical reference price */}
+    <div className="min-w-0 rounded-lg border border-[#cfe0f8] bg-[#eef5ff] px-2.5 py-2">
+      <p className="text-[10px] font-bold text-[#45658b]">
+        السعر التاريخي (غير مباشر)
+      </p>
+
       <p
         dir="ltr"
-        className="text-[17px] font-black tabular-nums text-[#103c77]"
+        className="mt-1 text-right text-[15px] font-black tabular-nums text-[#104b9b]"
       >
-        {ready ? priceText(activeTechnical?.price) : "—"}
+        {ready
+          ? priceText(activeTechnical?.price)
+          : "—"}
       </p>
     </div>
 
   </div>
 
+  {/* Compact disclaimer */}
+  <p className="text-[10px] leading-5 text-slate-500">
+  السعر المرجعي تاريخي وليس سعراً مباشراً.
+  مستويات الدعم والمقاومة محسوبة وفق الفترة المرجعية.
+  التحليل وصفي وليس توصية تداول.
+</p>
+
+  {/* Full technical analysis CTA */}
+  <Link
+    href="/technical-analysis"
+    className="flex min-h-[42px] w-full items-center justify-center gap-2 rounded-lg bg-brand-500 px-4 text-[12px] font-black text-white shadow-sm transition hover:bg-brand-600"
+  >
+    استكشف مركز التحليل الفني الكامل
+    <span aria-hidden="true">←</span>
+  </Link>
+
 </div>
 
-{/* ============================================================
-    COMPACT EXPLANATORY NOTE
-============================================================ */}
-<div className="border-t border-slate-200 bg-[#f8faff] px-4 py-2.5 sm:px-6">
 
-  <div className="flex items-start gap-2">
+  {/* DESKTOP ONLY — PRESERVE ORIGINAL LAYOUT */}
+  <div className="hidden lg:block">
 
-    <span className="shrink-0 text-[12px] text-blue-600">
-      ⓘ
-    </span>
+    <div className="flex flex-wrap items-center justify-between gap-x-5 gap-y-2">
 
-    <p className="text-[10px] leading-5 text-slate-600 sm:text-[11px]">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
+
+        <div className="flex items-center gap-1.5">
+          <span className="text-[10px] font-bold text-slate-500">
+            آخر شمعة:
+          </span>
+
+          <span className="text-[10px] font-black text-[#153b69]">
+            {clock === null ? "—" : dateText(technicalTime)}
+          </span>
+        </div>
+
+        <span className="h-3 w-px bg-slate-200" />
+
+        <div className="flex items-center gap-1.5">
+          <span className="text-[10px] font-bold text-slate-500">
+            شمعة المرجع:
+          </span>
+
+          <span className="text-[10px] font-black text-[#153b69]">
+            {clock === null
+              ? "—"
+              : dateText(activePivot?.reference_candle_time_utc)}
+          </span>
+        </div>
+
+        <span className="h-3 w-px bg-slate-200" />
+
+        <div className="flex items-center gap-1.5">
+          <span className="text-[10px] font-bold text-slate-500">
+            آخر حساب للمحور:
+          </span>
+
+          <span className="text-[10px] font-black text-[#153b69]">
+            {clock === null
+              ? "—"
+              : dateText(activePivot?.calculated_at)}
+          </span>
+        </div>
+
+      </div>
+
+      <div className="flex items-center gap-2 rounded-md border border-slate-200 bg-white px-2.5 py-1.5">
+        <span className="text-[10px] font-bold text-slate-500">
+          سعر الشمعة التاريخي (غير مباشر):
+        </span>
+
+        <span
+          dir="ltr"
+          className="text-[12px] font-black tabular-nums text-[#103c77]"
+        >
+          {ready
+            ? priceText(activeTechnical?.price)
+            : "—"}
+        </span>
+      </div>
+
+    </div>
+
+    <p className="mt-2 border-t border-[#e2eaf4] pt-2 text-[10px] leading-5 text-slate-500">
       <strong className="text-[#153b69]">
-        ملاحظة حول فترات الحساب:
+        ملاحظة:
       </strong>{" "}
-      تعتمد مستويات Pivot على الفترة اليومية لفريمي M5 وM15،
-      والأسبوعية لفريمات M30 وH1 وH4،
-      والشهرية لفريمي D1 وW1.
-      لذلك قد تتطابق مستويات عدة فريمات بشكل طبيعي.
+      السعر المعروض مرجعي تاريخي وليس سعراً مباشراً.
+      تُحسب مستويات Pivot يومياً لفريمي M5 وM15،
+      وأسبوعياً لفريمات M30 وH1 وH4،
+      وشهرياً لفريمي D1 وW1.
+      قد تتطابق مستويات عدة أطر زمنية بشكل طبيعي.
       التحليل وصفي وليس توصية تداول.
     </p>
 
   </div>
 
 </div>
-
 </div>
-</section>
 
+    </section>
   );
 }
