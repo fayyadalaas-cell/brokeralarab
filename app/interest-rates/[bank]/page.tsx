@@ -269,55 +269,65 @@ function decisionColor(change: number | null): string {
   return "text-blue-700";
 }
 
-function nextMeeting(bank: Bank): Meeting | null {
-  const today = new Date().toISOString().slice(0, 10);
-
-  return (
-    (Array.isArray(bank.meetings) ? bank.meetings : [])
-      .filter((meeting) => {
-        const date = dateOnly(meeting.meeting_date);
-        return (
-          date !== null &&
-          date >= today &&
-          meeting.status !== "completed" &&
-          meeting.status !== "cancelled"
-        );
-      })
-      .sort((a, b) =>
-        (a.meeting_date || "").localeCompare(b.meeting_date || "")
-      )[0] || null
-  );
-}
 
 function upcomingMeetings(bank: Bank): Meeting[] {
   const today = new Date().toISOString().slice(0, 10);
+  const lastDecisionDate = dateOnly(bank.last_decision_date);
 
   return (Array.isArray(bank.meetings) ? bank.meetings : [])
     .filter((meeting) => {
       const date = dateOnly(meeting.meeting_date);
-      return (
-        date !== null &&
-        date >= today &&
-        meeting.status !== "completed" &&
-        meeting.status !== "cancelled"
-      );
+
+      if (!date) return false;
+
+      // Exclude completed or cancelled meetings.
+      if (
+        meeting.status === "completed" ||
+        meeting.status === "cancelled"
+      ) {
+        return false;
+      }
+
+      // Exclude dates before today.
+      if (date < today) return false;
+
+      // The latest recorded decision has already taken place.
+      // Do not show its meeting as upcoming, even if
+      // the meeting status has not yet been updated.
+      if (
+        lastDecisionDate &&
+        date <= lastDecisionDate
+      ) {
+        return false;
+      }
+
+      return true;
     })
     .sort((a, b) =>
-      (a.meeting_date || "").localeCompare(b.meeting_date || "")
+      (a.meeting_date || "").localeCompare(
+        b.meeting_date || ""
+      )
     );
 }
+
+function nextMeeting(bank: Bank): Meeting | null {
+  return upcomingMeetings(bank)[0] || null;
+}
+
+
 
 function historyRows(bank: Bank): HistoryRow[] {
   const map = new Map<string, HistoryRow>();
 
+  // 1. Read saved historical decisions.
   for (const item of Array.isArray(bank.rate_history)
     ? bank.rate_history
     : []) {
     const date = dateOnly(
       item.decision_date ||
-        item.meeting_date ||
-        item.date ||
-        item.effective_date
+      item.meeting_date ||
+      item.date ||
+      item.effective_date
     );
 
     const rate = number(item.decision_rate ?? item.rate);
@@ -330,10 +340,13 @@ function historyRows(bank: Bank): HistoryRow[] {
       previous: number(item.previous_rate),
       change: number(item.change_bps),
       type: item.decision_type || null,
-      source: validUrl(item.decision_source_url || item.source_url),
+      source: validUrl(
+        item.decision_source_url || item.source_url
+      ),
     });
   }
 
+  // 2. Include completed meetings with recorded decisions.
   for (const item of Array.isArray(bank.meetings)
     ? bank.meetings
     : []) {
@@ -349,13 +362,62 @@ function historyRows(bank: Bank): HistoryRow[] {
     map.set(date, {
       date,
       rate,
-      previous: number(item.previous_rate) ?? existing?.previous ?? null,
-      change: number(item.change_bps) ?? existing?.change ?? null,
-      type: item.decision_type || existing?.type || null,
-      source: validUrl(item.decision_source_url) || existing?.source || null,
+      previous:
+        number(item.previous_rate) ??
+        existing?.previous ??
+        null,
+      change:
+        number(item.change_bps) ??
+        existing?.change ??
+        null,
+      type:
+        item.decision_type ||
+        existing?.type ||
+        null,
+      source:
+        validUrl(item.decision_source_url) ||
+        existing?.source ||
+        null,
     });
   }
 
+  // 3. Include the latest recorded bank decision.
+  // This keeps the displayed history synchronized
+  // with the latest decision fields in Supabase.
+  const lastDate = dateOnly(bank.last_decision_date);
+  const currentRate = number(bank.current_rate);
+  const today = new Date().toISOString().slice(0, 10);
+
+  if (
+    lastDate &&
+    lastDate <= today &&
+    currentRate !== null
+  ) {
+    const existing = map.get(lastDate);
+
+    map.set(lastDate, {
+      date: lastDate,
+      rate: currentRate,
+      previous:
+        number(bank.previous_rate) ??
+        existing?.previous ??
+        null,
+      change:
+        number(bank.last_change_bps) ??
+        existing?.change ??
+        null,
+      type:
+        bank.last_decision_type ||
+        existing?.type ||
+        null,
+      source:
+        validUrl(bank.last_decision_source_url) ||
+        existing?.source ||
+        null,
+    });
+  }
+
+  // 4. Sort chronologically and calculate missing changes.
   const chronological = [...map.values()].sort((a, b) =>
     a.date.localeCompare(b.date)
   );
@@ -378,6 +440,7 @@ function historyRows(bank: Bank): HistoryRow[] {
     })
     .reverse();
 }
+
 
 // =====================================================
 // SUPABASE

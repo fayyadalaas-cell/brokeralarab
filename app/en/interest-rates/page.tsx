@@ -465,17 +465,64 @@ const calendarSource = (bank: Bank) =>
    UPCOMING MEETINGS
 ===================================================== */
 
-function getNextMeeting(bank: Bank, today: string) {
-  return (
-    Array.isArray(bank.meetings)
-      ? bank.meetings
-      : []
+
+/* =====================================================
+   UPCOMING MEETINGS
+===================================================== */
+
+// Shared meeting filter for the comparison table
+// and the global monetary policy calendar.
+function isUpcomingMeeting(
+  bank: Bank,
+  meeting: Meeting,
+  today: string
+): boolean {
+  const meetingDate = dateOnly(meeting.meeting_date);
+  const latestDecisionDate = dateOnly(bank.last_decision_date);
+
+  if (!meetingDate) return false;
+
+  // Exclude cancelled and completed meetings.
+  if (
+    meeting.status === "completed" ||
+    meeting.status === "cancelled"
+  ) {
+    return false;
+  }
+
+  // Keep only scheduled meetings.
+  if (meeting.status !== "scheduled") {
+    return false;
+  }
+
+  // Exclude meetings before today.
+  if (meetingDate < today) {
+    return false;
+  }
+
+  // A decision already recorded for this date
+  // means the meeting is no longer upcoming.
+  if (
+    latestDecisionDate &&
+    meetingDate <= latestDecisionDate
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
+// Find the first valid upcoming meeting.
+function getNextMeeting(
+  bank: Bank,
+  today: string
+): Meeting | undefined {
+  return (Array.isArray(bank.meetings)
+    ? bank.meetings
+    : []
   )
-    .filter(
-      (meeting) =>
-        meeting.status === "scheduled" &&
-        !!dateOnly(meeting.meeting_date) &&
-        dateOnly(meeting.meeting_date)! >= today
+    .filter((meeting) =>
+      isUpcomingMeeting(bank, meeting, today)
     )
     .sort((a, b) =>
       (a.meeting_date || "").localeCompare(
@@ -484,20 +531,26 @@ function getNextMeeting(bank: Bank, today: string) {
     )[0];
 }
 
+
 /* =====================================================
    HISTORICAL DECISIONS
 ===================================================== */
 
+
 function getHistory(bank: Bank): HistoryRow[] {
-  const rows: HistoryRow[] = [];
+  const unique = new Map<string, HistoryRow>();
+
+  // =====================================================
+  // 1. HISTORICAL DECISIONS FROM SUPABASE
+  // =====================================================
 
   if (Array.isArray(bank.rate_history)) {
     for (const item of bank.rate_history) {
       const date = dateOnly(
         item.decision_date ||
-          item.meeting_date ||
-          item.date ||
-          item.effective_date
+        item.meeting_date ||
+        item.date ||
+        item.effective_date
       );
 
       const rate = numeric(
@@ -506,7 +559,7 @@ function getHistory(bank: Bank): HistoryRow[] {
 
       if (!date || rate === null) continue;
 
-      rows.push({
+      unique.set(date, {
         date,
         rate,
         previousRate: numeric(item.previous_rate),
@@ -517,47 +570,109 @@ function getHistory(bank: Bank): HistoryRow[] {
     }
   }
 
+  // =====================================================
+  // 2. COMPLETED MEETINGS
+  // =====================================================
+
   if (Array.isArray(bank.meetings)) {
     for (const meeting of bank.meetings) {
-      if (meeting.status !== "completed") continue;
+      if (meeting.status !== "completed") {
+        continue;
+      }
 
       const date = dateOnly(meeting.meeting_date);
-
       const rate = numeric(meeting.decision_rate);
 
       if (!date || rate === null) continue;
 
-      rows.push({
+      const existing = unique.get(date);
+
+      unique.set(date, {
         date,
         rate,
-        previousRate: numeric(meeting.previous_rate),
-        changeBps: numeric(meeting.change_bps),
-        type: meeting.decision_type || null,
+        previousRate:
+          numeric(meeting.previous_rate) ??
+          existing?.previousRate ??
+          null,
+        changeBps:
+          numeric(meeting.change_bps) ??
+          existing?.changeBps ??
+          null,
+        type:
+          meeting.decision_type ||
+          existing?.type ||
+          null,
         source: "meeting",
       });
     }
   }
 
-  const unique = new Map<string, HistoryRow>();
+  // =====================================================
+  // 3. LATEST RECORDED DECISION
+  // =====================================================
 
-  for (const row of rows) {
-    const existing = unique.get(row.date);
+  const latestDate = dateOnly(bank.last_decision_date);
+  const currentRate = numeric(bank.current_rate);
+  const previousRate = numeric(bank.previous_rate);
+  const latestChange = numeric(bank.last_change_bps);
 
-    if (!existing || row.source === "meeting") {
-      unique.set(row.date, row);
-    }
+  const today = new Date().toISOString().slice(0, 10);
+
+  if (
+    latestDate &&
+    latestDate <= today &&
+    currentRate !== null
+  ) {
+    const existing = unique.get(latestDate);
+
+    // Use the latest bank fields as the current
+    // authoritative values in this database.
+    // A Map prevents duplicate rows on the same date.
+
+    unique.set(latestDate, {
+      date: latestDate,
+      rate: currentRate,
+      previousRate:
+        previousRate ??
+        existing?.previousRate ??
+        null,
+      changeBps:
+        latestChange ??
+        existing?.changeBps ??
+        null,
+      type:
+        latestChange !== null
+          ? latestChange > 0
+            ? "hike"
+            : latestChange < 0
+            ? "cut"
+            : "hold"
+          : existing?.type ?? null,
+      source: existing?.source ?? "history",
+    });
   }
+
+  // =====================================================
+  // 4. SORT HISTORY BY DATE
+  // =====================================================
 
   const sorted = [...unique.values()].sort((a, b) =>
     a.date.localeCompare(b.date)
   );
+
+  // =====================================================
+  // 5. CALCULATE MISSING PREVIOUS RATES
+  //    AND BASIS POINT CHANGES
+  // =====================================================
 
   return sorted.map((row, index) => {
     const prior =
       index > 0 ? sorted[index - 1] : null;
 
     const previousRate =
-      row.previousRate ?? prior?.rate ?? null;
+      row.previousRate ??
+      prior?.rate ??
+      null;
 
     const changeBps =
       row.changeBps ??
@@ -574,6 +689,7 @@ function getHistory(bank: Bank): HistoryRow[] {
     };
   });
 }
+
 
 /* =====================================================
    SUPABASE — SHARED DATA, ENGLISH CONTENT
@@ -636,19 +752,33 @@ async function loadData(): Promise<{
           record.is_published !== false
       ) || null;
 
-    const banks = records
-      .filter(
-        (record) =>
-          BANK_SLUGS.includes(
-            record.slug as (typeof BANK_SLUGS)[number]
-          ) &&
-          record.is_published !== false
-      )
-      .sort(
-        (a, b) =>
-          (a.display_order ?? 99) -
-          (b.display_order ?? 99)
-      );
+    
+const banks = records
+  .filter(
+    (record) =>
+      BANK_SLUGS.includes(
+        record.slug as (typeof BANK_SLUGS)[number]
+      ) &&
+      record.is_published !== false
+  )
+  .sort((a, b) => {
+    const dateA = dateOnly(a.last_decision_date) || "";
+    const dateB = dateOnly(b.last_decision_date) || "";
+
+    // Most recent monetary policy decision first.
+    const byDecisionDate = dateB.localeCompare(dateA);
+
+    if (byDecisionDate !== 0) {
+      return byDecisionDate;
+    }
+
+    // Keep the original display order for equal dates.
+    return (
+      (a.display_order ?? 99) -
+      (b.display_order ?? 99)
+    );
+  });
+
 
     return {
       banks,
@@ -1538,25 +1668,27 @@ export default async function InterestRatesPage({
      UPCOMING MEETINGS
   ===================================================== */
 
-  const allMeetings: EventRow[] = banks
-    .flatMap((bank) =>
-      (Array.isArray(bank.meetings)
-        ? bank.meetings
-        : []
-      )
-        .filter(
-          (meeting) =>
-            meeting.status === "scheduled" &&
-            !!dateOnly(meeting.meeting_date) &&
-            dateOnly(meeting.meeting_date)! >= today
-        )
-        .map((meeting) => ({ bank, meeting }))
+  
+const allMeetings: EventRow[] = banks
+  .flatMap((bank) =>
+    (Array.isArray(bank.meetings)
+      ? bank.meetings
+      : []
     )
-    .sort((a, b) =>
-      (a.meeting.meeting_date || "").localeCompare(
-        b.meeting.meeting_date || ""
+      .filter((meeting) =>
+        isUpcomingMeeting(bank, meeting, today)
       )
-    );
+      .map((meeting) => ({
+        bank,
+        meeting,
+      }))
+  )
+  .sort((a, b) =>
+    (a.meeting.meeting_date || "").localeCompare(
+      b.meeting.meeting_date || ""
+    )
+  );
+
 
   const calendarYears = [
     ...new Set(

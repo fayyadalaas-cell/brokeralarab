@@ -383,18 +383,68 @@ const officialSource = (bank: Bank) =>
 const calendarSource = (bank: Bank) =>
   BANK_DETAILS[bank.slug]?.calendar || officialSource(bank);
 
-function getNextMeeting(bank: Bank, today: string) {
-  return (Array.isArray(bank.meetings) ? bank.meetings : [])
-    .filter(
-      (m) =>
-        m.status === "scheduled" &&
-        !!dateOnly(m.meeting_date) &&
-        dateOnly(m.meeting_date)! >= today
+
+// =====================================================
+// UPCOMING MEETINGS — SHARED FILTER
+// =====================================================
+
+function isUpcomingMeeting(
+  bank: Bank,
+  meeting: Meeting,
+  today: string
+): boolean {
+  const meetingDate = dateOnly(meeting.meeting_date);
+  const latestDecisionDate = dateOnly(bank.last_decision_date);
+
+  if (!meetingDate) return false;
+
+  // Exclude completed or cancelled meetings.
+  if (
+    meeting.status === "completed" ||
+    meeting.status === "cancelled"
+  ) {
+    return false;
+  }
+
+  // Only scheduled meetings can be upcoming.
+  if (meeting.status !== "scheduled") {
+    return false;
+  }
+
+  // Exclude past meetings.
+  if (meetingDate < today) {
+    return false;
+  }
+
+  // Exclude meetings whose decisions are already recorded.
+  if (
+    latestDecisionDate &&
+    meetingDate <= latestDecisionDate
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
+function getNextMeeting(
+  bank: Bank,
+  today: string
+): Meeting | undefined {
+  return (Array.isArray(bank.meetings)
+    ? bank.meetings
+    : []
+  )
+    .filter((meeting) =>
+      isUpcomingMeeting(bank, meeting, today)
     )
     .sort((a, b) =>
-      (a.meeting_date || "").localeCompare(b.meeting_date || "")
+      (a.meeting_date || "").localeCompare(
+        b.meeting_date || ""
+      )
     )[0];
 }
+
 
 
 function getHistory(bank: Bank): HistoryRow[] {
@@ -513,21 +563,81 @@ function getHistory(bank: Bank): HistoryRow[] {
     });
   });
 
-  // Remove exact duplicates, preferring meeting records.
-  const unique = new Map<string, HistoryRow>();
+  
+// =====================================================
+// REMOVE DUPLICATES AND INCLUDE LATEST DECISION
+// =====================================================
 
-  for (const row of rows) {
-    const key = `${row.date}|${row.rate.toFixed(6)}`;
-    const existing = unique.get(key);
+// 1. Keep existing historical records and meetings.
+const unique = new Map<string, HistoryRow>();
 
-    if (!existing || row.source === "meeting") {
-      unique.set(key, row);
+for (const row of rows) {
+  const key = `${row.date}|${row.rate.toFixed(6)}`;
+  const existing = unique.get(key);
+
+  if (!existing || row.source === "meeting") {
+    unique.set(key, row);
+  }
+}
+
+// 2. Read the latest recorded decision.
+const latestDate = dateOnly(bank.last_decision_date);
+const currentRate = numeric(bank.current_rate);
+const previousRate = numeric(bank.previous_rate);
+const latestChange = numeric(bank.last_change_bps);
+
+const today = new Date().toISOString().slice(0, 10);
+
+// 3. Include the latest recorded decision.
+if (
+  latestDate &&
+  latestDate <= today &&
+  currentRate !== null
+) {
+  // Find existing details for the same date.
+  const existing = rows.find(
+    (row) => row.date === latestDate
+  );
+
+  // Remove older entries for this decision date.
+  for (const [key, row] of unique.entries()) {
+    if (row.date === latestDate) {
+      unique.delete(key);
     }
   }
 
-  const sorted = [...unique.values()].sort((a, b) =>
-    a.date.localeCompare(b.date)
+  // Insert the latest decision without duplication.
+  unique.set(
+    `${latestDate}|${currentRate.toFixed(6)}`,
+    {
+      date: latestDate,
+      rate: currentRate,
+      previousRate:
+        previousRate ??
+        existing?.previousRate ??
+        null,
+      changeBps:
+        latestChange ??
+        existing?.changeBps ??
+        null,
+      type:
+        latestChange !== null
+          ? latestChange > 0
+            ? "hike"
+            : latestChange < 0
+            ? "cut"
+            : "hold"
+          : existing?.type ?? null,
+      source: existing?.source ?? "history",
+    }
   );
+}
+
+// 4. Preserve chronological sorting.
+const sorted = [...unique.values()].sort((a, b) =>
+  a.date.localeCompare(b.date)
+);
+
 
   return sorted.map((row, index) => {
     const prior = index > 0 ? sorted[index - 1] : null;
@@ -592,18 +702,33 @@ async function loadData(): Promise<{
         (r) => r.slug === "global" && r.is_published !== false
       ) || null;
 
-    const banks = records
-      .filter(
-        (r) =>
-          BANK_SLUGS.includes(
-            r.slug as (typeof BANK_SLUGS)[number]
-          ) && r.is_published !== false
-      )
-      .sort(
-        (a, b) =>
-          (a.display_order ?? 99) -
-          (b.display_order ?? 99)
-      );
+    
+const banks = records
+  .filter(
+    (r) =>
+      BANK_SLUGS.includes(
+        r.slug as (typeof BANK_SLUGS)[number]
+      ) &&
+      r.is_published !== false
+  )
+  .sort((a, b) => {
+    const dateA = dateOnly(a.last_decision_date) || "";
+    const dateB = dateOnly(b.last_decision_date) || "";
+
+    // Show the bank with the latest decision first.
+    const byDecisionDate = dateB.localeCompare(dateA);
+
+    if (byDecisionDate !== 0) {
+      return byDecisionDate;
+    }
+
+    // Preserve the original order when dates match.
+    return (
+      (a.display_order ?? 99) -
+      (b.display_order ?? 99)
+    );
+  });
+
 
     return { banks, hub, error: false };
   } catch (error) {
@@ -1319,17 +1444,22 @@ export default async function InterestRatesPage({
   const today = new Date().toISOString().slice(0, 10);
 
   
+
 const allMeetings: EventRow[] = banks
   .flatMap((bank) =>
-    (Array.isArray(bank.meetings) ? bank.meetings : [])
-      .filter(
-        (meeting) =>
-          meeting.status === "scheduled" &&
-          !!dateOnly(meeting.meeting_date) &&
-          dateOnly(meeting.meeting_date)! >= today
+    (Array.isArray(bank.meetings)
+      ? bank.meetings
+      : []
+    )
+      .filter((meeting) =>
+        isUpcomingMeeting(bank, meeting, today)
       )
-      .map((meeting) => ({ bank, meeting }))
+      .map((meeting) => ({
+        bank,
+        meeting,
+      }))
   )
+
   .sort((a, b) => {
     const dateA = dateOnly(a.meeting.meeting_date) || "";
     const dateB = dateOnly(b.meeting.meeting_date) || "";
