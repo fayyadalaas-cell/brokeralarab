@@ -365,17 +365,23 @@ function getZoneMainLevel(
 }
 
 function dateText(value: unknown) {
-  if (typeof value !== "string" || !value) return "غير متاح";
+  if (typeof value !== "string" || !value) {
+    return "غير متاح";
+  }
+
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "غير متاح";
+
+  if (Number.isNaN(date.getTime())) {
+    return "غير متاح";
+  }
 
   return new Intl.DateTimeFormat("ar", {
-    timeZone: "America/Toronto",
     year: "numeric",
     month: "short",
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
+    hour12: true,
   }).format(date);
 }
 
@@ -1172,6 +1178,17 @@ type PivotV6Row = {
   calculated_at: string;
 };
 
+type PivotV6EngineStatus = {
+  engine_id: string;
+  status: string;
+  last_success_at: string | null;
+  last_checked_at: string | null;
+  last_published_at: string | null;
+  last_published_rows: number;
+  symbols_count: number;
+  rows_validated: number;
+};
+
 
 const PIVOT_V6_METHODS: {
   key: PivotV6Method;
@@ -1253,6 +1270,157 @@ const [activePivotMethod, setActivePivotMethod] =
   const [error, setError] = useState("");
   const [checkedAt, setCheckedAt] =
     useState<string | null>(null);
+
+    // ============================================================
+// PIVOT V6 — ENGINE HEALTH MONITORING
+// Reads broker_pivot_engine_status independently.
+// ============================================================
+
+const [pivotEngineStatus, setPivotEngineStatus] =
+  useState<PivotV6EngineStatus | null>(null);
+
+const [pivotStatusError, setPivotStatusError] =
+  useState(false);
+
+const [pivotClock, setPivotClock] =
+  useState<number | null>(null);
+
+useEffect(() => {
+  let cancelled = false;
+  let controller: AbortController | null = null;
+
+  async function loadPivotEngineStatus() {
+    controller?.abort();
+
+    const currentController = new AbortController();
+    controller = currentController;
+
+    try {
+      const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+      const key =
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+
+      if (!url || !key) {
+        throw new Error("Supabase configuration unavailable");
+      }
+
+      const endpoint = new URL(
+        `${url.replace(/\/$/, "")}/rest/v1/broker_pivot_engine_status`
+      );
+
+      endpoint.searchParams.set(
+        "select",
+        "engine_id,status,last_success_at,last_checked_at,last_published_at,last_published_rows,symbols_count,rows_validated"
+      );
+
+      endpoint.searchParams.set("engine_id", "eq.pivot-v6");
+      endpoint.searchParams.set("limit", "1");
+
+      const response = await fetch(endpoint.toString(), {
+        method: "GET",
+        headers: {
+          apikey: key,
+          Authorization: `Bearer ${key}`,
+          Accept: "application/json",
+        },
+        cache: "no-store",
+        signal: currentController.signal,
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `Pivot engine status HTTP ${response.status}`
+        );
+      }
+
+      const result: unknown = await response.json();
+
+      if (!Array.isArray(result)) {
+        throw new Error("Invalid Pivot engine status response");
+      }
+
+      const record = result[0] as
+        | PivotV6EngineStatus
+        | undefined;
+
+      if (!cancelled && !currentController.signal.aborted) {
+        setPivotEngineStatus(
+          record?.engine_id === "pivot-v6"
+            ? record
+            : null
+        );
+
+        setPivotStatusError(!record || record.engine_id !== "pivot-v6");
+        setPivotClock(Date.now());
+      }
+    } catch (error) {
+      if (!cancelled && !currentController.signal.aborted) {
+        console.error("Pivot V6 engine status:", error);
+        setPivotStatusError(true);
+        setPivotEngineStatus(null);
+      }
+    }
+  }
+
+  void loadPivotEngineStatus();
+
+  const interval = window.setInterval(() => {
+    if (document.visibilityState === "visible") {
+      void loadPivotEngineStatus();
+    }
+  }, 60_000);
+
+  const onVisibilityChange = () => {
+    if (document.visibilityState === "visible") {
+      void loadPivotEngineStatus();
+    }
+  };
+
+  document.addEventListener(
+    "visibilitychange",
+    onVisibilityChange
+  );
+
+  const clockInterval = window.setInterval(() => {
+    setPivotClock(Date.now());
+  }, 60_000);
+
+  setPivotClock(Date.now());
+
+  return () => {
+    cancelled = true;
+    controller?.abort();
+
+    window.clearInterval(interval);
+    window.clearInterval(clockInterval);
+
+    document.removeEventListener(
+      "visibilitychange",
+      onVisibilityChange
+    );
+  };
+}, []);
+
+const pivotLastSuccess =
+  pivotEngineStatus?.last_success_at ?? null;
+
+const pivotSuccessTimestamp = pivotLastSuccess
+  ? Date.parse(pivotLastSuccess)
+  : NaN;
+
+const pivotAge =
+  pivotClock !== null && Number.isFinite(pivotSuccessTimestamp)
+    ? pivotClock - pivotSuccessTimestamp
+    : NaN;
+
+const pivotEngineFresh =
+  pivotEngineStatus?.status === "success" &&
+  !pivotStatusError &&
+  Number.isFinite(pivotAge) &&
+  pivotAge >= -120_000 &&
+  pivotAge <= 15 * 60_000;
 
   const selectedPivotInstrument =
     INSTRUMENTS.find(
@@ -1742,13 +1910,49 @@ function levelCard(
               </span>
             </div>
 
-            <div className="flex items-center gap-2 text-[10px] text-slate-500">
-              <Clock3 size={13} />
+            <div className="flex flex-wrap items-center gap-2 text-[10px]">
 
-              {checkedAt
-                ? `آخر فحص: ${dateText(checkedAt)}`
-                : "جارِ فحص البيانات"}
-            </div>
+  <span
+    className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 font-black ${
+      pivotEngineFresh
+        ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+        : "border-amber-200 bg-amber-50 text-amber-700"
+    }`}
+  >
+    <span
+      className={`h-1.5 w-1.5 rounded-full ${
+        pivotEngineFresh
+          ? "bg-emerald-500"
+          : "bg-amber-500"
+      }`}
+    />
+
+    {pivotEngineFresh
+      ? "النظام يعمل"
+      : "التحديث غير مؤكد"}
+  </span>
+
+  <span className="inline-flex items-center gap-1.5 text-slate-600">
+    <Clock3 size={13} />
+
+    <span className="font-bold">
+      آخر حساب ناجح:
+    </span>
+
+    <span className="font-black text-[#153b69]">
+      {pivotClock === null
+        ? "—"
+        : dateText(pivotLastSuccess)}
+    </span>
+  </span>
+
+  <span className="text-slate-400">
+    {checkedAt
+      ? `آخر فحص للصفحة: ${dateText(checkedAt)}`
+      : "جارِ فحص البيانات"}
+  </span>
+
+</div>
           </div>
 
           
@@ -2089,21 +2293,48 @@ function levelCard(
 
                       {/* METHOD TIMESTAMPS */}
 
-                      <div className="flex flex-wrap items-center justify-between gap-x-5 gap-y-2 border-t border-slate-100 bg-[#fafcff] px-4 py-3 sm:px-5">
+<div className="flex flex-wrap items-center justify-between gap-x-5 gap-y-2 border-t border-slate-100 bg-[#fafcff] px-4 py-3 sm:px-5">
 
-                        <p className="text-[10px] text-slate-500">
-                          الشمعة المرجعية:{" "}
-                          <span className="font-bold text-[#102b50]">
-                            {dateText(row.reference_candle_time_utc)}
-                          </span>
-                        </p>
+  <p className="text-[10px] text-slate-500">
+    الشمعة المرجعية:{" "}
+    <span className="font-bold text-[#102b50]">
+      {dateText(row.reference_candle_time_utc)}
+    </span>
+  </p>
 
-                        <p className="text-[10px] text-slate-400">
-                          تاريخ الحساب:{" "}
-                          {dateText(row.calculated_at)}
-                        </p>
+  <div className="flex flex-wrap items-center gap-2">
 
-                      </div>
+    <p className="text-[10px] text-slate-500">
+      آخر حساب ناجح للنظام:{" "}
+
+      <span
+        className={`font-black ${
+          pivotEngineFresh
+            ? "text-emerald-700"
+            : "text-amber-700"
+        }`}
+      >
+        {pivotClock === null
+          ? "—"
+          : dateText(pivotLastSuccess)}
+      </span>
+    </p>
+
+    <span
+      className={`rounded-md px-1.5 py-0.5 text-[9px] font-black ${
+        pivotEngineFresh
+          ? "bg-emerald-50 text-emerald-700"
+          : "bg-amber-50 text-amber-700"
+      }`}
+    >
+      {pivotEngineFresh
+        ? "النظام يعمل"
+        : "التحديث غير مؤكد"}
+    </span>
+
+  </div>
+
+</div>
 
                     </article>
                   );

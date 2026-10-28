@@ -372,12 +372,12 @@ function dateText(value: unknown) {
   }
 
   return new Intl.DateTimeFormat("en-US", {
-    timeZone: "America/Toronto",
     year: "numeric",
     month: "short",
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
+    hour12: true,
   }).format(date);
 }
 
@@ -1290,6 +1290,21 @@ type PivotV6RecordEn = {
   calculated_at: string;
 };
 
+// ============================================================
+// PIVOT V6 — ENGINE STATUS
+// ============================================================
+
+type PivotV6EngineStatus = {
+  engine_id: string;
+  status: string;
+  last_success_at: string | null;
+  last_checked_at: string | null;
+  last_published_at: string | null;
+  last_published_rows: number;
+  symbols_count: number;
+  rows_validated: number;
+};
+
 const PIVOT_V6_METHODS_EN: {
   key: PivotV6MethodEn;
   name: string;
@@ -1364,6 +1379,187 @@ function PivotV6PanelEn() {
   const [error, setError] = useState("");
   const [checkedAt, setCheckedAt] =
     useState<string | null>(null);
+
+    // ============================================================
+// PIVOT V6 — ENGINE HEALTH MONITORING
+// Independent of instrument and timeframe selection.
+// ============================================================
+
+const [pivotEngineStatus, setPivotEngineStatus] =
+  useState<PivotV6EngineStatus | null>(null);
+
+const [pivotStatusError, setPivotStatusError] =
+  useState(false);
+
+const [pivotClock, setPivotClock] =
+  useState<number | null>(null);
+
+useEffect(() => {
+  let cancelled = false;
+  let controller: AbortController | null = null;
+
+  async function loadPivotEngineStatus() {
+    controller?.abort();
+
+    const currentController = new AbortController();
+    controller = currentController;
+
+    try {
+      const url =
+        process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+      const key =
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+
+      if (!url || !key) {
+        throw new Error(
+          "Supabase configuration unavailable"
+        );
+      }
+
+      const endpoint = new URL(
+        `${url.replace(/\/$/, "")}/rest/v1/broker_pivot_engine_status`
+      );
+
+      endpoint.searchParams.set(
+        "select",
+        "engine_id,status,last_success_at,last_checked_at,last_published_at,last_published_rows,symbols_count,rows_validated"
+      );
+
+      endpoint.searchParams.set(
+        "engine_id",
+        "eq.pivot-v6"
+      );
+
+      endpoint.searchParams.set("limit", "1");
+
+      const response = await fetch(
+        endpoint.toString(),
+        {
+          method: "GET",
+          headers: {
+            apikey: key,
+            Authorization: `Bearer ${key}`,
+            Accept: "application/json",
+          },
+          cache: "no-store",
+          signal: currentController.signal,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          `Pivot engine status HTTP ${response.status}`
+        );
+      }
+
+      const result: unknown = await response.json();
+
+      if (!Array.isArray(result)) {
+        throw new Error(
+          "Invalid Pivot engine status response"
+        );
+      }
+
+      const record = result[0] as
+        | PivotV6EngineStatus
+        | undefined;
+
+      if (
+        !cancelled &&
+        !currentController.signal.aborted
+      ) {
+        setPivotEngineStatus(
+          record?.engine_id === "pivot-v6"
+            ? record
+            : null
+        );
+
+        setPivotStatusError(
+          !record || record.engine_id !== "pivot-v6"
+        );
+
+        setPivotClock(Date.now());
+      }
+    } catch (error) {
+      if (
+        !cancelled &&
+        !currentController.signal.aborted
+      ) {
+        console.error(
+          "Pivot V6 engine status:",
+          error
+        );
+
+        setPivotStatusError(true);
+        setPivotEngineStatus(null);
+      }
+    }
+  }
+
+  void loadPivotEngineStatus();
+
+  const interval = window.setInterval(() => {
+    if (document.visibilityState === "visible") {
+      void loadPivotEngineStatus();
+    }
+  }, 60_000);
+
+  const onVisibilityChange = () => {
+    if (document.visibilityState === "visible") {
+      void loadPivotEngineStatus();
+    }
+  };
+
+  document.addEventListener(
+    "visibilitychange",
+    onVisibilityChange
+  );
+
+  const clockInterval = window.setInterval(() => {
+    setPivotClock(Date.now());
+  }, 60_000);
+
+  setPivotClock(Date.now());
+
+  return () => {
+    cancelled = true;
+    controller?.abort();
+
+    window.clearInterval(interval);
+    window.clearInterval(clockInterval);
+
+    document.removeEventListener(
+      "visibilitychange",
+      onVisibilityChange
+    );
+  };
+}, []);
+
+// ============================================================
+// LAST SUCCESSFUL PIVOT ENGINE CALCULATION
+// ============================================================
+
+const pivotLastSuccess =
+  pivotEngineStatus?.last_success_at ?? null;
+
+const pivotSuccessTimestamp = pivotLastSuccess
+  ? Date.parse(pivotLastSuccess)
+  : NaN;
+
+const pivotAge =
+  pivotClock !== null &&
+  Number.isFinite(pivotSuccessTimestamp)
+    ? pivotClock - pivotSuccessTimestamp
+    : NaN;
+
+const pivotEngineFresh =
+  pivotEngineStatus?.status === "success" &&
+  !pivotStatusError &&
+  Number.isFinite(pivotAge) &&
+  pivotAge >= -120_000 &&
+  pivotAge <= 15 * 60_000;
 
   const selectedInstrument =
     INSTRUMENTS.find(
@@ -1832,13 +2028,50 @@ function levelCard(
                 Levels calculated from completed candles
               </span>
             </div>
+{/* PIVOT ENGINE STATUS + LAST SUCCESS */}
+<div className="flex flex-wrap items-center gap-2 text-[10px]">
 
-            <span className="flex items-center gap-2 text-[10px] text-slate-500">
-              <Clock3 size={13} />
-              {checkedAt
-                ? `Last checked: ${formatDate(checkedAt)}`
-                : "Checking data"}
-            </span>
+  <span
+    className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 font-black ${
+      pivotEngineFresh
+        ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+        : "border-amber-200 bg-amber-50 text-amber-700"
+    }`}
+  >
+    <span
+      className={`h-1.5 w-1.5 rounded-full ${
+        pivotEngineFresh
+          ? "bg-emerald-500"
+          : "bg-amber-500"
+      }`}
+    />
+
+    {pivotEngineFresh
+      ? "System Operational"
+      : "Update Unverified"}
+  </span>
+
+  <span className="inline-flex items-center gap-1.5 text-slate-600">
+    <Clock3 size={13} />
+
+    <span className="font-bold">
+      Last Successful Calculation:
+    </span>
+
+    <span className="font-black text-[#153b69]">
+      {pivotClock === null
+        ? "—"
+        : formatDate(pivotLastSuccess)}
+    </span>
+  </span>
+
+  <span className="text-slate-400">
+    {checkedAt
+      ? `Page checked: ${formatDate(checkedAt)}`
+      : "Checking data"}
+  </span>
+
+</div>
           </div>
 
           
@@ -2140,19 +2373,58 @@ function levelCard(
                         </div>
                       </div>
 
-                      {/* TIMESTAMPS */}
-                      <div className="flex flex-wrap items-center justify-between gap-x-5 gap-y-2 border-t border-slate-100 bg-[#fafcff] px-4 py-3 sm:px-5">
-                        <p className="text-[10px] text-slate-500">
-                          Reference candle:{" "}
-                          <span className="font-bold text-[#102b50]">
-                            {formatDate(row.reference_candle_time_utc)}
-                          </span>
-                        </p>
+                     {/* ====================================================
+    PIVOT V6 METHOD TIMESTAMPS
+    Reference candle remains unchanged.
+    Engine success comes from broker_pivot_engine_status.
+==================================================== */}
 
-                        <p className="text-[10px] text-slate-400">
-                          Calculated: {formatDate(row.calculated_at)}
-                        </p>
-                      </div>
+<div className="flex flex-wrap items-center justify-between gap-x-5 gap-y-2 border-t border-slate-100 bg-[#fafcff] px-4 py-3 sm:px-5">
+
+  {/* REFERENCE CANDLE */}
+  <p className="text-[10px] text-slate-500">
+    Reference Candle:{" "}
+
+    <span className="font-bold text-[#102b50]">
+      {formatDate(row.reference_candle_time_utc)}
+    </span>
+  </p>
+
+  {/* LAST SUCCESSFUL ENGINE CALCULATION */}
+  <div className="flex flex-wrap items-center gap-2">
+
+    <p className="text-[10px] text-slate-500">
+      Last Successful Calculation:{" "}
+
+      <span
+        className={`font-black ${
+          pivotEngineFresh
+            ? "text-emerald-700"
+            : "text-amber-700"
+        }`}
+      >
+        {pivotClock === null
+          ? "—"
+          : formatDate(pivotLastSuccess)}
+      </span>
+    </p>
+
+    {/* ENGINE HEALTH BADGE */}
+    <span
+      className={`rounded-md px-1.5 py-0.5 text-[9px] font-black ${
+        pivotEngineFresh
+          ? "bg-emerald-50 text-emerald-700"
+          : "bg-amber-50 text-amber-700"
+      }`}
+    >
+      {pivotEngineFresh
+        ? "System Operational"
+        : "Update Unverified"}
+    </span>
+
+  </div>
+
+</div>
                     </article>
                   );
                 })}
@@ -9280,17 +9552,17 @@ const mobileVisibleMarkets = showEveryMarket
   );
 
   const formatLastCalculation = (timestamp: number | null) => {
-    if (timestamp === null) return "Unavailable";
+  if (timestamp === null) return "Unavailable";
 
-    return new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      timeZone: "UTC",
-    }).format(new Date(timestamp));
-  };
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  }).format(new Date(timestamp));
+};
 
   const completeness =
     TOTAL_EXPECTED > 0
@@ -9409,7 +9681,7 @@ const mobileVisibleMarkets = showEveryMarket
     {
       label: "Last Recorded Calculation",
       value: formatLastCalculation(lastCalculation),
-      note: "Coordinated Universal Time (UTC)",
+      note: "Displayed in your local time zone",
       type: "date",
     },
   ].map((stat) => (

@@ -26,6 +26,17 @@ export type HomePivotRow = {
   reference_candle_time_utc?: string | null;
 };
 
+type HomePivotEngineStatus = {
+  engine_id: string;
+  status: string;
+  last_success_at: string | null;
+  last_checked_at: string | null;
+  last_published_at: string | null;
+  last_published_rows: number;
+  symbols_count: number;
+  rows_validated: number;
+};
+
 type Props = {
   initialTechnical: HomeTechnicalRow | null;
   initialPivot: HomePivotRow | null;
@@ -304,6 +315,10 @@ export default function HomeTechnicalSnapshot({
   const [refreshError, setRefreshError] = useState(false);
   const [clock, setClock] = useState<number | null>(null);
   const [pivotExpanded, setPivotExpanded] = useState(false);
+  const [pivotEngineStatus, setPivotEngineStatus] =
+  useState<HomePivotEngineStatus | null>(null);
+
+const [pivotStatusError, setPivotStatusError] = useState(false);
 
   const shortSymbol = symbol
     .replace(/c$/, "")
@@ -377,8 +392,38 @@ export default function HomeTechnicalSnapshot({
           Accept: "application/json",
         };
 
-        const [technicalResult, pivotResult] =
-          await Promise.allSettled([
+        const statusUrl = new URL(
+  `${base}/rest/v1/broker_pivot_engine_status`
+);
+
+statusUrl.searchParams.set(
+  "select",
+  "engine_id,status,last_success_at,last_checked_at,last_published_at,last_published_rows,symbols_count,rows_validated"
+);
+
+statusUrl.searchParams.set("engine_id", "eq.pivot-v6");
+statusUrl.searchParams.set("limit", "1");
+
+const statusPromise = fetch(statusUrl.toString(), {
+  headers,
+  cache: "no-store",
+  signal: currentController.signal,
+}).then(async (response) => {
+  if (!response.ok) {
+    throw new Error(`Pivot status HTTP ${response.status}`);
+  }
+
+  const rows: unknown = await response.json();
+
+  if (!Array.isArray(rows)) {
+    throw new Error("Invalid Pivot engine status response");
+  }
+
+  return rows as HomePivotEngineStatus[];
+});
+
+        const [technicalResult, pivotResult, statusResult] =
+  await Promise.allSettled([
             fetch(technicalUrl.toString(), {
               headers,
               cache: "no-store",
@@ -416,9 +461,11 @@ export default function HomeTechnicalSnapshot({
                 throw new Error("Invalid Pivot response");
               }
 
-              return rows as HomePivotRow[];
-            }),
-          ]);
+                    return rows as HomePivotRow[];
+    }),
+
+    statusPromise,
+  ]);
 
         if (cancelled || currentController.signal.aborted) {
           return;
@@ -444,10 +491,23 @@ export default function HomeTechnicalSnapshot({
           setPivot(null);
         }
 
-        setRefreshError(
-          technicalResult.status === "rejected" ||
-          pivotResult.status === "rejected"
-        );
+        if (statusResult.status === "fulfilled") {
+  setPivotEngineStatus(statusResult.value[0] ?? null);
+  setPivotStatusError(statusResult.value.length === 0);
+} else {
+  console.error(
+    "Home Pivot engine status:",
+    statusResult.reason
+  );
+
+  setPivotEngineStatus(null);
+  setPivotStatusError(true);
+}
+
+setRefreshError(
+  technicalResult.status === "rejected" ||
+  pivotResult.status === "rejected"
+);
 
         setClock(Date.now());
       } catch (error) {
@@ -566,6 +626,24 @@ export default function HomeTechnicalSnapshot({
       timeframe === "H4" ? 510 :
       timeframe === "D1" ? 3000 : 12000
     ) * 60000;
+
+    const pivotLastSuccess = pivotEngineStatus?.last_success_at ?? null;
+
+const pivotAge =
+  clock !== null && pivotLastSuccess
+    ? clock - Date.parse(pivotLastSuccess)
+    : NaN;
+
+const pivotEngineFresh =
+  pivotEngineStatus?.status === "success" &&
+  !pivotStatusError &&
+  Number.isFinite(pivotAge) &&
+  pivotAge >= -120000 &&
+  pivotAge <= 15 * 60 * 1000;
+
+const pivotDisplayTime = pivotEngineFresh
+  ? pivotLastSuccess
+  : activePivot?.calculated_at ?? null;
 
   const levels = activePivot?.levels ?? null;
 
@@ -1229,6 +1307,32 @@ export default function HomeTechnicalSnapshot({
 
   </div>
 
+<div className="rounded-lg border border-[#e0e9f5] bg-white px-2.5 py-2">
+  <div className="flex items-center justify-between gap-2">
+    <span className="text-[10px] font-bold text-slate-500">
+      آخر حساب ناجح للمحور
+    </span>
+
+    <span
+      className={`rounded-md px-2 py-1 text-[9px] font-black ${
+        pivotEngineFresh
+          ? "bg-emerald-50 text-emerald-700"
+          : "bg-amber-50 text-amber-700"
+      }`}
+    >
+      {pivotEngineFresh
+        ? "النظام يعمل"
+        : "التحديث غير مؤكد"}
+    </span>
+  </div>
+
+  <p className="mt-1 text-[11px] font-black text-[#153b69]">
+    {clock === null
+      ? "—"
+      : dateText(pivotLastSuccess)}
+  </p>
+</div>
+
   {/* Compact disclaimer */}
   <p className="text-[10px] leading-5 text-slate-500">
   السعر المرجعي تاريخي وليس سعراً مباشراً.
@@ -1283,14 +1387,32 @@ export default function HomeTechnicalSnapshot({
 
         <div className="flex items-center gap-1.5">
           <span className="text-[10px] font-bold text-slate-500">
-            آخر حساب للمحور:
-          </span>
+  آخر حساب ناجح للمحور:
+</span>
 
-          <span className="text-[10px] font-black text-[#153b69]">
-            {clock === null
-              ? "—"
-              : dateText(activePivot?.calculated_at)}
-          </span>
+<span
+  className={`text-[10px] font-black ${
+    pivotEngineFresh
+      ? "text-emerald-700"
+      : "text-amber-700"
+  }`}
+>
+  {clock === null
+    ? "—"
+    : dateText(pivotLastSuccess)}
+</span>
+
+<span
+  className={`rounded-md px-1.5 py-0.5 text-[9px] font-bold ${
+    pivotEngineFresh
+      ? "bg-emerald-50 text-emerald-700"
+      : "bg-amber-50 text-amber-700"
+  }`}
+>
+  {pivotEngineFresh
+    ? "المحرك يعمل"
+    : "التحديث غير مؤكد"}
+</span>
         </div>
 
       </div>
