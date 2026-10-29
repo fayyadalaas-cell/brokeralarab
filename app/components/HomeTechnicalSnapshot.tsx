@@ -92,15 +92,17 @@ const BIAS: Record<string, {
   },
 };
 
+
 const PIVOT_LEVELS = [
-  { key: "S3", type: "support" },
-  { key: "S2", type: "support" },
   { key: "S1", type: "support" },
+  { key: "S2", type: "support" },
+  { key: "S3", type: "support" },
   { key: "P", type: "pivot" },
   { key: "R1", type: "resistance" },
   { key: "R2", type: "resistance" },
   { key: "R3", type: "resistance" },
 ] as const;
+
 
 function numeric(value: unknown): number | null {
   if (value === null || value === undefined || value === "") {
@@ -721,39 +723,51 @@ const pivotDisplayTime = pivotEngineFresh
     >
       <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_14px_40px_rgba(15,23,42,0.055)]">
 
-        {/* ======================================
-            HEADER — ORIGINAL BRAND STYLE
-        ====================================== */}
+        
+{/* ======================================
+    HEADER — MATCH HOMEPAGE SECTION STYLE
+====================================== */}
 
-        <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3 sm:px-6 sm:py-4">
-          <div className="flex flex-col items-center justify-between gap-3 lg:flex-row">
+<div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3.5 sm:px-6 sm:py-4">
+  <div className="flex flex-col items-center justify-between gap-3 lg:flex-row lg:gap-6">
 
-            <div className="min-w-0 flex-1 text-center lg:text-right">
-              <span className="inline-flex rounded-full border border-blue-200 bg-white px-3 py-1 text-[11px] font-black text-blue-700 shadow-sm">
-                مركز التحليل الفني للأسواق
-              </span>
+    {/* TEXT */}
+    <div className="min-w-0 flex-1 text-center lg:text-right">
 
-              <h2
-                id="home-technical-title"
-                className="mt-1.5 text-[20px] font-black leading-tight text-[#07111f] sm:mt-2 sm:text-[29px]"
-              >
-                التحليل الفني للأسواق والعملات
-              </h2>
+      {/* BADGE */}
+      <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[10px] font-black text-brand-500 shadow-sm lg:text-[12px]">
+        مركز التحليل الفني للأسواق
+      </span>
 
-              <p className="mt-1.5 max-w-[850px] text-[11px] leading-6 text-slate-600 sm:text-[12px]">
-                تقييم المؤشرات الفنية ومستويات الدعم والمقاومة
-                للذهب والفضة وأزواج العملات عبر سبعة أطر زمنية.
-              </p>
-            </div>
+      {/* TITLE */}
+      <h2
+        id="home-technical-title"
+        className="mx-auto mt-2.5 max-w-[360px] text-[26px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] sm:max-w-none sm:text-[34px] lg:mx-0 lg:mt-3 lg:text-[36px]"
+      >
+        التحليل الفني للأسواق والعملات
+      </h2>
 
-            <Link
-              href="/technical-analysis"
-              className="hidden min-h-10 shrink-0 items-center justify-center rounded-lg bg-brand-500 px-4 text-[12px] font-black text-white shadow-sm transition hover:bg-brand-600 lg:inline-flex"
-            >
-              استكشف مركز التحليل ←
-            </Link>
-          </div>
-        </div>
+      {/* DESCRIPTION */}
+      <p className="mx-auto mt-1.5 max-w-[850px] text-[11px] font-semibold leading-5 text-slate-600 sm:text-[13px] sm:leading-6 lg:mx-0 lg:mt-2.5 lg:max-w-none lg:text-[15px] lg:leading-8">
+        تقييم المؤشرات الفنية ومستويات الدعم والمقاومة
+        للذهب والفضة وأزواج العملات عبر سبعة أطر زمنية.
+      </p>
+
+    </div>
+
+    {/* DESKTOP CTA */}
+    <div className="hidden shrink-0 self-center pl-4 lg:flex lg:-translate-x-[14px]">
+      <Link
+        href="/technical-analysis"
+        className="inline-flex h-11 min-w-[180px] items-center justify-center rounded-xl bg-brand-500 px-5 text-[13px] font-black text-white shadow-[0_10px_22px_rgba(37,99,235,0.20)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-600"
+      >
+        استكشف مركز التحليل ←
+      </Link>
+    </div>
+
+  </div>
+</div>
+
 
         {/* ======================================
             COMPACT MARKET TOOLBAR
