@@ -77,6 +77,7 @@ function getAbsoluteUrl(value: string | null | undefined) {
   return `${BASE_URL}${value.startsWith("/") ? value : `/${value}`}`;
 }
 
+
 export async function generateMetadata({
   searchParams,
 }: {
@@ -87,13 +88,20 @@ export async function generateMetadata({
 
   return {
     metadataBase: new URL(BASE_URL),
+
+    // SEO TITLE — KEEP UNCHANGED
     title: "تقييم شركات الفوركس 2026 | دليل الوسطاء",
+
+    // META DESCRIPTION — KEEP UNCHANGED
     description:
       "دليل تقييم شركات الفوركس: قارن الوسطاء حسب التراخيص والرسوم والمنصات والحد الأدنى للإيداع والحساب الإسلامي قبل فتح الحساب.",
+
     applicationName: "بروكر العرب",
     category: "المال والأعمال",
     creator: "بروكر العرب",
     publisher: "بروكر العرب",
+
+    // CANONICAL & LANGUAGE ALTERNATES
     alternates: {
       canonical: BROKERS_PAGE_URL,
       languages: {
@@ -102,11 +110,16 @@ export async function generateMetadata({
         "x-default": `${BASE_URL}/en/brokers`,
       },
     },
+
+    // INDEX MAIN PAGE, NOINDEX FILTERED VERSIONS
     robots: filtered
       ? {
           index: false,
           follow: true,
-          googleBot: { index: false, follow: true },
+          googleBot: {
+            index: false,
+            follow: true,
+          },
         }
       : {
           index: true,
@@ -120,6 +133,8 @@ export async function generateMetadata({
             "max-video-preview": -1,
           },
         },
+
+    // OPEN GRAPH
     openGraph: {
       title: "تقييم شركات الفوركس 2026 | دليل الوسطاء",
       description:
@@ -137,6 +152,8 @@ export async function generateMetadata({
         },
       ],
     },
+
+    // TWITTER / X
     twitter: {
       card: "summary_large_image",
       title: "تقييم شركات الفوركس 2026 | بروكر العرب",
@@ -146,6 +163,7 @@ export async function generateMetadata({
     },
   };
 }
+
 
 function getParam(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] ?? "" : value ?? "";
@@ -361,6 +379,27 @@ function renderStars(
   );
 }
 
+
+function BrokerEditorialNote({
+  bestFor,
+}: {
+  bestFor: string | null;
+}) {
+  if (!bestFor?.trim()) return null;
+
+  return (
+    <div className="mt-3 rounded-xl border border-brand-100 bg-brand-50/40 px-3 py-2.5">
+      <p className="text-[11px] font-bold leading-5 text-slate-700">
+        <span className="font-black text-brand-700">
+          يناسب:
+        </span>{" "}
+        {bestFor.trim()}
+      </p>
+    </div>
+  );
+}
+
+
 function BrokerCard({
   broker,
   index,
@@ -433,7 +472,11 @@ function BrokerCard({
             src={broker.logo}
             alt={`شعار ${broker.name ?? "شركة التداول"}`}
             fill
-            className={`object-contain ${getBrokerLogoClass(broker.name)}`}
+            className={
+  broker.name?.toLowerCase().includes("capital")
+    ? "!scale-[0.95] object-contain"
+    : `object-contain ${getBrokerLogoClass(broker.name)}`
+}
             sizes="102px"
           />
         ) : (
@@ -468,11 +511,23 @@ function BrokerCard({
         <div className="mt-1.5 flex items-center justify-start">
           {renderStars(broker.rating, "text-[13px]")}
         </div>
+      
       </div>
     </div>
+
+    {/* VISIBLE BROKER NAME — MOBILE */}
+    <h2 className="mt-2 text-center text-[14px] font-black leading-5 text-slate-950">
+      <Link
+        href={`/brokers/${broker.slug}`}
+        className="transition-colors hover:text-brand-600"
+      >
+        {broker.name ?? "وسيط تداول"}
+      </Link>
+    </h2>
   </div>
 
   {/* MOBILE INFORMATION PANEL */}
+
   <div className="mx-3 overflow-hidden rounded-[14px] border border-slate-200 bg-slate-50/40">
     {/* QUICK FACTS */}
     <div className="grid grid-cols-2">
@@ -606,6 +661,15 @@ function BrokerCard({
     </div>
   </div>
 
+
+{/* BROKER EDITORIAL NOTE — MOBILE */}
+<div className="px-3">
+  <BrokerEditorialNote bestFor={broker.best_for} />
+</div>
+
+
+
+
   {/* MOBILE ACTIONS */}
   <div className="grid grid-cols-[1.15fr_0.85fr] gap-2 px-3 pb-3 pt-2.5">
     <Link
@@ -660,10 +724,17 @@ function BrokerCard({
               )}
             </Link>
 
-            {/* ACCESSIBLE BROKER NAME */}
-            <h2 className="sr-only">
-              {broker.name ?? "وسيط تداول"}
-            </h2>
+            
+{/* VISIBLE BROKER NAME — DESKTOP */}
+<h2 className="mt-3 text-center text-[17px] font-black leading-6 text-slate-950">
+  <Link
+    href={`/brokers/${broker.slug}`}
+    className="transition-colors hover:text-brand-600"
+  >
+    {broker.name ?? "وسيط تداول"}
+  </Link>
+</h2>
+
 
             {/* BADGES + RATING */}
             <div className="min-w-0 flex-1 lg:flex-none">
@@ -846,6 +917,10 @@ function BrokerCard({
       </div>
     </div>
   </div>
+
+
+<BrokerEditorialNote bestFor={broker.best_for} />
+
 
 {/* DESKTOP ACTIONS */}
 <div className="mt-auto hidden items-center justify-start gap-2 border-t border-slate-200/70 pt-3 lg:flex">
@@ -1160,6 +1235,720 @@ function FilterFields({
     </>
   );
 }
+
+
+/* ============================================================
+   BROKERS EDITORIAL GUIDE — ARABIC
+   Independent educational content below broker listings
+   ============================================================ */
+
+function BrokersEditorialGuide({
+  brokers,
+}: {
+  brokers: Broker[];
+}) {
+  const comparisonBrokers = brokers
+    .filter((broker) => broker.slug && broker.name)
+    .slice(0, 8);
+
+  const sectionClass =
+    "rounded-[22px] border border-slate-200 bg-white p-5 shadow-[0_5px_20px_rgba(15,23,42,0.04)] sm:p-7";
+
+  const headingClass =
+    "text-[20px] font-black leading-[1.5] text-slate-950 sm:text-[26px]";
+
+  const paragraphClass =
+    "text-[13px] leading-[2] text-slate-700 sm:text-[15px]";
+
+  const subheadingClass =
+    "text-[15px] font-black leading-7 text-slate-900 sm:text-[17px]";
+
+  const criteria = [
+    {
+      title: "التراخيص والكيان القانوني",
+      description:
+        "نراجع الجهات الرقابية المعلنة، والكيانات القانونية التي تقدم الخدمات، ونطاق الترخيص. امتلاك علامة تجارية لعدة تراخيص لا يعني أن جميع العملاء يتمتعون بالحماية التنظيمية نفسها.",
+    },
+    {
+      title: "تكاليف التداول الفعلية",
+      description:
+        "ننظر إلى السبريد والعمولات ورسوم التبييت والتكاليف غير المرتبطة بالتداول. لا يكفي الإعلان عن سبريد يبدأ من صفر، لأن التكلفة تختلف بحسب الحساب والأداة وظروف السوق.",
+    },
+    {
+      title: "أنواع الحسابات وشروطها",
+      description:
+        "نقارن الحد الأدنى للإيداع والرافعة المالية وحجم العقد ومستويات الهامش وخصائص الحسابات المتاحة. وقد تختلف الشروط باختلاف الدولة والكيان القانوني.",
+    },
+    {
+      title: "المنصات وأدوات التداول",
+      description:
+        "نفحص المنصات المعلنة مثل MT4 وMT5 وغيرها، ومدى ملاءمتها للتداول اليدوي أو الآلي، مع التمييز بين توفر المنصة وجودة تنفيذ الأوامر الفعلية.",
+    },
+    {
+      title: "الإيداع والسحب وخدمة العملاء",
+      description:
+        "نراجع وسائل الدفع المعلنة، وأي قيود أو رسوم منشورة، وتوفر الدعم العربي. ولا نعتبر سرعة السحب أو جودة الاستجابة مضمونة دون بيانات موثقة عن التجربة الفعلية.",
+    },
+    {
+      title: "ملاءمة الوسيط للمتداول",
+      description:
+        "قد يناسب الوسيط المتداول المحترف ولا يناسب المبتدئ. لذلك لا نكتفي بالتقييم العام، بل ننظر إلى طبيعة الاستخدام والرسوم والخصائص والقيود ذات الصلة.",
+    },
+  ];
+
+  const licenseSteps = [
+    "حدد الاسم القانوني للشركة التي ستفتح حسابك معها، وليس اسم العلامة التجارية فقط.",
+    "افتح موقع الجهة الرقابية الرسمي وابحث عن الكيان القانوني أو رقم الترخيص.",
+    "طابق الاسم القانوني وحالة الترخيص والعنوان والأنشطة المسموح بها، ولا تكتف بتشابه الاسم.",
+    "تحقق مما إذا كان الترخيص يخص الجهة التي ستتعاقد معها فعلياً أم شركة أخرى داخل المجموعة.",
+    "راجع التحذيرات التنظيمية والقيود الخاصة ببلد إقامتك قبل إيداع الأموال.",
+  ];
+
+  const tradingProfiles = [
+    {
+      title: "المتداول المبتدئ",
+      description:
+        "الأولوية لسهولة استخدام المنصة، وفهم شروط الحساب، ووضوح التكاليف، وإمكانية تجربة حساب تجريبي. الإيداع المنخفض وحده ليس دليلاً على ملاءمة الوسيط.",
+    },
+    {
+      title: "السكالبينج والتداول النشط",
+      description:
+        "ينبغي التركيز على إجمالي تكلفة الصفقة، والسبريد في أوقات التداول الفعلية، والعمولات، وسياسة التنفيذ، والانزلاق السعري، وأي قيود على الاستراتيجيات قصيرة الأجل.",
+    },
+    {
+      title: "التداول الآلي",
+      description:
+        "تحقق من دعم المنصة المطلوبة والمستشارين الخبراء EA، وسياسات استخدام الاستراتيجيات الآلية، وإمكانية تشغيل VPS، وشروط التنفيذ والقيود الفنية.",
+    },
+    {
+      title: "المتداول الذي يريد حساباً إسلامياً",
+      description:
+        "تحقق من الأصول المشمولة بالإعفاء من رسوم التبييت، ومدته، والرسوم الإدارية البديلة، وما إذا كانت الشروط تختلف بين أنواع الحسابات.",
+    },
+  ];
+
+  return (
+    <section
+      id="brokers-editorial-guide"
+      aria-labelledby="brokers-guide-title"
+      
+
+className="mx-auto w-full max-w-[1520px] px-3 pb-8 pt-3 sm:px-6 sm:pb-12 sm:pt-4 lg:px-8"
+
+
+    >
+      <div className="space-y-5 sm:space-y-7">
+
+        {/* INTRODUCTION */}
+        <header className="rounded-[24px] border border-brand-100 bg-gradient-to-bl from-[#edf5ff] via-white to-white px-5 py-7 sm:px-8 sm:py-9">
+          <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1.5 text-[10px] font-black text-brand-700 sm:text-xs">
+            دليل مستقل لتقييم ومقارنة وسطاء الفوركس
+          </span>
+
+          <h2
+            id="brokers-guide-title"
+            className="mt-4 max-w-[900px] text-[23px] font-black leading-[1.4] text-slate-950 sm:text-[32px]"
+          >
+            كيف تقرأ تقييمات شركات الفوركس وتتخذ قراراً مدروساً؟
+          </h2>
+
+          
+<p className={`mt-4 w-full ${paragraphClass}`}>
+  يساعدك دليل بروكر العرب على قراءة تقييمات شركات الفوركس
+  ومقارنة شركات التداول وفق معايير واضحة تشمل التراخيص
+  والكيانات القانونية، وتكاليف التداول، وأنواع الحسابات،
+  ومنصات التداول، وشروط الإيداع والسحب. والهدف هو فهم
+  الاختلافات الفعلية بين الوسطاء قبل اتخاذ قرار فتح حساب،
+  وليس الاكتفاء بترتيب الشركات حسب التقييم الرقمي.
+</p>
+
+<p className={`mt-3 w-full ${paragraphClass}`}>
+  عند مراجعة تقييم شركات التداول أو تصنيف شركات الفوركس،
+  من المهم معرفة سبب حصول كل وسيط على درجته، ومدى ملاءمة
+  شروطه لاستراتيجيتك وبلد إقامتك. لذلك يجمع هذا الدليل
+  بين قائمة تقييم الوسطاء، وجدول المقارنة، وخطوات التحقق
+  من التراخيص، وشرح تكاليف التداول، مع روابط للمراجعات
+  التفصيلية. التقييم وسيلة للمقارنة وليس ضماناً لسلامة
+  الأموال أو خلو التداول من المخاطر.
+</p>
+
+
+          
+{/* QUICK NAVIGATION — SOFT BLUE STYLE */}
+<div className="mt-5 flex flex-wrap gap-2">
+  {[
+    {
+      label: "منهجية التقييم",
+      href: "#broker-rating-methodology",
+    },
+    {
+      label: "جدول المقارنة",
+      href: "#brokers-comparison-table",
+    },
+    {
+      label: "التحقق من التراخيص",
+      href: "#verify-forex-license",
+    },
+    {
+      label: "تكاليف التداول",
+      href: "#forex-trading-costs",
+    },
+  ].map((item) => (
+    <a
+      key={item.href}
+      href={item.href}
+      className="inline-flex min-h-[38px] items-center justify-center rounded-xl border border-[#cfe0fa] bg-[#f5f9ff] px-4 py-2.5 text-[12px] font-black text-[#2458a5] shadow-[0_2px_5px_rgba(30,91,184,0.035)] transition-all duration-200 hover:border-[#9cbdf2] hover:bg-[#eaf3ff] hover:shadow-[0_4px_12px_rgba(30,91,184,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
+    >
+      {item.label}
+
+      <span
+        aria-hidden="true"
+        className="mr-1.5 text-[13px] text-brand-500"
+      >
+        ←
+      </span>
+    </a>
+  ))}
+</div>
+
+        </header>
+
+        {/* METHODOLOGY */}
+        <section
+          id="broker-rating-methodology"
+          className={`${sectionClass} scroll-mt-24`}
+        >
+          <div className="w-full">
+            <span className="text-[11px] font-black text-brand-700">
+              منهجية مراجعة الوسطاء
+            </span>
+
+            <h2 className={`mt-2 ${headingClass}`}>
+              كيف يتم تقييم شركات الفوركس في بروكر العرب؟
+            </h2>
+
+            <p className={`mt-4 ${paragraphClass}`}>
+              يعتمد تقييم الوسيط على مراجعة مجموعة من الخصائص
+              التنظيمية والتشغيلية والتجارية. ويساعد التقييم العام
+              على تنظيم نتائج المقارنة، لكنه لا يلغي أهمية
+              مراجعة التفاصيل الفردية لكل شركة.
+            </p>
+
+            <p className={`mt-3 ${paragraphClass}`}>
+              عند قراءة تقييم أي وسيط، من المهم الفصل بين
+              المعلومات التي يمكن التحقق منها مباشرة، مثل
+              رقم الترخيص ورسوم الحساب المنشورة، وبين الجوانب
+              التي تحتاج إلى اختبارات أو أدلة إضافية، مثل
+              جودة التنفيذ الفعلية وسرعة معالجة طلبات السحب.
+            </p>
+          </div>
+
+          <div className="mt-6 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {criteria.map((item, index) => (
+              <article
+                key={item.title}
+                className="rounded-[16px] border border-slate-200 bg-slate-50/60 p-4 sm:p-5"
+              >
+                <div className="flex items-start gap-3">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-brand-50 text-[12px] font-black text-brand-700">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+
+                  <div className="min-w-0">
+                    <h3 className={subheadingClass}>
+                      {item.title}
+                    </h3>
+                    <p className="mt-2 text-[12px] leading-[1.9] text-slate-600 sm:text-[13px]">
+                      {item.description}
+                    </p>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div className="mt-5 rounded-[16px] border border-amber-200 bg-amber-50/60 p-4 sm:p-5">
+            <h3 className="text-[14px] font-black text-slate-900">
+              ماذا يعني حصول شركة على تقييم مرتفع؟
+            </h3>
+
+            <p className="mt-2 text-[12px] leading-7 text-slate-700 sm:text-[13px]">
+              يعني أن الوسيط حقق نتيجة مرتفعة وفق منهجية التقييم
+              المستخدمة، ولا يعني أنه الأنسب لكل متداول أو أن
+              التعامل معه خالٍ من المخاطر. كما أن بيانات الرسوم
+              والتراخيص والمنتجات قد تتغير بمرور الوقت.
+              لذلك ينبغي مراجعة شروط الكيان القانوني والحساب
+              قبل التسجيل أو الإيداع.
+            </p>
+          </div>
+
+          <div className="mt-5">
+            <Link
+              href="/how-we-review-brokers"
+              className="inline-flex min-h-[42px] items-center justify-center rounded-xl bg-brand-500 px-5 py-2.5 text-[12px] font-black text-white transition hover:bg-brand-600"
+            >
+              اقرأ منهجية تقييم الوسطاء بالتفصيل ←
+            </Link>
+          </div>
+        </section>
+
+        {/* COMPARISON TABLE */}
+        <section
+          id="brokers-comparison-table"
+          className={`${sectionClass} scroll-mt-24`}
+        >
+          <span className="text-[11px] font-black text-brand-700">
+            مقارنة مباشرة
+          </span>
+
+          <h2 className={`mt-2 ${headingClass}`}>
+            جدول مقارنة شركات الفوركس حسب التقييم وشروط الحساب
+          </h2>
+
+          
+<p className={`mt-3 w-full ${paragraphClass}`}>
+
+            يوضح الجدول مجموعة من الوسطاء المدرجين في الدليل
+            بناءً على التقييمات والبيانات المسجلة لدينا.
+            يمكنك مقارنة الحد الأدنى للإيداع والرافعة المالية
+            والانتقال إلى المراجعة التفصيلية. هذه البيانات
+            إرشادية وقد تختلف بحسب الكيان القانوني وبلد الإقامة
+            ونوع الحساب.
+          </p>
+
+          <div className="mt-5 overflow-x-auto rounded-[16px] border border-slate-200">
+            <table className="w-full min-w-[700px] border-collapse text-right">
+              <thead className="bg-slate-50">
+                <tr className="text-[12px] font-black text-slate-700">
+                  <th scope="col" className="px-4 py-4">
+                    الشركة
+                  </th>
+                  <th scope="col" className="px-4 py-4">
+                    التقييم
+                  </th>
+                  <th scope="col" className="px-4 py-4">
+                    الحد الأدنى للإيداع
+                  </th>
+                  <th scope="col" className="px-4 py-4">
+                    الرافعة المعلنة
+                  </th>
+                  <th scope="col" className="px-4 py-4">
+                    الحساب الإسلامي
+                  </th>
+                  <th scope="col" className="px-4 py-4">
+                    المراجعة
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody className="divide-y divide-slate-100 bg-white">
+                {comparisonBrokers.map((broker) => (
+                  <tr
+                    key={broker.id}
+                    className="text-[12px] text-slate-700 transition hover:bg-brand-50/30"
+                  >
+                    <td className="px-4 py-4 font-black text-slate-950">
+                      <Link
+                        href={`/brokers/${broker.slug}`}
+                        className="hover:text-brand-600"
+                      >
+                        {broker.name}
+                      </Link>
+                    </td>
+
+                    <td
+                      dir="ltr"
+                      className="px-4 py-4 text-right font-black"
+                    >
+                      {formatRating(broker.rating)} / 5
+                    </td>
+
+                    <td className="px-4 py-4 font-bold">
+                      {formatDeposit(broker.min_deposit)}
+                    </td>
+
+                    <td className="px-4 py-4 font-bold">
+                      {normalizeText(broker.max_leverage)}
+                    </td>
+
+                    <td className="px-4 py-4 font-bold">
+                      {islamicAccountLabel(broker.islamic_account)}
+                    </td>
+
+                    <td className="px-4 py-4">
+                      <Link
+                        href={`/brokers/${broker.slug}`}
+                        className="font-black text-brand-700 underline-offset-4 hover:underline"
+                      >
+                        اقرأ التقييم
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <p className="mt-3 text-[11px] leading-6 text-slate-500">
+            يعرض الجدول أول ثمانية وسطاء من القائمة المرتبة
+            بالتقييم. ولا تعني المراكز الأولى ضماناً للأرباح
+            أو جودة التنفيذ في جميع ظروف السوق.
+          </p>
+
+          <div className="mt-4 flex flex-wrap gap-3">
+            <Link
+              href="/compare"
+              className="inline-flex min-h-[42px] items-center rounded-xl border border-brand-200 bg-brand-50 px-4 py-2.5 text-[12px] font-black text-brand-700 transition hover:bg-brand-100"
+            >
+              مقارنة وسيطين بالتفصيل ←
+            </Link>
+            <Link
+              href="/compare-accounts"
+              className="inline-flex min-h-[42px] items-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-[12px] font-black text-slate-800 transition hover:bg-slate-50"
+            >
+              مقارنة أنواع حسابات التداول ←
+            </Link>
+          </div>
+        </section>
+
+        {/* LICENSE VERIFICATION */}
+        <section
+          id="verify-forex-license"
+          className={`${sectionClass} scroll-mt-24`}
+        >
+          <span className="text-[11px] font-black text-brand-700">
+            التحقق التنظيمي
+          </span>
+
+          <h2 className={`mt-2 ${headingClass}`}>
+            كيف تتحقق من ترخيص شركة الفوركس قبل فتح الحساب؟
+          </h2>
+
+          <p className={`mt-4 ${paragraphClass}`}>
+            من أكثر الأخطاء شيوعاً الاعتماد على شعارات الجهات
+            الرقابية المعروضة على موقع الوسيط دون التحقق من
+            الشركة القانونية التي ستتعامل معها. فقد تمتلك
+            مجموعة مالية عدة شركات في دول مختلفة، وتخضع كل
+            شركة لقواعد ومتطلبات تنظيمية مختلفة.
+          </p>
+
+          <ol className="mt-5 space-y-3">
+            {licenseSteps.map((step, index) => (
+              <li
+                key={index}
+                className="flex items-start gap-3 rounded-[14px] border border-slate-200 bg-slate-50/60 p-3.5 sm:p-4"
+              >
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-[12px] font-black text-brand-700">
+                  {index + 1}
+                </span>
+                <p className="pt-0.5 text-[12px] leading-7 text-slate-700 sm:text-[13px]">
+                  {step}
+                </p>
+              </li>
+            ))}
+          </ol>
+
+          <div className="mt-5 rounded-[16px] border border-brand-100 bg-brand-50/50 p-4 sm:p-5">
+            <h3 className={subheadingClass}>
+              مثال عملي: علامة تجارية تحمل أكثر من ترخيص
+            </h3>
+
+            <p className="mt-2 text-[12px] leading-7 text-slate-700 sm:text-[13px]">
+              إذا أعلنت شركة تداول أنها مرخصة من أكثر من جهة،
+              فلا تفترض أن حسابك سيخضع تلقائياً للجهة ذات
+              المتطلبات الأكثر صرامة. راجع اتفاقية العميل
+              وصفحة الكيان القانوني وتفاصيل فتح الحساب،
+              ثم طابق الشركة المعنية في السجل الرقابي الرسمي.
+              الحماية المتاحة تعتمد على الجهة المتعاقد معها
+              والقواعد المنطبقة عليها.
+            </p>
+          </div>
+
+          <Link
+            href="/licenses"
+            className="mt-5 inline-flex min-h-[42px] items-center rounded-xl bg-brand-500 px-5 py-2.5 text-[12px] font-black text-white transition hover:bg-brand-600"
+          >
+            استكشف دليل تراخيص شركات الفوركس ←
+          </Link>
+        </section>
+
+        
+{/* TRADING COSTS */}
+<section
+  id="forex-trading-costs"
+  className={`${sectionClass} scroll-mt-24`}
+>
+  <span className="text-[11px] font-black text-brand-700">
+    فهم تكلفة التداول
+  </span>
+
+  <h2 className={`mt-2 ${headingClass}`}>
+    كيف تقارن السبريد والعمولات بين شركات الفوركس؟
+  </h2>
+
+  <p className={`mt-4 ${paragraphClass}`}>
+    لا يكفي النظر إلى الحد الأدنى المعلن للسبريد لمعرفة أي حساب
+    تداول أقل تكلفة. يجب مقارنة إجمالي المصاريف المرتبطة بفتح
+    الصفقة وإغلاقها، مع مراعاة أداة التداول وحجم العقد ووقت
+    التنفيذ وفترة الاحتفاظ بالمركز.
+  </p>
+
+  {/* TRADING COSTS — EDUCATIONAL CARDS */}
+  <div className="mt-5 grid gap-3 md:grid-cols-2">
+    {[
+      {
+        title: "السبريد",
+        text: "الفرق بين سعر الشراء وسعر البيع، وهو من التكاليف الأساسية للصفقة. قد يكون ثابتاً أو متغيراً، وقد يتسع أثناء الأخبار أو انخفاض السيولة.",
+        href: "/learn-trading/spread",
+        linkText: "شرح السبريد وطريقة حسابه",
+      },
+      {
+        title: "عمولة التداول",
+        text: "رسوم منفصلة قد يفرضها الوسيط على كل عقد أو جانب من الصفقة. يجب حساب العمولة مع السبريد لمعرفة التكلفة الإجمالية عند فتح المركز وإغلاقه.",
+        href: null,
+        linkText: null,
+      },
+      {
+        title: "رسوم التبييت",
+        text: "تكلفة أو عائد قد ينطبق عند الاحتفاظ بالمراكز لليوم التالي، وفق الأداة واتجاه الصفقة وسياسة الوسيط. وقد تنطبق رسوم إدارية بديلة على بعض الحسابات الإسلامية.",
+        href: null,
+        linkText: null,
+      },
+      {
+        title: "الانزلاق السعري وجودة التنفيذ",
+        text: "قد يختلف سعر تنفيذ الصفقة عن السعر المطلوب، خصوصاً خلال التقلبات أو ضعف السيولة. لذلك لا يكفي النظر إلى السبريد المعلن وحده.",
+        href: "/learn-trading/liquidity",
+        linkText: "فهم السيولة وتأثيرها على التنفيذ",
+      },
+    ].map((item) => (
+      <article
+        key={item.title}
+        className="flex flex-col rounded-[16px] border border-slate-200 bg-slate-50/60 p-4 transition hover:border-brand-200 hover:bg-brand-50/20"
+      >
+        <h3 className={subheadingClass}>
+          {item.title}
+        </h3>
+
+        <p className="mt-2 flex-1 text-[12px] leading-7 text-slate-600 sm:text-[13px]">
+          {item.text}
+        </p>
+
+        {item.href && (
+          <Link
+            href={item.href}
+            className="mt-4 inline-flex items-center gap-1.5 self-start text-[12px] font-black text-brand-700 underline-offset-4 transition hover:underline"
+          >
+            {item.linkText}
+            <span aria-hidden="true">←</span>
+          </Link>
+        )}
+      </article>
+    ))}
+  </div>
+
+  {/* RAW VS STANDARD ACCOUNT COST EXAMPLE */}
+  <div className="mt-5 overflow-hidden rounded-[16px] border border-brand-100">
+    <div className="bg-brand-50 px-4 py-3 sm:px-5">
+      <h3 className="text-[14px] font-black text-slate-900 sm:text-[16px]">
+        مثال توضيحي: هل حساب Raw أقل تكلفة دائماً؟
+      </h3>
+    </div>
+
+    <div className="space-y-3 bg-white px-4 py-4 sm:px-5">
+      <p className="text-[12px] leading-7 text-slate-700 sm:text-[13px]">
+        افترض أنك تقارن حسابين لتداول زوج EUR/USD بحجم عقد قياسي
+        واحد (100,000 يورو)، مع افتراض أن قيمة النقطة تساوي
+        10 دولارات أمريكية في حساب مقوّم بالدولار:
+      </p>
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        {/* STANDARD ACCOUNT */}
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <h4 className="text-[13px] font-black text-slate-950">
+            الحساب الأول — Standard
+          </h4>
+
+          <p className="mt-2 text-[12px] leading-7 text-slate-700">
+            سبريد 1.2 نقطة، دون عمولة إضافية.
+          </p>
+
+          <p
+            dir="ltr"
+            className="mt-2 text-right text-[12px] font-bold text-slate-600"
+          >
+            1.2 × $10 = $12
+          </p>
+
+          <p className="mt-2 text-[14px] font-black text-brand-700">
+            التكلفة التقديرية: $12
+          </p>
+        </div>
+
+        {/* RAW ACCOUNT */}
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <h4 className="text-[13px] font-black text-slate-950">
+            الحساب الثاني — Raw
+          </h4>
+
+          <p className="mt-2 text-[12px] leading-7 text-slate-700">
+            سبريد 0.2 نقطة وعمولة إجمالية قدرها 7 دولارات
+            لفتح الصفقة وإغلاقها.
+          </p>
+
+          <p
+            dir="ltr"
+            className="mt-2 text-right text-[12px] font-bold text-slate-600"
+          >
+            (0.2 × $10) + $7 = $9
+          </p>
+
+          <p className="mt-2 text-[14px] font-black text-brand-700">
+            التكلفة التقديرية: $9
+          </p>
+        </div>
+      </div>
+
+      {/* EXPLANATION */}
+      <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-4">
+        <h4 className="text-[13px] font-black text-slate-900">
+          ماذا نستنتج من هذه المقارنة؟
+        </h4>
+
+        <p className="mt-2 text-[12px] leading-7 text-slate-700 sm:text-[13px]">
+          في هذا المثال الافتراضي، يوفر حساب Raw تكلفة أقل
+          بمقدار 3 دولارات للصفقة القياسية مقارنة بحساب Standard.
+          لكن هذا لا يعني أن جميع حسابات Raw أقل تكلفة دائماً؛
+          فالنتيجة تعتمد على السبريد الفعلي والعمولة وحجم العقد
+          والأداة المالية وشروط الوسيط.
+        </p>
+      </div>
+
+      <p className="text-[11px] leading-6 text-slate-500">
+        المثال افتراضي للتوضيح ولا يمثل أسعار وسيط معين.
+        تفترض الحسابات دورة تداول كاملة تشمل فتح المركز وإغلاقه،
+        ولا تشمل رسوم التبييت أو الانزلاق السعري أو تغير السبريد
+        أو رسوم تحويل العملات.
+      </p>
+
+      {/* INTERNAL EDUCATIONAL LINKS */}
+      <div className="flex flex-wrap gap-2 border-t border-slate-100 pt-4">
+        <Link
+          href="/learn-trading/spread"
+          className="inline-flex min-h-[40px] items-center rounded-xl border border-brand-200 bg-brand-50 px-4 py-2.5 text-[12px] font-black text-brand-700 transition hover:bg-brand-100"
+        >
+          كيف يتم حساب السبريد؟ ←
+        </Link>
+
+        <Link
+          href="/lowest-spread-brokers"
+          className="inline-flex min-h-[40px] items-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-[12px] font-black text-slate-800 transition hover:bg-slate-50"
+        >
+          مقارنة وسطاء السبريد المنخفض ←
+        </Link>
+
+        <Link
+          href="/compare-accounts"
+          className="inline-flex min-h-[40px] items-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-[12px] font-black text-slate-800 transition hover:bg-slate-50"
+        >
+          مقارنة أنواع حسابات التداول ←
+        </Link>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+        {/* BROKER SELECTION */}
+        <section
+          id="choose-forex-broker"
+          className={`${sectionClass} scroll-mt-24`}
+        >
+          <span className="text-[11px] font-black text-brand-700">
+            اختيار يناسب استراتيجية التداول
+          </span>
+
+          <h2 className={`mt-2 ${headingClass}`}>
+            كيف تختار شركة الفوركس المناسبة لطريقة تداولك؟
+          </h2>
+
+          <p className={`mt-4 ${paragraphClass}`}>
+            لا توجد شركة تداول واحدة تقدم بالضرورة أفضل
+            الشروط لجميع المتداولين. قبل مقارنة النتائج،
+            حدد الأسواق التي تتداولها، ومتوسط حجم صفقاتك،
+            ومدة الاحتفاظ بالمراكز، والمنصة التي تحتاجها،
+            ومدى استعدادك لتحمل المخاطر.
+          </p>
+
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            {tradingProfiles.map((profile) => (
+              <article
+                key={profile.title}
+                className="rounded-[16px] border border-slate-200 bg-slate-50/60 p-4 sm:p-5"
+              >
+                <h3 className={subheadingClass}>
+                  {profile.title}
+                </h3>
+                <p className="mt-2 text-[12px] leading-7 text-slate-600 sm:text-[13px]">
+                  {profile.description}
+                </p>
+              </article>
+            ))}
+          </div>
+
+          <div className="mt-5 rounded-[16px] border border-slate-200 bg-white p-4 sm:p-5">
+            <h3 className={subheadingClass}>
+              قبل أن تفتح حساب تداول حقيقي
+            </h3>
+
+            <p className="mt-2 text-[12px] leading-7 text-slate-700 sm:text-[13px]">
+              اقرأ اتفاقية العميل، وتأكد من الكيان القانوني،
+              والرسوم، وسياسة الهامش والإغلاق الإجباري،
+              وطرق السحب، وأي قيود على الاستراتيجية التي
+              تنوي استخدامها. اختبر المنصة عبر الحساب
+              التجريبي عندما يكون متاحاً، ولا تعتمد على
+              التقييم الرقمي كبديل عن هذه الفحوص.
+            </p>
+          </div>
+
+          <div className="mt-5 flex flex-wrap gap-3">
+            <a
+              href="#brokers-list"
+              className="inline-flex min-h-[42px] items-center rounded-xl bg-brand-500 px-5 py-2.5 text-[12px] font-black text-white transition hover:bg-brand-600"
+            >
+              العودة إلى قائمة الوسطاء ↑
+            </a>
+
+            <Link
+              href="/best-brokers"
+              className="inline-flex min-h-[42px] items-center rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-[12px] font-black text-slate-800 transition hover:bg-slate-50"
+            >
+              شاهد قوائم أفضل الوسطاء ←
+            </Link>
+          </div>
+        </section>
+
+        {/* EDITORIAL DISCLOSURE */}
+        <div className="rounded-[16px] border border-slate-200 bg-slate-100/60 px-4 py-4 sm:px-6">
+          <h2 className="text-[13px] font-black text-slate-900">
+            ملاحظة حول التقييمات والمخاطر
+          </h2>
+
+          <p className="mt-2 text-[11px] leading-7 text-slate-600 sm:text-[12px]">
+            يقدم بروكر العرب معلومات بحثية ومقارنات لأغراض
+            تعليمية ومعلوماتية، ولا تشكل توصية استثمارية
+            شخصية أو ضماناً لسلامة الأموال أو تحقيق الأرباح.
+            تداول الفوركس وعقود الفروقات ينطوي على مخاطر
+            مرتفعة، وقد تتجاوز الخسائر القدرة المالية لبعض
+            المتداولين. يجب التحقق من المعلومات والشروط
+            التنظيمية لدى الجهات الرسمية والوسيط قبل
+            اتخاذ أي قرار مالي.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 
 export default async function BrokersPage({
   searchParams,
@@ -1602,7 +2391,9 @@ const structuredData = {
 
   <section
   id="brokers-list"
-  className="mx-auto w-full max-w-[1520px] px-3 pb-5 pt-3 sm:px-6 sm:pb-8 sm:pt-6 lg:px-8 lg:pb-12 lg:pt-7"
+  
+className="mx-auto w-full max-w-[1520px] px-3 pb-2 pt-3 sm:px-6 sm:pb-2 sm:pt-6 lg:px-8 lg:pb-2 lg:pt-7"
+
 >
   {/* MOBILE LIST HEADER */}
 <div className="mb-2.5 lg:hidden">
@@ -1778,14 +2569,21 @@ const structuredData = {
           </div>
         )}
       </div>
+    
     </div>
   </div>
 </section>
 
+{/* SEO EDITORIAL GUIDE — BELOW BROKER LIST */}
+<BrokersEditorialGuide brokers={brokers} />
+
+{/* EXISTING FAQ SECTION */}
 <section
   id="frequently-asked-questions"
   className="mx-auto w-full max-w-[1520px] scroll-mt-24 px-3 pb-12 sm:px-6 sm:pb-16 lg:px-8 lg:pb-20"
 >
+
+
   <div className="overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-[0_5px_20px_rgba(15,23,42,0.045)]">
     {/* FAQ HEADER */}
     <div className="border-b border-slate-100 bg-gradient-to-bl from-brand-50/60 via-white to-white px-4 py-4 sm:px-6 sm:py-6">

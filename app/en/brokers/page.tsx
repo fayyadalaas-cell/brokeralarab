@@ -380,6 +380,26 @@ function renderStars(
   );
 }
 
+
+function BrokerEditorialNoteEn({
+  bestFor,
+}: {
+  bestFor: string | null;
+}) {
+  if (!bestFor?.trim()) return null;
+
+  return (
+    <div className="mt-3 rounded-xl border border-brand-100 bg-brand-50/40 px-3 py-2.5">
+      <p className="text-[11px] font-bold leading-5 text-slate-700">
+        <span className="font-black text-brand-700">
+          Suitable for:
+        </span>{" "}
+        {bestFor.trim()}
+      </p>
+    </div>
+  );
+}
+
             
 function BrokerCard({
   broker,
@@ -453,7 +473,13 @@ function BrokerCard({
         src={broker.logo}
         alt={`${brokerName} logo`}
         fill
-        className={`object-contain ${getBrokerLogoClass(brokerName)}`}
+        
+className={
+  brokerName.toLowerCase().includes("capital")
+    ? "!scale-[0.95] object-contain"
+    : `object-contain ${getBrokerLogoClass(brokerName)}`
+}
+
         sizes="108px"
       />
     ) : (
@@ -494,6 +520,17 @@ function BrokerCard({
     </span>
   </div>
 </div>
+
+{/* VISIBLE BROKER NAME — MOBILE */}
+<h2 className="mt-2 text-center text-[14px] font-black leading-5 text-slate-950">
+  <Link
+    href={`/en/brokers/${broker.slug}`}
+    className="transition-colors hover:text-brand-600"
+  >
+    {brokerName}
+  </Link>
+</h2>
+
           </div>
        
 
@@ -603,6 +640,13 @@ function BrokerCard({
           </div>
         </div>
 
+
+{/* BROKER EDITORIAL NOTE — MOBILE */}
+<div className="px-3">
+  <BrokerEditorialNoteEn bestFor={bestFor} />
+</div>
+
+
         {/* MOBILE ACTIONS */}
         <div className="grid grid-cols-[1.15fr_0.85fr] gap-2 px-3 pb-3 pt-2.5">
           <Link
@@ -660,7 +704,17 @@ function BrokerCard({
               )}
             </Link>
 
-            <h2 className="sr-only">{brokerName}</h2>
+            
+{/* VISIBLE BROKER NAME — DESKTOP */}
+<h2 className="mt-3 text-center text-[17px] font-black leading-6 text-slate-950">
+  <Link
+    href={`/en/brokers/${broker.slug}`}
+    className="transition-colors hover:text-brand-600"
+  >
+    {brokerName}
+  </Link>
+</h2>
+
 
             {/* RANK + RECOMMENDED */}
             <div className="flex flex-wrap items-center justify-center gap-2">
@@ -813,6 +867,11 @@ function BrokerCard({
               </div>
             </div>
           </div>
+
+
+{/* BROKER EDITORIAL NOTE — DESKTOP */}
+<BrokerEditorialNoteEn bestFor={bestFor} />
+
 
           {/* FULL-WIDTH DESKTOP ACTIONS */}
           <div className="mt-auto grid grid-cols-2 gap-3 border-t border-slate-200/70 pt-3">
@@ -1071,6 +1130,745 @@ function FilterFields({
     </>
   );
 }
+
+
+/* ============================================================
+   BROKERS EDITORIAL GUIDE — ENGLISH
+   Complete component — Broker Alarab
+   ============================================================ */
+
+function BrokersEditorialGuideEn({
+  brokers,
+}: {
+  brokers: Broker[];
+}) {
+  const comparisonBrokers = brokers
+    .filter((broker) => broker.slug && getBrokerName(broker))
+    .slice(0, 8);
+
+  const sectionClass =
+    "rounded-[22px] border border-slate-200 bg-white p-5 shadow-[0_5px_20px_rgba(15,23,42,0.04)] sm:p-7";
+
+  const headingClass =
+    "text-[20px] font-black leading-[1.5] text-slate-950 sm:text-[26px]";
+
+  const paragraphClass =
+    "text-[13px] leading-[2] text-slate-700 sm:text-[15px]";
+
+  const subheadingClass =
+    "text-[15px] font-black leading-7 text-slate-900 sm:text-[17px]";
+
+  const criteria = [
+    {
+      title: "Regulation and Legal Entities",
+      description:
+        "We examine disclosed regulatory authorities, the legal entities providing brokerage services and the scope of their licences. A group holding multiple licences does not mean every client receives the same regulatory protections.",
+    },
+    {
+      title: "Actual Trading Costs",
+      description:
+        "We consider spreads, commissions, overnight financing charges and other account-related costs. A spread advertised from zero does not necessarily mean a trading account has the lowest overall cost.",
+    },
+    {
+      title: "Account Types and Conditions",
+      description:
+        "We compare minimum deposits, maximum leverage, contract sizes, margin requirements and account features. Trading conditions may differ according to the account type, jurisdiction and legal entity.",
+    },
+    {
+      title: "Trading Platforms and Tools",
+      description:
+        "We review advertised platforms, including MT4, MT5 and other trading systems, and their suitability for manual or automated trading. Platform availability alone does not establish execution quality.",
+    },
+    {
+      title: "Deposits, Withdrawals and Support",
+      description:
+        "We examine published payment methods, applicable restrictions, disclosed fees and support availability. Withdrawal speed and service quality should not be treated as guaranteed without supporting evidence.",
+    },
+    {
+      title: "Suitability for Different Traders",
+      description:
+        "A broker suitable for an experienced trader may not be ideal for a beginner. We consider how trading conditions, available platforms, costs and account restrictions fit different trading needs.",
+    },
+  ];
+
+  const licenseSteps = [
+    "Identify the legal company that will hold your trading account, rather than relying on the broker's brand name alone.",
+    "Visit the regulator's official register and search for the legal entity or licence number.",
+    "Verify the registered name, licence status, authorised activities and other relevant registration details.",
+    "Confirm whether the licence applies to the entity you will actually contract with, rather than another company within the group.",
+    "Review regulatory warnings, country-specific restrictions and the client agreement before depositing funds.",
+  ];
+
+  const tradingProfiles = [
+    {
+      title: "Beginner Forex Traders",
+      description:
+        "Prioritise an understandable trading platform, transparent account conditions, clear costs and access to a demo account where available. A low minimum deposit alone does not make a broker suitable for beginners.",
+    },
+    {
+      title: "Scalpers and Active Traders",
+      description:
+        "Pay particular attention to total transaction costs, spreads during active trading hours, commission structures, execution policies, slippage and any restrictions on short-term trading strategies.",
+    },
+    {
+      title: "Automated Trading",
+      description:
+        "Check support for your preferred platform, Expert Advisors, automated strategies and VPS services. Review execution conditions and any restrictions affecting algorithmic trading.",
+    },
+    {
+      title: "Traders Seeking Islamic Accounts",
+      description:
+        "Review the instruments covered by swap-free arrangements, eligibility rules, holding-period restrictions and any alternative administrative charges. Conditions may vary by account type.",
+    },
+  ];
+
+  const costItems: {
+    title: string;
+    text: string;
+    href: string | null;
+    linkText: string | null;
+  }[] = [
+    {
+      title: "Forex Spreads",
+      text: "The difference between the bid and ask price. Spreads may be fixed or variable and can widen during major news releases or periods of reduced liquidity.",
+      href: "/en/learn-trading/spread",
+      linkText: "Learn How Forex Spreads Work",
+    },
+    {
+      title: "Trading Commissions",
+      text: "Separate charges that a broker may apply per lot or per side of a trade. Commissions must be considered alongside spreads to calculate total transaction costs.",
+      href: null,
+      linkText: null,
+    },
+    {
+      title: "Overnight Financing and Swaps",
+      text: "Financing costs or credits may apply when positions are held overnight. Charges depend on the instrument, trade direction and account conditions. Some swap-free accounts may have alternative fees.",
+      href: null,
+      linkText: null,
+    },
+    {
+      title: "Slippage and Execution Quality",
+      text: "An order may be filled at a different price from the one requested, particularly during volatility or limited liquidity. Advertised spreads alone cannot establish execution quality.",
+      href: "/en/learn-trading/liquidity",
+      linkText: "Understand Liquidity and Execution",
+    },
+  ];
+
+  return (
+    <section
+      id="brokers-editorial-guide"
+      aria-labelledby="brokers-guide-title"
+      className="mx-auto w-full max-w-[1520px] px-3 pb-8 pt-3 sm:px-6 sm:pb-12 sm:pt-4 lg:px-8"
+    >
+      <div className="space-y-5 sm:space-y-7">
+
+        {/* =====================================================
+            INTRODUCTION
+        ===================================================== */}
+        <header className="rounded-[24px] border border-brand-100 bg-gradient-to-br from-[#edf5ff] via-white to-white px-5 py-7 sm:px-8 sm:py-9">
+          <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1.5 text-[10px] font-black text-brand-700 sm:text-xs">
+            Independent Forex Broker Reviews and Comparisons
+          </span>
+
+          <h2
+            id="brokers-guide-title"
+            className="mt-4 text-[23px] font-black leading-[1.4] text-slate-950 sm:text-[32px]"
+          >
+            How to Read Forex Broker Reviews and Make an Informed Decision
+          </h2>
+
+          <p className={`mt-4 w-full ${paragraphClass}`}>
+            Broker Alarab helps traders evaluate forex broker reviews,
+            compare forex brokers and understand the factors behind
+            different broker ratings. Important considerations include
+            regulatory licences, legal entities, trading costs,
+            account types, available platforms, deposits and
+            withdrawal conditions. The objective is to identify
+            meaningful differences between brokerage providers
+            before opening a trading account.
+          </p>
+
+          <p className={`mt-3 w-full ${paragraphClass}`}>
+            When examining forex broker ratings or broker rankings,
+            it is important to understand what each score represents
+            and whether the broker's conditions suit your trading
+            approach and country of residence. This guide combines
+            a broker directory, an account comparison table,
+            regulatory verification steps and a practical explanation
+            of trading costs. A rating supports research and
+            comparison; it does not guarantee the safety of funds
+            or eliminate trading risks.
+          </p>
+
+          {/* QUICK NAVIGATION */}
+          <div className="mt-5 flex flex-wrap gap-2">
+            {[
+              {
+                label: "Rating Methodology",
+                href: "#broker-rating-methodology",
+              },
+              {
+                label: "Comparison Table",
+                href: "#brokers-comparison-table",
+              },
+              {
+                label: "Verify Regulation",
+                href: "#verify-forex-license",
+              },
+              {
+                label: "Trading Costs",
+                href: "#forex-trading-costs",
+              },
+            ].map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className="inline-flex min-h-[38px] items-center justify-center rounded-xl border border-[#cfe0fa] bg-[#f5f9ff] px-4 py-2.5 text-[12px] font-black text-[#2458a5] shadow-[0_2px_5px_rgba(30,91,184,0.035)] transition-all duration-200 hover:border-[#9cbdf2] hover:bg-[#eaf3ff] hover:shadow-[0_4px_12px_rgba(30,91,184,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
+              >
+                {item.label}
+                <span
+                  aria-hidden="true"
+                  className="ml-1.5 text-[13px] text-brand-500"
+                >
+                  →
+                </span>
+              </a>
+            ))}
+          </div>
+        </header>
+
+        {/* =====================================================
+            METHODOLOGY
+        ===================================================== */}
+        <section
+          id="broker-rating-methodology"
+          className={`${sectionClass} scroll-mt-24`}
+        >
+          <div className="w-full">
+            <span className="text-[11px] font-black text-brand-700">
+              Broker Review Methodology
+            </span>
+
+            <h2 className={`mt-2 ${headingClass}`}>
+              How Does Broker Alarab Evaluate Forex Brokers?
+            </h2>
+
+            <p className={`mt-4 ${paragraphClass}`}>
+              Forex broker evaluations involve reviewing regulatory,
+              operational and commercial characteristics. An overall
+              rating helps organise broker comparison results, but
+              it should never replace an examination of each
+              broker's individual conditions.
+            </p>
+
+            <p className={`mt-3 ${paragraphClass}`}>
+              When reading a forex broker review, distinguish between
+              information that can be directly verified, such as
+              published account fees or licence registrations,
+              and factors that require additional evidence,
+              such as real-world execution quality and the
+              processing of withdrawal requests.
+            </p>
+          </div>
+
+          <div className="mt-6 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {criteria.map((item, index) => (
+              <article
+                key={item.title}
+                className="rounded-[16px] border border-slate-200 bg-slate-50/60 p-4 sm:p-5"
+              >
+                <div className="flex items-start gap-3">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-brand-50 text-[12px] font-black text-brand-700">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+
+                  <div className="min-w-0">
+                    <h3 className={subheadingClass}>
+                      {item.title}
+                    </h3>
+
+                    <p className="mt-2 text-[12px] leading-[1.9] text-slate-600 sm:text-[13px]">
+                      {item.description}
+                    </p>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div className="mt-5 rounded-[16px] border border-amber-200 bg-amber-50/60 p-4 sm:p-5">
+            <h3 className="text-[14px] font-black text-slate-900">
+              What Does a High Forex Broker Rating Actually Mean?
+            </h3>
+
+            <p className="mt-2 text-[12px] leading-7 text-slate-700 sm:text-[13px]">
+              A high rating indicates that a broker has performed
+              well against the applicable evaluation criteria.
+              It does not mean the broker is suitable for everyone
+              or that trading with the company is risk-free.
+              Account fees, regulatory arrangements and trading
+              conditions may change. Always confirm the terms
+              applicable to your account before registering
+              or depositing money.
+            </p>
+          </div>
+
+          <div className="mt-5">
+            <Link
+              href="/en/how-we-review-brokers"
+              className="inline-flex min-h-[42px] items-center justify-center rounded-xl bg-brand-500 px-5 py-2.5 text-[12px] font-black text-white transition hover:bg-brand-600"
+            >
+              Read Our Full Broker Review Methodology →
+            </Link>
+          </div>
+        </section>
+
+        {/* =====================================================
+            COMPARISON TABLE
+        ===================================================== */}
+        <section
+          id="brokers-comparison-table"
+          className={`${sectionClass} scroll-mt-24`}
+        >
+          <span className="text-[11px] font-black text-brand-700">
+            Compare Brokers
+          </span>
+
+          <h2 className={`mt-2 ${headingClass}`}>
+            Forex Broker Comparison Table: Ratings and Account Conditions
+          </h2>
+
+          <p className={`mt-3 w-full ${paragraphClass}`}>
+            This forex broker comparison table presents a selection
+            of brokers from our directory, ordered by their
+            published ratings. Compare minimum deposits,
+            advertised maximum leverage and Islamic account
+            availability before visiting each broker's full
+            review. Conditions may vary by legal entity,
+            jurisdiction and account type.
+          </p>
+
+          <div className="mt-5 overflow-x-auto rounded-[16px] border border-slate-200">
+            <table className="w-full min-w-[700px] border-collapse text-left">
+              <thead className="bg-slate-50">
+                <tr className="text-[12px] font-black text-slate-700">
+                  <th scope="col" className="px-4 py-4">
+                    Broker
+                  </th>
+                  <th scope="col" className="px-4 py-4">
+                    Rating
+                  </th>
+                  <th scope="col" className="px-4 py-4">
+                    Minimum Deposit
+                  </th>
+                  <th scope="col" className="px-4 py-4">
+                    Max. Leverage
+                  </th>
+                  <th scope="col" className="px-4 py-4">
+                    Islamic Account
+                  </th>
+                  <th scope="col" className="px-4 py-4">
+                    Review
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody className="divide-y divide-slate-100 bg-white">
+                {comparisonBrokers.map((broker) => (
+                  <tr
+                    key={broker.id}
+                    className="text-[12px] text-slate-700 transition hover:bg-brand-50/30"
+                  >
+                    <td className="px-4 py-4 font-black text-slate-950">
+                      <Link
+                        href={`/en/brokers/${broker.slug}`}
+                        className="hover:text-brand-600"
+                      >
+                        {getBrokerName(broker)}
+                      </Link>
+                    </td>
+
+                    <td className="px-4 py-4 font-black">
+                      {formatRating(broker.rating)} / 5
+                    </td>
+
+                    <td className="px-4 py-4 font-bold">
+                      {formatDeposit(broker.min_deposit)}
+                    </td>
+
+                    <td className="px-4 py-4 font-bold">
+                      {normalizeText(broker.max_leverage)}
+                    </td>
+
+                    <td className="px-4 py-4 font-bold">
+                      {islamicAccountLabel(broker.islamic_account)}
+                    </td>
+
+                    <td className="px-4 py-4">
+                      <Link
+                        href={`/en/brokers/${broker.slug}`}
+                        className="font-black text-brand-700 underline-offset-4 hover:underline"
+                      >
+                        Read Review
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <p className="mt-3 text-[11px] leading-6 text-slate-500">
+            The table displays the first eight brokers from the
+            rating-ordered directory. Higher ratings do not
+            guarantee profits, execution quality or suitability
+            for every trader.
+          </p>
+
+          <div className="mt-4 flex flex-wrap gap-3">
+            <Link
+              href="/en/compare"
+              className="inline-flex min-h-[42px] items-center rounded-xl border border-brand-200 bg-brand-50 px-4 py-2.5 text-[12px] font-black text-brand-700 transition hover:bg-brand-100"
+            >
+              Compare Two Forex Brokers →
+            </Link>
+
+            <Link
+              href="/en/compare-accounts"
+              className="inline-flex min-h-[42px] items-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-[12px] font-black text-slate-800 transition hover:bg-slate-50"
+            >
+              Compare Trading Account Types →
+            </Link>
+          </div>
+        </section>
+
+        {/* =====================================================
+            LICENSE VERIFICATION
+        ===================================================== */}
+        <section
+          id="verify-forex-license"
+          className={`${sectionClass} scroll-mt-24`}
+        >
+          <span className="text-[11px] font-black text-brand-700">
+            Regulatory Verification
+          </span>
+
+          <h2 className={`mt-2 ${headingClass}`}>
+            How to Verify a Forex Broker's Regulatory Licence
+          </h2>
+
+          <p className={`mt-4 ${paragraphClass}`}>
+            One common mistake is relying exclusively on the
+            regulatory logos displayed on a broker's website.
+            A brokerage group may operate several legal entities
+            across different jurisdictions, each subject to
+            different regulatory obligations and client protections.
+            The entity holding your account matters more than
+            the number of regulatory logos advertised.
+          </p>
+
+          <ol className="mt-5 space-y-3">
+            {licenseSteps.map((step, index) => (
+              <li
+                key={index}
+                className="flex items-start gap-3 rounded-[14px] border border-slate-200 bg-slate-50/60 p-3.5 sm:p-4"
+              >
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-[12px] font-black text-brand-700">
+                  {index + 1}
+                </span>
+
+                <p className="pt-0.5 text-[12px] leading-7 text-slate-700 sm:text-[13px]">
+                  {step}
+                </p>
+              </li>
+            ))}
+          </ol>
+
+          <div className="mt-5 rounded-[16px] border border-brand-100 bg-brand-50/50 p-4 sm:p-5">
+            <h3 className={subheadingClass}>
+              Practical Example: A Broker with Multiple Licences
+            </h3>
+
+            <p className="mt-2 text-[12px] leading-7 text-slate-700 sm:text-[13px]">
+              Suppose a forex broker advertises licences from
+              several regulatory authorities. That does not
+              automatically mean your trading account will
+              be protected under the rules of the most
+              stringent regulator. Check your client agreement,
+              identify the contracting entity and compare
+              its details with the official regulatory register.
+              Available protections depend on the legal entity
+              and the regulations applicable to your account.
+            </p>
+          </div>
+
+          <Link
+            href="/en/licenses"
+            className="mt-5 inline-flex min-h-[42px] items-center rounded-xl bg-brand-500 px-5 py-2.5 text-[12px] font-black text-white transition hover:bg-brand-600"
+          >
+            Explore Forex Broker Regulations and Licences →
+          </Link>
+        </section>
+
+        {/* =====================================================
+            TRADING COSTS
+        ===================================================== */}
+        <section
+          id="forex-trading-costs"
+          className={`${sectionClass} scroll-mt-24`}
+        >
+          <span className="text-[11px] font-black text-brand-700">
+            Understanding Trading Costs
+          </span>
+
+          <h2 className={`mt-2 ${headingClass}`}>
+            How to Compare Forex Spreads and Trading Commissions
+          </h2>
+
+          <p className={`mt-4 ${paragraphClass}`}>
+            The lowest advertised spread does not necessarily
+            identify the cheapest forex trading account.
+            Compare the full cost of opening and closing a trade,
+            considering the instrument, position size, execution
+            conditions and how long you intend to hold the position.
+          </p>
+
+          {/* EDUCATIONAL COST CARDS */}
+          <div className="mt-5 grid gap-3 md:grid-cols-2">
+            {costItems.map((item) => (
+              <article
+                key={item.title}
+                className="flex flex-col rounded-[16px] border border-slate-200 bg-slate-50/60 p-4 transition hover:border-brand-200 hover:bg-brand-50/20"
+              >
+                <h3 className={subheadingClass}>
+                  {item.title}
+                </h3>
+
+                <p className="mt-2 flex-1 text-[12px] leading-7 text-slate-600 sm:text-[13px]">
+                  {item.text}
+                </p>
+
+                {item.href && (
+                  <Link
+                    href={item.href}
+                    className="mt-4 inline-flex items-center gap-1.5 self-start text-[12px] font-black text-brand-700 underline-offset-4 transition hover:underline"
+                  >
+                    {item.linkText}
+                    <span aria-hidden="true">→</span>
+                  </Link>
+                )}
+              </article>
+            ))}
+          </div>
+
+          {/* STANDARD VS RAW ACCOUNT EXAMPLE */}
+          <div className="mt-5 overflow-hidden rounded-[16px] border border-brand-100">
+            <div className="bg-brand-50 px-4 py-3 sm:px-5">
+              <h3 className="text-[14px] font-black text-slate-900 sm:text-[16px]">
+                Practical Example: Is a Raw Spread Account Always Cheaper?
+              </h3>
+            </div>
+
+            <div className="space-y-3 bg-white px-4 py-4 sm:px-5">
+              <p className="text-[12px] leading-7 text-slate-700 sm:text-[13px]">
+                Consider two EUR/USD trading accounts with a position
+                size of one standard lot (100,000 euros).
+                For this example, assume a pip value of $10
+                in a USD-denominated trading account:
+              </p>
+
+              <div className="grid gap-3 sm:grid-cols-2">
+                {/* STANDARD ACCOUNT */}
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                  <h4 className="text-[13px] font-black text-slate-950">
+                    Account One — Standard
+                  </h4>
+
+                  <p className="mt-2 text-[12px] leading-7 text-slate-700">
+                    1.2-pip spread with no additional commission.
+                  </p>
+
+                  <p className="mt-2 text-[12px] font-bold text-slate-600">
+                    1.2 × $10 = $12
+                  </p>
+
+                  <p className="mt-2 text-[14px] font-black text-brand-700">
+                    Estimated Trading Cost: $12
+                  </p>
+                </div>
+
+                {/* RAW ACCOUNT */}
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                  <h4 className="text-[13px] font-black text-slate-950">
+                    Account Two — Raw
+                  </h4>
+
+                  <p className="mt-2 text-[12px] leading-7 text-slate-700">
+                    0.2-pip spread plus a total $7 commission
+                    for opening and closing the position.
+                  </p>
+
+                  <p className="mt-2 text-[12px] font-bold text-slate-600">
+                    (0.2 × $10) + $7 = $9
+                  </p>
+
+                  <p className="mt-2 text-[14px] font-black text-brand-700">
+                    Estimated Trading Cost: $9
+                  </p>
+                </div>
+              </div>
+
+              {/* EXPLANATION */}
+              <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-4">
+                <h4 className="text-[13px] font-black text-slate-900">
+                  What Can We Learn from This Comparison?
+                </h4>
+
+                <p className="mt-2 text-[12px] leading-7 text-slate-700 sm:text-[13px]">
+                  In this hypothetical example, the Raw account
+                  costs $3 less per standard-lot round trip.
+                  However, Raw accounts are not automatically
+                  cheaper in every situation. Actual costs depend
+                  on prevailing spreads, commissions, position
+                  sizes, instruments and individual broker conditions.
+                </p>
+              </div>
+
+              <p className="text-[11px] leading-6 text-slate-500">
+                This illustration does not represent the pricing
+                of any particular broker. It assumes a complete
+                opening-and-closing transaction and excludes
+                overnight financing, slippage, spread changes
+                and currency conversion charges.
+              </p>
+
+              {/* INTERNAL EDUCATIONAL LINKS */}
+              <div className="flex flex-wrap gap-2 border-t border-slate-100 pt-4">
+                <Link
+                  href="/en/learn-trading/spread"
+                  className="inline-flex min-h-[40px] items-center rounded-xl border border-brand-200 bg-brand-50 px-4 py-2.5 text-[12px] font-black text-brand-700 transition hover:bg-brand-100"
+                >
+                  How to Calculate Forex Spreads →
+                </Link>
+
+                <Link
+                  href="/en/lowest-spread-brokers"
+                  className="inline-flex min-h-[40px] items-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-[12px] font-black text-slate-800 transition hover:bg-slate-50"
+                >
+                  Compare Low-Spread Forex Brokers →
+                </Link>
+
+                <Link
+                  href="/en/compare-accounts"
+                  className="inline-flex min-h-[40px] items-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-[12px] font-black text-slate-800 transition hover:bg-slate-50"
+                >
+                  Compare Forex Trading Accounts →
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* =====================================================
+            CHOOSING A FOREX BROKER
+        ===================================================== */}
+        <section
+          id="choose-forex-broker"
+          className={`${sectionClass} scroll-mt-24`}
+        >
+          <span className="text-[11px] font-black text-brand-700">
+            Choosing a Broker for Your Trading Style
+          </span>
+
+          <h2 className={`mt-2 ${headingClass}`}>
+            How to Choose the Right Forex Broker for Your Trading Strategy
+          </h2>
+
+          <p className={`mt-4 ${paragraphClass}`}>
+            There is no single forex broker that necessarily
+            offers the best conditions for every trader.
+            Before comparing broker rankings, identify
+            the instruments you intend to trade, your
+            typical position size, holding period,
+            preferred platform and tolerance for risk.
+          </p>
+
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            {tradingProfiles.map((profile) => (
+              <article
+                key={profile.title}
+                className="rounded-[16px] border border-slate-200 bg-slate-50/60 p-4 sm:p-5"
+              >
+                <h3 className={subheadingClass}>
+                  {profile.title}
+                </h3>
+
+                <p className="mt-2 text-[12px] leading-7 text-slate-600 sm:text-[13px]">
+                  {profile.description}
+                </p>
+              </article>
+            ))}
+          </div>
+
+          <div className="mt-5 rounded-[16px] border border-slate-200 bg-white p-4 sm:p-5">
+            <h3 className={subheadingClass}>
+              Before Opening a Live Forex Trading Account
+            </h3>
+
+            <p className="mt-2 text-[12px] leading-7 text-slate-700 sm:text-[13px]">
+              Read the client agreement and verify the contracting
+              legal entity, account fees, margin requirements,
+              stop-out policies, withdrawal procedures and any
+              restrictions affecting your strategy. Where available,
+              test the platform with a demo account before
+              committing funds. A broker's rating should not
+              replace these checks.
+            </p>
+          </div>
+
+          <div className="mt-5 flex flex-wrap gap-3">
+            <a
+              href="#brokers-list"
+              className="inline-flex min-h-[42px] items-center rounded-xl bg-brand-500 px-5 py-2.5 text-[12px] font-black text-white transition hover:bg-brand-600"
+            >
+              Back to Forex Broker Reviews ↑
+            </a>
+
+            <Link
+              href="/en/best-brokers"
+              className="inline-flex min-h-[42px] items-center rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-[12px] font-black text-slate-800 transition hover:bg-slate-50"
+            >
+              Explore Best Forex Broker Lists →
+            </Link>
+          </div>
+        </section>
+
+        {/* =====================================================
+            EDITORIAL DISCLOSURE
+        ===================================================== */}
+        <div className="rounded-[16px] border border-slate-200 bg-slate-100/60 px-4 py-4 sm:px-6">
+          <h2 className="text-[13px] font-black text-slate-900">
+            Editorial Information and Trading Risk Disclosure
+          </h2>
+
+          <p className="mt-2 text-[11px] leading-7 text-slate-600 sm:text-[12px]">
+            Broker Alarab provides broker research and comparison
+            information for educational and informational purposes.
+            Ratings and comparisons do not constitute personalised
+            investment advice or guarantee the safety of funds
+            or potential profits. Forex and CFD trading involve
+            substantial risks, and losses may be significant.
+            Traders should independently verify regulatory
+            status, contractual terms and account conditions
+            before making financial decisions.
+          </p>
+        </div>
+
+      </div>
+    </section>
+  );
+}
+
 
 export default async function BrokersPage({
   searchParams,
@@ -1508,7 +2306,9 @@ export default async function BrokersPage({
         {/* BROKER LIST */}
         <section
           id="brokers-list"
-          className="mx-auto w-full max-w-[1520px] px-3 pb-5 pt-3 sm:px-6 sm:pb-8 sm:pt-6 lg:px-8 lg:pb-12 lg:pt-7"
+          
+className="mx-auto w-full max-w-[1520px] px-3 pb-2 pt-3 sm:px-6 sm:pb-2 sm:pt-6 lg:px-8 lg:pb-2 lg:pt-7"
+
         >
           {/* MOBILE LIST HEADER */}
           <div className="mb-2.5 lg:hidden">
@@ -1678,6 +2478,11 @@ export default async function BrokersPage({
             </div>
           </div>
         </section>
+
+        
+{/* EDITORIAL GUIDE — ENGLISH */}
+<BrokersEditorialGuideEn brokers={brokers} />
+
 
         {/* FAQ */}
         <section
