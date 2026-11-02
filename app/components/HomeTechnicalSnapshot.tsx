@@ -1095,7 +1095,7 @@ const priceRangePosition =
 {/* COMPACT MARKET SUMMARY */}
 
 <div className="hidden border-b border-slate-100 bg-white px-3 py-3 sm:block sm:px-5 sm:py-3">
-  <div className="grid grid-cols-3 gap-2">
+  <div className="grid grid-cols-3 gap-2 lg:hidden">
 
     <div className="min-w-0 rounded-[14px] border border-slate-200 bg-[#fbfdff] p-2.5 text-center">
       <p className="text-[10px] font-bold text-slate-500">

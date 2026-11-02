@@ -1077,7 +1077,7 @@ export default function HomeTechnicalSnapshotEn({
             MARKET SUMMARY — HIDDEN ON MOBILE
         ===================================================== */}
 
-        <div className="hidden border-b border-slate-100 bg-white px-3 py-3 sm:block sm:px-5">
+        <div className="hidden border-b border-slate-100 bg-white px-3 py-3 sm:block sm:px-5 lg:hidden">
           <div className="grid grid-cols-3 gap-2">
 
             <div className="min-w-0 rounded-[14px] border border-slate-200 bg-[#fbfdff] p-2.5 text-center">
