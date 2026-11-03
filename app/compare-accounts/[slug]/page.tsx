@@ -325,9 +325,24 @@ async function getComparison(
 
     for (const first of firstItems) {
       for (const second of secondItems) {
-        if (first.account.id === second.account.id) {
-          continue;
-        }
+        
+if (first.account.id === second.account.id) {
+  continue;
+}
+
+// Do not compare accounts from the same broker.
+if (first.broker.id === second.broker.id) {
+  continue;
+}
+
+// Compare accounts only within the same category.
+const firstType = first.account.account_type?.trim().toLowerCase();
+const secondType = second.account.account_type?.trim().toLowerCase();
+
+if (!firstType || !secondType || firstType !== secondType) {
+  continue;
+}
+
 
         const identity = [
           first.account.id,

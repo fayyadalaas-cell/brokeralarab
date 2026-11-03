@@ -47,39 +47,100 @@ export default function AccountComparePicker({ brokers, accounts }: Props) {
   const [accountA, setAccountA] = useState("");
   const [accountB, setAccountB] = useState("");
 
+
+  const normalizeType = (value: string | null) =>
+    (value ?? "").trim().toLowerCase();
+
   const accountsA = useMemo(
-    () => accounts.filter((a) => a.broker_id === Number(brokerA))
-      .sort((a, b) => (a.sort_order ?? 999) - (b.sort_order ?? 999)),
+    () =>
+      accounts
+        .filter((a) => a.broker_id === Number(brokerA))
+        .sort((a, b) => (a.sort_order ?? 999) - (b.sort_order ?? 999)),
     [accounts, brokerA]
   );
-  const accountsB = useMemo(
-    () => accounts.filter((a) => a.broker_id === Number(brokerB))
-      .sort((a, b) => (a.sort_order ?? 999) - (b.sort_order ?? 999)),
-    [accounts, brokerB]
+
+  const selectedAccountA = accountsA.find(
+    (a) => a.id === Number(accountA)
   );
 
-  const selectedBrokerA = brokers.find((b) => b.id === Number(brokerA));
-  const selectedBrokerB = brokers.find((b) => b.id === Number(brokerB));
-  const selectedAccountA = accountsA.find((a) => a.id === Number(accountA));
-  const selectedAccountB = accountsB.find((a) => a.id === Number(accountB));
+  const selectedType = normalizeType(
+    selectedAccountA?.account_type ?? null
+  );
 
-  const sameAccount = Boolean(accountA && accountB && accountA === accountB);
+  const accountsB = useMemo(
+    () =>
+      accounts
+        .filter(
+          (a) =>
+            Boolean(brokerB) &&
+            Boolean(brokerA) &&
+            brokerA !== brokerB &&
+            a.broker_id === Number(brokerB) &&
+            Boolean(selectedType) &&
+            normalizeType(a.account_type) === selectedType
+        )
+        .sort((a, b) => (a.sort_order ?? 999) - (b.sort_order ?? 999)),
+    [accounts, brokerA, brokerB, selectedType]
+  );
+
+  const selectedBrokerA = brokers.find(
+    (b) => b.id === Number(brokerA)
+  );
+
+  const selectedBrokerB = brokers.find(
+    (b) => b.id === Number(brokerB)
+  );
+
+  const selectedAccountB = accountsB.find(
+    (a) => a.id === Number(accountB)
+  );
+
+  const sameAccount = Boolean(
+    accountA && accountB && accountA === accountB
+  );
+
+  const sameBroker = Boolean(
+    brokerA && brokerB && brokerA === brokerB
+  );
+
   const canCompare = Boolean(
-    selectedBrokerA?.slug && selectedBrokerB?.slug &&
-    selectedAccountA?.account_name && selectedAccountB?.account_name && !sameAccount
+    selectedBrokerA?.slug &&
+    selectedBrokerB?.slug &&
+    selectedAccountA?.account_name &&
+    selectedAccountB?.account_name &&
+    !sameAccount &&
+    !sameBroker &&
+    selectedType &&
+    normalizeType(selectedAccountB?.account_type ?? null) ===
+      selectedType
   );
 
   function handleCompare() {
-    if (!canCompare || !selectedBrokerA?.slug || !selectedBrokerB?.slug ||
-      !selectedAccountA?.account_name || !selectedAccountB?.account_name) return;
+    if (
+      !canCompare ||
+      !selectedBrokerA?.slug ||
+      !selectedBrokerB?.slug ||
+      !selectedAccountA?.account_name ||
+      !selectedAccountB?.account_name
+    ) {
+      return;
+    }
 
-    const first = `${selectedBrokerA.slug}-${slugify(selectedAccountA.account_name)}`;
-    const second = `${selectedBrokerB.slug}-${slugify(selectedAccountB.account_name)}`;
+    const first = `${selectedBrokerA.slug}-${slugify(
+      selectedAccountA.account_name
+    )}`;
+
+    const second = `${selectedBrokerB.slug}-${slugify(
+      selectedAccountB.account_name
+    )}`;
+
     const [left, right] = [first, second].sort((a, b) =>
       a < b ? -1 : a > b ? 1 : 0
     );
+
     router.push(`/compare-accounts/${left}-vs-${right}`);
   }
+
 
   const selectClass = "mt-2.5 h-[56px] w-full min-w-0 rounded-2xl border border-slate-200 bg-white px-4 text-[15px] font-extrabold text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400 sm:text-[16px]";
   const mobileSelectClass = "h-11 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3 text-[12px] font-bold text-slate-900 outline-none focus:border-[#2B6FD0] focus:ring-2 focus:ring-blue-100 disabled:bg-slate-100 disabled:text-slate-400";
@@ -92,10 +153,18 @@ export default function AccountComparePicker({ brokers, accounts }: Props) {
         id={`${compact ? "mobile" : "desktop"}-broker-${side}`}
         aria-label={`شركة التداول للحساب ${first ? "الأول" : "الثاني"}`}
         value={first ? brokerA : brokerB}
-        onChange={(event) => {
-          if (first) { setBrokerA(event.target.value); setAccountA(""); }
-          else { setBrokerB(event.target.value); setAccountB(""); }
-        }}
+        
+onChange={(event) => {
+  if (first) {
+    setBrokerA(event.target.value);
+    setAccountA("");
+    setAccountB("");
+  } else {
+    setBrokerB(event.target.value);
+    setAccountB("");
+  }
+}}
+
         className={compact ? mobileSelectClass : selectClass}
       >
         <option value="">اختر شركة التداول</option>
@@ -116,10 +185,31 @@ export default function AccountComparePicker({ brokers, accounts }: Props) {
         aria-label={`نوع حساب التداول ${first ? "الأول" : "الثاني"}`}
         value={first ? accountA : accountB}
         disabled={!brokerValue || !available.length}
-        onChange={(event) => first ? setAccountA(event.target.value) : setAccountB(event.target.value)}
+        
+onChange={(event) => {
+  if (first) {
+    setAccountA(event.target.value);
+    setAccountB("");
+  } else {
+    setAccountB(event.target.value);
+  }
+}}
+
         className={compact ? mobileSelectClass : selectClass}
       >
-        <option value="">{!brokerValue ? "اختر الشركة أولاً" : available.length ? "اختر نوع الحساب" : "لا توجد حسابات متاحة"}</option>
+        
+<option value="">
+  {!brokerValue
+    ? "اختر الشركة أولاً"
+    : !first && !accountA
+      ? "اختر الحساب الأول قبل المتابعة"
+      : !first && sameBroker
+        ? "اختر شركة مختلفة للمقارنة"
+        : available.length
+          ? "اختر نوع الحساب"
+          : "لا يوجد حساب من نفس الفئة"}
+</option>
+
         {available.map((account) => (
           <option key={account.id} value={account.id}>
             {account.account_name_ar || account.account_name}

@@ -220,6 +220,7 @@ const uniqueComparisonAccounts = comparisonAccounts.filter(
     !item.key.includes("-vs-")
 );
 
+
 const popularComparisons: {
   first: (typeof uniqueComparisonAccounts)[number];
   second: (typeof uniqueComparisonAccounts)[number];
@@ -228,23 +229,24 @@ const popularComparisons: {
 
 const usedPairs = new Set<string>();
 
-for (let offset = 1; offset < availableBrokers.length; offset++) {
-  for (let i = 0; i < availableBrokers.length; i++) {
-    const firstBroker = availableBrokers[i];
-    const secondBroker =
-      availableBrokers[(i + offset) % availableBrokers.length];
+for (let i = 0; i < uniqueComparisonAccounts.length; i++) {
+  for (let j = i + 1; j < uniqueComparisonAccounts.length; j++) {
+    const first = uniqueComparisonAccounts[i];
+    const second = uniqueComparisonAccounts[j];
 
-    if (firstBroker.id === secondBroker.id) continue;
+    if (first.broker.id === second.broker.id) continue;
 
-    const first = uniqueComparisonAccounts.find(
-      (item) => item.broker.id === firstBroker.id
-    );
+    const firstType = first.account.account_type
+      ?.trim()
+      .toLowerCase();
 
-    const second = uniqueComparisonAccounts.find(
-      (item) => item.broker.id === secondBroker.id
-    );
+    const secondType = second.account.account_type
+      ?.trim()
+      .toLowerCase();
 
-    if (!first || !second) continue;
+    if (!firstType || !secondType || firstType !== secondType) {
+      continue;
+    }
 
     const sorted = [first, second].sort((a, b) =>
       a.key.localeCompare(b.key, "en")
@@ -267,6 +269,7 @@ for (let offset = 1; offset < availableBrokers.length; offset++) {
 
   if (popularComparisons.length >= 12) break;
 }
+
 
   const faqSchema = {
     "@context": "https://schema.org",

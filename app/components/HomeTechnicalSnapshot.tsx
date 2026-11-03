@@ -258,16 +258,19 @@ function TechnicalGauge({
         )
       : 0.5;
 
-  const radius = 85;
-  const cx = 120;
-  const cy = 105;
+  const radiusX = 85;
+const radiusY = 95;
 
-  const x =
-    cx - radius * Math.cos(Math.PI * position);
-  const y =
-    cy - radius * Math.sin(Math.PI * position);
+const cx = 120;
+const cy = 115;
 
-  const arc = "M35 105 A85 85 0 0 1 205 105";
+const x =
+  cx - radiusX * Math.cos(Math.PI * position);
+
+const y =
+  cy - radiusY * Math.sin(Math.PI * position);
+
+const arc = "M35 115 A85 95 0 0 1 205 115";
 
   const segments = [
     { color: "#e11d48", start: 0, size: 25 },

@@ -19,8 +19,10 @@ export const metadata: Metadata = {
     "compare forex trading accounts",
     "forex account comparison",
     "trading account comparison 2026",
-    "Standard vs Raw Spread account",
-    "ECN vs Standard account",
+    
+"Standard account broker comparison",
+"Raw Spread account broker comparison",
+
     "forex spreads and commissions",
     "minimum deposit forex accounts",
     "Islamic trading accounts",
@@ -105,10 +107,12 @@ const faq = [
     q: "Is the account with the lowest spread always the best?",
     a: "No. Consider the total cost of trading, including commissions, execution conditions, supported platforms and the instruments you trade.",
   },
-  {
-    q: "Can I compare two accounts from the same broker?",
-    a: "Yes. Choose the same broker on both sides and select two different account types to compare their features and costs.",
-  },
+  
+{
+  q: "Which forex trading accounts can I compare?",
+  a: "You can compare trading accounts from two different brokers when they share the same account category. For example, Standard accounts can be compared with other Standard-category accounts. Raw Spread and Razor accounts can also be compared when both are classified as Raw.",
+},
+
   {
     q: "Are swap-free or Islamic accounts available at every broker?",
     a: "No. Availability and eligibility depend on the broker, account type, country of residence and regulated entity. Confirm the current terms directly with the broker.",
@@ -197,6 +201,7 @@ const uniqueComparisonAccounts = comparisonAccounts.filter(
     !item.key.includes("-vs-")
 );
 
+
 const popularComparisons: {
   first: (typeof uniqueComparisonAccounts)[number];
   second: (typeof uniqueComparisonAccounts)[number];
@@ -205,23 +210,28 @@ const popularComparisons: {
 
 const usedPairs = new Set<string>();
 
-for (let offset = 1; offset < availableBrokers.length; offset++) {
-  for (let i = 0; i < availableBrokers.length; i++) {
-    const firstBroker = availableBrokers[i];
-    const secondBroker =
-      availableBrokers[(i + offset) % availableBrokers.length];
+for (let i = 0; i < uniqueComparisonAccounts.length; i++) {
+  for (
+    let j = i + 1;
+    j < uniqueComparisonAccounts.length;
+    j++
+  ) {
+    const first = uniqueComparisonAccounts[i];
+    const second = uniqueComparisonAccounts[j];
 
-    if (firstBroker.id === secondBroker.id) continue;
+    if (first.broker.id === second.broker.id) continue;
 
-    const first = uniqueComparisonAccounts.find(
-      (item) => item.broker.id === firstBroker.id
-    );
+    const firstType = first.account.account_type
+      ?.trim()
+      .toLowerCase();
 
-    const second = uniqueComparisonAccounts.find(
-      (item) => item.broker.id === secondBroker.id
-    );
+    const secondType = second.account.account_type
+      ?.trim()
+      .toLowerCase();
 
-    if (!first || !second) continue;
+    if (!firstType || !secondType || firstType !== secondType) {
+      continue;
+    }
 
     const sorted = [first, second].sort((a, b) =>
       a.key < b.key ? -1 : a.key > b.key ? 1 : 0
@@ -244,6 +254,7 @@ for (let offset = 1; offset < availableBrokers.length; offset++) {
 
   if (popularComparisons.length >= 12) break;
 }
+
 
 
   const faqSchema = {
@@ -297,7 +308,7 @@ for (let offset = 1; offset < availableBrokers.length; offset++) {
               <span className="mt-1 block text-[#1E5BB8]">Find the Right Account for You</span>
             </h1>
             <p className="mx-auto mt-3 max-w-[340px] text-[12px] font-medium leading-[1.9] text-slate-600">
-              Compare accounts from the same broker or different brokers, including spreads, commissions and minimum deposits.
+              Compare matching account categories from different forex brokers, including spreads, commissions and minimum deposits.
             </p>
             <div className="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[10px] font-bold text-slate-700">
               {["Spreads & fees", "Account types", "Deposit requirements"].map((item) => (
@@ -357,7 +368,7 @@ for (let offset = 1; offset < availableBrokers.length; offset++) {
             <span className="inline-flex items-center rounded-full border border-blue-100 bg-white px-4 py-2 text-[11px] font-extrabold text-[#1E5BB8] shadow-sm">Trading Account Comparison</span>
             <h2 className="mt-4 text-[25px] font-black leading-tight text-slate-950 sm:text-[36px]">Choose Two Accounts and Compare</h2>
             <p className="mx-auto mt-3 max-w-[760px] text-[13px] leading-7 text-slate-600 sm:text-[15px] sm:leading-8">
-              Select a broker and its account type on each side. Compare two accounts from the same broker or from different brokers to explore their costs and conditions.
+              Choose an account from the first broker, then select a matching account category from another broker to compare trading costs and conditions.
             </p>
             <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
               {["Spreads", "Commissions", "Minimum deposit", "Account type", "Islamic accounts", "Trading conditions"].map((item) => (
@@ -375,7 +386,7 @@ for (let offset = 1; offset < availableBrokers.length; offset++) {
                 <AccountComparePicker brokers={availableBrokers} accounts={accounts} />
               </div>
               <p className="mt-5 text-center text-[11px] leading-6 text-blue-100/80 sm:text-xs">
-                Compare two different account types from one broker or accounts from two brokers. Availability and conditions depend on your jurisdiction.
+                Compare accounts within the same category across different brokers. Account availability and trading conditions may vary by jurisdiction.
               </p>
             </div>
           </div>

@@ -321,9 +321,29 @@ async function getComparison(
 
     for (const first of firstItems) {
       for (const second of secondItems) {
-        if (first.account.id === second.account.id) {
-          continue;
-        }
+        
+if (first.account.id === second.account.id) {
+  continue;
+}
+
+// Accounts must belong to different brokers.
+if (first.broker.id === second.broker.id) {
+  continue;
+}
+
+// Both accounts must have the same account_type.
+const firstType = first.account.account_type
+  ?.trim()
+  .toLowerCase();
+
+const secondType = second.account.account_type
+  ?.trim()
+  .toLowerCase();
+
+if (!firstType || !secondType || firstType !== secondType) {
+  continue;
+}
+
 
         const identity = [
           first.account.id,
@@ -1299,8 +1319,6 @@ export default async function Page({ params }: PageProps) {
     },
   ];
 
-  const sameBroker =
-    first.broker.id === second.broker.id;
 
   // ====================================================
   // FAQ
@@ -1324,13 +1342,18 @@ export default async function Page({ params }: PageProps) {
         "Not necessarily. Trading costs should be evaluated using both spreads and commissions, " +
         "while considering the financial instrument, position size and execution conditions.",
     },
-    {
-      question:
-        "Can I compare two accounts from the same broker?",
-      answer: sameBroker
-        ? "Yes. Both accounts in this comparison belong to the same broker, but their characteristics may differ."
-        : "Yes. Broker Alarab allows traders to compare accounts from the same broker or from different brokers.",
-    },
+    
+{
+  question:
+    "Which trading accounts can I compare?",
+  answer:
+    "Broker Alarab compares trading accounts from different brokers " +
+    "when they belong to the same account category. For example, " +
+    "Standard accounts can be compared with other Standard-category " +
+    "accounts, while Raw Spread and Razor accounts may be compared " +
+    "when both are classified as Raw.",
+},
+
     {
       question:
         "How can I verify the trading conditions?",

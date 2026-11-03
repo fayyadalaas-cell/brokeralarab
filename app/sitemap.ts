@@ -71,18 +71,21 @@ const LAST_SIGNIFICANT_UPDATE = new Date("2026-10-05T00:00:00.000Z");
         lastModified: LAST_SIGNIFICANT_UPDATE,
       })) || [];
 
-  const { data: accounts, error: accountsError } = await supabase
+  
+const { data: accounts, error: accountsError } = await supabase
   .from("broker_accounts")
   .select(`
     id,
     broker_id,
     account_name,
+    account_type,
     brokers!inner(
       slug,
       publication_status
     )
   `)
   .eq("brokers.publication_status", "published");
+
 
 if (accountsError) {
   console.error("Sitemap accounts query failed:", accountsError);
@@ -155,76 +158,116 @@ const countryPagesEN: MetadataRoute.Sitemap =
   }
 
 
-  // ARABIC & ENGLISH ACCOUNT COMPARISON PAGES
+
+  // =====================================================
+  // ACCOUNT COMPARISONS — ARABIC & ENGLISH
+  // Only same account_type across different brokers
+  // =====================================================
+
+  const normalizeType = (value: string | null) =>
+    (value ?? "").trim().toLowerCase();
+
+  type ComparisonAccount = {
+    key: string;
+    brokerId: number;
+    accountType: string;
+  };
 
   const comparisonKeyCounts = new Map<string, number>();
+  const comparisonAccounts: ComparisonAccount[] = [];
 
-  (accounts ?? []).forEach((row: any) => {
-    const broker = row.brokers?.slug;
+  for (const row of accounts ?? []) {
+    const brokerRelation = row.brokers as
+      | { slug: string | null }
+      | { slug: string | null }[]
+      | null;
+
+    const broker = Array.isArray(brokerRelation)
+      ? brokerRelation[0]?.slug
+      : brokerRelation?.slug;
+
     const account = accountSlug(row.account_name);
+    const accountType = normalizeType(row.account_type);
 
-    if (!broker || !account) return;
+    if (!broker || !account || !accountType) continue;
 
     const key = `${broker}-${account}`;
+
+    // Avoid account keys containing the comparison separator.
+    if (key.includes("-vs-")) continue;
 
     comparisonKeyCounts.set(
       key,
       (comparisonKeyCounts.get(key) ?? 0) + 1
     );
-  });
 
-  const comparisonAccountKeys = Array.from(
-    comparisonKeyCounts.entries()
-  )
-    .filter(([, count]) => count === 1)
-    .map(([key]) => key)
-    .sort();
+    comparisonAccounts.push({
+      key,
+      brokerId: row.broker_id,
+      accountType,
+    });
+  }
 
-  // Count all interpretations of each comparison URL
+  // Keep only accounts with unique URL keys.
+  const uniqueComparisonAccounts = comparisonAccounts
+    .filter(
+      (item) => comparisonKeyCounts.get(item.key) === 1
+    )
+    .sort((a, b) =>
+      a.key < b.key ? -1 : a.key > b.key ? 1 : 0
+    );
+
   const comparisonSlugCounts = new Map<string, number>();
 
-  for (let i = 0; i < comparisonAccountKeys.length; i++) {
-    for (let j = i + 1; j < comparisonAccountKeys.length; j++) {
-      const slug =
-        `${comparisonAccountKeys[i]}-vs-${comparisonAccountKeys[j]}`;
+  // Generate only valid pairs.
+  const validComparisonSlugs: string[] = [];
+
+  for (let i = 0; i < uniqueComparisonAccounts.length; i++) {
+    for (
+      let j = i + 1;
+      j < uniqueComparisonAccounts.length;
+      j++
+    ) {
+      const first = uniqueComparisonAccounts[i];
+      const second = uniqueComparisonAccounts[j];
+
+      // Do not compare accounts from the same broker.
+      if (first.brokerId === second.brokerId) continue;
+
+      // Do not compare different account categories.
+      if (first.accountType !== second.accountType) continue;
+
+      const slug = `${first.key}-vs-${second.key}`;
 
       comparisonSlugCounts.set(
         slug,
         (comparisonSlugCounts.get(slug) ?? 0) + 1
       );
+
+      validComparisonSlugs.push(slug);
     }
   }
 
-  // Include only unambiguous canonical URLs
-  const accountComparisonPages: MetadataRoute.Sitemap = [];
-  const accountComparisonPagesEN: MetadataRoute.Sitemap = [];
+  // Include only unambiguous canonical URLs.
+  const canonicalComparisonSlugs = validComparisonSlugs.filter(
+    (slug) => comparisonSlugCounts.get(slug) === 1
+  );
 
-  for (let i = 0; i < comparisonAccountKeys.length; i++) {
-    for (let j = i + 1; j < comparisonAccountKeys.length; j++) {
-      const slug =
-        `${comparisonAccountKeys[i]}-vs-${comparisonAccountKeys[j]}`;
+  const accountComparisonPages: MetadataRoute.Sitemap =
+    canonicalComparisonSlugs.map((slug) => ({
+      url: `${BASE_URL}/compare-accounts/${slug}`,
+      lastModified: LAST_SIGNIFICANT_UPDATE,
+    }));
 
-      if (comparisonSlugCounts.get(slug) !== 1) continue;
+  const accountComparisonPagesEN: MetadataRoute.Sitemap =
+    canonicalComparisonSlugs.map((slug) => ({
+      url: `${BASE_URL}/en/compare-accounts/${slug}`,
+      lastModified: LAST_SIGNIFICANT_UPDATE,
+    }));
 
-      // Avoid ambiguous account keys containing the comparison separator
-      if (
-        comparisonAccountKeys[i].includes("-vs-") ||
-        comparisonAccountKeys[j].includes("-vs-")
-      ) {
-        continue;
-      }
-
-      accountComparisonPages.push({
-        url: `${BASE_URL}/compare-accounts/${slug}`,
-        lastModified: LAST_SIGNIFICANT_UPDATE,
-      });
-
-      accountComparisonPagesEN.push({
-        url: `${BASE_URL}/en/compare-accounts/${slug}`,
-        lastModified: LAST_SIGNIFICANT_UPDATE,
-      });
-    }
-  }
+  console.log(
+    `[Sitemap] Valid account comparisons: ${canonicalComparisonSlugs.length} per language`
+  );
 
 
   const toolPages = TOOL_SLUGS.map((slug) => ({
