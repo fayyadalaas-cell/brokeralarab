@@ -916,13 +916,43 @@ const collectionPageSchema = {
     e: "Rate-hike expectations",
     special: true,
   },
-  {
-    y: "Jul 2026",
-    h: 4205,
-    l: 3961,
-    e: "Latest update",
-    special: true,
-  },
+  
+{
+  y: "Jul 2026",
+  h: 4205,
+  l: 3961,
+  e: "Price volatility",
+  special: true,
+},
+{
+  y: "Aug 2026",
+  h: 4697,
+  l: 4019,
+  e: "Weaker US dollar",
+  special: true,
+},
+{
+  y: "Sep 2026",
+  h: 4510,
+  l: 4110,
+  e: "Interest rate pressure",
+  special: true,
+},
+{
+  y: "Oct 2026",
+  h: 4228,
+  l: 3870,
+  e: "Stronger dollar and bond yields",
+  special: true,
+},
+{
+  y: "Nov 2026",
+  h: 3970.31,
+  l: 3891.26,
+  e: "Latest update: Nov 3",
+  special: true,
+},
+
 
   { y: 2025, h: 4537, l: 2600, e: "Major rally" },
                   { y: 2024, h: 2790, l: 1984, e: "Record highs" },
@@ -1078,12 +1108,38 @@ const collectionPageSchema = {
     l: 3940,
     e: "Rate-hike expectations",
   },
-  {
-    y: "Jul 2026",
-    h: 4205,
-    l: 3961,
-    e: "Latest update",
-  },
+  
+{
+  y: "Jul 2026",
+  h: 4205,
+  l: 3961,
+  e: "Price volatility",
+},
+{
+  y: "Aug 2026",
+  h: 4697,
+  l: 4019,
+  e: "Weaker US dollar",
+},
+{
+  y: "Sep 2026",
+  h: 4510,
+  l: 4110,
+  e: "Interest rate pressure",
+},
+{
+  y: "Oct 2026",
+  h: 4228,
+  l: 3870,
+  e: "Stronger dollar and bond yields",
+},
+{
+  y: "Nov 2026",
+  h: 3970.31,
+  l: 3891.26,
+  e: "Latest update: Nov 3",
+},
+
 
   { y: 2025, h: 4537, l: 2600, e: "Major rally" },
                 { y: 2024, h: 2790, l: 1984, e: "Record highs" },
