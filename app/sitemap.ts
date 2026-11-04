@@ -51,25 +51,161 @@ const LAST_SIGNIFICANT_UPDATE = new Date("2026-10-05T00:00:00.000Z");
     lastModified: LAST_SIGNIFICANT_UPDATE,
   }));
 
-  const { data: openAccountGuides } = await supabase
-  .from("broker_open_account_guides")
-  .select(`
-    slug,
-    brokers!inner(
-      publication_status
-    )
-  `)
-  .eq("is_active", true)
-  .eq("brokers.publication_status", "published");
+  
+  // =====================================================
+  // OPEN ACCOUNT GUIDES — LEGACY AR + V2 AR / EN
+  // =====================================================
 
-  const openAccountPages =
-    openAccountGuides
-      ?.map((g) => g.slug)
-      .filter((slug): slug is string => Boolean(slug))
-      .map((slug) => ({
-        url: `${BASE_URL}/brokers/${slug}/open-account`,
-        lastModified: LAST_SIGNIFICANT_UPDATE,
-      })) || [];
+  // Published brokers only
+  const publishedBrokerSlugs = new Set(brokerSlugs);
+
+  // 1. Keep existing legacy Arabic guides (including Exness).
+  const { data: legacyGuides, error: legacyGuidesError } =
+    await supabase
+      .from("broker_open_account_guides")
+      .select(`
+        slug,
+        brokers!inner(publication_status)
+      `)
+      .eq("is_active", true)
+      .eq("brokers.publication_status", "published");
+
+  if (legacyGuidesError) {
+    console.error(
+      "[Sitemap] Legacy guides:",
+      legacyGuidesError.message
+    );
+    throw new Error("Failed to load legacy account guides");
+  }
+
+  // 2. Load published V2 guides.
+  const { data: v2Guides, error: v2GuidesError } =
+    await supabase
+      .from("broker_account_guides_v2")
+      .select("id, slug, last_verified_at")
+      .eq("is_published", true);
+
+  if (v2GuidesError) {
+    console.error(
+      "[Sitemap] V2 guides:",
+      v2GuidesError.message
+    );
+    throw new Error("Failed to load V2 account guides");
+  }
+
+  // 3. Find V2 guides that actually have English steps.
+  const v2GuideIds = (v2Guides ?? [])
+    .filter((guide) =>
+      publishedBrokerSlugs.has(guide.slug)
+    )
+    .map((guide) => guide.id);
+
+  const englishGuideIds = new Set<number>();
+
+  if (v2GuideIds.length > 0) {
+    const { data: englishSteps, error: englishStepsError } =
+      await supabase
+        .from("broker_account_guide_steps_v2")
+        .select("guide_id")
+        .in("guide_id", v2GuideIds)
+        .eq("language", "en")
+        .eq("is_active", true);
+
+    if (englishStepsError) {
+      console.error(
+        "[Sitemap] English guide steps:",
+        englishStepsError.message
+      );
+      throw new Error("Failed to load English guide steps");
+    }
+
+    for (const step of englishSteps ?? []) {
+      englishGuideIds.add(step.guide_id);
+    }
+  }
+
+  // 4. Deduplicate Arabic URLs.
+  const arabicGuideMap = new Map<
+    string,
+    MetadataRoute.Sitemap[number]
+  >();
+
+  for (const guide of legacyGuides ?? []) {
+    if (
+      !guide.slug ||
+      !publishedBrokerSlugs.has(guide.slug)
+    ) {
+      continue;
+    }
+
+    const pageUrl =
+      `${BASE_URL}/brokers/${guide.slug}/open-account`;
+
+    arabicGuideMap.set(pageUrl, {
+      url: pageUrl,
+      lastModified: LAST_SIGNIFICANT_UPDATE,
+    });
+  }
+
+  // V2 takes precedence over a legacy URL with the same slug.
+  for (const guide of v2Guides ?? []) {
+    if (
+      !guide.slug ||
+      !publishedBrokerSlugs.has(guide.slug)
+    ) {
+      continue;
+    }
+
+    const pageUrl =
+      `${BASE_URL}/brokers/${guide.slug}/open-account`;
+
+    const verifiedDate = guide.last_verified_at
+      ? new Date(guide.last_verified_at)
+      : null;
+
+    arabicGuideMap.set(pageUrl, {
+      url: pageUrl,
+      lastModified:
+        verifiedDate &&
+        !Number.isNaN(verifiedDate.getTime())
+          ? verifiedDate
+          : LAST_SIGNIFICANT_UPDATE,
+    });
+  }
+
+  const openAccountPages: MetadataRoute.Sitemap =
+    Array.from(arabicGuideMap.values());
+
+  // 5. English URLs — only for published V2 guides
+  // with at least one active English step.
+  const openAccountPagesEN: MetadataRoute.Sitemap =
+    (v2Guides ?? [])
+      .filter(
+        (guide) =>
+          Boolean(guide.slug) &&
+          publishedBrokerSlugs.has(guide.slug) &&
+          englishGuideIds.has(guide.id)
+      )
+      .map((guide) => {
+        const verifiedDate = guide.last_verified_at
+          ? new Date(guide.last_verified_at)
+          : null;
+
+        return {
+          url:
+            `${BASE_URL}/en/brokers/${guide.slug}/open-account`,
+          lastModified:
+            verifiedDate &&
+            !Number.isNaN(verifiedDate.getTime())
+              ? verifiedDate
+              : LAST_SIGNIFICANT_UPDATE,
+        };
+      });
+
+  console.log(
+    `[Sitemap] Account guides: ${openAccountPages.length} AR, ${openAccountPagesEN.length} EN`
+  );
+
 
   
 const { data: accounts, error: accountsError } = await supabase

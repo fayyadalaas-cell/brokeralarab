@@ -324,20 +324,62 @@ async function getBrokerLicenses(
   return data as BrokerLicense[];
 }
 
+
 async function getOpenAccountGuide(slug: string) {
   const supabase = await createClient();
 
-  const { data, error } = await supabase
-    .from("broker_open_account_guides")
-    .select("slug")
+  // Legacy Arabic guide — Exness
+  if (slug === "exness") {
+    const { data, error } = await supabase
+      .from("broker_open_account_guides")
+      .select("slug")
+      .eq("slug", slug)
+      .eq("is_active", true)
+      .maybeSingle();
+
+    if (error) {
+      console.error("[Account Guide AR] Legacy:", error.message);
+      return null;
+    }
+
+    return data;
+  }
+
+  // V2 Arabic guides — XS and future brokers
+  const { data: guide, error: guideError } = await supabase
+    .from("broker_account_guides_v2")
+    .select("id, slug")
     .eq("slug", slug)
-    .eq("is_active", true)
+    .eq("is_published", true)
     .maybeSingle();
 
-  if (error || !data) return null;
+  if (guideError) {
+    console.error("[Account Guide AR] V2:", guideError.message);
+    return null;
+  }
 
-  return data;
+  if (!guide) return null;
+
+  // Display the button only when active Arabic steps exist.
+  const { data: steps, error: stepsError } = await supabase
+    .from("broker_account_guide_steps_v2")
+    .select("id")
+    .eq("guide_id", guide.id)
+    .eq("language", "ar")
+    .eq("is_active", true)
+    .limit(1);
+
+  if (stepsError) {
+    console.error(
+      "[Account Guide AR] Steps:",
+      stepsError.message
+    );
+    return null;
+  }
+
+  return steps?.length ? guide : null;
 }
+
 
 export async function generateMetadata({
   params,

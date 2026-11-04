@@ -3,6 +3,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
+import NewAccountGuideV2, {
+  getV2Metadata,
+} from "./NewAccountGuideV2";
+
+
 type PageProps = {
   params: Promise<{ slug: string }>;
 };
@@ -11,8 +16,16 @@ function lines(text?: string | null) {
   return text ? text.split("\n").filter(Boolean) : [];
 }
 
+
 export async function generateMetadata({ params }: PageProps) {
   const { slug } = await params;
+
+  // XS and all new guides use V2 metadata.
+  if (slug !== "exness") {
+    return getV2Metadata(slug);
+  }
+
+  // Preserve Exness metadata exactly as before.
   const supabase = await createClient();
 
   const { data: guide } = await supabase
@@ -23,7 +36,10 @@ export async function generateMetadata({ params }: PageProps) {
     .single();
 
   return {
-    title: guide?.meta_title_ar || guide?.title_ar || "شرح فتح حساب تداول",
+    title:
+      guide?.meta_title_ar ||
+      guide?.title_ar ||
+      "شرح فتح حساب تداول",
     description:
       guide?.meta_description_ar ||
       "شرح فتح حساب تداول خطوة بخطوة بالصور للمتداولين العرب.",
@@ -33,8 +49,16 @@ export async function generateMetadata({ params }: PageProps) {
   };
 }
 
+
 export default async function OpenAccountGuidePage({ params }: PageProps) {
   const { slug } = await params;
+  
+  // New V2 guide for XS and future brokers.
+  // The entire legacy Exness implementation below stays unchanged.
+  if (slug !== "exness") {
+    return <NewAccountGuideV2 slug={slug} />;
+  }
+
   const supabase = await createClient();
 
   const { data: guideData } = await supabase

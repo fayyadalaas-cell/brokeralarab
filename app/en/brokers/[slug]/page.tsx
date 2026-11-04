@@ -1695,6 +1695,31 @@ export default async function BrokerPage({
   notFound();
 }
 
+
+const supabaseGuide = await createClient();
+
+const { data: accountGuide } = await supabaseGuide
+  .from("broker_account_guides_v2")
+  .select("id")
+  .eq("slug", broker.slug)
+  .eq("is_published", true)
+  .maybeSingle();
+
+let hasEnglishAccountGuide = false;
+
+if (accountGuide) {
+  const { data: englishGuideStep } = await supabaseGuide
+    .from("broker_account_guide_steps_v2")
+    .select("id")
+    .eq("guide_id", accountGuide.id)
+    .eq("language", "en")
+    .eq("is_active", true)
+    .limit(1);
+
+  hasEnglishAccountGuide = Boolean(englishGuideStep?.length);
+}
+
+
 const relatedBrokers = await getRelatedBrokers(slug);
 
 const allAccountsData = await getBrokerAccounts(broker.id);
@@ -2702,42 +2727,57 @@ return (
           </dl>
         </div>
 
-        {/* Account Actions */}
-        <div className="border-t border-slate-200 p-5 sm:p-6 max-sm:p-3.5">
-          <div className="grid grid-cols-1 gap-2.5 max-sm:gap-2">
-            <a
-              href={`/go/${broker.slug}?type=real`}
-              target="_blank"
-              rel="nofollow sponsored noopener noreferrer"
-              className="inline-flex min-h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-3 text-center text-sm font-extrabold text-white transition hover:bg-brand-600 max-sm:min-h-[46px] max-sm:px-3 max-sm:py-2.5"
-            >
-              <span className="min-w-0">
-                Open an account with{" "}
-                {broker.name_en || broker.name}
-              </span>
+        
+{/* Account Actions */}
+<div className="border-t border-slate-200 p-5 sm:p-6 max-sm:p-3.5">
+  <div className="grid grid-cols-1 gap-2.5 max-sm:gap-2">
+    {/* Real Account */}
+    <a
+      href={`/go/${broker.slug}?type=real`}
+      target="_blank"
+      rel="nofollow sponsored noopener noreferrer"
+      className="inline-flex min-h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-3 text-center text-sm font-extrabold text-white transition hover:bg-brand-600 max-sm:min-h-[46px] max-sm:px-3 max-sm:py-2.5"
+    >
+      <span className="min-w-0">
+        Open an account with{" "}
+        {broker.name_en || broker.name}
+      </span>
 
-              <span aria-hidden="true" className="shrink-0">
-                ↗
-              </span>
-            </a>
+      <span aria-hidden="true" className="shrink-0">
+        ↗
+      </span>
+    </a>
 
-            <a
-              href={`/go/${broker.slug}?type=demo`}
-              target="_blank"
-              rel="nofollow sponsored noopener noreferrer"
-              className="inline-flex min-h-[46px] w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-bold text-slate-800 transition hover:bg-slate-50 max-sm:min-h-[44px] max-sm:py-2.5"
-            >
-              Open a demo account
-            </a>
-          </div>
+    {/* Demo Account */}
+    <a
+      href={`/go/${broker.slug}?type=demo`}
+      target="_blank"
+      rel="nofollow sponsored noopener noreferrer"
+      className="inline-flex min-h-[46px] w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-bold text-slate-800 transition hover:bg-slate-50 max-sm:min-h-[44px] max-sm:py-2.5"
+    >
+      Open a demo account
+    </a>
 
-          <p className="mt-4 text-xs font-medium leading-6 text-slate-600 max-sm:mt-3 max-sm:text-[11px] max-sm:leading-5">
-            Trading conditions and client protection may vary by
-            country of residence and the legal entity holding the
-            account. Review the applicable details before registering.
-          </p>
-        </div>
-      </aside>
+    {/* Illustrated Account Opening Guide — V2 English */}
+    {hasEnglishAccountGuide && (
+      <Link
+        href={`/en/brokers/${broker.slug}/open-account`}
+        className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2.5 text-center text-xs font-extrabold text-blue-700 transition hover:border-blue-300 hover:bg-blue-100"
+      >
+        <span>Step-by-Step Account Opening Guide</span>
+        <span aria-hidden="true">↗</span>
+      </Link>
+    )}
+  </div>
+
+  <p className="mt-4 text-xs font-medium leading-6 text-slate-600 max-sm:mt-3 max-sm:text-[11px] max-sm:leading-5">
+    Trading conditions and client protection may vary by
+    country of residence and the legal entity holding the
+    account. Review the applicable details before registering.
+  </p>
+</div>
+</aside>
+
 
       {/* Mobile Section Navigation */}
       <nav
