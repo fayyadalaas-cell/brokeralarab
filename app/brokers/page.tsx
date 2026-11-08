@@ -19,8 +19,9 @@ type Broker = {
   max_leverage: string | null;
   arabic_support: string | null;
   logo: string | null;
-  real_account_url: string | null;
+    real_account_url: string | null;
   demo_account_url: string | null;
+  account_opening_status: "active" | "suspended" | null;
 };
 
 type BrokerSearchParams = {
@@ -400,18 +401,32 @@ function BrokerEditorialNote({
 }
 
 
+
 function BrokerCard({
   broker,
   index,
+  hasIllustratedGuide,
 }: {
   broker: Broker;
   index: number;
+  hasIllustratedGuide: boolean;
 }) {
-  const realLink = hasRealAccountLink(broker.real_account_url);
+  const isAccountOpeningSuspended =
+    broker.account_opening_status === "suspended" ||
+    broker.slug === "markets";
+
+  const realLink = hasRealAccountLink(
+    broker.real_account_url
+  );
+
+  const showIllustratedGuide =
+    hasIllustratedGuide && !isAccountOpeningSuspended;
+
   const platforms = splitToBadges(broker.platforms, 4);
   const regulators = splitToBadges(broker.regulation, 4);
   const islamicLabel = islamicAccountLabel(broker.islamic_account);
   const arabicSupport = arabicSupportLabel(broker.arabic_support);
+
 
   return (
     <article
@@ -434,7 +449,7 @@ function BrokerCard({
   <div className="border-b border-slate-100 bg-gradient-to-l from-white to-brand-50/20 px-3 pb-3 pt-2.5">
     {/* BADGES */}
     <div className="mb-2 flex items-center justify-between gap-2">
-      {index < 5 ? (
+      {index < 5 && !isAccountOpeningSuspended ? (
         <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[9px] font-black text-emerald-700">
           <span aria-hidden="true" className="text-[8px]">
             ✓
@@ -670,336 +685,391 @@ function BrokerCard({
 
 
 
-  {/* MOBILE ACTIONS */}
-  <div className="grid grid-cols-[1.15fr_0.85fr] gap-2 px-3 pb-3 pt-2.5">
-    <Link
-      href={`/brokers/${broker.slug}`}
-      className="inline-flex min-h-[38px] items-center justify-center rounded-xl bg-brand-500 px-3 py-2 text-[11px] font-black text-white shadow-[0_5px_12px_rgba(30,91,184,0.12)] transition hover:bg-brand-600"
-    >
-      اقرأ التقييم
-    </Link>
+  
 
-    {realLink ? (
-      <a
-        href={`/go/${broker.slug}?type=real`}
-        rel="sponsored nofollow"
-        className="inline-flex min-h-[38px] items-center justify-center rounded-xl border border-slate-300 bg-white px-3 py-2 text-[11px] font-black text-slate-800 transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700"
-      >
-        فتح حساب
-      </a>
-    ) : (
-      <span className="inline-flex min-h-[38px] items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-[11px] font-black text-slate-400">
-        قريبًا
-      </span>
-    )}
-  </div>
-</div>
+{/* MOBILE ACTIONS */}
+<div className="grid grid-cols-2 gap-2 px-3 pb-3 pt-2.5">
 
-      <div className="hidden lg:grid lg:min-h-[180px] lg:grid-cols-[220px_minmax(0,1fr)_150px]">
-        {/* BROKER IDENTITY */}
-        <div className="border-b border-slate-100 bg-gradient-to-bl from-white via-white to-brand-50/30 p-4 sm:p-5 lg:border-b-0 lg:border-l">
-          <div className="flex h-full items-center gap-4 lg:flex-col lg:justify-center lg:gap-3 lg:text-center">
-            {/* LOGO */}
-            <Link
-              href={`/brokers/${broker.slug}`}
-              aria-label={`اقرأ تقييم ${broker.name ?? "شركة التداول"}`}
-              className="relative flex h-[82px] w-[136px] shrink-0 items-center justify-center overflow-hidden rounded-[17px] border border-slate-200 bg-white shadow-[0_7px_20px_rgba(15,23,42,0.07)] transition duration-300 hover:border-brand-200 sm:h-[90px] sm:w-[156px] lg:h-[98px] lg:w-[178px]"
-            >
-              {broker.logo ? (
-                <Image
-  src={broker.logo}
-  alt={`شعار ${broker.name ?? "شركة التداول"}`}
-  fill
-  className={
-    broker.name?.toLowerCase().includes("capital")
-      ? "!scale-[0.95] object-contain"
-      : `object-contain transition duration-300 ${getBrokerLogoClass(broker.name)}`
-  }
-  sizes="178px"
-/>
-              ) : (
-                <span className="text-xl font-black text-slate-600">
-                  {getInitials(broker.name)}
-                </span>
-              )}
-            </Link>
-
-            
-{/* VISIBLE BROKER NAME — DESKTOP */}
-<h2 className="mt-3 text-center text-[17px] font-black leading-6 text-slate-950">
+  {/* Review Button */}
   <Link
     href={`/brokers/${broker.slug}`}
-    className="transition-colors hover:text-brand-600"
+    className="inline-flex min-h-[42px] min-w-0 items-center justify-center rounded-xl bg-brand-500 px-2 py-2 text-center text-[11px] font-black text-white shadow-[0_5px_12px_rgba(30,91,184,0.12)] transition hover:bg-brand-600"
   >
-    {broker.name ?? "وسيط تداول"}
+    اقرأ التقييم
   </Link>
-</h2>
 
-
-            {/* BADGES + RATING */}
-            <div className="min-w-0 flex-1 lg:flex-none">
-              <div className="flex flex-wrap items-center gap-2 lg:justify-center">
-                <span
-  className={`inline-flex h-6 min-w-6 items-center justify-center rounded-full px-2 text-[10px] font-black shadow-sm ${
-    index < 3
-      ? "border border-brand-200 bg-brand-50 text-brand-700"
-      : "border border-slate-200 bg-white text-slate-600"
-  }`}
->
-  {index + 1}
-</span>
-
-                {index < 5 && (
-  <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-black text-emerald-700">
-    <span aria-hidden="true" className="text-[9px]">
-      ✓
+  {/* Account Opening / Suspension */}
+  {isAccountOpeningSuspended ? (
+    <span
+      role="status"
+      className="inline-flex min-h-[42px] min-w-0 items-center justify-center rounded-xl border border-amber-200 bg-amber-50 px-2 py-2 text-center text-[11px] font-black text-amber-900"
+    >
+      الإحالات موقوفة
     </span>
-    موصى بها
-  </span>
-)}
-              </div>
+  ) : realLink ? (
+    <a
+      href={`/go/${broker.slug}?type=real`}
+      rel="sponsored nofollow"
+      className="inline-flex min-h-[42px] min-w-0 items-center justify-center rounded-xl border border-slate-300 bg-white px-2 py-2 text-center text-[11px] font-black text-slate-800 transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700"
+    >
+      فتح حساب
+    </a>
+  ) : (
+    <span className="inline-flex min-h-[42px] min-w-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-2 py-2 text-center text-[11px] font-black text-slate-400">
+      قريبًا
+    </span>
+  )}
 
-              <div
-                dir="ltr"
-                className="mt-2.5 flex flex-wrap items-center gap-2 lg:justify-center"
-              >
-                {renderStars(broker.rating)}
-
-                <span className="text-sm font-black text-slate-950">
-                  {formatRating(broker.rating)}
-                  <span className="ml-1 text-[10px] font-bold text-slate-500">
-                    /5
-                  </span>
-                </span>
-              </div>
-
-              
-            </div>
-          </div>
-        </div>
-
-        {/* BROKER DETAILS */}
-<div className="min-w-0 p-4 sm:p-5 lg:flex lg:h-full lg:flex-col lg:px-4 lg:py-4">
-  {/* QUICK FACTS */}
-  <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-    {/* MINIMUM DEPOSIT */}
-    <div className="rounded-xl border border-slate-200/70 bg-slate-50/65 px-3 py-2.5 transition group-hover:bg-white">
-      <span className="block text-[10px] font-bold text-slate-500 sm:text-[11px]">
-        الحد الأدنى للإيداع
-      </span>
-
-      <span
-        dir="ltr"
-        className="mt-1 block text-right text-[15px] font-black text-slate-950"
+  {/* Illustrated Account Opening Guide */}
+  {showIllustratedGuide && (
+    <Link
+      href={`/brokers/${broker.slug}/open-account`}
+      target="_blank"
+      rel="noopener noreferrer"
+      title={`شرح فتح حساب ${broker.name || ""} بالصور`}
+      aria-label={`شرح فتح حساب ${broker.name || ""} بالصور`}
+      className="col-span-2 inline-flex min-h-[40px] w-full items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-center text-[11px] font-black text-brand-600 transition hover:border-blue-300 hover:bg-blue-100"
+    >
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
       >
-        {formatDeposit(broker.min_deposit)}
-      </span>
-    </div>
+        <rect x="3" y="3" width="18" height="18" rx="2" />
+        <circle cx="8.5" cy="8.5" r="1.5" />
+        <path d="m21 15-5-5L5 21" />
+      </svg>
 
-    {/* MAX LEVERAGE */}
-    <div className="rounded-xl border border-slate-200/70 bg-slate-50/65 px-3 py-2.5 transition group-hover:bg-white">
-      <span className="block text-[10px] font-bold text-slate-500 sm:text-[11px]">
-        الرافعة المالية
-      </span>
+      <span>شرح فتح الحساب بالصور</span>
+    </Link>
+  )}
+</div>
 
-      <span
-        dir="ltr"
-        className="mt-1 block text-right text-[14px] font-black text-slate-950"
+</div>
+
+
+<div className="hidden lg:grid lg:min-h-[180px] lg:grid-cols-[220px_minmax(0,1fr)_150px]">
+  {/* BROKER IDENTITY */}
+  <div className="border-b border-slate-100 bg-gradient-to-bl from-white via-white to-brand-50/30 p-4 sm:p-5 lg:border-b-0 lg:border-l">
+    <div className="flex h-full items-center gap-4 lg:flex-col lg:justify-center lg:gap-3 lg:text-center">
+
+      {/* LOGO */}
+      <Link
+        href={`/brokers/${broker.slug}`}
+        aria-label={`اقرأ تقييم ${broker.name ?? "شركة التداول"}`}
+        className="relative flex h-[82px] w-[136px] shrink-0 items-center justify-center overflow-hidden rounded-[17px] border border-slate-200 bg-white shadow-[0_7px_20px_rgba(15,23,42,0.07)] transition duration-300 hover:border-brand-200 sm:h-[90px] sm:w-[156px] lg:h-[98px] lg:w-[178px]"
       >
-        {normalizeText(broker.max_leverage)}
-      </span>
-    </div>
+        {broker.logo ? (
+          <Image
+            src={broker.logo}
+            alt={`شعار ${broker.name ?? "شركة التداول"}`}
+            fill
+            className={
+              broker.name?.toLowerCase().includes("capital")
+                ? "!scale-[0.95] object-contain"
+                : `object-contain transition duration-300 ${getBrokerLogoClass(broker.name)}`
+            }
+            sizes="178px"
+          />
+        ) : (
+          <span className="text-xl font-black text-slate-600">
+            {getInitials(broker.name)}
+          </span>
+        )}
+      </Link>
 
-    {/* ISLAMIC ACCOUNT */}
-    <div className="rounded-xl border border-slate-200/70 bg-slate-50/65 px-3 py-2.5 transition group-hover:bg-white">
-      <span className="block text-[10px] font-bold text-slate-500 sm:text-[11px]">
-        الحساب الإسلامي
-      </span>
+      {/* VISIBLE BROKER NAME — DESKTOP */}
+      <h2 className="mt-3 text-center text-[17px] font-black leading-6 text-slate-950">
+        <Link
+          href={`/brokers/${broker.slug}`}
+          className="transition-colors hover:text-brand-600"
+        >
+          {broker.name ?? "وسيط تداول"}
+        </Link>
+      </h2>
 
-      <span
-  className={`mt-1 inline-flex items-center gap-1.5 text-[14px] font-black ${
-    islamicLabel === "متوفر"
-      ? "text-emerald-700"
-      : islamicLabel === "غير متوفر"
-      ? "text-rose-700"
-      : "text-slate-800"
-  }`}
->
-  <span
-    aria-hidden="true"
-    className={`h-1.5 w-1.5 rounded-full ${
-      islamicLabel === "متوفر"
-        ? "bg-emerald-500"
-        : islamicLabel === "غير متوفر"
-        ? "bg-rose-500"
-        : "bg-slate-400"
-    }`}
-  />
+      {/* BADGES + RATING */}
+      <div className="min-w-0 flex-1 lg:flex-none">
+        <div className="flex flex-wrap items-center gap-2 lg:justify-center">
+          <span
+            className={`inline-flex h-6 min-w-6 items-center justify-center rounded-full px-2 text-[10px] font-black shadow-sm ${
+              index < 3
+                ? "border border-brand-200 bg-brand-50 text-brand-700"
+                : "border border-slate-200 bg-white text-slate-600"
+            }`}
+          >
+            {index + 1}
+          </span>
 
-  {islamicLabel}
-</span>
-    </div>
-
-    {/* ARABIC SUPPORT */}
-    <div className="rounded-xl border border-slate-200/70 bg-slate-50/65 px-3 py-2.5 transition group-hover:bg-white">
-      <span className="block text-[10px] font-bold text-slate-500 sm:text-[11px]">
-        الدعم العربي
-      </span>
-
-      <span
-  className={`mt-1 inline-flex items-center gap-1.5 text-[14px] font-black ${
-    arabicSupport === "متوفر"
-      ? "text-emerald-700"
-      : arabicSupport === "غير متوفر"
-      ? "text-rose-700"
-      : "text-slate-800"
-  }`}
->
-  <span
-    aria-hidden="true"
-    className={`h-1.5 w-1.5 rounded-full ${
-      arabicSupport === "متوفر"
-        ? "bg-emerald-500"
-        : arabicSupport === "غير متوفر"
-        ? "bg-rose-500"
-        : "bg-slate-400"
-    }`}
-  />
-
-  {arabicSupport}
-</span>
-    </div>
-  </div>
-
-  {/* PLATFORMS + REGULATORS */}
-  <div className="mt-3 grid gap-3 sm:grid-cols-[1.25fr_1fr]">
-    {/* PLATFORMS */}
-    <div className="min-w-0 rounded-xl border border-slate-200/70 bg-white px-3 py-2.5">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <span className="shrink-0 text-[11px] font-bold text-slate-500">
-          المنصات
-        </span>
-
-        <span
-  dir="ltr"
-  title={platforms.join(", ")}
-  className="min-w-0 flex-1 text-left text-[13px] font-black leading-5 text-slate-950 sm:line-clamp-2"
->
-  {platforms.join(", ") || "غير محدد"}
-</span>
-      </div>
-    </div>
-
-    {/* REGULATORS */}
-    <div className="min-w-0 rounded-xl border border-slate-100 bg-white px-3 py-2.5">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <span className="shrink-0 text-[11px] font-bold text-slate-500">
-          أبرز التراخيص
-        </span>
-
-        <div className="flex flex-wrap items-center justify-end gap-1.5">
-          {regulators.length > 0 ? (
-            regulators.map((regulator) => (
-              <span
-                key={regulator}
-                dir="ltr"
-                className="inline-flex min-h-[23px] items-center justify-center rounded-lg border border-brand-100 bg-brand-50 px-2 py-0.5 text-[9px] font-black text-brand-700"
-              >
-                {regulator}
+          {index < 5 && !isAccountOpeningSuspended && (
+            <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-black text-emerald-700">
+              <span aria-hidden="true" className="text-[9px]">
+                ✓
               </span>
-            ))
-          ) : (
-            <span className="text-xs font-bold text-slate-700">
-              غير محدد
+              موصى بها
             </span>
           )}
         </div>
+
+        <div
+          dir="ltr"
+          className="mt-2.5 flex flex-wrap items-center gap-2 lg:justify-center"
+        >
+          {renderStars(broker.rating)}
+
+          <span className="text-sm font-black text-slate-950">
+            {formatRating(broker.rating)}
+            <span className="ml-1 text-[10px] font-bold text-slate-500">
+              /5
+            </span>
+          </span>
+        </div>
       </div>
     </div>
   </div>
 
+  {/* BROKER DETAILS */}
+  <div className="min-w-0 p-4 sm:p-5 lg:flex lg:h-full lg:flex-col lg:px-4 lg:py-4">
 
-<BrokerEditorialNote bestFor={broker.best_for} />
+    {/* QUICK FACTS */}
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
 
+      {/* MINIMUM DEPOSIT */}
+      <div className="rounded-xl border border-slate-200/70 bg-slate-50/65 px-3 py-2.5 transition group-hover:bg-white">
+        <span className="block text-[10px] font-bold text-slate-500 sm:text-[11px]">
+          الحد الأدنى للإيداع
+        </span>
 
-{/* DESKTOP ACTIONS */}
-<div className="mt-auto hidden items-center justify-start gap-2 border-t border-slate-200/70 pt-3 lg:flex">
+        <span
+          dir="ltr"
+          className="mt-1 block text-right text-[15px] font-black text-slate-950"
+        >
+          {formatDeposit(broker.min_deposit)}
+        </span>
+      </div>
+
+      {/* MAX LEVERAGE */}
+      <div className="rounded-xl border border-slate-200/70 bg-slate-50/65 px-3 py-2.5 transition group-hover:bg-white">
+        <span className="block text-[10px] font-bold text-slate-500 sm:text-[11px]">
+          الرافعة المالية
+        </span>
+
+        <span
+          dir="ltr"
+          className="mt-1 block text-right text-[14px] font-black text-slate-950"
+        >
+          {normalizeText(broker.max_leverage)}
+        </span>
+      </div>
+
+      {/* ISLAMIC ACCOUNT */}
+      <div className="rounded-xl border border-slate-200/70 bg-slate-50/65 px-3 py-2.5 transition group-hover:bg-white">
+        <span className="block text-[10px] font-bold text-slate-500">
+          الحساب الإسلامي
+        </span>
+
+        <span
+          className={`mt-1 inline-flex items-center gap-1.5 text-[14px] font-black ${
+            islamicLabel === "متوفر"
+              ? "text-emerald-700"
+              : islamicLabel === "غير متوفر"
+              ? "text-rose-700"
+              : "text-slate-800"
+          }`}
+        >
+          <span
+            aria-hidden="true"
+            className={`h-1.5 w-1.5 rounded-full ${
+              islamicLabel === "متوفر"
+                ? "bg-emerald-500"
+                : islamicLabel === "غير متوفر"
+                ? "bg-rose-500"
+                : "bg-slate-400"
+            }`}
+          />
+          {islamicLabel}
+        </span>
+      </div>
+
+      {/* ARABIC SUPPORT */}
+      <div className="rounded-xl border border-slate-200/70 bg-slate-50/65 px-3 py-2.5 transition group-hover:bg-white">
+        <span className="block text-[10px] font-bold text-slate-500">
+          الدعم العربي
+        </span>
+
+        <span
+          className={`mt-1 inline-flex items-center gap-1.5 text-[14px] font-black ${
+            arabicSupport === "متوفر"
+              ? "text-emerald-700"
+              : arabicSupport === "غير متوفر"
+              ? "text-rose-700"
+              : "text-slate-800"
+          }`}
+        >
+          <span
+            aria-hidden="true"
+            className={`h-1.5 w-1.5 rounded-full ${
+              arabicSupport === "متوفر"
+                ? "bg-emerald-500"
+                : arabicSupport === "غير متوفر"
+                ? "bg-rose-500"
+                : "bg-slate-400"
+            }`}
+          />
+          {arabicSupport}
+        </span>
+      </div>
+    </div>
+
+    {/* PLATFORMS + REGULATORS */}
+    <div className="mt-3 grid gap-3 sm:grid-cols-[1.25fr_1fr]">
+
+      {/* PLATFORMS */}
+      <div className="min-w-0 rounded-xl border border-slate-200/70 bg-white px-3 py-2.5">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <span className="shrink-0 text-[11px] font-bold text-slate-500">
+            المنصات
+          </span>
+
+          <span
+            dir="ltr"
+            title={platforms.join(", ")}
+            className="min-w-0 flex-1 text-left text-[13px] font-black leading-5 text-slate-950 sm:line-clamp-2"
+          >
+            {platforms.join(", ") || "غير محدد"}
+          </span>
+        </div>
+      </div>
+
+      {/* REGULATORS */}
+      <div className="min-w-0 rounded-xl border border-slate-100 bg-white px-3 py-2.5">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <span className="shrink-0 text-[11px] font-bold text-slate-500">
+            أبرز التراخيص
+          </span>
+
+          <div className="flex flex-wrap items-center justify-end gap-1.5">
+            {regulators.length > 0 ? (
+              regulators.map((regulator) => (
+                <span
+                  key={regulator}
+                  dir="ltr"
+                  className="inline-flex min-h-[23px] items-center justify-center rounded-lg border border-brand-100 bg-brand-50 px-2 py-0.5 text-[9px] font-black text-brand-700"
+                >
+                  {regulator}
+                </span>
+              ))
+            ) : (
+              <span className="text-xs font-bold text-slate-700">
+                غير محدد
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <BrokerEditorialNote bestFor={broker.best_for} />
+
+    {/* DESKTOP ACTIONS */}
+    <div className="mt-auto hidden items-center justify-start gap-2 border-t border-slate-200/70 pt-3 lg:flex">
+      <Link
+        href={`/brokers/${broker.slug}`}
+        className="inline-flex min-h-[38px] min-w-[138px] items-center justify-center rounded-xl bg-brand-500 px-4 py-2 text-xs font-black text-white shadow-[0_5px_12px_rgba(30,91,184,0.12)] transition hover:-translate-y-0.5 hover:bg-brand-600"
+      >
+        اقرأ التقييم
+      </Link>
+
+      {isAccountOpeningSuspended ? (
+        <span
+          role="status"
+          className="inline-flex min-h-[38px] min-w-[108px] items-center justify-center rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] font-black text-amber-900"
+        >
+          الإحالات موقوفة
+        </span>
+      ) : realLink ? (
+        <a
+          href={`/go/${broker.slug}?type=real`}
+          rel="sponsored nofollow"
+          className="inline-flex min-h-[38px] min-w-[108px] items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-700 transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700"
+        >
+          فتح حساب
+        </a>
+      ) : (
+        <span className="inline-flex min-h-[38px] min-w-[105px] items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-black text-slate-400">
+          قريبًا
+        </span>
+      )}
+
+      
+{/* Illustrated Account Opening Guide */}
+{showIllustratedGuide && (
   <Link
-    href={`/brokers/${broker.slug}`}
-    className="inline-flex min-h-[38px] min-w-[138px] items-center justify-center rounded-xl bg-brand-500 px-4 py-2 text-xs font-black text-white shadow-[0_5px_12px_rgba(30,91,184,0.12)] transition hover:-translate-y-0.5 hover:bg-brand-600"
+    href={`/brokers/${broker.slug}/open-account`}
+    target="_blank"
+    rel="noopener noreferrer"
+    title={`شرح فتح حساب ${broker.name || ""} بالصور`}
+    aria-label={`شرح فتح حساب ${broker.name || ""} بالصور`}
+    className="inline-flex min-h-[38px] shrink-0 items-center justify-center gap-1.5 rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-[11px] font-black text-brand-600 transition hover:border-blue-300 hover:bg-blue-100"
   >
-    اقرأ التقييم
-  </Link>
-
-  {realLink ? (
-    <a
-      href={`/go/${broker.slug}?type=real`}
-      rel="sponsored nofollow"
-      className="inline-flex min-h-[38px] min-w-[108px] items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-700 transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700"
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
     >
-      فتح حساب
-    </a>
-  ) : (
-    <span className="inline-flex min-h-[38px] min-w-[105px] cursor-not-allowed items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-black text-slate-400">
-      قريبًا
-    </span>
-  )}
-</div>
+      <rect x="3" y="3" width="18" height="18" rx="2" />
+      <circle cx="8.5" cy="8.5" r="1.5" />
+      <path d="m21 15-5-5L5 21" />
+    </svg>
 
-         {/* MOBILE ACTIONS */}
-<div className="mt-3 grid grid-cols-[1.15fr_0.85fr] gap-2 border-t border-slate-100 pt-3 lg:hidden">
-  <Link
-    href={`/brokers/${broker.slug}`}
-    className="inline-flex min-h-[42px] items-center justify-center rounded-xl bg-brand-500 px-3 py-2 text-xs font-black text-white transition hover:bg-brand-600"
-  >
-    اقرأ التقييم
+    <span>شرح فتح الحساب بالصور</span>
   </Link>
-
-  {realLink ? (
-    <a
-      href={`/go/${broker.slug}?type=real`}
-      rel="sponsored nofollow"
-      className="inline-flex min-h-[42px] items-center justify-center rounded-xl border border-brand-200 bg-brand-50 px-3 py-2 text-xs font-black text-brand-700 transition hover:bg-brand-100"
-    >
-      فتح حساب
-    </a>
-  ) : (
-    <span className="inline-flex min-h-[42px] cursor-not-allowed items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-black text-slate-400">
-      قريبًا
-    </span>
-  )}
+)}
 </div>
-</div>
-
-        {/* RATING — DESKTOP */}
-<div className="hidden border-r border-slate-100 bg-gradient-to-b from-[#fbfdff] to-[#f4f8fe] px-4 py-4 lg:flex lg:flex-col lg:items-center lg:justify-center">
-  <span className="text-[11px] font-bold text-slate-500">
-    التقييم العام
-  </span>
-
-  <div
-    dir="ltr"
-    className="mt-1 text-[37px] font-black leading-none tracking-[-0.04em] text-slate-950"
-  >
-    {formatRating(broker.rating)}
   </div>
 
-  <span className="mt-2 inline-flex rounded-full border border-brand-100 bg-brand-50/70 px-3 py-1 text-[10px] font-black text-brand-700">
-  {ratingLabel(broker.rating)}
-</span>
+  {/* RATING — DESKTOP */}
+  <div className="hidden border-r border-slate-100 bg-gradient-to-b from-[#fbfdff] to-[#f4f8fe] px-4 py-4 lg:flex lg:flex-col lg:items-center lg:justify-center">
+    <span className="text-[11px] font-bold text-slate-500">
+      التقييم العام
+    </span>
 
-  <div className="mt-3">
-  {renderStars(broker.rating, "text-[15px]")}
-</div>
+    <div
+      dir="ltr"
+      className="mt-1 text-[37px] font-black leading-none tracking-[-0.04em] text-slate-950"
+    >
+      {formatRating(broker.rating)}
+    </div>
 
-  <span className="mt-2 text-[10px] font-bold text-slate-500">
-  من 5
-</span>
+    <span className="mt-2 inline-flex rounded-full border border-brand-100 bg-brand-50/70 px-3 py-1 text-[10px] font-black text-brand-700">
+      {ratingLabel(broker.rating)}
+    </span>
+
+    <div className="mt-3">
+      {renderStars(broker.rating, "text-[15px]")}
+    </div>
+
+    <span className="mt-2 text-[10px] font-bold text-slate-500">
+      من 5
+    </span>
+  </div>
 </div>
-      </div>
-    </article>
-  );
+</article>
+);
 }
+
 
 function FilterFields({
   query,
@@ -1967,7 +2037,7 @@ export default async function BrokersPage({
  const { data, error } = await supabase
   .from("brokers")
   .select(
-    "id,name,slug,rating,min_deposit,best_for,regulation,platforms,islamic_account,max_leverage,arabic_support,logo,real_account_url,demo_account_url"
+    "id,name,slug,rating,min_deposit,best_for,regulation,platforms,islamic_account,max_leverage,arabic_support,logo,real_account_url,demo_account_url,account_opening_status"
   )
   .eq("publication_status", "published")
   .order("rating", { ascending: false });
@@ -1977,6 +2047,56 @@ export default async function BrokersPage({
   }
 
   const brokers = (data as Broker[] | null) ?? [];
+
+  
+// Published Arabic illustrated account-opening guides (V2)
+const { data: guideData, error: guideError } = await supabase
+  .from("broker_account_guides_v2")
+  .select("id,slug")
+  .eq("is_published", true)
+  .neq("slug", "exness");
+
+if (guideError) {
+  console.error(
+    "[Brokers] Failed to load account guides:",
+    guideError.message
+  );
+}
+
+const guides = (guideData || []) as {
+  id: number;
+  slug: string;
+}[];
+
+const guideIds = guides.map((guide) => guide.id);
+
+const { data: guideSteps, error: stepsError } =
+  guideIds.length > 0
+    ? await supabase
+        .from("broker_account_guide_steps_v2")
+        .select("guide_id")
+        .in("guide_id", guideIds)
+        .eq("language", "ar")
+        .eq("is_active", true)
+    : { data: [], error: null };
+
+if (stepsError) {
+  console.error(
+    "[Brokers] Failed to verify guide steps:",
+    stepsError.message
+  );
+}
+
+const activeGuideIds = new Set(
+  (guideSteps || []).map((step) => step.guide_id)
+);
+
+const illustratedGuideSlugs = new Set(
+  guides
+    .filter((guide) => activeGuideIds.has(guide.id))
+    .map((guide) => guide.slug)
+);
+
 
   const filteredBrokers = brokers.filter((broker) => {
     const matchesQuery =
@@ -2541,14 +2661,17 @@ className="mx-auto w-full max-w-[1520px] px-3 pb-2 pt-3 sm:px-6 sm:pb-2 sm:pt-6 
       {/* BROKER CARDS */}
       <div className="space-y-3 lg:space-y-3.5">
         {filteredBrokers.length > 0 ? (
-          filteredBrokers.map((broker, index) => (
-            <BrokerCard
-              key={broker.id}
-              broker={broker}
-              index={index}
-            />
-          ))
-        ) : (
+  filteredBrokers.map((broker, index) => (
+    <BrokerCard
+      key={broker.id}
+      broker={broker}
+      index={index}
+      hasIllustratedGuide={illustratedGuideSlugs.has(
+        broker.slug || ""
+      )}
+    />
+  ))
+) : (
           <div className="rounded-[22px] border border-slate-200 bg-white px-5 py-12 text-center shadow-sm">
             <div className="text-3xl">⌕</div>
 

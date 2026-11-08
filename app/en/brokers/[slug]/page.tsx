@@ -50,8 +50,10 @@ type Broker = {
   platform_details_en: string | null;
   meta_title: string | null;
   meta_description: string | null;
-  real_account_url: string | null;
+    real_account_url: string | null;
   demo_account_url: string | null;
+
+  account_opening_status?: "active" | "suspended" | null;
   mt4_download_url: string | null;
   mt5_download_url: string | null;
   founded_year: string | null;
@@ -98,12 +100,39 @@ type Broker = {
   available_platforms_en: string | null;
   platform_tools_en: string | null;
 
+ 
   regulation_summary_en: string | null;
   fund_protection_en: string | null;
   safety_factors_en: string | null;
+
+  complaints: BrokerComplaint[] | null;
+};
+
+type BrokerComplaint = {
+  id: string;
+  incident_date?: string | null;
+  categories?: string[];
+  status?: string;
+  is_published?: boolean;
+
+  title_ar?: string | null;
+  title_en?: string | null;
+
+  description_ar?: string | null;
+  description_en?: string | null;
+
+  broker_response_ar?: string | null;
+  broker_response_en?: string | null;
+
+  editorial_note_ar?: string | null;
+  editorial_note_en?: string | null;
+
+  resolution_ar?: string | null;
+  resolution_en?: string | null;
 };
 
 type RelatedBroker = {
+
   id: number;
   name: string | null;
   name_en: string | null;
@@ -429,6 +458,187 @@ export async function generateMetadata({
     },
   };
 }
+
+
+function BrokerComplaintsSection({
+  complaints,
+  brokerName,
+}: {
+  complaints: BrokerComplaint[];
+  brokerName: string;
+}) {
+  if (!complaints.length) return null;
+
+  const statusLabels: Record<string, string> = {
+    unresolved: "Unresolved",
+    under_review: "Under Review",
+    escalated_to_management: "Escalated to Management",
+    resolved: "Resolved",
+    closed: "Closed",
+  };
+
+  const formatComplaintDate = (date?: string | null) => {
+    if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      return null;
+    }
+
+    const [year, month, day] = date.split("-").map(Number);
+    const parsed = new Date(Date.UTC(year, month - 1, day));
+
+    if (
+      parsed.getUTCFullYear() !== year ||
+      parsed.getUTCMonth() !== month - 1 ||
+      parsed.getUTCDate() !== day
+    ) {
+      return null;
+    }
+
+    return new Intl.DateTimeFormat("en-GB", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      timeZone: "UTC",
+    }).format(parsed);
+  };
+
+  return (
+    <section
+      id="client-complaints"
+      dir="ltr"
+      className="scroll-mt-24 rounded-3xl border border-slate-200 bg-white p-4 text-left shadow-sm md:p-8"
+    >
+      <div className="mb-5">
+        <div className="flex items-start gap-3">
+          <span
+            aria-hidden="true"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-amber-200 bg-amber-50 text-xl text-amber-700"
+          >
+            ⚠
+          </span>
+
+          <div className="min-w-0">
+            <h2 className="text-xl font-extrabold leading-8 text-slate-950 md:text-2xl">
+              Client Complaints About <bdi>{brokerName}</bdi>
+            </h2>
+
+            <p className="mt-1 text-sm leading-7 text-slate-600">
+              Complaints documented by Broker Alarab,
+              including broker responses and the status
+              of each case.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        {complaints.map((complaint) => {
+          const status = complaint.status || "under_review";
+          const isResolved = status === "resolved";
+
+          const statusLabel =
+            statusLabels[status] || "Status Not Specified";
+
+          const formattedDate = formatComplaintDate(
+            complaint.incident_date
+          );
+
+          return (
+            <article
+              key={complaint.id}
+              className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
+            >
+              <div className="border-b border-slate-100 bg-slate-50/70 p-4 md:p-5">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-base font-extrabold leading-7 text-slate-950 md:text-lg">
+                      {complaint.title_en}
+                    </h3>
+
+                    {formattedDate && (
+                      <p className="mt-1 text-xs text-slate-500">
+                        Incident date: {formattedDate}
+                      </p>
+                    )}
+                  </div>
+
+                  <span
+                    className={`inline-flex shrink-0 rounded-full border px-3 py-1.5 text-xs font-bold ${
+                      isResolved
+                        ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                        : "border-amber-200 bg-amber-50 text-amber-800"
+                    }`}
+                  >
+                    {statusLabel}
+                  </span>
+                </div>
+              </div>
+
+              <div className="space-y-5 p-4 md:p-6">
+                {complaint.description_en && (
+                  <div>
+                    <h4 className="mb-2 text-sm font-extrabold text-slate-950">
+                      Complaint Details
+                    </h4>
+
+                    <p className="whitespace-pre-line break-words text-sm leading-8 text-slate-700 md:text-base">
+                      {complaint.description_en}
+                    </p>
+                  </div>
+                )}
+
+                {complaint.broker_response_en && (
+                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                    <h4 className="mb-2 text-sm font-extrabold text-slate-950">
+                      Broker Response
+                    </h4>
+
+                    <p className="whitespace-pre-line break-words text-sm leading-8 text-slate-700">
+                      {complaint.broker_response_en}
+                    </p>
+                  </div>
+                )}
+
+                {complaint.editorial_note_en && (
+                  <div className="border-l-2 border-brand-500 pl-4">
+                    <h4 className="mb-2 text-sm font-extrabold text-slate-950">
+                      Broker Alarab's Editorial Assessment
+                    </h4>
+
+                    <p className="whitespace-pre-line break-words text-sm leading-8 text-slate-700">
+                      {complaint.editorial_note_en}
+                    </p>
+                  </div>
+                )}
+
+                {complaint.resolution_en && (
+                  <div className="rounded-xl border border-slate-200 bg-white p-4">
+                    <h4 className="mb-2 text-sm font-extrabold text-slate-950">
+                      Latest Case Update
+                    </h4>
+
+                    <p className="whitespace-pre-line break-words text-sm leading-7 text-slate-600">
+                      {complaint.resolution_en}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </article>
+          );
+        })}
+      </div>
+
+      <p className="mt-4 border-t border-slate-100 pt-4 text-xs leading-6 text-slate-500">
+        Broker Alarab publishes complaints based on
+        available information and supporting evidence,
+        distinguishing client-reported allegations from
+        confirmed broker responses. An individual complaint
+        does not necessarily indicate that all clients
+        experience the same issue.
+      </p>
+    </section>
+  );
+}
+
 
 function SectionCard({
   title,
@@ -1689,11 +1899,15 @@ export default async function BrokerPage({
     ? query.preview[0]
     : query.preview;
 
-  const broker = await getBroker(slug, previewToken);
+    const broker = await getBroker(slug, previewToken);
 
   if (!broker) {
-  notFound();
-}
+    notFound();
+  }
+
+  const isAccountOpeningSuspended =
+    broker.account_opening_status === "suspended" ||
+    broker.slug === "markets";
 
 
 const supabaseGuide = await createClient();
@@ -1886,12 +2100,29 @@ const commissionAccounts = accountsData.filter((acc) => {
   );
 });
 
+
 const faqItems = (broker.faq_en ?? []).filter(
   (item) => item?.question?.trim() && item?.answer?.trim()
 );
 
 const visibleFaqItems = faqItems.slice(0, 5);
 const extraFaqItems = faqItems.slice(5);
+
+// Published English complaints only
+const publishedComplaints: BrokerComplaint[] =
+  Array.isArray(broker.complaints)
+    ? broker.complaints.filter(
+        (complaint) =>
+          complaint &&
+          complaint.is_published === true &&
+          typeof complaint.title_en === "string" &&
+          complaint.title_en.trim().length > 0
+      )
+    : [];
+
+const hasPublishedComplaints =
+  publishedComplaints.length > 0;
+
 
 const paymentMethods = splitText(
   broker.payment_methods_en
@@ -2420,14 +2651,26 @@ return (
           label: "Fees",
           href: "#fees",
         },
+        
         {
           label: "Deposits & Withdrawals",
           href: "#deposit-withdrawal",
         },
+
+        ...(hasPublishedComplaints
+          ? [
+              {
+                label: "Client Complaints",
+                href: "#client-complaints",
+              },
+            ]
+          : []),
+
         {
           label: "Platforms",
           href: "#platforms",
         },
+
         {
           label: "Final Verdict",
           href: "#verdict",
@@ -2728,119 +2971,161 @@ return (
         </div>
 
         
+
 {/* Account Actions */}
 <div className="border-t border-slate-200 p-5 sm:p-6 max-sm:p-3.5">
   <div className="grid grid-cols-1 gap-2.5 max-sm:gap-2">
-    {/* Real Account */}
-    <a
-      href={`/go/${broker.slug}?type=real`}
-      target="_blank"
-      rel="nofollow sponsored noopener noreferrer"
-      className="inline-flex min-h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-3 text-center text-sm font-extrabold text-white transition hover:bg-brand-600 max-sm:min-h-[46px] max-sm:px-3 max-sm:py-2.5"
-    >
-      <span className="min-w-0">
-        Open an account with{" "}
-        {broker.name_en || broker.name}
-      </span>
 
-      <span aria-hidden="true" className="shrink-0">
-        ↗
-      </span>
-    </a>
-
-    {/* Demo Account */}
-    <a
-      href={`/go/${broker.slug}?type=demo`}
-      target="_blank"
-      rel="nofollow sponsored noopener noreferrer"
-      className="inline-flex min-h-[46px] w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-bold text-slate-800 transition hover:bg-slate-50 max-sm:min-h-[44px] max-sm:py-2.5"
-    >
-      Open a demo account
-    </a>
-
-    {/* Illustrated Account Opening Guide — V2 English */}
-    {hasEnglishAccountGuide && (
-      <Link
-        href={`/en/brokers/${broker.slug}/open-account`}
-        className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2.5 text-center text-xs font-extrabold text-blue-700 transition hover:border-blue-300 hover:bg-blue-100"
+    {isAccountOpeningSuspended ? (
+      /* Account Referrals Suspended */
+      <div
+        role="status"
+        className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-4 text-center"
       >
-        <span>Step-by-Step Account Opening Guide</span>
-        <span aria-hidden="true">↗</span>
-      </Link>
+        <div className="flex items-center justify-center gap-2 text-sm font-extrabold text-amber-900">
+          <span aria-hidden="true">⚠</span>
+          <span>New Account Referrals Suspended</span>
+        </div>
+
+        <p className="mt-2 text-xs leading-6 text-amber-900">
+          Broker Alarab is currently not referring new clients to{" "}
+          {broker.name_en || broker.name}.
+        </p>
+
+        {hasPublishedComplaints && (
+          <a
+            href="#client-complaints"
+            className="mt-3 inline-flex min-h-[40px] items-center justify-center text-xs font-bold text-brand-600 underline underline-offset-4"
+          >
+            Read the documented complaint
+          </a>
+        )}
+      </div>
+    ) : (
+      <>
+        {/* Real Account */}
+        <a
+          href={`/go/${broker.slug}?type=real`}
+          target="_blank"
+          rel="nofollow sponsored noopener noreferrer"
+          className="inline-flex min-h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-3 text-center text-sm font-extrabold text-white transition hover:bg-brand-600 max-sm:min-h-[46px] max-sm:px-3 max-sm:py-2.5"
+        >
+          <span className="min-w-0">
+            Open an account with{" "}
+            {broker.name_en || broker.name}
+          </span>
+
+          <span aria-hidden="true" className="shrink-0">
+            ↗
+          </span>
+        </a>
+
+        {/* Demo Account */}
+        <a
+          href={`/go/${broker.slug}?type=demo`}
+          target="_blank"
+          rel="nofollow sponsored noopener noreferrer"
+          className="inline-flex min-h-[46px] w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-bold text-slate-800 transition hover:bg-slate-50 max-sm:min-h-[44px] max-sm:py-2.5"
+        >
+          Open a demo account
+        </a>
+
+        {/* Illustrated Account Opening Guide — V2 English */}
+        {hasEnglishAccountGuide && (
+          <Link
+            href={`/en/brokers/${broker.slug}/open-account`}
+            className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2.5 text-center text-xs font-extrabold text-blue-700 transition hover:border-blue-300 hover:bg-blue-100"
+          >
+            <span>Step-by-Step Account Opening Guide</span>
+            <span aria-hidden="true">↗</span>
+          </Link>
+        )}
+      </>
     )}
   </div>
 
   <p className="mt-4 text-xs font-medium leading-6 text-slate-600 max-sm:mt-3 max-sm:text-[11px] max-sm:leading-5">
-    Trading conditions and client protection may vary by
-    country of residence and the legal entity holding the
-    account. Review the applicable details before registering.
+    {isAccountOpeningSuspended
+      ? "Broker Alarab has temporarily suspended new account referrals to this broker. The review remains available for informational purposes."
+      : "Trading conditions and client protection may vary by country of residence and the legal entity holding the account. Review the applicable details before registering."}
   </p>
 </div>
 </aside>
 
 
-      {/* Mobile Section Navigation */}
-      <nav
-        aria-label="Broker review sections"
-        className="relative order-[-1] -mt-2 overflow-hidden rounded-2xl border border-slate-200 bg-white md:hidden"
-      >
-        <div className="flex gap-2 overflow-x-auto overscroll-x-contain p-3 max-sm:gap-2 max-sm:py-2 max-sm:pl-2 max-sm:pr-9 max-sm:[scrollbar-width:none] max-sm:[&::-webkit-scrollbar]:hidden">
-          {[
-            {
-              label: "Quick Summary",
-              href: "#broker-summary",
-            },
-            {
-              label: "Rating Scores",
-              href: "#scores",
-            },
-            {
-              label: "Accounts",
-              href: "#accounts",
-            },
-            {
-              label: "Regulation",
-              href: "#regulation",
-            },
-            {
-              label: "Fees",
-              href: "#fees",
-            },
-            {
-              label: "Deposits",
-              href: "#deposit-withdrawal",
-            },
-            {
-              label: "Platforms",
-              href: "#platforms",
-            },
-            {
-              label: "Final Verdict",
-              href: "#verdict",
-            },
-            {
-              label: "FAQs",
-              href: "#faq",
-            },
-          ].map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className="inline-flex min-h-[40px] shrink-0 items-center justify-center whitespace-nowrap rounded-lg border border-slate-200 bg-white px-4 py-2 text-[13px] font-bold text-slate-700 transition hover:border-brand-500 hover:bg-blue-50 hover:text-brand-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 max-sm:min-h-[44px] max-sm:px-3 max-sm:text-xs"
-            >
-              {item.label}
-            </a>
-          ))}
-        </div>
+{/* Mobile Section Navigation */}
+<nav
+  aria-label="Broker review sections"
+  className="relative order-[-1] -mt-2 overflow-hidden rounded-2xl border border-slate-200 bg-white md:hidden"
+>
+  <div className="flex gap-2 overflow-x-auto overscroll-x-contain p-3 max-sm:gap-2 max-sm:py-2 max-sm:pl-2 max-sm:pr-9 max-sm:[scrollbar-width:none] max-sm:[&::-webkit-scrollbar]:hidden">
+    {[
+      {
+        label: "Quick Summary",
+        href: "#broker-summary",
+      },
+      {
+        label: "Rating Scores",
+        href: "#scores",
+      },
+      {
+        label: "Accounts",
+        href: "#accounts",
+      },
+      {
+        label: "Regulation",
+        href: "#regulation",
+      },
+      {
+        label: "Fees",
+        href: "#fees",
+      },
+      {
+        label: "Deposits",
+        href: "#deposit-withdrawal",
+      },
 
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 right-0 hidden w-8 items-center justify-center bg-gradient-to-l from-white via-white/95 to-transparent text-lg text-slate-400 max-sm:flex"
-        >
-          ›
-        </span>
-      </nav>
-    </div>
+      ...(hasPublishedComplaints
+        ? [
+            {
+              label: "Complaints",
+              href: "#client-complaints",
+            },
+          ]
+        : []),
+
+      {
+        label: "Platforms",
+        href: "#platforms",
+      },
+      {
+        label: "Final Verdict",
+        href: "#verdict",
+      },
+      {
+        label: "FAQs",
+        href: "#faq",
+      },
+    ].map((item) => (
+      <a
+        key={item.href}
+        href={item.href}
+        className="inline-flex min-h-[40px] shrink-0 items-center justify-center whitespace-nowrap rounded-lg border border-slate-200 bg-white px-4 py-2 text-[13px] font-bold text-slate-700 transition hover:border-brand-500 hover:bg-blue-50 hover:text-brand-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 max-sm:min-h-[44px] max-sm:px-3 max-sm:text-xs"
+      >
+        {item.label}
+      </a>
+    ))}
+  </div>
+
+  <span
+    aria-hidden="true"
+    className="pointer-events-none absolute inset-y-0 right-0 hidden w-8 items-center justify-center bg-gradient-to-l from-white via-white/95 to-transparent text-lg text-slate-400 max-sm:flex"
+  >
+    ›
+  </span>
+</nav>
+</div>
+
 
     {/* Account Types */}
     {accountsData.some((account) => account.account_name?.trim()) && (
@@ -3494,13 +3779,20 @@ return (
 )}
 
 
-  {/* Account Opening */}
-  <div className="mt-5 flex flex-col gap-3 border-t border-slate-200 pt-5 md:flex-row md:items-center md:justify-between md:gap-6">
-    <p className="text-[15px] font-medium leading-7 text-slate-600 md:text-base">
-      Review the account conditions, availability, and trading costs before
-      registering.
-    </p>
+  
+{/* Account Opening */}
+<div className="mt-5 flex flex-col gap-3 border-t border-slate-200 pt-5 md:flex-row md:items-center md:justify-between md:gap-6">
+  <p className="text-[15px] font-medium leading-7 text-slate-600 md:text-base">
+    {isAccountOpeningSuspended
+      ? "Broker Alarab has suspended new account referrals to this broker."
+      : "Review the account conditions, availability, and trading costs before registering."}
+  </p>
 
+  {isAccountOpeningSuspended ? (
+    <span className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-amber-200 bg-amber-50 px-6 py-3 text-sm font-extrabold text-amber-900 md:shrink-0">
+      New Account Referrals Suspended
+    </span>
+  ) : (
     <a
       href={`/go/${broker.slug}?type=real`}
       target="_blank"
@@ -3511,12 +3803,11 @@ return (
         Open an Account with{" "}
         <bdi>{broker.name_en || broker.name}</bdi>
       </span>
-
-      <span aria-hidden="true" className="shrink-0">
-        ↗
-      </span>
+      <span aria-hidden="true">↗</span>
     </a>
-  </div>
+  )}
+</div>
+
 </section>
 
 {brokerLicenses.length > 0 ? (
@@ -3936,11 +4227,21 @@ return (
       </div>
     </div>
   </div>
+
 </SectionCard>
+
+{/* Client Complaints - published complaints only */}
+{hasPublishedComplaints && (
+  <BrokerComplaintsSection
+    complaints={publishedComplaints}
+    brokerName={broker.name_en || broker.name || "the broker"}
+  />
+)}
 
 {/* Trading Platforms */}
 <SectionCard
   title="Trading Platforms"
+
   subtitle={`A closer look at the trading platforms offered by ${
     broker.name_en || broker.name
   } and the overall platform experience.`}
@@ -4089,7 +4390,7 @@ return (
             )}
 
             {/* MetaTrader Downloads */}
-            {(hasMT4 || hasMT5) && (
+{!isAccountOpeningSuspended && (hasMT4 || hasMT5) && (
               <div className="mt-4 border-t border-slate-100 pt-3 md:mt-5 md:pt-4">
                 <h3 className="text-xs font-semibold leading-5 text-slate-500">
                   Download MetaTrader Platforms
@@ -4228,18 +4529,28 @@ return (
         </div>
       )}
 
+      
       {/* Account Link */}
       <div className="mt-4 flex justify-center border-t border-slate-100 pt-3 md:pt-4">
-        <a
-          href={`/go/${broker.slug}?type=real`}
-          target="_blank"
-          rel="nofollow sponsored noopener noreferrer"
-          className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-lg bg-brand-600 px-5 py-2 text-xs font-bold text-white transition hover:bg-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 md:w-auto"
-        >
-          
-          Open an account with {broker.name_en || broker.name}
-          <span aria-hidden="true">↗</span>
-        </a>
+        {isAccountOpeningSuspended ? (
+          <div
+            role="status"
+            className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-5 py-3 text-center text-xs font-bold text-amber-900 md:w-auto"
+          >
+            <span aria-hidden="true">⚠</span>
+            <span>New Account Referrals Suspended</span>
+          </div>
+        ) : (
+          <a
+            href={`/go/${broker.slug}?type=real`}
+            target="_blank"
+            rel="nofollow sponsored noopener noreferrer"
+            className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-lg bg-brand-600 px-5 py-2 text-xs font-bold text-white transition hover:bg-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 md:w-auto"
+          >
+            Open an account with {broker.name_en || broker.name}
+            <span aria-hidden="true">↗</span>
+          </a>
+        )}
       </div>
 
       {/* Capital.com ONLY - Short Risk Warning */}
@@ -4260,6 +4571,7 @@ return (
       )}
 
     </div>
+
   </div>
 </SectionCard>
 

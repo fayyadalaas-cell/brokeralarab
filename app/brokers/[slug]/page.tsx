@@ -56,8 +56,9 @@ type Broker = {
   meta_title_en: string | null;
   meta_description_en: string | null;
 
-  real_account_url: string | null;
+   real_account_url: string | null;
   demo_account_url: string | null;
+  account_opening_status?: "active" | "suspended" | null;
   mt4_download_url: string | null;
   mt5_download_url: string | null;
   
@@ -84,8 +85,10 @@ type Broker = {
   score_deposit: number | null;
   score_support: number | null;
 
-  faq_ar: { question: string; answer: string }[] | null;
+    faq_ar: { question: string; answer: string }[] | null;
   faq_en: { question: string; answer: string }[] | null;
+
+
 
   broker_positioning_en: string | null;
   broker_positioning_ar: string | null;
@@ -129,8 +132,33 @@ type Broker = {
   fund_protection_en: string | null;
   fund_protection_ar: string | null;
 
-  safety_factors_en: string | null;
+    safety_factors_en: string | null;
   safety_factors_ar: string | null;
+
+  complaints: BrokerComplaint[] | null;
+};
+
+type BrokerComplaint = {
+  id: string;
+  incident_date?: string | null;
+  categories?: string[];
+  status?: string;
+  is_published?: boolean;
+
+  title_ar?: string | null;
+  title_en?: string | null;
+
+  description_ar?: string | null;
+  description_en?: string | null;
+
+  broker_response_ar?: string | null;
+  broker_response_en?: string | null;
+
+  editorial_note_ar?: string | null;
+  editorial_note_en?: string | null;
+
+  resolution_ar?: string | null;
+  resolution_en?: string | null;
 };
 
 type RelatedBroker = {
@@ -504,6 +532,183 @@ export async function generateMetadata({
     },
   };
 }
+
+
+function BrokerComplaintsSection({
+  complaints,
+  brokerName,
+}: {
+  complaints: BrokerComplaint[];
+  brokerName: string;
+}) {
+  if (!complaints.length) return null;
+
+  const statusLabels: Record<string, string> = {
+    unresolved: "لم تُحل الشكوى",
+    under_review: "قيد المراجعة",
+    escalated_to_management: "تم التصعيد للإدارة",
+    resolved: "تم حل الشكوى",
+    closed: "أُغلقت الشكوى",
+  };
+
+  const formatComplaintDate = (date?: string | null) => {
+    if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      return null;
+    }
+
+    const [year, month, day] = date.split("-").map(Number);
+    const parsed = new Date(Date.UTC(year, month - 1, day));
+
+    if (
+      parsed.getUTCFullYear() !== year ||
+      parsed.getUTCMonth() !== month - 1 ||
+      parsed.getUTCDate() !== day
+    ) {
+      return null;
+    }
+
+    return new Intl.DateTimeFormat("ar", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      timeZone: "UTC",
+    }).format(parsed);
+  };
+
+  return (
+    <section
+      id="client-complaints"
+      dir="rtl"
+      className="scroll-mt-24 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:p-8"
+    >
+      <div className="mb-5">
+        <div className="flex items-start gap-3">
+          <span
+            aria-hidden="true"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-amber-200 bg-amber-50 text-xl text-amber-700"
+          >
+            ⚠
+          </span>
+
+          <div className="min-w-0">
+            <h2 className="text-xl font-extrabold leading-8 text-slate-950 md:text-2xl">
+              شكاوى العملاء على <bdi>{brokerName}</bdi>
+            </h2>
+
+            <p className="mt-1 text-sm leading-7 text-slate-600">
+              شكاوى موثقة لدى بروكر العرب، مع عرض ردود
+              الشركة وحالة كل شكوى بشفافية.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        {complaints.map((complaint) => {
+          const status = complaint.status || "under_review";
+          const isResolved = status === "resolved";
+          const statusLabel =
+            statusLabels[status] || "حالة الشكوى غير محددة";
+
+          const formattedDate = formatComplaintDate(
+            complaint.incident_date
+          );
+
+          return (
+            <article
+              key={complaint.id}
+              className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
+            >
+              <div className="border-b border-slate-100 bg-slate-50/70 p-4 md:p-5">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-base font-extrabold leading-7 text-slate-950 md:text-lg">
+                      {complaint.title_ar}
+                    </h3>
+
+                    {formattedDate && (
+                      <p className="mt-1 text-xs text-slate-500">
+                        تاريخ الواقعة: {formattedDate}
+                      </p>
+                    )}
+                  </div>
+
+                  <span
+                    className={`inline-flex shrink-0 rounded-full border px-3 py-1.5 text-xs font-bold ${
+                      isResolved
+                        ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                        : "border-amber-200 bg-amber-50 text-amber-800"
+                    }`}
+                  >
+                    {statusLabel}
+                  </span>
+                </div>
+              </div>
+
+              <div className="space-y-5 p-4 md:p-6">
+                {complaint.description_ar && (
+                  <div>
+                    <h4 className="mb-2 text-sm font-extrabold text-slate-950">
+                      تفاصيل الشكوى
+                    </h4>
+
+                    <p className="whitespace-pre-line break-words text-sm leading-8 text-slate-700 md:text-base">
+                      {complaint.description_ar}
+                    </p>
+                  </div>
+                )}
+
+                {complaint.broker_response_ar && (
+                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                    <h4 className="mb-2 text-sm font-extrabold text-slate-950">
+                      رد الشركة
+                    </h4>
+
+                    <p className="whitespace-pre-line break-words text-sm leading-8 text-slate-700">
+                      {complaint.broker_response_ar}
+                    </p>
+                  </div>
+                )}
+
+                {complaint.editorial_note_ar && (
+                  <div className="border-r-2 border-brand-500 pr-4">
+                    <h4 className="mb-2 text-sm font-extrabold text-slate-950">
+                      تقييم بروكر العرب للواقعة
+                    </h4>
+
+                    <p className="whitespace-pre-line break-words text-sm leading-8 text-slate-700">
+                      {complaint.editorial_note_ar}
+                    </p>
+                  </div>
+                )}
+
+                {complaint.resolution_ar && (
+                  <div className="rounded-xl border border-slate-200 bg-white p-4">
+                    <h4 className="mb-2 text-sm font-extrabold text-slate-950">
+                      آخر تطورات الشكوى
+                    </h4>
+
+                    <p className="whitespace-pre-line break-words text-sm leading-7 text-slate-600">
+                      {complaint.resolution_ar}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </article>
+          );
+        })}
+      </div>
+
+      <p className="mt-4 border-t border-slate-100 pt-4 text-xs leading-6 text-slate-500">
+        تنشر بروكر العرب الشكاوى وفق المعلومات والأدلة
+        المتاحة، مع توضيح ما يستند إلى إفادة العميل وما
+        تؤكده ردود الشركة. ولا تعني الشكوى الفردية بالضرورة
+        وجود المشكلة نفسها لدى جميع العملاء.
+      </p>
+    </section>
+  );
+}
+
 
 function SectionCard({
   title,
@@ -1815,6 +2020,10 @@ if (!broker) {
   notFound();
 }
 
+const isAccountOpeningSuspended =
+  broker.account_opening_status === "suspended" ||
+  broker.slug === "markets";
+
 const [
   relatedBrokers,
   accountsData,
@@ -1970,13 +2179,28 @@ const visibleAccounts = isNaga
       )[0] || null
   : null;
 
-  const faqItems =
+    const faqItems =
     (broker.faq_ar ?? []).filter(
       (item) => item?.question?.trim() && item?.answer?.trim()
     );
 
   const visibleFaqItems = faqItems.slice(0, 5);
   const extraFaqItems = faqItems.slice(5);
+
+  // Published complaints only
+  const publishedComplaints: BrokerComplaint[] =
+    Array.isArray(broker.complaints)
+      ? broker.complaints.filter(
+          (complaint) =>
+            complaint &&
+            complaint.is_published === true &&
+            typeof complaint.title_ar === "string" &&
+            complaint.title_ar.trim().length > 0
+        )
+      : [];
+
+  const hasPublishedComplaints =
+    publishedComplaints.length > 0;
 
   const paymentMethods = splitText(broker.payment_methods_ar);
 
@@ -2454,7 +2678,17 @@ const structuredData = {
   { label: "الحسابات", href: "#accounts" },
   { label: "التراخيص والأمان", href: "#licenses" },
   { label: "الرسوم", href: "#fees" },
-  { label: "الإيداع والسحب", href: "#deposit-withdrawal" },
+    { label: "الإيداع والسحب", href: "#deposit-withdrawal" },
+
+  ...(hasPublishedComplaints
+    ? [
+        {
+          label: "شكاوى العملاء",
+          href: "#client-complaints",
+        },
+      ]
+    : []),
+
   { label: "المنصات", href: "#platforms" },
   { label: "الحكم النهائي", href: "#verdict" },
   { label: "الأسئلة الشائعة", href: "#faq" },
@@ -2757,57 +2991,91 @@ const structuredData = {
           </dl>
         </div>
 
-       {/* Account Actions */}
+       
+{/* Account Actions */}
 <div className="border-t border-slate-200 p-5 sm:p-6 max-sm:p-3.5">
   <div className="grid grid-cols-1 gap-2.5 max-sm:gap-2">
-    <a
-      href={`/go/${broker.slug}?type=real`}
-      target="_blank"
-      rel="nofollow sponsored noopener noreferrer"
-      className="inline-flex min-h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-3 text-sm font-extrabold text-white transition hover:bg-brand-600 max-sm:min-h-[46px] max-sm:px-3 max-sm:py-2.5 max-sm:text-center"
-    >
-      <span className="min-w-0">
-        فتح حساب مع <bdi>{broker.name}</bdi>
-      </span>
-
-      <span aria-hidden="true" className="shrink-0">
-        ↗
-      </span>
-    </a>
-
-    <a
-      href={`/go/${broker.slug}?type=demo`}
-      target="_blank"
-      rel="nofollow sponsored noopener noreferrer"
-      className="inline-flex min-h-[46px] w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-800 transition hover:bg-slate-50 max-sm:min-h-[44px] max-sm:py-2.5 max-sm:text-center"
-    >
-      فتح حساب تجريبي
-    </a>
-
-    {openAccountGuide && (
-      <Link
-        href={`/brokers/${broker.slug}/open-account`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-blue-100 bg-blue-50 px-4 py-2.5 text-center text-[13px] font-bold text-brand-600 transition hover:bg-blue-100"
+    {isAccountOpeningSuspended ? (
+      <div
+        role="status"
+        className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-4 text-center"
       >
-        <span className="min-w-0">
-          دليل فتح الحساب بالصور
-        </span>
+        <div className="flex items-center justify-center gap-2 text-sm font-extrabold text-amber-900">
+          <span aria-hidden="true">⚠</span>
+          <span>تم تعليق إحالات فتح الحسابات الجديدة</span>
+        </div>
 
-        <span aria-hidden="true" className="shrink-0">
-          ↗
-        </span>
-      </Link>
+        <p className="mt-2 text-xs leading-6 text-amber-900">
+          لا تقوم بروكر العرب حالياً بإحالة عملاء جدد إلى{" "}
+          <bdi>{broker.name || broker.name_en}</bdi>.
+        </p>
+
+        {hasPublishedComplaints && (
+          <a
+            href="#client-complaints"
+            className="mt-3 inline-flex min-h-[40px] items-center justify-center text-xs font-bold text-brand-600 underline underline-offset-4"
+          >
+            الاطلاع على الشكوى المنشورة
+          </a>
+        )}
+      </div>
+    ) : (
+      <>
+        {/* Real Account */}
+        <a
+          href={`/go/${broker.slug}?type=real`}
+          target="_blank"
+          rel="nofollow sponsored noopener noreferrer"
+          className="inline-flex min-h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-3 text-sm font-extrabold text-white transition hover:bg-brand-600 max-sm:min-h-[46px] max-sm:px-3 max-sm:py-2.5 max-sm:text-center"
+        >
+          <span className="min-w-0">
+            فتح حساب مع <bdi>{broker.name}</bdi>
+          </span>
+
+          <span aria-hidden="true" className="shrink-0">
+            ↗
+          </span>
+        </a>
+
+        {/* Demo Account */}
+        <a
+          href={`/go/${broker.slug}?type=demo`}
+          target="_blank"
+          rel="nofollow sponsored noopener noreferrer"
+          className="inline-flex min-h-[46px] w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-800 transition hover:bg-slate-50 max-sm:min-h-[44px] max-sm:py-2.5 max-sm:text-center"
+        >
+          فتح حساب تجريبي
+        </a>
+
+        {/* Illustrated Account Opening Guide */}
+        {openAccountGuide && (
+          <Link
+            href={`/brokers/${broker.slug}/open-account`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-blue-100 bg-blue-50 px-4 py-2.5 text-center text-[13px] font-bold text-brand-600 transition hover:bg-blue-100"
+          >
+            <span className="min-w-0">
+              دليل فتح الحساب بالصور
+            </span>
+
+            <span aria-hidden="true" className="shrink-0">
+              ↗
+            </span>
+          </Link>
+        )}
+      </>
     )}
   </div>
 
   <p className="mt-4 text-xs font-medium leading-6 text-slate-600 max-sm:mt-3 max-sm:text-[11px] max-sm:leading-5">
-    تختلف الشروط والحماية حسب بلد الإقامة والكيان الذي يُفتح
-    الحساب لديه. راجع التفاصيل قبل التسجيل.
-    </p>
+    {isAccountOpeningSuspended
+      ? "علّقت بروكر العرب إحالة العملاء الجدد إلى هذه الشركة. وتبقى صفحة التقييم متاحة للاطلاع على المعلومات والشكاوى."
+      : "تختلف الشروط والحماية حسب بلد الإقامة والكيان الذي يُفتح الحساب لديه. راجع التفاصيل قبل التسجيل."}
+  </p>
 </div>
 </aside>
+
 
 {/* Section Navigation */}
 <nav
@@ -2821,7 +3089,17 @@ const structuredData = {
   { label: "الحسابات", href: "#accounts" },
   { label: "التراخيص والأمان", href: "#licenses" },
   { label: "الرسوم", href: "#fees" },
-  { label: "الإيداع والسحب", href: "#deposit-withdrawal" },
+    { label: "الإيداع والسحب", href: "#deposit-withdrawal" },
+
+  ...(hasPublishedComplaints
+    ? [
+        {
+          label: "شكاوى العملاء",
+          href: "#client-complaints",
+        },
+      ]
+    : []),
+
   { label: "المنصات", href: "#platforms" },
   { label: "الحكم النهائي", href: "#verdict" },
   { label: "الأسئلة الشائعة", href: "#faq" },
@@ -2958,7 +3236,8 @@ const structuredData = {
         )}
       </div>
 
-      {(broker.mt4_download_url || broker.mt5_download_url) && (
+     {!isAccountOpeningSuspended &&
+  (broker.mt4_download_url || broker.mt5_download_url) && (
         <div className="mt-4 flex flex-wrap gap-4 text-[13px] font-bold max-sm:mt-3 max-sm:gap-2">
           {broker.mt4_download_url && (
             <a
@@ -3572,12 +3851,24 @@ const structuredData = {
 )}
 
 
-  {/* Account Opening */}
-  <div className="mt-5 flex flex-col gap-3 border-t border-slate-200 pt-5 md:flex-row md:items-center md:justify-between md:gap-6">
-    <p className="text-[15px] font-medium leading-7 text-slate-600 md:text-base">
-      راجع شروط الحساب وتكاليفه قبل التسجيل.
-    </p>
+  
+{/* Account Opening */}
+<div className="mt-5 flex flex-col gap-3 border-t border-slate-200 pt-5 md:flex-row md:items-center md:justify-between md:gap-6">
+  <p className="text-[15px] font-medium leading-7 text-slate-600 md:text-base">
+    {isAccountOpeningSuspended
+      ? "علّقت بروكر العرب إحالة العملاء الجدد إلى هذه الشركة."
+      : "راجع شروط الحساب وتكاليفه قبل التسجيل."}
+  </p>
 
+  {isAccountOpeningSuspended ? (
+    <span
+      role="status"
+      className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-6 py-3 text-center text-sm font-extrabold text-amber-900 md:shrink-0"
+    >
+      <span aria-hidden="true">⚠</span>
+      <span>تم تعليق إحالات فتح الحسابات الجديدة</span>
+    </span>
+  ) : (
     <a
       href={`/go/${broker.slug}?type=real`}
       target="_blank"
@@ -3591,7 +3882,9 @@ const structuredData = {
         ↗
       </span>
     </a>
-  </div>
+  )}
+</div>
+
 </section>
 
 
@@ -3953,11 +4246,22 @@ const structuredData = {
       </div>
     </div>
   </div>
+
 </SectionCard>
+
+
+
+{hasPublishedComplaints && (
+  <BrokerComplaintsSection
+    complaints={publishedComplaints}
+    brokerName={broker.name || broker.name_en || "الوسيط"}
+  />
+)}
 
 {/* منصات التداول */}
 <SectionCard
   title="منصات التداول"
+
   subtitle={`نظرة شاملة على منصات التداول التي تقدمها ${broker.name} وتجربة الاستخدام.`}
   id="platforms"
 >
@@ -4093,7 +4397,7 @@ const structuredData = {
             )}
 
             {/* تحميل المنصات المتاحة */}
-            {(hasMT4 || hasMT5) && (
+{!isAccountOpeningSuspended && (hasMT4 || hasMT5) && (
               <div className="mt-4 border-t border-slate-100 pt-3 md:mt-5 md:pt-4">
                 <h3 className="text-xs font-semibold leading-5 text-slate-500">
                   تحميل منصات MetaTrader
@@ -4230,27 +4534,41 @@ const structuredData = {
       )}
 
 
-      {/* روابط الحساب */}
-      <div className="mt-4 flex flex-col gap-2 border-t border-slate-100 pt-3 md:flex-row md:items-center md:justify-center md:pt-4">
-        <a
-          href={`/go/${broker.slug}?type=real`}
-          target="_blank"
-          rel="nofollow sponsored noopener noreferrer"
-          className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-xs font-bold text-white transition hover:bg-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500"
-        >
-          فتح حساب لدى {broker.name}
-          <span aria-hidden="true">↗</span>
-        </a>
+      
+{/* روابط الحساب */}
+<div className="mt-4 flex flex-col gap-2 border-t border-slate-100 pt-3 md:flex-row md:items-center md:justify-center md:pt-4">
+  {isAccountOpeningSuspended ? (
+    <div
+      role="status"
+      className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-center text-xs font-bold text-amber-900"
+    >
+      <span aria-hidden="true">⚠</span>
+      <span>تم تعليق إحالات فتح الحسابات الجديدة</span>
+    </div>
+  ) : (
+    <>
+      <a
+        href={`/go/${broker.slug}?type=real`}
+        target="_blank"
+        rel="nofollow sponsored noopener noreferrer"
+        className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-xs font-bold text-white transition hover:bg-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500"
+      >
+        فتح حساب لدى {broker.name}
+        <span aria-hidden="true">↗</span>
+      </a>
 
-        {openAccountGuide && (
-          <Link
-            href={`/brokers/${broker.slug}/open-account`}
-            className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-slate-200 px-4 py-2 text-xs font-semibold text-brand-600 transition hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500"
-          >
-            شرح فتح الحساب بالصور
-          </Link>
-        )}
-      </div>
+      {openAccountGuide && (
+        <Link
+          href={`/brokers/${broker.slug}/open-account`}
+          className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-slate-200 px-4 py-2 text-xs font-semibold text-brand-600 transition hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500"
+        >
+          شرح فتح الحساب بالصور
+        </Link>
+      )}
+    </>
+  )}
+</div>
+
       
       {/* Capital.com ONLY - Short Risk Warning */}
       {broker.slug === "capital-com" && (

@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 
 export const revalidate = 3600;
 
+
 type Broker = {
   id: number;
   name: string | null;
@@ -23,7 +24,9 @@ type Broker = {
   logo: string | null;
   real_account_url: string | null;
   demo_account_url: string | null;
+  account_opening_status: "active" | "suspended" | null;
 };
+
 
 type BrokerSearchParams = {
   q?: string | string[];
@@ -401,19 +404,35 @@ function BrokerEditorialNoteEn({
 }
 
             
+
 function BrokerCard({
   broker,
   index,
+  hasIllustratedGuide,
 }: {
   broker: Broker;
   index: number;
+  hasIllustratedGuide: boolean;
 }) {
   const brokerName = getBrokerName(broker);
   const bestFor = getBrokerBestFor(broker);
-  const realLink = hasRealAccountLink(broker.real_account_url);
+
+  const isAccountOpeningSuspended =
+    broker.account_opening_status === "suspended" ||
+    broker.slug === "markets";
+
+  const realLink = hasRealAccountLink(
+    broker.real_account_url
+  );
+
+  const showIllustratedGuide =
+    hasIllustratedGuide && !isAccountOpeningSuspended;
+
   const platforms = splitToBadges(broker.platforms, 4);
   const regulators = splitToBadges(broker.regulation, 4);
   const allRegulators = splitToBadges(broker.regulation, 20);
+
+
 
   return (
     <article
@@ -448,7 +467,7 @@ function BrokerCard({
               {index + 1}
             </span>
 
-            {index < 5 ? (
+            {index < 5 && !isAccountOpeningSuspended ? (
               <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[9px] font-black text-emerald-700">
                 <span aria-hidden="true" className="text-[8px]">
                   ✓
@@ -647,30 +666,76 @@ className={
 </div>
 
 
-        {/* MOBILE ACTIONS */}
-        <div className="grid grid-cols-[1.15fr_0.85fr] gap-2 px-3 pb-3 pt-2.5">
-          <Link
-            href={`/en/brokers/${broker.slug}`}
-            className="inline-flex min-h-[40px] items-center justify-center rounded-xl bg-brand-500 px-3 py-2 text-[11px] font-black text-white shadow-[0_5px_12px_rgba(30,91,184,0.12)] transition hover:bg-brand-600"
-          >
-            Read Review
-          </Link>
+        
+{/* MOBILE ACTIONS */}
+<div className="grid grid-cols-2 gap-2 px-3 pb-3 pt-2.5">
 
-          {realLink ? (
-            <a
-              href={`/go/${broker.slug}?type=real`}
-              rel="sponsored nofollow"
-              className="inline-flex min-h-[40px] items-center justify-center rounded-xl border border-slate-300 bg-white px-3 py-2 text-[11px] font-black text-slate-800 transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700"
-            >
-              Open Account
-            </a>
-          ) : (
-            <span className="inline-flex min-h-[40px] items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-[11px] font-black text-slate-400">
-              Coming Soon
-            </span>
-          )}
-        </div>
-      </div>
+  {/* Read Review */}
+  <Link
+    href={`/en/brokers/${broker.slug}`}
+    className="inline-flex min-h-[42px] min-w-0 items-center justify-center rounded-xl bg-brand-500 px-2 py-2 text-center text-[11px] font-black text-white shadow-[0_5px_12px_rgba(30,91,184,0.12)] transition hover:bg-brand-600"
+  >
+    Read Review
+  </Link>
+
+  {/* Account Opening / Suspension */}
+  {isAccountOpeningSuspended ? (
+    <span
+      role="status"
+      className="inline-flex min-h-[42px] min-w-0 items-center justify-center rounded-xl border border-amber-200 bg-amber-50 px-2 py-2 text-center text-[10px] font-black text-amber-900"
+    >
+      Referrals Suspended
+    </span>
+  ) : realLink ? (
+    <a
+      href={`/go/${broker.slug}?type=real`}
+      rel="sponsored nofollow"
+      className="inline-flex min-h-[42px] min-w-0 items-center justify-center rounded-xl border border-slate-300 bg-white px-2 py-2 text-center text-[11px] font-black text-slate-800 transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700"
+    >
+      Open Account
+    </a>
+  ) : (
+    <span className="inline-flex min-h-[42px] min-w-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-2 py-2 text-center text-[11px] font-black text-slate-400">
+      Coming Soon
+    </span>
+  )}
+
+  {/* Illustrated Account Opening Guide */}
+  {showIllustratedGuide && (
+    <Link
+      href={`/en/brokers/${broker.slug}/open-account`}
+      target="_blank"
+      rel="noopener noreferrer"
+      title={`Illustrated account opening guide for ${brokerName}`}
+      aria-label={`Illustrated account opening guide for ${brokerName}`}
+      className="col-span-2 inline-flex min-h-[40px] w-full items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-center text-[11px] font-black text-brand-600 transition hover:border-blue-300 hover:bg-blue-100"
+    >
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <rect x="3" y="3" width="18" height="18" rx="2" />
+        <circle cx="8.5" cy="8.5" r="1.5" />
+        <path d="m21 15-5-5L5 21" />
+      </svg>
+
+      <span>Illustrated Account Opening Guide</span>
+    </Link>
+  )}
+</div>
+</div>
+
+{/* =========================================================
+    DESKTOP CARD
+========================================================= */}
+
 
       {/* =========================================================
           DESKTOP CARD
@@ -728,7 +793,7 @@ className={
                 {index + 1}
               </span>
 
-              {index < 5 && (
+              {index < 5 && !isAccountOpeningSuspended && (
                 <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-black text-emerald-700">
                   <span aria-hidden="true" className="text-[9px]">
                     ✓
@@ -873,33 +938,78 @@ className={
 <BrokerEditorialNoteEn bestFor={bestFor} />
 
 
-          {/* FULL-WIDTH DESKTOP ACTIONS */}
-          <div className="mt-auto grid grid-cols-2 gap-3 border-t border-slate-200/70 pt-3">
-            <Link
-              href={`/en/brokers/${broker.slug}`}
-              className="inline-flex min-h-[40px] w-full items-center justify-center rounded-xl bg-brand-500 px-4 py-2 text-xs font-black text-white shadow-[0_5px_12px_rgba(30,91,184,0.12)] transition hover:-translate-y-0.5 hover:bg-brand-600"
-            >
-              Read Full Review
-            </Link>
+          
+{/* FULL-WIDTH DESKTOP ACTIONS */}
+<div className="mt-auto grid grid-cols-2 gap-3 border-t border-slate-200/70 pt-3">
 
-            {realLink ? (
-              <a
-                href={`/go/${broker.slug}?type=real`}
-                rel="sponsored nofollow"
-                className="inline-flex min-h-[40px] w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-black text-slate-700 transition hover:-translate-y-0.5 hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700"
-              >
-                Open Account
-              </a>
-            ) : (
-              <span className="inline-flex min-h-[40px] w-full cursor-not-allowed items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-black text-slate-400">
-                Account Opening Coming Soon
-              </span>
-            )}
-          </div>
-        </div>
+  {/* Read Full Review */}
+  <Link
+    href={`/en/brokers/${broker.slug}`}
+    className="inline-flex min-h-[40px] w-full items-center justify-center rounded-xl bg-brand-500 px-4 py-2 text-center text-xs font-black text-white shadow-[0_5px_12px_rgba(30,91,184,0.12)] transition hover:-translate-y-0.5 hover:bg-brand-600"
+  >
+    Read Full Review
+  </Link>
 
-        {/* DESKTOP RATING */}
-        <div className="flex flex-col items-center justify-center border-l border-slate-100 bg-gradient-to-b from-[#fbfdff] to-[#f4f8fe] px-4 py-4">
+  {/* Account Opening / Suspension */}
+  {isAccountOpeningSuspended ? (
+    <span
+      role="status"
+      className="inline-flex min-h-[40px] w-full items-center justify-center rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-center text-[11px] font-black text-amber-900"
+    >
+      New Referrals Suspended
+    </span>
+  ) : realLink ? (
+    <a
+      href={`/go/${broker.slug}?type=real`}
+      rel="sponsored nofollow"
+      className="inline-flex min-h-[40px] w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-center text-xs font-black text-slate-700 transition hover:-translate-y-0.5 hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700"
+    >
+      Open Account
+    </a>
+  ) : (
+    <span className="inline-flex min-h-[40px] w-full cursor-not-allowed items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-center text-xs font-black text-slate-400">
+      Account Opening Coming Soon
+    </span>
+  )}
+
+  {/* Illustrated Account Opening Guide */}
+  {showIllustratedGuide && (
+    <Link
+      href={`/en/brokers/${broker.slug}/open-account`}
+      target="_blank"
+      rel="noopener noreferrer"
+      title={`Illustrated account opening guide for ${brokerName}`}
+      aria-label={`Illustrated account opening guide for ${brokerName}`}
+      className="col-span-2 inline-flex min-h-[40px] w-full items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2 text-center text-xs font-black text-brand-600 transition hover:border-blue-300 hover:bg-blue-100"
+    >
+      <svg
+        width="17"
+        height="17"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <rect x="3" y="3" width="18" height="18" rx="2" />
+        <circle cx="8.5" cy="8.5" r="1.5" />
+        <path d="m21 15-5-5L5 21" />
+      </svg>
+
+      <span>Illustrated Account Opening Guide</span>
+    </Link>
+ 
+  )}
+</div>
+
+{/* END BROKER DETAILS */}
+</div>
+
+{/* DESKTOP RATING */}
+<div className="flex flex-col items-center justify-center border-l border-slate-100 bg-gradient-to-b from-[#fbfdff] to-[#f4f8fe] px-4 py-4">
+
           <span className="text-[11px] font-bold text-slate-500">
             Overall rating
           </span>
@@ -1882,21 +1992,80 @@ export default async function BrokersPage({
   const rating = getParam(params.rating);
   const regulator = getParam(params.regulator);
 
-  const supabase = await createClient();
+  
+const supabase = await createClient();
 
-  const { data, error } = await supabase
+// =====================================================
+// Published Brokers + Account Opening Status
+// =====================================================
+const { data, error } = await supabase
   .from("brokers")
   .select(
-    "id,name,name_en,slug,rating,min_deposit,best_for,best_for_en,regulation,platforms,islamic_account,max_leverage,arabic_support,logo,real_account_url,demo_account_url"
+    "id,name,name_en,slug,rating,min_deposit,best_for,best_for_en,regulation,platforms,islamic_account,max_leverage,arabic_support,logo,real_account_url,demo_account_url,account_opening_status"
   )
   .eq("publication_status", "published")
   .order("rating", { ascending: false });
 
-  if (error) {
-    throw new Error(`Failed to load published brokers: ${error.message}`);
-  }
+if (error) {
+  throw new Error(
+    `Failed to load published brokers: ${error.message}`
+  );
+}
 
-  const brokers = (data as Broker[] | null) ?? [];
+const brokers = (data as Broker[] | null) ?? [];
+
+// =====================================================
+// Published English Illustrated Account Opening Guides
+// =====================================================
+const { data: guideData, error: guideError } = await supabase
+  .from("broker_account_guides_v2")
+  .select("id,slug")
+  .eq("is_published", true)
+  .neq("slug", "exness");
+
+if (guideError) {
+  console.error(
+    "[EN Brokers] Failed to load account guides:",
+    guideError.message
+  );
+}
+
+const guides = (guideData || []) as {
+  id: number;
+  slug: string;
+}[];
+
+const guideIds = guides.map((guide) => guide.id);
+
+// Verify that each published guide has active English steps
+const { data: guideSteps, error: stepsError } =
+  guideIds.length > 0
+    ? await supabase
+        .from("broker_account_guide_steps_v2")
+        .select("guide_id")
+        .in("guide_id", guideIds)
+        .eq("language", "en")
+        .eq("is_active", true)
+    : { data: [], error: null };
+
+if (stepsError) {
+  console.error(
+    "[EN Brokers] Failed to verify guide steps:",
+    stepsError.message
+  );
+}
+
+const activeGuideIds = new Set(
+  (guideSteps || []).map((step) => step.guide_id)
+);
+
+const illustratedGuideSlugs = new Set(
+  guides
+    .filter((guide) => activeGuideIds.has(guide.id))
+    .map((guide) => guide.slug)
+);
+
+
 
   const filteredBrokers = brokers.filter((broker) => {
     const normalizedQuery = query.toLowerCase();
@@ -2446,15 +2615,20 @@ className="mx-auto w-full max-w-[1520px] px-3 pb-2 pt-3 sm:px-6 sm:pb-2 sm:pt-6 
 
             {/* BROKER CARDS */}
             <div className="min-w-0 space-y-3.5">
-              {filteredBrokers.length > 0 ? (
-                filteredBrokers.map((broker, index) => (
-                  <BrokerCard
-                    key={broker.id}
-                    broker={broker}
-                    index={index}
-                  />
-                ))
-              ) : (
+              
+{filteredBrokers.length > 0 ? (
+  filteredBrokers.map((broker, index) => (
+    <BrokerCard
+      key={broker.id}
+      broker={broker}
+      index={index}
+      hasIllustratedGuide={illustratedGuideSlugs.has(
+        broker.slug || ""
+      )}
+    />
+  ))
+) : (
+
                 <div className="rounded-[22px] border border-slate-200 bg-white px-5 py-12 text-center shadow-sm">
                   <div className="text-3xl">⌕</div>
 

@@ -662,9 +662,15 @@ export default async function NewAccountGuideV2({
             {/* TITLE */}
 
             <div className="max-w-[1160px]">
-              <h1 className="text-[29px] font-black leading-[1.55] tracking-tight text-[#092f5c] sm:text-[37px] sm:leading-[1.4] lg:text-[46px] xl:text-[51px]">
-                {title}
-              </h1>
+              
+<div
+  role="heading"
+  aria-level={1}
+  className="text-[29px] font-black leading-[1.55] tracking-tight text-[#092f5c] sm:text-[37px] sm:leading-[1.4] lg:text-[46px] xl:text-[51px]"
+>
+  {title}
+</div>
+
 
               <p className="mt-5 max-w-[1000px] text-[15px] leading-8 text-slate-600 sm:text-[17px] sm:leading-9">
                 {intro}
