@@ -10,6 +10,18 @@ import {
 
 export const dynamic = "force-dynamic";
 
+// Central Bank Interest Rates — AR / EN
+const INTEREST_RATE_BANK_SLUGS = [
+  "fed",
+  "ecb",
+  "boe",
+  "boj",
+  "boc",
+  "rba",
+  "snb",
+  "rbnz",
+];
+
 const REGULATOR_SLUGS = [
   "fca",
   "asic",
@@ -49,8 +61,20 @@ type GuideRow = {
   slug: string | null;
 };
 
+type V2GuideRow = {
+  id: number;
+  slug: string | null;
+};
+
+type EnglishGuideStepRow = {
+  guide_id: number;
+};
+
 type AccountRow = {
+  broker_id: number;
   account_name: string | null;
+  account_type: string | null;
+
   brokers:
     | {
         slug: string | null;
@@ -145,77 +169,113 @@ function createBrokerComparisons(
   return urls;
 }
 
+
 function createAccountComparisons(
   accounts: AccountRow[]
 ): string[] {
-  const keyCounts = new Map<string, number>();
 
+  const normalizeType = (value: string | null) =>
+    (value ?? "").trim().toLowerCase();
+
+  type ComparisonAccount = {
+    key: string;
+    brokerId: number;
+    accountType: string;
+  };
+
+  const comparisonKeyCounts = new Map<string, number>();
+
+  const comparisonAccounts: ComparisonAccount[] = [];
+
+  // Step 1: Prepare valid accounts
   for (const row of accounts) {
     const broker = getBrokerSlug(row.brokers);
     const account = accountSlug(row.account_name);
+    const accountType = normalizeType(row.account_type);
 
-    if (!broker || !account) continue;
+    if (!broker || !account || !accountType) {
+      continue;
+    }
 
     const key = `${broker}-${account}`;
 
-    keyCounts.set(
+    // Avoid ambiguous comparison URLs
+    if (key.includes("-vs-")) {
+      continue;
+    }
+
+    comparisonKeyCounts.set(
       key,
-      (keyCounts.get(key) ?? 0) + 1
+      (comparisonKeyCounts.get(key) ?? 0) + 1
     );
+
+    comparisonAccounts.push({
+      key,
+      brokerId: row.broker_id,
+      accountType,
+    });
   }
 
-  const accountKeys = Array.from(
-    keyCounts.entries()
-  )
-    .filter(([, count]) => count === 1)
-    .map(([key]) => key)
-    .sort();
+  // Step 2: Keep accounts with unique URL keys
+  const uniqueComparisonAccounts = comparisonAccounts
+    .filter(
+      (item) => comparisonKeyCounts.get(item.key) === 1
+    )
+    .sort((a, b) =>
+      a.key < b.key ? -1 : a.key > b.key ? 1 : 0
+    );
 
-  const comparisonSlugCounts = new Map<
-    string,
-    number
-  >();
+  const comparisonSlugCounts = new Map<string, number>();
 
-  for (let i = 0; i < accountKeys.length; i++) {
-    for (let j = i + 1; j < accountKeys.length; j++) {
-      const slug =
-        `${accountKeys[i]}-vs-${accountKeys[j]}`;
+  const validComparisonSlugs: string[] = [];
+
+  // Step 3: Generate valid comparison pairs
+  for (
+    let i = 0;
+    i < uniqueComparisonAccounts.length;
+    i++
+  ) {
+    for (
+      let j = i + 1;
+      j < uniqueComparisonAccounts.length;
+      j++
+    ) {
+      const first = uniqueComparisonAccounts[i];
+      const second = uniqueComparisonAccounts[j];
+
+      // Never compare accounts from the same broker
+      if (first.brokerId === second.brokerId) {
+        continue;
+      }
+
+      // Compare only matching account types
+      if (first.accountType !== second.accountType) {
+        continue;
+      }
+
+      const slug = `${first.key}-vs-${second.key}`;
 
       comparisonSlugCounts.set(
         slug,
         (comparisonSlugCounts.get(slug) ?? 0) + 1
       );
+
+      validComparisonSlugs.push(slug);
     }
   }
 
-  const urls: string[] = [];
+  // Step 4: Keep only unambiguous canonical slugs
+  const canonicalComparisonSlugs =
+    validComparisonSlugs.filter(
+      (slug) => comparisonSlugCounts.get(slug) === 1
+    );
 
-  for (let i = 0; i < accountKeys.length; i++) {
-    for (let j = i + 1; j < accountKeys.length; j++) {
-      const first = accountKeys[i];
-      const second = accountKeys[j];
-
-      const slug = `${first}-vs-${second}`;
-
-      if (comparisonSlugCounts.get(slug) !== 1) {
-        continue;
-      }
-
-      if (
-        first.includes("-vs-") ||
-        second.includes("-vs-")
-      ) {
-        continue;
-      }
-
-      urls.push(
-        ...bilingualUrls(`compare-accounts/${slug}`)
-      );
-    }
-  }
-
-  return urls;
+  // Step 5: Generate Arabic and English URLs
+  return canonicalComparisonSlugs.flatMap(
+    (slug) => bilingualUrls(`compare-accounts/${slug}`)
+  );
 }
+
 
 export async function GET() {
   try {
@@ -251,18 +311,20 @@ export async function GET() {
         .eq("is_active", true)
         .eq("brokers.publication_status", "published"),
 
-      supabase
-        .from("broker_accounts")
-        .select(
-          `
-          account_name,
-          brokers!inner(
-            slug,
-            publication_status
-          )
-          `
-        )
-        .eq("brokers.publication_status", "published"),
+     supabase
+  .from("broker_accounts")
+  .select(
+    `
+      broker_id,
+      account_name,
+      account_type,
+      brokers!inner(
+        slug,
+        publication_status
+      )
+    `
+  )
+  .eq("brokers.publication_status", "published"),
     ]);
 
     if (brokersResult.error) {
@@ -280,6 +342,68 @@ export async function GET() {
     if (accountsResult.error) {
       throw accountsResult.error;
     }
+
+    // Published V2 account-opening guides
+const { data: v2GuidesData, error: v2GuidesError } =
+  await supabase
+    .from("broker_account_guides_v2")
+    .select("id, slug")
+    .eq("is_published", true);
+
+if (v2GuidesError) {
+  throw v2GuidesError;
+}
+
+const v2Guides = (
+  v2GuidesData ?? []
+) as V2GuideRow[];
+
+// Only include guides belonging to published brokers
+const publishedBrokerSlugs = new Set(
+  (brokersResult.data ?? [])
+    .map((broker) => broker.slug)
+    .filter(
+      (slug): slug is string =>
+        Boolean(slug)
+    )
+);
+
+const publishedV2Guides = v2Guides.filter(
+  (guide) =>
+    Boolean(guide.slug) &&
+    publishedBrokerSlugs.has(guide.slug!)
+);
+
+// Find V2 guides that have active English steps
+const v2GuideIds = publishedV2Guides.map(
+  (guide) => guide.id
+);
+
+const englishGuideIds = new Set<number>();
+
+if (v2GuideIds.length > 0) {
+  const {
+    data: englishStepsData,
+    error: englishStepsError,
+  } = await supabase
+    .from("broker_account_guide_steps_v2")
+    .select("guide_id")
+    .in("guide_id", v2GuideIds)
+    .eq("language", "en")
+    .eq("is_active", true);
+
+  if (englishStepsError) {
+    throw englishStepsError;
+  }
+
+  const englishSteps = (
+    englishStepsData ?? []
+  ) as EnglishGuideStepRow[];
+
+  for (const step of englishSteps) {
+    englishGuideIds.add(step.guide_id);
+  }
+}
 
     const brokers = (
       brokersResult.data ?? []
@@ -351,15 +475,48 @@ export async function GET() {
       }
     );
 
-    // Active account opening guides
-    const openAccountUrls = guides
-      .filter(
-        (guide) => Boolean(guide.slug)
-      )
-      .map(
-        (guide) =>
-          `${BASE_URL}/brokers/${guide.slug}/open-account`
-      );
+    // ============================================
+// Account Opening Guides — Legacy + V2 AR/EN
+// ============================================
+
+// Keep legacy Arabic guides, including Exness
+const legacyGuideUrls = guides
+  .filter(
+    (guide) =>
+      Boolean(guide.slug) &&
+      publishedBrokerSlugs.has(guide.slug!)
+  )
+  .map(
+    (guide) =>
+      `${BASE_URL}/brokers/${guide.slug}/open-account`
+  );
+
+// Published V2 Arabic guides
+const v2ArabicGuideUrls = publishedV2Guides
+  .filter((guide) => Boolean(guide.slug))
+  .map(
+    (guide) =>
+      `${BASE_URL}/brokers/${guide.slug}/open-account`
+  );
+
+// Published V2 English guides with active English steps
+const v2EnglishGuideUrls = publishedV2Guides
+  .filter(
+    (guide) =>
+      Boolean(guide.slug) &&
+      englishGuideIds.has(guide.id)
+  )
+  .map(
+    (guide) =>
+      `${BASE_URL}/en/brokers/${guide.slug}/open-account`
+  );
+
+// Deduplicate all guide URLs
+const openAccountUrls = uniqueUrls([
+  ...legacyGuideUrls,
+  ...v2ArabicGuideUrls,
+  ...v2EnglishGuideUrls,
+]);
 
     // Individual broker account pages
     const accountUrls = accounts.flatMap(
@@ -393,9 +550,18 @@ export async function GET() {
       );
 
     // Events in both supported languages
-    const eventUrls = EVENT_SLUGS.flatMap(
-      (slug) => bilingualUrls(`events/${slug}`)
-    );
+const eventUrls = EVENT_SLUGS.flatMap(
+  (slug) => bilingualUrls(`events/${slug}`)
+);
+
+// Central Bank Interest Rates — AR / EN
+const interestRateUrls = [
+  ...bilingualUrls("interest-rates"),
+
+  ...INTEREST_RATE_BANK_SLUGS.flatMap(
+    (slug) => bilingualUrls(`interest-rates/${slug}`)
+  ),
+];
 
     const content = `# Broker Alarab
 
@@ -470,6 +636,19 @@ ${lineList(regulatorUrls)}
 ## Forex and Fintech Events
 
 ${lineList(eventUrls)}
+
+## Central Bank Interest Rates
+
+Broker Alarab provides Arabic and English coverage of central bank
+interest rates, monetary policy decisions, official announcements,
+historical rate changes, and upcoming policy meetings.
+
+Coverage includes the Federal Reserve, European Central Bank,
+Bank of England, Bank of Japan, Bank of Canada,
+Reserve Bank of Australia, Swiss National Bank,
+and Reserve Bank of New Zealand.
+
+${lineList(interestRateUrls)}
 
 ## XML Resources
 
