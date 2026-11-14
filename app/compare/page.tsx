@@ -121,7 +121,8 @@ const { data } = await supabase
   .select(
     "id,name,slug,rating,min_deposit,best_for,regulation,platforms,islamic_account,logo"
   )
-  .eq("publication_status", "published")
+    .eq("publication_status", "published")
+  .eq("is_full_review", true)
   .order("rating", { ascending: false });
 
   const brokers = ((data ?? []) as Broker[]).filter((b) => b.name && b.slug);

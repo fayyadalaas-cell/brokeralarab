@@ -486,6 +486,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   .from("brokers")
   .select("name, slug")
   .eq("publication_status", "published")
+  .eq("is_full_review", true)
   .in("slug", [leftSlug, rightSlug]);
 
   const brokers = (data ?? []) as { name: string | null; slug: string | null }[];
@@ -723,6 +724,7 @@ export default async function ComparePage({ params }: PageProps) {
   .from("brokers")
   .select("*")
   .eq("publication_status", "published")
+  .eq("is_full_review", true)
   .in("slug", [leftSlug, rightSlug]);
 
   const brokers = (brokersData ?? []) as Broker[];

@@ -621,7 +621,8 @@ export default async function LowMinimumDepositBrokersPage() {
   .from("brokers")
   .select("*")
   .in("id", brokerIds)
-  .eq("publication_status", "published");
+  .eq("publication_status", "published")
+  .eq("is_full_review", true);
 
   if (brokersError) {
     return (
@@ -654,14 +655,16 @@ export default async function LowMinimumDepositBrokersPage() {
     );
 
   const accounts: PreparedAccount[] =
-    (
-      (accountsData ??
-        []) as BrokerAccountRow[]
-    ).map((row) => {
+  (
+    (accountsData ??
+      []) as BrokerAccountRow[]
+  )
+    .filter((row) =>
+      brokersMap.has(row.broker_id)
+    )
+    .map((row) => {
       const broker =
-        brokersMap.get(
-          row.broker_id
-        );
+        brokersMap.get(row.broker_id);
 
       return {
         ...row,

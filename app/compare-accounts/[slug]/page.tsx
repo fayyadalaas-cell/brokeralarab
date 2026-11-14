@@ -254,13 +254,13 @@ async function getComparison(
   const supabase = await createClient();
 
   const { data: brokerRows, error: brokerError } =
-    await supabase
-      .from("brokers")
-.select(
-  "id,name,slug,logo,rating,publication_status,regulation,platforms,islamic_account,max_leverage,account_availability_note_ar,real_account_url"
-)
-      
-      .eq("publication_status", "published");
+  await supabase
+    .from("brokers")
+    .select(
+      "id,name,slug,logo,rating,publication_status,regulation,platforms,islamic_account,max_leverage,account_availability_note_ar,real_account_url"
+    )
+    .eq("publication_status", "published")
+    .eq("is_full_review", true);
 
   if (brokerError || !brokerRows) return null;
 

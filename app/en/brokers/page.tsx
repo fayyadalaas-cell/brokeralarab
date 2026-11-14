@@ -13,6 +13,7 @@ type Broker = {
   name_en: string | null;
   slug: string | null;
   rating: number | null;
+  is_full_review: boolean | null;
   min_deposit: number | null;
   best_for: string | null;
   best_for_en: string | null;
@@ -467,7 +468,7 @@ function BrokerCard({
               {index + 1}
             </span>
 
-            {index < 5 && !isAccountOpeningSuspended ? (
+            {index < 5 && broker.is_full_review === true && !isAccountOpeningSuspended ? (
               <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[9px] font-black text-emerald-700">
                 <span aria-hidden="true" className="text-[8px]">
                   ✓
@@ -793,7 +794,7 @@ className={
                 {index + 1}
               </span>
 
-              {index < 5 && !isAccountOpeningSuspended && (
+              {index < 5 && broker.is_full_review === true && !isAccountOpeningSuspended && (
                 <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-black text-emerald-700">
                   <span aria-hidden="true" className="text-[9px]">
                     ✓
@@ -2001,10 +2002,11 @@ const supabase = await createClient();
 const { data, error } = await supabase
   .from("brokers")
   .select(
-    "id,name,name_en,slug,rating,min_deposit,best_for,best_for_en,regulation,platforms,islamic_account,max_leverage,arabic_support,logo,real_account_url,demo_account_url,account_opening_status"
+    "id,name,name_en,slug,is_full_review,rating,min_deposit,best_for,best_for_en,regulation,platforms,islamic_account,max_leverage,arabic_support,logo,real_account_url,demo_account_url,account_opening_status"
   )
   .eq("publication_status", "published")
-  .order("rating", { ascending: false });
+  .order("is_full_review", { ascending: false, nullsFirst: false })
+  .order("rating", { ascending: false, nullsFirst: false });
 
 if (error) {
   throw new Error(
@@ -2111,9 +2113,15 @@ const illustratedGuideSlugs = new Set(
     );
   });
 
-  const sortedBrokersForSchema = [...brokers].sort(
-    (a, b) => Number(b.rating ?? 0) - Number(a.rating ?? 0)
-  );
+  const sortedBrokersForSchema = [...brokers].sort((a, b) => {
+  const reviewDifference =
+    Number(b.is_full_review === true) -
+    Number(a.is_full_review === true);
+
+  if (reviewDifference !== 0) return reviewDifference;
+
+  return Number(b.rating ?? 0) - Number(a.rating ?? 0);
+});
 
   const structuredData = {
     "@context": "https://schema.org",

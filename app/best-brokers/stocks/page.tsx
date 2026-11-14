@@ -17,11 +17,11 @@ export const metadata: Metadata = {
     canonical: "https://brokeralarab.com/best-brokers/stocks",
 
     languages: {
-      ar: "https://brokeralarab.com/best-brokers/stocks",
-      en: "https://brokeralarab.com/best-brokers/stocks",
-      "x-default":
-        "https://brokeralarab.com/best-brokers/stocks",
-    },
+  ar: "https://brokeralarab.com/best-brokers/stocks",
+  en: "https://brokeralarab.com/en/best-brokers/stocks",
+  "x-default":
+    "https://brokeralarab.com/best-brokers/stocks",
+},
   },
 
     openGraph: {
@@ -461,7 +461,8 @@ export default async function BestStockTradingBrokersPage() {
 } = await supabase
   .from("brokers")
   .select("*")
-  .eq("publication_status", "published");
+  .eq("publication_status", "published")
+  .eq("is_full_review", true);
 
   if (brokersError) {
     return (

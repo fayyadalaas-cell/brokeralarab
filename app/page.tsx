@@ -434,6 +434,9 @@ const homePivot =
 
   const topBrokers = brokers.slice(0, 6);
 
+
+  
+
   const sidebarBrokers = brokers
   .filter(
     (broker) =>

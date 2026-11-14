@@ -35,11 +35,17 @@ const LAST_SIGNIFICANT_UPDATE = new Date("2026-10-05T00:00:00.000Z");
 
   const { data: brokers } = await supabase
   .from("brokers")
-  .select("id, slug")
+  .select("id, slug, is_full_review")
   .eq("publication_status", "published");
 
-  const brokerSlugs =
-    brokers?.map((b) => b.slug).filter((slug): slug is string => Boolean(slug)) || [];
+const brokerSlugs =
+  brokers?.map((b) => b.slug).filter((slug): slug is string => Boolean(slug)) || [];
+
+const fullReviewBrokerSlugs =
+  brokers
+    ?.filter((b) => b.is_full_review === true)
+    .map((b) => b.slug)
+    .filter((slug): slug is string => Boolean(slug)) || [];
 
   const brokerPages = brokerSlugs.map((slug) => ({
     url: `${BASE_URL}/brokers/${slug}`,
@@ -217,10 +223,12 @@ const { data: accounts, error: accountsError } = await supabase
     account_type,
     brokers!inner(
       slug,
-      publication_status
+      publication_status,
+      is_full_review
     )
   `)
-  .eq("brokers.publication_status", "published");
+  .eq("brokers.publication_status", "published")
+  .eq("brokers.is_full_review", true);
 
 
 if (accountsError) {
@@ -279,15 +287,15 @@ const countryPagesEN: MetadataRoute.Sitemap =
   const comparePages: MetadataRoute.Sitemap = [];
   const comparePagesEN: MetadataRoute.Sitemap = [];
 
-  for (let i = 0; i < brokerSlugs.length; i++) {
-    for (let j = i + 1; j < brokerSlugs.length; j++) {
+  for (let i = 0; i < fullReviewBrokerSlugs.length; i++) {
+  for (let j = i + 1; j < fullReviewBrokerSlugs.length; j++) {
       comparePages.push({
-        url: `${BASE_URL}/compare/${brokerSlugs[i]}-vs-${brokerSlugs[j]}`,
+        url: `${BASE_URL}/compare/${fullReviewBrokerSlugs[i]}-vs-${fullReviewBrokerSlugs[j]}`,
         lastModified: LAST_SIGNIFICANT_UPDATE,
       });
 
       comparePagesEN.push({
-        url: `${BASE_URL}/en/compare/${brokerSlugs[i]}-vs-${brokerSlugs[j]}`,
+        url: `${BASE_URL}/en/compare/${fullReviewBrokerSlugs[i]}-vs-${fullReviewBrokerSlugs[j]}`,
         lastModified: LAST_SIGNIFICANT_UPDATE,
       });
     }
@@ -519,11 +527,14 @@ const countryPagesEN: MetadataRoute.Sitemap =
     ...toolPagesEN,
     ...countryPages,
     ...countryPagesEN,
+    
     ...brokerPages,
     ...brokerPagesEN,
     ...openAccountPages,
+    ...openAccountPagesEN,
     ...accountPages,
     ...accountPagesEN,
+
     ...comparePages,
     ...comparePagesEN,
     ...accountComparisonPages,

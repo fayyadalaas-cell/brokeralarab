@@ -64,6 +64,7 @@ type Broker = {
   logo: string | null;
 
   rating: number | null;
+  is_full_review: boolean | null;
 
   min_deposit: number | null;
   platforms: string | null;
@@ -1046,6 +1047,7 @@ async function getCountryData(
           slug,
           logo,
           rating,
+          is_full_review,
           min_deposit,
           platforms,
           regulation,
@@ -1127,12 +1129,14 @@ async function getCountryData(
     page:
       page as CountryPage,
 
-    rankings: (
+        rankings: (
       (rankingsResult.data ||
         []) as RankingRow[]
-    ).filter((row) =>
-      oneBroker(row.brokers),
-    ),
+    ).filter((row) => {
+      const broker = oneBroker(row.brokers);
+
+      return broker?.is_full_review === true;
+    }),
 
     blocks:
       (blocksResult.data ||

@@ -105,6 +105,7 @@ async function getPageData(slug: string) {
       .select("id,name,name_en,slug,logo,rating,real_account_url")
       .in("id", brokerIds)
       .eq("publication_status", "published")
+      .eq("is_full_review", true)
   : { data: [] };
 
   return {

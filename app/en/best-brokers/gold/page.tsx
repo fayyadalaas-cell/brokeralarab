@@ -114,7 +114,8 @@ async function getTopGoldBrokers(): Promise<Broker[]> {
       headquarters
       `
     )
-    .eq("publication_status", "published")
+        .eq("publication_status", "published")
+    .eq("is_full_review", true)
     .not("rating", "is", null)
     .order("rating", { ascending: false })
     .limit(10);

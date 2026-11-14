@@ -572,7 +572,8 @@ const { data: brokerRows, error: brokersError } = await supabase
     min_deposit
   `)
   .in("id", brokerIds)
-  .eq("publication_status", "published");
+  .eq("publication_status", "published")
+  .eq("is_full_review", true);
 
   if (brokersError || !brokerRows?.length) {
     return [];

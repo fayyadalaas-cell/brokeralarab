@@ -150,10 +150,11 @@ export default async function CompareAccountsPage() {
   const supabase = await createClient();
 
   const { data: brokerData, error: brokerError } = await supabase
-    .from("brokers")
-    .select("id,name,slug,logo,rating")
-    .eq("publication_status", "published")
-    .order("rating", { ascending: false });
+  .from("brokers")
+  .select("id,name,slug,logo,rating")
+  .eq("publication_status", "published")
+  .eq("is_full_review", true)
+  .order("rating", { ascending: false });
 
   const { data: accountData, error: accountError } = await supabase
     .from("broker_accounts")

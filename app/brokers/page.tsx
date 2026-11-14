@@ -10,6 +10,7 @@ type Broker = {
   id: number;
   name: string | null;
   slug: string | null;
+  is_full_review: boolean | null;
   rating: number | null;
   min_deposit: number | null;
   best_for: string | null;
@@ -449,7 +450,7 @@ function BrokerCard({
   <div className="border-b border-slate-100 bg-gradient-to-l from-white to-brand-50/20 px-3 pb-3 pt-2.5">
     {/* BADGES */}
     <div className="mb-2 flex items-center justify-between gap-2">
-      {index < 5 && !isAccountOpeningSuspended ? (
+      {index < 5 && broker.is_full_review === true && !isAccountOpeningSuspended ? (
         <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[9px] font-black text-emerald-700">
           <span aria-hidden="true" className="text-[8px]">
             ✓
@@ -807,7 +808,7 @@ function BrokerCard({
             {index + 1}
           </span>
 
-          {index < 5 && !isAccountOpeningSuspended && (
+          {index < 5 && broker.is_full_review === true && !isAccountOpeningSuspended && (
             <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-black text-emerald-700">
               <span aria-hidden="true" className="text-[9px]">
                 ✓
@@ -2037,10 +2038,11 @@ export default async function BrokersPage({
  const { data, error } = await supabase
   .from("brokers")
   .select(
-    "id,name,slug,rating,min_deposit,best_for,regulation,platforms,islamic_account,max_leverage,arabic_support,logo,real_account_url,demo_account_url,account_opening_status"
+    "id,name,slug,is_full_review,rating,min_deposit,best_for,regulation,platforms,islamic_account,max_leverage,arabic_support,logo,real_account_url,demo_account_url,account_opening_status"
   )
   .eq("publication_status", "published")
-  .order("rating", { ascending: false });
+  .order("is_full_review", { ascending: false, nullsFirst: false })
+  .order("rating", { ascending: false, nullsFirst: false });
 
   if (error) {
     throw new Error(`Failed to load published brokers: ${error.message}`);
@@ -2141,9 +2143,15 @@ const matchesRegulator =
     );
   });
 
-  const sortedBrokersForSchema = [...brokers].sort(
-  (a, b) => Number(b.rating ?? 0) - Number(a.rating ?? 0)
-);
+  const sortedBrokersForSchema = [...brokers].sort((a, b) => {
+  const reviewDifference =
+    Number(b.is_full_review === true) -
+    Number(a.is_full_review === true);
+
+  if (reviewDifference !== 0) return reviewDifference;
+
+  return Number(b.rating ?? 0) - Number(a.rating ?? 0);
+});
 
 const structuredData = {
   "@context": "https://schema.org",

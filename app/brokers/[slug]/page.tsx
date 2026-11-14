@@ -3,11 +3,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import BrokerRelatedComparisons from "../../components/BrokerRelatedComparisons";
+import BrokerTopAlternatives from "../../components/BrokerTopAlternatives";
 
 type Broker = {
   id: number;
   name: string | null;
   name_en: string | null;
+  is_full_review: boolean | null;
   best_for_en: string | null;
   intro_en: string | null;
   slug: string | null;
@@ -168,6 +170,8 @@ type RelatedBroker = {
   slug: string | null;
   rating: number | null;
   logo: string | null;
+  real_account_url: string | null;
+  account_opening_status: "active" | "suspended" | null;
 };
 
 type BrokerAccount = {
@@ -308,11 +312,31 @@ async function getRelatedBrokers(
 
   const { data, error } = await supabase
     .from("brokers")
-    .select("id, name, name_en, slug, rating, logo")
+    .select("id, name, name_en, slug, rating, logo, real_account_url, account_opening_status")
     .eq("publication_status", "published")
     .neq("slug", currentSlug)
     .order("id", { ascending: true })
     .limit(30);
+
+  if (error || !data) return [];
+
+  return data as RelatedBroker[];
+}
+
+async function getTopRatedAlternatives(
+  currentSlug: string
+): Promise<RelatedBroker[]> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("brokers")
+    .select("id, name, name_en, slug, rating, logo, real_account_url, account_opening_status")
+    .eq("publication_status", "published")
+    .eq("is_full_review", true)
+    .not("rating", "is", null)
+    .neq("slug", currentSlug)
+    .order("rating", { ascending: false })
+    .limit(10);
 
   if (error || !data) return [];
 
@@ -2030,7 +2054,9 @@ const [
   brokerLicenses,
   openAccountGuide,
 ] = await Promise.all([
-  getRelatedBrokers(slug),
+  broker.is_full_review === true
+    ? getRelatedBrokers(slug)
+    : getTopRatedAlternatives(slug),
   getBrokerAccounts(broker.id),
   getBrokerLicenses(broker.id),
   getOpenAccountGuide(slug),
@@ -4679,21 +4705,35 @@ const structuredData = {
 )}
 
         <div className="mb-2">
-  <SectionCard
-    title={`مقارنة ${broker.name || broker.name_en} مع شركات أخرى`}
-  >
-    {broker.slug && (
-  <BrokerRelatedComparisons
-    key={broker.slug}
-    broker={{ ...broker, slug: broker.slug }}
-    relatedBrokers={relatedBrokers.flatMap((item) =>
-      item.slug
-        ? [{ ...item, slug: item.slug }]
-        : []
-    )}
-  />
-)}
-  </SectionCard>
+  {broker.is_full_review === true ? (
+    <SectionCard
+      title={`مقارنة ${broker.name || broker.name_en} مع شركات أخرى`}
+    >
+      {broker.slug && (
+        <BrokerRelatedComparisons
+          key={broker.slug}
+          broker={{ ...broker, slug: broker.slug }}
+          relatedBrokers={relatedBrokers.flatMap((item) =>
+            item.slug
+              ? [{ ...item, slug: item.slug }]
+              : []
+          )}
+        />
+      )}
+    </SectionCard>
+  ) : (
+    <SectionCard
+  title={`أفضل 3 منصات تداول مرخصة بديلة لشركة ${broker.name || broker.name_en}`}
+>
+      <BrokerTopAlternatives
+        brokers={relatedBrokers.flatMap((item) =>
+          item.slug
+            ? [{ ...item, slug: item.slug }]
+            : []
+        )}
+      />
+    </SectionCard>
+  )}
 </div>
 
 

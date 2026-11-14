@@ -79,10 +79,11 @@ async function getTopGoldBrokers(): Promise<Broker[]> {
     .select(
   "id, name, slug, logo, rating, min_deposit, max_leverage, islamic_account, real_account_url, arabic_support, regulation, founded_year, headquarters"
 )
-.eq("publication_status", "published")    
-.not("rating", "is", null)
-    .order("rating", { ascending: false })
-    .limit(10);
+  .eq("publication_status", "published")
+  .eq("is_full_review", true)
+  .not("rating", "is", null)
+  .order("rating", { ascending: false })
+  .limit(10);
 
   if (error) {
     return [];

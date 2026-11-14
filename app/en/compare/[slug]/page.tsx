@@ -633,10 +633,11 @@ export async function generateMetadata({
   const supabase = await createClient();
 
   const { data } = await supabase
-    .from("brokers")
-    .select("name, name_en, slug, publication_status")
-    .eq("publication_status", "published")
-    .in("slug", [leftSlug, rightSlug]);
+  .from("brokers")
+  .select("name, name_en, slug, publication_status")
+  .eq("publication_status", "published")
+  .eq("is_full_review", true)
+  .in("slug", [leftSlug, rightSlug]);
 
   const brokers = (data ?? []) as Pick<
     Broker,
@@ -797,10 +798,11 @@ function ExpandableText({
   const supabase = await createClient();
 
   const { data: brokersData } = await supabase
-    .from("brokers")
-    .select("*")
-    .eq("publication_status", "published")
-    .in("slug", [leftSlug, rightSlug]);
+  .from("brokers")
+  .select("*")
+  .eq("publication_status", "published")
+  .eq("is_full_review", true)
+  .in("slug", [leftSlug, rightSlug]);
 
   const brokers = (brokersData ?? []) as Broker[];
 

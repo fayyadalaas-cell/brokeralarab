@@ -80,8 +80,9 @@ async function getBrokerAccess(
     broker.preview_token === previewToken;
 
   const canAccess =
-    broker.publication_status === "published" ||
-    hasValidPreview;
+  (broker.publication_status === "published" &&
+    broker.is_full_review === true) ||
+  hasValidPreview;
 
   if (!canAccess) {
     return null;
@@ -147,7 +148,9 @@ export async function generateMetadata({
     `${brokerName} ${current.account_name} account review covering spreads, fees, minimum deposit and trading costs.`;
 
   const isPreview =
-    broker.publication_status !== "published";
+  broker.publication_status !== "published" ||
+  broker.is_full_review !== true ||
+  hasValidPreview;
 
   const pageUrl = `https://brokeralarab.com/en/brokers/${broker.slug}/accounts/${slugify(
     current.account_name
@@ -345,21 +348,25 @@ const hasImportantNotes =
   
   // Related comparisons with accounts from other brokers
   const { data: otherAccounts, error: relatedAccountsError } =
-    await supabase
-      .from("broker_accounts")
-      .select(`
-        id,
-        account_name,
-        broker_id,
-        brokers!inner(
-          slug,
-          name,
-          name_en,
-          publication_status
-        )
-      `)
-      .neq("broker_id", broker.id)
-      .eq("brokers.publication_status", "published");
+  await supabase
+    .from("broker_accounts")
+    .select(`
+      id,
+      account_name,
+      account_type,
+      broker_id,
+      brokers!inner(
+        slug,
+        name,
+        name_en,
+        publication_status,
+        is_full_review
+      )
+    `)
+    .neq("broker_id", broker.id)
+    .eq("brokers.publication_status", "published")
+    .eq("brokers.is_full_review", true)
+    .eq("account_type", current.account_type);
 
   if (relatedAccountsError) {
     console.error(
@@ -372,6 +379,14 @@ const hasImportantNotes =
 
   const relatedComparisons = (otherAccounts ?? []).flatMap(
     (row: any) => {
+      if (
+  !current.account_type?.trim() ||
+  !row.account_type?.trim() ||
+  row.account_type.trim().toLowerCase() !==
+    current.account_type.trim().toLowerCase()
+) {
+  return [];
+}
       const otherBroker = Array.isArray(row.brokers)
         ? row.brokers[0]
         : row.brokers;

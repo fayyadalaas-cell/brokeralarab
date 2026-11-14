@@ -8,42 +8,44 @@ import { createClient } from "@/lib/supabase/server";
 ========================================================= */
 
 
+
 export const metadata: Metadata = {
-  title: "أفضل شركات تداول السلع 2026 | الذهب والنفط والمعادن",
+  title: "أفضل شركات تداول المؤشرات 2026 | ناسداك وS&P 500 وداو جونز",
   description:
-    "قارن أفضل شركات تداول السلع في 2026 لتداول الذهب والنفط والفضة والغاز الطبيعي. تعرف على المنصات والتراخيص والحد الأدنى للإيداع والحسابات الإسلامية.",
+    "قارن أفضل شركات تداول المؤشرات العالمية في 2026، بما فيها ناسداك 100 وS&P 500 وداو جونز. اكتشف التراخيص والمنصات والسبريد والحسابات المتاحة.",
 
   alternates: {
-    canonical: "https://brokeralarab.com/best-brokers/commodities",
+    canonical: "https://brokeralarab.com/best-brokers/indices",
 
     languages: {
-      ar: "https://brokeralarab.com/best-brokers/commodities",
-      en: "https://brokeralarab.com/en/best-brokers/commodities",
-      "x-default": "https://brokeralarab.com/best-brokers/commodities",
+      ar: "https://brokeralarab.com/best-brokers/indices",
+      en: "https://brokeralarab.com/en/best-brokers/indices",
+      "x-default": "https://brokeralarab.com/best-brokers/indices",
     },
   },
 
   openGraph: {
-    title: "أفضل شركات تداول السلع والذهب والنفط 2026",
+    title: "أفضل شركات تداول المؤشرات العالمية 2026",
     description:
-      "مقارنة شركات تداول السلع عبر الإنترنت لتداول الذهب والنفط والفضة والغاز الطبيعي والمعادن والطاقة.",
-    url: "https://brokeralarab.com/best-brokers/commodities",
+      "مقارنة أفضل وسطاء تداول ناسداك وS&P 500 وداو جونز من حيث التراخيص والتكاليف والمنصات وشروط التداول.",
+    url: "https://brokeralarab.com/best-brokers/indices",
     type: "website",
     siteName: "بروكر العرب",
     locale: "ar_AR",
+
     images: [
       {
         url: "/og-image.webp",
-        alt: "أفضل شركات تداول السلع والذهب والنفط | بروكر العرب",
+        alt: "أفضل شركات تداول المؤشرات | بروكر العرب",
       },
     ],
   },
 
   twitter: {
     card: "summary_large_image",
-    title: "أفضل شركات تداول السلع 2026",
+    title: "أفضل شركات تداول المؤشرات 2026",
     description:
-      "قارن شركات تداول الذهب والنفط والفضة والغاز الطبيعي والمنصات والحسابات المتاحة.",
+      "قارن شركات تداول ناسداك وS&P 500 وداو جونز من حيث التراخيص والسبريد والمنصات والحسابات.",
     images: ["/og-image.webp"],
   },
 
@@ -60,6 +62,8 @@ export const metadata: Metadata = {
     },
   },
 };
+
+
 
 
 /* =========================================================
@@ -450,10 +454,11 @@ export default async function BestIndicesTradingBrokersPage() {
   const {
     data: brokersData,
     error: brokersError,
-  } = await supabase
+    } = await supabase
     .from("brokers")
     .select("*")
-    .eq("publication_status", "published");
+    .eq("publication_status", "published")
+    .eq("is_full_review", true);
 
   if (brokersError) {
     return (

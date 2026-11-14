@@ -768,7 +768,8 @@ export default async function ScalpingBrokersPage() {
       )
    `)
 .eq("is_best_for_scalping", true)
-.eq("broker.publication_status", "published");
+.eq("broker.publication_status", "published")
+.eq("broker.is_full_review", true);
 
   if (error) {
     console.error("Scalping brokers query error:", error);

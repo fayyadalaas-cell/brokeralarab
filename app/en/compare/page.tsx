@@ -128,6 +128,7 @@ export default async function ComparePage() {
     "id,name,name_en,slug,rating,min_deposit,best_for,best_for_en,regulation,platforms,islamic_account,logo"
   )
   .eq("publication_status", "published")
+  .eq("is_full_review", true)
   .order("rating", { ascending: false });
 
   const brokers = ((data ?? []) as Broker[]).filter((b) => b.name && b.slug);

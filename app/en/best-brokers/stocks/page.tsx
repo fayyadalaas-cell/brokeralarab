@@ -455,7 +455,8 @@ export default async function BestStockTradingBrokersPage() {
 } = await supabase
   .from("brokers")
   .select("*")
-  .eq("publication_status", "published");
+  .eq("publication_status", "published")
+  .eq("is_full_review", true);
 
   if (brokersError) {
     return (

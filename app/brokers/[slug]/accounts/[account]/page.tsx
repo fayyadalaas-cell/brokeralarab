@@ -76,8 +76,9 @@ async function getBrokerAccess(
     broker.preview_token === previewToken;
 
   const canAccess =
-    broker.publication_status === "published" ||
-    hasValidPreview;
+  (broker.publication_status === "published" &&
+    broker.is_full_review === true) ||
+  hasValidPreview;
 
   if (!canAccess) {
     return null;
@@ -342,6 +343,7 @@ const { data: comparisonBrokersData } = await supabase
   .from("brokers")
   .select("id,name,slug")
   .eq("publication_status", "published")
+  .eq("is_full_review", true)
   .neq("id", broker.id);
 
 const comparisonBrokers = (comparisonBrokersData ?? []).filter(
