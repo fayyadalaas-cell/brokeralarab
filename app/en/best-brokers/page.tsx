@@ -828,7 +828,8 @@ export default async function BestBrokersPage() {
         real_account_url,
         score_safety
       `)
-      .eq("publication_status", "published")
+            .eq("publication_status", "published")
+      .eq("is_full_review", true)
       .order("rating", {
         ascending: false,
       }),

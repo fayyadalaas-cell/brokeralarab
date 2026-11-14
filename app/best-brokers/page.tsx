@@ -512,6 +512,7 @@ export default async function BestBrokersPage() {
     key_strength_ar
   `)
   .eq("publication_status", "published")
+  .eq("is_full_review", true)
   .order("rating", { ascending: false }),
 
     supabase

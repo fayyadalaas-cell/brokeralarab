@@ -488,9 +488,11 @@ export default async function LowestSpreadBrokersPage() {
   );
 
   const { data: brokersData, error: brokersError } = await supabase
-    .from("brokers")
-    .select("*")
-    .in("id", brokerIds);
+  .from("brokers")
+  .select("*")
+  .in("id", brokerIds)
+  .eq("publication_status", "published")
+  .eq("is_full_review", true);
 
   if (brokersError) {
     return (
@@ -516,8 +518,10 @@ export default async function LowestSpreadBrokersPage() {
   );
 
   const accounts: PreparedAccount[] = (
-    (accountsData ?? []) as BrokerAccountRow[]
-  ).map((row) => {
+  (accountsData ?? []) as BrokerAccountRow[]
+)
+  .filter((row) => brokersMap.has(row.broker_id))
+  .map((row) => {
     const broker = brokersMap.get(row.broker_id);
 
     const spreadAverage = toNumber(row.spread_avg);
