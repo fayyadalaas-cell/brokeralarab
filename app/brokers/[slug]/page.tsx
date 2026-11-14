@@ -3653,22 +3653,31 @@ const structuredData = {
             </label>
 
             {/* Desktop: Open the Account Page */}
-            <Link
-  href={withPreview(
-    `/brokers/${broker.slug}/accounts/${accountSlug(
-      acc.account_name
-    )}`,
-    previewToken
-  )}
-  className="hidden items-center gap-1.5 rounded-md text-sm font-extrabold leading-5 text-brand-600 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 md:inline-flex"
->
-  <bdi className="min-w-0 break-words">
-    {acc.account_name || "غير محدد"}
-  </bdi>
-  <span aria-hidden="true" className="shrink-0">
-    ↗
+            {/* Desktop: Account name */}
+{broker.is_full_review === true ? (
+  <Link
+    href={withPreview(
+      `/brokers/${broker.slug}/accounts/${accountSlug(
+        acc.account_name
+      )}`,
+      previewToken
+    )}
+    className="hidden items-center gap-1.5 rounded-md text-sm font-extrabold leading-5 text-brand-600 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 md:inline-flex"
+  >
+    <bdi className="min-w-0 break-words">
+      {acc.account_name || "غير محدد"}
+    </bdi>
+    <span aria-hidden="true" className="shrink-0">
+      ↗
+    </span>
+  </Link>
+) : (
+  <span className="hidden text-sm font-extrabold leading-5 text-slate-900 md:inline-flex">
+    <bdi className="min-w-0 break-words">
+      {acc.account_name || "غير محدد"}
+    </bdi>
   </span>
-</Link>
+)}
           </h3>
 
           {acc.best_for && (
@@ -3725,23 +3734,26 @@ const structuredData = {
 </dl>
 
         {/* Mobile Account Page Link */}
-        <div
-          id={`account-page-${acc.id}`}
-          className="order-6 col-span-2 hidden pb-1 pt-1 peer-checked:block md:!hidden"
-        >
-          <Link
-            href={withPreview(
-              `/brokers/${broker.slug}/accounts/${accountSlug(
-                acc.account_name
-              )}`,
-              previewToken
-            )}
-            className="flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-blue-50 px-3 text-base font-bold text-brand-600 transition hover:bg-blue-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500"
-          >
-            تفاصيل الحساب
-            <span aria-hidden="true">↗</span>
-          </Link>
-        </div>
+        {/* Mobile Account Page Link — Full Reviews Only */}
+{broker.is_full_review === true && (
+  <div
+    id={`account-page-${acc.id}`}
+    className="order-6 col-span-2 hidden pb-1 pt-1 peer-checked:block md:!hidden"
+  >
+    <Link
+      href={withPreview(
+        `/brokers/${broker.slug}/accounts/${accountSlug(
+          acc.account_name
+        )}`,
+        previewToken
+      )}
+      className="flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-blue-50 px-3 text-base font-bold text-brand-600 transition hover:bg-blue-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500"
+    >
+      تفاصيل الحساب
+      <span aria-hidden="true">↗</span>
+    </Link>
+  </div>
+)}
       </article>
     ))
   ) : (
