@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 
 type Broker = {
   id: number;
+  is_full_review: boolean;
   name: string | null;
   name_en?: string | null;
   slug: string | null;
@@ -186,7 +187,9 @@ export default function BrokerFinder({ brokers, countryRankings = [] }: Props) {
   const hasActiveFilters =
     hasSearched && canSearch;
 
-  const scored = brokers.map((broker) => {
+  const scored = brokers
+  .filter((broker) => broker.is_full_review === true)
+  .map((broker) => {
     let score = 0;
 
     const platforms = normalize(

@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 
 type Broker = {
   id: number;
+  is_full_review: boolean;
   name: string | null;
   slug: string | null;
   rating: number | null;
@@ -266,7 +267,9 @@ const canSearch =
       .map((row) => row.broker_id)
   );
 
-  const scored = brokers.map((broker) => {
+  const scored = brokers
+  .filter((broker) => broker.is_full_review === true)
+  .map((broker) => {
     let score = 0;
 
     const bestFor = normalize(broker.best_for);

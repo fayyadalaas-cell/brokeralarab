@@ -59,6 +59,7 @@ export const metadata: Metadata = {
 
 type Broker = {
   id: number;
+  is_full_review: boolean;
   name: string | null;
   slug: string | null;
   rating: number | null;
@@ -276,8 +277,9 @@ export default async function HomePage() {
   ] = await Promise.all([
     supabase
   .from("brokers")
-  .select(`
+.select(`
     id,
+    is_full_review,
     name,
     slug,
     rating,
@@ -440,6 +442,7 @@ const homePivot =
   const sidebarBrokers = brokers
   .filter(
     (broker) =>
+      broker.is_full_review === true &&
       broker.logo &&
       broker.slug &&
       broker.name
@@ -451,9 +454,18 @@ const homePivot =
   .slice(0, 7);
 
   const footerFeaturedBrokers = brokers
-    .filter((broker) => broker.logo && broker.slug && broker.name)
-    .sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0))
-    .slice(0, 5);
+  .filter(
+    (broker) =>
+      broker.is_full_review === true &&
+      broker.logo &&
+      broker.slug &&
+      broker.name
+  )
+  .sort(
+    (a, b) =>
+      Number(b.rating || 0) - Number(a.rating || 0)
+  )
+  .slice(0, 5);
 
   const resolveComparisonBroker = (value: any) => {
   const comparisonBroker = Array.isArray(value)
