@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import BrokerRelatedComparisons from "../../../components/BrokerRelatedComparisons";
+import BrokerTopAlternatives from "../../../components/BrokerTopAlternatives";
 
 
 type Broker = {
@@ -133,13 +134,14 @@ type BrokerComplaint = {
 };
 
 type RelatedBroker = {
-
   id: number;
   name: string | null;
   name_en: string | null;
   slug: string | null;
   rating: number | null;
   logo: string | null;
+  real_account_url: string | null;
+  account_opening_status: "active" | "suspended" | null;
 };
 
 type BrokerAccount = {
@@ -280,7 +282,7 @@ async function getRelatedBrokers(
 
   const { data, error } = await supabase
     .from("brokers")
-    .select("id, name, name_en, slug, rating, logo")
+    .select("id, name, name_en, slug, rating, logo, real_account_url, account_opening_status")
     .eq("publication_status", "published")
     .neq("slug", currentSlug)
     .order("id", { ascending: true })
@@ -290,6 +292,29 @@ async function getRelatedBrokers(
 
   return data as RelatedBroker[];
 }
+
+async function getTopRatedAlternatives(
+  currentSlug: string
+): Promise<RelatedBroker[]> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("brokers")
+    .select(
+      "id, name, name_en, slug, rating, logo, real_account_url, account_opening_status"
+    )
+    .eq("publication_status", "published")
+    .eq("is_full_review", true)
+    .not("rating", "is", null)
+    .neq("slug", currentSlug)
+    .order("rating", { ascending: false })
+    .limit(10);
+
+  if (error || !data) return [];
+
+  return data as RelatedBroker[];
+}
+  
 
 async function getBrokerAccounts(brokerId: number): Promise<BrokerAccount[]> {
   const supabase = await createClient();
@@ -1935,7 +1960,10 @@ if (accountGuide) {
 }
 
 
-const relatedBrokers = await getRelatedBrokers(slug);
+const relatedBrokers =
+  broker.is_full_review === true
+    ? await getRelatedBrokers(slug)
+    : await getTopRatedAlternatives(slug);
 
 const allAccountsData = await getBrokerAccounts(broker.id);
 
@@ -4676,30 +4704,48 @@ return (
   </SectionCard>
 )}
 
-      {/* Related Broker Comparisons */}
+      {/* Related Broker Comparisons / Top Alternatives */}
 <div className="mb-2">
-  <SectionCard
-    title={`Compare ${
-      broker.name_en || broker.name
-    } with Other Brokers`}
-  >
-    {broker.slug && (
-      <BrokerRelatedComparisons
-        key={broker.slug}
+  {broker.is_full_review === true ? (
+    <SectionCard
+      title={`Compare ${
+        broker.name_en || broker.name
+      } with Other Brokers`}
+    >
+      {broker.slug && (
+        <BrokerRelatedComparisons
+          key={broker.slug}
+          locale="en"
+          broker={{
+            ...broker,
+            slug: broker.slug,
+          }}
+          relatedBrokers={relatedBrokers.flatMap(
+            (item) =>
+              item.slug
+                ? [{ ...item, slug: item.slug }]
+                : []
+          )}
+        />
+      )}
+    </SectionCard>
+  ) : (
+    <SectionCard
+      title={`Top 3 Alternative Forex Brokers to ${
+        broker.name_en || broker.name
+      }`}
+    >
+      <BrokerTopAlternatives
         locale="en"
-        broker={{
-          ...broker,
-          slug: broker.slug,
-        }}
-        relatedBrokers={relatedBrokers.flatMap(
+        brokers={relatedBrokers.flatMap(
           (item) =>
             item.slug
               ? [{ ...item, slug: item.slug }]
               : []
         )}
       />
-    )}
-  </SectionCard>
+    </SectionCard>
+  )}
 </div>
 
 
