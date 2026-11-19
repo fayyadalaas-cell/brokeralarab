@@ -150,8 +150,10 @@ export const STATIC_PAGES_EN = [
   "en/terms-and-conditions",
 ];
 
+
 export const EVENT_SLUGS = [
   "forex-expo-dubai-2026",
+  "forex-traders-expo-summit-dubai-2026", // New - November 2026
   "money-expo-abu-dhabi-2026",
   "jeddah-fintech-week-2026",
   "profx-expo-africa-2026",
@@ -159,6 +161,7 @@ export const EVENT_SLUGS = [
   "ifx-expo-asia-2026",
   "blockchain-life-ai-future-week-dubai-2026",
 ];
+
 
 export function url(path: string) {
   return path ? `${BASE_URL}/${path}` : BASE_URL;
