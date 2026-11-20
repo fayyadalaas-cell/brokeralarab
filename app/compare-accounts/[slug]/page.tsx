@@ -2655,32 +2655,9 @@ const labels: Record<string, string> = {
   };
 
   const modernGroups: ComparisonGroup[] = [
+    
     {
-      title: "01 — التعريف بالحسابين",
-      description:
-        "اسم الشركة والحساب وتصنيف المقارنة المستخدم لمطابقة الحسابات المتشابهة.",
-      rows: [
-        {
-          label: "شركة التداول",
-          a: first.broker.name,
-          b: second.broker.name,
-        },
-        {
-          label: "اسم الحساب",
-          a: name(first),
-          b: name(second),
-        },
-        {
-          label: "تصنيف المقارنة",
-          a: comparisonCategory(first),
-          b: comparisonCategory(second),
-          note:
-            "تصنيف داخلي يُستخدم لمطابقة الحسابات، ولا يُعد اسماً تجارياً للحساب.",
-        },
-      ],
-    },
-    {
-      title: "02 — السبريد وتكاليف التداول",
+      title: "01 — السبريد وتكاليف التداول",
       description:
         "قارن الرسوم المعلنة مع مراعاة اختلاف الأدوات المالية وطريقة احتساب العمولة.",
       rows: [
@@ -2736,7 +2713,7 @@ second.account.spread_avg !== undefined
       ],
     },
     {
-      title: "03 — الإيداع وتنفيذ الأوامر",
+      title: "02 — الإيداع وتنفيذ الأوامر",
       description:
         "متطلبات فتح الحساب ونوع التنفيذ والمنصات المعلنة.",
       rows: [
@@ -2763,7 +2740,7 @@ second.account.spread_avg !== undefined
     },
     
 {
-  title: "04 — ملاءمة الحساب وشروطه",
+  title: "03 — ملاءمة الحساب وشروطه",
   description:
     "الفئات المستهدفة وشروط توفر الحساب الإسلامي لدى كل وسيط.",
   rows: [
@@ -2791,7 +2768,7 @@ second.account.spread_avg !== undefined
   ],
 },
 {
-  title: "05 — التنظيم وخصائص الشركة",
+  title: "04 — التنظيم وخصائص الشركة",
   description:
     "معلومات عامة عن الوسيط وليست ضماناً بانطباق جميع الشروط على الحساب المحدد.",
   rows: [
@@ -3109,77 +3086,7 @@ description:
 </section>
 
 
-      {/* INTRODUCTION */}
-      <section className="mx-auto max-w-[1520px] px-3 pt-8 sm:px-6 lg:px-8">
-        <div className="rounded-[26px] border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
-          <SectionTitle
-            eyebrow="نظرة عامة"
-            title={`ما الذي يميز ${firstName} عن ${secondName}؟`}
-            description="قبل مقارنة الأرقام، من المهم فهم طبيعة كل حساب والشروط التي قد تجعله مناسباً لفئة معينة من المتداولين."
-          />
-
-          <div className="grid gap-5 lg:grid-cols-2">
-            {[first, second].map((item) => (
-              <article
-  key={item.key}
-  className="flex h-full min-w-0 flex-col rounded-[24px] border border-blue-100 bg-[#f8fbff] px-5 py-7 text-center shadow-sm transition-all hover:border-blue-200 hover:shadow-md sm:px-7"
->
-  {/* Brand / Logo block */}
-  <div className="flex flex-col items-center">
-    <div className="flex min-h-[110px] items-center justify-center">
-      <div className="flex h-[92px] w-[92px] items-center justify-center rounded-2xl border border-slate-100 bg-white shadow-sm">
-        <div className="[&_img]:h-auto [&_img]:max-h-[54px] [&_img]:w-auto [&_img]:max-w-[72px]">
-          <Logo broker={item.broker} />
-        </div>
-      </div>
-    </div>
-
-    <h3 className="mt-4 text-[22px] font-black leading-8 text-slate-950">
-      {item.broker.name}
-    </h3>
-
-    <p className="mt-1 text-[15px] font-bold text-[#1E5BB8]">
-      حساب {name(item)}
-    </p>
-
-    <div
-      aria-hidden="true"
-      className="mt-3 h-[3px] w-12 rounded-full bg-blue-500"
-    />
-  </div>
-
-  {/* Description */}
-  <p className="mx-auto mt-5 max-w-[360px] text-[13px] leading-7 text-slate-500">
-    اطلع على تفاصيل الحساب وشروط التداول والتقييم الكامل للوسيط.
-  </p>
-
-  {/* Buttons */}
-  <div className="mt-6 grid w-full max-w-[430px] grid-cols-1 gap-3 self-center sm:grid-cols-2">
-    <Link
-      href={brokerLink(item)}
-      className="flex min-h-[46px] items-center justify-center rounded-xl border border-blue-200 bg-white px-4 py-2.5 text-center text-[14px] font-black text-blue-800 transition hover:border-blue-400 hover:bg-blue-50"
-    >
-      تقييم الشركة
-      <span aria-hidden="true" className="mr-2">
-        ←
-      </span>
-    </Link>
-
-    <Link
-      href={accountLink(item)}
-      className="flex min-h-[46px] items-center justify-center rounded-xl bg-[#1E5BB8] px-4 py-2.5 text-center text-[14px] font-black text-white transition hover:bg-[#184A97]"
-    >
-      تفاصيل الحساب
-      <span aria-hidden="true" className="mr-2">
-        ←
-      </span>
-    </Link>
-  </div>
-</article>
-            ))}
-          </div>
-        </div>
-      </section>
+      
 
       {/* TABLE */}
       <section

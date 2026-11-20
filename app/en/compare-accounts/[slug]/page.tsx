@@ -1235,25 +1235,7 @@ function DataTable({
         : text;
     };
 
-    const comparisonCategory = (item: Item): string => {
-      const category = str(
-        item.account.account_type
-      ).toLowerCase();
-
-      const labels: Record<string, string> = {
-        standard: "Standard",
-        professional: "Professional",
-        pro: "Professional",
-        cent: "Cent",
-        raw: "Raw Spread",
-        zero: "Zero Spread",
-        islamic: "Islamic",
-      };
-
-      return labels[category] ||
-        category ||
-        "Not classified";
-    };
+    
 
     const spreadNumber = (
       item: Item,
@@ -1304,33 +1286,10 @@ function DataTable({
        ========================================================= */
 
     const modernGroups: ComparisonGroup[] = [
-      {
-        title: "01 — Account Information",
-        description:
-          "Identify the brokers, account names and the internal category used to match comparable account types.",
-        rows: [
-          {
-            label: "Broker",
-            a: first.broker.name,
-            b: second.broker.name,
-          },
-          {
-            label: "Account Name",
-            a: name(first),
-            b: name(second),
-          },
-          {
-            label: "Comparison Category",
-            a: comparisonCategory(first),
-            b: comparisonCategory(second),
-            note:
-              "This is the category used to match comparable accounts. It is not necessarily the broker's official account name.",
-          },
-        ],
-      },
+      
 
       {
-        title: "02 — Spreads and Trading Costs",
+        title: "01 — Spreads and Trading Costs",
         description:
           "Compare advertised pricing while considering the trading instrument, spread measurement and commission structure.",
         rows: [
@@ -1386,7 +1345,7 @@ function DataTable({
       },
 
       {
-        title: "03 — Deposits and Order Execution",
+        title: "02 — Deposits and Order Execution",
         description:
           "Review funding requirements, execution methods and the trading platforms listed by each broker.",
         rows: [
@@ -1413,7 +1372,7 @@ function DataTable({
       },
 
       {
-        title: "04 — Account Suitability and Conditions",
+        title: "03 — Account Suitability and Conditions",
         description:
           "Review the intended trading profile and Islamic account availability under the applicable conditions.",
         rows: [
@@ -1454,7 +1413,7 @@ function DataTable({
       },
 
       {
-        title: "05 — Broker Regulation and Information",
+        title: "04 — Broker Regulation and Information",
         description:
           "Broker-level regulatory information does not mean that every listed license or trading condition applies to the selected account.",
         rows: [
@@ -3217,39 +3176,7 @@ export default async function Page({ params }: PageProps) {
         </div>
       </section>
 
-      {/* =================================================
-          INTRODUCTION
-      ================================================= */}
-
-      <section className="mx-auto max-w-[1520px] px-3 pt-8 sm:px-6 lg:px-8">
-        <div className="rounded-[26px] border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
-          <SectionTitle
-            eyebrow="ACCOUNT OVERVIEW"
-            title={`What Makes ${firstName} Different from ${secondName}?`}
-            description="Before comparing the numbers, it is important to understand the purpose of each account and the conditions that may make it suitable for different traders."
-          />
-
-          <div className="grid gap-5 lg:grid-cols-2">
-            {[first, second].map((item) => (
-              <article
-                key={item.account.id}
-                className="rounded-[22px] border border-slate-200 bg-[#f8fbff] p-5 sm:p-6"
-              >
-                <h3 className="mb-4 text-[19px] font-black text-[#184A97]">
-                  {fullName(item)}
-                </h3>
-
-                <Paragraphs
-                  value={
-                    item.content?.hero_intro_en ||
-                    item.content?.overview_en
-                  }
-                />
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+      
 
       {/* =================================================
           COMPARISON TABLE
