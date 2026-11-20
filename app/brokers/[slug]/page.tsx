@@ -186,6 +186,7 @@ type BrokerAccount = {
   execution_type: string | null;
   best_for: string | null;
   best_for_en: string | null;
+  best_for_category?: string | null;
   sort_order: number | null;
 };
 
@@ -271,6 +272,7 @@ function withPreview(path: string, previewToken?: string) {
   return `${path}?preview=${encodeURIComponent(previewToken)}`;
 }
 
+
 async function getBroker(
   slug: string,
   previewToken?: string
@@ -304,6 +306,7 @@ async function getBroker(
 
   return null;
 }
+
 
 async function getRelatedBrokers(
   currentSlug: string
@@ -356,6 +359,362 @@ async function getBrokerAccounts(brokerId: number): Promise<BrokerAccount[]> {
 
   return data as BrokerAccount[];
 }
+
+
+
+async function getBrokerAccountsV2(
+  brokerId: number
+): Promise<BrokerAccount[] | null> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("broker_accounts_v2")
+    .select(`
+      id,
+      broker_id,
+      account_name,
+      account_name_ar,
+      spread_advertised_from,
+      spread_avg,
+      spread_unit,
+      spread_unit_ar,
+      commission_amount,
+      commission_currency,
+      commission_basis,
+      commission_unit,
+      trading_costs_extra,
+      min_deposit_amount,
+      min_deposit_currency,
+      deposit_policy,
+      availability_notes_ar,
+      execution_type,
+      execution_type_ar,
+      
+execution_type_short_ar,
+best_for_category,
+sort_order
+
+    `)
+    .eq("broker_id", brokerId)
+    .eq("publication_status", "published")
+    .eq("verification_status", "verified")
+    .order("sort_order", { ascending: true });
+
+  if (error || !data?.length) {
+    if (error) {
+      console.error(
+        "[Broker V2] Account display:",
+        error.message
+      );
+    }
+    return null;
+  }
+
+  return data.map((account) => {
+    // 1. Spread
+    const spreadValue =
+      account.spread_advertised_from ??
+      account.spread_avg;
+
+    const spreadUnit =
+      account.spread_unit_ar ||
+      account.spread_unit ||
+      "";
+
+    const spread =
+      spreadValue === null
+        ? null
+        : `${account.spread_advertised_from !== null ? "من " : ""}${spreadValue} ${spreadUnit}`.trim();
+
+    // 2. Commission
+    type CommissionPolicy = {
+      type?: string;
+      amount_usd?: number;
+      amount_qualifier?: string;
+      instrument_specific?: boolean;
+    };
+
+    const costs: CommissionPolicy[] =
+      Array.isArray(account.trading_costs_extra)
+        ? account.trading_costs_extra
+        : [];
+
+    const advertisedCommission = costs.find(
+      (item) =>
+        item.type === "advertised_commission_policy" &&
+        typeof item.amount_usd === "number"
+    );
+
+    let commission: string | null = null;
+
+    if (advertisedCommission) {
+      const prefix =
+        advertisedCommission.amount_qualifier === "up_to"
+          ? "حتى "
+          : advertisedCommission.amount_qualifier === "from"
+            ? "من "
+            : "";
+
+      commission =
+        `${prefix}$${advertisedCommission.amount_usd} لكل لوت/اتجاه`;
+    } else if (account.commission_amount === 0) {
+      commission = "بدون عمولة";
+    } else if (account.commission_amount !== null) {
+      commission = `${account.commission_amount} ${
+        account.commission_currency || ""
+      }`.trim();
+    }
+
+    
+    // 3. Minimum deposit - numeric reference for comparison
+    const minDeposit =
+      account.min_deposit_amount !== null
+        ? `$${account.min_deposit_amount}`
+        : "غير متاح";
+
+
+
+    // 4. Short execution label
+    const executionType =
+      account.execution_type_short_ar ||
+      account.execution_type_ar ||
+      account.execution_type ||
+      null;
+
+
+const bestForLabels: Record<string, string> = {
+  beginners: "مناسب للمبتدئين",
+  small_capital: "لأصحاب رأس المال الصغير",
+  experienced: "للمتداولين المحترفين",
+  scalping: "للمضاربة السريعة",
+  day_trading: "للتداول اليومي",
+  swing_trading: "للتداول متوسط الأجل",
+  automated_trading: "للتداول الآلي",
+  low_spreads: "للباحثين عن سبريد منخفض",
+  commission_free: "للتداول دون عمولة",
+  high_volume: "لأحجام التداول الكبيرة",
+};
+
+const bestFor =
+  account.best_for_category
+    ? bestForLabels[account.best_for_category] || null
+    : null;
+
+
+    return {
+      id: Number(account.id),
+      broker_id: Number(account.broker_id),
+      account_name:
+        account.account_name || account.account_name_ar,
+      spread,
+      commission,
+      commission_en: commission,
+      min_deposit: minDeposit,
+      min_deposit_en: minDeposit,
+      execution_type: executionType,
+      
+
+      best_for: bestFor,
+      best_for_en: null,
+
+      // Keep the selected Supabase category code.
+      best_for_category:
+        account.best_for_category || null,
+
+
+      sort_order: account.sort_order,
+    };
+  });
+}
+
+
+
+
+type AccountCategoryOption = {
+  code: string;
+  label_ar: string;
+  label_en: string;
+};
+
+type BrokerCompanyV2Content = {
+  account_id: number;
+  editorial_status: string;
+
+  trading_fees_ar: string | null;
+  trading_fees_en: string | null;
+
+  deposit_withdrawal_ar: string | null;
+  deposit_withdrawal_en: string | null;
+
+  account_types_ar: string | null;
+  account_types_en: string | null;
+
+  
+  // JSONB fields are validated before use.
+  account_category_options: unknown;
+
+  account_suitability_avoid_ar: unknown;
+  account_suitability_avoid_en: unknown;
+
+};
+
+
+
+async function getPublishedCompanyV2(
+  broker: Broker
+): Promise<BrokerCompanyV2Content | null> {
+  // Keep Capital.com completely on the legacy system.
+  if (broker.slug === "capital-com") {
+    return null;
+  }
+
+  // The broker itself must remain published.
+  if (broker.publication_status !== "published") {
+    return null;
+  }
+
+  
+const supabase = await createClient();
+
+// Verify the status of all accounts, including drafts hidden by RLS.
+const { data: isReady, error: readyError } =
+  await supabase.rpc("is_broker_v2_ready", {
+    p_broker_id: broker.id,
+  });
+
+if (readyError) {
+  console.error(
+    "[Broker V2] Readiness check failed:",
+    readyError.message
+  );
+  return null;
+}
+
+if (isReady !== true) {
+  return null;
+}
+
+const { data: accounts, error: accountsError } =
+
+    await supabase
+      .from("broker_accounts_v2")
+      .select(
+        "id, slug, verification_status, publication_status"
+      )
+      .eq("broker_id", broker.id);
+
+  if (accountsError || !accounts?.length) {
+    if (accountsError) {
+      console.error(
+        "[Broker V2] Accounts:",
+        accountsError.message
+      );
+    }
+    return null;
+  }
+
+  // Every account must have been approved and published.
+  
+
+if (
+  accounts.some(
+    (account) =>
+      account.verification_status !== "verified" ||
+      account.publication_status !== "published"
+  )
+) {
+  return null;
+}
+
+
+
+  const accountIds = accounts.map((account) => account.id);
+
+  
+  const { data: content, error: contentError } =
+    await supabase
+      .from("broker_account_content_v2")
+      .select(`
+        account_id,
+        editorial_status,
+        trading_fees_ar,
+        trading_fees_en,
+        deposit_withdrawal_ar,
+        deposit_withdrawal_en,
+        account_types_ar,
+        account_types_en,
+        account_category_options,
+        account_suitability_avoid_ar,
+        account_suitability_avoid_en
+      `)
+      .in("account_id", accountIds);
+
+
+  if (contentError || !content) {
+    if (contentError) {
+      console.error(
+        "[Broker V2] Content:",
+        contentError.message
+      );
+    }
+    return null;
+  }
+
+  // Require one approved content record per account.
+  if (
+    content.length !== accounts.length ||
+    content.some(
+      (row) => row.editorial_status !== "approved"
+    ) ||
+    new Set(content.map((row) => row.account_id)).size
+      !== accounts.length
+  ) {
+    return null;
+  }
+
+  const fields = [
+    "trading_fees_ar",
+    "trading_fees_en",
+    "deposit_withdrawal_ar",
+    "deposit_withdrawal_en",
+    "account_types_ar",
+    "account_types_en",
+  ] as const;
+
+  const hasAnyCompanyContent = (
+    row: BrokerCompanyV2Content
+  ) =>
+    fields.some(
+      (field) =>
+        typeof row[field] === "string" &&
+        row[field]!.trim().length > 0
+    );
+
+  const hasCompleteCompanyContent = (
+    row: BrokerCompanyV2Content
+  ) =>
+    fields.every(
+      (field) =>
+        typeof row[field] === "string" &&
+        row[field]!.trim().length > 0
+    );
+
+  const companyRows = content.filter(
+    hasAnyCompanyContent
+  );
+
+  // Company-wide content must exist exactly once.
+  if (
+    companyRows.length !== 1 ||
+    !hasCompleteCompanyContent(companyRows[0])
+  ) {
+    return null;
+  }
+
+  return companyRows[0];
+}
+
+
 
 async function getBrokerLicenses(
   brokerId: number
@@ -460,6 +819,9 @@ export async function generateMetadata({
     };
   }
 
+ const companyV2 = await getPublishedCompanyV2(broker);
+const useV2 = companyV2 !== null;
+
   const brokerName =
     broker.name?.trim() ||
     broker.name_en?.trim() ||
@@ -483,13 +845,17 @@ export async function generateMetadata({
     reviewDate?.getUTCFullYear() ||
     new Date().getUTCFullYear();
 
-  const title =
-    broker.meta_title?.trim() ||
-    `تقييم ${brokerName} ${reviewYear}: التراخيص والرسوم والحسابات | بروكر العرب`;
+    
 
-  const description =
-    broker.meta_descr?.trim() ||
-    `اقرأ تقييم ${brokerName} لعام ${reviewYear} وتعرّف على التراخيص، الرسوم والسبريد، أنواع الحسابات، منصات التداول، الإيداع والسحب، والمزايا والعيوب قبل فتح الحساب.`;
+
+const title =
+  broker.meta_title?.trim() ||
+  `تقييم ${brokerName} ${reviewYear}: التراخيص والرسوم والحسابات | بروكر العرب`;
+
+const description =
+  broker.meta_descr?.trim() ||
+  `اقرأ تقييم ${brokerName} لعام ${reviewYear} وتعرّف على التراخيص، الرسوم والسبريد، أنواع الحسابات، منصات التداول، الإيداع والسحب، والمزايا والعيوب قبل فتح الحساب.`;
+
 
   const brokerLogo = absoluteUrl(broker.logo);
   const isPreview = broker.publication_status !== "published";
@@ -2038,13 +2404,18 @@ export default async function BrokerPage({
     ? query.preview[0]
     : query.preview;
 
-  const broker = await getBroker(slug, previewToken);
+  
+const broker = await getBroker(slug, previewToken);
 
 if (!broker) {
   notFound();
 }
 
+const companyV2 = await getPublishedCompanyV2(broker);
+const useV2 = companyV2 !== null;
+
 const isAccountOpeningSuspended =
+
   broker.account_opening_status === "suspended" ||
   broker.slug === "markets";
 
@@ -2057,15 +2428,22 @@ const [
   broker.is_full_review === true
     ? getRelatedBrokers(slug)
     : getTopRatedAlternatives(slug),
-  getBrokerAccounts(broker.id),
+  
+useV2
+  ? getBrokerAccountsV2(broker.id)
+  : getBrokerAccounts(broker.id),
+
   getBrokerLicenses(broker.id),
   getOpenAccountGuide(slug),
 ]);
 
+
+const safeAccountsData = accountsData || [];
+
 const isNaga = broker.slug === "naga";
 
 const visibleAccounts = isNaga
-  ? accountsData.filter(
+  ? safeAccountsData.filter(
       (account) =>
         ![
           "Iron",
@@ -2076,7 +2454,7 @@ const visibleAccounts = isNaga
           "Crystal",
         ].includes(account.account_name || "")
     )
-  : accountsData;
+    : safeAccountsData;
 
   const nagaVipLevels = [
   {
@@ -2135,19 +2513,122 @@ const visibleAccounts = isNaga
   },
 ];
 
-  const commissionAccounts = visibleAccounts.filter(
-  (acc) =>
+  
+const commissionAccounts = visibleAccounts.filter((acc) => {
+  if (useV2) {
+    const value = acc.commission?.trim();
+
+    return Boolean(
+      value &&
+      value !== "بدون عمولة" &&
+      value !== "غير محدد"
+    );
+  }
+
+  return Boolean(
     acc.commission &&
     acc.commission !== "0" &&
     acc.commission !== "0$" &&
     acc.commission !== "$0"
-);
+  );
+});
+
 
   const pros = splitText(broker.pros);
   const cons = splitText(broker.cons);
 
-  const whoShouldUse = splitText(broker.who_should_use_ar).slice(0, 4);
-  const whoShouldAvoid = splitText(broker.who_should_avoid_ar).slice(0, 4);
+  
+  /* =====================================================
+     BROKER SUITABILITY — V1 / V2
+
+     V1:
+       Keep the original broker editorial lists.
+
+     V2:
+       Positive categories come from published V2
+       accounts and their selected best_for_category.
+
+       Negative observations come only from manually
+       reviewed Supabase content.
+
+     Never assume that an unused category means
+     the broker is unsuitable for that category.
+     ===================================================== */
+
+  const v2CategoryOptions =
+    useV2 &&
+    Array.isArray(companyV2?.account_category_options)
+      ? companyV2.account_category_options.filter(
+          (option): option is AccountCategoryOption =>
+            typeof option === "object" &&
+            option !== null &&
+            typeof option.code === "string" &&
+            typeof option.label_ar === "string" &&
+            option.code.trim().length > 0 &&
+            option.label_ar.trim().length > 0
+        )
+      : [];
+
+  // Categories are selected in broker_accounts_v2.
+  // Only accounts actually displayed by this page
+  // contribute to the positive suitability list.
+
+  const selectedCategoryCodes = new Set(
+    useV2
+      ? visibleAccounts
+          .map((account) =>
+            account.best_for_category?.trim()
+          )
+          .filter(
+            (code): code is string =>
+              Boolean(code)
+          )
+      : []
+  );
+
+  // Maintain the order defined in Supabase JSONB.
+  // Do not force the number to equal the account count:
+  // two accounts may share the same category.
+
+  const v2SuitableCategories =
+    v2CategoryOptions.filter((option) =>
+      selectedCategoryCodes.has(option.code)
+    );
+
+  // Positive list — V2 account classification,
+  // or original V1 broker content.
+
+  const whoShouldUse = useV2
+    ? v2SuitableCategories.map(
+        (option) => option.label_ar
+      )
+    : splitText(
+        broker.who_should_use_ar
+      ).slice(0, 4);
+
+  // Negative list — independent editorial decisions.
+  // Never calculate it as "10 minus selected categories".
+
+  const v2AvoidRaw =
+    companyV2?.account_suitability_avoid_ar;
+
+  const v2AvoidNotes =
+    Array.isArray(v2AvoidRaw)
+      ? v2AvoidRaw
+          .filter(
+            (value): value is string =>
+              typeof value === "string"
+          )
+          .map((value) => value.trim())
+          .filter(Boolean)
+      : [];
+
+  const whoShouldAvoid = useV2
+    ? v2AvoidNotes
+    : splitText(
+        broker.who_should_avoid_ar
+      ).slice(0, 4);
+
 
   const brokerPositioning =
     broker.broker_positioning_ar ||
@@ -2231,7 +2712,9 @@ const visibleAccounts = isNaga
   const paymentMethods = splitText(broker.payment_methods_ar);
 
 const depositSummary =
-  broker.deposit_withdrawal_summary_ar || null;
+  (useV2 ? companyV2?.deposit_withdrawal_ar : null) ||
+  broker.deposit_withdrawal_summary_ar ||
+  null;
 
 const withdrawalSpeed =
   broker.withdrawal_speed_ar || null;
@@ -2295,13 +2778,19 @@ const reviewDate = modifiedTime
   ? new Date(publishedTime)
   : null;
 
+
 const reviewYear =
   reviewDate?.getUTCFullYear() ||
   new Date().getUTCFullYear();
 
+
+const reviewHeading = `تقييم ${brokerName} ${reviewYear}`;
+
+
 const rawReviewScore = Number(
   overallScore || broker.rating
 );
+
 
 const reviewScore =
   Number.isFinite(rawReviewScore) &&
@@ -2375,8 +2864,8 @@ const reviewSchema = reviewScore
       "@type": "Review",
       "@id": `${pageUrl}#review`,
       url: pageUrl,
-      name: `تقييم ${brokerName} ${reviewYear}`,
-      headline: `تقييم ${brokerName} ${reviewYear}`,
+      name: reviewHeading,
+headline: reviewHeading,
       inLanguage: "ar",
       datePublished: publishedTime,
       dateModified: modifiedTime,
@@ -2424,7 +2913,7 @@ const webPageSchema = {
   "@type": "WebPage",
   "@id": `${pageUrl}#webpage`,
   url: pageUrl,
-  name: `تقييم ${brokerName} ${reviewYear}`,
+  name: reviewHeading,
   description: pageDescription,
   inLanguage: "ar",
   datePublished: publishedTime,
@@ -2629,12 +3118,16 @@ const structuredData = {
               </span>
             </div>
 
-            <h1
-              id="broker-review-title"
-              className="mt-3 break-words text-[30px] font-black leading-tight tracking-tight text-slate-950 sm:text-[38px] xl:text-[46px] max-sm:mt-1.5 max-sm:text-[23px] max-sm:leading-[1.35]"
-            >
-              تقييم <bdi>{broker.name}</bdi>
-            </h1>
+            
+
+<h1
+  id="broker-review-title"
+  className="mt-3 break-words text-[30px] font-black leading-tight tracking-tight text-slate-950 sm:text-[38px] xl:text-[46px] max-sm:mt-1.5 max-sm:text-[23px] max-sm:leading-[1.35]"
+>
+  تقييم <bdi>{broker.name}</bdi>
+</h1>
+
+
           </div>
 
          <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-[13px] font-medium leading-6 text-slate-600 sm:text-sm max-sm:col-span-2 max-sm:mt-0 max-sm:gap-x-4 max-sm:gap-y-1 max-sm:border-t max-sm:border-slate-200/70 max-sm:pt-3 max-sm:text-xs max-sm:leading-6">
@@ -3151,7 +3644,7 @@ const structuredData = {
 </div>
 
     {/* Account Types: Compact Full-Width Row */}
-    {accountsData.some((account) => account.account_name?.trim()) && (
+    {safeAccountsData.some((account) => account.account_name?.trim()) && (
       <div className="mt-6 border-t border-slate-200 pt-5 max-sm:mt-4 max-sm:pt-4">
         <div className="flex flex-wrap items-center gap-x-5 gap-y-3 max-sm:flex-col max-sm:items-stretch max-sm:gap-2.5">
           <h3 className="text-sm font-extrabold text-slate-950">
@@ -3161,7 +3654,7 @@ const structuredData = {
           <div className="flex min-w-0 flex-wrap gap-2 max-sm:grid max-sm:grid-cols-2 max-sm:[&>a:last-child:nth-child(odd)]:col-span-2 max-sm:[&>a:last-child:nth-child(odd)]:justify-self-center max-sm:[&>a:last-child:nth-child(odd)]:w-[calc((100%-0.5rem)/2)]">
   {Array.from(
     new Set(
-      accountsData
+      safeAccountsData
         .map((account) => account.account_name?.trim())
         .filter((name): name is string => Boolean(name))
     )
@@ -3532,7 +4025,13 @@ const structuredData = {
   id="accounts-section-title"
   className="text-[22px] font-extrabold leading-8 text-slate-950 md:text-2xl"
 >
- {isNaga ? (
+ 
+{useV2 ? (
+  <>
+    أنواع حسابات <bdi>{broker.name}</bdi>:
+    {" "}مقارنة السبريد والعمولات وشروط التداول
+  </>
+) : isNaga ? (
   <>
     حساب التداول ومستويات VIP لدى <bdi>{broker.name}</bdi>
   </>
@@ -3541,6 +4040,7 @@ const structuredData = {
     أنواع حسابات <bdi>{broker.name}</bdi>
   </>
 )}
+
 </h2>
 
     <p className="mt-2 text-base font-medium leading-7 text-slate-600 md:text-[17px] md:leading-8">
@@ -3582,8 +4082,67 @@ const structuredData = {
 </div>
 
 
+
+{useV2 && companyV2?.account_types_ar && (
+  <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-4 md:p-5">
+    <h3 className="mb-3 text-lg font-bold text-slate-950">
+      كيف تختار حساب التداول المناسب لدى {brokerName}؟
+    </h3>
+
+    
+
+<div className="md:hidden">
+  <input
+    id={`account-types-expand-${broker.id}`}
+    type="checkbox"
+    className="peer sr-only"
+    aria-label="إظهار أو إخفاء شرح أنواع حسابات التداول"
+  />
+
+  <div className="relative max-h-[224px] overflow-hidden peer-checked:max-h-none">
+    <div className="space-y-3 text-right text-[14px] leading-8 text-slate-700">
+      {companyV2.account_types_ar
+        .split(/\r?\n+/)
+        .map((p) => p.trim())
+        .filter(Boolean)
+        .map((paragraph, i) => (
+          <p key={i}>{paragraph}</p>
+        ))}
+    </div>
+
+    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white to-transparent peer-checked:hidden" />
+  </div>
+
+  <label
+    htmlFor={`account-types-expand-${broker.id}`}
+    className="mt-3 flex min-h-[44px] cursor-pointer items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-bold text-brand-600 transition hover:bg-slate-100 peer-checked:[&_.show-more]:hidden peer-checked:[&_.show-less]:inline"
+  >
+    <span className="show-more">
+      عرض المزيد ↓
+    </span>
+
+    <span className="show-less hidden">
+      عرض أقل ↑
+    </span>
+  </label>
+</div>
+
+
+    <div className="hidden space-y-3 text-base leading-8 text-slate-700 md:block">
+      {companyV2.account_types_ar
+        .split(/\r?\n+/)
+        .map((p) => p.trim())
+        .filter(Boolean)
+        .map((paragraph, i) => (
+          <p key={i}>{paragraph}</p>
+        ))}
+    </div>
+  </div>
+)}
+
+
   {/* Accounts Introduction from Supabase */}
-{broker.accounts_intro_ar?.trim() && (
+{!useV2 && broker.accounts_intro_ar?.trim() && (
   <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50/80 px-3.5 py-3 text-right md:mt-5 md:px-5 md:py-4">
     <p className="mb-1 text-[15px] font-bold leading-7 text-slate-950 md:text-base">
       معلومات عن توفر الحسابات
@@ -4055,7 +4614,11 @@ const structuredData = {
 
 {/* الرسوم وتكاليف التداول */}
 <SectionCard
-  title="الرسوم وتكاليف التداول"
+  title={
+  useV2
+    ? `رسوم تداول ${broker.name}: السبريد والعمولات`
+    : "الرسوم وتكاليف التداول"
+}
   subtitle={`نظرة واضحة على السبريد والعمولات وأهم تكاليف التداول المحتملة لدى ${broker.name}.`}
   id="fees"
 >
@@ -4104,17 +4667,34 @@ const structuredData = {
 </div>
 
       {/* شرح الرسوم */}
-      <div className="min-w-0 px-3.5 py-4 md:p-5">
+      
+<div
+  className={
+    useV2
+      ? "min-w-0 px-4 py-5 md:px-7 md:py-6"
+      : "min-w-0 px-3.5 py-4 md:p-5"
+  }
+>
+
         <h3 className="text-sm font-bold leading-6 text-slate-950 md:text-base">
           شرح رسوم التداول
         </h3>
 
                 <details className="group mt-2.5">
           <summary className="list-none [&::-webkit-details-marker]:hidden">
-            <div className="line-clamp-4 space-y-3 text-right text-[13px] font-normal leading-6 text-slate-700 [overflow-wrap:anywhere] group-open:line-clamp-none md:line-clamp-none md:text-sm md:leading-7">
+            
+<div
+  className={
+    useV2
+      ? "line-clamp-4 space-y-4 text-right text-[14px] font-normal leading-7 text-slate-700 [overflow-wrap:anywhere] group-open:line-clamp-none md:line-clamp-none md:text-[15px] md:leading-8"
+      : "line-clamp-4 space-y-3 text-right text-[13px] font-normal leading-6 text-slate-700 [overflow-wrap:anywhere] group-open:line-clamp-none md:line-clamp-none md:text-sm md:leading-7"
+  }
+>
+
               {(() => {
                 const text =
-                  broker.fees ||
+  (useV2 ? companyV2?.trading_fees_ar : null) ||
+  broker.fees ||
                   `تختلف تكاليف التداول لدى ${broker.name} بحسب نوع الحساب المختار، وقيمة السبريد، وهيكل العمولات، والأداة المالية التي يتم تداولها.`;
 
                 const existingParagraphs = text
@@ -4171,7 +4751,14 @@ const structuredData = {
 </SectionCard>
 
 {/* الإيداع والسحب */}
-<SectionCard title="الإيداع والسحب" id="deposit-withdrawal">
+<SectionCard
+  title={
+    useV2
+      ? `الإيداع والسحب لدى ${broker.name}: الطرق والرسوم والمدة`
+      : "الإيداع والسحب"
+  }
+  id="deposit-withdrawal"
+>
   <div
     dir="rtl"
     className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
@@ -4227,14 +4814,30 @@ const structuredData = {
       </div>
 
       {/* تفاصيل الإيداع والسحب */}
-      <div className="min-w-0 px-3.5 py-4 md:p-5">
+      
+<div
+  className={
+    useV2
+      ? "min-w-0 px-4 py-5 md:px-7 md:py-6"
+      : "min-w-0 px-3.5 py-4 md:p-5"
+  }
+>
+
         <h3 className="text-sm font-bold leading-6 text-slate-950 md:text-base">
           تفاصيل الإيداع والسحب
         </h3>
 
         <details className="group/deposit mt-2.5">
           <summary className="list-none rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 [&::-webkit-details-marker]:hidden">
-            <div className="line-clamp-4 space-y-3 text-right text-[13px] font-normal leading-6 text-slate-700 [overflow-wrap:anywhere] group-open/deposit:line-clamp-none md:line-clamp-none md:text-sm md:leading-7">
+            
+<div
+  className={
+    useV2
+      ? "line-clamp-4 space-y-4 text-right text-[14px] font-normal leading-7 text-slate-700 [overflow-wrap:anywhere] group-open/deposit:line-clamp-none md:line-clamp-none md:text-[15px] md:leading-8"
+      : "line-clamp-4 space-y-3 text-right text-[13px] font-normal leading-6 text-slate-700 [overflow-wrap:anywhere] group-open/deposit:line-clamp-none md:line-clamp-none md:text-sm md:leading-7"
+  }
+>
+
               {(
                 depositSummary ||
                 "لا توجد معلومات كافية حاليًا حول الإيداع والسحب."
@@ -4382,14 +4985,30 @@ const structuredData = {
           </div>
 
           {/* تجربة المنصات */}
-          <div className="min-w-0 px-3.5 py-4 md:p-5">
+          
+<div
+  className={
+    useV2
+      ? "min-w-0 px-4 py-5 md:px-7 md:py-6"
+      : "min-w-0 px-3.5 py-4 md:p-5"
+  }
+>
+
             <h3 className="text-sm font-bold leading-6 text-slate-950 md:text-base">
               تجربة منصات التداول
             </h3>
 
             <details className="group/platforms mt-2.5">
               <summary className="list-none rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 [&::-webkit-details-marker]:hidden">
-                <div className="line-clamp-4 space-y-3 text-right text-[13px] font-normal leading-6 text-slate-700 [overflow-wrap:anywhere] group-open/platforms:line-clamp-none md:line-clamp-none md:text-sm md:leading-7">
+                
+<div
+  className={
+    useV2
+      ? "line-clamp-4 space-y-4 text-right text-[14px] font-normal leading-7 text-slate-700 [overflow-wrap:anywhere] group-open/platforms:line-clamp-none md:line-clamp-none md:text-[15px] md:leading-8"
+      : "line-clamp-4 space-y-3 text-right text-[13px] font-normal leading-6 text-slate-700 [overflow-wrap:anywhere] group-open/platforms:line-clamp-none md:line-clamp-none md:text-sm md:leading-7"
+  }
+>
+
                   {(
                     platformSummary ||
                     "لا توجد معلومات كافية حاليًا حول منصات التداول."
@@ -4507,7 +5126,15 @@ const structuredData = {
       </div>
     </div>
 
-    <div className="min-w-0 px-3.5 py-4 md:p-5">
+    
+<div
+  className={
+    useV2
+      ? "min-w-0 px-4 py-5 md:px-7 md:py-6"
+      : "min-w-0 px-3.5 py-4 md:p-5"
+  }
+>
+
       {/* الخلاصة */}
       <h3 className="text-sm font-bold leading-6 text-slate-950 md:text-base">
         خلاصة تقييم {broker.name}
@@ -4515,7 +5142,15 @@ const structuredData = {
 
       <details className="group/verdict mt-2.5">
         <summary className="list-none rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 [&::-webkit-details-marker]:hidden">
-          <div className="line-clamp-4 space-y-3 text-right text-[13px] font-normal leading-6 text-slate-700 [overflow-wrap:anywhere] group-open/verdict:line-clamp-none md:line-clamp-none md:text-sm md:leading-7">
+          
+<div
+  className={
+    useV2
+      ? "line-clamp-4 space-y-4 text-right text-[14px] font-normal leading-7 text-slate-700 [overflow-wrap:anywhere] group-open/verdict:line-clamp-none md:line-clamp-none md:text-[15px] md:leading-8"
+      : "line-clamp-4 space-y-3 text-right text-[13px] font-normal leading-6 text-slate-700 [overflow-wrap:anywhere] group-open/verdict:line-clamp-none md:line-clamp-none md:text-sm md:leading-7"
+  }
+>
+
             {(broker.final_verdict || "لا توجد بيانات متاحة حاليًا.")
               .split(/\|\||\r?\n+/)
               .map((paragraph) => paragraph.trim())
@@ -4551,7 +5186,15 @@ const structuredData = {
                 نقطة القوة
               </h4>
 
-              <p className="mt-1 text-[13px] leading-6 text-slate-800 [overflow-wrap:anywhere]">
+              
+<p
+  className={
+    useV2
+      ? "mt-2 text-[14px] leading-7 text-slate-800 [overflow-wrap:anywhere] md:text-[15px] md:leading-8"
+      : "mt-1 text-[13px] leading-6 text-slate-800 [overflow-wrap:anywhere]"
+  }
+>
+
                 {broker.key_strength_ar}
               </p>
             </div>
@@ -4563,7 +5206,15 @@ const structuredData = {
                 أهم ملاحظة
               </h4>
 
-              <p className="mt-1 text-[13px] leading-6 text-slate-800 [overflow-wrap:anywhere]">
+              
+<p
+  className={
+    useV2
+      ? "mt-2 text-[14px] leading-7 text-slate-800 [overflow-wrap:anywhere] md:text-[15px] md:leading-8"
+      : "mt-1 text-[13px] leading-6 text-slate-800 [overflow-wrap:anywhere]"
+  }
+>
+
                 {broker.key_weakness_ar}
               </p>
             </div>
@@ -4659,7 +5310,15 @@ const structuredData = {
           </summary>
 
           <div className="border-t border-slate-100 bg-slate-50/60 px-3.5 py-3 md:px-4">
-            <div className="space-y-2 text-right text-[13px] font-normal leading-6 text-slate-700 [overflow-wrap:anywhere] md:text-sm md:leading-7">
+            
+<div
+  className={
+    useV2
+      ? "space-y-4 text-right text-[14px] font-normal leading-7 text-slate-700 [overflow-wrap:anywhere] md:text-[15px] md:leading-8"
+      : "space-y-2 text-right text-[13px] font-normal leading-6 text-slate-700 [overflow-wrap:anywhere] md:text-sm md:leading-7"
+  }
+>
+
               {item.answer
                 .split(/\|\||\r?\n+/)
                 .map((paragraph) => paragraph.trim())

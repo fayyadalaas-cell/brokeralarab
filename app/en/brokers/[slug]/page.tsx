@@ -154,9 +154,12 @@ type BrokerAccount = {
   min_deposit: string | null;
   min_deposit_en: string | null;
   execution_type: string | null;
+  
   best_for: string | null;
   best_for_en: string | null;
+  best_for_category?: string | null;
   sort_order: number | null;
+
 };
 
 type BrokerLicense = {
@@ -329,6 +332,340 @@ async function getBrokerAccounts(brokerId: number): Promise<BrokerAccount[]> {
 
   return data as BrokerAccount[];
 }
+
+
+async function getBrokerAccountsV2(
+  brokerId: number
+): Promise<BrokerAccount[] | null> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("broker_accounts_v2")
+    .select(`
+      id,
+      broker_id,
+      slug,
+      account_name,
+      spread_advertised_from,
+      spread_avg,
+      spread_unit,
+      commission_amount,
+      commission_currency,
+      trading_costs_extra,
+      min_deposit_amount,
+      min_deposit_currency,
+      execution_type,
+      best_for_category,
+      sort_order
+    `)
+    .eq("broker_id", brokerId)
+    .eq("publication_status", "published")
+    .eq("verification_status", "verified")
+    .order("sort_order", { ascending: true });
+
+  if (error || !data?.length) {
+    if (error) {
+      console.error(
+        "[Broker EN V2] Account display:",
+        error.message
+      );
+    }
+    return null;
+  }
+
+  const bestForLabels: Record<string, string> = {
+    beginners: "Beginners",
+    small_capital: "Small-Capital Traders",
+    experienced: "Experienced Traders",
+    scalping: "Scalpers",
+    day_trading: "Day Traders",
+    swing_trading: "Swing Traders",
+    automated_trading: "Automated Trading",
+    low_spreads: "Low-Spread Traders",
+    commission_free: "Commission-Free Trading",
+    high_volume: "High-Volume Traders",
+  };
+
+  type CommissionPolicy = {
+    type?: string;
+    amount_usd?: number;
+    amount_qualifier?: string;
+    instrument_specific?: boolean;
+  };
+
+  return data.map((account) => {
+    // 1. Spread - English unit
+    const spreadValue =
+      account.spread_advertised_from ??
+      account.spread_avg;
+
+    
+const spreadUnit =
+  account.spread_unit === "pip"
+    ? "pips"
+    : account.spread_unit || "";
+
+
+    const spread =
+      spreadValue === null
+        ? null
+        : `${
+            account.spread_advertised_from !== null
+              ? "From "
+              : ""
+          }${spreadValue} ${spreadUnit}`;
+
+    // 2. Commission from verified V2 fields
+    const costs: CommissionPolicy[] =
+      Array.isArray(account.trading_costs_extra)
+        ? account.trading_costs_extra
+        : [];
+
+    const advertisedCommission = costs.find(
+      (item) =>
+        item.type === "advertised_commission_policy" &&
+        typeof item.amount_usd === "number"
+    );
+
+    let commission: string | null = null;
+
+    if (advertisedCommission) {
+      const prefix =
+        advertisedCommission.amount_qualifier === "up_to"
+          ? "Up to "
+          : advertisedCommission.amount_qualifier === "from"
+            ? "From "
+            : "";
+
+      commission =
+        `${prefix}$${advertisedCommission.amount_usd} per lot/side`;
+    } else if (account.commission_amount === 0) {
+      commission = "No commission";
+    } else if (account.commission_amount !== null) {
+      commission = `${account.commission_amount} ${
+        account.commission_currency || ""
+      }`.trim();
+    }
+
+    // 3. Numeric reference deposit
+    const minDeposit =
+      account.min_deposit_amount !== null
+        ? `${account.min_deposit_currency === "USD" ? "$" : ""}${account.min_deposit_amount}${
+            account.min_deposit_currency &&
+            account.min_deposit_currency !== "USD"
+              ? ` ${account.min_deposit_currency}`
+              : ""
+          }`
+        : "Not available";
+
+    // 4. Short execution label
+    const executionType =
+      account.slug === "pro" &&
+      account.execution_type === "Market Execution"
+        ? "Instant / Market"
+        : account.execution_type || null;
+
+    // 5. One primary suitability category
+    const bestFor = account.best_for_category
+      ? bestForLabels[account.best_for_category] || null
+      : null;
+
+    return {
+      id: Number(account.id),
+      broker_id: Number(account.broker_id),
+      account_name: account.account_name,
+      spread,
+      commission,
+      commission_en: commission,
+      min_deposit: minDeposit,
+      min_deposit_en: minDeposit,
+      execution_type: executionType,
+      
+      best_for: null,
+      best_for_en: bestFor,
+      best_for_category: account.best_for_category || null,
+      sort_order: account.sort_order,
+
+    };
+  });
+}
+
+
+
+type AccountCategoryOption = {
+  code: string;
+  label_ar: string;
+  label_en: string;
+};
+
+type BrokerCompanyV2Content = {
+  account_id: number;
+  editorial_status: string;
+
+  trading_fees_ar: string | null;
+  trading_fees_en: string | null;
+
+  deposit_withdrawal_ar: string | null;
+  deposit_withdrawal_en: string | null;
+
+  account_types_ar: string | null;
+  account_types_en: string | null;
+
+  account_category_options: unknown;
+
+  account_suitability_avoid_ar: unknown;
+  account_suitability_avoid_en: unknown;
+};
+
+
+async function getPublishedCompanyV2(
+  broker: Broker
+): Promise<BrokerCompanyV2Content | null> {
+  // Capital.com must remain on V1.
+  if (broker.slug === "capital-com") {
+    return null;
+  }
+
+  if (broker.publication_status !== "published") {
+    return null;
+  }
+
+  const supabase = await createClient();
+
+  // Check ALL V2 accounts, including drafts hidden by RLS.
+  const { data: isReady, error: readyError } =
+    await supabase.rpc("is_broker_v2_ready", {
+      p_broker_id: broker.id,
+    });
+
+  if (readyError) {
+    console.error(
+      "[Broker EN V2] Readiness check:",
+      readyError.message
+    );
+    return null;
+  }
+
+  if (isReady !== true) {
+    return null;
+  }
+
+  const { data: accounts, error: accountsError } =
+    await supabase
+      .from("broker_accounts_v2")
+      .select(
+        "id, slug, verification_status, publication_status"
+      )
+      .eq("broker_id", broker.id);
+
+  if (accountsError || !accounts?.length) {
+    if (accountsError) {
+      console.error(
+        "[Broker EN V2] Accounts:",
+        accountsError.message
+      );
+    }
+    return null;
+  }
+
+  if (
+    accounts.some(
+      (account) =>
+        account.verification_status !== "verified" ||
+        account.publication_status !== "published"
+    )
+  ) {
+    return null;
+  }
+
+  const accountIds = accounts.map(
+    (account) => account.id
+  );
+
+  
+  const { data: content, error: contentError } =
+    await supabase
+      .from("broker_account_content_v2")
+      .select(`
+        account_id,
+        editorial_status,
+        trading_fees_ar,
+        trading_fees_en,
+        deposit_withdrawal_ar,
+        deposit_withdrawal_en,
+        account_types_ar,
+        account_types_en,
+        account_category_options,
+        account_suitability_avoid_ar,
+        account_suitability_avoid_en
+      `)
+      .in("account_id", accountIds);
+
+
+  if (contentError || !content) {
+    if (contentError) {
+      console.error(
+        "[Broker EN V2] Content:",
+        contentError.message
+      );
+    }
+    return null;
+  }
+
+  // Every account needs approved content.
+  if (
+    content.length !== accounts.length ||
+    content.some(
+      (row) => row.editorial_status !== "approved"
+    ) ||
+    new Set(
+      content.map((row) => row.account_id)
+    ).size !== accounts.length
+  ) {
+    return null;
+  }
+
+  const fields = [
+    "trading_fees_ar",
+    "trading_fees_en",
+    "deposit_withdrawal_ar",
+    "deposit_withdrawal_en",
+    "account_types_ar",
+    "account_types_en",
+  ] as const;
+
+  const hasAnyCompanyContent = (
+    row: BrokerCompanyV2Content
+  ) =>
+    fields.some(
+      (field) =>
+        typeof row[field] === "string" &&
+        row[field]!.trim().length > 0
+    );
+
+  const hasCompleteCompanyContent = (
+    row: BrokerCompanyV2Content
+  ) =>
+    fields.every(
+      (field) =>
+        typeof row[field] === "string" &&
+        row[field]!.trim().length > 0
+    );
+
+  const companyRows = content.filter(
+    hasAnyCompanyContent
+  );
+
+  if (
+    companyRows.length !== 1 ||
+    !hasCompleteCompanyContent(companyRows[0])
+  ) {
+    return null;
+  }
+
+  return companyRows[0];
+}
+
 
 async function getBrokerLicenses(
   brokerId: number
@@ -1965,7 +2302,25 @@ const relatedBrokers =
     ? await getRelatedBrokers(slug)
     : await getTopRatedAlternatives(slug);
 
-const allAccountsData = await getBrokerAccounts(broker.id);
+
+const companyV2 = await getPublishedCompanyV2(broker);
+const useV2 = companyV2 !== null;
+
+// V1 is preserved for all brokers not ready for V2.
+const legacyAccountsData = await getBrokerAccounts(broker.id);
+
+// Load V2 accounts only when the broker is fully approved.
+const publishedV2Accounts = useV2
+  ? await getBrokerAccountsV2(broker.id)
+  : null;
+
+// Use V2 only when both the approval gate
+// and account data are available.
+const activeV2 = useV2 && publishedV2Accounts !== null;
+
+const allAccountsData = activeV2
+  ? publishedV2Accounts
+  : legacyAccountsData;
 
 const isNaga = broker.slug === "naga";
 
@@ -1982,6 +2337,7 @@ const accountsData = isNaga
         ].includes(account.account_name || "")
     )
   : allAccountsData;
+
 
 const nagaVipLevels = [
   {
@@ -2032,13 +2388,98 @@ const cons = splitText(
   broker.cons_en
 );
 
-const whoShouldUse = splitText(
-  broker.who_should_use_en
-).slice(0, 4);
 
-const whoShouldAvoid = splitText(
-  broker.who_should_avoid_en
-).slice(0, 4);
+/* =====================================================
+   BROKER SUITABILITY — ENGLISH V1 / V2
+
+   V1: Keep the original broker content unchanged.
+
+   V2:
+   - Positive categories come from selected V2 accounts.
+   - Labels come from Supabase JSONB.
+   - Negative notes are independent editorial content.
+   ===================================================== */
+
+// Read category options stored in Supabase.
+const categoryOptionsRaw =
+  companyV2?.account_category_options;
+
+const categoryOptions: AccountCategoryOption[] =
+  activeV2 && Array.isArray(categoryOptionsRaw)
+    ? categoryOptionsRaw.flatMap((item): AccountCategoryOption[] => {
+        if (
+          typeof item !== "object" ||
+          item === null ||
+          typeof item.code !== "string" ||
+          typeof item.label_en !== "string" ||
+          typeof item.label_ar !== "string" ||
+          !item.code.trim() ||
+          !item.label_en.trim()
+        ) {
+          return [];
+        }
+
+        return [{
+          code: item.code.trim(),
+          label_ar: item.label_ar,
+          label_en: item.label_en.trim(),
+        }];
+      })
+    : [];
+
+// Get the categories assigned to this broker's V2 accounts.
+const selectedCategoryCodes = new Set(
+  activeV2
+    ? accountsData
+        .map((account) => account.best_for_category)
+        .filter(
+          (code): code is string =>
+            typeof code === "string" &&
+            code.trim().length > 0
+        )
+    : []
+);
+
+// Keep the category order from Supabase.
+// Each category appears only once.
+const suitableCategoryLabels = Array.from(
+  new Map(
+    categoryOptions
+      .filter((option) =>
+        selectedCategoryCodes.has(option.code)
+      )
+      .map((option) => [
+        option.code,
+        option.label_en,
+      ] as const)
+  ).values()
+);
+
+// Positive categories: V2 from accounts, V1 unchanged.
+const whoShouldUse: string[] = activeV2
+  ? suitableCategoryLabels
+  : splitText(broker.who_should_use_en).slice(0, 4);
+
+// Independent editorial limitations from Supabase.
+const avoidRaw =
+  companyV2?.account_suitability_avoid_en;
+
+const approvedAvoidNotes: string[] =
+  activeV2 && Array.isArray(avoidRaw)
+    ? avoidRaw
+        .filter(
+          (item): item is string =>
+            typeof item === "string"
+        )
+        .map((item) => item.trim())
+        .filter(Boolean)
+    : [];
+
+// Negative notes: V2 from Supabase, V1 unchanged.
+const whoShouldAvoid: string[] = activeV2
+  ? approvedAvoidNotes
+  : splitText(broker.who_should_avoid_en).slice(0, 4);
+
 
 const brokerPositioning =
   broker.broker_positioning_en ||
@@ -3415,11 +3856,17 @@ return (
   {/* Section Header */}
   <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between lg:gap-8">
     <div className="min-w-0 flex-1">
-      <h2
+      
+<h2
   id="accounts-section-title"
   className="text-[22px] font-extrabold leading-8 text-slate-950 md:text-2xl"
 >
-  {isNaga ? (
+  {activeV2 ? (
+    <>
+      <bdi>{broker.name_en || broker.name}</bdi> Account Types:
+      {" "}Spreads, Commissions & Trading Conditions
+    </>
+  ) : isNaga ? (
     <>
       Trading Account & VIP Levels at{" "}
       <bdi>{broker.name_en || broker.name}</bdi>
@@ -3431,6 +3878,7 @@ return (
     </>
   )}
 </h2>
+
 
       <p className="mt-2 text-base font-medium leading-7 text-slate-600 md:text-[17px] md:leading-8">
   {isNaga ? (
@@ -3491,18 +3939,78 @@ return (
     </dl>
   </div>
 
-  {/* Account Introduction from Supabase */}
-  {broker.accounts_intro_en?.trim() && (
-    <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50/80 px-3.5 py-3 md:mt-5 md:px-5 md:py-4">
-      <p className="mb-1 text-[15px] font-bold leading-7 text-slate-950 md:text-base">
-        Account Availability
-      </p>
+  
+{/* Account Introduction — V1 only */}
+{!activeV2 && broker.accounts_intro_en?.trim() && (
+  <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50/80 px-3.5 py-3 md:mt-5 md:px-5 md:py-4">
+    <p className="mb-1 text-[15px] font-bold leading-7 text-slate-950 md:text-base">
+      Account Availability
+    </p>
 
-      <p className="whitespace-pre-line break-words text-base font-medium leading-7 text-slate-600 md:leading-8">
-        {broker.accounts_intro_en.trim()}
-      </p>
+    <p className="whitespace-pre-line break-words text-base font-medium leading-7 text-slate-600 md:leading-8">
+      {broker.accounts_intro_en.trim()}
+    </p>
+  </div>
+)}
+
+{/* V2 — Account Types Editorial Content */}
+{activeV2 && companyV2?.account_types_en && (
+  <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-4 md:p-5">
+    <h3 className="mb-3 text-lg font-bold leading-7 text-slate-950">
+      How to Choose the Right Trading Account at{" "}
+      <bdi>{broker.name_en || broker.name}</bdi>
+    </h3>
+
+    {/* Mobile — first 7 lines with Show More */}
+    <div className="md:hidden">
+      <input
+        id={`account-types-expand-en-${broker.id}`}
+        type="checkbox"
+        className="peer sr-only"
+        aria-label="Expand or collapse account types explanation"
+      />
+
+      <div className="relative max-h-[224px] overflow-hidden peer-checked:max-h-none">
+        <div className="space-y-3 text-left text-[14px] leading-8 text-slate-700">
+          {companyV2.account_types_en
+            .split(/\r?\n+/)
+            .map((paragraph) => paragraph.trim())
+            .filter(Boolean)
+            .map((paragraph, i) => (
+              <p key={i}>{paragraph}</p>
+            ))}
+        </div>
+
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white to-transparent peer-checked:hidden" />
+      </div>
+
+      <label
+        htmlFor={`account-types-expand-en-${broker.id}`}
+        className="mt-3 flex min-h-[44px] cursor-pointer items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-bold text-brand-600 transition hover:bg-slate-100 peer-checked:[&_.show-more]:hidden peer-checked:[&_.show-less]:inline"
+      >
+        <span className="show-more">
+          Show More ↓
+        </span>
+
+        <span className="show-less hidden">
+          Show Less ↑
+        </span>
+      </label>
     </div>
-  )}
+
+    {/* Desktop — full editorial content */}
+    <div className="hidden space-y-4 text-left text-[15px] leading-8 text-slate-700 md:block">
+      {companyV2.account_types_en
+        .split(/\r?\n+/)
+        .map((paragraph) => paragraph.trim())
+        .filter(Boolean)
+        .map((paragraph, i) => (
+          <p key={i}>{paragraph}</p>
+        ))}
+    </div>
+  </div>
+)}
+
 
   {/* Responsive Account Comparison */}
   <div className="mt-4 space-y-2.5 md:mt-5 md:space-y-0 md:overflow-hidden md:rounded-[20px] md:border md:border-slate-200">
@@ -3518,12 +4026,21 @@ return (
       <span>Execution Type</span>
     </div>
 
-    {accountsData.length ? (
-      accountsData.map((acc) => (
-        <article
-          key={acc.id}
-          className="grid min-w-0 grid-cols-2 gap-x-3 gap-y-1 rounded-[16px] border border-slate-200 bg-white px-3.5 py-2.5 md:grid-cols-[minmax(0,1.5fr)_repeat(3,minmax(0,1fr))_minmax(0,1.2fr)] md:items-center md:gap-3 md:rounded-none md:border-0 md:border-t md:border-slate-100 md:px-4 md:py-4 md:[&>dl]:!text-center md:[&_dd]:!mt-0 md:[&_dd]:!text-center md:[&_dd]:!text-sm md:[&_dd]:!leading-6"
-        >
+    
+
+{accountsData.length ? (
+  accountsData.map((acc) => (
+    <article
+      key={acc.id}
+      
+className={
+  activeV2
+    ? "grid min-w-0 grid-cols-2 gap-x-3 gap-y-2 rounded-xl border border-slate-200 bg-white px-4 py-3.5 transition-colors hover:bg-blue-50/40 md:grid-cols-[minmax(0,1.5fr)_repeat(3,minmax(0,1fr))_minmax(0,1.2fr)] md:items-center md:gap-3 md:rounded-none md:border-0 md:border-t md:border-slate-100 md:px-4 md:py-4 md:[&>dl]:!text-center md:[&_dd]:!mt-0 md:[&_dd]:!text-center md:[&_dd]:!text-sm md:[&_dd]:!leading-6"
+    : "grid min-w-0 grid-cols-2 gap-x-3 gap-y-1 rounded-[16px] border border-slate-200 bg-white px-3.5 py-2.5 md:grid-cols-[minmax(0,1.5fr)_repeat(3,minmax(0,1fr))_minmax(0,1.2fr)] md:items-center md:gap-3 md:rounded-none md:border-0 md:border-t md:border-slate-100 md:px-4 md:py-4 md:[&>dl]:!text-center md:[&_dd]:!mt-0 md:[&_dd]:!text-center md:[&_dd]:!text-sm md:[&_dd]:!leading-6"
+}
+
+    >
+
           {/* Mobile Expansion Control */}
           <input
             id={`account-toggle-${acc.id}`}
@@ -3536,7 +4053,9 @@ return (
           />
 
           {/* Account Name */}
-          <div className="order-1 col-span-2 min-w-0 peer-checked:[&_.account-chevron]:rotate-180 peer-checked:[&_.account-best-for]:block peer-focus-visible:[&_.account-toggle-label]:outline peer-focus-visible:[&_.account-toggle-label]:outline-2 peer-focus-visible:[&_.account-toggle-label]:outline-brand-500 md:order-none md:col-span-1">
+          
+<div className={`order-1 col-span-2 min-w-0 peer-checked:[&_.account-chevron]:rotate-180 peer-checked:[&_.account-best-for]:block peer-focus-visible:[&_.account-toggle-label]:outline peer-focus-visible:[&_.account-toggle-label]:outline-2 peer-focus-visible:[&_.account-toggle-label]:outline-brand-500 md:order-none md:col-span-1 ${activeV2 ? "md:!col-start-1 md:!row-start-1" : ""}`}>
+
             <h3>
               {/* Mobile */}
               <label
@@ -3599,7 +4118,9 @@ return (
           </div>
 
           {/* Spread: Always Visible */}
-          <dl className="order-2 flex min-w-0 flex-wrap items-baseline gap-x-1.5 md:order-none md:block">
+          
+<dl className={`order-2 flex min-w-0 flex-wrap items-baseline gap-x-1.5 md:order-none md:block ${activeV2 ? "md:!col-start-2 md:!row-start-1 md:!col-span-1" : ""}`}>
+
             <dt className="text-sm font-medium leading-6 text-slate-500 md:sr-only">
               Spread:
             </dt>
@@ -3612,7 +4133,9 @@ return (
           {/* Commission: Expanded on Mobile */}
           <dl
             id={`account-commission-${acc.id}`}
-            className="order-4 col-span-2 mt-2 hidden min-w-0 items-start justify-between gap-4 border-t border-slate-100 pt-3 peer-checked:flex md:order-none md:col-span-1 md:mt-0 md:block md:border-0 md:pt-0"
+            
+className={`order-4 col-span-2 mt-2 hidden min-w-0 items-start justify-between gap-4 border-t border-slate-100 pt-3 peer-checked:flex md:order-none md:col-span-1 md:mt-0 md:block md:border-0 md:pt-0 ${activeV2 ? "md:!col-start-3 md:!row-start-1" : ""}`}
+
           >
             <dt className="shrink-0 text-[15px] font-medium leading-7 text-slate-500 md:sr-only">
               Commission
@@ -3628,7 +4151,9 @@ return (
           </dl>
 
           {/* Deposit: Always Visible */}
-          <dl className="order-3 flex min-w-0 flex-wrap items-baseline justify-end gap-x-1.5 md:order-none md:block">
+          
+<dl className={`order-3 flex min-w-0 flex-wrap items-baseline justify-end gap-x-1.5 md:order-none md:block ${activeV2 ? "md:!col-start-4 md:!row-start-1 md:!col-span-1" : ""}`}>
+
             <dt className="text-sm font-medium leading-6 text-slate-500 md:sr-only">
               Deposit:
             </dt>
@@ -3645,7 +4170,9 @@ return (
           {/* Execution: Expanded on Mobile */}
           <dl
             id={`account-execution-${acc.id}`}
-            className="order-5 col-span-2 hidden min-w-0 items-start justify-between gap-4 border-t border-slate-100 py-3 peer-checked:flex md:order-none md:col-span-1 md:block md:border-0 md:py-0"
+            
+className={`order-5 col-span-2 hidden min-w-0 items-start justify-between gap-4 border-t border-slate-100 py-3 peer-checked:flex md:order-none md:col-span-1 md:block md:border-0 md:py-0 ${activeV2 ? "md:!col-start-5 md:!row-start-1" : ""}`}
+
           >
             <dt className="shrink-0 text-[15px] font-medium leading-7 text-slate-500 md:sr-only">
               Execution Type
@@ -4008,9 +4535,14 @@ return (
 </SectionCard>
 )}
 
+
 {/* Fees and Trading Costs */}
 <SectionCard
-  title="Fees & Trading Costs"
+  title={
+    activeV2
+      ? `${broker.name_en || broker.name} Trading Fees: Spreads & Commissions`
+      : "Fees & Trading Costs"
+  }
   subtitle={`A clear overview of ${
     broker.name_en || broker.name
   }’s spreads, commissions, and potential trading costs.`}
@@ -4028,7 +4560,6 @@ return (
         </h3>
 
         <dl className="mt-2 divide-y divide-slate-200 md:mt-3">
-          {/* Lowest Spread */}
           <div className="flex items-center justify-between gap-3 py-2 md:block md:pb-3 md:pt-0">
             <dt className="shrink-0 text-xs leading-5 text-slate-500">
               Lowest Spread
@@ -4044,7 +4575,6 @@ return (
             </dd>
           </div>
 
-          {/* Commission Structure */}
           <div className="flex items-center justify-between gap-3 pb-0 pt-2 md:block md:pt-3">
             <dt className="shrink-0 text-xs leading-5 text-slate-500">
               Commission Structure
@@ -4052,56 +4582,66 @@ return (
 
             <dd className="min-w-0 break-words text-right text-[13px] font-semibold leading-6 text-slate-950 md:mt-1 md:text-left">
               {commissionAccounts.length === 1
-  ? "1 commission-based account"
-  : commissionAccounts.length > 1
-  ? `${commissionAccounts.length} commission-based accounts`
-  : noCommissionAccounts.length > 0
-  ? "Commission-free accounts available"
-  : "Commission data unavailable"}
+                ? "1 commission-based account"
+                : commissionAccounts.length > 1
+                  ? `${commissionAccounts.length} commission-based accounts`
+                  : noCommissionAccounts.length > 0
+                    ? "Commission-free accounts available"
+                    : "Commission data unavailable"}
             </dd>
           </div>
         </dl>
       </div>
 
-      {/* Fees Explanation */}
-      <div className="min-w-0 px-3.5 py-4 md:p-5">
+      {/* Trading Fees Explanation */}
+      <div
+        className={
+          activeV2
+            ? "min-w-0 px-4 py-5 md:px-7 md:py-6"
+            : "min-w-0 px-3.5 py-4 md:p-5"
+        }
+      >
         <h3 className="text-sm font-bold leading-6 text-slate-950 md:text-base">
           Trading Fees Explained
         </h3>
 
         <details className="group mt-2.5">
           <summary className="list-none [&::-webkit-details-marker]:hidden">
-            <div className="line-clamp-4 space-y-3 text-left text-[13px] font-normal leading-6 text-slate-700 [overflow-wrap:anywhere] group-open:line-clamp-none md:line-clamp-none md:text-sm md:leading-7">
+            <div
+              className={
+                activeV2
+                  ? "line-clamp-4 space-y-4 text-left text-[14px] font-normal leading-7 text-slate-700 [overflow-wrap:anywhere] group-open:line-clamp-none md:line-clamp-none md:text-[15px] md:leading-8"
+                  : "line-clamp-4 space-y-3 text-left text-[13px] font-normal leading-6 text-slate-700 [overflow-wrap:anywhere] group-open:line-clamp-none md:line-clamp-none md:text-sm md:leading-7"
+              }
+            >
               {(() => {
                 const text =
+                  (activeV2
+                    ? companyV2?.trading_fees_en
+                    : null) ||
                   broker.fees_en ||
                   `Trading costs at ${
                     broker.name_en || broker.name
                   } depend on the selected account type, spread, commission structure, and traded instrument.`;
 
-                // Use paragraphs already stored in Supabase.
-                const existingParagraphs = text
+                const paragraphs = text
                   .split(/\|\||\r?\n+/)
                   .map((paragraph) => paragraph.trim())
                   .filter(Boolean);
 
-                if (existingParagraphs.length > 1) {
-                  return existingParagraphs.map(
-                    (paragraph, index) => (
-                      <p key={index}>{paragraph}</p>
-                    )
-                  );
+                if (paragraphs.length > 1) {
+                  return paragraphs.map((paragraph, index) => (
+                    <p key={index}>{paragraph}</p>
+                  ));
                 }
 
-                // Split a long text near the middle at a sentence ending.
-                // This ignores periods inside decimals and names such as Capital.com.
                 const boundaries = Array.from(
                   text.matchAll(/[.!?](?=\s+\S)/g),
                   (match) =>
                     match.index! + match[0].length
                 );
 
-                if (text.length < 240 || boundaries.length === 0) {
+                if (text.length < 240 || !boundaries.length) {
                   return <p>{text}</p>;
                 }
 
@@ -4140,9 +4680,15 @@ return (
   </div>
 </SectionCard>
 
-     {/* Deposits and Withdrawals */}
+
+   
+{/* Deposits and Withdrawals */}
 <SectionCard
-  title="Deposits & Withdrawals"
+  title={
+    activeV2
+      ? `Deposits & Withdrawals at ${broker.name_en || broker.name}: Methods, Fees & Processing Times`
+      : "Deposits & Withdrawals"
+  }
   id="deposit-withdrawal"
 >
   <div
@@ -4176,12 +4722,18 @@ return (
 
             <dd className="min-w-0 text-right text-[13px] font-bold leading-6 text-slate-950 md:mt-1 md:text-left md:text-sm">
               <bdi>
-                {formatMoney(broker.min_deposit)}
+                
+{activeV2
+  ? lowestDeposit?.min_deposit_en ||
+    lowestDeposit?.min_deposit ||
+    "Not specified"
+  : formatMoney(broker.min_deposit)}
+
               </bdi>
             </dd>
           </div>
 
-          {/* Deposit and Withdrawal Score */}
+          {/* Funding Score */}
           <div className="flex items-center justify-between gap-3 py-2 md:block md:py-3">
             <dt className="shrink-0 text-xs leading-5 text-slate-500">
               Funding Score
@@ -4208,15 +4760,30 @@ return (
       </div>
 
       {/* Deposit and Withdrawal Details */}
-      <div className="min-w-0 px-3.5 py-4 md:p-5">
+      <div
+        className={
+          activeV2
+            ? "min-w-0 px-4 py-5 md:px-7 md:py-6"
+            : "min-w-0 px-3.5 py-4 md:p-5"
+        }
+      >
         <h3 className="text-sm font-bold leading-6 text-slate-950 md:text-base">
           Deposit & Withdrawal Details
         </h3>
 
         <details className="group/deposit mt-2.5">
           <summary className="list-none rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 [&::-webkit-details-marker]:hidden">
-            <div className="line-clamp-4 space-y-3 text-left text-[13px] font-normal leading-6 text-slate-700 [overflow-wrap:anywhere] group-open/deposit:line-clamp-none md:line-clamp-none md:text-sm md:leading-7">
+            <div
+              className={
+                activeV2
+                  ? "line-clamp-4 space-y-4 text-left text-[14px] font-normal leading-7 text-slate-700 [overflow-wrap:anywhere] group-open/deposit:line-clamp-none md:line-clamp-none md:text-[15px] md:leading-8"
+                  : "line-clamp-4 space-y-3 text-left text-[13px] font-normal leading-6 text-slate-700 [overflow-wrap:anywhere] group-open/deposit:line-clamp-none md:line-clamp-none md:text-sm md:leading-7"
+              }
+            >
               {(
+                (activeV2
+                  ? companyV2?.deposit_withdrawal_en
+                  : null) ||
                 depositSummary ||
                 "There is currently insufficient information about deposits and withdrawals."
               )
@@ -4266,8 +4833,8 @@ return (
       </div>
     </div>
   </div>
-
 </SectionCard>
+
 
 {/* Client Complaints - published complaints only */}
 {hasPublishedComplaints && (
@@ -4374,14 +4941,26 @@ return (
           </div>
 
           {/* Platform Experience */}
-          <div className="min-w-0 px-3.5 py-4 md:p-5">
+          <div
+  className={
+    activeV2
+      ? "min-w-0 px-4 py-5 md:px-7 md:py-6"
+      : "min-w-0 px-3.5 py-4 md:p-5"
+  }
+>
             <h3 className="text-sm font-bold leading-6 text-slate-950 md:text-base">
               Trading Platform Experience
             </h3>
 
             <details className="group/platforms mt-2.5">
               <summary className="list-none rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 [&::-webkit-details-marker]:hidden">
-                <div className="line-clamp-4 space-y-3 text-left text-[13px] font-normal leading-6 text-slate-700 [overflow-wrap:anywhere] group-open/platforms:line-clamp-none md:line-clamp-none md:text-sm md:leading-7">
+                <div
+  className={
+    activeV2
+      ? "line-clamp-4 space-y-4 text-left text-[14px] font-normal leading-7 text-slate-700 [overflow-wrap:anywhere] group-open/platforms:line-clamp-none md:line-clamp-none md:text-[15px] md:leading-8"
+      : "line-clamp-4 space-y-3 text-left text-[13px] font-normal leading-6 text-slate-700 [overflow-wrap:anywhere] group-open/platforms:line-clamp-none md:line-clamp-none md:text-sm md:leading-7"
+  }
+>
                   {(
                     platformSummary ||
                     `There is currently insufficient information about the trading platforms available at ${
@@ -4500,15 +5079,31 @@ return (
       </div>
     </div>
 
-    <div className="min-w-0 px-3.5 py-4 md:p-5">
-      {/* Verdict Summary */}
+    
+<div
+  className={
+    activeV2
+      ? "min-w-0 px-4 py-5 md:px-7 md:py-6"
+      : "min-w-0 px-3.5 py-4 md:p-5"
+  }
+>
+  {/* Verdict Summary */}
+
       <h3 className="text-sm font-bold leading-6 text-slate-950 md:text-base">
         Our verdict on {broker.name_en || broker.name}
       </h3>
 
       <details className="group/verdict mt-2.5">
         <summary className="list-none rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 [&::-webkit-details-marker]:hidden">
-          <div className="line-clamp-4 space-y-3 text-left text-[13px] font-normal leading-6 text-slate-700 [overflow-wrap:anywhere] group-open/verdict:line-clamp-none md:line-clamp-none md:text-sm md:leading-7">
+          
+<div
+  className={
+    activeV2
+      ? "line-clamp-4 space-y-4 text-left text-[14px] font-normal leading-7 text-slate-700 [overflow-wrap:anywhere] group-open/verdict:line-clamp-none md:line-clamp-none md:text-[15px] md:leading-8"
+      : "line-clamp-4 space-y-3 text-left text-[13px] font-normal leading-6 text-slate-700 [overflow-wrap:anywhere] group-open/verdict:line-clamp-none md:line-clamp-none md:text-sm md:leading-7"
+  }
+>
+
             {(
               broker.final_verdict_en ||
               "There is not enough information available to provide a final verdict at this time."
@@ -4548,7 +5143,15 @@ return (
                 Key Strength
               </h4>
 
-              <p className="mt-1 text-[13px] leading-6 text-slate-800 [overflow-wrap:anywhere]">
+              
+<p
+  className={
+    activeV2
+      ? "mt-2 text-[14px] leading-7 text-slate-800 [overflow-wrap:anywhere] md:text-[15px] md:leading-8"
+      : "mt-1 text-[13px] leading-6 text-slate-800 [overflow-wrap:anywhere]"
+  }
+>
+
                 {broker.key_strength_en}
               </p>
             </div>
@@ -4560,7 +5163,15 @@ return (
                 Main Limitation
               </h4>
 
-              <p className="mt-1 text-[13px] leading-6 text-slate-800 [overflow-wrap:anywhere]">
+              
+<p
+  className={
+    activeV2
+      ? "mt-2 text-[14px] leading-7 text-slate-800 [overflow-wrap:anywhere] md:text-[15px] md:leading-8"
+      : "mt-1 text-[13px] leading-6 text-slate-800 [overflow-wrap:anywhere]"
+  }
+>
+
                 {broker.key_weakness_en}
               </p>
             </div>
@@ -4647,7 +5258,15 @@ return (
           </summary>
 
           <div className="border-t border-slate-100 bg-slate-50/60 px-3.5 py-3 md:px-4">
-            <div className="space-y-2 text-left text-[13px] font-normal leading-6 text-slate-700 [overflow-wrap:anywhere] md:text-sm md:leading-7">
+            
+<div
+  className={
+    activeV2
+      ? "space-y-4 text-left text-[14px] font-normal leading-7 text-slate-700 [overflow-wrap:anywhere] md:text-[15px] md:leading-8"
+      : "space-y-2 text-left text-[13px] font-normal leading-6 text-slate-700 [overflow-wrap:anywhere] md:text-sm md:leading-7"
+  }
+>
+
               {item.answer
                 .split(/\|\||\r?\n+/)
                 .map((paragraph) => paragraph.trim())

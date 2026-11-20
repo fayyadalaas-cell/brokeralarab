@@ -90,6 +90,440 @@ async function getBrokerAccess(
   };
 }
 
+
+type AccountPageRow = {
+  id: number;
+  broker_id: number;
+  account_name: string;
+  spread: string | null;
+  spread_avg: number | null;
+  commission: string | null;
+  commission_value: number | string | null;
+  min_deposit: string | null;
+  execution_type: string | null;
+  best_for: string | null;
+  is_islamic_available: boolean | null;
+  islamic_conditions: string | null;
+  sort_order: number | null;
+};
+
+
+
+type AccountEditorial = {
+  hero_intro_ar: string | null;
+  overview_ar: string | null;
+  expert_verdict_ar: string | null;
+  pros_ar: string[];
+  cons_ar: string[];
+
+  who_is_it_for_ar: string[];
+  best_for_ar?: string | null;
+
+  unique_content_ar: {
+    title?: string;
+    content?: string;
+  }[];
+
+  faq_ar: {
+    question?: string;
+    answer?: string;
+  }[];
+
+  important_notes_title_ar: string | null;
+  important_notes_ar: (
+    | string
+    | { title?: string; content?: string }
+  )[];
+};
+
+
+
+type AccountPageData = {
+  accounts: AccountPageRow[];
+  current: AccountPageRow;
+  accountContent: AccountEditorial | null;
+  activeV2: boolean;
+};
+
+function accountV2Text(
+  row: Record<string, unknown>,
+  ...keys: string[]
+): string | null {
+  for (const key of keys) {
+    const value = row[key];
+
+    if (
+      typeof value === "string" &&
+      value.trim()
+    ) {
+      return value.trim();
+    }
+  }
+
+  return null;
+}
+
+function accountV2Array<T>(
+  row: Record<string, unknown>,
+  ...keys: string[]
+): T[] {
+  for (const key of keys) {
+    const value = row[key];
+
+    if (Array.isArray(value)) {
+      return value as T[];
+    }
+  }
+
+  return [];
+}
+
+function mapV2Account(
+  row: Record<string, unknown>
+): AccountPageRow {
+  const name = String(row.account_name || "");
+  const spreadFrom =
+    typeof row.spread_advertised_from === "number"
+      ? row.spread_advertised_from
+      : null;
+
+  const spreadAverage =
+    typeof row.spread_avg === "number"
+      ? row.spread_avg
+      : null;
+
+  const spreadValue = spreadFrom ?? spreadAverage;
+
+  const commissionAmount =
+    typeof row.commission_amount === "number"
+      ? row.commission_amount
+      : null;
+
+  type CommissionPolicy = {
+    type?: string;
+    amount_usd?: number;
+    amount_qualifier?: string;
+  };
+
+  const costs: CommissionPolicy[] =
+    Array.isArray(row.trading_costs_extra)
+      ? row.trading_costs_extra
+      : [];
+
+  const policy = costs.find(
+    (item) =>
+      item.type === "advertised_commission_policy" &&
+      typeof item.amount_usd === "number"
+  );
+
+  let commission: string | null = null;
+
+  if (policy) {
+    const prefix =
+      policy.amount_qualifier === "up_to"
+        ? "حتى "
+        : policy.amount_qualifier === "from"
+          ? "من "
+          : "";
+
+    commission =
+      `${prefix}$${policy.amount_usd} لكل لوت/اتجاه`;
+  } else if (commissionAmount === 0) {
+    commission = "بدون عمولة";
+  } else if (commissionAmount !== null) {
+    commission =
+      `${commissionAmount} ${
+        row.commission_currency || ""
+      }`.trim();
+  }
+
+  const deposit =
+    typeof row.min_deposit_amount === "number"
+      ? `${
+          row.min_deposit_currency === "USD"
+            ? "$"
+            : ""
+        }${row.min_deposit_amount}${
+          row.min_deposit_currency &&
+          row.min_deposit_currency !== "USD"
+            ? ` ${row.min_deposit_currency}`
+            : ""
+        }`
+      : "غير محدد";
+
+  const bestForLabels: Record<string, string> = {
+    beginners: "المبتدئين",
+    small_capital: "أصحاب رأس المال الصغير",
+    experienced: "المتداولين المحترفين",
+    scalping: "المضاربة السريعة",
+    day_trading: "التداول اليومي",
+    swing_trading: "التداول متوسط الأجل",
+    automated_trading: "التداول الآلي",
+    low_spreads: "الباحثين عن سبريد منخفض",
+    commission_free: "التداول دون عمولة",
+    high_volume: "أحجام التداول الكبيرة",
+  };
+
+  const category = String(
+    row.best_for_category || ""
+  );
+
+  const islamicStatus = String(
+    row.islamic_status || ""
+  ).toLowerCase();
+
+  return {
+    id: Number(row.id),
+    broker_id: Number(row.broker_id),
+    account_name: name,
+
+    spread:
+      spreadValue === null
+        ? null
+        : `${
+            spreadFrom !== null ? "من " : ""
+          }${spreadValue} ${
+            row.spread_unit_ar || "نقطة"
+          }`,
+
+    spread_avg: spreadAverage ?? spreadFrom,
+
+    commission,
+    commission_value: commissionAmount,
+
+    min_deposit: deposit,
+
+    execution_type:
+      accountV2Text(
+        row,
+        "execution_type_short_ar",
+        "execution_type_ar"
+      ) ||
+      (typeof row.execution_type === "string"
+        ? row.execution_type
+        : null),
+
+    best_for: bestForLabels[category] || null,
+
+    is_islamic_available:
+      ["available", "yes", "true"].includes(
+        islamicStatus
+      ),
+
+    islamic_conditions: accountV2Text(
+      row,
+      "islamic_conditions_ar"
+    ),
+
+    sort_order:
+      typeof row.sort_order === "number"
+        ? row.sort_order
+        : null,
+  };
+}
+
+
+
+function mapV2Editorial(
+  row: Record<string, unknown>
+): AccountEditorial {
+  const sections = Array.isArray(row.sections_ar)
+    ? row.sections_ar
+    : [];
+
+  return {
+    hero_intro_ar: accountV2Text(row, "hero_intro_ar"),
+    overview_ar: accountV2Text(row, "overview_ar"),
+    expert_verdict_ar: accountV2Text(
+      row,
+      "expert_verdict_ar"
+    ),
+    pros_ar: accountV2Array<string>(row, "pros_ar"),
+    cons_ar: accountV2Array<string>(row, "cons_ar"),
+
+    best_for_ar: accountV2Text(row, "best_for_ar"),
+    who_is_it_for_ar: [],
+
+    unique_content_ar: sections
+      .filter(
+        (section): section is Record<string, unknown> =>
+          typeof section === "object" &&
+          section !== null &&
+          !Array.isArray(section)
+      )
+      .map((section) => ({
+        title:
+          typeof section.title === "string"
+            ? section.title
+            : "",
+        content:
+          typeof section.body === "string"
+            ? section.body
+            : "",
+      }))
+      .filter(
+        (section) =>
+          section.title.trim() ||
+          section.content.trim()
+      ),
+
+    faq_ar: accountV2Array<{
+      question?: string;
+      answer?: string;
+    }>(row, "faq_ar"),
+
+    important_notes_title_ar: null,
+    important_notes_ar: [],
+  };
+}
+
+
+async function getAccountPageData(
+  brokerId: number,
+  accountSlug: string,
+  brokerSlug: string
+): Promise<AccountPageData | null> {
+  const supabase = await createClient();
+
+  // V2 is not permitted for Capital.com.
+  if (brokerSlug !== "capital-com") {
+    const { data: ready, error: readyError } =
+      await supabase.rpc("is_broker_v2_ready", {
+        p_broker_id: brokerId,
+      });
+
+    if (readyError) {
+      console.error(
+        "[Account AR V2] Readiness:",
+        readyError.message
+      );
+    }
+
+    if (!readyError && ready === true) {
+      const { data: rawAccounts, error: accountsError } =
+        await supabase
+          .from("broker_accounts_v2")
+          .select("*")
+          .eq("broker_id", brokerId)
+          .eq("publication_status", "published")
+          .eq("verification_status", "verified")
+          .order("sort_order", {
+            ascending: true,
+          });
+
+      if (
+        !accountsError &&
+        rawAccounts?.length
+      ) {
+        const ids = rawAccounts.map(
+          (item) => item.id
+        );
+
+        const { data: rawContent, error: contentError } =
+          await supabase
+            .from("broker_account_content_v2")
+            .select("*")
+            .in("account_id", ids);
+
+        const validContent =
+          !contentError &&
+          rawContent?.length === rawAccounts.length &&
+          rawContent.every(
+            (item) =>
+              item.editorial_status === "approved"
+          ) &&
+          new Set(
+            rawContent.map((item) => item.account_id)
+          ).size === rawAccounts.length;
+
+          
+        if (validContent && rawContent) {
+          const selected = rawAccounts.find(
+            (item) =>
+              item.slug === accountSlug ||
+              slugify(item.account_name) === accountSlug
+          );
+
+          
+if (!selected) {
+  // V2 is approved, but this account is not in V2.
+  // Do not fall back to an old V1 account page.
+  return null;
+}
+
+const editorial = rawContent.find(
+  (item) => item.account_id === selected.id
+);
+
+if (!editorial) {
+  return null;
+}
+
+return {
+  accounts: rawAccounts.map((item) =>
+    mapV2Account(item as Record<string, unknown>)
+  ),
+
+  current: mapV2Account(
+    selected as Record<string, unknown>
+  ),
+
+  accountContent: mapV2Editorial(
+    editorial as Record<string, unknown>
+  ),
+
+  activeV2: true,
+};
+
+        }
+      } else if (accountsError) {
+        console.error(
+          "[Account AR V2] Accounts:",
+          accountsError.message
+        );
+      }
+    }
+  }
+
+  // Original V1: unchanged for all other brokers.
+  const { data: legacyAccounts, error: legacyError } =
+    await supabase
+      .from("broker_accounts")
+      .select("*")
+      .eq("broker_id", brokerId)
+      .order("sort_order", {
+        ascending: true,
+      });
+
+  if (legacyError || !legacyAccounts?.length) {
+    return null;
+  }
+
+  const current = legacyAccounts.find(
+    (item) =>
+      slugify(item.account_name) === accountSlug
+  );
+
+  if (!current) {
+    return null;
+  }
+
+  const { data: legacyContent } = await supabase
+    .from("broker_account_content")
+    .select("*")
+    .eq("account_id", current.id)
+    .maybeSingle();
+
+  return {
+    accounts: legacyAccounts as AccountPageRow[],
+    current: current as AccountPageRow,
+    accountContent:
+      (legacyContent as AccountEditorial | null) || null,
+    activeV2: false,
+  };
+}
+
+
 export async function generateMetadata({
   params,
   searchParams,
@@ -113,16 +547,15 @@ export async function generateMetadata({
 
   const { broker } = access;
 
-  const supabase = await createClient();
+  
+const accountData = await getAccountPageData(
+  broker.id,
+  account,
+  broker.slug
+);
 
-  const { data: accounts } = await supabase
-  .from("broker_accounts")
-  .select("*")
-  .eq("broker_id", broker.id);
+const current = accountData?.current || null;
 
-  const current = accounts?.find(
-    (a) => slugify(a.account_name) === account
-  );
 
   if (!current) {
     return {
@@ -211,58 +644,29 @@ export default async function BrokerAccountPage({
 
   const { broker } = access;
 
-  const supabase = await createClient();
+  
+const accountData = await getAccountPageData(
+  broker.id,
+  account,
+  broker.slug
+);
 
-  const { data: accounts } = await supabase
-  .from("broker_accounts")
-  .select("*")
-  .eq("broker_id", broker.id)
-  .order("sort_order", { ascending: true });
-
-  if (!accounts?.length) {
-    notFound();
-  }
-
-  const current = accounts.find(
-    (a) => slugify(a.account_name) === account
-  );
-
-  if (!current) {
+if (!accountData) {
   notFound();
 }
 
-/* =========================================================
-   Advanced account editorial / SEO content
-   Optional: if no content exists, the page keeps using
-   the existing generated template.
-========================================================= */
+const {
+  accounts,
+  current,
+  accountContent,
+  activeV2,
+} = accountData;
 
-const { data: accountContent } = await supabase
-  .from("broker_account_content")
-  .select(`
-    overview_ar,
-    overview_en,
-    expert_verdict_ar,
-    expert_verdict_en,
-    pros_ar,
-    pros_en,
-    cons_ar,
-    cons_en,
-    who_is_it_for_ar,
-    who_is_it_for_en,
-    unique_content_ar,
-    unique_content_en,
-    faq_ar,
-    faq_en,
-    important_notes_title_ar,
-    important_notes_title_en,
-    important_notes_ar,
-    important_notes_en,
-    hero_intro_ar,
-    hero_intro_en
-  `)
-  .eq("account_id", current.id)
-  .maybeSingle();
+const supabase = await createClient();
+
+/* =========================================================
+   Advanced account editorial — V1 / V2
+   ========================================================= */
 
 const hasAdvancedContent = Boolean(
   accountContent?.overview_ar?.trim() ||
@@ -280,27 +684,32 @@ const hasAdvancedContent = Boolean(
 );
 
 const advancedPros =
-  hasAdvancedContent && Array.isArray(accountContent?.pros_ar)
+  hasAdvancedContent &&
+  Array.isArray(accountContent?.pros_ar)
     ? accountContent.pros_ar
     : [];
 
 const advancedCons =
-  hasAdvancedContent && Array.isArray(accountContent?.cons_ar)
+  hasAdvancedContent &&
+  Array.isArray(accountContent?.cons_ar)
     ? accountContent.cons_ar
     : [];
 
 const advancedAudience =
-  hasAdvancedContent && Array.isArray(accountContent?.who_is_it_for_ar)
+  hasAdvancedContent &&
+  Array.isArray(accountContent?.who_is_it_for_ar)
     ? accountContent.who_is_it_for_ar
     : [];
 
 const advancedSections =
-  hasAdvancedContent && Array.isArray(accountContent?.unique_content_ar)
+  hasAdvancedContent &&
+  Array.isArray(accountContent?.unique_content_ar)
     ? accountContent.unique_content_ar
     : [];
 
 const advancedFaq =
-  hasAdvancedContent && Array.isArray(accountContent?.faq_ar)
+  hasAdvancedContent &&
+  Array.isArray(accountContent?.faq_ar)
     ? accountContent.faq_ar
     : [];
 
@@ -311,6 +720,25 @@ const advancedImportantNotes =
 
 const hasImportantNotes =
   advancedImportantNotes.length > 0;
+
+
+const v2HeroSummary = activeV2
+  ? (() => {
+      const intro = accountContent?.hero_intro_ar?.trim();
+
+      if (!intro) {
+        return `تعرف على أهم شروط حساب ${current.account_name} لدى ${broker.name}، من السبريد والعمولات إلى الإيداع ونوع التنفيذ.`;
+      }
+
+      const firstSentence =
+        intro.split(/(?<=[.!؟])\s+/)[0]?.trim() || intro;
+
+      return firstSentence.length <= 220
+        ? firstSentence
+        : `${firstSentence.slice(0, 220).replace(/\s+\S*$/, "")}…`;
+    })()
+  : null;
+
 
 const isCapital = broker.slug === "capital-com";
 
@@ -330,9 +758,15 @@ const cheapestSpread = [...accounts].sort(
     (a, b) => moneyRank(a.min_deposit) - moneyRank(b.min_deposit)
   )[0];
 
-  const zeroCommission =
-    String(current.commission_value ?? current.commission) === "0" ||
+  
+const zeroCommission = activeV2
+  ? current.commission_value === 0 &&
+    current.commission === "بدون عمولة"
+  : String(
+      current.commission_value ?? current.commission
+    ) === "0" ||
     current.commission === "$0";
+
 
   const betterSpreadAccounts = accounts.filter(
     (a) => Number(a.spread_avg ?? 99) < Number(current.spread_avg ?? 99)
@@ -480,9 +914,13 @@ const relatedComparisons = [
 
     <div className="mx-auto mt-3 max-w-[560px] text-[13px] leading-7 text-slate-600">
       <MobileExpandableText lines={3}>
-        {accountContent?.hero_intro_ar?.trim()
-          ? accountContent.hero_intro_ar
-          : `شرح مختصر لتكلفة التداول، السبريد، العمولة، أقل إيداع، ونوع التنفيذ مع مقارنة مباشرة بباقي حسابات ${broker.name}.`}
+        
+{activeV2
+  ? v2HeroSummary
+  : accountContent?.hero_intro_ar?.trim()
+    ? accountContent.hero_intro_ar
+    : `شرح مختصر لتكلفة التداول، السبريد، العمولة، أقل إيداع، ونوع التنفيذ مع مقارنة مباشرة بباقي حسابات ${broker.name}.`}
+
       </MobileExpandableText>
     </div>
 
@@ -560,139 +998,245 @@ const relatedComparisons = [
       </div>
     </div>
 
-    <div className="mt-3 rounded-xl border border-brand-100 bg-brand-50 px-3 py-2.5 text-right">
-      <p className="text-[10px] font-bold text-blue-800">
-        الأفضل لـ
-      </p>
+    
+{activeV2 ? (
+  <div className="mt-3 flex items-center justify-between gap-3 rounded-xl border border-brand-100 bg-brand-50 px-3 py-3">
+    <span className="shrink-0 text-xs font-semibold text-blue-800">
+      الأفضل لـ
+    </span>
 
-      <p className="mt-0.5 text-[13px] font-black leading-6 text-blue-950">
-        {current.best_for}
-      </p>
-    </div>
+    <strong className="min-w-0 text-left text-[13px] font-extrabold leading-6 text-blue-950">
+      {current.best_for || "غير محدد"}
+    </strong>
+  </div>
+) : (
+  <div className="mt-3 rounded-xl border border-brand-100 bg-brand-50 px-3 py-2.5 text-right">
+    <p className="text-[10px] font-bold text-blue-800">
+      الأفضل لـ
+    </p>
+
+    <p className="mt-0.5 text-[13px] font-black leading-6 text-blue-950">
+      {current.best_for}
+    </p>
+  </div>
+)}
+
   </div>
 </section>
 
-      {/* Desktop Hero - unchanged */}
-      <section className="relative hidden overflow-hidden bg-white md:block">
-        <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-blue-50 to-transparent" />
+      
+{/* Desktop Hero */}
+<section className="relative hidden overflow-hidden bg-white md:block">
+  <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-blue-50 to-transparent" />
 
-        <div className="relative mx-auto flex max-w-[1520px] flex-col gap-6 px-4 py-6 lg:flex-row">
-          <div className="flex-1 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm lg:p-7">
-            <div className="mb-5 flex flex-wrap gap-2">
-              <span className="rounded-full bg-brand-50 px-3 py-1 text-xs font-bold text-brand-600">
-                دليل حسابات {broker.name}
-              </span>
+  <div
+    className={
+      activeV2
+        ? "relative mx-auto flex max-w-[1520px] flex-col items-start gap-4 px-4 py-5 lg:flex-row"
+        : "relative mx-auto flex max-w-[1520px] flex-col gap-6 px-4 py-6 lg:flex-row"
+    }
+  >
+    {/* Main Hero */}
+    <div
+      className={
+        activeV2
+          ? "w-full min-w-0 flex-1 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm lg:p-6"
+          : "flex-1 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm lg:p-7"
+      }
+    >
+      <div className="mb-5 flex flex-wrap gap-2">
+        <span className="rounded-full bg-brand-50 px-3 py-1 text-xs font-bold text-brand-600">
+          دليل حسابات {broker.name}
+        </span>
 
-              <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
-                {zeroCommission ? "بدون عمولة" : `عمولة ${current.commission}`}
-              </span>
+        <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
+          {zeroCommission
+            ? "بدون عمولة"
+            : `عمولة ${current.commission}`}
+        </span>
 
-              <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">
-                {current.execution_type}
-              </span>
-            </div>
+        <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">
+          {current.execution_type}
+        </span>
+      </div>
 
-            <h1 className="max-w-4xl text-3xl font-black leading-tight md:text-4xl">
-  حساب {current.account_name} في {broker.name}: السبريد، العمولة وهل
-  يناسبك؟
-</h1>
+      <h1 className="max-w-4xl text-3xl font-black leading-tight md:text-4xl">
+        حساب {current.account_name} في {broker.name}: السبريد، العمولة وهل
+        يناسبك؟
+      </h1>
 
-            <p className="mt-5 max-w-5xl text-sm leading-8 text-slate-600 md:text-base">
-  {accountContent?.hero_intro_ar?.trim()
-    ? accountContent.hero_intro_ar
-    : `إذا كنت تفكر في فتح حساب ${current.account_name} لدى ${broker.name}، فهذه الصفحة تمنحك شرحًا واضحًا لتكلفة التداول، السبريد، العمولة، أقل إيداع، ونوع التنفيذ، مع مقارنة مباشرة بباقي حسابات الشركة حتى تختار الحساب الأنسب لطريقة تداولك.`}
-</p>
+      <p className="mt-5 max-w-5xl text-sm leading-8 text-slate-600 md:text-base">
+        {activeV2
+          ? v2HeroSummary
+          : accountContent?.hero_intro_ar?.trim()
+            ? accountContent.hero_intro_ar
+            : `إذا كنت تفكر في فتح حساب ${current.account_name} لدى ${broker.name}، فهذه الصفحة تمنحك شرحًا واضحًا لتكلفة التداول، السبريد، العمولة، أقل إيداع، ونوع التنفيذ، مع مقارنة مباشرة بباقي حسابات الشركة حتى تختار الحساب الأنسب لطريقة تداولك.`}
+      </p>
 
-            <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              {[
-                ["السبريد", current.spread],
-                ["العمولة", current.commission],
-                ["أقل إيداع", current.min_deposit],
-                ["الحساب الإسلامي", current.is_islamic_available ? "متاح" : "غير محدد"],
-              ].map(([label, value]) => (
-                <div
-                  key={label}
-                  className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
-                >
-                  <p className="text-xs text-slate-500">{label}</p>
-                  <strong className="mt-2 block text-lg font-black">
-                    {value}
-                  </strong>
-                </div>
-              ))}
-            </div>
+      {/* Account Statistics */}
+      <div
+        className={
+          activeV2
+            ? "mt-4 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4"
+            : "mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
+        }
+      >
+        {[
+          ["السبريد", current.spread],
+          ["العمولة", current.commission],
+          ["أقل إيداع", current.min_deposit],
+          [
+            "الحساب الإسلامي",
+            current.is_islamic_available ? "متاح" : "غير محدد",
+          ],
+        ].map(([label, value]) => (
+          <div
+            key={label}
+            className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
+          >
+            <p className="text-xs text-slate-500">{label}</p>
 
-            <div className="mt-7 flex flex-wrap gap-3">
-              {broker.real_account_url && (
-                <a
-                  href={broker.real_account_url}
-                  target="_blank"
-                  rel="nofollow sponsored noopener"
-                  className="rounded-xl bg-brand-500 px-6 py-3 text-sm font-black text-white shadow-sm hover:bg-brand-600"
-                >
-                  فتح حساب حقيقي
-                </a>
-              )}
+            <strong className="mt-2 block text-lg font-black">
+              {value}
+            </strong>
+          </div>
+        ))}
+      </div>
 
-              <Link
-                href={withPreview(
-  `/brokers/${broker.slug}`,
-  previewToken
-)}
-                className="rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-black text-slate-800 hover:bg-slate-50"
+      {/* Actions and Suitability */}
+      {activeV2 ? (
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+          {/* Action Buttons - Right Side */}
+          <div className="flex flex-wrap items-center gap-3">
+            {broker.real_account_url && (
+              <a
+                href={broker.real_account_url}
+                target="_blank"
+                rel="nofollow sponsored noopener"
+                className="rounded-xl bg-brand-500 px-6 py-3 text-sm font-black text-white shadow-sm hover:bg-brand-600"
               >
-                العودة إلى تقييم {broker.name}
-              </Link>
-            </div>
+                فتح حساب حقيقي
+              </a>
+            )}
+
+            <Link
+              href={withPreview(
+                `/brokers/${broker.slug}`,
+                previewToken
+              )}
+              className="rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-black text-slate-800 hover:bg-slate-50"
+            >
+              العودة إلى تقييم {broker.name}
+            </Link>
           </div>
 
-          <aside className="w-full rounded-3xl border border-slate-200 bg-white p-5 shadow-sm lg:w-[320px]">
-            <div className="flex items-center gap-4">
-              {broker.logo && (
-                <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-slate-200 bg-white">
-                  <Image
-                    src={broker.logo}
-                    alt={broker.name}
-                    width={48}
-                    height={48}
-                    className="object-contain"
-                  />
-                </div>
-              )}
+          {/* Best For - Left Side - V2 Only */}
+          <div className="inline-flex min-h-[44px] max-w-full items-center gap-3 rounded-xl border border-brand-100 bg-brand-50 px-4 py-2.5">
+            <span className="shrink-0 text-xs font-semibold text-blue-800">
+              الأفضل لـ
+            </span>
 
-              <div>
-                <p className="text-xs text-slate-500">حساب تداول</p>
-                <h2 className="text-2xl font-black">{current.account_name}</h2>
-              </div>
-            </div>
-
-            <div className="mt-5 grid gap-3">
-              {[
-                ["الوسيط", broker.name],
-                ["السبريد", current.spread],
-                ["العمولة", current.commission],
-                ["أقل إيداع", current.min_deposit],
-                ["نوع التنفيذ", current.execution_type],
-              ].map(([label, value]) => (
-                <div
-                  key={label}
-                  className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3"
-                >
-                  <span className="text-xs text-slate-500">{label}</span>
-                  <strong className="text-sm text-slate-950">{value}</strong>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-5 rounded-2xl border border-brand-100 bg-brand-50 p-4">
-              <p className="text-xs font-bold text-blue-800">الأفضل لـ</p>
-              <p className="mt-2 text-sm font-black leading-7 text-blue-950">
-                {current.best_for}
-              </p>
-            </div>
-                    </aside>
+            <strong className="text-sm font-extrabold leading-6 text-blue-950">
+              {current.best_for || "غير محدد"}
+            </strong>
+          </div>
         </div>
-      </section>
+      ) : (
+        <div className="mt-7 flex flex-wrap gap-3">
+          {broker.real_account_url && (
+            <a
+              href={broker.real_account_url}
+              target="_blank"
+              rel="nofollow sponsored noopener"
+              className="rounded-xl bg-brand-500 px-6 py-3 text-sm font-black text-white shadow-sm hover:bg-brand-600"
+            >
+              فتح حساب حقيقي
+            </a>
+          )}
+
+          <Link
+            href={withPreview(
+              `/brokers/${broker.slug}`,
+              previewToken
+            )}
+            className="rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-black text-slate-800 hover:bg-slate-50"
+          >
+            العودة إلى تقييم {broker.name}
+          </Link>
+        </div>
+      )}
+    </div>
+
+    {/* Sidebar */}
+    
+<aside
+  className={
+    activeV2
+      ? "w-full rounded-3xl border border-slate-200 bg-white p-5 shadow-sm lg:w-[320px] lg:self-stretch"
+      : "w-full rounded-3xl border border-slate-200 bg-white p-5 shadow-sm lg:w-[320px]"
+  }
+>
+
+      <div className="flex items-center gap-4">
+        {broker.logo && (
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-slate-200 bg-white">
+            <Image
+              src={broker.logo}
+              alt={broker.name}
+              width={48}
+              height={48}
+              className="object-contain"
+            />
+          </div>
+        )}
+
+        <div>
+          <p className="text-xs text-slate-500">حساب تداول</p>
+          <h2 className="text-2xl font-black">
+            {current.account_name}
+          </h2>
+        </div>
+      </div>
+
+      <div className="mt-5 grid gap-3">
+        {[
+          ["الوسيط", broker.name],
+          ["السبريد", current.spread],
+          ["العمولة", current.commission],
+          ["أقل إيداع", current.min_deposit],
+          ["نوع التنفيذ", current.execution_type],
+        ].map(([label, value]) => (
+          <div
+            key={label}
+            className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3"
+          >
+            <span className="text-xs text-slate-500">
+              {label}
+            </span>
+
+            <strong className="text-sm text-slate-950">
+              {value}
+            </strong>
+          </div>
+        ))}
+      </div>
+
+      {/* Best For - V1 Only */}
+      {!activeV2 && (
+        <div className="mt-5 rounded-2xl border border-brand-100 bg-brand-50 p-4">
+          <p className="text-xs font-bold text-blue-800">
+            الأفضل لـ
+          </p>
+
+          <p className="mt-2 text-sm font-black leading-7 text-blue-950">
+            {current.best_for}
+          </p>
+        </div>
+      )}
+    </aside>
+  </div>
+</section>
+
 
       {isCapital ? (
         <section className="mx-auto max-w-[1520px] px-4 pt-2 md:pt-4">
@@ -788,9 +1332,79 @@ const relatedComparisons = [
     </div>
   </div>
 
-  {/* Desktop - keep current design unchanged */}
-  <div className="hidden gap-3 md:grid md:grid-cols-3 md:gap-5">
+  
 
+{/* Desktop Account Highlights */}
+{activeV2 ? (
+  <div className="hidden gap-4 md:grid md:grid-cols-3 md:gap-5">
+    {/* Lowest Spread - Clickable */}
+    <Link
+      href={withPreview(
+        `/brokers/${broker.slug}/accounts/${slugify(
+          cheapestSpread.account_name
+        )}`,
+        previewToken
+      )}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex min-h-[138px] flex-col items-center justify-center rounded-3xl border border-blue-200 bg-blue-50/80 px-5 py-6 text-center shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-400 hover:bg-blue-100/70 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+    >
+      <p className="text-[13px] font-medium text-blue-700">
+        أقل سبريد في حسابات {broker.name}
+      </p>
+
+      <h3 className="mt-2 text-xl font-extrabold text-slate-950">
+        {cheapestSpread.account_name}
+      </h3>
+
+      <p className="mt-2 text-sm leading-6 text-blue-700">
+        السبريد {cheapestSpread.spread || "غير محدد"}
+      </p>
+    </Link>
+
+    {/* Lowest Deposit - Clickable */}
+    <Link
+      href={withPreview(
+        `/brokers/${broker.slug}/accounts/${slugify(
+          lowestDeposit.account_name
+        )}`,
+        previewToken
+      )}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex min-h-[138px] flex-col items-center justify-center rounded-3xl border border-blue-200 bg-blue-50/80 px-5 py-6 text-center shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-400 hover:bg-blue-100/70 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+    >
+      <p className="text-[13px] font-medium text-blue-700">
+        أقل إيداع في حسابات {broker.name}
+      </p>
+
+      <h3 className="mt-2 text-xl font-extrabold text-slate-950">
+        {lowestDeposit.account_name}
+      </h3>
+
+      <p className="mt-2 text-sm leading-6 text-blue-700">
+        الإيداع المرجعي {lowestDeposit.min_deposit || "غير محدد"}
+      </p>
+    </Link>
+
+
+    {/* Total Accounts */}
+    <div className="flex min-h-[138px] flex-col items-center justify-center rounded-3xl border border-blue-200 bg-blue-50/80 px-5 py-6 text-center shadow-sm">
+      <p className="text-[13px] font-medium text-blue-700">
+        عدد حسابات {broker.name}
+      </p>
+
+      <h3 className="mt-2 text-xl font-extrabold text-slate-950">
+        {accounts.length} حسابات
+      </h3>
+
+      <p className="mt-2 text-sm leading-6 text-blue-700">
+        مقارنة مباشرة بين الحسابات المتاحة
+      </p>
+    </div>
+  </div>
+) : (
+  <div className="hidden gap-3 md:grid md:grid-cols-3 md:gap-5">
     <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
       <p className="text-sm text-slate-500">
         أقل سبريد في حسابات {broker.name}
@@ -832,12 +1446,21 @@ const relatedComparisons = [
         مقارنة مباشرة بين الحسابات المتاحة
       </p>
     </div>
-
   </div>
+)}
+
 </section>
 
       <section className="mx-auto max-w-[1520px] px-4 pb-6 md:pb-8">
-  <div className="grid gap-4 lg:grid-cols-[1fr_360px] lg:gap-5">
+  
+<div
+  className={
+    activeV2
+      ? "grid gap-4 lg:grid-cols-1 lg:gap-4"
+      : "grid gap-4 lg:grid-cols-[1fr_360px] lg:gap-5"
+  }
+>
+
 
     {/* Account Overview */}
     <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
@@ -964,41 +1587,69 @@ const relatedComparisons = [
 
       <section className="mx-auto max-w-[1520px] px-4 pb-6 md:pb-8">
   {/* Who is it for + Cons */}
-  <div className="grid gap-4 lg:grid-cols-2 lg:gap-5">
+  
+<div
+  className={
+    activeV2
+      ? "grid gap-4 lg:grid-cols-1 lg:gap-4"
+      : "grid gap-4 lg:grid-cols-2 lg:gap-5"
+  }
+>
 
-    {/* Who is it for */}
-    <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
-      <h2 className="text-[22px] font-black leading-8 md:text-2xl">
-        لمن يناسب حساب {current.account_name}؟
-      </h2>
 
-      <div className="mt-4 grid gap-3">
-        {(hasAdvancedContent && advancedAudience.length > 0
-          ? advancedAudience
-          : [
-              `مناسب لمن يبحث عن حساب يخدم فئة ${current.best_for}.`,
-              "مناسب لمن يريد معرفة تكلفة التداول قبل فتح الحساب.",
-              `مناسب لمن يقارن السبريد والعمولة بين حسابات ${broker.name}.`,
-              `مناسب لمن يريد التداول عبر ${
-                broker.platforms || "منصات التداول المتاحة"
-              }.`,
-            ]
-        ).map((item: string, index: number) => (
-          <div
-            key={`${item}-${index}`}
-            className="flex items-start gap-3 rounded-2xl border border-emerald-100 bg-emerald-50/50 p-3 text-right"
-          >
-            <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-xs font-black text-white">
-              ✓
-            </span>
+    
+{/* Who is it for */}
+<div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
+  <h2 className="text-[22px] font-black leading-8 md:text-2xl">
+    لمن يناسب حساب {current.account_name}؟
+  </h2>
 
-            <p className="text-sm leading-7 text-slate-700">
-              {item}
-            </p>
-          </div>
-        ))}
-      </div>
+  
+{activeV2 && accountContent?.best_for_ar?.trim() ? (
+  <div className="mt-4 rounded-2xl border border-brand-100 bg-brand-50/40 p-4 md:p-6">
+    <div className="mb-3 flex items-center gap-2">
+      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-700">
+        ✓
+      </span>
+      <span className="text-sm font-bold text-slate-900">
+        الفئة الأنسب لهذا الحساب
+      </span>
     </div>
+
+    <p className="max-w-5xl whitespace-pre-line text-[14px] leading-8 text-slate-700 md:text-[15px]">
+      {accountContent.best_for_ar.trim()}
+    </p>
+  </div>
+) : (
+
+    <div className="mt-4 grid gap-3">
+      {(hasAdvancedContent && advancedAudience.length > 0
+        ? advancedAudience
+        : [
+            `مناسب لمن يبحث عن حساب يخدم فئة ${current.best_for}.`,
+            "مناسب لمن يريد معرفة تكلفة التداول قبل فتح الحساب.",
+            `مناسب لمن يقارن السبريد والعمولة بين حسابات ${broker.name}.`,
+            `مناسب لمن يريد التداول عبر ${
+              broker.platforms || "منصات التداول المتاحة"
+            }.`,
+          ]
+      ).map((item: string, index: number) => (
+        <div
+          key={`${item}-${index}`}
+          className="flex items-start gap-3 rounded-2xl border border-emerald-100 bg-emerald-50/50 p-3 text-right"
+        >
+          <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-xs font-black text-white">
+            ✓
+          </span>
+          <p className="text-sm leading-7 text-slate-700">
+            {item}
+          </p>
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+
 
     {/* Cons */}
     <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
@@ -1006,7 +1657,15 @@ const relatedComparisons = [
         متى لا يكون {current.account_name} مناسبًا؟
       </h2>
 
-      <div className="mt-4 grid gap-3">
+      
+<div
+  className={
+    activeV2
+      ? "mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3"
+      : "mt-4 grid gap-3"
+  }
+>
+
         {(hasAdvancedContent && advancedCons.length > 0
           ? advancedCons
           : [
@@ -1018,7 +1677,13 @@ const relatedComparisons = [
         ).map((item: string, index: number) => (
           <div
             key={`${item}-${index}`}
-            className="flex items-start gap-3 rounded-2xl border border-amber-100 bg-amber-50/60 p-3 text-right"
+            
+className={
+  activeV2
+    ? "flex items-start gap-3 rounded-2xl border border-amber-100 bg-amber-50/50 p-4 text-right"
+    : "flex items-start gap-3 rounded-2xl border border-amber-100 bg-amber-50/60 p-3 text-right"
+}
+
           >
             <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-500 text-xs font-black text-white">
               !
@@ -1115,11 +1780,25 @@ const relatedComparisons = [
           key={`mobile-${section.title}-${index}`}
           className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4"
         >
-          {section.title && (
-            <h3 className="text-[14px] font-black leading-6 text-slate-950">
-              {section.title}
-            </h3>
-          )}
+          
+{section.title && (
+  activeV2 ? (
+    <div className="flex flex-col items-center justify-center gap-2 border-b border-slate-200 pb-3 text-center">
+      <h3 className="w-full text-center text-[15px] font-extrabold leading-7 text-slate-950">
+        {section.title}
+      </h3>
+      <span
+        aria-hidden="true"
+        className="h-[3px] w-10 rounded-full bg-brand-500"
+      />
+    </div>
+  ) : (
+    <h3 className="text-[14px] font-black leading-6 text-slate-950">
+      {section.title}
+    </h3>
+  )
+)}
+
 
           {section.content && (
             <div className="mt-3 border-t border-slate-200 pt-3">
@@ -1183,13 +1862,34 @@ const relatedComparisons = [
           key={`desktop-${section.title}-${index}`}
           className="flex h-full flex-col rounded-2xl border border-slate-200 bg-slate-50/60 p-5"
         >
-          {section.title && (
-            <div className="flex min-h-[64px] items-start border-b border-slate-200 pb-3">
-              <h3 className="w-full text-[15px] font-black leading-7 text-slate-950 md:text-base">
-                {section.title}
-              </h3>
-            </div>
-          )}
+          
+{section.title && (
+  <div
+    className={
+      activeV2
+        ? "flex min-h-[68px] flex-col items-center justify-center gap-2 border-b border-slate-200 pb-3 text-center"
+        : "flex min-h-[64px] items-start border-b border-slate-200 pb-3"
+    }
+  >
+    <h3
+      className={
+        activeV2
+          ? "w-full text-center text-[15px] font-extrabold leading-7 text-slate-950 md:text-base"
+          : "w-full text-[15px] font-black leading-7 text-slate-950 md:text-base"
+      }
+    >
+      {section.title}
+    </h3>
+
+    {activeV2 && (
+      <span
+        aria-hidden="true"
+        className="h-[3px] w-12 rounded-full bg-brand-500"
+      />
+    )}
+  </div>
+)}
+
 
           {section.content && (
             <p className="mt-4 text-sm leading-8 text-slate-600">
