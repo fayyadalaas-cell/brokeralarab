@@ -2151,179 +2151,262 @@ function AccountAnalysis({
             MOBILE ONLY — GROUP CONTENT BY ACCOUNT
             Desktop comparison remains unchanged.
             ===================================================== */}
-        <div className="space-y-5 lg:hidden">
-          {data.map(
-            ({
-              item,
-              pros,
-              cons,
-              audience,
-              analysis,
-              notes,
-            }) => (
-              <article
-                key={`mobile-analysis-${item.key}`}
-                className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm"
-              >
-                {/* Broker identity */}
-                <div className="border-b border-blue-200 bg-blue-50/70 p-4">
-                  <div className="flex items-center gap-3">
-                    <Logo broker={item.broker} />
+        
+{/* =====================================================
+    V2 MOBILE — COMPACT ACCOUNT EDITORIAL
+    Assessment visible; other sections collapsible.
+    Desktop and V1 remain unchanged.
+    ===================================================== */}
 
-                    <div className="min-w-0">
-                      <h3 className="text-[18px] font-black text-slate-950">
-                        {item.broker.name}
-                      </h3>
+<div className="space-y-4 lg:hidden">
+  {data.map(
+    ({
+      item,
+      pros,
+      cons,
+      audience,
+      analysis,
+      notes,
+    }) => {
+      const accordionClass =
+        "group overflow-hidden rounded-2xl border border-slate-200 bg-white";
 
-                      <p className="mt-1 text-[13px] font-bold text-blue-700">
-                        {name(item)} Account
-                      </p>
-                    </div>
+      const summaryClass =
+        "flex min-h-[54px] cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-left [&::-webkit-details-marker]:hidden";
+
+      const summaryTitleClass =
+        "min-w-0 text-[14px] font-extrabold leading-6 text-slate-900";
+
+      const accordionContentClass =
+        "border-t border-slate-100 px-3 pb-4 pt-3";
+
+      return (
+        <article
+          key={`mobile-analysis-${item.key}`}
+          className="overflow-hidden rounded-[22px] border border-blue-100 bg-white shadow-sm"
+        >
+          {/* Broker identity */}
+          <div className="border-b border-blue-200 bg-blue-50/70 px-3 py-3">
+            <div className="flex items-center gap-3">
+              <Logo broker={item.broker} />
+
+              <div className="min-w-0">
+                <h3 className="text-[17px] font-black leading-6 text-slate-950">
+                  {item.broker.name}
+                </h3>
+
+                <p className="mt-1 text-[12px] font-bold text-blue-700">
+                  {name(item)} Account
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-3 p-3">
+
+            {/* Assessment — always visible */}
+            <section className="rounded-2xl border border-blue-100 bg-blue-50/20 p-4">
+              <h4 className="text-[15px] font-black leading-6 text-slate-950">
+                Broker Alarab&apos;s Assessment
+              </h4>
+
+              <p className="mt-1 text-[11px] text-slate-500">
+                Our editorial view of the {name(item)} account
+              </p>
+
+              <div className="mt-3 border-t border-blue-100 pt-3">
+                <Paragraphs
+                  value={item.content?.expert_verdict_en}
+                />
+              </div>
+            </section>
+
+            {/* Advantages */}
+            <details className={accordionClass}>
+              <summary className={summaryClass}>
+                <span className={summaryTitleClass}>
+                  Account Advantages
+                  <span className="ml-2 text-[11px] font-medium text-slate-400">
+                    ({pros.length})
+                  </span>
+                </span>
+
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-700">
+                  <span className="text-lg leading-none group-open:rotate-45">
+                    +
+                  </span>
+                </span>
+              </summary>
+
+              <div className={accordionContentClass}>
+                <ListPanel
+                  title="Account Advantages"
+                  items={pros}
+                  tone="positive"
+                />
+              </div>
+            </details>
+
+            {/* Disadvantages */}
+            <details className={accordionClass}>
+              <summary className={summaryClass}>
+                <span className={summaryTitleClass}>
+                  Disadvantages and Considerations
+                  <span className="ml-2 text-[11px] font-medium text-slate-400">
+                    ({cons.length})
+                  </span>
+                </span>
+
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-50 text-amber-700">
+                  <span className="text-lg leading-none group-open:rotate-45">
+                    +
+                  </span>
+                </span>
+              </summary>
+
+              <div className={accordionContentClass}>
+                <ListPanel
+                  title="Disadvantages and Considerations"
+                  items={cons}
+                  tone="caution"
+                />
+              </div>
+            </details>
+
+            {/* Suitability */}
+            <details className={accordionClass}>
+              <summary className={summaryClass}>
+                <span className={summaryTitleClass}>
+                  Who Is This Account Suitable For?
+                </span>
+
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-700">
+                  <span className="text-lg leading-none group-open:rotate-45">
+                    +
+                  </span>
+                </span>
+              </summary>
+
+              <div className={accordionContentClass}>
+                {item.activeV2 &&
+                item.content?.best_for_en?.trim() &&
+                !hasArabic(item.content.best_for_en) ? (
+                  <p className="whitespace-pre-line text-[13px] leading-7 text-slate-700">
+                    {item.content.best_for_en.trim()}
+                  </p>
+                ) : audience.length > 0 ? (
+                  <ul className="space-y-3">
+                    {audience.map((point, index) => (
+                      <li
+                        key={`${item.key}-audience-${index}`}
+                        className="flex items-start gap-2 text-[13px] leading-7 text-slate-700"
+                      >
+                        <span className="mt-3 h-2 w-2 shrink-0 rounded-full bg-blue-500" />
+                        <span>{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-[13px] leading-7 text-slate-500">
+                    No additional suitability details are documented.
+                  </p>
+                )}
+              </div>
+            </details>
+
+            {/* Detailed account analysis */}
+            <details className={accordionClass}>
+              <summary className={summaryClass}>
+                <span className={summaryTitleClass}>
+                  Detailed Account Analysis
+                  <span className="ml-2 text-[11px] font-medium text-slate-400">
+                    ({analysis.length})
+                  </span>
+                </span>
+
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-700">
+                  <span className="text-lg leading-none group-open:rotate-45">
+                    +
+                  </span>
+                </span>
+              </summary>
+
+              <div className={accordionContentClass}>
+                {analysis.length > 0 ? (
+                  <div className="space-y-3">
+                    {analysis.map((block, index) => (
+                      <section
+                        key={`${item.key}-detail-${index}`}
+                        className="rounded-xl border border-slate-100 bg-slate-50/70 p-3"
+                      >
+                        <h5 className="text-[13px] font-extrabold leading-6 text-blue-900">
+                          {block.title}
+                        </h5>
+
+                        <p className="mt-2 whitespace-pre-line text-[13px] leading-7 text-slate-700">
+                          {block.content}
+                        </p>
+                      </section>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-[13px] text-slate-500">
+                    No detailed analysis is currently available.
+                  </p>
+                )}
+              </div>
+            </details>
+
+            {/* Important notes, only when available */}
+            {notes.length > 0 && (
+              <details className={accordionClass}>
+                <summary className={summaryClass}>
+                  <span className={summaryTitleClass}>
+                    Important Account Notes
+                  </span>
+
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-50 text-amber-700">
+                    <span className="text-lg leading-none group-open:rotate-45">
+                      +
+                    </span>
+                  </span>
+                </summary>
+
+                <div className={accordionContentClass}>
+                  <div className="space-y-3">
+                    {notes.map((note, index) => (
+                      <div
+                        key={`${item.key}-note-${index}`}
+                        className="rounded-xl bg-amber-50/60 p-3"
+                      >
+                        <h5 className="text-[13px] font-bold text-slate-900">
+                          {note.title}
+                        </h5>
+
+                        <p className="mt-2 whitespace-pre-line text-[13px] leading-7 text-slate-700">
+                          {note.content}
+                        </p>
+                      </div>
+                    ))}
                   </div>
                 </div>
+              </details>
+            )}
 
-                <div className="space-y-4 p-3 sm:p-4">
-                  {/* Editorial assessment */}
-                  <section className="rounded-2xl border border-slate-200 bg-white p-4">
-                    <div className="mb-4 border-b border-slate-100 pb-3">
-                      <h4 className="text-[16px] font-black text-slate-950">
-                        Broker Alarab&apos;s Assessment
-                      </h4>
+            {/* Full account review */}
+            <Link
+              href={accountLink(item)}
+              className="flex min-h-[46px] items-center justify-center rounded-xl bg-[#1E5BB8] px-3 py-3 text-center text-[12px] font-black text-white transition hover:bg-[#184A97]"
+            >
+              Read the Full {name(item)} Account Review →
+            </Link>
+          </div>
+        </article>
+      );
+    }
+  )}
+</div>
 
-                      <p className="mt-1 text-[11px] text-slate-500">
-                        Editorial assessment of the {name(item)} account
-                      </p>
-                    </div>
-
-                    <Paragraphs
-                      value={item.content?.expert_verdict_en}
-                    />
-                  </section>
-
-                  {/* Account advantages */}
-                  <ListPanel
-                    title="Account Advantages"
-                    items={pros}
-                    tone="positive"
-                  />
-
-                  {/* Account disadvantages */}
-                  <ListPanel
-                    title="Disadvantages and Considerations"
-                    items={cons}
-                    tone="caution"
-                  />
-
-                  {/* Suitable traders */}
-                  <section className="rounded-2xl border border-blue-100 bg-blue-50/30 p-4">
-                    <h4 className="border-b border-blue-100 pb-3 text-[16px] font-black text-slate-950">
-                      Who Is This Account Suitable For?
-                    </h4>
-
-                    {item.activeV2 &&
-                    item.content?.best_for_en?.trim() &&
-                    !hasArabic(item.content.best_for_en) ? (
-                      <p className="mt-4 whitespace-pre-line text-[13px] leading-7 text-slate-700">
-                        {item.content.best_for_en.trim()}
-                      </p>
-                    ) : audience.length > 0 ? (
-                      <ul className="mt-4 space-y-3">
-                        {audience.map((point, index) => (
-                          <li
-                            key={`${item.key}-mobile-audience-${index}`}
-                            className="flex items-start gap-3 text-[13px] leading-7 text-slate-700"
-                          >
-                            <span
-                              aria-hidden="true"
-                              className="mt-3 h-2 w-2 shrink-0 rounded-full bg-blue-500"
-                            />
-                            <span>{point}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className="mt-4 text-[13px] leading-7 text-slate-500">
-                        No additional suitability details are currently documented.
-                      </p>
-                    )}
-                  </section>
-
-                  {/* Detailed account analysis */}
-                  <section className="rounded-2xl border border-slate-200 bg-white p-4">
-                    <div className="mb-4 border-b border-slate-100 pb-3">
-                      <h4 className="text-[16px] font-black text-slate-950">
-                        Detailed Account Analysis
-                      </h4>
-
-                      <p className="mt-1 text-[11px] text-slate-500">
-                        Trading costs, execution and account conditions
-                      </p>
-                    </div>
-
-                    {analysis.length > 0 ? (
-                      <div className="space-y-3">
-                        {analysis.map((block, index) => (
-                          <section
-                            key={`${item.key}-mobile-detail-${index}`}
-                            className="rounded-xl border border-slate-100 bg-slate-50/70 p-3"
-                          >
-                            <h5 className="text-[14px] font-extrabold leading-6 text-blue-900">
-                              {block.title}
-                            </h5>
-
-                            <p className="mt-2 whitespace-pre-line text-[13px] leading-7 text-slate-700">
-                              {block.content}
-                            </p>
-                          </section>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-[13px] leading-7 text-slate-500">
-                        No additional detailed account analysis is currently available.
-                      </p>
-                    )}
-                  </section>
-
-                  {/* Important account notes */}
-                  {notes.length > 0 && (
-                    <section className="rounded-2xl border border-amber-200 bg-amber-50/50 p-4">
-                      <h4 className="text-[16px] font-black text-slate-950">
-                        {item.content?.important_notes_title_en &&
-                        !hasArabic(item.content.important_notes_title_en)
-                          ? item.content.important_notes_title_en
-                          : `Important Notes About ${fullName(item)}`}
-                      </h4>
-
-                      <div className="mt-4 space-y-4">
-                        {notes.map((note, index) => (
-                          <div
-                            key={`${item.key}-mobile-note-${index}`}
-                          >
-                            <h5 className="text-[14px] font-bold text-slate-900">
-                              {note.title}
-                            </h5>
-
-                            <p className="mt-1 whitespace-pre-line text-[13px] leading-7 text-slate-700">
-                              {note.content}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    </section>
-                  )}
-
-                  {/* Account review link */}
-                  <Link
-                    href={accountLink(item)}
-                    className="flex min-h-[48px] items-center justify-center rounded-xl bg-[#1E5BB8] px-4 py-3 text-center text-[13px] font-black text-white transition hover:bg-[#184A97]"
-                  >
-                    Read the Full {name(item)} Account Review →
-                  </Link>
-                </div>
-              </article>
-            )
-          )}
-        </div>
 
 
         {/* Broker and Account Headers */}

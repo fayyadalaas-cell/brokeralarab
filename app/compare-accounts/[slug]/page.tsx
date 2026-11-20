@@ -1788,7 +1788,9 @@ function AccountAnalysis({
     const modernPair = (
       render: (entry: (typeof data)[number]) => React.ReactNode
     ) => (
-      <div className="grid gap-4 lg:grid-cols-2">
+      
+<div className="hidden gap-4 lg:grid lg:grid-cols-2">
+
         {data.map((entry) => (
           <div
             key={`v2-${entry.item.key}`}
@@ -1806,6 +1808,279 @@ function AccountAnalysis({
 
     return (
       <div dir="rtl" className="space-y-5">
+
+
+{/* =====================================================
+    V2 MOBILE — ARABIC COLLAPSIBLE EDITORIAL
+    Desktop and V1 remain unchanged.
+    ===================================================== */}
+
+<div className="space-y-4 lg:hidden">
+  {data.map(
+    ({
+      item,
+      pros,
+      cons,
+      audience,
+      analysis,
+      notes,
+    }) => {
+      const accordionClass =
+        "group overflow-hidden rounded-2xl border border-slate-200 bg-white";
+
+      const summaryClass =
+        "flex min-h-[54px] cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-right [&::-webkit-details-marker]:hidden";
+
+      const headingClass =
+        "min-w-0 text-[14px] font-extrabold leading-6 text-slate-900";
+
+      const contentClass =
+        "border-t border-slate-100 px-3 pb-4 pt-3";
+
+      const accordionIcon = (
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-700">
+          <span className="text-lg leading-none transition-transform group-open:rotate-45">
+            +
+          </span>
+        </span>
+      );
+
+      return (
+        <article
+          key={`mobile-ar-analysis-${item.key}`}
+          className="overflow-hidden rounded-[22px] border border-blue-100 bg-white shadow-sm"
+        >
+          {/* اسم الشركة والحساب */}
+          <div className="border-b border-blue-200 bg-blue-50/70 px-3 py-3">
+            <div className="flex items-center gap-3">
+              <Logo broker={item.broker} />
+
+              <div className="min-w-0">
+                <h3 className="text-[17px] font-black leading-6 text-slate-950">
+                  {item.broker.name}
+                </h3>
+
+                <p className="mt-1 text-[12px] font-bold text-blue-700">
+                  حساب {name(item)}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-3 p-3">
+
+            {/* رأي بروكر العرب — مفتوح دائماً */}
+            <section className="rounded-2xl border border-blue-100 bg-blue-50/20 p-4">
+              <h4 className="text-[15px] font-black leading-7 text-slate-950">
+                رأي بروكر العرب
+              </h4>
+
+              <p className="mt-1 text-[11px] text-slate-500">
+                التقييم التحريري لحساب {name(item)}
+              </p>
+
+              <div className="mt-3 border-t border-blue-100 pt-3">
+                <Paragraphs
+                  value={item.content?.expert_verdict_ar}
+                />
+              </div>
+            </section>
+
+            {/* مميزات الحساب */}
+            <details className={accordionClass}>
+              <summary className={summaryClass}>
+                <span className={headingClass}>
+                  مميزات الحساب
+                  <span className="mr-2 text-[11px] font-medium text-slate-400">
+                    ({pros.length})
+                  </span>
+                </span>
+
+                {accordionIcon}
+              </summary>
+
+              <div className={contentClass}>
+                {pros.length > 0 ? (
+                  <ul className="space-y-3">
+                    {pros.map((point, index) => (
+                      <li
+                        key={`${item.key}-pros-${index}`}
+                        className="flex items-start gap-3 text-[13px] leading-7 text-slate-700"
+                      >
+                        <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-xs font-black text-emerald-700">
+                          ✓
+                        </span>
+                        <span>{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-[13px] text-slate-500">
+                    لا توجد مميزات إضافية موثقة حالياً.
+                  </p>
+                )}
+              </div>
+            </details>
+
+            {/* العيوب */}
+            <details className={accordionClass}>
+              <summary className={summaryClass}>
+                <span className={headingClass}>
+                  العيوب والنقاط التي يجب الانتباه لها
+                  <span className="mr-2 text-[11px] font-medium text-slate-400">
+                    ({cons.length})
+                  </span>
+                </span>
+
+                {accordionIcon}
+              </summary>
+
+              <div className={contentClass}>
+                {cons.length > 0 ? (
+                  <ul className="space-y-3">
+                    {cons.map((point, index) => (
+                      <li
+                        key={`${item.key}-cons-${index}`}
+                        className="flex items-start gap-3 text-[13px] leading-7 text-slate-700"
+                      >
+                        <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-50 text-xs font-black text-amber-700">
+                          !
+                        </span>
+                        <span>{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-[13px] text-slate-500">
+                    لا توجد ملاحظات إضافية موثقة حالياً.
+                  </p>
+                )}
+              </div>
+            </details>
+
+            {/* لمن يناسب الحساب */}
+            <details className={accordionClass}>
+              <summary className={summaryClass}>
+                <span className={headingClass}>
+                  لمن يناسب هذا الحساب؟
+                </span>
+
+                {accordionIcon}
+              </summary>
+
+              <div className={contentClass}>
+                {item.activeV2 &&
+                item.content?.best_for_ar?.trim() ? (
+                  <p className="whitespace-pre-line text-[13px] leading-8 text-slate-700">
+                    {item.content.best_for_ar.trim()}
+                  </p>
+                ) : audience.length > 0 ? (
+                  <ul className="space-y-3">
+                    {audience.map((point, index) => (
+                      <li
+                        key={`${item.key}-audience-${index}`}
+                        className="flex items-start gap-2 text-[13px] leading-8 text-slate-700"
+                      >
+                        <span className="mt-3 h-2 w-2 shrink-0 rounded-full bg-blue-500" />
+                        <span>{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-[13px] leading-7 text-slate-500">
+                    لا تتوفر تفاصيل إضافية عن الفئة المناسبة حالياً.
+                  </p>
+                )}
+              </div>
+            </details>
+
+            {/* تحليل الحساب بالتفصيل */}
+            <details className={accordionClass}>
+              <summary className={summaryClass}>
+                <span className={headingClass}>
+                  تحليل الحساب بالتفصيل
+                  <span className="mr-2 text-[11px] font-medium text-slate-400">
+                    ({analysis.length})
+                  </span>
+                </span>
+
+                {accordionIcon}
+              </summary>
+
+              <div className={contentClass}>
+                {analysis.length > 0 ? (
+                  <div className="space-y-3">
+                    {analysis.map((block, index) => (
+                      <section
+                        key={`${item.key}-analysis-${index}`}
+                        className="rounded-xl border border-slate-100 bg-slate-50/70 p-3"
+                      >
+                        <h5 className="text-[13px] font-extrabold leading-7 text-blue-900">
+                          {block.title}
+                        </h5>
+
+                        <p className="mt-2 whitespace-pre-line text-[13px] leading-8 text-slate-700">
+                          {block.content}
+                        </p>
+                      </section>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-[13px] text-slate-500">
+                    لا يتوفر تحليل تفصيلي إضافي لهذا الحساب حالياً.
+                  </p>
+                )}
+              </div>
+            </details>
+
+            {/* الملاحظات المهمة */}
+            {notes.length > 0 && (
+              <details className={accordionClass}>
+                <summary className={summaryClass}>
+                  <span className={headingClass}>
+                    {item.content?.important_notes_title_ar ||
+                      "ملاحظات مهمة حول الحساب"}
+                  </span>
+
+                  {accordionIcon}
+                </summary>
+
+                <div className={contentClass}>
+                  <div className="space-y-3">
+                    {notes.map((note, index) => (
+                      <div
+                        key={`${item.key}-note-${index}`}
+                        className="rounded-xl border border-amber-100 bg-amber-50/60 p-3"
+                      >
+                        <h5 className="text-[13px] font-bold leading-7 text-slate-900">
+                          {note.title}
+                        </h5>
+
+                        <p className="mt-2 whitespace-pre-line text-[13px] leading-8 text-slate-700">
+                          {note.content}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </details>
+            )}
+
+            {/* رابط التقييم الكامل */}
+            <Link
+              href={accountLink(item)}
+              className="flex min-h-[46px] items-center justify-center rounded-xl bg-[#1E5BB8] px-3 py-3 text-center text-[13px] font-black text-white transition hover:bg-[#184A97]"
+            >
+              اقرأ التقييم الكامل لحساب {name(item)} ←
+            </Link>
+
+          </div>
+        </article>
+      );
+    }
+  )}
+</div>
+
         {/* Broker and account headers */}
         {modernPair(({ item }) => (
           <div className="flex min-h-[94px] items-center gap-4 rounded-2xl border border-blue-200 bg-blue-50/70 p-4 sm:p-5">
@@ -1940,11 +2215,13 @@ function AccountAnalysis({
             Never render empty V2 placeholder cards. */}
         {entriesWithNotes.length > 0 && (
           <div
-            className={
-              entriesWithNotes.length === 2
-                ? "grid gap-4 lg:grid-cols-2"
-                : "grid gap-4"
-            }
+            
+className={
+  entriesWithNotes.length === 2
+    ? "hidden gap-4 lg:grid lg:grid-cols-2"
+    : "hidden gap-4 lg:grid"
+}
+
           >
             {entriesWithNotes.map(({ item, notes }) => (
               <section
