@@ -46,6 +46,7 @@ type Broker = {
   safety_factors_ar: string | null;
 };
 
+
 type BrokerAccount = {
   id: number;
   broker_id: number;
@@ -57,7 +58,13 @@ type BrokerAccount = {
   execution_type: string | null;
   best_for: string | null;
   sort_order: number | null;
+
+  // V2 only
+  slug?: string | null;
+  best_for_category?: string | null;
+  source?: "v1" | "v2";
 };
+
 
 type BrokerLicense = {
   id: number;
@@ -252,6 +259,293 @@ function accountSlug(value: string | null) {
     .replace(/[^\w-]/g, "");
 }
 
+
+/* =========================================================
+   MIXED V1 / V2 BROKER ACCOUNTS
+   Each broker is checked independently.
+   Capital.com remains on V1.
+   ========================================================= */
+
+function accountHref(
+  broker: Broker,
+  account: BrokerAccount
+): string {
+  const slug =
+    account.source === "v2" && account.slug
+      ? account.slug
+      : accountSlug(account.account_name);
+
+  return `/brokers/${broker.slug}/accounts/${slug}`;
+}
+
+async function getComparisonBrokerAccounts(
+  broker: Broker
+): Promise<{
+  accounts: BrokerAccount[];
+  useV2: boolean;
+}> {
+  const supabase = await createClient();
+
+  let useV2 = false;
+
+  if (broker.slug !== "capital-com") {
+    const { data: ready, error: readyError } =
+      await supabase.rpc("is_broker_v2_ready", {
+        p_broker_id: broker.id,
+      });
+
+    if (readyError) {
+      throw new Error(
+        `[Compare Brokers] V2 readiness failed for ${broker.slug}: ${readyError.message}`
+      );
+    }
+
+    useV2 = ready === true;
+  }
+
+  // V1: unchanged source for brokers not yet migrated.
+  if (!useV2) {
+    const { data, error } = await supabase
+      .from("broker_accounts")
+      .select("*")
+      .eq("broker_id", broker.id)
+      .order("sort_order", { ascending: true });
+
+    if (error) {
+      throw new Error(
+        `[Compare Brokers] V1 accounts failed for ${broker.slug}: ${error.message}`
+      );
+    }
+
+    const accounts = (data ?? []) as BrokerAccount[];
+
+    return {
+      useV2: false,
+      accounts: accounts.map((account) => ({
+        ...account,
+        source: "v1" as const,
+      })),
+    };
+  }
+
+  // V2: fetch all accounts so publication and
+  // verification requirements can be checked.
+  const { data: rawAccounts, error: accountError } =
+    await supabase
+      .from("broker_accounts_v2")
+      .select(`
+        id,
+        broker_id,
+        slug,
+        account_name,
+        account_name_ar,
+        spread_advertised_from,
+        spread_unit,
+        spread_unit_ar,
+        commission_amount,
+        commission_currency,
+        trading_costs_extra,
+        min_deposit_amount,
+        min_deposit_currency,
+        execution_type,
+        execution_type_ar,
+        execution_type_short_ar,
+        best_for_category,
+        sort_order,
+        verification_status,
+        publication_status
+      `)
+      .eq("broker_id", broker.id)
+      .order("sort_order", { ascending: true });
+
+  if (accountError || !rawAccounts?.length) {
+    throw new Error(
+      `[Compare Brokers] V2 accounts unavailable for ${broker.slug}: ${accountError?.message || "No accounts"}`
+    );
+  }
+
+  if (
+    rawAccounts.some(
+      (account) =>
+        account.publication_status !== "published" ||
+        account.verification_status !== "verified"
+    )
+  ) {
+    throw new Error(
+      `[Compare Brokers] Incomplete V2 publication for ${broker.slug}`
+    );
+  }
+
+  const accountIds = rawAccounts.map(
+    (account) => account.id
+  );
+
+  const { data: contentRows, error: contentError } =
+    await supabase
+      .from("broker_account_content_v2")
+      .select(`
+        account_id,
+        editorial_status,
+        account_category_options
+      `)
+      .in("account_id", accountIds);
+
+  if (
+    contentError ||
+    !contentRows ||
+    contentRows.length !== accountIds.length ||
+    contentRows.some(
+      (row) => row.editorial_status !== "approved"
+    ) ||
+    new Set(
+      contentRows.map((row) => row.account_id)
+    ).size !== accountIds.length
+  ) {
+    throw new Error(
+      `[Compare Brokers] V2 editorial content incomplete for ${broker.slug}: ${contentError?.message || "Not approved"}`
+    );
+  }
+
+  // Category names come from existing Supabase JSONB.
+  const categoryLabels = new Map<string, string>();
+
+  for (const row of contentRows) {
+    const options = row.account_category_options;
+
+    if (!Array.isArray(options)) continue;
+
+    for (const option of options) {
+      if (
+        option &&
+        typeof option === "object" &&
+        typeof option.code === "string" &&
+        typeof option.label_ar === "string"
+      ) {
+        categoryLabels.set(
+          option.code,
+          option.label_ar
+        );
+      }
+    }
+  }
+
+  type CommissionPolicy = {
+    type?: string;
+    amount_usd?: number;
+    amount_qualifier?: string;
+  };
+
+  const accounts: BrokerAccount[] =
+    rawAccounts.map((row) => {
+      // V2 advertised starting spread only.
+      // Do not use spread_avg.
+      
+const spreadFrom =
+  row.spread_advertised_from === null ||
+  row.spread_advertised_from === undefined ||
+  row.spread_advertised_from === ""
+    ? null
+    : Number(row.spread_advertised_from);
+
+
+      const spreadUnit =
+        row.spread_unit_ar ||
+        (row.spread_unit === "pip"
+          ? "نقطة"
+          : row.spread_unit) ||
+        "";
+
+      const spread =
+        spreadFrom !== null &&
+        Number.isFinite(spreadFrom)
+          ? `من ${spreadFrom} ${spreadUnit}`.trim()
+          : null;
+
+      const costs: CommissionPolicy[] =
+        Array.isArray(row.trading_costs_extra)
+          ? row.trading_costs_extra
+          : [];
+
+      const advertisedCommission = costs.find(
+        (item) =>
+          item.type ===
+            "advertised_commission_policy" &&
+          typeof item.amount_usd === "number"
+      );
+
+      let commission: string | null = null;
+
+      if (advertisedCommission) {
+        const prefix =
+          advertisedCommission.amount_qualifier ===
+          "up_to"
+            ? "حتى "
+            : advertisedCommission.amount_qualifier ===
+                "from"
+              ? "من "
+              : "";
+
+        commission =
+          `${prefix}$${advertisedCommission.amount_usd} لكل لوت/اتجاه`;
+      } else if (row.commission_amount === 0) {
+        commission = "بدون عمولة";
+      } else if (row.commission_amount !== null) {
+        commission =
+          `${row.commission_amount} ${row.commission_currency || ""}`.trim();
+      }
+
+      
+const minDeposit =
+  row.min_deposit_amount !== null &&
+  row.min_deposit_amount !== undefined &&
+  row.min_deposit_amount !== ""
+    ? `${
+        row.min_deposit_currency === "USD" ? "$" : ""
+      }${row.min_deposit_amount}${
+        row.min_deposit_currency &&
+        row.min_deposit_currency !== "USD"
+          ? ` ${row.min_deposit_currency}`
+          : ""
+      }`
+    : null;
+
+
+      const category =
+        row.best_for_category
+          ? String(row.best_for_category)
+          : null;
+
+      return {
+        id: Number(row.id),
+        broker_id: Number(row.broker_id),
+        account_name: row.account_name,
+        account_name_ar: row.account_name_ar,
+        slug: row.slug,
+        spread,
+        commission,
+        min_deposit: minDeposit,
+        execution_type:
+          row.execution_type_short_ar ||
+          row.execution_type_ar ||
+          row.execution_type ||
+          null,
+        best_for:
+          category
+            ? categoryLabels.get(category) || null
+            : null,
+        best_for_category: category,
+        sort_order: row.sort_order,
+        source: "v2",
+      };
+    });
+
+  return {
+    accounts,
+    useV2: true,
+  };
+}
+
+
 function getBetterValueLabel(left: Broker, right: Broker) {
   const leftDeposit = left.min_deposit ?? 999999;
   const rightDeposit = right.min_deposit ?? 999999;
@@ -268,24 +562,64 @@ function getHigherRatingLabel(left: Broker, right: Broker) {
   return l > r ? left.name : r > l ? right.name : "تعادل";
 }
 
-function getBeginnerWinner(left: Broker, right: Broker) {
-  const lDeposit = left.min_deposit ?? 999999;
-  const rDeposit = right.min_deposit ?? 999999;
 
-  const lScore =
-    (lDeposit <= 50 ? 2 : 0) +
-    (cleanText(left.best_for).includes("مبتد") ? 2 : 0) +
-    hasIslamicScore(left.islamic_account) +
-    hasArabicSupportScore(left.arabic_support);
+function getBeginnerWinner(
+  left: Broker,
+  right: Broker,
+  leftAccounts: BrokerAccount[],
+  rightAccounts: BrokerAccount[]
+) {
+  const beginnerScore = (
+    broker: Broker,
+    accounts: BrokerAccount[]
+  ): number => {
+    const usingV2 = accounts.some(
+      (account) => account.source === "v2"
+    );
 
-  const rScore =
-    (rDeposit <= 50 ? 2 : 0) +
-    (cleanText(right.best_for).includes("مبتد") ? 2 : 0) +
-    hasIslamicScore(right.islamic_account) +
-    hasArabicSupportScore(right.arabic_support);
+    const hasBeginnerAccount = usingV2
+      ? accounts.some(
+          (account) =>
+            account.best_for_category === "beginners"
+        )
+      : accounts.some((account) =>
+          cleanText(account.best_for).includes("مبتد")
+        ) ||
+        cleanText(broker.best_for).includes("مبتد");
 
-  return lScore > rScore ? left.name : rScore > lScore ? right.name : "تعادل";
+    const minimumText = minimumAccountDeposit(
+      accounts,
+      usingV2 ? null : broker.min_deposit
+    );
+
+    const minimumMatch = minimumText
+      .replace(/,/g, "")
+      .match(/\d+(?:\.\d+)?/);
+
+    const minimumValue = minimumMatch
+      ? Number(minimumMatch[0])
+      : null;
+
+    return (
+      (hasBeginnerAccount ? 2 : 0) +
+      (minimumValue !== null && minimumValue <= 50
+        ? 2
+        : 0) +
+      hasIslamicScore(broker.islamic_account) +
+      hasArabicSupportScore(broker.arabic_support)
+    );
+  };
+
+  const leftScore = beginnerScore(left, leftAccounts);
+  const rightScore = beginnerScore(right, rightAccounts);
+
+  return leftScore > rightScore
+    ? left.name
+    : rightScore > leftScore
+      ? right.name
+      : "تعادل";
 }
+
 
 function getScalpingWinner(left: Broker, right: Broker) {
   const leftScore = left.score_fees;
@@ -734,15 +1068,24 @@ export default async function ComparePage({ params }: PageProps) {
 
   if (!left || !right) notFound();
 
-  const { data: accountsData } = await supabase
-    .from("broker_accounts")
-    .select("*")
-    .in("broker_id", [left.id, right.id])
-    .order("sort_order", { ascending: true });
+  
+  /* =====================================================
+     BROKER ACCOUNTS — MIXED V1/V2
+     Independent source selection for each broker.
+     ===================================================== */
 
-  const accounts = (accountsData ?? []) as BrokerAccount[];
-  const leftAccounts = accounts.filter((a) => a.broker_id === left.id);
-  const rightAccounts = accounts.filter((a) => a.broker_id === right.id);
+  const [leftAccountData, rightAccountData] =
+    await Promise.all([
+      getComparisonBrokerAccounts(left),
+      getComparisonBrokerAccounts(right),
+    ]);
+
+  const leftAccounts = leftAccountData.accounts;
+  const rightAccounts = rightAccountData.accounts;
+
+  const leftV2 = leftAccountData.useV2;
+  const rightV2 = rightAccountData.useV2;
+
 
   const { data: licensesData } = await supabase
   .from("broker_licenses")
@@ -815,7 +1158,14 @@ const rightLicenses = licenses.filter(
 );
 
   const overallWinner = getHigherRatingLabel(left, right);
-const beginnerWinner = getBeginnerWinner(left, right);
+
+const beginnerWinner = getBeginnerWinner(
+  left,
+  right,
+  leftAccounts,
+  rightAccounts
+);
+
 const scalpingWinner = getScalpingWinner(left, right);
 
 const leftRating = left.rating ?? 0;
@@ -859,15 +1209,17 @@ const decisionBrokers = [
   },
 ];
 
+
 const leftMinimumDeposit = minimumAccountDeposit(
   leftAccounts,
-  left.min_deposit
+  leftV2 ? null : left.min_deposit
 );
 
 const rightMinimumDeposit = minimumAccountDeposit(
   rightAccounts,
-  right.min_deposit
+  rightV2 ? null : right.min_deposit
 );
+
 
 const parseMinimumDeposit = (
   value: string
@@ -907,6 +1259,90 @@ const depositWinner =
     : leftMinimumNumber < rightMinimumNumber
     ? left.name
     : right.name;
+
+
+/* =====================================================
+   ACCOUNT FACTORS — ONE SOURCE FOR DESKTOP & MOBILE
+
+   Each column uses one reference account.
+   The minimum deposit comes from the recorded
+   minimum across the broker's available accounts.
+
+   V2 spread = advertised starting spread.
+   V1 spread = original recorded value.
+   No average-spread claim is made.
+   ===================================================== */
+
+const leftReferenceAccount =
+  leftAccounts[0] || null;
+
+const rightReferenceAccount =
+  rightAccounts[0] || null;
+
+const accountValue = (
+  account: BrokerAccount | null,
+  field:
+    | "spread"
+    | "commission"
+    | "execution_type"
+): string => {
+  if (!account) return "غير محدد";
+
+  return cleanText(account[field]) || "غير محدد";
+};
+
+const accountFactorRows = [
+  {
+    label: "الحساب المرجعي",
+    leftValue:
+      leftReferenceAccount?.account_name_ar ||
+      leftReferenceAccount?.account_name ||
+      "غير محدد",
+    rightValue:
+      rightReferenceAccount?.account_name_ar ||
+      rightReferenceAccount?.account_name ||
+      "غير محدد",
+  },
+  {
+    label: "أقل إيداع موثق",
+    leftValue: leftMinimumDeposit,
+    rightValue: rightMinimumDeposit,
+  },
+  {
+    label: "السبريد حسب الحساب",
+    leftValue: accountValue(
+      leftReferenceAccount,
+      "spread"
+    ),
+    rightValue: accountValue(
+      rightReferenceAccount,
+      "spread"
+    ),
+  },
+  {
+    label: "عمولة الحساب المرجعي",
+    leftValue: accountValue(
+      leftReferenceAccount,
+      "commission"
+    ),
+    rightValue: accountValue(
+      rightReferenceAccount,
+      "commission"
+    ),
+  },
+  {
+    label: "طريقة تنفيذ الحساب المرجعي",
+    leftValue: accountValue(
+      leftReferenceAccount,
+      "execution_type"
+    ),
+    rightValue: accountValue(
+      rightReferenceAccount,
+      "execution_type"
+    ),
+  },
+];
+
 
 const safetyWinner = getSafetyWinner(
   left,
@@ -1018,12 +1454,14 @@ const safetyWinner = getSafetyWinner(
           ? right.name
           : "تعادل",
     },
-    {
-      label: "الحد الأدنى للإيداع",
-      leftValue: money(left.min_deposit),
-      rightValue: money(right.min_deposit),
-      winner: depositWinner,
-    },
+    
+{
+  label: "الحد الأدنى للإيداع",
+  leftValue: leftMinimumDeposit,
+  rightValue: rightMinimumDeposit,
+  winner: depositWinner,
+},
+
     {
       label: "المنصات",
       leftValue: shortPlatforms(left.platforms),
@@ -1108,12 +1546,31 @@ const safetyWinner = getSafetyWinner(
   rightValue: rightMinimumDeposit,
   winner: depositWinner,
 },
-    {
-      label: "مناسب للمبتدئين",
-      leftValue: cleanText(left.best_for) || "فئات متعددة",
-      rightValue: cleanText(right.best_for) || "فئات متعددة",
-      winner: beginnerWinner,
-    },
+    
+{
+  label: "مناسب للمبتدئين",
+
+  leftValue:
+    leftAccounts.find(
+      (account) =>
+        account.best_for_category === "beginners"
+    )?.best_for ||
+    (!leftV2
+      ? cleanText(left.best_for) || "فئات متعددة"
+      : "غير مصنف أساسياً للمبتدئين"),
+
+  rightValue:
+    rightAccounts.find(
+      (account) =>
+        account.best_for_category === "beginners"
+    )?.best_for ||
+    (!rightV2
+      ? cleanText(right.best_for) || "فئات متعددة"
+      : "غير مصنف أساسياً للمبتدئين"),
+
+  winner: beginnerWinner,
+},
+
   ];
 
   const leftReasons = getBrokerReasons(left, right, "left");
@@ -2088,7 +2545,9 @@ const safetyWinner = getSafetyWinner(
       <p className="mt-2 text-sm leading-6 text-slate-600">
         {scalpingWinner === "تعادل"
           ? "لا يظهر فرق حاسم في التكلفة؛ نوع الحساب وشروطه هما العامل الأهم."
-          : `${scalpingWinner} يقدم أفضلية في التكلفة أو السبريد وفق البيانات المتاحة.`}
+          
+: `${scalpingWinner} يتقدم وفق تقييم الرسوم العام، وليس بالضرورة في تكلفة كل حساب.`
+}
       </p>
     </div>
   </div>
@@ -2181,75 +2640,9 @@ const safetyWinner = getSafetyWinner(
       </div>
     </div>
 
-    {[
-      {
-        label: "نوع الحساب الأساسي",
-        leftValue:
-          leftAccounts[0]?.account_name_ar ||
-          leftAccounts[0]?.account_name ||
-          "غير محدد",
-        rightValue:
-          rightAccounts[0]?.account_name_ar ||
-          rightAccounts[0]?.account_name ||
-          "غير محدد",
-      },
-      {
-        label: "الحد الأدنى للإيداع",
-        leftValue:
-          leftAccounts.find((a) =>
-            cleanText(a.min_deposit)
-          )?.min_deposit ||
-          money(left.min_deposit),
-        rightValue:
-          rightAccounts.find((a) =>
-            cleanText(a.min_deposit)
-          )?.min_deposit ||
-          money(right.min_deposit),
-      },
-      {
-        label: "متوسط السبريد",
-        leftValue:
-          leftAccounts.find((a) =>
-            cleanText(a.spread)
-          )?.spread ||
-          cleanText(left.spreads) ||
-          "غير محدد",
-        rightValue:
-          rightAccounts.find((a) =>
-            cleanText(a.spread)
-          )?.spread ||
-          cleanText(right.spreads) ||
-          "غير محدد",
-      },
-      {
-        label: "العمولات على التداول",
-        leftValue:
-          leftAccounts.find((a) =>
-            cleanText(a.commission)
-          )?.commission ||
-          cleanText(left.fees) ||
-          "غير محدد",
-        rightValue:
-          rightAccounts.find((a) =>
-            cleanText(a.commission)
-          )?.commission ||
-          cleanText(right.fees) ||
-          "غير محدد",
-      },
-      {
-        label: "طريقة تنفيذ الأوامر",
-        leftValue:
-          leftAccounts.find((a) =>
-            cleanText(a.execution_type)
-          )?.execution_type ||
-          "غير محدد",
-        rightValue:
-          rightAccounts.find((a) =>
-            cleanText(a.execution_type)
-          )?.execution_type ||
-          "غير محدد",
-      },
-    ].map((row, index) => (
+    
+    {accountFactorRows.map((row, index) => (
+
       <div
         key={row.label}
         className={`grid grid-cols-[1fr_1fr_1fr] ${
@@ -2353,9 +2746,9 @@ const safetyWinner = getSafetyWinner(
           {/* Account name */}
           <div className="min-h-[62px] border-b border-slate-100 pb-3">
             <Link
-              href={`/brokers/${broker.slug}/accounts/${accountSlug(
-                acc.account_name
-              )}`}
+              
+href={accountHref(broker, acc)}
+
               target="_blank"
               rel="noopener noreferrer"
               className="text-lg font-black leading-6 text-[#0f172a] transition hover:text-brand-500"
@@ -2417,9 +2810,9 @@ const safetyWinner = getSafetyWinner(
           {/* Account details */}
           <div className="mt-auto pt-4">
             <Link
-              href={`/brokers/${broker.slug}/accounts/${accountSlug(
-                acc.account_name
-              )}`}
+              
+href={accountHref(broker, acc)}
+
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center text-xs font-black text-brand-500 transition hover:underline"
@@ -2520,7 +2913,9 @@ const safetyWinner = getSafetyWinner(
     <p className="mt-2 text-[12px] leading-6 text-slate-600">
       {scalpingWinner === "تعادل"
         ? "لا يظهر فرق حاسم في التكلفة؛ لذلك يعتمد الاختيار على شروط كل حساب."
-        : `${scalpingWinner} يظهر أفضلية في التكلفة أو السبريد وفق البيانات المتاحة.`}
+        
+: `${scalpingWinner} يتقدم وفق تقييم الرسوم العام، وليس بالضرورة في تكلفة كل حساب.`
+}
     </p>
   </div>
 
@@ -2599,75 +2994,9 @@ const safetyWinner = getSafetyWinner(
       </div>
     </div>
 
-    {[
-      {
-        label: "الحساب الأساسي",
-        leftValue:
-          leftAccounts[0]?.account_name_ar ||
-          leftAccounts[0]?.account_name ||
-          "غير محدد",
-        rightValue:
-          rightAccounts[0]?.account_name_ar ||
-          rightAccounts[0]?.account_name ||
-          "غير محدد",
-      },
-      {
-        label: "أقل إيداع",
-        leftValue:
-          leftAccounts.find((a) =>
-            cleanText(a.min_deposit)
-          )?.min_deposit ||
-          money(left.min_deposit),
-        rightValue:
-          rightAccounts.find((a) =>
-            cleanText(a.min_deposit)
-          )?.min_deposit ||
-          money(right.min_deposit),
-      },
-      {
-        label: "السبريد",
-        leftValue:
-          leftAccounts.find((a) =>
-            cleanText(a.spread)
-          )?.spread ||
-          cleanText(left.spreads) ||
-          "غير محدد",
-        rightValue:
-          rightAccounts.find((a) =>
-            cleanText(a.spread)
-          )?.spread ||
-          cleanText(right.spreads) ||
-          "غير محدد",
-      },
-      {
-        label: "العمولة",
-        leftValue:
-          leftAccounts.find((a) =>
-            cleanText(a.commission)
-          )?.commission ||
-          cleanText(left.fees) ||
-          "غير محدد",
-        rightValue:
-          rightAccounts.find((a) =>
-            cleanText(a.commission)
-          )?.commission ||
-          cleanText(right.fees) ||
-          "غير محدد",
-      },
-      {
-        label: "تنفيذ الأوامر",
-        leftValue:
-          leftAccounts.find((a) =>
-            cleanText(a.execution_type)
-          )?.execution_type ||
-          "غير محدد",
-        rightValue:
-          rightAccounts.find((a) =>
-            cleanText(a.execution_type)
-          )?.execution_type ||
-          "غير محدد",
-      },
-    ].map((row) => (
+    
+    {accountFactorRows.map((row) => (
+
       <div
         key={row.label}
         className="grid grid-cols-[minmax(0,1fr)_80px_80px] items-stretch border-t border-[#dbeafe]"
@@ -2755,9 +3084,9 @@ const safetyWinner = getSafetyWinner(
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <Link
-                          href={`/brokers/${broker.slug}/accounts/${accountSlug(
-                            acc.account_name
-                          )}`}
+                          
+href={accountHref(broker, acc)}
+
                           target="_blank"
                           rel="noopener noreferrer"
                           className="break-words text-[15px] font-black leading-6 text-[#0f172a] transition hover:text-brand-500"
@@ -2774,9 +3103,9 @@ const safetyWinner = getSafetyWinner(
                       </div>
 
                       <Link
-                        href={`/brokers/${broker.slug}/accounts/${accountSlug(
-                          acc.account_name
-                        )}`}
+                        
+href={accountHref(broker, acc)}
+
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={`تفاصيل حساب ${

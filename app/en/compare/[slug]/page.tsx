@@ -88,6 +88,7 @@ type Broker = {
   score_support: number | null;
 };
 
+
 type BrokerAccount = {
   id: number;
   broker_id: number;
@@ -111,7 +112,13 @@ type BrokerAccount = {
   best_for_en: string | null;
 
   sort_order: number | null;
+
+  // V2 fields
+  slug?: string | null;
+  best_for_category?: string | null;
+  source?: "v1" | "v2";
 };
+
 
 type BrokerLicense = {
   id: number;
@@ -325,6 +332,341 @@ function accountSlug(value: string | null) {
     .replace(/[^\w-]/g, "");
 }
 
+
+/* =========================================================
+   ENGLISH BROKER COMPARISON — MIXED V1 / V2
+
+   - Check each broker independently.
+   - Capital.com remains V1.
+   - V2 requires complete approval.
+   - Never mix legacy account values into V2.
+   - Preserve original commission basis and wording.
+   ========================================================= */
+
+function comparisonAccountHref(
+  broker: Broker,
+  account: BrokerAccount
+): string {
+  const slug =
+    account.source === "v2" &&
+    cleanText(account.slug)
+      ? cleanText(account.slug)
+      : accountSlug(
+          account.account_name_en ||
+          account.account_name
+        );
+
+  return `/en/brokers/${broker.slug}/accounts/${slug}`;
+}
+
+async function getComparisonBrokerAccountsEN(
+  broker: Broker
+): Promise<{
+  accounts: BrokerAccount[];
+  useV2: boolean;
+}> {
+  const supabase = await createClient();
+
+  let useV2 = false;
+
+  // Capital.com always stays on V1.
+  if (broker.slug !== "capital-com") {
+    const { data: ready, error: readyError } =
+      await supabase.rpc("is_broker_v2_ready", {
+        p_broker_id: broker.id,
+      });
+
+    if (readyError) {
+      throw new Error(
+        `[Compare EN] V2 readiness error for ${broker.slug}: ${readyError.message}`
+      );
+    }
+
+    useV2 = ready === true;
+  }
+
+  /* -------------------------
+     V1 — existing broker data
+     ------------------------- */
+
+  if (!useV2) {
+    const { data, error } = await supabase
+      .from("broker_accounts")
+      .select("*")
+      .eq("broker_id", broker.id)
+      .order("sort_order", { ascending: true });
+
+    if (error) {
+      throw new Error(
+        `[Compare EN] V1 account error for ${broker.slug}: ${error.message}`
+      );
+    }
+
+    return {
+      useV2: false,
+      accounts: ((data ?? []) as BrokerAccount[]).map(
+        (account) => ({
+          ...account,
+          source: "v1" as const,
+        })
+      ),
+    };
+  }
+
+  /* -------------------------
+     V2 — approved accounts
+     ------------------------- */
+
+  const { data: rawAccounts, error: accountError } =
+    await supabase
+      .from("broker_accounts_v2")
+      .select(`
+        id,
+        broker_id,
+        slug,
+        account_name,
+        account_name_ar,
+        spread_advertised_from,
+        spread_unit,
+        commission_amount,
+        commission_currency,
+        trading_costs_extra,
+        min_deposit_amount,
+        min_deposit_currency,
+        execution_type,
+        execution_type_short_en,
+        execution_type_en,
+        best_for_category,
+        sort_order,
+        verification_status,
+        publication_status
+      `)
+      .eq("broker_id", broker.id)
+      .order("sort_order", { ascending: true });
+
+  if (accountError || !rawAccounts?.length) {
+    throw new Error(
+      `[Compare EN] V2 accounts unavailable for ${broker.slug}: ${accountError?.message || "No accounts"}`
+    );
+  }
+
+  // Check ALL accounts, not only the published subset.
+  if (
+    rawAccounts.some(
+      (account) =>
+        account.publication_status !== "published" ||
+        account.verification_status !== "verified"
+    )
+  ) {
+    throw new Error(
+      `[Compare EN] V2 accounts not fully approved for ${broker.slug}`
+    );
+  }
+
+  const accountIds = rawAccounts.map(
+    (account) => account.id
+  );
+
+  const { data: contentRows, error: contentError } =
+    await supabase
+      .from("broker_account_content_v2")
+      .select(`
+        account_id,
+        editorial_status,
+        account_category_options
+      `)
+      .in("account_id", accountIds);
+
+  if (
+    contentError ||
+    !contentRows ||
+    contentRows.length !== rawAccounts.length ||
+    contentRows.some(
+      (content) => content.editorial_status !== "approved"
+    ) ||
+    new Set(
+      contentRows.map((content) => content.account_id)
+    ).size !== accountIds.length
+  ) {
+    throw new Error(
+      `[Compare EN] V2 editorial content incomplete for ${broker.slug}: ${contentError?.message || "Approval incomplete"}`
+    );
+  }
+
+  // Read English suitability labels from Supabase.
+  const categoryLabels = new Map<string, string>();
+
+  for (const content of contentRows) {
+    const options = content.account_category_options;
+
+    if (!Array.isArray(options)) continue;
+
+    for (const option of options) {
+      if (
+        option &&
+        typeof option === "object" &&
+        typeof option.code === "string" &&
+        typeof option.label_en === "string"
+      ) {
+        categoryLabels.set(
+          option.code,
+          option.label_en
+        );
+      }
+    }
+  }
+
+  /* -------------------------
+     V2 field formatting
+     ------------------------- */
+
+  const mappedAccounts: BrokerAccount[] =
+    rawAccounts.map((row) => {
+      const spreadNumber =
+        row.spread_advertised_from === null ||
+        row.spread_advertised_from === undefined ||
+        row.spread_advertised_from === ""
+          ? null
+          : Number(row.spread_advertised_from);
+
+      const spreadUnit =
+        cleanText(row.spread_unit) || "pip";
+
+      const formattedUnit =
+        spreadUnit.toLowerCase() === "pip"
+          ? "pips"
+          : spreadUnit;
+
+      const spread =
+        spreadNumber !== null &&
+        Number.isFinite(spreadNumber)
+          ? `From ${spreadNumber} ${formattedUnit}`
+          : null;
+
+      type CommissionPolicy = {
+        type?: string;
+        amount_usd?: number;
+        amount_qualifier?: string;
+      };
+
+      const policies: CommissionPolicy[] =
+        Array.isArray(row.trading_costs_extra)
+          ? row.trading_costs_extra.filter(
+              (policy): policy is CommissionPolicy =>
+                typeof policy === "object" &&
+                policy !== null &&
+                !Array.isArray(policy)
+            )
+          : [];
+
+      const policy = policies.find(
+        (item) =>
+          item.type ===
+            "advertised_commission_policy" &&
+          typeof item.amount_usd === "number"
+      );
+
+      const commissionNumber =
+        row.commission_amount === null ||
+        row.commission_amount === undefined ||
+        row.commission_amount === ""
+          ? null
+          : Number(row.commission_amount);
+
+      let commission: string | null = null;
+
+      if (policy) {
+        const qualifier =
+          policy.amount_qualifier === "up_to"
+            ? "Up to "
+            : policy.amount_qualifier === "from"
+              ? "From "
+              : "";
+
+        commission =
+          `${qualifier}$${policy.amount_usd} per lot/side`;
+      } else if (
+        commissionNumber !== null &&
+        Number.isFinite(commissionNumber)
+      ) {
+        commission =
+          commissionNumber === 0
+            ? "No commission"
+            : `${commissionNumber} ${
+                row.commission_currency || ""
+              }`.trim();
+      }
+
+      const depositNumber =
+        row.min_deposit_amount === null ||
+        row.min_deposit_amount === undefined ||
+        row.min_deposit_amount === ""
+          ? null
+          : Number(row.min_deposit_amount);
+
+      const depositCurrency =
+        cleanText(row.min_deposit_currency);
+
+      const deposit =
+        depositNumber !== null &&
+        Number.isFinite(depositNumber)
+          ? depositCurrency === "USD"
+            ? `$${depositNumber}`
+            : `${depositNumber} ${depositCurrency}`.trim()
+          : null;
+
+      const category =
+        cleanText(row.best_for_category) || null;
+
+      return {
+        id: Number(row.id),
+        broker_id: Number(row.broker_id),
+
+        slug: row.slug,
+        account_name: row.account_name,
+        account_name_en: row.account_name,
+
+        spread,
+        spread_en: spread,
+
+        commission,
+        commission_en: commission,
+
+        min_deposit: deposit,
+        min_deposit_en: deposit,
+
+        execution_type:
+          row.execution_type_short_en ||
+          row.execution_type_en ||
+          row.execution_type ||
+          null,
+
+        execution_type_en:
+          row.execution_type_short_en ||
+          row.execution_type_en ||
+          row.execution_type ||
+          null,
+
+        best_for_category: category,
+        best_for: category
+          ? categoryLabels.get(category) || null
+          : null,
+        best_for_en: category
+          ? categoryLabels.get(category) || null
+          : null,
+
+        sort_order: row.sort_order,
+        source: "v2",
+      };
+    });
+
+  return {
+    accounts: mappedAccounts,
+    useV2: true,
+  };
+}
+
+
 function licenseTrustLabel(value: string | null) {
   if (value === "Tier 1") return "Strong oversight";
   if (value === "Tier 2") return "Moderate oversight";
@@ -380,29 +722,66 @@ function getHigherRatingLabel(left: Broker, right: Broker) {
   return "Tie";
 }
 
-function getBeginnerWinner(left: Broker, right: Broker) {
-  const leftDeposit = left.min_deposit ?? 999999;
-  const rightDeposit = right.min_deposit ?? 999999;
 
-  const leftBestFor = cleanText(
-    left.best_for_en || left.best_for
-  ).toLowerCase();
+function getBeginnerWinner(
+  left: Broker,
+  right: Broker,
+  leftAccounts: BrokerAccount[],
+  rightAccounts: BrokerAccount[]
+): string {
+  const calculateScore = (
+    broker: Broker,
+    accounts: BrokerAccount[]
+  ): number => {
+    const usingV2 = accounts.some(
+      (account) => account.source === "v2"
+    );
 
-  const rightBestFor = cleanText(
-    right.best_for_en || right.best_for
-  ).toLowerCase();
+    const hasBeginnerAccount = usingV2
+      ? accounts.some(
+          (account) =>
+            account.best_for_category === "beginners"
+        )
+      : accounts.some((account) =>
+          cleanText(
+            account.best_for_en || account.best_for
+          ).toLowerCase().includes("begin")
+        ) ||
+        cleanText(
+          broker.best_for_en || broker.best_for
+        ).toLowerCase().includes("begin");
 
-  const leftScore =
-    (leftDeposit <= 50 ? 2 : 0) +
-    (leftBestFor.includes("begin") ? 2 : 0) +
-    hasIslamicScore(left.islamic_account) +
-    hasArabicSupportScore(left.arabic_support);
+    const minimumText = minimumAccountDeposit(
+      accounts,
+      usingV2 ? null : broker.min_deposit
+    );
 
-  const rightScore =
-    (rightDeposit <= 50 ? 2 : 0) +
-    (rightBestFor.includes("begin") ? 2 : 0) +
-    hasIslamicScore(right.islamic_account) +
-    hasArabicSupportScore(right.arabic_support);
+    const match = minimumText
+      .replace(/,/g, "")
+      .match(/\d+(?:\.\d+)?/);
+
+    const minimum =
+      minimumText === "Not specified" || !match
+        ? null
+        : Number(match[0]);
+
+    return (
+      (hasBeginnerAccount ? 2 : 0) +
+      (minimum !== null && minimum <= 50 ? 2 : 0) +
+      hasIslamicScore(broker.islamic_account) +
+      hasArabicSupportScore(broker.arabic_support)
+    );
+  };
+
+  const leftScore = calculateScore(
+    left,
+    leftAccounts
+  );
+
+  const rightScore = calculateScore(
+    right,
+    rightAccounts
+  );
 
   if (leftScore > rightScore) {
     return brokerName(left);
@@ -414,6 +793,7 @@ function getBeginnerWinner(left: Broker, right: Broker) {
 
   return "Tie";
 }
+
 
 function getScalpingWinner(
   left: Broker,
@@ -818,23 +1198,25 @@ function ExpandableText({
     notFound();
   }
 
-  const { data: accountsData } = await supabase
-    .from("broker_accounts")
-    .select("*")
-    .in("broker_id", [left.id, right.id])
-    .order("sort_order", {
-      ascending: true,
-    });
+  
+  /* =====================================================
+     MIXED V1 / V2 BROKER ACCOUNTS
+     Each broker uses its approved data source.
+     Capital.com remains V1.
+     ===================================================== */
 
-  const accounts = (accountsData ?? []) as BrokerAccount[];
+  const [leftAccountData, rightAccountData] =
+    await Promise.all([
+      getComparisonBrokerAccountsEN(left),
+      getComparisonBrokerAccountsEN(right),
+    ]);
 
-  const leftAccounts = accounts.filter(
-    (account) => account.broker_id === left.id
-  );
+  const leftAccounts = leftAccountData.accounts;
+  const rightAccounts = rightAccountData.accounts;
 
-  const rightAccounts = accounts.filter(
-    (account) => account.broker_id === right.id
-  );
+  const leftV2 = leftAccountData.useV2;
+  const rightV2 = rightAccountData.useV2;
+
 
   const { data: licencesData } = await supabase
     .from("broker_licenses")
@@ -910,17 +1292,110 @@ for (const regulator of regulatorsData ?? []) {
   const leftName = brokerName(left);
   const rightName = brokerName(right);
 
-  const leftMinimumDeposit =
-  minimumAccountDeposit(
+  
+  /* =====================================================
+     ACCOUNT DATA — MIXED V1 / V2
+     Shared by desktop and mobile.
+     ===================================================== */
+
+  const leftMinimumDeposit = minimumAccountDeposit(
     leftAccounts,
-    left.min_deposit
+    leftV2 ? null : left.min_deposit
   );
 
-const rightMinimumDeposit =
-  minimumAccountDeposit(
+  const rightMinimumDeposit = minimumAccountDeposit(
     rightAccounts,
-    right.min_deposit
+    rightV2 ? null : right.min_deposit
   );
+
+  // First account according to sort_order.
+  const leftReferenceAccount =
+    leftAccounts[0] ?? null;
+
+  const rightReferenceAccount =
+    rightAccounts[0] ?? null;
+
+  // English account value, falling back to V1 value.
+  const accountField = (
+    account: BrokerAccount | null,
+    englishField:
+      | "spread_en"
+      | "commission_en"
+      | "execution_type_en",
+    originalField:
+      | "spread"
+      | "commission"
+      | "execution_type"
+  ): string => {
+    if (!account) return "Not specified";
+
+    return (
+      cleanText(
+        account[englishField] ||
+        account[originalField]
+      ) || "Not specified"
+    );
+  };
+
+  // One set of comparison rows for both layouts.
+  const accountFactorRows = [
+    {
+      label: "Reference Account",
+      leftValue:
+        leftReferenceAccount?.account_name_en ||
+        leftReferenceAccount?.account_name ||
+        "Not specified",
+      rightValue:
+        rightReferenceAccount?.account_name_en ||
+        rightReferenceAccount?.account_name ||
+        "Not specified",
+    },
+    {
+      label: "Minimum Deposit",
+      leftValue: leftMinimumDeposit,
+      rightValue: rightMinimumDeposit,
+    },
+    {
+      label: "Account Spread",
+      leftValue: accountField(
+        leftReferenceAccount,
+        "spread_en",
+        "spread"
+      ),
+      rightValue: accountField(
+        rightReferenceAccount,
+        "spread_en",
+        "spread"
+      ),
+    },
+    {
+      label: "Account Commission",
+      leftValue: accountField(
+        leftReferenceAccount,
+        "commission_en",
+        "commission"
+      ),
+      rightValue: accountField(
+        rightReferenceAccount,
+        "commission_en",
+        "commission"
+      ),
+    },
+    {
+      label: "Order Execution",
+      leftValue: accountField(
+        leftReferenceAccount,
+        "execution_type_en",
+        "execution_type"
+      ),
+      rightValue: accountField(
+        rightReferenceAccount,
+        "execution_type_en",
+        "execution_type"
+      ),
+    },
+  ];
+
 
   const leftRating = left.rating ?? 0;
   const rightRating = right.rating ?? 0;
@@ -951,9 +1426,11 @@ const rightMinimumDeposit =
   );
 
   const beginnerWinner = getBeginnerWinner(
-    left,
-    right
-  );
+  left,
+  right,
+  leftAccounts,
+  rightAccounts
+);
 
   const scalpingWinner = getScalpingWinner(
     left,
@@ -1965,99 +2442,9 @@ const decisionBrokers = [
               </div>
             </div>
 
-            {[
-              {
-  label: "Main Account",
-  leftValue:
-    leftAccounts[0]?.account_name_en ||
-    leftAccounts[0]?.account_name ||
-    "Not specified",
-  rightValue:
-    rightAccounts[0]?.account_name_en ||
-    rightAccounts[0]?.account_name ||
-    "Not specified",
-},
-              {
-  label: "Minimum Deposit",
-  leftValue: leftMinimumDeposit,
-  rightValue: rightMinimumDeposit,
-},
-              {
-                label: "Starting Spread",
-                leftValue:
-                  leftAccounts.find((account) =>
-                    cleanText(
-                      account.spread_en || account.spread
-                    )
-                  )?.spread_en ||
-                  leftAccounts.find((account) =>
-                    cleanText(account.spread)
-                  )?.spread ||
-                  cleanText(left.spreads_en || left.spreads) ||
-                  "Not specified",
-                rightValue:
-                  rightAccounts.find((account) =>
-                    cleanText(
-                      account.spread_en || account.spread
-                    )
-                  )?.spread_en ||
-                  rightAccounts.find((account) =>
-                    cleanText(account.spread)
-                  )?.spread ||
-                  cleanText(right.spreads_en || right.spreads) ||
-                  "Not specified",
-              },
-              {
-                label: "Trading Commission",
-                leftValue:
-                  leftAccounts.find((account) =>
-                    cleanText(
-                      account.commission_en ||
-                        account.commission
-                    )
-                  )?.commission_en ||
-                  leftAccounts.find((account) =>
-                    cleanText(account.commission)
-                  )?.commission ||
-                  "Not specified",
-                rightValue:
-                  rightAccounts.find((account) =>
-                    cleanText(
-                      account.commission_en ||
-                        account.commission
-                    )
-                  )?.commission_en ||
-                  rightAccounts.find((account) =>
-                    cleanText(account.commission)
-                  )?.commission ||
-                  "Not specified",
-              },
-              {
-                label: "Order Execution",
-                leftValue:
-                  leftAccounts.find((account) =>
-                    cleanText(
-                      account.execution_type_en ||
-                        account.execution_type
-                    )
-                  )?.execution_type_en ||
-                  leftAccounts.find((account) =>
-                    cleanText(account.execution_type)
-                  )?.execution_type ||
-                  "Not specified",
-                rightValue:
-                  rightAccounts.find((account) =>
-                    cleanText(
-                      account.execution_type_en ||
-                        account.execution_type
-                    )
-                  )?.execution_type_en ||
-                  rightAccounts.find((account) =>
-                    cleanText(account.execution_type)
-                  )?.execution_type ||
-                  "Not specified",
-              },
-            ].map((row) => (
+            
+{accountFactorRows.map((row) => (
+
               <div
                 key={row.label}
                 className="grid grid-cols-[1.15fr_1fr_1fr] border-t border-[#dbeafe] text-sm"
@@ -2152,10 +2539,7 @@ const decisionBrokers = [
           account.account_name ||
           "Trading Account";
 
-        const accountPath = accountSlug(
-          account.account_name_en ||
-            account.account_name
-        );
+        
 
         return (
           <article
@@ -2169,7 +2553,9 @@ const decisionBrokers = [
             {/* Account name */}
             <div className="min-h-[62px] border-b border-slate-100 pb-3">
               <Link
-                href={`/en/brokers/${broker.slug}/accounts/${accountPath}`}
+                
+href={comparisonAccountHref(broker, account)}
+
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-lg font-black leading-6 text-[#0f172a] transition hover:text-brand-500"
@@ -2238,7 +2624,9 @@ const decisionBrokers = [
             {/* Account details */}
             <div className="mt-auto pt-4">
               <Link
-                href={`/en/brokers/${broker.slug}/accounts/${accountPath}`}
+                
+href={comparisonAccountHref(broker, account)}
+
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-xs font-black text-brand-500 transition hover:underline"
@@ -2310,7 +2698,9 @@ const decisionBrokers = [
       <p className="mt-2 text-[12px] leading-6 text-slate-600">
         {scalpingWinner === "Tie"
           ? "Neither broker has a decisive cost advantage, so compare the conditions of each account."
-          : `${scalpingWinner} shows an advantage in trading costs or spreads based on the available data.`}
+          
+: `${scalpingWinner} leads on the overall fees rating, but this does not necessarily mean lower costs for every account.`
+}
       </p>
     </div>
 
@@ -2393,97 +2783,9 @@ const decisionBrokers = [
         </div>
       </div>
 
-      {[
-        {
-  label: "Main Account",
-  leftValue:
-    leftAccounts[0]?.account_name_en ||
-    leftAccounts[0]?.account_name ||
-    "Not specified",
-  rightValue:
-    rightAccounts[0]?.account_name_en ||
-    rightAccounts[0]?.account_name ||
-    "Not specified",
-},
-        {
-  label: "Minimum Deposit",
-  leftValue: leftMinimumDeposit,
-  rightValue: rightMinimumDeposit,
-},
-        {
-          label: "Spread",
-          leftValue:
-            leftAccounts.find((account) =>
-              cleanText(account.spread_en || account.spread)
-            )?.spread_en ||
-            leftAccounts.find((account) =>
-              cleanText(account.spread)
-            )?.spread ||
-            cleanText(left.spreads_en) ||
-            "Not specified",
-          rightValue:
-            rightAccounts.find((account) =>
-              cleanText(account.spread_en || account.spread)
-            )?.spread_en ||
-            rightAccounts.find((account) =>
-              cleanText(account.spread)
-            )?.spread ||
-            cleanText(right.spreads_en) ||
-            "Not specified",
-        },
-        {
-          label: "Commission",
-          leftValue:
-            leftAccounts.find((account) =>
-              cleanText(
-                account.commission_en ||
-                  account.commission
-              )
-            )?.commission_en ||
-            leftAccounts.find((account) =>
-              cleanText(account.commission)
-            )?.commission ||
-            cleanText(left.fees_en) ||
-            "Not specified",
-          rightValue:
-            rightAccounts.find((account) =>
-              cleanText(
-                account.commission_en ||
-                  account.commission
-              )
-            )?.commission_en ||
-            rightAccounts.find((account) =>
-              cleanText(account.commission)
-            )?.commission ||
-            cleanText(right.fees_en) ||
-            "Not specified",
-        },
-        {
-          label: "Execution",
-          leftValue:
-            leftAccounts.find((account) =>
-              cleanText(
-                account.execution_type_en ||
-                  account.execution_type
-              )
-            )?.execution_type_en ||
-            leftAccounts.find((account) =>
-              cleanText(account.execution_type)
-            )?.execution_type ||
-            "Not specified",
-          rightValue:
-            rightAccounts.find((account) =>
-              cleanText(
-                account.execution_type_en ||
-                  account.execution_type
-              )
-            )?.execution_type_en ||
-            rightAccounts.find((account) =>
-              cleanText(account.execution_type)
-            )?.execution_type ||
-            "Not specified",
-        },
-      ].map((row) => (
+      
+{accountFactorRows.map((row) => (
+
         <div
           key={row.label}
           className="grid grid-cols-[minmax(0,1fr)_80px_80px] items-stretch border-t border-[#dbeafe]"
@@ -2587,7 +2889,9 @@ const decisionBrokers = [
                         <div className="flex items-start justify-between gap-3">
                           <div className="min-w-0">
                             <Link
-                              href={`/en/brokers/${broker.slug}/accounts/${accountPath}`}
+                              
+href={comparisonAccountHref(broker, account)}
+
                               className="break-words text-[15px] font-black leading-6 text-[#0f172a] transition hover:text-brand-500"
                             >
                               {accountName}
@@ -2600,7 +2904,9 @@ const decisionBrokers = [
                           </div>
 
                           <Link
-                            href={`/en/brokers/${broker.slug}/accounts/${accountPath}`}
+                            
+href={comparisonAccountHref(broker, account)}
+
                             aria-label={`${accountName} account details`}
                             className="shrink-0 rounded-full bg-[#eff6ff] px-3 py-1.5 text-[10px] font-black text-brand-500"
                           >
