@@ -278,6 +278,7 @@ async function getBroker(
   return null;
 }
 
+
 async function getRelatedBrokers(
   currentSlug: string
 ): Promise<RelatedBroker[]> {
@@ -285,16 +286,34 @@ async function getRelatedBrokers(
 
   const { data, error } = await supabase
     .from("brokers")
-    .select("id, name, name_en, slug, rating, logo, real_account_url, account_opening_status")
+    .select(`
+      id,
+      name,
+      name_en,
+      slug,
+      rating,
+      logo,
+      real_account_url,
+      account_opening_status
+    `)
     .eq("publication_status", "published")
+    .eq("is_full_review", true)
+    .not("slug", "is", null)
     .neq("slug", currentSlug)
     .order("id", { ascending: true })
     .limit(30);
 
-  if (error || !data) return [];
+  if (error || !data) {
+    console.error(
+      "[Broker EN Related Comparisons]",
+      error?.message
+    );
+    return [];
+  }
 
   return data as RelatedBroker[];
 }
+
 
 async function getTopRatedAlternatives(
   currentSlug: string
