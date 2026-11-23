@@ -948,9 +948,9 @@ const collectionPageSchema = {
 },
 {
   y: "Nov 2026",
-  h: 3970.31,
-  l: 3891.26,
-  e: "Latest update: Nov 3",
+  h: 4148.31,
+  l: 3502.26,
+  e: "Latest update: Nov 23",
   special: true,
 },
 
