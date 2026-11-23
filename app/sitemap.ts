@@ -1,12 +1,15 @@
 import { createClient } from "@/lib/supabase/server";
 import type { MetadataRoute } from "next";
+
 import {
   BASE_URL,
   TOOL_SLUGS,
   STATIC_PAGES,
   STATIC_PAGES_EN,
+  ARTICLE_PAGES,
   EVENT_SLUGS,
 } from "@/lib/site-map-data";
+
 
 // فعّلها لاحقًا لما تجهز صفحات الدول الإنجليزية
 const ENABLE_EN_COUNTRY_PAGES = false;
@@ -823,6 +826,81 @@ const countryPagesEN: MetadataRoute.Sitemap =
     lastModified: LAST_SIGNIFICANT_UPDATE,
   }));
 
+
+/* =====================================================
+   ARTICLES — ARABIC / ENGLISH SITEMAP
+
+   Generated from ARTICLE_PAGES in site-map-data.ts.
+
+   Only published language versions are included.
+
+   Reciprocal hreflang is added only when
+   both language versions are published.
+   ===================================================== */
+
+const articlePages: MetadataRoute.Sitemap =
+  ARTICLE_PAGES.flatMap((article) => {
+    const cleanSlug = article.slug
+      .trim()
+      .replace(/^\/+|\/+$/g, "");
+
+    if (!cleanSlug || (!article.ar && !article.en)) {
+      return [];
+    }
+
+    const arabicUrl =
+      `${BASE_URL}/articles/${cleanSlug}`;
+
+    const englishUrl =
+      `${BASE_URL}/en/articles/${cleanSlug}`;
+
+    const parsedDate = new Date(
+      `${article.lastModified}T00:00:00.000Z`
+    );
+
+    const lastModified =
+      Number.isNaN(parsedDate.getTime())
+        ? LAST_SIGNIFICANT_UPDATE
+        : parsedDate;
+
+    const hasBothLanguages =
+      article.ar && article.en;
+
+    const alternates = hasBothLanguages
+      ? {
+          languages: {
+            ar: arabicUrl,
+            en: englishUrl,
+          },
+        }
+      : undefined;
+
+    const pages: MetadataRoute.Sitemap = [];
+
+    if (article.ar) {
+      pages.push({
+        url: arabicUrl,
+        lastModified,
+        ...(alternates ? { alternates } : {}),
+      });
+    }
+
+    if (article.en) {
+      pages.push({
+        url: englishUrl,
+        lastModified,
+        ...(alternates ? { alternates } : {}),
+      });
+    }
+
+    return pages;
+  });
+
+console.log(
+  `[Sitemap] Articles: ${articlePages.length} URLs`
+);
+
+
   const eventPages = EVENT_SLUGS.map((slug) => ({
     url: `${BASE_URL}/events/${slug}`,
     lastModified: LAST_SIGNIFICANT_UPDATE,
@@ -909,10 +987,16 @@ const countryPagesEN: MetadataRoute.Sitemap =
   ];
 
 
-  return [
-    ...staticPages,
-    ...staticPagesEN,
-    ...toolPages,
+  
+return [
+  ...staticPages,
+  ...staticPagesEN,
+
+  // Articles — Arabic & English
+  ...articlePages,
+
+  ...toolPages,
+
     ...toolPagesEN,
     ...countryPages,
     ...countryPagesEN,

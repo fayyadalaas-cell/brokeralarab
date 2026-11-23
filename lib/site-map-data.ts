@@ -151,6 +151,38 @@ export const STATIC_PAGES_EN = [
 ];
 
 
+/* =========================================================
+   ARTICLES — CENTRAL SITEMAP REGISTRY
+
+   Add every newly published article here.
+
+   The sitemap automatically generates:
+   - Arabic article URL
+   - English article URL
+   - Accurate lastModified date
+   - Reciprocal hreflang when both languages exist
+
+   Set ar / en to true only when the actual
+   corresponding page is published and indexable.
+   ========================================================= */
+
+export type ArticleSitemapEntry = {
+  slug: string;
+  lastModified: string;
+  ar: boolean;
+  en: boolean;
+};
+
+export const ARTICLE_PAGES: ArticleSitemapEntry[] = [
+  {
+    slug: "gold-price-crashes-history",
+    lastModified: "2026-11-23",
+    ar: true,
+    en: true,
+  },
+];
+
+
 export const EVENT_SLUGS = [
   "forex-expo-dubai-2026",
   "forex-traders-expo-summit-dubai-2026", // New - November 2026
