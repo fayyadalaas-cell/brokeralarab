@@ -1255,17 +1255,7 @@ style={
     </div>
 </section>
 
-{/* ============================================================
-    EN HOMEPAGE TECHNICAL ANALYSIS
-    INSTRUMENT SELECTOR + 7 TIMEFRAMES + CLASSIC PIVOT
-============================================================ */}
 
-{/* TEMPORARILY DISABLED — TECHNICAL ANALYSIS UNDER REVIEW */}
-
-  <HomeTechnicalSnapshotEn
-    initialTechnical={homeTechnical}
-    initialPivot={homePivot}
-  />
 
 
 {/* EXNESS PREMIUM BANNER */}
@@ -2012,7 +2002,17 @@ style={
 
 </section>
 
+{/* ============================================================
+    EN HOMEPAGE TECHNICAL ANALYSIS
+    INSTRUMENT SELECTOR + 7 TIMEFRAMES + CLASSIC PIVOT
+============================================================ */}
 
+{/* TEMPORARILY DISABLED — TECHNICAL ANALYSIS UNDER REVIEW */}
+
+  <HomeTechnicalSnapshotEn
+    initialTechnical={homeTechnical}
+    initialPivot={homePivot}
+  />
 
 {/* ACCOUNT TYPES HOME SECTION - COMPACT PREMIUM ENGLISH */}
 <section className="mx-auto w-full max-w-7xl px-0 py-2.5 sm:py-3">

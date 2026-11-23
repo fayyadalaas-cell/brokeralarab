@@ -1232,15 +1232,7 @@ const allHeroBrokers = heroBrokerIds
     </div>
 </section>
 
-{/* ============================================================
-    HOME TECHNICAL ANALYSIS PREVIEW
-    GOLD H1 + CLASSIC PIVOT
-============================================================ */}
 
-<HomeTechnicalSnapshot
-  initialTechnical={homeTechnical}
-  initialPivot={homePivot}
-/>
 
 {/* TOP COMPARISONS - PREMIUM RESPONSIVE */}
 <section className="mx-auto w-full max-w-7xl px-0 py-2.5 sm:py-3">
@@ -1962,7 +1954,15 @@ const allHeroBrokers = heroBrokerIds
 
 </section>
 
+{/* ============================================================
+    HOME TECHNICAL ANALYSIS PREVIEW
+    GOLD H1 + CLASSIC PIVOT
+============================================================ */}
 
+<HomeTechnicalSnapshot
+  initialTechnical={homeTechnical}
+  initialPivot={homePivot}
+/>
 
 {/* ACCOUNT TYPES HOME SECTION */}
 <section className="mx-auto w-full max-w-7xl px-0 py-2.5 sm:py-3">
