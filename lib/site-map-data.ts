@@ -180,6 +180,12 @@ export const ARTICLE_PAGES: ArticleSitemapEntry[] = [
     ar: true,
     en: true,
   },
+  {
+    slug: "gold-reaction-fed-decisions",
+    lastModified: "2026-11-23",
+    ar: true,
+    en: true,
+  },
 ];
 
 
