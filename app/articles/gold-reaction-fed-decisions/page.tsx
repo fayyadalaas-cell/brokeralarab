@@ -53,7 +53,7 @@ const HERO_IMAGE =
 const ARTICLE_READY = true;
 const HERO_IMAGE_READY = true;
 const ENGLISH_VERSION_READY = true;
-const FEATURED_BROKERS_READY = false;
+const FEATURED_BROKERS_READY = true;
 
 export const metadata: Metadata = {
   title: ARTICLE.seoTitle,
