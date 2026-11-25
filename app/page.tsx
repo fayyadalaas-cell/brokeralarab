@@ -1057,6 +1057,36 @@ const allHeroBrokers = heroBrokerIds
 />
 </section>
 
+{/* EXNESS PREMIUM BANNER */}
+<div className="mx-auto -my-1 flex w-full max-w-7xl justify-center sm:-my-1.5 sm:py-0">
+  <a
+    href="https://one.toexness.com/a/hhmbah9f13"
+    target="_blank"
+    rel="sponsored noopener noreferrer"
+    aria-label="إعلان Exness"
+    className="
+      group block w-full max-w-[900px]
+      overflow-hidden rounded-[14px]
+      border border-slate-200/80
+      bg-white p-[5px]
+      shadow-[0_8px_24px_rgba(15,23,42,0.075)]
+      transition duration-300
+      hover:-translate-y-[1px]
+      hover:border-slate-300
+      hover:shadow-[0_12px_30px_rgba(15,23,42,0.10)]
+      sm:max-w-[820px]
+    "
+  >
+    <img
+      src="/banners/AR_Spreads_50_lower_728x90.jpg"
+      width={728}
+      height={90}
+      alt="إعلان Exness للتداول في الأسواق المالية"
+      className="block w-full rounded-[10px] !h-auto !object-contain"
+    />
+  </a>
+</div>
+
   {/* HOW WE RATE - COMPACT PREMIUM */}
 <section className="mx-auto w-full max-w-7xl px-0 py-2.5 sm:py-3">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_14px_40px_rgba(15,23,42,0.055)]">
@@ -1654,6 +1684,38 @@ const allHeroBrokers = heroBrokerIds
   </div>
 </section>
 
+{/* XS PREMIUM BANNER */}
+<div className="mx-auto -my-1 flex w-full max-w-7xl justify-center sm:-my-1.5 sm:py-0">
+  <a
+    href="https://my.xs.com/links/go/5696"
+    target="_blank"
+    rel="sponsored noopener noreferrer"
+    aria-label="إعلان XS.com"
+    className="
+      group block w-full max-w-[900px]
+      overflow-hidden rounded-[14px]
+      border border-slate-200/80
+      bg-white p-[5px]
+      shadow-[0_8px_24px_rgba(15,23,42,0.075)]
+      transition duration-300
+      hover:-translate-y-[1px]
+      hover:border-slate-300
+      hover:shadow-[0_12px_30px_rgba(15,23,42,0.10)]
+      sm:max-w-[820px]
+    "
+  >
+    <img
+      src="/banners/xsbannerar.jpg"
+      width="728"
+      height="90"
+      alt="إعلان XS.com للتداول في الأسواق المالية"
+      className="block h-auto w-full rounded-[10px] object-contain sm:h-[82px] sm:object-cover"
+    />
+  </a>
+</div>
+
+
+
 {/* =========================================================
     COUNTRIES DIRECTORY - COMPACT PREMIUM
 ========================================================= */}
@@ -1964,6 +2026,36 @@ const allHeroBrokers = heroBrokerIds
   initialPivot={homePivot}
 />
 
+{/* PEPPERSTONE PREMIUM BANNER */}
+<div className="mx-auto -my-1 flex w-full max-w-7xl justify-center sm:-my-1.5 sm:py-0">
+  <a
+    href="https://track.pepperstonepartners.com/visit/?bta=44176&nci=6687"
+    target="_blank"
+    rel="sponsored noopener noreferrer"
+    aria-label="زيارة Pepperstone"
+    className="
+      group block w-full max-w-[900px]
+      overflow-hidden rounded-[14px]
+      border border-slate-200/80
+      bg-white p-[5px]
+      shadow-[0_8px_24px_rgba(15,23,42,0.075)]
+      transition duration-300
+      hover:-translate-y-[1px]
+      hover:border-slate-300
+      hover:shadow-[0_12px_30px_rgba(15,23,42,0.10)]
+      sm:max-w-[820px]
+    "
+  >
+    <img
+      src="https://pepperstonepartners.ck-cdn.com/tn/serve/?cid=687946"
+      width="728"
+      height="90"
+      alt="Pepperstone"
+      className="block h-auto w-full rounded-[10px] object-contain sm:h-[82px] sm:object-cover"
+    />
+  </a>
+</div>
+
 {/* ACCOUNT TYPES HOME SECTION */}
 <section className="mx-auto w-full max-w-7xl px-0 py-2.5 sm:py-3">
   <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_12px_34px_rgba(15,23,42,0.045)]">
@@ -2122,35 +2214,7 @@ const allHeroBrokers = heroBrokerIds
   </div>
 </section>
 
-{/* PEPPERSTONE PREMIUM BANNER */}
-<div className="mx-auto -my-1 flex w-full max-w-7xl justify-center sm:-my-1.5 sm:py-0">
-  <a
-    href="https://track.pepperstonepartners.com/visit/?bta=44176&nci=6687"
-    target="_blank"
-    rel="sponsored noopener noreferrer"
-    aria-label="زيارة Pepperstone"
-    className="
-      group block w-full max-w-[900px]
-      overflow-hidden rounded-[14px]
-      border border-slate-200/80
-      bg-white p-[5px]
-      shadow-[0_8px_24px_rgba(15,23,42,0.075)]
-      transition duration-300
-      hover:-translate-y-[1px]
-      hover:border-slate-300
-      hover:shadow-[0_12px_30px_rgba(15,23,42,0.10)]
-      sm:max-w-[820px]
-    "
-  >
-    <img
-      src="https://pepperstonepartners.ck-cdn.com/tn/serve/?cid=687946"
-      width="728"
-      height="90"
-      alt="Pepperstone"
-      className="block h-auto w-full rounded-[10px] object-contain sm:h-[82px] sm:object-cover"
-    />
-  </a>
-</div>
+
 
 {/* WHY TRUST BROKER ALARAB */}
 <section className="mx-auto w-full max-w-7xl px-0 py-2.5 sm:py-3">
@@ -3309,35 +3373,34 @@ const allHeroBrokers = heroBrokerIds
 </div>
 </div>
 
-{/* XS.COM SPONSORED SIDEBAR AD */}
-<div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white p-2 shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
+{/* CAPITAL.COM SPONSORED SIDEBAR AD */}
+<div className="rounded-[22px] border border-slate-200 bg-white p-2 shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
+
   <div className="mb-2 flex items-center justify-between px-1">
     <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[8px] font-black text-slate-500">
       إعلان
     </span>
 
     <span className="text-[10px] font-bold text-slate-600">
-      XS.com
+      Capital.com
     </span>
   </div>
 
   <a
-    href="https://my.xs.com/links/go/5696"
+    href="https://go.capital.com/visit/?bta=107752&nci=7031"
     target="_blank"
-    rel="nofollow sponsored noopener noreferrer"
-    aria-label="فتح حساب تداول مع XS.com"
-    className="group block overflow-hidden rounded-[16px] bg-white"
+    rel="sponsored noopener noreferrer"
+    className="block w-full"
   >
     <img
-      src="/brokers/xs-banner-ar.gif"
-      width="250"
-      height="360"
-      alt="إعلان XS.com للتداول في الأسواق المالية"
-      title="فتح حساب تداول مع XS.com"
-      loading="lazy"
-      className="block aspect-[25/36] w-full object-fill transition duration-300 group-hover:scale-[1.02]"
+      src="/banners/capitalbannerar.png"
+      alt="إعلان Capital.com"
+      width={300}
+      height={250}
+      className="!block !w-full !h-auto !max-w-full !max-h-none !object-contain !object-center !transform-none !scale-100"
     />
   </a>
+
 </div>
 
         {/* FOREX TERMS */}
