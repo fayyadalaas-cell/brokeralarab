@@ -186,6 +186,12 @@ export const ARTICLE_PAGES: ArticleSitemapEntry[] = [
     ar: true,
     en: true,
   },
+  {
+    slug: "open-forex-account-saudi-arabia",
+    lastModified: "2026-11-24",
+    ar: true,
+    en: true,
+  },
 ];
 
 
