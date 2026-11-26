@@ -529,84 +529,83 @@ export default function MarketHoursSidebar() {
       : "";
 
   return (
-    <div
-      dir="rtl"
-      className="
-        overflow-hidden rounded-[22px]
-        border border-slate-200
-        bg-white
-        shadow-[0_10px_28px_rgba(15,23,42,0.055)]
-      "
+  <div
+    dir="rtl"
+    className="flex h-full min-w-0 flex-1 flex-col"
+  >
+
+    {/* =====================================================
+    EXTERNAL SECTION HEADER
+====================================================== */}
+
+<div className="mb-4 flex min-h-[44px] shrink-0 items-center">
+
+  <h2 className="min-w-0 text-[24px] font-black leading-8 tracking-tight text-[#10233f]">
+
+    <Link
+      href="/tools/market-hours"
+      className="group/title inline-flex items-center gap-2 transition duration-200 hover:text-brand-600"
     >
-      {/* HEADER */}
-      <div className="border-b border-slate-100 bg-[linear-gradient(135deg,#f8fbff_0%,#eef5ff_100%)] px-4 pb-3 pt-3">
 
-        <div className="flex items-center justify-between gap-3">
+      حالة الأسواق
 
-          <div className="flex min-w-0 items-center gap-3">
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+        className="shrink-0 transition-transform duration-200 group-hover/title:-translate-x-1"
+      >
+        <path d="m15 18-6-6 6-6" />
+      </svg>
 
-            {/* MINI MARKET CLOCK */}
-<div className="relative flex h-12 w-12 shrink-0 items-center justify-center">
+    </Link>
 
-  {/* DARK OUTER SHELL */}
-  <div className="absolute inset-0 rounded-full bg-[#0a1d36] shadow-[0_6px_16px_rgba(15,23,42,0.22)]" />
-
-  {/* OUTER RING */}
-  <div className="absolute inset-[3px] rounded-full border border-blue-400/50" />
-
-  {/* INNER FACE */}
-  <div className="absolute inset-[7px] rounded-full bg-[#102a4c]" />
-
-  {/* BLUE SESSION ARC */}
-  <span className="absolute right-[5px] top-[7px] h-[14px] w-[14px] rounded-tr-full border-r-[3px] border-t-[3px] border-blue-400" />
-
-  {/* CYAN SESSION ARC */}
-  <span className="absolute bottom-[6px] left-[6px] h-[13px] w-[13px] rounded-bl-full border-b-[3px] border-l-[3px] border-cyan-400" />
-
-  {/* CENTER */}
-  <div className="relative z-10 flex h-[28px] w-[28px] items-center justify-center rounded-full border border-white/10 bg-[#07182d] shadow-[0_2px_8px_rgba(0,0,0,0.22)]">
-
-    <span
-      dir="ltr"
-      className="text-[10px] font-black leading-none tracking-[-0.04em] text-white"
-    >
-      24H
-    </span>
-
-  </div>
-
-  {/* CURRENT TIME DOT */}
-  <span className="absolute bottom-[8px] right-[7px] z-20 h-[5px] w-[5px] rounded-full border border-[#0a1d36] bg-rose-400 shadow-[0_0_6px_rgba(251,113,133,0.7)]" />
+  </h2>
 
 </div>
 
-            <div className="min-w-0">
+    {/* =====================================================
+        MARKET HOURS CARD
+    ====================================================== */}
 
-              <div className="flex items-center gap-2">
+    <div
+      className="
+        flex min-h-0 flex-1 flex-col justify-between
+        overflow-hidden rounded-[18px]
+        border border-slate-200
+        bg-white
+      "
+    >
 
-                <h3 className="text-[14px] font-black text-[#07111f]">
-                  حالة الأسواق
-                </h3>
+      {/* LOCAL TIME HEADER */}
 
-                <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[7px] font-black text-emerald-700">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                  LIVE
-                </span>
+      <div className="border-b border-slate-100 bg-[#f8fafc] px-3 pb-3 pt-3">
 
-              </div>
+        <div className="mb-2 flex items-center justify-between gap-2">
 
-              <p className="mt-0.5 text-[8.5px] font-semibold text-slate-500">
-                حسب توقيتك المحلي
-              </p>
+          <span className="text-[11px] font-semibold text-slate-500">
+            حسب توقيتك المحلي
+          </span>
 
-            </div>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-[8px] font-black text-emerald-700">
 
-          </div>
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+
+            LIVE
+
+          </span>
 
         </div>
 
         {/* TIME */}
-        <div className="mt-2.5 flex items-center justify-between rounded-[13px] border border-brand-100 bg-white px-3 py-2 shadow-[0_3px_10px_rgba(15,23,42,0.05)]">
+
+        <div className="flex items-center justify-between rounded-[12px] border border-slate-200 bg-white px-3 py-2">
 
           <div className="text-right">
 
@@ -651,11 +650,11 @@ export default function MarketHoursSidebar() {
         <>
           {/* FEATURED MARKET */}
 {featuredMarket && (
-  <div className="px-3 pb-2 pt-3">
+  <div className="px-3 pb-1.5 pt-2">
     <div
       className={`
-        relative overflow-hidden rounded-[18px] border
-        px-3.5 py-3.5
+        relative overflow-hidden rounded-[16px] border
+        px-3 py-2.5
         ${
           featuredMarket.isOpen
             ? "border-emerald-200 bg-[linear-gradient(135deg,#ffffff_0%,#f1fcf7_100%)] shadow-[0_6px_18px_rgba(16,185,129,0.07)]"
@@ -726,7 +725,7 @@ export default function MarketHoursSidebar() {
 
       </div>
 
-      <div className="mt-3 border-t border-emerald-100/70 pt-2.5">
+      <div className="mt-2 border-t border-emerald-100/70 pt-1.5">
         <div className="flex items-center justify-between gap-3">
 
           <span className="text-[8px] font-bold text-slate-400">
@@ -755,7 +754,7 @@ export default function MarketHoursSidebar() {
 )}
 
 {/* OTHER MARKETS */}
-<div className="px-3 pb-2.5 pt-1">
+<div className="px-3 pb-1.5 pt-1">
   <div className="overflow-hidden rounded-[16px] border border-slate-100 bg-[#fbfcfe]">
 
     {marketStates
@@ -766,21 +765,21 @@ export default function MarketHoursSidebar() {
       )
       .map((item, index, array) => (
         <div
-          key={item.market.id}
-          className={`
-            px-3 py-2.5
-            ${
-              index !== array.length - 1
-                ? "border-b border-slate-100"
-                : ""
-            }
-            ${
-              item.isOpen
-                ? "bg-emerald-50/40"
-                : ""
-            }
-          `}
-        >
+  key={item.market.id}
+  className={`
+    px-3 py-2
+    ${
+      index !== array.length - 1
+        ? "border-b border-slate-100"
+        : ""
+    }
+    ${
+      item.isOpen
+        ? "bg-emerald-50/40"
+        : ""
+    }
+  `}
+>
           {/* TOP ROW */}
           <div className="flex items-center justify-between gap-3">
 
@@ -845,7 +844,7 @@ export default function MarketHoursSidebar() {
           </div>
 
           {/* COUNTDOWN */}
-          <div className="mt-2 flex items-center justify-between pr-[38px]">
+          <div className="mt-1 flex items-center justify-between pr-[38px]">
 
             <span className="text-[7px] font-bold text-slate-400">
               {item.nextChangeType === "close"
@@ -876,9 +875,9 @@ export default function MarketHoursSidebar() {
 
 {/* NEXT MARKET */}
 {nextMarket && (
-  <div className="border-t border-slate-100 bg-[#fbfdff] px-3 py-2.5">
+  <div className="border-t border-slate-100 bg-[#fbfdff] px-3 py-1.5">
 
-    <div className="flex items-center justify-between gap-3 rounded-[11px] bg-brand-50/45 px-2.5 py-2">
+    <div className="flex items-center justify-between gap-3 rounded-[11px] bg-brand-50/45 px-2.5 py-1.5">
 
       <div className="flex min-w-0 items-center gap-2.5">
 
@@ -927,12 +926,12 @@ export default function MarketHoursSidebar() {
 )}
 
           {/* CTA */}
-          <div className="border-t border-slate-100 bg-white p-3">
+<div className="border-t border-slate-100 bg-white px-3 py-2">
 
-            <Link
-              href="/tools/market-hours"
-              className="group flex h-[44px] w-full items-center justify-center gap-2 rounded-[13px] bg-brand-600 px-4 text-[10px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.16)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-700"
-            >
+  <Link
+    href="/tools/market-hours"
+    className="group flex h-[40px] w-full items-center justify-center gap-2 rounded-[11px] bg-brand-600 px-4 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.16)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-700"
+  >
               <span>
   عرض جميع ساعات الأسواق
 </span>
@@ -941,7 +940,7 @@ export default function MarketHoursSidebar() {
                 ←
               </span>
 
-            </Link>
+                        </Link>
 
           </div>
 
@@ -949,5 +948,7 @@ export default function MarketHoursSidebar() {
       )}
 
     </div>
+
+  </div>
   );
 }

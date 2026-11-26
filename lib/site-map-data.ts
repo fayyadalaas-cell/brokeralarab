@@ -169,41 +169,169 @@ export const STATIC_PAGES_EN = [
 export type ArticleSitemapEntry = {
   slug: string;
   lastModified: string;
+  publishedAt: string;
   ar: boolean;
   en: boolean;
+
+  image?: string;
+  titleAr: string;
+  titleEn: string;
+  descriptionAr: string;
+  descriptionEn: string;
+  categoryAr: string;
+  categoryEn: string;
 };
 
 export const ARTICLE_PAGES: ArticleSitemapEntry[] = [
+
+  /* =====================================================
+     ARTICLE 01 — GOLD PRICE CRASHES
+  ===================================================== */
+
   {
     slug: "gold-price-crashes-history",
     lastModified: "2026-11-23",
+    publishedAt: "2026-11-23",
+
     ar: true,
     en: true,
+
+    image: "/articles/gold-crashes-hero-updated.webp",
+
+    titleAr: "أكبر انهيارات أسعار الذهب عبر التاريخ",
+
+    titleEn: "Major Gold Price Crashes Throughout History",
+
+    descriptionAr:
+      "دراسة تاريخية لأبرز انهيارات أسعار الذهب والعوامل التي أدت إلى تراجع الأسعار.",
+
+    descriptionEn:
+      "A historical study of major gold price crashes and the factors behind them.",
+
+    categoryAr: "الذهب والأسواق",
+    categoryEn: "Gold and Financial Markets",
   },
+
+  /* =====================================================
+     ARTICLE 02 — GOLD AND FED DECISIONS
+  ===================================================== */
+
   {
     slug: "gold-reaction-fed-decisions",
     lastModified: "2026-11-23",
+    publishedAt: "2026-11-23",
+
     ar: true,
     en: true,
+
+    image: "/articles/gold-fed-decisions-hero.webp",
+
+    titleAr:
+      "كيف تتفاعل أسعار الذهب مع قرارات الفيدرالي الأمريكي؟",
+
+    titleEn:
+      "How Gold Prices React to Federal Reserve Decisions",
+
+    descriptionAr:
+      "تحليل العلاقة بين قرارات الفائدة الأمريكية وتحركات أسعار الذهب في الأسواق المالية.",
+
+    descriptionEn:
+      "An analysis of the relationship between Federal Reserve interest rate decisions and gold prices.",
+
+    categoryAr: "الذهب والأسواق",
+    categoryEn: "Gold and Financial Markets",
   },
+
+  /* =====================================================
+     ARTICLE 03 — SAUDI ARABIA
+  ===================================================== */
+
   {
     slug: "open-forex-account-saudi-arabia",
     lastModified: "2026-11-25",
+    publishedAt: "2026-11-24",
+
     ar: true,
     en: true,
+
+    image: "/articles/open-forex-account-saudi-arabia.webp",
+
+    titleAr:
+      "كيفية فتح حساب فوركس في السعودية – الشروط وخطوات التسجيل",
+
+    titleEn:
+      "How to Open a Forex Trading Account in Saudi Arabia",
+
+    descriptionAr:
+      "تعرف على شروط فتح حساب فوركس في السعودية للمواطنين والمقيمين، والمستندات المطلوبة للتوثيق، وخطوات التسجيل والإيداع والتحقق من تراخيص شركات التداول.",
+
+    descriptionEn:
+      "A guide to opening a forex trading account, choosing a broker and understanding registration requirements in Saudi Arabia.",
+
+    categoryAr: "أدلة التداول",
+    categoryEn: "Trading Guides",
   },
+
+  /* =====================================================
+     ARTICLE 04 — KUWAIT
+  ===================================================== */
+
   {
     slug: "open-forex-account-kuwait",
     lastModified: "2026-11-25",
+    publishedAt: "2026-11-25",
+
     ar: true,
     en: true,
+
+    image: "/articles/open-forex-account-kuwait.webp",
+
+    titleAr:
+      "كيفية فتح حساب فوركس في الكويت – الشروط وخطوات التسجيل",
+
+    titleEn:
+      "How to Open a Forex Trading Account in Kuwait",
+
+    descriptionAr:
+      "دليل فتح حساب فوركس في الكويت للمواطنين والمقيمين، يشمل البطاقة المدنية وتوثيق الحساب وإثبات العنوان والتسجيل ووسائل الدفع بالدينار الكويتي والتحقق من التراخيص.",
+
+    descriptionEn:
+      "A guide to opening a forex trading account and choosing a suitable broker in Kuwait.",
+
+    categoryAr: "أدلة التداول",
+    categoryEn: "Trading Guides",
   },
+
+  /* =====================================================
+     ARTICLE 05 — BEST TIME TO TRADE GOLD
+  ===================================================== */
+
   {
     slug: "best-time-to-trade-gold",
     lastModified: "2026-11-25",
+    publishedAt: "2026-11-25",
+
     ar: true,
     en: true,
+
+    image: "/articles/best-time-to-trade-gold.webp",
+
+    titleAr:
+      "أفضل أوقات تداول الذهب خلال اليوم – دراسة إحصائية لحركة الأسعار",
+
+    titleEn:
+      "Best Time to Trade Gold (XAU/USD): A Statistical Study of Intraday Price Movements",
+
+    descriptionAr:
+      "دراسة إحصائية لأفضل أوقات تداول الذهب بناءً على بيانات تاريخية تمتد لأكثر من 16 عاماً.",
+
+    descriptionEn:
+      "A statistical study of the best gold trading hours based on more than 16 years of historical data.",
+
+    categoryAr: "الذهب والأسواق",
+    categoryEn: "Gold and Financial Markets",
   },
+
 ];
 
 export const EVENT_SLUGS = [

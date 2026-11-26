@@ -2,6 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import BrokerFinder from "@/app/components/BrokerFinder";
+import HomeArticles from "@/app/components/HomeArticles";
+import HomeComparisons from "@/app/components/HomeComparisons";
+import HomeCountries from "@/app/components/HomeCountries";
+import HomeMarketPrices from "@/app/components/HomeMarketPrices";
+import HomeTradingTools from "@/app/components/HomeTradingTools";
+import HomeInterestRates from "@/app/components/HomeInterestRates";
+import HomeStrategies from "@/app/components/HomeStrategies";
+import HomeMethodology from "@/app/components/HomeMethodology";
+import HomeClosingSection from "@/app/components/HomeClosingSection";
 import MarketHoursSidebar from "@/app/components/MarketHoursSidebar";
 import HomeTechnicalSnapshot, {
   type HomeTechnicalRow,
@@ -87,9 +96,12 @@ type Broker = {
   headquarters: string | null;
   max_leverage: string | null;
   islamic_account: string | null;
-  arabic_support: string | null;
+    arabic_support: string | null;
   trading_assets: string | null;
   real_account_url: string | null;
+
+  score_safety: number | null;
+  score_fees: number | null;
 };
 
 function money(value: number | null) {
@@ -244,21 +256,23 @@ type Comparison = {
   title: string | null;
   views_count: number | null;
   broker_1: {
-  name: string | null;
-  slug: string | null;
-  logo: string | null;
-  rating: number | null;
-  publication_status: string | null;
-} | null;
+    name: string | null;
+    slug: string | null;
+    logo: string | null;
+    rating: number | null;
+    publication_status: string | null;
+  } | null;
 
-broker_2: {
-  name: string | null;
-  slug: string | null;
-  logo: string | null;
-  rating: number | null;
-  publication_status: string | null;
-} | null;
+  broker_2: {
+    name: string | null;
+    slug: string | null;
+    logo: string | null;
+    rating: number | null;
+    publication_status: string | null;
+  } | null;
 };
+
+
 
 export const revalidate = 3600;
 
@@ -271,7 +285,7 @@ export default async function HomePage() {
 
   const [
     { data },
-    { data: comparisonsData },
+    { data: comparisonBrokerOrder },
     { data: rankingData },
     { data: homeEvents },
   ] = await Promise.all([
@@ -291,37 +305,17 @@ export default async function HomePage() {
     logo,
     islamic_account,
     arabic_support,
-    real_account_url
+real_account_url,
+score_safety,
+score_fees
   `)
   .eq("publication_status", "published")
   .order("rating", { ascending: false }),
 
     supabase
-  .from("comparisons")
-  .select(`
-    id,
-    slug,
-    title,
-    views_count,
-    broker_1:broker_1_id (
-  name,
-  slug,
-  logo,
-  rating,
-  publication_status
-),
-broker_2:broker_2_id (
-  name,
-  slug,
-  logo,
-  rating,
-  publication_status
-)
-  `)
-  .not("slug", "is", null)
-  .not("title", "is", null)
-  .order("views_count", { ascending: false })
-  .limit(4),
+  .from("brokers")
+  .select("id, slug, is_full_review")
+  .eq("publication_status", "published"),
 
     supabase
   .from("country_broker_rankings")
@@ -445,13 +439,14 @@ const homePivot =
       broker.is_full_review === true &&
       broker.logo &&
       broker.slug &&
-      broker.name
+      broker.name &&
+      broker.slug.toLowerCase() !== "xm"
   )
   .sort(
     (a, b) =>
       Number(b.rating || 0) - Number(a.rating || 0)
   )
-  .slice(0, 7);
+  .slice(0, 6);
 
   const footerFeaturedBrokers = brokers
   .filter(
@@ -467,59 +462,105 @@ const homePivot =
   )
   .slice(0, 5);
 
-  const resolveComparisonBroker = (value: any) => {
-  const comparisonBroker = Array.isArray(value)
-    ? value[0] ?? null
-    : value ?? null;
+  /* =========================================================
+   HOME — ALL FULL REVIEW BROKER COMPARISONS
+========================================================= */
 
-  if (!comparisonBroker) {
-    return null;
-  }
-
-  const normalizedComparisonName = String(
-    comparisonBroker.name || ""
-  )
-    .trim()
-    .toLowerCase();
-
-  const brokerFromMainList = brokers.find(
-    (broker) =>
-      String(broker.name || "")
-        .trim()
-        .toLowerCase() === normalizedComparisonName
-  );
-
-  return {
-    ...comparisonBroker,
-    slug:
-      comparisonBroker.slug ||
-      brokerFromMainList?.slug ||
-      null,
-  };
+type HomeComparisonBroker = {
+  id: number;
+  name: string;
+  slug: string;
+  logo: string | null;
+  rating: number | null;
 };
 
-const topComparisons: Comparison[] = (
-  (comparisonsData ?? []) as any[]
-)
-  .map((item) => ({
-    id: item.id,
-    slug: item.slug,
-    title: item.title,
-    views_count: item.views_count,
-    broker_1: resolveComparisonBroker(item.broker_1),
-    broker_2: resolveComparisonBroker(item.broker_2),
-  }))
-  .filter(
-    (item) =>
-      item.slug &&
-      item.title &&
-      item.broker_1 &&
-      item.broker_2 &&
-      item.broker_1.slug &&
-      item.broker_2.slug &&
-      item.broker_1.publication_status === "published" &&
-      item.broker_2.publication_status === "published"
-  );
+type HomeComparisonItem = {
+  slug: string;
+  broker1: HomeComparisonBroker;
+  broker2: HomeComparisonBroker;
+};
+
+/* FULL REVIEW BROKERS ONLY */
+
+const fullReviewBrokerMap = new Map(
+  brokers
+    .filter(
+      (broker) =>
+        broker.is_full_review === true &&
+        Boolean(broker.slug) &&
+        Boolean(broker.name)
+    )
+    .map((broker) => [
+      broker.slug!,
+      broker,
+    ] as const)
+);
+
+/* USE THE EXISTING SITEMAP BROKER ORDER */
+
+const eligibleComparisonBrokers: HomeComparisonBroker[] = [];
+
+const seenBrokerSlugs = new Set<string>();
+
+for (const row of comparisonBrokerOrder ?? []) {
+
+  if (
+    row.is_full_review !== true ||
+    !row.slug ||
+    seenBrokerSlugs.has(row.slug)
+  ) {
+    continue;
+  }
+
+  const broker = fullReviewBrokerMap.get(row.slug);
+
+  if (!broker || !broker.name || !broker.slug) {
+    continue;
+  }
+
+  seenBrokerSlugs.add(broker.slug);
+
+  eligibleComparisonBrokers.push({
+    id: broker.id,
+    name: broker.name,
+    slug: broker.slug,
+    logo: broker.logo,
+    rating: broker.rating,
+  });
+
+}
+
+/* GENERATE UNIQUE BROKER PAIRS */
+
+const homeComparisons: HomeComparisonItem[] = [];
+
+for (
+  let i = 0;
+  i < eligibleComparisonBrokers.length;
+  i++
+) {
+
+  for (
+    let j = i + 1;
+    j < eligibleComparisonBrokers.length;
+    j++
+  ) {
+
+    const broker1 = eligibleComparisonBrokers[i];
+
+    const broker2 = eligibleComparisonBrokers[j];
+
+    homeComparisons.push({
+      slug: `${broker1.slug}-vs-${broker2.slug}`,
+      broker1,
+      broker2,
+    });
+
+  }
+
+}
+
+/* ================= END HOME COMPARISONS ================= */
 
   const featured = brokers[0] ?? null;
   const countryPages = getCountryPages();
@@ -681,2290 +722,522 @@ const whyBrokerAlarabItems = [
   };
 
   return (
-    <main dir="rtl" className="min-h-screen bg-[#f4f7fb] text-[#0f172a]">
+    <main
+  dir="rtl"
+  className="min-h-screen bg-[#f5f7fb] text-[#0f172a]"
+>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
 
-{/* HERO - MODERN LIGHT */}
-<section className="relative overflow-hidden border-b border-[#173b70] bg-[linear-gradient(135deg,#eef5ff_0%,#dceaff_48%,#c9ddfb_100%)]">
-  {(() => {
-    // IDs الشركات التي تريد عرضها في الهيرو، بالترتيب
-const heroBrokerIds = [1, 2, 18, 14, 25, 11];
-
-const allHeroBrokers = heroBrokerIds
-  .map((id) =>
-    brokers.find((broker) => Number(broker.id) === id)
-  )
-  .filter((broker): broker is Broker => Boolean(broker))
-  .map((broker) => ({
-    id: broker.id,
-    name: broker.name || "شركة تداول",
-    slug: broker.slug || "",
-    rating: broker.rating
-      ? Number(broker.rating).toFixed(2)
-      : "—",
-    logo: broker.logo || null,
-    minDeposit: money(broker.min_deposit),
-    regulation: shortReg(
-      broker.regulation_short || broker.regulation
-    ),
-  }));
-
-       return (
-      <>
-       
-        <div className="relative">
-        {/* FINTECH BACKGROUND */}
-<div className="pointer-events-none absolute inset-0 overflow-hidden">
-  {/* BASE DARK GRADIENT */}
-  <div className="absolute inset-0 bg-[linear-gradient(125deg,#061326_0%,#08203d_48%,#0b3260_100%)]" />
-
-  {/* BLUE AURORA LIGHTS */}
-  <div className="absolute -right-[180px] -top-[260px] h-[620px] w-[620px] rounded-full bg-[#1688ff]/25 blur-[130px]" />
-
-  <div className="absolute -bottom-[280px] left-[18%] hidden h-[560px] w-[560px] rounded-full bg-[#0ea5e9]/15 blur-[140px] sm:block" />
-
-  <div className="absolute left-[42%] top-[-220px] hidden h-[480px] w-[480px] rounded-full bg-[#2563eb]/10 blur-[125px] lg:block" />
-
-  {/* TECH GRID */}
-  <div className="absolute inset-0 opacity-[0.055] sm:opacity-[0.09] [background-image:linear-gradient(rgba(147,197,253,0.6)_1px,transparent_1px),linear-gradient(90deg,rgba(147,197,253,0.6)_1px,transparent_1px)] [background-size:64px_64px]" />
-
-  {/* DATA DOTS */}
-  <div className="absolute inset-y-0 right-0 w-full opacity-[0.045] sm:opacity-[0.08] [background-image:radial-gradient(circle,rgba(125,211,252,0.9)_1px,transparent_1.5px)] [background-size:24px_24px] lg:w-[56%] lg:opacity-[0.12]" />
-
-  {/* MARKET DATA CURVE */}
-  <svg
-    viewBox="0 0 1600 520"
-    fill="none"
-    preserveAspectRatio="none"
-    aria-hidden="true"
-    className="absolute inset-0 h-full w-full opacity-40 sm:opacity-50 lg:opacity-[0.58]"
-  >
-    <defs>
-      <linearGradient
-        id="heroChartLine"
-        x1="0"
-        y1="0"
-        x2="1600"
-        y2="0"
-        gradientUnits="userSpaceOnUse"
-      >
-        <stop stopColor="#38bdf8" stopOpacity="0" />
-        <stop offset="0.32" stopColor="#38bdf8" stopOpacity="0.12" />
-        <stop offset="0.68" stopColor="#60a5fa" stopOpacity="0.38" />
-        <stop offset="1" stopColor="#93c5fd" stopOpacity="0" />
-      </linearGradient>
-
-      <linearGradient
-        id="heroChartArea"
-        x1="800"
-        y1="180"
-        x2="800"
-        y2="520"
-        gradientUnits="userSpaceOnUse"
-      >
-        <stop stopColor="#2563eb" stopOpacity="0.16" />
-        <stop offset="1" stopColor="#2563eb" stopOpacity="0" />
-      </linearGradient>
-    </defs>
-
-    <path
-      d="M0 418C116 406 173 436 268 394C359 354 421 386 514 337C618 282 676 344 773 292C870 240 936 267 1020 214C1110 157 1181 211 1264 157C1351 101 1438 145 1600 72V520H0V418Z"
-      fill="url(#heroChartArea)"
-    />
-
-    <path
-      d="M0 418C116 406 173 436 268 394C359 354 421 386 514 337C618 282 676 344 773 292C870 240 936 267 1020 214C1110 157 1181 211 1264 157C1351 101 1438 145 1600 72"
-      stroke="url(#heroChartLine)"
-      strokeWidth="2"
-    />
-
-    <path
-      d="M0 458C169 431 261 471 402 425C524 385 601 424 733 369C864 315 965 356 1088 302C1231 239 1354 280 1600 166"
-      stroke="#60a5fa"
-      strokeOpacity="0.07"
-      strokeWidth="1"
-      strokeDasharray="8 10"
-    />
-  </svg>
-
-  {/* TECHNOLOGY RINGS */}
-  <div className="absolute -right-[110px] top-[-120px] hidden h-[480px] w-[480px] rounded-full border border-blue-300/[0.07] sm:block" />
-
-  <div className="absolute -right-[35px] top-[-45px] hidden h-[330px] w-[330px] rounded-full border border-blue-300/[0.06] sm:block" />
-
-  {/* DEPTH OVERLAY */}
-  <div className="absolute inset-0 bg-gradient-to-b from-white/[0.025] via-transparent to-black/20" />
-</div>
-
-        {/* MAIN HERO */}
-<div className="relative mx-auto w-full max-w-[1560px] px-4 py-2 sm:px-6 sm:py-5 lg:px-8 lg:py-7">
-  <div className="grid items-center gap-5 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-7 xl:grid-cols-[minmax(0,1fr)_445px] xl:gap-9">
-
-    {/* HERO CONTENT */}
-    <div className="relative order-1 flex h-full min-w-0 flex-col justify-center py-0 text-center sm:py-2 lg:py-3 lg:text-right">
-
-      {/* BRAND POSITIONING */}
-      <div className="hidden items-center justify-center gap-2.5 sm:flex lg:justify-start">
-        <span className="h-px w-7 bg-gradient-to-l from-cyan-400 to-transparent sm:w-9" />
-
-        <div className="flex items-center gap-2 text-[9px] font-black text-blue-200 sm:text-[11px]">
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-60 motion-reduce:animate-none" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan-400" />
-          </span>
-
-          <span className="sm:hidden">
-            بيانات أدق · قرار أوضح
-          </span>
-
-          <span className="hidden sm:inline">
-            بيانات أدق · مقارنة أوضح · قرار أفضل
-          </span>
-        </div>
-      </div>
-
-      {/* MAIN TITLE */}
-      <h1 className="mx-auto mt-3 max-w-[900px] text-[35px] font-black leading-[1.12] tracking-[-0.04em] text-white sm:mt-4 sm:text-[47px] sm:leading-[1.05] lg:mx-0 lg:text-[48px] xl:text-[58px]">
-        أفضل شركات التداول
-
-        <span className="mt-2.5 block bg-gradient-to-l from-[#6dd5ff] via-[#62a9ff] to-[#9fc9ff] bg-clip-text pb-2 pt-[2px] leading-[1.16] text-transparent sm:mt-1 lg:mt-3">
-          برؤية أعمق.
-        </span>
-      </h1>
-
-      {/* DESCRIPTION */}
-      <p className="mx-auto mt-1 max-w-[325px] text-[13px] font-semibold leading-[1.75] text-slate-200 sm:mt-2 sm:max-w-[820px] sm:text-[14px] sm:leading-7 lg:mx-0 lg:max-w-[700px] lg:text-[16px] lg:leading-8 lg:[text-wrap:pretty] xl:text-[17px]">
-        <span className="sm:hidden">
-          قارن التراخيص والرسوم والحسابات والمنصات، واستكشف تقييمات الوسطاء
-          قبل اختيار الأنسب لك.
-        </span>
-
-        <span className="hidden sm:inline">
-          قارن شركات التداول حسب التراخيص والرسوم والسبريد والحسابات والمنصات،
-          واستكشف تقييمات الوسطاء وبياناتهم قبل اختيار الوسيط المناسب.
-        </span>
-      </p>
-
-      {/* ACTIONS */}
-      <div className="mt-3 flex flex-col items-stretch justify-center gap-2 sm:mt-5 sm:flex-row sm:items-center sm:gap-3 lg:mt-6 lg:justify-start">
-        <a
-  href="/brokers"
-          className="group inline-flex min-h-[46px] items-center justify-center gap-3 rounded-[13px] bg-[linear-gradient(135deg,#2878e5_0%,#1664cf_100%)] px-5 text-[11px] font-black text-white shadow-[0_14px_30px_rgba(20,105,220,0.32)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_42px_rgba(20,105,220,0.42)] sm:min-h-[50px] sm:min-w-[180px] sm:px-6 sm:text-[13px]"
-        >
-          استكشف الوسطاء
-
-          <span className="text-[15px] transition duration-300 group-hover:-translate-x-1 motion-reduce:transform-none">
-            ←
-          </span>
-        </a>
-
-        <Link
-          href="/compare"
-          className="group inline-flex min-h-[46px] items-center justify-center gap-2 rounded-[13px] border border-white/15 bg-white/[0.07] px-5 text-[11px] font-black text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-md transition duration-300 hover:-translate-y-0.5 hover:border-blue-300/35 hover:bg-white/[0.12] sm:min-h-[50px] sm:min-w-[165px] sm:px-6 sm:text-[12px]"
-        >
-          قارن بين الوسطاء
-
-          <span className="text-[14px] text-blue-300 transition duration-300 group-hover:-translate-x-1 motion-reduce:transform-none">
-            ←
-          </span>
-        </Link>
-      </div>
-
-      {/* DESKTOP TRUST STATS */}
-      <div className="mt-7 hidden max-w-[900px] grid-cols-4 gap-3 lg:grid">
-        {[
-          {
-            value: "150+",
-            label: "وسيط تمت دراسته",
-          },
-          {
-            value: "50+",
-            label: "مراجعة ومقارنة",
-          },
-          {
-            value: "18+",
-            label: "جهة رقابية",
-          },
-          {
-            value: "10",
-            label: "حاسبات تداول",
-          },
-        ].map((item) => (
-          <div
-            key={item.label}
-            className="group relative overflow-hidden rounded-[17px] border border-white/10 bg-white/[0.055] px-4 py-3.5 text-right backdrop-blur-sm transition duration-300 hover:-translate-y-0.5 hover:border-blue-300/25 hover:bg-white/[0.085]"
-          >
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-l from-transparent via-cyan-300/35 to-transparent" />
-
-            <div className="text-[20px] font-black leading-none text-[#76c8ff] xl:text-[22px]">
-              {item.value}
-            </div>
-
-            <div className="mt-2 text-[10px] font-bold leading-4 text-blue-100/70 xl:text-[11px]">
-              {item.label}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* MOBILE BROKER LOGOS */}
-      <div className="mt-3 sm:mt-4 lg:hidden">
-        <div className="mb-2 flex items-center justify-between">
-          <span className="text-[10px] font-black text-blue-100">
-            شركات تمت مراجعتها
-          </span>
-
-          <Link
-            href="/brokers"
-            className="inline-flex items-center gap-1 text-[10px] font-black text-cyan-300 transition hover:text-white"
-          >
-            جميع الوسطاء
-            <span>←</span>
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-3 gap-2">
-          {allHeroBrokers.slice(0, 6).map((broker) => (
-            <Link
-              key={broker.id}
-              href={`/brokers/${broker.slug}`}
-              className="group flex h-[60px] items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-white p-1 shadow-[0_8px_20px_rgba(0,0,0,0.15)] transition duration-300 hover:-translate-y-0.5 hover:border-blue-300"
-            >
-              {broker.logo ? (
-                <img
-                  src={broker.logo}
-                  alt={broker.name}
-                  className="h-[48px] w-[105px] scale-[1.14] object-contain transition duration-300 group-hover:scale-[1.2]"
-                />
-              ) : (
-                <span className="text-[10px] font-black text-slate-700">
-                  {broker.name}
-                </span>
-              )}
-            </Link>
-          ))}
-        </div>
-      </div>
-    </div>
-
-    {/* BROKER LOGOS — DESKTOP */}
-    <div className="order-2 hidden h-full lg:block">
-      <div className="relative mr-0 h-full w-full">
-
-        {/* BLUE GLOW */}
-        <div className="absolute -inset-5 rounded-[42px] bg-gradient-to-br from-[#2878e5]/25 via-[#38bdf8]/10 to-transparent blur-[36px]" />
-
-        <div className="relative flex h-full flex-col overflow-hidden rounded-[30px] border border-white/10 bg-[linear-gradient(145deg,#0b1f3a_0%,#102f59_58%,#174f8f_100%)] p-5 shadow-[0_28px_75px_rgba(6,25,53,0.28)]">
-
-          {/* CARD HEADER */}
-          <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-4">
-            <div className="text-right">
-              <span className="inline-flex rounded-full border border-white/10 bg-white/10 px-3 py-1 text-[10px] font-black text-blue-100">
-                شركات تمت مراجعتها
-              </span>
-
-              <h2 className="mt-2 text-[20px] font-black text-white">
-                بيانات الوسطاء في مكان واحد
-              </h2>
-
-              <p className="mt-1 text-[11px] font-semibold text-blue-100/75">
-                قارن التراخيص والحسابات والرسوم بسهولة
-              </p>
-            </div>
-
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-brand-500 text-[18px] text-white shadow-[0_10px_24px_rgba(37,99,235,0.22)]">
-              ✓
-            </div>
-          </div>
-
-          {/* DESKTOP LOGO GRID */}
-          <div className="mt-5 grid grid-cols-3 gap-3">
-            {allHeroBrokers.slice(0, 6).map((broker) => (
-              <Link
-                key={broker.id}
-                href={`/brokers/${broker.slug}`}
-                className="group flex h-[86px] items-center justify-center overflow-hidden rounded-[20px] border border-white/15 bg-white p-1 shadow-[0_8px_24px_rgba(0,0,0,0.12)] transition duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-[0_16px_34px_rgba(0,0,0,0.18)]"
-              >
-                {broker.logo ? (
-                  <img
-                    src={broker.logo}
-                    alt={broker.name}
-                    className={
-  broker.name?.toLowerCase().includes("capital")
-    ? "h-[72px] w-[145px] max-w-[85%] object-contain transition duration-300"
-    : "h-[72px] w-[145px] scale-[1.08] object-contain transition duration-300 group-hover:scale-[1.14]"
-}
-                  />
-                ) : (
-                  <span className="text-xs font-black text-slate-700">
-                    {broker.name}
-                  </span>
-                )}
-              </Link>
-            ))}
-          </div>
-
-          {/* CARD FOOTER */}
-<div className="mt-auto flex min-h-[82px] items-center justify-between rounded-2xl border border-white/10 bg-white/10 px-4 py-3">
-            <div className="min-w-0 text-right">
-              <div className="text-[13px] font-black text-white">
-                تقييمات مستقلة وبيانات محدثة
-              </div>
-
-              <div className="mt-1 text-[10px] font-semibold leading-4 text-blue-100/80">
-                الإعلانات لا تؤثر على منهجية التقييم
-              </div>
-            </div>
-
-            <Link
-              href="/brokers"
-              className="mr-3 inline-flex h-9 shrink-0 items-center justify-center rounded-xl bg-white px-4 text-[11px] font-black text-[#123d73] shadow-sm transition hover:bg-blue-50"
-            >
-              جميع الوسطاء
-            </Link>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-</div>
-</>
-);
-})()}
-</section>
-
-{/* HOME CONTENT + DESKTOP SIDEBAR */}
-<div className="mx-auto w-full max-w-[1600px] px-4 sm:px-6 lg:px-8">
-  <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_310px] xl:items-start xl:gap-3">
-
-    {/* ALL HOME PAGE SECTIONS */}
-    <div className="min-w-0 xl:[&>section]:pl-0">
-
-      {/* FINDER */}
-<section
-  id="finder"
-  className="scroll-mt-24 mx-auto max-w-7xl px-0 pt-2 pb-3 sm:pt-4 sm:pb-4 lg:pt-4 lg:pb-4"
->
-  <BrokerFinder
-  brokers={brokers}
-  countryRankings={countryRankings}
-/>
-</section>
-
-{/* EXNESS PREMIUM BANNER */}
-<div className="mx-auto -my-1 flex w-full max-w-7xl justify-center sm:-my-1.5 sm:py-0">
-  <a
-    href="https://one.toexness.com/a/hhmbah9f13"
-    target="_blank"
-    rel="sponsored noopener noreferrer"
-    aria-label="إعلان Exness"
-    className="
-      group block w-full max-w-[900px]
-      overflow-hidden rounded-[14px]
-      border border-slate-200/80
-      bg-white p-[5px]
-      shadow-[0_8px_24px_rgba(15,23,42,0.075)]
-      transition duration-300
-      hover:-translate-y-[1px]
-      hover:border-slate-300
-      hover:shadow-[0_12px_30px_rgba(15,23,42,0.10)]
-      sm:max-w-[820px]
-    "
-  >
-    <img
-      src="/banners/AR_Spreads_50_lower_728x90.jpg"
-      width={728}
-      height={90}
-      alt="إعلان Exness للتداول في الأسواق المالية"
-      className="block w-full rounded-[10px] !h-auto !object-contain"
-    />
-  </a>
-</div>
-
-  {/* HOW WE RATE - COMPACT PREMIUM */}
-<section className="mx-auto w-full max-w-7xl px-0 py-2.5 sm:py-3">
-  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_14px_40px_rgba(15,23,42,0.055)]">
-    {(() => {
-      const ratingItems = [
-        {
-          num: "01",
-          title: "التنظيم وحماية الأموال",
-          mobileTitle: "التراخيص والأمان",
-          desc: "نراجع قوة التراخيص، الكيان القانوني، وآليات حماية أموال العملاء وشفافية الإجراءات.",
-        },
-        {
-          num: "02",
-          title: "تكاليف التداول",
-          mobileTitle: "تكاليف التداول",
-          desc: "نقارن السبريد والعمولات ورسوم التبييت وأي تكاليف إضافية قد تؤثر على المتداول.",
-        },
-        {
-          num: "03",
-          title: "المنصات والتنفيذ",
-          mobileTitle: "المنصات والتنفيذ",
-          desc: "نقيّم سرعة التنفيذ واستقرار المنصات وسهولة الاستخدام على مختلف الأجهزة.",
-        },
-        {
-          num: "04",
-          title: "الإيداع والسحب",
-          mobileTitle: "الإيداع والسحب",
-          desc: "نراجع سرعة الإيداع والسحب، تنوع وسائل الدفع، والرسوم المرتبطة بالعمليات.",
-        },
-        {
-          num: "05",
-          title: "الحساب الإسلامي",
-          mobileTitle: "الحساب الإسلامي",
-          desc: "نراجع شروط الحساب الإسلامي، القيود، والرسوم المرتبطة به قبل التوصية به.",
-        },
-        {
-          num: "06",
-          title: "الدعم وتجربة الاستخدام",
-          mobileTitle: "الدعم الفني",
-          desc: "نقيّم جودة خدمة العملاء، سهولة فتح الحساب، وتجربة المستخدم بشكل عام.",
-        },
-      ];
-
-      return (
-        <>
-          {/* =========================
-              DESKTOP
-          ========================== */}
-          <div className="hidden lg:block">
-            {/* HEADER */}
-            <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-6 py-4">
-  <div className="flex items-center justify-between gap-6">
-
-    {/* TEXT */}
-    <div className="min-w-0 flex-1 text-right">
-      <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[12px] font-black text-brand-500 shadow-sm">
-        منهجية تقييم الوسطاء
-      </span>
-
-      <h2 className="mt-3 text-[36px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f]">
-        كيف نقيم شركات التداول؟
-      </h2>
-
-      <p className="mt-2.5 w-full text-[15px] font-semibold leading-8 text-slate-600">
-        نراجع أهم العوامل التي تؤثر على تجربة المتداول، بدءًا من قوة التنظيم
-        وتكاليف التداول وحتى سرعة التنفيذ والسحب والحساب الإسلامي
-        وجودة الدعم.
-      </p>
-    </div>
-
-    {/* CTA */}
-    <div className="shrink-0 self-center pl-4 lg:-translate-x-[14px]">
-      <Link
-        href="/how-we-review-brokers"
-        className="inline-flex h-11 min-w-[180px] items-center justify-center rounded-xl bg-brand-500 px-5 text-[13px] font-black text-white shadow-[0_10px_22px_rgba(37,99,235,0.20)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-600"
-      >
-        اطّلع على المنهجية
-      </Link>
-    </div>
-
-  </div>
-</div>
-
-            {/* DESKTOP CARDS */}
-            <div className="grid grid-cols-3 gap-3 px-5 py-4">
-              {ratingItems.map((item) => (
-                <Link
-                  key={item.num}
-                  href="/how-we-review-brokers"
-                  className="group relative min-h-[108px] overflow-hidden rounded-[20px] border border-slate-200 bg-white p-4 transition duration-300 hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-[0_12px_28px_rgba(15,23,42,0.07)]"
-                >
-                  {/* TOP ACCENT */}
-                  <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-l from-brand-500 via-[#60a5fa] to-transparent opacity-70 transition duration-300 group-hover:opacity-100" />
-
-                  <div className="flex h-full items-start gap-3.5 pt-0.5">
-                    {/* NUMBER */}
-                    <span className="flex h-10 min-w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 px-2 text-[11px] font-black text-brand-600 ring-1 ring-[#bfdbfe] transition duration-300 group-hover:bg-brand-500 group-hover:text-white">
-                      {item.num}
-                    </span>
-
-                    {/* CONTENT */}
-                    <div className="min-w-0 flex-1">
-                      <h3 className="text-[18px] font-black leading-6 text-[#07111f]">
-                        {item.title}
-                      </h3>
-
-                      <p className="mt-1 text-[12px] font-medium leading-6 text-slate-600">
-                        {item.desc}
-                      </p>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-
-            
-          </div>
-
-          {/* =========================
-              MOBILE / TABLET
-          ========================== */}
-          <div className="lg:hidden">
-            {/* MOBILE HEADER */}
-            <div className="border-b border-slate-100 bg-gradient-to-b from-[#f8fbff] to-[#eef5ff] px-4 py-3.5 text-center">
-              <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[10px] font-black text-brand-500 shadow-sm">
-                منهجية تقييم الوسطاء
-              </span>
-
-              <h2 className="mx-auto mt-2.5 max-w-[310px] text-[26px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] sm:max-w-none sm:text-[34px]">
-  كيف نقيم شركات التداول؟
-</h2>
-
-              <p className="mx-auto mt-1.5 max-w-[430px] text-[11px] font-semibold leading-5 text-slate-600 sm:text-[13px] sm:leading-6">
-                نراجع أهم العوامل التي تؤثر على تجربة المتداول، من التراخيص
-                والتكاليف إلى المنصات والسحب والحساب الإسلامي وجودة الدعم.
-              </p>
-            </div>
-
-            {/* MOBILE CARDS */}
-            <div className="grid grid-cols-2 gap-2 bg-white p-3 sm:gap-2.5 sm:p-4">
-              {ratingItems.map((item) => (
-                <Link
-                  key={item.num}
-                  href="/how-we-review-brokers"
-                  className="group relative flex min-h-[64px] items-center justify-center overflow-hidden rounded-[14px] border border-slate-200 bg-[#fbfdff] px-2.5 py-2 transition duration-300 hover:border-brand-200 hover:bg-brand-50/30"
-                >
-                  {/* TOP ACCENT */}
-                  <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-l from-brand-500 via-[#60a5fa] to-transparent opacity-60" />
-
-                  
-
-                  {/* MOBILE TITLE */}
-                  <h3 className="whitespace-pre-line text-right text-[12.5px] font-black leading-5 text-[#07111f] sm:text-[15px]">
-  {item.mobileTitle}
-</h3>
-                </Link>
-              ))}
-            </div>
-
-            {/* MOBILE CTA */}
-            <div className="border-t border-slate-100 bg-white px-3 pb-3 pt-2.5 sm:px-4 sm:pb-4">
-              <Link
-                href="/how-we-review-brokers"
-                className="inline-flex h-10 w-full items-center justify-center rounded-xl bg-brand-500 px-4 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.18)] transition duration-300 hover:bg-brand-600 sm:h-11 sm:text-[12px]"
-              >
-                اطّلع على منهجية التقييم
-              </Link>
-            </div>
-          </div>
-        </>
-      );
-    })()}
-    </div>
-</section>
-
-
-
-{/* TOP COMPARISONS - PREMIUM RESPONSIVE */}
-<section className="mx-auto w-full max-w-7xl px-0 py-2.5 sm:py-3">
-  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_14px_40px_rgba(15,23,42,0.055)]">
-
-    {/* =====================================================
-        HEADER
-    ====================================================== */}
-    <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3.5 sm:px-6 lg:py-4">
-
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
-
-        {/* TEXT */}
-        <div className="min-w-0 flex-1 text-center lg:text-right">
-          <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[11px] font-black text-brand-500 shadow-sm sm:text-[12px]">
-            مقارنات الوسطاء
-          </span>
-
-          <h2 className="mx-auto mt-2.5 max-w-[310px] text-[26px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] sm:max-w-none sm:text-[34px] lg:mx-0 lg:text-[36px]">
-            أشهر مقارنات شركات التداول
-          </h2>
-
-          {/* MOBILE DESCRIPTION */}
-          <p className="mx-auto mt-2 max-w-[300px] text-[12px] font-semibold leading-6 text-slate-600 sm:hidden">
-            قارن بين أشهر الوسطاء من حيث التراخيص والرسوم والحسابات والمنصات.
-          </p>
-
-          {/* DESKTOP DESCRIPTION */}
-          <p className="mt-2 hidden max-w-[900px] text-[15px] font-semibold leading-8 text-slate-600 sm:block">
-            استعرض أشهر مقارنات شركات التداول، وتعرّف على الفروقات
-            في التراخيص وأنواع الحسابات والرسوم والمنصات لاختيار الوسيط المناسب.
-          </p>
-        </div>
-
-        {/* DESKTOP CTA */}
-        <div className="hidden shrink-0 lg:flex lg:pb-1">
-          <Link
-            href="/compare"
-            className="inline-flex h-11 min-w-[180px] items-center justify-center rounded-xl bg-brand-500 px-5 text-[13px] font-black text-white shadow-[0_10px_22px_rgba(37,99,235,0.20)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-600"
-          >
-            تصفح جميع المقارنات
-          </Link>
-        </div>
-
-        {/* MOBILE CTA */}
-        <div className="flex justify-center lg:hidden">
-          <Link
-            href="/compare"
-            className="inline-flex h-10 items-center justify-center rounded-xl bg-brand-500 px-5 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.18)] transition hover:bg-brand-600"
-          >
-            تصفح جميع المقارنات
-          </Link>
-        </div>
-      </div>
-    </div>
-
-
-    {/* =====================================================
-        MOBILE - HORIZONTAL SNAP CAROUSEL
-    ====================================================== */}
-    <div className="md:hidden">
-      <div
-        className="
-          flex snap-x snap-mandatory gap-3
-          overflow-x-auto overscroll-x-contain
-          px-4 pb-4 pt-3
-          [scrollbar-width:none]
-          [&::-webkit-scrollbar]:hidden
-        "
-      >
-        {topComparisons.map((cmp, index) => (
-          <article
-            key={cmp.id}
-            className="
-              relative w-[88%] min-w-[88%] snap-center
-              overflow-hidden rounded-[20px]
-              border border-slate-200 bg-white
-              shadow-[0_8px_22px_rgba(15,23,42,0.055)]
-            "
-          >
-            {/* TOP LINE */}
-            <div className="h-[3px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent" />
-
-            <div className="p-3">
-
-              {/* CARD HEADER */}
-              <div className="mb-2.5 flex items-center justify-between">
-                <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-2.5 py-0.5 text-[9px] font-black text-brand-600">
-                  مقارنة مختارة
-                </span>
-
-                <span
-                  dir="rtl"
-                  className="flex h-6 min-w-6 items-center justify-center rounded-full bg-slate-100 px-1.5 text-[9px] font-black text-slate-500"
-                >
-                  #{index + 1}
-                </span>
-              </div>
-
-
-              {/* BROKERS */}
-              <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
-
-                {/* BROKER 1 */}
-                <div className="flex min-w-0 flex-col items-center text-center">
-                  <Link
-                    href={
-  cmp.broker_1?.slug
-    ? `/brokers/${cmp.broker_1.slug}`
-    : "/brokers"
-}
-                    className="flex h-[52px] w-[52px] items-center justify-center rounded-[15px] border border-slate-200 bg-slate-50 p-2"
-                  >
-                    {cmp.broker_1?.logo ? (
-                      <img
-                        src={cmp.broker_1.logo}
-                        alt={cmp.broker_1.name || "Broker 1"}
-                        className="h-full w-full object-contain"
-                      />
-                    ) : (
-                      <span className="text-[9px] text-slate-400">
-                        Logo
-                      </span>
-                    )}
-                  </Link>
-
-                  <Link
-                    href={
-  cmp.broker_1?.slug
-    ? `/brokers/${cmp.broker_1.slug}`
-    : "/brokers"
-}
-                    className="mt-2 max-w-[100px] truncate text-[14px] font-black leading-5 text-[#0f172a]"
-                  >
-                    {cmp.broker_1?.name || "Broker 1"}
-                  </Link>
-
-                  <span
-                    aria-label={`تقييم ${
-                      cmp.broker_1?.name || "الوسيط الأول"
-                    } ${
-                      cmp.broker_1?.rating?.toFixed(2) ?? "غير متوفر"
-                    } من 5`}
-                    className="mt-0.5 text-[10px] font-bold text-[#f59e0b]"
-                  >
-                    ★ {cmp.broker_1?.rating?.toFixed(2) ?? "—"}
-                  </span>
-                </div>
-
-
-                {/* VS */}
-                <div className="flex items-center justify-center">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full border border-brand-100 bg-brand-50 text-[10px] font-black text-brand-600 shadow-sm">
-                    VS
-                  </div>
-                </div>
-
-
-                {/* BROKER 2 */}
-<div className="flex min-w-0 flex-col items-center text-center">
-  <Link
-    href={
-      cmp.broker_2?.slug
-        ? `/brokers/${cmp.broker_2.slug}`
-        : "/brokers"
-    }
-    className="flex h-[52px] w-[52px] items-center justify-center rounded-[15px] border border-slate-200 bg-slate-50 p-2"
-  >
-    {cmp.broker_2?.logo ? (
-      <img
-        src={cmp.broker_2.logo}
-        alt={cmp.broker_2.name || "Broker 2"}
-        className="h-full w-full object-contain"
-      />
-    ) : (
-      <span className="text-[9px] text-slate-400">
-        Logo
-      </span>
-    )}
-  </Link>
-
-  <Link
-    href={
-      cmp.broker_2?.slug
-        ? `/brokers/${cmp.broker_2.slug}`
-        : "/brokers"
-    }
-    className="mt-2 max-w-[100px] truncate text-[14px] font-black leading-5 text-[#0f172a]"
-  >
-    {cmp.broker_2?.name || "Broker 2"}
-  </Link>
-
-  <span
-    aria-label={`تقييم ${
-      cmp.broker_2?.name || "الوسيط الثاني"
-    } ${
-      cmp.broker_2?.rating?.toFixed(2) ?? "غير متوفر"
-    } من 5`}
-    className="mt-0.5 text-[10px] font-bold text-[#f59e0b]"
-  >
-    ★ {cmp.broker_2?.rating?.toFixed(2) ?? "—"}
-  </span>
-</div>
-              </div>
-
-
-              {/* FEATURES */}
-              <div className="mt-3 text-center text-[9.5px] font-bold text-slate-500">
-                الحسابات
-                <span className="mx-1.5 text-slate-300">•</span>
-                الرسوم
-                <span className="mx-1.5 text-slate-300">•</span>
-                المنصات
-                <span className="mx-1.5 text-slate-300">•</span>
-                التراخيص
-              </div>
-
-
-              {/* CTA */}
-              <div className="mt-3">
-                <Link
-                  href={`/compare/${cmp.slug}`}
-                  className="flex h-10 w-full items-center justify-center rounded-xl bg-brand-500 px-4 text-[12px] font-black text-white transition hover:bg-brand-600"
-                >
-                  شاهد المقارنة الكاملة
-                </Link>
-              </div>
-            </div>
-          </article>
-        ))}
-      </div>
-
-
-      {/* SWIPE HINT */}
-      {topComparisons.length > 1 && (
-        <div className="-mt-1 flex items-center justify-center gap-1.5 pb-3">
-          {topComparisons.map((cmp, index) => (
-            <span
-              key={cmp.id}
-              className={
-                index === 0
-                  ? "h-1.5 w-5 rounded-full bg-brand-500"
-                  : "h-1.5 w-1.5 rounded-full bg-slate-300"
-              }
-            />
-          ))}
-        </div>
-      )}
-    </div>
-
-
-    {/* =====================================================
-        DESKTOP / TABLET
-    ====================================================== */}
-    <div className="hidden gap-3 px-4 pb-4 pt-3 md:grid md:grid-cols-2 xl:px-5">
-      {topComparisons.map((cmp, index) => (
-        <article
-          key={cmp.id}
-          className="
-            group flex h-full flex-col overflow-hidden
-            rounded-[20px] border border-slate-200 bg-white
-            shadow-[0_5px_18px_rgba(15,23,42,0.04)]
-            transition duration-300
-            hover:-translate-y-0.5
-            hover:border-brand-200
-            hover:shadow-[0_14px_28px_rgba(15,23,42,0.07)]
-          "
-        >
-          {/* TOP LINE */}
-          <div className="h-[3px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent" />
-
-          <div className="flex flex-1 flex-col p-4">
-
-            {/* CARD HEADER */}
-            <div className="mb-3 flex items-center justify-between gap-3">
-              <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-2.5 py-0.5 text-[10px] font-black text-brand-600">
-                مقارنة مختارة
-              </span>
-
-              <span
-                dir="ltr"
-                className="text-[10px] font-bold text-slate-400"
-              >
-                #{index + 1}
-              </span>
-            </div>
-
-
-            {/* BROKERS */}
-<div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
-
-  {/* BROKER 1 */}
-  <div className="flex min-w-0 flex-col items-center text-center">
-    <Link
-      href={
-        cmp.broker_1?.slug
-          ? `/brokers/${cmp.broker_1.slug}`
-          : "/brokers"
-      }
-      className="flex h-[64px] w-[64px] items-center justify-center rounded-[17px] border border-slate-200 bg-slate-50 p-2.5 transition hover:border-brand-100 hover:bg-brand-50 xl:h-[68px] xl:w-[68px]"
-    >
-      {cmp.broker_1?.logo ? (
-        <img
-          src={cmp.broker_1.logo}
-          alt={cmp.broker_1.name || "Broker 1"}
-          className="h-full w-full object-contain"
-        />
-      ) : (
-        <span className="text-[9px] text-slate-400">
-          Logo
-        </span>
-      )}
-    </Link>
-
-    <Link
-      href={
-        cmp.broker_1?.slug
-          ? `/brokers/${cmp.broker_1.slug}`
-          : "/brokers"
-      }
-      className="mt-2.5 max-w-[120px] truncate text-[16px] font-black leading-none text-[#0f172a] transition hover:text-brand-500"
-    >
-      {cmp.broker_1?.name || "Broker 1"}
-    </Link>
-
-    <span
-      aria-label={`تقييم ${
-        cmp.broker_1?.name || "الوسيط الأول"
-      } ${
-        cmp.broker_1?.rating?.toFixed(2) ?? "غير متوفر"
-      } من 5`}
-      className="mt-1 text-[10px] font-bold text-[#f59e0b]"
-    >
-      ★ {cmp.broker_1?.rating?.toFixed(2) ?? "—"}
-    </span>
-  </div>
-
-  {/* VS */}
-  <div className="flex items-center justify-center">
-    <div className="flex h-9 w-9 items-center justify-center rounded-full border border-brand-100 bg-brand-50 text-[11px] font-black text-brand-600 shadow-sm">
-      VS
-    </div>
-  </div>
-
-  {/* BROKER 2 */}
-  <div className="flex min-w-0 flex-col items-center text-center">
-    <Link
-      href={
-        cmp.broker_2?.slug
-          ? `/brokers/${cmp.broker_2.slug}`
-          : "/brokers"
-      }
-      className="flex h-[64px] w-[64px] items-center justify-center rounded-[17px] border border-slate-200 bg-slate-50 p-2.5 transition hover:border-brand-100 hover:bg-brand-50 xl:h-[68px] xl:w-[68px]"
-    >
-      {cmp.broker_2?.logo ? (
-        <img
-          src={cmp.broker_2.logo}
-          alt={cmp.broker_2.name || "Broker 2"}
-          className="h-full w-full object-contain"
-        />
-      ) : (
-        <span className="text-[9px] text-slate-400">
-          Logo
-        </span>
-      )}
-    </Link>
-
-    <Link
-      href={
-        cmp.broker_2?.slug
-          ? `/brokers/${cmp.broker_2.slug}`
-          : "/brokers"
-      }
-      className="mt-2.5 max-w-[120px] truncate text-[16px] font-black leading-none text-[#0f172a] transition hover:text-brand-500"
-    >
-      {cmp.broker_2?.name || "Broker 2"}
-    </Link>
-
-    <span
-      aria-label={`تقييم ${
-        cmp.broker_2?.name || "الوسيط الثاني"
-      } ${
-        cmp.broker_2?.rating?.toFixed(2) ?? "غير متوفر"
-      } من 5`}
-      className="mt-1 text-[10px] font-bold text-[#f59e0b]"
-    >
-      ★ {cmp.broker_2?.rating?.toFixed(2) ?? "—"}
-    </span>
-  </div>
-</div>
-          
-
-
-            {/* FEATURES */}
-            <div className="mt-4 grid grid-cols-2 gap-2">
-              <div className="flex min-h-[44px] items-center justify-center rounded-xl bg-brand-50 px-2.5 py-2 text-center text-[10px] font-bold leading-4 text-brand-700">
-                مقارنة الحسابات والرسوم
-              </div>
-
-              <div className="flex min-h-[44px] items-center justify-center rounded-xl bg-slate-50 px-2.5 py-2 text-center text-[10px] font-bold leading-4 text-slate-600 ring-1 ring-slate-200">
-                مقارنة المنصات والتراخيص
-              </div>
-            </div>
-
-
-            {/* CTA */}
-            <div className="mt-auto pt-3">
-              <Link
-                href={`/compare/${cmp.slug}`}
-                className="inline-flex h-11 w-full items-center justify-center rounded-xl bg-brand-500 px-4 text-[13px] font-black text-white transition hover:bg-brand-600"
-              >
-                شاهد المقارنة الكاملة
-              </Link>
-            </div>
-          </div>
-        </article>
-      ))}
-    </div>
-  </div>
-</section>
-
-{/* XS PREMIUM BANNER */}
-<div className="mx-auto -my-1 flex w-full max-w-7xl justify-center sm:-my-1.5 sm:py-0">
-  <a
-    href="https://my.xs.com/links/go/5696"
-    target="_blank"
-    rel="sponsored noopener noreferrer"
-    aria-label="إعلان XS.com"
-    className="
-      group block w-full max-w-[900px]
-      overflow-hidden rounded-[14px]
-      border border-slate-200/80
-      bg-white p-[5px]
-      shadow-[0_8px_24px_rgba(15,23,42,0.075)]
-      transition duration-300
-      hover:-translate-y-[1px]
-      hover:border-slate-300
-      hover:shadow-[0_12px_30px_rgba(15,23,42,0.10)]
-      sm:max-w-[820px]
-    "
-  >
-    <img
-      src="/banners/xsbannerar.jpg"
-      width="728"
-      height="90"
-      alt="إعلان XS.com للتداول في الأسواق المالية"
-      className="block h-auto w-full rounded-[10px] object-contain sm:h-[82px] sm:object-cover"
-    />
-  </a>
-</div>
-
-
-
 {/* =========================================================
-    COUNTRIES DIRECTORY - COMPACT PREMIUM
+    HERO — PREMIUM FINANCIAL PLATFORM
 ========================================================= */}
-<section className="mx-auto w-full max-w-7xl px-0 py-2.5 sm:py-3">
 
-  <div className="overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-[0_12px_34px_rgba(15,23,42,0.045)] sm:rounded-[28px]">
+<section
+  dir="rtl"
+  className="relative isolate overflow-hidden border-b border-[#173b70] bg-[#081b32]"
+>
 
-    {/* =====================================================
-        HEADER
-    ====================================================== */}
-    <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3 sm:px-5 lg:px-6">
+  {(() => {
 
-      <div className="flex flex-col items-center gap-2.5 lg:flex-row lg:items-center lg:justify-between lg:gap-5">
+    /* =====================================================
+       MANUAL HERO BROKER SELECTION
+    ====================================================== */
 
-        {/* TEXT */}
-        <div className="min-w-0 flex-1 text-center lg:text-right">
+    const heroBrokerIds = [1, 2, 18, 14, 25, 11];
 
-          <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[10px] font-black text-brand-500 shadow-sm sm:text-[11px] lg:text-[12px]">
-            حسب الدولة
-          </span>
+    const allHeroBrokers = heroBrokerIds
+      .map((id) =>
+        brokers.find((broker) => Number(broker.id) === id)
+      )
+      .filter((broker): broker is Broker => Boolean(broker));
 
+    return (
 
-          <h2 className="mx-auto mt-2 max-w-[310px] text-[26px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] sm:max-w-none sm:text-[32px] lg:mx-0 lg:text-[34px]">
-            أفضل شركات التداول حسب الدولة
-          </h2>
+      <>
 
+        {/* ===============================================
+            PREMIUM FINTECH BACKGROUND
+        ================================================ */}
 
-          {/* MOBILE DESCRIPTION */}
-          <p className="mx-auto mt-2 max-w-[305px] text-[11px] font-semibold leading-5 text-slate-600 md:hidden">
-            اختر بلدك للوصول إلى الوسطاء المناسبين من حيث التراخيص والحسابات وطرق الدفع.
-          </p>
-
-
-          {/* DESKTOP DESCRIPTION */}
-          <p className="mt-1.5 hidden max-w-[900px] text-[13px] font-semibold leading-6 text-slate-600 md:block lg:text-[14px]">
-            استعرض أفضل شركات التداول حسب الدولة، وقارن الوسطاء من حيث التراخيص،
-            الحساب الإسلامي، وسائل الإيداع والسحب، وسهولة فتح الحساب.
-          </p>
-
-        </div>
-
-
-        {/* CTA */}
-        <div className="shrink-0 self-center lg:pl-4 lg:-translate-x-[14px]">
-
-          <Link
-            href="/best-brokers"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex h-10 min-w-[160px] items-center justify-center rounded-xl bg-brand-500 px-4 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-600 sm:h-11 sm:min-w-[180px] sm:px-5 sm:text-[13px]"
-          >
-            عرض جميع الدول
-          </Link>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    {/* =====================================================
-        MOBILE
-        12 COUNTRIES + CENTERED OTHER COUNTRIES
-    ====================================================== */}
-    <div className="p-2 md:hidden">
-
-      <div className="grid grid-cols-2 gap-1.5">
-
-        {countryPages.map((item) => (
-
-          <Link
-            key={item.href}
-            href={item.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            title={`أفضل شركات التداول في ${item.badge}`}
-            className="group flex h-[52px] items-center rounded-[11px] border border-slate-200 bg-white px-2 shadow-[0_2px_7px_rgba(15,23,42,0.03)] transition duration-300 hover:border-brand-200 hover:bg-[#f8fbff]"
-          >
-
-            <div className="flex w-full items-center justify-between gap-1.5">
-
-              <div className="flex min-w-0 items-center gap-1.5">
-
-                {/* FLAG */}
-                <div className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-white shadow-sm">
-
-                  <img
-                    src={item.flag}
-                    alt={item.badge}
-                    className="h-5 w-5 rounded-full object-cover"
-                  />
-
-                </div>
-
-
-                {/* COUNTRY NAME */}
-                <h3 className="truncate text-[13px] font-black leading-5 text-[#0f172a]">
-                  {item.badge}
-                </h3>
-
-              </div>
-
-
-              {/* ARROW */}
-              <span className="shrink-0 text-[14px] font-black leading-none text-brand-500 transition group-hover:-translate-x-[2px]">
-                ←
-              </span>
-
-            </div>
-
-          </Link>
-
-        ))}
-
-      </div>
-
-
-      {/* =================================================
-          OTHER COUNTRIES - MOBILE CENTERED
-      ================================================= */}
-      <div className="mt-1.5 flex justify-center">
-
-        <Link
-          href="/best-brokers"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group flex h-[52px] w-[calc(50%-3px)] min-w-[145px] items-center rounded-[11px] border border-dashed border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-2 shadow-[0_2px_7px_rgba(37,99,235,0.04)] transition duration-300 hover:bg-brand-50"
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
         >
 
-          <div className="flex w-full items-center justify-between gap-1.5">
+          {/* BASE GRADIENT */}
 
-            <div className="flex min-w-0 items-center gap-1.5">
+          <div className="absolute inset-0 bg-[linear-gradient(120deg,#061326_0%,#0b2340_55%,#10365e_100%)]" />
 
-              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-brand-100 bg-white text-[13px] shadow-sm">
-                🌍
-              </div>
+          {/* SOFT BLUE LIGHTS */}
 
+          <div className="absolute -right-[180px] -top-[280px] h-[650px] w-[650px] rounded-full bg-[#1688ff]/15 blur-[130px]" />
 
-              <h3 className="truncate text-[13px] font-black leading-5 text-[#0f172a]">
-                دول أخرى
-              </h3>
+          <div className="absolute -bottom-[260px] left-[15%] h-[500px] w-[500px] rounded-full bg-[#2563eb]/10 blur-[120px]" />
 
-            </div>
+          {/* FINANCIAL GRID */}
 
+          <div className="absolute inset-0 opacity-[0.045] [background-image:linear-gradient(rgba(147,197,253,0.7)_1px,transparent_1px),linear-gradient(90deg,rgba(147,197,253,0.7)_1px,transparent_1px)] [background-size:65px_65px]" />
 
-            <span className="shrink-0 text-[14px] font-black leading-none text-brand-500 transition group-hover:-translate-x-[2px]">
-              ←
-            </span>
+          {/* DECORATIVE FINANCIAL CURVE */}
 
-          </div>
-
-        </Link>
-
-      </div>
-
-    </div>
-
-
-    {/* =====================================================
-        DESKTOP / TABLET
-        12 COUNTRIES
-    ====================================================== */}
-    <div className="hidden p-3 md:block lg:p-3.5">
-
-      <div className="grid gap-2.5 md:grid-cols-2 lg:gap-3">
-
-        {countryPages.map((item) => (
-
-          <Link
-            key={item.href}
-            href={item.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            title={`أفضل شركات التداول في ${item.badge}`}
-            className="group min-h-[68px] rounded-[15px] border border-slate-200 bg-white px-3 py-2 shadow-[0_2px_8px_rgba(15,23,42,0.035)] transition duration-300 hover:-translate-y-0.5 hover:border-brand-300 hover:bg-[#fcfdff] hover:shadow-[0_12px_26px_rgba(37,99,235,0.10)]"
+          <svg
+            viewBox="0 0 1600 500"
+            fill="none"
+            preserveAspectRatio="none"
+            className="absolute inset-0 h-full w-full opacity-40"
           >
 
-            <div className="flex min-h-[52px] items-center gap-2.5">
+            <defs>
 
-              {/* FLAG */}
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-[#f8fafc] shadow-sm">
+              <linearGradient
+                id="homeHeroLine"
+                x1="0"
+                y1="0"
+                x2="1600"
+                y2="0"
+                gradientUnits="userSpaceOnUse"
+              >
 
-                <img
-                  src={item.flag}
-                  alt={item.badge}
-                  className="h-6 w-6 rounded-full object-cover"
+                <stop stopColor="#38bdf8" stopOpacity="0" />
+
+                <stop
+                  offset="0.6"
+                  stopColor="#60a5fa"
+                  stopOpacity="0.35"
                 />
 
+                <stop
+                  offset="1"
+                  stopColor="#93c5fd"
+                  stopOpacity="0.05"
+                />
+
+              </linearGradient>
+
+            </defs>
+
+            <path
+              d="M0 420 C180 440 250 360 410 370 C580 380 680 280 840 290 C1000 310 1080 180 1260 200 C1400 220 1490 100 1600 70"
+              stroke="url(#homeHeroLine)"
+              strokeWidth="2"
+            />
+
+          </svg>
+
+        </div>
+
+        {/* ===============================================
+            MAIN HERO CONTAINER
+        ================================================ */}
+
+        <div className="relative mx-auto w-full min-w-0 max-w-[1600px] px-3 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-6">
+
+          <div className="grid min-w-0 grid-cols-1 items-center gap-4 sm:gap-5 lg:grid-cols-[minmax(0,1fr)_440px] lg:gap-6 xl:grid-cols-[minmax(0,1fr)_500px] xl:gap-8">
+
+            {/* ===========================================
+                RIGHT SIDE — MAIN HERO CONTENT
+            ============================================ */}
+
+            <div className="flex min-w-0 flex-col justify-center text-center lg:text-right">
+
+              {/* BRAND POSITIONING */}
+
+              <div className="flex items-center justify-center gap-2.5 lg:justify-start">
+
+                <span className="h-2 w-2 shrink-0 rounded-full bg-cyan-400 shadow-[0_0_12px_rgba(34,211,238,0.6)]" />
+
+                <span className="text-[11px] font-semibold leading-6 text-blue-200 sm:text-[13px]">
+
+                  بيانات أدق · مقارنة أوضح · قرار أفضل
+
+                </span>
+
               </div>
 
+              {/* MAIN SEO TITLE */}
 
-              {/* CONTENT */}
-              <div className="min-w-0 flex-1">
+              <h1 className="mt-3 text-[clamp(24px,7.5vw,32px)] font-black leading-[1.25] tracking-tight text-white sm:mt-4 sm:text-[44px] lg:text-[48px] xl:text-[60px]">
 
-                <div className="flex items-center gap-2">
+                أفضل شركات التداول
 
-                  <h3 className="truncate text-[16px] font-black leading-5 text-[#0f172a]">
-                    {item.title}
-                  </h3>
+                <span className="mt-1 block bg-gradient-to-l from-[#6dd5ff] via-[#62a9ff] to-[#9fc9ff] bg-clip-text pb-1 text-transparent">
 
+                  برؤية أعمق.
 
-                  <span className="shrink-0 rounded-full bg-brand-50 px-2 py-0.5 text-[9px] font-extrabold text-brand-600">
-                    {item.badge}
-                  </span>
+                </span>
 
-                </div>
+              </h1>
 
+              {/* MAIN DESCRIPTION */}
 
-                <p className="mt-0.5 line-clamp-1 text-[11px] font-medium leading-4 text-slate-500">
-                  {item.shortDesc ?? item.desc}
-                </p>
+<p className="mx-auto mt-3 max-w-[740px] text-[13px] font-medium leading-6 text-slate-300 sm:mt-4 sm:text-[15px] sm:leading-8 lg:mx-0 lg:text-[16px] xl:text-[17px]">
 
-              </div>
+  <span className="sm:hidden">
 
+    تقييمات مستقلة ومقارنات شاملة للوسطاء،
+    وتحليلات وأدوات مالية تساعدك على اختيار
+    وسيط التداول المناسب.
 
-              {/* ACTION */}
-              <div className="shrink-0 text-left">
+  </span>
 
-                <div className="text-[9px] font-bold text-slate-400">
-                  افتح الصفحة
-                </div>
+  <span className="hidden sm:inline">
 
+    تقييمات مستقلة، ومقارنات شاملة لشركات التداول،
+    وبيانات الأسواق المالية والتحليل الفني وأدوات
+    التداول. كل ما تحتاجه لفهم الأسواق واختيار
+    وسيط التداول المناسب.
 
-                <div className="mt-0.5 text-[16px] font-black leading-none text-brand-500 transition duration-300 group-hover:translate-x-[-3px]">
-                  ←
-                </div>
+  </span>
 
-              </div>
+</p>
 
-            </div>
+              {/* =========================================
+    MAIN ACTION BUTTONS
+========================================== */}
 
-          </Link>
+<div className="mt-4 grid grid-cols-2 items-stretch gap-2 sm:mt-6 sm:flex sm:flex-row sm:items-center sm:justify-center sm:gap-3 lg:justify-start">
 
-        ))}
+  {/* BROKER DIRECTORY */}
 
-      </div>
-
-
-      {/* =================================================
-          OTHER COUNTRIES - DESKTOP CENTERED
-      ================================================= */}
-      <div className="mt-2.5 flex justify-center">
-
-        <Link
-          href="/best-brokers"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group min-h-[70px] w-full max-w-[610px] rounded-[16px] border border-dashed border-[#93c5fd] bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] px-3 py-2 shadow-[0_2px_8px_rgba(37,99,235,0.04)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-50/40 hover:shadow-[0_10px_24px_rgba(37,99,235,0.07)]"
-        >
-
-          <div className="flex min-h-[52px] items-center gap-2.5">
-
-            {/* ICON */}
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-brand-100 bg-white text-[16px] shadow-sm">
-              🌍
-            </div>
-
-
-            {/* CONTENT */}
-            <div className="min-w-0 flex-1">
-
-              <h3 className="text-[15px] font-black leading-5 text-[#0f172a]">
-                كل الدول الأخرى
-              </h3>
-
-
-              <p className="mt-0.5 truncate text-[11px] font-medium leading-4 text-slate-500">
-                اختر من الصفحة العامة إذا لم تجد بلدك ضمن القائمة
-              </p>
-
-            </div>
-
-
-            {/* ACTION */}
-            <div className="shrink-0 text-left">
-
-              <div className="text-[9px] font-bold text-brand-500">
-                تصفح الكل
-              </div>
-
-
-              <div className="mt-0.5 text-[16px] font-black leading-none text-brand-500 transition duration-300 group-hover:translate-x-[-3px]">
-                ←
-              </div>
-
-            </div>
-
-          </div>
-
-        </Link>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
-{/* ============================================================
-    HOME TECHNICAL ANALYSIS PREVIEW
-    GOLD H1 + CLASSIC PIVOT
-============================================================ */}
-
-<HomeTechnicalSnapshot
-  initialTechnical={homeTechnical}
-  initialPivot={homePivot}
-/>
-
-{/* PEPPERSTONE PREMIUM BANNER */}
-<div className="mx-auto -my-1 flex w-full max-w-7xl justify-center sm:-my-1.5 sm:py-0">
-  <a
-    href="https://track.pepperstonepartners.com/visit/?bta=44176&nci=6687"
-    target="_blank"
-    rel="sponsored noopener noreferrer"
-    aria-label="زيارة Pepperstone"
-    className="
-      group block w-full max-w-[900px]
-      overflow-hidden rounded-[14px]
-      border border-slate-200/80
-      bg-white p-[5px]
-      shadow-[0_8px_24px_rgba(15,23,42,0.075)]
-      transition duration-300
-      hover:-translate-y-[1px]
-      hover:border-slate-300
-      hover:shadow-[0_12px_30px_rgba(15,23,42,0.10)]
-      sm:max-w-[820px]
-    "
+  <Link
+    href="/brokers"
+    className="group inline-flex min-h-[44px] min-w-0 items-center justify-center gap-2 rounded-[9px] bg-[linear-gradient(135deg,#2878e5_0%,#1664cf_100%)] px-2 text-[12px] font-black text-white shadow-[0_10px_25px_rgba(20,105,220,0.24)] transition duration-300 hover:-translate-y-0.5 hover:brightness-110 sm:min-h-[50px] sm:min-w-[195px] sm:gap-4 sm:rounded-[11px] sm:px-7 sm:text-[13px]"
   >
-    <img
-      src="https://pepperstonepartners.ck-cdn.com/tn/serve/?cid=687946"
-      width="728"
-      height="90"
-      alt="Pepperstone"
-      className="block h-auto w-full rounded-[10px] object-contain sm:h-[82px] sm:object-cover"
-    />
-  </a>
+
+    استكشف الوسطاء
+
+    <span
+      aria-hidden="true"
+      className="shrink-0 text-[15px] transition-transform group-hover:-translate-x-1 sm:text-[18px]"
+    >
+      ←
+    </span>
+
+  </Link>
+
+  {/* BROKER COMPARISONS */}
+
+  <Link
+    href="/compare"
+    className="group inline-flex min-h-[44px] min-w-0 items-center justify-center gap-2 rounded-[9px] border border-blue-200/25 bg-white/[0.045] px-2 text-[12px] font-bold text-white transition duration-300 hover:border-blue-300/50 hover:bg-white/10 sm:min-h-[50px] sm:min-w-[185px] sm:gap-4 sm:rounded-[11px] sm:px-7 sm:text-[13px]"
+  >
+
+    قارن بين الوسطاء
+
+    <span
+      aria-hidden="true"
+      className="shrink-0 text-[15px] text-blue-300 transition-transform group-hover:-translate-x-1 sm:text-[17px]"
+    >
+      ←
+    </span>
+
+  </Link>
+
 </div>
 
-{/* ACCOUNT TYPES HOME SECTION */}
-<section className="mx-auto w-full max-w-7xl px-0 py-2.5 sm:py-3">
-  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_12px_34px_rgba(15,23,42,0.045)]">
+              {/* =========================================
+    PLATFORM FEATURES — DESKTOP AND TABLET
+========================================== */}
 
-    {/* =====================================================
-        HEADER
-    ====================================================== */}
-    <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3.5 sm:px-6 lg:py-4">
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
+<div className="hidden grid-cols-2 gap-x-5 gap-y-4 border-t border-white/15 pt-4 text-right sm:mt-6 sm:grid lg:mt-7 xl:grid-cols-4 xl:gap-x-5">
 
-        {/* TEXT */}
-        <div className="min-w-0 flex-1 text-center lg:text-right">
-          <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[10px] font-black text-brand-500 shadow-sm sm:text-[11px] lg:text-[12px]">
-            أنواع حسابات التداول
-          </span>
+  {[
+    {
+      title: "تقييمات مستقلة",
+      icon: "shield",
+    },
+    {
+      title: "بيانات مالية محدثة",
+      icon: "activity",
+    },
+    {
+      title: "مقارنات تفصيلية للوسطاء",
+      icon: "compare",
+    },
+    {
+      title: "أدوات تداول مجانية",
+      icon: "calculator",
+    },
+  ].map((item) => (
 
-          <h2 className="mx-auto mt-2.5 max-w-[335px] text-[24px] font-black leading-[1.32] tracking-[-0.02em] text-[#07111f] sm:max-w-none sm:text-[34px] lg:mx-0 lg:text-[36px]">
-            اختر نوع الحساب المناسب لأسلوب تداولك
-          </h2>
+    <div
+      key={item.title}
+      className="flex min-w-0 items-center gap-2.5"
+    >
 
-          {/* MOBILE DESCRIPTION */}
-          <p className="mx-auto mt-2 max-w-[305px] text-[11px] font-semibold leading-5 text-slate-600 sm:hidden">
-            قارن بين الحسابات الشائعة واختر النوع الأنسب لخبرتك ورأس مالك.
-          </p>
+      <svg
+        width="23"
+        height="23"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+        className="h-[23px] w-[23px] shrink-0 text-[#76c8ff]"
+      >
 
-          {/* DESKTOP DESCRIPTION */}
-          <p className="mt-2 hidden whitespace-nowrap text-[14px] font-semibold leading-6 text-slate-600 sm:block lg:text-[15px]">
-            تعرّف على مزايا حسابات التداول المختلفة، وقارن بين Standard و Raw Spread و ECN و Cent لاختيار الحساب الأنسب لخبرتك ورأس مالك.
-          </p>
-        </div>
+        {item.icon === "shield" && (
+          <>
+            <path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z" />
+            <path d="m9 12 2 2 4-4" />
+          </>
+        )}
 
-        {/* CTA */}
-        <div className="shrink-0 self-center pl-4 lg:-translate-x-[14px]">
-          <Link
-            href="/lowest-spread-brokers"
-            className="inline-flex h-11 min-w-[180px] items-center justify-center rounded-xl bg-brand-500 px-5 text-[13px] font-black text-white shadow-[0_10px_22px_rgba(37,99,235,0.20)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-600"
-          >
-            قارن أنواع الحسابات
-          </Link>
-        </div>
+        {item.icon === "activity" && (
+          <path d="M2 12h5l3-7 4 14 3-7h5" />
+        )}
 
-      </div>
+        {item.icon === "compare" && (
+          <>
+            <path d="M3 7h18M16 2l5 5-5 5" />
+            <path d="M21 17H3m5-5-5 5 5 5" />
+          </>
+        )}
+
+        {item.icon === "calculator" && (
+          <>
+            <rect x="5" y="2" width="14" height="20" rx="2" />
+            <path d="M8 6h8M8 11h1m6 0h1m-8 4h1m6 0h1m-8 4h1m6 0h1" />
+          </>
+        )}
+
+      </svg>
+
+      <span className="text-[13px] font-bold leading-6 text-blue-100 xl:text-[14px]">
+
+        {item.title}
+
+      </span>
+
     </div>
 
-    {/* =====================================================
-        MOBILE
-    ====================================================== */}
-    <div className="p-2.5 sm:hidden">
-      <div className="grid gap-2.5">
-        {accountTypeItems.map((item) => (
-          <Link
-            key={item.title}
-            href={item.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group overflow-hidden rounded-[15px] border border-slate-200 bg-white px-3 py-2.5 shadow-[0_3px_10px_rgba(15,23,42,0.035)] transition duration-300 hover:border-brand-200 hover:bg-[#fbfdff]"
-          >
-            <div className="flex items-center justify-between gap-3">
-              <div className="min-w-0 flex-1 text-right">
+  ))}
 
-                <div className="flex items-center justify-between gap-2">
-                  <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-2.5 py-0.5 text-[9px] font-black text-brand-600">
-                    {item.badge}
-                  </span>
+</div>
 
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-brand-50 text-[13px] font-black text-brand-500 transition group-hover:bg-brand-500 group-hover:text-white">
-                    ←
-                  </span>
-                </div>
-
-                <h3 className="mt-1.5 text-[15px] font-black leading-5 text-[#07111f]">
-                  {item.title}
-                </h3>
-
-                <p className="mt-1 text-[11px] font-black leading-5 text-brand-600">
-                  {item.mobileSuitable}
-                </p>
-
-                <p className="mt-0.5 text-[10.5px] font-semibold leading-5 text-slate-500">
-                  {item.mobileDesc}
-                </p>
-
-              </div>
             </div>
 
-            <div className="mt-1.5 flex items-center justify-between border-t border-slate-100 pt-1.5 text-[9.5px] font-extrabold text-brand-500">
-              <span>
-                قارن الوسطاء الذين يقدمون هذا الحساب
-              </span>
+            {/* ===========================================
+    LEFT SIDE — PREMIUM BROKER SHOWCASE
+============================================ */}
 
-              <span className="shrink-0 transition group-hover:-translate-x-1">
-                ←
-              </span>
-            </div>
-          </Link>
-        ))}
-      </div>
-    </div>
+<div className="relative min-w-0">
 
-    {/* =====================================================
-        DESKTOP / TABLET
-    ====================================================== */}
-    <div className="hidden px-4 pb-4 pt-3 sm:block lg:px-5">
-      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-        {accountTypeItems.map((item) => (
-          <Link
-            key={item.title}
-            href={item.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group flex min-h-[220px] flex-col overflow-hidden rounded-[20px] border border-slate-200 bg-white p-4 shadow-[0_4px_14px_rgba(15,23,42,0.035)] transition duration-300 hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-[0_12px_28px_rgba(37,99,235,0.09)]"
-          >
+  {/* SOFT CARD GLOW */}
 
-            {/* TOP */}
-            <div className="flex items-center justify-between gap-3">
-              <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[10px] font-black text-brand-600">
-                {item.badge}
-              </span>
+  <div
+    aria-hidden="true"
+    className="pointer-events-none absolute -inset-4 rounded-[32px] bg-blue-500/10 blur-[30px]"
+  />
 
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-brand-100 bg-[#f8fbff] text-[13px] font-black text-brand-500 transition group-hover:bg-brand-500 group-hover:text-white">
-                ←
-              </span>
-            </div>
+  {/* BROKER SHOWCASE CARD */}
 
-            {/* TITLE */}
-            <h3 className="mt-3 text-[18px] font-black leading-6 text-[#07111f]">
-              {item.title}
-            </h3>
+  <div className="relative overflow-hidden rounded-[15px] border border-[#83b6ff]/20 bg-[linear-gradient(145deg,#102943_0%,#173c65_100%)] p-2.5 shadow-[0_20px_50px_rgba(0,0,0,0.16)] sm:rounded-[22px] sm:p-5">
 
-            {/* SUITABLE */}
-            <p className="mt-1.5 min-h-[36px] text-[12.5px] font-black leading-6 text-brand-600">
-              {item.desktopSuitable}
-            </p>
+    {/* =======================================
+        SHOWCASE HEADER
+    ======================================== */}
 
-            {/* DESCRIPTION */}
-            <p className="mt-1 min-h-[44px] text-[11.5px] font-medium leading-6 text-slate-600">
-              {item.desktopDesc}
-            </p>
+    <div className="flex items-center justify-between gap-3 pb-2.5 sm:pb-4">
 
-            {/* BOTTOM CTA */}
-            <div className="mt-auto flex items-center justify-between gap-2 border-t border-slate-100 pt-3 text-[10px] font-extrabold leading-5 text-brand-500">
-              <span>
-                قارن الوسطاء الذين يقدمون هذا الحساب
-              </span>
+      <div className="min-w-0">
 
-              <span className="shrink-0 transition group-hover:-translate-x-1">
-                ←
-              </span>
-            </div>
+        <h2 className="text-[15px] font-black leading-6 text-white sm:text-[20px] sm:leading-7">
 
-          </Link>
-        ))}
-      </div>
-    </div>
+          شركات تداول مختارة
 
-  </div>
-</section>
-
-
-
-{/* WHY TRUST BROKER ALARAB */}
-<section className="mx-auto w-full max-w-7xl px-0 py-2.5 sm:py-3">
-  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_12px_34px_rgba(15,23,42,0.045)]">
-
-    {/* =====================================================
-        HEADER
-    ====================================================== */}
-    <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3.5 sm:px-6 lg:py-4">
-      <div className="text-center lg:text-right">
-
-        <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[10px] font-black text-brand-500 shadow-sm sm:text-[11px] lg:text-[12px]">
-          لماذا بروكر العرب؟
-        </span>
-
-        <h2 className="mx-auto mt-2.5 max-w-[330px] text-[25px] font-black leading-[1.12] tracking-[-0.02em] text-[#07111f] sm:max-w-none sm:text-[34px] lg:mx-0 lg:text-[36px]">
-          لماذا يثق المتداولون في بروكر العرب؟
         </h2>
 
-        {/* MOBILE DESCRIPTION */}
-        <p className="mx-auto mt-2 max-w-[305px] text-[11px] font-semibold leading-5 text-slate-600 sm:hidden">
-          نساعدك على مقارنة الوسطاء وفهم التراخيص والرسوم والحسابات بشكل أوضح.
+        <p className="mt-0.5 text-[11px] font-medium leading-5 text-blue-100 sm:mt-1.5 sm:text-[14px] sm:leading-6">
+
+          استكشف تقييمات الوسطاء وخدماتهم
+
         </p>
 
-        {/* DESKTOP DESCRIPTION */}
-        <p className="mt-2 hidden whitespace-nowrap text-[14px] font-semibold leading-6 text-slate-600 sm:block lg:text-[15px]">
-          نساعد المتداول العربي على اختيار وسيط مناسب من خلال مراجعات واضحة ومقارنات عملية تركز على الترخيص والرسوم والحسابات وطرق الإيداع والسحب.
-        </p>
       </div>
+
+      {/* SHOWCASE ICON */}
+
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] border border-blue-200/15 bg-white/[0.07] text-[#93c5fd] sm:h-11 sm:w-11 sm:rounded-[12px]">
+
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+          className="h-5 w-5 sm:h-6 sm:w-6"
+        >
+
+          <rect x="3" y="3" width="7" height="7" rx="1.5" />
+
+          <rect x="14" y="3" width="7" height="7" rx="1.5" />
+
+          <rect x="3" y="14" width="7" height="7" rx="1.5" />
+
+          <rect x="14" y="14" width="7" height="7" rx="1.5" />
+
+        </svg>
+
+      </div>
+
     </div>
 
+    {/* =======================================
+        SIX PREMIUM LOGO POSITIONS
+        MOBILE: 3 COLUMNS
+        DESKTOP: 2 COLUMNS
+    ======================================== */}
 
-    {/* =====================================================
-        MOBILE
-    ====================================================== */}
-    <div className="grid gap-2.5 p-2.5 sm:hidden">
-      {whyBrokerAlarabItems.map((item, index) => (
-        <div
-          key={item.desktopTitle}
-          className="rounded-[14px] border border-slate-200 bg-[#fbfdff] px-3 py-2.5 shadow-[0_2px_8px_rgba(15,23,42,0.035)]"
+    <div className="grid grid-cols-3 gap-2 sm:grid-cols-2 sm:gap-2.5">
+
+      {allHeroBrokers.slice(0, 6).map((broker) => (
+
+        <Link
+          key={broker.id}
+          href={`/brokers/${broker.slug}`}
+          aria-label={`عرض تقييم شركة ${broker.name}`}
+          className="group relative flex h-[60px] min-w-0 items-center justify-center overflow-hidden rounded-[9px] border border-white/90 bg-white px-1 py-1 transition duration-300 hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-[0_8px_20px_rgba(0,0,0,0.15)] sm:h-[82px] sm:rounded-[12px] sm:px-2"
         >
-          <div className="flex items-center gap-2.5">
-            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-brand-100 bg-white text-[10px] font-black text-brand-600">
-              {index + 1}
+
+          {/* HOVER ACCENT */}
+
+          <span
+            aria-hidden="true"
+            className="absolute inset-x-0 bottom-0 z-10 h-[3px] origin-center scale-x-0 bg-[#2878e5] transition-transform duration-300 group-hover:scale-x-100"
+          />
+
+          {/* BROKER LOGO */}
+
+          {broker.logo ? (
+
+            <img
+              src={broker.logo}
+              alt={`شعار ${broker.name}`}
+              className="h-[44px] w-[72px] max-w-full object-contain mix-blend-multiply transition-opacity duration-300 group-hover:opacity-85 sm:h-[70px] sm:w-[180px]"
+              style={{
+                transform: `scale(${
+                  broker.slug === "capital-com"
+                    ? 1.30
+                    : broker.slug === "oneroyal"
+                      ? 1.15
+                      : broker.slug === "icmarkets"
+                        ? 1.35
+                        : 1.40
+                })`,
+              }}
+            />
+
+          ) : (
+
+            <span className="text-center text-[11px] font-black text-[#10233f] sm:text-[14px]">
+
+              {broker.name}
+
             </span>
 
-            <div className="min-w-0 flex-1 text-right">
-              <h3 className="text-[14px] font-black leading-5 text-[#0f172a]">
-                {item.mobileTitle}
-              </h3>
+          )}
 
-              <p className="mt-0.5 text-[10.5px] font-semibold leading-5 text-slate-500">
-                {item.mobileDesc}
-              </p>
-            </div>
-          </div>
-        </div>
+        </Link>
+
       ))}
+
     </div>
 
-
-    {/* =====================================================
-        DESKTOP / TABLET
-    ====================================================== */}
-    <div className="hidden px-4 pb-4 pt-3 sm:block lg:px-5">
-      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-        {whyBrokerAlarabItems.map((item, index) => (
-          <div
-            key={item.desktopTitle}
-            className="group relative overflow-hidden rounded-[20px] border border-slate-200 bg-white p-4 shadow-[0_4px_14px_rgba(15,23,42,0.035)] transition duration-300 hover:-translate-y-0.5 hover:border-brand-300 hover:bg-[#fcfdff] hover:shadow-[0_12px_28px_rgba(37,99,235,0.09)]"
-          >
-            <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent opacity-55" />
-
-            <div className="mb-3 flex items-center justify-between gap-3">
-              <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-2.5 py-0.5 text-[10px] font-black text-brand-500">
-                {item.tag}
-              </span>
-
-              <span className="flex h-8 w-8 items-center justify-center rounded-xl border border-brand-100 bg-[#f8fbff] text-[11px] font-black text-brand-500 transition group-hover:bg-brand-500 group-hover:text-white">
-                {index + 1}
-              </span>
-            </div>
-
-            <h3 className="text-[17px] font-black leading-6 tracking-[-0.02em] text-[#07111f]">
-              {item.desktopTitle}
-            </h3>
-
-            <p className="mt-2 text-[11.5px] font-medium leading-6 text-slate-600">
-              {item.desktopDesc}
-            </p>
-          </div>
-        ))}
-      </div>
-    </div>
-
-  </div>
-</section>
-
-{/* FOREX & FINTECH EVENTS - COMPACT PREMIUM */}
-<section className="mx-auto w-full max-w-7xl px-0 py-2.5 sm:py-3">
-  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_12px_34px_rgba(15,23,42,0.045)]">
-    {(() => {
-  /*
-   * أقرب فعاليتين عاديتين، بالإضافة إلى فعالية
-   * الشريك الإعلامي الرسمي عند وجودها.
-   */
-  const selectedEvents = eventList.slice(0, 3);
-
-      return (
-        <>
-          {/* =====================================================
-              HEADER
-          ====================================================== */}
-          <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3.5 sm:px-6 lg:py-4">
-            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
-
-              <div className="min-w-0 flex-1 text-center lg:text-right">
-                <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[10px] font-black text-brand-500 shadow-sm sm:text-[11px] lg:text-[12px]">
-                  معارض ومؤتمرات التداول
-                </span>
-
-                <h2 className="mx-auto mt-2.5 max-w-[315px] text-[25px] font-black leading-[1.12] tracking-[-0.02em] text-[#07111f] sm:max-w-none sm:text-[34px] lg:mx-0 lg:text-[36px]">
-                  أهم معارض ومؤتمرات الفوركس في 2026
-                </h2>
-
-                {/* MOBILE DESCRIPTION */}
-                <p className="mx-auto mt-2 max-w-[305px] text-[11px] font-semibold leading-5 text-slate-600 sm:hidden">
-                  تابع أبرز معارض الفوركس والتكنولوجيا المالية والأحداث التي يشارك فيها بروكر العرب.
-                </p>
-
-                {/* DESKTOP DESCRIPTION */}
-                <p className="mt-2 hidden whitespace-nowrap text-[14px] font-semibold leading-6 text-slate-600 sm:block lg:text-[15px]">
-                  تابع أبرز معارض الفوركس والتكنولوجيا المالية، وتعرّف على الأحداث التي يشارك فيها بروكر العرب بصفته شريكًا إعلاميًا رسميًا.
-                </p>
-              </div>
-
-              {/* CTA - SAME ALIGNMENT AS OTHER SECTIONS */}
-              <div className="shrink-0 self-center pl-4 lg:-translate-x-[14px]">
-                <Link
-                  href="/events"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex h-11 min-w-[180px] items-center justify-center rounded-xl bg-brand-500 px-5 text-[13px] font-black text-white shadow-[0_10px_22px_rgba(37,99,235,0.20)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-600"
-                >
-                  عرض جميع المعارض
-                </Link>
-              </div>
-            </div>
-          </div>
-
-
-          {/* =====================================================
-              EVENTS
-          ====================================================== */}
-          <div
-  className={`grid gap-2.5 p-2.5 lg:gap-3 lg:p-4 ${
-    selectedEvents.length === 2
-      ? "md:grid-cols-2"
-      : "md:grid-cols-3"
-  }`}
->
-            {selectedEvents.map((event) => {
-              const count = eventCountdown(
-                event.start_date,
-                event.end_date
-              );
-
-              const mediaPartner = event.is_media_partner === true;
-
-              const eventTitle = (
-                event.title_ar || "معرض تداول"
-              )
-                .replace(/\s*2026\s*/gi, " ")
-                .replace(/\s+/g, " ")
-                .trim();
-
-              const eventLocation =
-                event.city_ar?.trim() ||
-                event.country_ar?.trim() ||
-                "سيتم الإعلان عن الموقع";
-
-              return (
-                <article
-                  key={event.id}
-                  className="group relative flex h-full flex-col overflow-hidden rounded-[18px] border border-slate-200 bg-white shadow-[0_4px_14px_rgba(15,23,42,0.035)] transition duration-300 hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-[0_12px_28px_rgba(37,99,235,0.08)] sm:rounded-[20px]"
-                >
-                  {/* TOP ACCENT */}
-                  <div
-                    className={`h-[3px] ${
-                      mediaPartner
-                        ? "bg-gradient-to-l from-[#f59e0b] via-[#fbbf24] to-brand-500"
-                        : "bg-gradient-to-l from-brand-600 via-brand-400 to-[#93c5fd]"
-                    }`}
-                  />
-
-
-                  {/* =================================================
-                      EVENT HEADER
-                  ================================================= */}
-                  <div className="relative border-b border-slate-100 bg-gradient-to-b from-[#f5f9ff] to-white px-3 pb-2.5 pt-2.5 text-center sm:px-4 sm:pb-3 sm:pt-3">
-
-                    <div className="flex min-h-[22px] justify-center">
-                      {mediaPartner ? (
-                        <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-[8.5px] font-black text-amber-700 shadow-sm sm:text-[9px]">
-                          <span className="flex h-4 w-4 items-center justify-center rounded-full bg-amber-100 text-[8px]">
-                            ✓
-                          </span>
-                          شريك إعلامي رسمي
-                        </span>
-                      ) : (
-                        <span className="inline-flex rounded-full border border-brand-100 bg-white px-2.5 py-0.5 text-[8.5px] font-black text-brand-500 shadow-sm sm:text-[9px]">
-                          حدث قادم
-                        </span>
-                      )}
-                    </div>
-
-                    <h3 className="mt-2 text-[15px] font-black leading-5 text-[#07111f] sm:text-[16px]">
-                      {eventTitle}
-                    </h3>
-
-                    <div className="mt-0.5 flex items-center justify-center gap-1 text-[10px] font-bold text-slate-500 sm:text-[11px]">
-                      <span className="text-brand-500">●</span>
-                      <span>{eventLocation}</span>
-                    </div>
-                  </div>
-
-
-                  {/* =================================================
-                      COUNTDOWN
-                  ================================================= */}
-                  {count.status === "live" ? (
-                    <div className="border-b border-emerald-100 bg-emerald-50 px-3 py-2 text-center">
-                      <div className="text-[15px] font-black text-emerald-600 sm:text-[17px]">
-                        جاري الآن
-                      </div>
-
-                      <div className="mt-0.5 text-[9px] font-bold text-emerald-700">
-                        الحدث منعقد حاليًا
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="border-b border-slate-100 bg-[#fbfdff] px-3 py-2">
-                      <div className="flex items-center justify-center gap-2">
-                        <div className="inline-flex min-w-[70px] items-center justify-center gap-1 rounded-xl border border-brand-100 bg-white px-2.5 py-1.5 shadow-sm">
-                          <span
-                            dir="ltr"
-                            className="text-[16px] font-black text-brand-600 sm:text-[18px]"
-                          >
-                            {count.days}
-                          </span>
-
-                          <span className="text-[9px] font-bold text-slate-500">
-                            يوم
-                          </span>
-                        </div>
-
-                        <div className="inline-flex min-w-[70px] items-center justify-center gap-1 rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 shadow-sm">
-                          <span
-                            dir="ltr"
-                            className="text-[16px] font-black text-slate-700 sm:text-[18px]"
-                          >
-                            {count.hours}
-                          </span>
-
-                          <span className="text-[9px] font-bold text-slate-500">
-                            ساعة
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="mt-1 text-center text-[8.5px] font-bold text-slate-400">
-                        الوقت المتبقي
-                      </div>
-                    </div>
-                  )}
-
-
-                  {/* =================================================
-                      EVENT DETAILS
-                  ================================================= */}
-                  <div className="flex flex-1 flex-col p-2.5 sm:p-3">
-
-                    <div className="rounded-[13px] border border-slate-100 bg-slate-50/70 px-2.5 py-2 text-center">
-                      <div className="text-[10px] font-black leading-5 text-slate-800 sm:text-[11px]">
-                        {formatEventDate(
-                          event.start_date,
-                          event.end_date
-                        )}
-                      </div>
-
-                      <div className="mt-0.5 text-[9px] font-bold leading-4 text-slate-600 sm:text-[10px]">
-                        {event.city_ar ||
-                          event.country_ar ||
-                          "سيتم الإعلان عن الموقع لاحقًا"}
-
-                        {event.city_ar && event.country_ar
-                          ? `، ${event.country_ar}`
-                          : ""}
-                      </div>
-
-                      {event.venue_ar && (
-                        <div className="mt-0.5 hidden text-[9px] font-medium leading-4 text-slate-500 sm:block">
-                          {event.venue_ar}
-                        </div>
-                      )}
-                    </div>
-
-                    <Link
-                      href={`/events/${event.slug}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-auto inline-flex min-h-[38px] w-full items-center justify-center rounded-xl border border-brand-200 bg-brand-50 px-3 text-[11px] font-black text-brand-600 transition hover:-translate-y-0.5 hover:border-brand-500 hover:bg-brand-500 hover:text-white sm:min-h-[40px] sm:text-[12px]"
-                    >
-                      عرض تفاصيل الحدث
-
-                      <span className="mr-2 transition group-hover:-translate-x-1">
-                        ←
-                      </span>
-                    </Link>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        </>
-      );
-    })()}
-  </div>
-</section>
-
-
-{/* BEST BROKERS BY NEED - DESKTOP + MOBILE TOP 10 */}
-<section className="mx-auto w-full max-w-7xl px-0 py-2.5 sm:py-3">
-  <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_12px_34px_rgba(15,23,42,0.045)]">
-    {(() => {
-      /* =====================================================
-          DATA
-      ====================================================== */
-
-      /* DESKTOP - KEEP CURRENT TOP 4 */
-      const topFourBrokers = footerFeaturedBrokers.slice(0, 4);
-
-      const categoryLabels = [
-  {
-    title: "الأفضل للمبتدئين",
-    desc: "سهولة استخدام وحسابات مناسبة للبداية",
-    factLabel: "مناسب لـ",
-    factValue: "بداية أسهل",
-    pageHref: "/best-brokers",
-  },
-  {
-    title: "الأفضل للسبريد المنخفض",
-    desc: "تكلفة تداول مناسبة للسكالبينج والمتداول النشط",
-    factLabel: "الميزة",
-    factValue: "تكلفة أقل",
-    pageHref: "/lowest-spread-brokers",
-  },
-  {
-    title: "الأفضل للحساب الإسلامي",
-    desc: "حسابات إسلامية بشروط واضحة للمتداول العربي",
-    factLabel: "نوع الحساب",
-    factValue: "إسلامي",
-    pageHref: "/islamic-forex-brokers",
-  },
-  {
-    title: "الأفضل للمنصات",
-    desc: "منصات متعددة وتجربة مناسبة للتداول اليومي",
-    factLabel: "المنصات",
-    factValue: "خيارات متعددة",
-    pageHref: "/brokers",
-  },
-];
-
-      /* MOBILE - TOP 10 BY RATING */
-      const mobileTopBrokers = [...footerFeaturedBrokers]
-  .filter(
-    (broker) =>
-      broker &&
-      broker.slug &&
-      broker.name &&
-      broker.logo
-  )
-  .sort(
-    (a, b) =>
-      Number(b.rating || 0) - Number(a.rating || 0)
-  )
-  .slice(0, 10);
-
-      return (
-        <>
-          {/* =====================================================
-              MOBILE ONLY
-          ====================================================== */}
-          <div className="xl:hidden">
-            {/* MOBILE HEADER */}
-            <div className="border-b border-slate-100 bg-gradient-to-b from-[#f8fbff] to-[#eef5ff] px-4 pb-3 pt-3.5 text-center">
-              <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[10px] font-black text-brand-500 shadow-sm">
-                الأعلى تقييمًا
-              </span>
-
-              <h2 className="mx-auto mt-2 max-w-[310px] text-[24px] font-black leading-[1.12] tracking-[-0.02em] text-[#07111f] md:max-w-none md:whitespace-nowrap">
-                أفضل الوسطاء في بروكر العرب
-              </h2>
-
-              <p className="mx-auto mt-1.5 max-w-[300px] text-[10.5px] font-semibold leading-5 text-slate-500">
-                استعرض أعلى الوسطاء تقييمًا واسحب لرؤية المزيد.
-              </p>
-
-              <Link
-                href="/brokers"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-2.5 inline-flex h-9 items-center justify-center rounded-xl bg-brand-500 px-5 text-[10.5px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.18)] transition hover:bg-brand-600"
-              >
-                عرض جميع الوسطاء
-              </Link>
-            </div>
-
-            {/* MOBILE HORIZONTAL CAROUSEL */}
-            <div
-              className="
-                flex snap-x snap-mandatory gap-2.5
-                overflow-x-auto overscroll-x-contain
-                px-3 pb-3 pt-3
-                [scrollbar-width:none]
-                [&::-webkit-scrollbar]:hidden
-              "
-            >
-              {mobileTopBrokers.map((broker, index) => (
-                <article
-                  key={broker.id}
-                  className="
-                    group relative
-                    w-[145px] min-w-[145px] shrink-0 md:w-[300px] md:min-w-[300px]
-                    snap-start
-                    overflow-hidden
-                    rounded-[16px]
-                    border border-slate-200
-                    bg-white
-                    px-3 pb-3 pt-3
-                    shadow-[0_4px_14px_rgba(15,23,42,0.04)]
-                  "
-                >
-                  {/* TOP LINE */}
-                  <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent" />
-
-                  {/* RANK */}
-                  <div className="flex items-center justify-between">
-                    <span className="rounded-full bg-brand-50 px-2 py-0.5 text-[8px] font-black text-brand-600">
-                      #{index + 1}
-                    </span>
-
-                    <span
-                      dir="ltr"
-                      className="text-[10px] font-black text-[#f59e0b]"
-                    >
-                      ★ {broker.rating?.toFixed(2) ?? "—"}
-                    </span>
-                  </div>
-
-                  {/* LOGO */}
-                  <Link
-                    href={`/brokers/${broker.slug}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mx-auto mt-2.5 flex h-[58px] w-[78px] items-center justify-center rounded-[14px] border border-slate-200 bg-[#fbfdff] p-2 shadow-sm"
-                  >
-                    <img
-                      src={broker.logo || ""}
-                      alt={broker.name || "شركة تداول"}
-                      className="max-h-[48px] max-w-[95%] object-contain"
-                    />
-                  </Link>
-
-                  {/* NAME */}
-                  <Link
-                    href={`/brokers/${broker.slug}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-2 block truncate text-center text-[13px] font-black text-[#07111f]"
-                  >
-                    {broker.name}
-                  </Link>
-
-                  <div className="mt-0.5 text-center text-[8.5px] font-bold text-slate-400">
-                    تقييم بروكر العرب
-                  </div>
-
-                  {/* REVIEW */}
-                  <Link
-                    href={`/brokers/${broker.slug}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-2.5 flex h-8 w-full items-center justify-center rounded-lg bg-brand-500 px-2 text-[10px] font-black text-white transition hover:bg-brand-600"
-                  >
-                    عرض التقييم
-                  </Link>
-                </article>
-              ))}
-            </div>
-
-            {/* MOBILE SWIPE HINT */}
-            {mobileTopBrokers.length > 2 && (
-              <div className="-mt-0.5 flex items-center justify-center gap-1.5 pb-3">
-                <span className="h-1.5 w-5 rounded-full bg-brand-500" />
-                <span className="h-1.5 w-1.5 rounded-full bg-slate-300" />
-                <span className="h-1.5 w-1.5 rounded-full bg-slate-300" />
-              </div>
-            )}
-          </div>
-
-
-          {/* =====================================================
-              DESKTOP / TABLET
-              YOUR CURRENT DESIGN - UNCHANGED
-          ====================================================== */}
-          <div className="hidden xl:block">
-            {/* HEADER */}
-            <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-6 py-5">
-              <div className="flex items-center justify-between gap-8">
-                <div className="text-right">
-                  <span className="inline-flex rounded-full border border-brand-100 bg-white px-3 py-1 text-[11px] font-black text-brand-600 shadow-sm">
-                    وسطاء مختارون حسب الاحتياج
-                  </span>
-
-                  <h2 className="mt-3 text-[30px] font-black leading-[1.15] tracking-[-0.02em] text-[#07111f] lg:text-[36px]">
-                    أفضل الوسطاء حسب احتياجك
-                  </h2>
-
-                  <p className="mt-2 max-w-[820px] text-[13px] font-semibold leading-7 text-slate-600 lg:text-[14px]">
-                    نعرض أعلى أربعة وسطاء تقييمًا في بروكر العرب، مع تصنيف واضح
-                    يساعدك على فهم الاستخدام الأنسب لكل خيار.
-                  </p>
-                </div>
+                {/* =======================================
+                    SIMPLE SHOWCASE FOOTER
+                ======================================== */}
 
                 <Link
                   href="/brokers"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex h-12 min-w-[190px] shrink-0 items-center justify-center rounded-2xl bg-brand-500 px-6 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(37,99,235,0.22)] transition hover:-translate-y-0.5 hover:bg-brand-600"
+                  className="group mt-3 flex min-h-[34px] items-center justify-center gap-3 border-t border-white/10 pt-2 text-[13px] font-bold text-blue-100 transition hover:text-white"
                 >
-                  عرض جميع الوسطاء
-                </Link>
-              </div>
-            </div>
 
-            {/* CARDS */}
-            <div className="grid grid-cols-4 gap-4 bg-white p-5">
-              {topFourBrokers.map((broker, index) => {
-                const category = categoryLabels[index];
+                  استكشف جميع شركات التداول
 
-                return (
-                  <article
-                    key={broker.id}
-                    className="group relative flex min-h-[380px] flex-col overflow-hidden rounded-[24px] border border-slate-200 bg-[#fbfdff] p-4 shadow-[0_6px_20px_rgba(15,23,42,0.045)] transition duration-300 hover:-translate-y-1 hover:border-brand-200 hover:bg-white hover:shadow-[0_18px_38px_rgba(15,23,42,0.09)]"
+                  <span
+                    aria-hidden="true"
+                    className="text-[17px] text-blue-300 transition-transform duration-200 group-hover:-translate-x-1"
                   >
-                    <div className="absolute inset-x-0 top-0 h-[4px] bg-gradient-to-r from-brand-500 via-[#60a5fa] to-transparent" />
 
-                    {/* CATEGORY */}
-                    <div className="flex items-start justify-between gap-3 pt-1">
-                      <span className="inline-flex min-h-[30px] items-center rounded-full border border-brand-100 bg-brand-50 px-3 py-1 text-[10px] font-black leading-4 text-brand-600">
-                        {category.title}
-                      </span>
+                    ←
 
-                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-[10px] font-black text-brand-600 shadow-sm">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-                    </div>
+                  </span>
 
-                    <p className="mt-3 min-h-[42px] text-[11px] font-semibold leading-5 text-slate-500">
-                      {category.desc}
-                    </p>
+                </Link>
 
-                    {/* BROKER */}
-                    <Link
-                      href={`/brokers/${broker.slug}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mx-auto mt-3 flex h-[78px] w-[104px] items-center justify-center rounded-[20px] border border-slate-200 bg-white p-2 shadow-[0_8px_22px_rgba(15,23,42,0.06)] transition group-hover:border-brand-100"
-                    >
-                      <img
-                        src={broker.logo || ""}
-                        alt={broker.name || "شركة تداول"}
-                        className="max-h-[68px] max-w-[95%] object-contain transition duration-300 group-hover:scale-105"
-                      />
-                    </Link>
+              </div>
 
-                    <Link
-                      href={`/brokers/${broker.slug}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-3 block truncate text-center text-[18px] font-black text-slate-950 transition hover:text-brand-500"
-                    >
-                      {broker.name}
-                    </Link>
-
-                    <div className="mt-1 text-center text-[10px] font-bold text-slate-500">
-                      تقييم بروكر العرب
-                    </div>
-
-                    {/* FACTS */}
-                    <div className="mt-3 grid grid-cols-2 gap-2">
-                      <div className="rounded-xl border border-slate-200 bg-white px-2 py-2.5 text-center">
-                        <div className="text-[9px] font-bold text-slate-400">
-                          التقييم
-                        </div>
-
-                        <div
-                          dir="ltr"
-                          className="mt-1 text-[17px] font-black text-brand-600"
-                        >
-                          {broker.rating?.toFixed(2) ?? "—"}
-
-                          <span className="mr-0.5 text-[9px] text-slate-400">
-                            /5
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="rounded-xl border border-slate-200 bg-white px-2 py-2.5 text-center">
-                        <div className="text-[9px] font-bold text-slate-400">
-                          {category.factLabel}
-                        </div>
-
-                        <div className="mt-1 truncate text-[11px] font-black text-[#0f172a]">
-                          {category.factValue}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* CATEGORY LINK */}
-                    <Link
-                      href={category.pageHref}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-3 flex items-center justify-between gap-2 border-t border-slate-100 pt-3 text-[10px] font-black text-brand-600 transition hover:text-brand-700"
-                    >
-                      <span>عرض جميع الخيارات</span>
-
-                      <span className="transition group-hover:-translate-x-1">
-                        ←
-                      </span>
-                    </Link>
-
-                    {/* ACTIONS */}
-                    <div className="mt-auto grid grid-cols-2 gap-2 pt-3">
-                      <Link
-                        href={`/brokers/${broker.slug}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-2 text-[11px] font-black text-slate-700 transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-600"
-                      >
-                        عرض التقييم
-                      </Link>
-
-                      <a
-                        href={
-                          broker.real_account_url ||
-                          `/brokers/${broker.slug}`
-                        }
-                        target="_blank"
-                        rel="nofollow sponsored noopener noreferrer"
-                        className="inline-flex h-10 items-center justify-center rounded-xl bg-brand-500 px-2 text-[11px] font-black text-white transition hover:bg-brand-600"
-                      >
-                        فتح حساب
-                      </a>
-                    </div>
-                  </article>
-                );
-              })}
             </div>
+
           </div>
-        </>
-      );
-    })()}
-  </div>
+
+        </div>
+
+      </>
+
+    );
+
+  })()}
+
 </section>
 
-  </div>
+{/* ================= END PREMIUM HERO ================= */}
+
+{/* HOME CONTENT + DESKTOP SIDEBAR */}
+<div className="mx-auto w-full max-w-[1600px] px-4 sm:px-6 lg:px-8">
+  <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_310px] xl:items-stretch xl:gap-3">
+
+    {/* ALL HOME PAGE SECTIONS */}
+    <div className="min-w-0 xl:flex xl:flex-col xl:[&>section]:pl-0">
+
+  {/* FINDER */}
+
+<section
+  id="finder"
+  className="scroll-mt-24 mx-auto w-full max-w-7xl px-0 pt-2 pb-3 sm:pt-4 sm:pb-4 lg:pt-4 lg:pb-4 xl:pb-0 xl:flex xl:flex-1 xl:flex-col xl:[&>*]:flex-1"
+>
+  <BrokerFinder
+    brokers={brokers}
+    countryRankings={countryRankings}
+  />
+</section>
+
+</div>
 
 {/* BROKERS SIDEBAR - DESKTOP ONLY */}
-<aside className="hidden min-h-full pt-4 xl:block">
-  <div className="sticky top-24 overflow-hidden rounded-[30px] border border-slate-200 bg-white pb-3 shadow-[0_16px_45px_rgba(15,23,42,0.07)]">
+<aside className="hidden pt-4 xl:block">
+  <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-[0_16px_45px_rgba(15,23,42,0.07)]">
 
       {/* SIDEBAR HEADER */}
-<div className="border-b border-slate-200 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3.5">
 
-  <div className="flex items-center gap-3">
+<div className="flex min-h-[76px] flex-col justify-center border-b border-slate-200 bg-[#f5f8fc] px-4 py-2.5">
 
-    {/* BROKER RADAR ICON */}
-    <div className="relative flex h-12 w-12 shrink-0 items-center justify-center">
+  <div className="flex items-center gap-2.5">
 
-      {/* DARK OUTER SHELL */}
-      <div className="absolute inset-0 rounded-full bg-[#0a1d36] shadow-[0_6px_16px_rgba(15,23,42,0.22)]" />
+    <span
+      aria-hidden="true"
+      className="h-[24px] w-[4px] shrink-0 rounded-full bg-brand-600"
+    />
 
-      {/* OUTER BLUE RING */}
-      <div className="absolute inset-[3px] rounded-full border border-blue-400/50" />
-
-      {/* INNER FACE */}
-      <div className="absolute inset-[7px] rounded-full bg-[#102a4c]" />
-
-      {/* RADAR RINGS */}
-      <div className="absolute inset-[11px] rounded-full border border-blue-300/25" />
-
-      <div className="absolute inset-[16px] rounded-full border border-blue-300/25" />
-
-      {/* CROSS AXIS */}
-      <span className="absolute left-1/2 top-[8px] h-[32px] w-px -translate-x-1/2 bg-white/10" />
-
-      <span className="absolute left-[8px] top-1/2 h-px w-[32px] -translate-y-1/2 bg-white/10" />
-
-      {/* RADAR SWEEP */}
-      <span className="absolute right-[7px] top-[7px] h-[18px] w-[18px] rounded-tr-full border-r-[3px] border-t-[3px] border-blue-400" />
-
-      {/* VERIFIED CENTER */}
-      <div className="relative z-10 flex h-[22px] w-[22px] items-center justify-center rounded-full border border-white/10 bg-[#07182d] shadow-[0_2px_8px_rgba(0,0,0,0.24)]">
-
-        <span className="text-[11px] font-black text-white">
-          ✓
-        </span>
-
-      </div>
-
-      {/* BROKER DOTS */}
-      <span className="absolute right-[8px] top-[19px] h-[4px] w-[4px] rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(34,211,238,0.65)]" />
-
-      <span className="absolute bottom-[9px] left-[11px] h-[4px] w-[4px] rounded-full bg-blue-400 shadow-[0_0_6px_rgba(96,165,250,0.65)]" />
-
-      <span className="absolute bottom-[8px] right-[11px] h-[4px] w-[4px] rounded-full bg-amber-400 shadow-[0_0_6px_rgba(251,191,36,0.65)]" />
-
-    </div>
-
-    {/* HEADER TEXT */}
-    <div className="min-w-0">
-
-      <span className="inline-flex rounded-full border border-brand-100 bg-white px-2.5 py-1 text-[8px] font-black text-brand-600 shadow-sm">
-        شركات مختارة
-      </span>
-
-      <h2 className="mt-1.5 text-[16px] font-black leading-6 text-[#07111f]">
-        أفضل وسطاء التداول
-      </h2>
-
-      <p className="mt-0.5 text-[8.5px] font-semibold leading-4 text-slate-500">
-        تصفح تقييمات مجموعة من أبرز شركات التداول.
-      </p>
-
-    </div>
+    <h2 className="text-[20px] font-black leading-7 text-[#10233f]">
+      وسطاء التداول
+    </h2>
 
   </div>
+
+  <p className="mt-2 pr-[14px] text-[11px] font-medium leading-5 text-slate-500">
+    تقييمات ومراجعات شركات التداول
+  </p>
 
 </div>
 
@@ -3003,23 +1276,36 @@ const allHeroBrokers = heroBrokerIds
       </div>
 
       {/* FEATURED LOGO */}
-      <div className="mt-3 flex min-h-[92px] items-center justify-center rounded-[18px] bg-white px-5 shadow-[0_8px_22px_rgba(15,23,42,0.07)] ring-1 ring-slate-100">
-        {sidebarBrokers[0].logo ? (
-          <img
-            src={sidebarBrokers[0].logo}
-            alt={`شعار ${sidebarBrokers[0].name}`}
-            loading="lazy"
-            className="max-h-[90px] max-w-[250px] object-contain scale-[1.28] transition duration-300 group-hover:scale-[1.35]"
-          />
-        ) : (
-          <span className="text-[18px] font-black text-slate-800">
-            {sidebarBrokers[0].name}
-          </span>
-        )}
-      </div>
+
+<div className="mt-2 flex h-[86px] items-center justify-center overflow-hidden px-2">
+
+  {sidebarBrokers[0].logo ? (
+
+    <img
+      src={sidebarBrokers[0].logo}
+      alt={`شعار ${sidebarBrokers[0].name}`}
+      loading="lazy"
+      className="h-[80px] w-[220px] max-w-full object-contain mix-blend-multiply transition duration-300"
+      style={{
+        transform:
+          sidebarBrokers[0].slug === "icmarkets"
+            ? "scale(1.45)"
+            : "scale(1.35)",
+      }}
+    />
+
+  ) : (
+
+    <span className="text-[18px] font-black text-slate-800">
+      {sidebarBrokers[0].name}
+    </span>
+
+  )}
+
+</div>
 
       {/* FEATURED INFO */}
-      <div className="mt-3 flex items-center justify-between gap-3">
+      <div className="mt-2 flex items-center justify-between gap-3">
         <div className="min-w-0">
           <h3
             title={sidebarBrokers[0].name || ""}
@@ -3041,80 +1327,92 @@ const allHeroBrokers = heroBrokerIds
   )}
 
   {/* OTHER BROKERS */}
-<div className="mt-3 space-y-2">
+
+<div className="mt-2 divide-y divide-slate-200">
+
   {sidebarBrokers.slice(1).map((broker) => (
+
     <Link
       key={broker.id}
       href={`/brokers/${broker.slug}`}
       target="_blank"
       rel="noopener noreferrer"
       prefetch={false}
-      className="group flex min-h-[84px] items-center gap-3 overflow-hidden rounded-[18px] border border-slate-200 bg-white px-3 py-2.5 shadow-[0_4px_14px_rgba(15,23,42,0.04)] transition duration-300 hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-[0_12px_24px_rgba(15,79,168,0.09)]"
+      aria-label={`عرض تقييم ${broker.name}`}
+      className="group flex min-h-[84px] items-center justify-between gap-2 rounded-md px-2 py-0.5 transition duration-200 hover:bg-blue-50/50"
     >
-      {/* LOGO */}
-      <div className="flex h-[60px] w-[112px] shrink-0 items-center justify-center overflow-visible rounded-[14px] bg-gradient-to-b from-white to-slate-100 transition duration-300 group-hover:bg-brand-50/50">
-  {broker.logo ? (
-    <img
+
+      {/* LOGO AND RATING */}
+
+      <div className="flex min-w-0 flex-1 flex-col items-center justify-center">
+
+        {/* BROKER LOGO */}
+
+        <div className="flex h-[53px] w-full items-center justify-center">
+
+          {broker.logo ? (
+
+            <img
   src={broker.logo}
   alt={`شعار ${broker.name}`}
   loading="lazy"
-  className={
-    broker.name?.toLowerCase().includes("capital")
-      ? "h-[54px] w-[108px] object-contain transition duration-300"
-      : "h-[54px] w-[108px] object-contain scale-[1.35] transition duration-300 group-hover:scale-[1.42]"
-  }
-  style={
-    broker.name?.toLowerCase().includes("capital")
-      ? {
-          width: "75%",
-          height: "auto",
-          maxHeight: "80%",
-          objectFit: "contain",
-          display: "block",
-        }
-      : undefined
-  }
+  className="h-[53px] w-[155px] max-w-full object-contain mix-blend-multiply transition duration-300"
+  style={{
+  transform: broker.name?.toLowerCase().includes("capital")
+    ? "scale(1.65)"
+    : "scale(1.75)",
+}}
 />
-  ) : (
-          <span className="truncate text-[11px] font-black text-slate-700">
-            {broker.name}
-          </span>
-        )}
-      </div>
 
-      {/* INFO */}
-      <div className="min-w-0 flex-1 text-right">
-        <h3
-          title={broker.name || ""}
-          className="truncate whitespace-nowrap text-[12px] font-black leading-5 text-[#07111f] transition group-hover:text-brand-600"
-        >
-          {broker.name}
-        </h3>
+          ) : (
+
+            <span className="text-[15px] font-black text-slate-800">
+              {broker.name}
+            </span>
+
+          )}
+
+        </div>
+
+        {/* BROKER RATING */}
 
         <div
-  dir="ltr"
-  className="mt-1.5 flex items-center justify-end gap-1.5 text-[#f59e0b]"
->
-  <span className="text-[14px] leading-none">
-    ★
-  </span>
+          dir="ltr"
+          className="mt-1 flex items-center justify-center gap-1.5"
+        >
 
-  <span className="text-[11px] font-black leading-none">
-    {broker.rating?.toFixed(2) ?? "—"}
-  </span>
-</div>
+          <span className="text-[15px] leading-none text-amber-500">
+            ★
+          </span>
 
-        <div className="mt-1.5 text-[9px] font-bold text-brand-600 transition group-hover:text-brand-700">
-  التقييم الكامل
-</div>
+          <span className="text-[12px] font-bold leading-none text-slate-700">
+            {broker.rating?.toFixed(2) ?? "—"}
+          </span>
+
+          <span className="text-[10px] font-medium text-slate-400">
+            / 5
+          </span>
+
+        </div>
+
       </div>
 
-      {/* ARROW */}
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-[14px] font-black text-brand-500 shadow-[0_3px_10px_rgba(15,23,42,0.05)] transition duration-300 group-hover:-translate-x-1 group-hover:border-brand-500 group-hover:bg-brand-500 group-hover:text-white">
-  ←
-</span>
+      {/* REVIEW BUTTON */}
+
+      <span className="inline-flex h-[32px] min-w-[76px] shrink-0 items-center justify-center gap-2 rounded-full border border-[#93b5e6] bg-white px-3 text-[11px] font-semibold text-brand-600 transition duration-200 group-hover:border-brand-500 group-hover:bg-brand-500 group-hover:text-white">
+
+        التقييم
+
+        <span className="text-[13px] leading-none">
+          ←
+        </span>
+
+      </span>
+
     </Link>
+
   ))}
+
 </div>
 
   {/* ALL BROKERS */}
@@ -3122,579 +1420,523 @@ const allHeroBrokers = heroBrokerIds
   href="/brokers"
   className="mt-3 flex h-[46px] w-full items-center justify-center gap-2 rounded-[14px] bg-brand-600 px-4 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-[0_12px_24px_rgba(37,99,235,0.26)]"
 >
-  <span>عرض جميع شركات التداول</span>
+   <span>عرض جميع شركات التداول</span>
   <span className="text-[13px]">←</span>
 </Link>
 
 </div>
 
-
-{/* SIDEBAR IMPORTANT LINKS */}
-<div className="space-y-3 px-3 pb-3 pt-3">
-
-  {/* LIVE MARKET HOURS */}
-  <MarketHoursSidebar />
-
-{/* ONEROYAL SPONSORED SIDEBAR AD */}
-<div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white p-2 shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
-  <div className="mb-2 flex items-center justify-between px-1">
-    <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[8px] font-black text-slate-500">
-      إعلان
-    </span>
-
-    <span className="text-[10px] font-bold text-slate-600">
-  OneRoyal
-</span>
   </div>
+</aside>
+
+</div>
+
+{/* EXNESS PREMIUM BANNER */}
+
+<div className="mx-auto flex w-full justify-center py-5 sm:py-6 lg:py-7">
+
+  <a
+    href="https://one.toexness.com/a/hhmbah9f13"
+    target="_blank"
+    rel="sponsored noopener noreferrer"
+    aria-label="إعلان Exness"
+    className="
+      group block w-full max-w-[1000px]
+      overflow-hidden rounded-[14px]
+      border border-slate-200/80
+      bg-white p-[5px]
+      shadow-[0_8px_24px_rgba(15,23,42,0.075)]
+      transition duration-300
+      hover:border-slate-300
+      hover:shadow-[0_12px_30px_rgba(15,23,42,0.10)]
+    "
+  >
+    <img
+      src="/banners/AR_Spreads_50_lower_728x90.jpg"
+      width={728}
+      height={90}
+      alt="إعلان Exness للتداول في الأسواق المالية"
+      className="block !h-auto !w-full rounded-[10px] !object-contain"
+    />
+  </a>
+
+</div>
+
+  {/* =====================================================
+    LATEST ARTICLES — FULL WIDTH
+===================================================== */}
+
+<HomeArticles />
+
+{/* =========================================================
+    SECOND HOME GROUP — COMPARISONS + MARKET HOURS
+========================================================= */}
+
+<div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_310px] xl:items-stretch xl:gap-3">
+
+  {/* MAIN CONTENT — BROKER COMPARISONS */}
+
+  <div className="min-w-0 xl:flex xl:flex-col xl:[&>section]:pl-0">
+
+  <HomeComparisons comparisons={homeComparisons} />
+
+</div>
+
+  {/* SECOND SIDEBAR — MARKET HOURS */}
+
+  <aside className="hidden min-w-0 pt-4 pb-4 xl:flex xl:flex-col">
+
+    <MarketHoursSidebar />
+
+  </aside>
+
+</div>
+
+{/* =========================================================
+    END SECOND HOME GROUP
+========================================================= */}
+
+
+{/* =========================================================
+    XS PREMIUM BANNER — FULL WIDTH
+========================================================= */}
+
+<div className="mx-auto flex w-full justify-center py-5 sm:py-6 lg:py-7">
+
+  <a
+    href="https://my.xs.com/links/go/5696"
+    target="_blank"
+    rel="sponsored noopener noreferrer"
+    aria-label="إعلان XS.com"
+    className="
+      group block w-full max-w-[1000px]
+      overflow-hidden rounded-[14px]
+      border border-slate-200/80
+      bg-white p-[5px]
+      shadow-[0_8px_24px_rgba(15,23,42,0.075)]
+      transition duration-300
+      hover:border-slate-300
+      hover:shadow-[0_12px_30px_rgba(15,23,42,0.10)]
+    "
+  >
+
+    <img
+      src="/banners/xsbannerar.jpg"
+      width={728}
+      height={90}
+      alt="إعلان XS.com للتداول في الأسواق المالية"
+      className="block !h-auto !w-full rounded-[10px] !object-contain"
+    />
+
+  </a>
+
+</div>
+
+{/* =========================================================
+    END XS PREMIUM BANNER
+========================================================= */}
+
+
+{/* =========================================================
+    THIRD HOME GROUP — COUNTRIES + ONEROYAL
+========================================================= */}
+
+<div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_310px] xl:items-stretch xl:gap-3">
+
+  {/* MAIN CONTENT — COUNTRIES */}
+
+  <div className="min-w-0 xl:flex xl:flex-col">
+
+    <HomeCountries />
+
+  </div>
+
+  {/* THIRD SIDEBAR — ONEROYAL */}
+
+  <aside className="hidden min-w-0 flex-col pt-4 pb-4 xl:flex">
+
+    {/* ADVERTISEMENT HEADER SPACER */}
+
+<div
+  aria-hidden="true"
+  className="mb-4 min-h-[44px] shrink-0"
+/>
+
+    {/* ADVERTISEMENT CARD */}
+
+<div className="relative flex flex-1 items-center justify-center overflow-hidden rounded-[18px] border border-slate-200 bg-white p-2">
+
+  {/* ADVERTISEMENT LABEL */}
+
+  <span className="absolute top-1.5 left-1/2 z-10 -translate-x-1/2 text-[10px] font-medium text-slate-400">
+    إعلان
+  </span>
+
+  {/* ONEROYAL BANNER */}
 
   <a
     href="https://vc.cabinet.oneroyal.com/links/go/15855"
     target="_blank"
     rel="nofollow sponsored noopener noreferrer"
     aria-label="فتح حساب تداول مع OneRoyal"
-    className="group block overflow-hidden rounded-[16px] bg-white"
+    className="group block w-full overflow-hidden rounded-[13px]"
   >
+
     <img
       src="https://vc.cabinet.oneroyal.com/uploads/public/banners/2023/07/10/f01276aaa41913e28cfa286e7c86f57d.png"
-      width="300"
-      height="250"
       alt="إعلان OneRoyal"
       title="فتح حساب تداول مع OneRoyal"
       loading="lazy"
-      className="mx-auto block h-auto w-full max-w-[300px] object-contain transition duration-300 group-hover:scale-[1.02]"
+      className="mx-auto block !h-auto !w-full !object-contain transition duration-300 group-hover:scale-[1.01]"
     />
-  </a>
 
-  </div>
-
-  {/* LICENSES */}
-  <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
-
-  {/* HEADER */}
-  <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-4">
-    <div className="flex items-center gap-3">
-      
-      {/* LICENSES ICON */}
-<div className="relative flex h-12 w-12 shrink-0 items-center justify-center">
-
-  <div className="absolute inset-0 rounded-full bg-[#0a1d36] shadow-[0_6px_16px_rgba(15,23,42,0.22)]" />
-
-  <div className="absolute inset-[3px] rounded-full border border-blue-400/50" />
-
-  <div className="absolute inset-[7px] rounded-full bg-[#102a4c]" />
-
-  {/* SHIELD */}
-  <div className="relative z-10 flex h-[25px] w-[21px] items-center justify-center rounded-b-[11px] rounded-t-[7px] border border-blue-300/50 bg-[#07182d]">
-
-    <span className="text-[11px] font-black text-white">
-      ✓
-    </span>
-
-  </div>
-
-  <span className="absolute right-[6px] top-[8px] h-[12px] w-[12px] rounded-tr-full border-r-[3px] border-t-[3px] border-blue-400" />
-
-  <span className="absolute bottom-[7px] left-[8px] h-[4px] w-[4px] rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(34,211,238,0.65)]" />
-
-</div>
-
-      <div className="min-w-0 flex-1">
-        <span className="inline-flex rounded-full border border-brand-100 bg-white px-2.5 py-1 text-[8px] font-black text-brand-600 shadow-sm">
-          دليل رقابي
-        </span>
-
-        <h3 className="mt-2.5 text-[15px] font-black leading-6 text-[#07111f]">
-          تراخيص شركات التداول
-        </h3>
-
-        <p className="mt-0.5 text-[9px] font-semibold leading-4 text-slate-500">
-          تعرّف على أبرز الجهات الرقابية العالمية.
-        </p>
-      </div>
-    </div>
-  </div>
-
-  {/* CONTENT */}
-  <div className="divide-y divide-slate-100 px-3">
-    {[
-      {
-        code: "FCA",
-        title: "الترخيص البريطاني",
-        href: "/licenses/fca",
-      },
-      {
-        code: "ASIC",
-        title: "الترخيص الأسترالي",
-        href: "/licenses/asic",
-      },
-      {
-        code: "DFSA",
-        title: "ترخيص دبي المالي",
-        href: "/licenses/dfsa",
-      },
-      {
-        code: "CySEC",
-        title: "الترخيص القبرصي",
-        href: "/licenses/cysec",
-      },
-      {
-        code: "FSCA",
-        title: "ترخيص جنوب أفريقيا",
-        href: "/licenses/fsca",
-      },
-    ].map((item) => (
-      <Link
-        key={item.href}
-        href={item.href}
-        className="group flex min-h-[60px] items-center justify-between gap-3 py-3"
-      >
-        <div className="flex min-w-0 items-center gap-2.5">
-          <span className="inline-flex h-7 min-w-[48px] shrink-0 items-center justify-center rounded-lg border border-brand-100 bg-brand-50 px-2 text-[9px] font-black text-brand-700">
-            {item.code}
-          </span>
-
-          <span className="truncate text-[11px] font-black text-slate-700 transition group-hover:text-brand-600">
-            {item.title}
-          </span>
-        </div>
-
-        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-[12px] font-black text-brand-500 transition group-hover:-translate-x-1 group-hover:border-brand-500 group-hover:bg-brand-500 group-hover:text-white">
-          ←
-        </span>
-      </Link>
-    ))}
-  </div>
-
-  {/* FOOTER */}
-<div className="border-t border-slate-100 bg-white p-3">
-  <Link
-    href="/licenses"
-    className="flex h-[46px] w-full items-center justify-center gap-2 rounded-[14px] bg-brand-600 px-4 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-[0_12px_24px_rgba(37,99,235,0.26)]"
-  >
-    <span>عرض جميع التراخيص</span>
-    <span className="text-[13px]">←</span>
-  </Link>
-</div>
-</div>
-
-
-
-{/* BROKER HELP CARD */}
-<div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
-  {/* HEADER */}
-  <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-4">
-    <div className="flex items-center gap-3">
-      {/* HELP ICON */}
-<div className="relative flex h-12 w-12 shrink-0 items-center justify-center">
-
-  <div className="absolute inset-0 rounded-full bg-[#0a1d36] shadow-[0_6px_16px_rgba(15,23,42,0.22)]" />
-
-  <div className="absolute inset-[3px] rounded-full border border-blue-400/50" />
-
-  <div className="absolute inset-[7px] rounded-full bg-[#102a4c]" />
-
-  {/* CHAT BUBBLE */}
-  <div className="relative z-10 flex h-[23px] w-[27px] items-center justify-center rounded-[9px] border border-blue-300/40 bg-[#07182d]">
-
-    <div className="flex items-center gap-[3px]">
-
-      <span className="h-[3px] w-[3px] rounded-full bg-cyan-300" />
-
-      <span className="h-[3px] w-[3px] rounded-full bg-blue-300" />
-
-      <span className="h-[3px] w-[3px] rounded-full bg-white/80" />
-
-    </div>
-
-    <span className="absolute -bottom-[4px] right-[5px] h-[7px] w-[7px] rotate-45 border-b border-r border-blue-300/40 bg-[#07182d]" />
-
-  </div>
-
-  <span className="absolute right-[6px] top-[7px] h-[11px] w-[11px] rounded-tr-full border-r-[3px] border-t-[3px] border-cyan-400" />
-
-  <span className="absolute bottom-[7px] left-[8px] h-[4px] w-[4px] rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.6)]" />
-
-</div>
-
-      <div className="min-w-0 flex-1">
-        <span className="inline-flex rounded-full border border-brand-100 bg-white px-2.5 py-1 text-[8px] font-black text-brand-600 shadow-sm">
-          مساعدة مجانية
-        </span>
-
-        <h3 className="mt-2 text-[15px] font-black leading-6 text-[#07111f]">
-  استشارة مجانية لاختيار الوسيط المناسب
-</h3>
-      </div>
-    </div>
-  </div>
-
-  {/* CONTENT */}
-  <div className="px-4 py-4">
-    <p className="text-[12.5px] font-medium leading-6 text-slate-700">
-     أخبرنا ببلدك وخبرتك وما تبحث عنه، وسنساعدك في مقارنة الوسطاء الأنسب لاحتياجاتك.
-    </p>
-
-    <div className="mt-3 space-y-2">
-      <div className="flex items-center gap-2 text-[10px] font-semibold text-slate-700">
-        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-50 text-[10px] font-bold text-brand-600">
-          ✓
-        </span>
-        مقارنة الوسطاء حسب بلدك
-      </div>
-
-      <div className="flex items-center gap-2 text-[10px] font-semibold text-slate-700">
-        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-50 text-[10px] font-bold text-brand-600">
-          ✓
-        </span>
-        خيارات مناسبة لمستوى خبرتك
-      </div>
-
-      <div className="flex items-center gap-2 text-[9px] font-bold text-slate-600">
-        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-50 text-[10px] font-bold text-brand-600">
-          ✓
-        </span>
-        مساعدة مجانية بدون التزام
-      </div>
-    </div>
-
-    <p className="mt-3 px-2 text-center text-[9px] font-semibold leading-5 text-slate-500">
-  خدمة معلوماتية لمقارنة الوسطاء، وليست استشارة استثمارية.
-</p>
-</div>
-
-<div className="border-t border-slate-100 bg-white p-3">
-  <Link
-    href="/contact"
-    className="flex h-[46px] w-full items-center justify-center gap-2 rounded-[14px] bg-brand-600 px-4 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-[0_12px_24px_rgba(37,99,235,0.26)]"
-  >
-    <span>تواصل معنا الآن</span>
-    <span className="text-[13px]">←</span>
-  </Link>
-</div>
-</div>
-
-{/* CAPITAL.COM SPONSORED SIDEBAR AD */}
-<div className="rounded-[22px] border border-slate-200 bg-white p-2 shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
-
-  <div className="mb-2 flex items-center justify-between px-1">
-    <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[8px] font-black text-slate-500">
-      إعلان
-    </span>
-
-    <span className="text-[10px] font-bold text-slate-600">
-      Capital.com
-    </span>
-  </div>
-
-  <a
-    href="https://go.capital.com/visit/?bta=107752&nci=7031"
-    target="_blank"
-    rel="sponsored noopener noreferrer"
-    className="block w-full"
-  >
-    <img
-      src="/banners/capitalbannerar.png"
-      alt="إعلان Capital.com"
-      width={300}
-      height={250}
-      className="!block !w-full !h-auto !max-w-full !max-h-none !object-contain !object-center !transform-none !scale-100"
-    />
   </a>
 
 </div>
 
-        {/* FOREX TERMS */}
-<div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
-
-  {/* HEADER */}
-  <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3.5">
-
-    <div className="flex items-center gap-3">
-
-      {/* LEARNING ICON */}
-      <div className="relative flex h-12 w-12 shrink-0 items-center justify-center">
-
-        {/* OUTER SHELL */}
-        <div className="absolute inset-0 rounded-full bg-[#0a1d36] shadow-[0_6px_16px_rgba(15,23,42,0.22)]" />
-
-        {/* OUTER RING */}
-        <div className="absolute inset-[3px] rounded-full border border-blue-400/50" />
-
-        {/* INNER FACE */}
-        <div className="absolute inset-[7px] rounded-full bg-[#102a4c]" />
-
-        {/* OPEN BOOK */}
-        <div className="relative z-10 flex h-[25px] w-[31px]">
-
-          {/* RIGHT PAGE */}
-          <div className="relative h-full w-1/2 rounded-r-[6px] border border-blue-300/45 bg-[#07182d]">
-
-            <span className="absolute right-[3px] top-[5px] h-[2px] w-[8px] rounded-full bg-cyan-300" />
-
-            <span className="absolute right-[3px] top-[10px] h-[2px] w-[7px] rounded-full bg-white/60" />
-
-            <span className="absolute right-[3px] top-[15px] h-[2px] w-[6px] rounded-full bg-white/35" />
-
-          </div>
-
-          {/* LEFT PAGE */}
-          <div className="relative h-full w-1/2 rounded-l-[6px] border border-r-0 border-blue-300/45 bg-[#07182d]">
-
-            <span
-              dir="ltr"
-              className="absolute left-[3px] top-[5px] text-[6px] font-black leading-none tracking-[-0.03em] text-blue-300"
-            >
-              ABC
-            </span>
-
-            <span className="absolute left-[3px] top-[13px] h-[2px] w-[8px] rounded-full bg-white/55" />
-
-            <span className="absolute left-[3px] top-[18px] h-[2px] w-[6px] rounded-full bg-white/30" />
-
-          </div>
-
-
-          {/* CENTER FOLD */}
-          <span className="absolute left-1/2 top-[2px] h-[21px] w-px -translate-x-1/2 bg-blue-300/25" />
-
-        </div>
-
-        {/* ACCENT */}
-        <span className="absolute bottom-[7px] left-[8px] h-[4px] w-[4px] rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(34,211,238,0.65)]" />
-
-      </div>
-
-      {/* TEXT */}
-      <div className="min-w-0">
-
-        <h3 className="text-[14px] font-black text-[#07111f]">
-          مصطلحات تداول مهمة
-        </h3>
-
-        <p className="mt-0.5 text-[9px] font-semibold leading-4 text-slate-500">
-          ابدأ بفهم أهم مفاهيم سوق الفوركس.
-        </p>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-  {/* CONTENT */}
-  <div className="divide-y divide-slate-100 px-3">
-
-    {[
-      {
-        label: "السبريد",
-        desc: "تكلفة الفرق بين سعري البيع والشراء",
-        href: "/learn-trading/spread",
-      },
-      {
-        label: "الرافعة المالية",
-        desc: "كيفية التحكم بصفقات أكبر من رأس المال",
-        href: "/learn-trading/leverage",
-      },
-      {
-        label: "الهامش",
-        desc: "المبلغ المطلوب لفتح الصفقة",
-        href: "/learn-trading/margin",
-      },
-    ].map((item) => (
-
-      <Link
-        key={item.href}
-        href={item.href}
-        className="group flex min-h-[56px] items-center justify-between gap-3 py-2.5"
-      >
-
-        <div className="min-w-0">
-
-          <div className="text-[12px] font-black leading-5 text-slate-800 transition group-hover:text-brand-600">
-            {item.label}
-          </div>
-
-          <div className="mt-1 truncate text-[10px] font-semibold leading-4 text-slate-500">
-            {item.desc}
-          </div>
-
-        </div>
-
-        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-[12px] font-black text-brand-500 transition group-hover:bg-brand-500 group-hover:text-white">
-          ←
-        </span>
-
-      </Link>
-
-    ))}
-
-  </div>
-
-  {/* CTA */}
-  <div className="border-t border-slate-100 bg-white p-3">
-
-    <Link
-      href="/learn-trading"
-      className="flex h-[46px] w-full items-center justify-center gap-2 rounded-[14px] bg-brand-600 px-4 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-[0_12px_24px_rgba(37,99,235,0.26)]"
-    >
-      <span>تصفح مركز تعلم التداول</span>
-      <span className="text-[13px]">←</span>
-    </Link>
-
-  </div>
+</aside>
 
 </div>
 
-{/* TRADING CALCULATORS */}
-<div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_7px_22px_rgba(15,23,42,0.045)]">
+{/* END THIRD HOME GROUP */}
 
-  {/* HEADER */}
-  <div className="border-b border-slate-100 bg-gradient-to-l from-[#f8fbff] via-white to-[#eef5ff] px-4 py-3.5">
 
-    <div className="flex items-center gap-3">
+{/* =========================================================
+    FOURTH HOME GROUP — TECHNICAL ANALYSIS + MARKET PRICES
+========================================================= */}
 
-      {/* CALCULATOR ICON */}
-      <div className="relative flex h-12 w-12 shrink-0 items-center justify-center">
+<div className="mt-2 grid grid-cols-1 gap-3 xl:grid-cols-[minmax(0,1fr)_310px] xl:items-stretch">
 
-        {/* OUTER SHELL */}
-        <div className="absolute inset-0 rounded-full bg-[#0a1d36] shadow-[0_6px_16px_rgba(15,23,42,0.22)]" />
+  {/* MAIN CONTENT — TECHNICAL ANALYSIS */}
 
-        {/* OUTER RING */}
-        <div className="absolute inset-[3px] rounded-full border border-blue-400/50" />
+  <div className="min-w-0 xl:flex xl:flex-col">
 
-        {/* INNER FACE */}
-        <div className="absolute inset-[7px] rounded-full bg-[#102a4c]" />
-
-        {/* CALCULATOR BODY */}
-        <div className="relative z-10 flex h-[30px] w-[25px] flex-col rounded-[6px] border border-blue-300/45 bg-[#07182d] p-[3px]">
-
-          {/* DISPLAY */}
-          <div className="flex h-[7px] items-center justify-end rounded-[2px] bg-blue-300/20 px-[2px]">
-
-            <span
-              dir="ltr"
-              className="text-[5px] font-black leading-none text-cyan-300"
-            >
-              123
-            </span>
-
-          </div>
-
-          {/* BUTTONS */}
-          <div className="mt-[3px] grid flex-1 grid-cols-2 gap-[2px]">
-
-            <span className="flex items-center justify-center rounded-[2px] bg-white/10 text-[7px] font-black leading-none text-white">
-              +
-            </span>
-
-            <span className="flex items-center justify-center rounded-[2px] bg-white/10 text-[8px] font-black leading-none text-white">
-              −
-            </span>
-
-            <span className="flex items-center justify-center rounded-[2px] bg-white/10 text-[7px] font-black leading-none text-blue-300">
-              ×
-            </span>
-
-            <span className="flex items-center justify-center rounded-[2px] bg-white/10 text-[7px] font-black leading-none text-cyan-300">
-              ÷
-            </span>
-
-          </div>
-
-        </div>
-
-        {/* ACCENT */}
-        <span className="absolute bottom-[7px] left-[8px] h-[4px] w-[4px] rounded-full bg-violet-400 shadow-[0_0_6px_rgba(167,139,250,0.65)]" />
-
-      </div>
-
-      {/* TEXT */}
-      <div className="min-w-0">
-
-        <h3 className="text-[14px] font-black text-[#07111f]">
-          حاسبات التداول
-        </h3>
-
-        <p className="mt-0.5 text-[9px] font-semibold leading-4 text-slate-500">
-          أدوات عملية تساعدك على حساب الصفقة.
-        </p>
-
-      </div>
-
-    </div>
+    <HomeTechnicalSnapshot
+      initialTechnical={homeTechnical}
+      initialPivot={homePivot}
+    />
 
   </div>
 
-  {/* CONTENT */}
-  <div className="grid grid-cols-1 gap-2 p-3">
+  {/* FOURTH SIDEBAR — MARKET PRICES */}
 
-    {[
-      {
-        title: "حاسبة إدارة المخاطر",
-        short: "المخاطر",
-        href: "/tools/risk-calculator",
-      },
-      {
-        title: "حاسبة قيمة النقطة",
-        short: "النقطة",
-        href: "/tools/pip-calculator",
-      },
-      {
-        title: "حاسبة الهامش",
-        short: "الهامش",
-        href: "/tools/margin-calculator",
-      },
-    ].map((item) => (
+  <aside className="flex min-w-0 flex-col pb-3 pt-3 sm:pb-4 sm:pt-4">
 
-      <Link
-        key={item.href}
-        href={item.href}
-        className="group flex min-h-[48px] items-center justify-between gap-3 rounded-[14px] border border-slate-200 bg-[#fbfdff] px-3 py-2 transition hover:border-violet-200 hover:bg-violet-50/40"
-      >
+    <HomeMarketPrices />
 
-        <div className="flex min-w-0 items-center gap-2.5">
-
-          <span className="inline-flex h-7 min-w-[48px] shrink-0 items-center justify-center rounded-lg bg-violet-50 px-2 text-[8px] font-black text-violet-700">
-            {item.short}
-          </span>
-
-          <span className="truncate text-[10px] font-black text-slate-700 transition group-hover:text-violet-700">
-            {item.title}
-          </span>
-
-        </div>
-
-        <span className="shrink-0 text-[13px] font-black text-slate-300 transition group-hover:-translate-x-1 group-hover:text-violet-600">
-          ←
-        </span>
-
-      </Link>
-
-    ))}
-
-  </div>
-
-  {/* CTA */}
-  <div className="border-t border-slate-100 bg-white p-3">
-
-    <Link
-      href="/tools"
-      className="flex h-[46px] w-full items-center justify-center gap-2 rounded-[14px] bg-brand-600 px-4 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-[0_12px_24px_rgba(37,99,235,0.26)]"
-    >
-      <span>عرض جميع حاسبات التداول</span>
-      <span className="text-[13px]">←</span>
-    </Link>
-
-  </div>
-
-</div>
-</div>
-
-    </div>
   </aside>
 
+</div>
+
+{/* END FOURTH HOME GROUP */}
+
+
+{/* =========================================================
+    PEPPERSTONE PREMIUM BANNER — FULL WIDTH
+========================================================= */}
+
+<div className="mx-auto flex w-full justify-center py-5 sm:py-6 lg:py-7">
+
+  <a
+    href="https://track.pepperstonepartners.com/visit/?bta=44176&nci=6687"
+    target="_blank"
+    rel="sponsored noopener noreferrer"
+    aria-label="زيارة Pepperstone"
+    className="
+      group block w-full max-w-[1000px]
+      overflow-hidden rounded-[14px]
+      border border-slate-200/80
+      bg-white p-[5px]
+      shadow-[0_8px_24px_rgba(15,23,42,0.075)]
+      transition duration-300
+      hover:border-slate-300
+      hover:shadow-[0_12px_30px_rgba(15,23,42,0.10)]
+    "
+  >
+
+    <img
+      src="https://pepperstonepartners.ck-cdn.com/tn/serve/?cid=687946"
+      width={728}
+      height={90}
+      alt="إعلان Pepperstone"
+      className="block !h-auto !w-full rounded-[10px] !object-contain"
+    />
+
+  </a>
+
+</div>
+
+{/* END PEPPERSTONE PREMIUM BANNER */}
+
+
+{/* =====================================================
+    ACCOUNT TYPES HOME SECTION — FULL WIDTH
+====================================================== */}
+
+<section
+  id="home-account-types"
+  aria-labelledby="home-account-types-title"
+  dir="rtl"
+  className="mx-auto w-full min-w-0 py-3 sm:py-4"
+>
+
+  {/* EXTERNAL SECTION HEADER */}
+
+  <div className="mb-4 flex min-h-[44px] shrink-0 items-center">
+
+    <h2
+      id="home-account-types-title"
+      className="min-w-0 text-[18px] font-black leading-8 tracking-tight text-[#10233f] sm:text-[24px]"
+    >
+
+      أنواع حسابات التداول
+
+    </h2>
+
   </div>
+
+  {/* =====================================================
+    ACCOUNT TYPES GRID
+    MOBILE: 2 COLUMNS
+    DESKTOP: ORIGINAL DESIGN
+====================================================== */}
+
+<div className="grid grid-cols-2 gap-2.5 sm:gap-3 xl:grid-cols-4">
+
+  {accountTypeItems.map((item, index) => (
+
+    <Link
+      key={item.title}
+      href={item.href}
+      className="group flex min-w-0 flex-col overflow-hidden rounded-[13px] border border-slate-200 bg-white p-3 transition duration-200 hover:border-brand-300 hover:bg-[#fcfdff] hover:shadow-[0_5px_18px_rgba(15,23,42,0.05)] sm:rounded-[18px] sm:p-4"
+    >
+
+      {/* ACCOUNT ICON AND BADGE */}
+
+      <div className="flex items-center justify-between gap-2">
+
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[9px] bg-[#edf3fc] text-[#194b92] transition duration-200 group-hover:bg-[#194b92] group-hover:text-white sm:h-11 sm:w-11 sm:rounded-[12px]">
+
+          <svg
+            width="23"
+            height="23"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.7"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+            className="h-5 w-5 sm:h-[23px] sm:w-[23px]"
+          >
+
+            {index === 0 ? (
+
+              <>
+
+                <rect
+                  x="3"
+                  y="5"
+                  width="18"
+                  height="15"
+                  rx="3"
+                />
+
+                <path d="M3 9h18" />
+
+                <path d="M15 14h3" />
+
+              </>
+
+            ) : index === 1 ? (
+
+              <>
+
+                <path d="M3 3v18h18" />
+
+                <path d="m6 15 5-5 4 3 6-7" />
+
+                <path d="M17 6h4v4" />
+
+              </>
+
+            ) : index === 2 ? (
+
+              <>
+
+                <rect
+                  x="9"
+                  y="2"
+                  width="6"
+                  height="6"
+                  rx="1"
+                />
+
+                <rect
+                  x="2"
+                  y="16"
+                  width="6"
+                  height="6"
+                  rx="1"
+                />
+
+                <rect
+                  x="16"
+                  y="16"
+                  width="6"
+                  height="6"
+                  rx="1"
+                />
+
+                <path d="M12 8v4M5 16v-4h14v4" />
+
+              </>
+
+            ) : (
+
+              <>
+
+                <ellipse
+                  cx="10"
+                  cy="5"
+                  rx="7"
+                  ry="3"
+                />
+
+                <path d="M3 5v5c0 1.7 3.1 3 7 3" />
+
+                <path d="M3 10v5c0 1.7 3.1 3 7 3" />
+
+                <circle
+                  cx="17"
+                  cy="16"
+                  r="5"
+                />
+
+              </>
+
+            )}
+
+          </svg>
+
+        </span>
+
+        {/* DESKTOP BADGE ONLY */}
+
+        <span className="hidden rounded-full bg-[#f1f5f9] px-2.5 py-1 text-[10px] font-bold text-slate-600 sm:inline-flex">
+
+          {item.badge}
+
+        </span>
+
+      </div>
+
+      {/* ACCOUNT TITLE */}
+
+      <h3 className="mt-2 break-words text-[14px] font-black leading-6 text-[#10233f] transition-colors group-hover:text-brand-600 sm:mt-3 sm:text-[19px]">
+
+        {item.title}
+
+      </h3>
+
+      {/* ACCOUNT DESCRIPTION */}
+
+      <p className="mt-1 text-[11px] font-medium leading-5 text-slate-600 sm:text-[13px] sm:leading-6">
+
+        {item.mobileDesc}
+
+      </p>
+
+      {/* CARD FOOTER */}
+
+      <div className="mt-auto pt-2 sm:pt-3">
+
+        <div className="flex items-center justify-between gap-1 border-t border-slate-100 pt-2 sm:gap-2 sm:pt-2.5">
+
+          <span className="text-[11px] font-bold text-[#194b92] sm:text-[12px]">
+
+            عرض الحسابات
+
+          </span>
+
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+            className="h-[14px] w-[14px] shrink-0 text-[#194b92] transition-transform duration-200 group-hover:-translate-x-1 sm:h-[17px] sm:w-[17px]"
+          >
+
+            <path d="M19 12H5" />
+
+            <path d="m12 19-7-7 7-7" />
+
+          </svg>
+
+        </div>
+
+      </div>
+
+    </Link>
+
+  ))}
+
+</div>
+
+</section>
+
+{/* END ACCOUNT TYPES — FULL WIDTH */}
+
+
+{/* =========================================================
+    FIFTH HOME GROUP — TRADING TOOLS + LICENSES
+========================================================= */}
+
+<HomeTradingTools />
+
+{/* END FIFTH HOME GROUP */}
+
+
+{/* =========================================================
+    GLOBAL INTEREST RATES — FULL WIDTH
+========================================================= */}
+
+<HomeInterestRates />
+
+{/* END GLOBAL INTEREST RATES */}
+
+
+{/* =========================================================
+    SELECTED TRADING STRATEGIES — FULL WIDTH
+========================================================= */}
+
+<HomeStrategies />
+
+{/* END SELECTED TRADING STRATEGIES */}
+
+
+{/* =========================================================
+    BROKER ALARAB — REVIEW METHODOLOGY
+========================================================= */}
+
+<HomeMethodology />
+
+{/* END HOME METHODOLOGY */}
+
+
+{/* =========================================================
+    FINAL HOME SECTION — CONTACT + BROKERS + ADVERTISEMENT
+========================================================= */}
+
+<HomeClosingSection brokers={brokers} />
+
+{/* END FINAL HOME SECTION */}
+
 </div>
 
 </main>
