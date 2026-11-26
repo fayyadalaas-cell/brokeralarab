@@ -41,7 +41,7 @@ titleHighlight:
   publisher: "بروكر العرب",
 
   published: "2026-11-24",
-  modified: "2026-11-24",
+  modified: "2026-11-25",
 
   heroAlt:
     "دليل فتح حساب تداول الفوركس في السعودية والتحقق من الهوية ومستندات التسجيل",
@@ -168,6 +168,7 @@ const contents = [
   { id: "registration-steps", label: "خطوات فتح الحساب" },
   { id: "verification", label: "توثيق حساب التداول" },
   { id: "verification-rejection", label: "أسباب رفض التوثيق" },
+  { id: "saudi-top-five", label: "مقارنة شركات التداول" },
   { id: "minimum-deposit", label: "الحد الأدنى للإيداع" },
   { id: "payments", label: "الإيداع والسحب" },
   { id: "islamic-account", label: "حساب التداول الإسلامي" },
@@ -1059,7 +1060,7 @@ async function getSaudiArticleBrokers(): Promise<
         Boolean(broker.slug)
       );
     })
-    .slice(0, 3);
+    .slice(0, 5);
 }
 
 /* =========================================================
@@ -1248,9 +1249,12 @@ function SaudiArticleBrokerCard({
    SAUDI BROKERS — ARTICLE SECTION
    ========================================================= */
 
-async function SaudiBrokerComparison() {
-  const brokers =
-    await getSaudiArticleBrokers();
+function SaudiBrokerComparison({
+  rankings,
+}: {
+  rankings: SaudiArticleRanking[];
+}) {
+  const brokers = rankings.slice(0, 3);
 
   return (
     <aside
@@ -1337,6 +1341,336 @@ async function SaudiBrokerComparison() {
       </div>
 
     </aside>
+  );
+}
+
+/* =========================================================
+   SAUDI TOP FIVE — COMPACT BROKER COMPARISON
+   ========================================================= */
+
+function SaudiTopFiveBrokers({
+  rankings,
+}: {
+  rankings: SaudiArticleRanking[];
+}) {
+  const brokers = rankings.slice(0, 5);
+
+  return (
+    <section
+      id="saudi-top-five"
+      aria-label="مقارنة شركات التداول في السعودية"
+      className="relative !my-9 scroll-mt-24 overflow-hidden rounded-[20px] border border-[#d7e5f4] bg-white shadow-[0_10px_30px_rgba(15,23,42,0.05)] sm:!my-12 sm:rounded-[24px]"
+    >
+
+      {/* SECTION HEADER */}
+
+      <div className="border-b border-[#d7e5f4] bg-[linear-gradient(270deg,#eaf3ff_0%,#ffffff_100%)] px-4 py-5 sm:px-6 sm:py-6">
+
+        <span className="text-[11px] font-black text-[#176ac8] sm:text-[12px]">
+
+          مقارنة شركات التداول
+
+        </span>
+
+        <h2 className="mt-2 text-[21px] font-black leading-[1.5] text-[#102747] sm:text-[27px]">
+
+          مقارنة أبرز شركات التداول في السعودية
+
+        </h2>
+
+        <p className="mt-2 text-[12px] leading-[1.9] text-slate-600 sm:text-[14px]">
+
+          بعد التعرف على شروط فتح الحساب
+          ومتطلبات التوثيق، يمكنك مقارنة
+          التقييمات ومنصات التداول والحد
+          الأدنى المعلن للإيداع لدى الشركات
+          المتقدمة في تصنيف بروكر العرب للسعودية.
+
+        </p>
+
+      </div>
+
+      {/* BROKER LIST */}
+
+      {brokers.length > 0 ? (
+
+        <div className="space-y-2.5 p-3 sm:space-y-3 sm:p-5">
+
+          {brokers.map((row) => {
+            const broker =
+              normalizeSaudiBroker(row.brokers);
+
+            if (!broker || !broker.slug) {
+              return null;
+            }
+
+            const rating =
+              row.country_rating ?? broker.rating;
+
+            const ratingText =
+              rating !== null &&
+              Number.isFinite(Number(rating))
+                ? `${Number(rating).toFixed(2)}/5`
+                : "غير متوفر";
+
+            const deposit =
+              broker.min_deposit !== null &&
+              Number.isFinite(Number(broker.min_deposit))
+                ? `$${broker.min_deposit}`
+                : "غير محدد";
+
+            const platforms =
+              broker.platforms
+                ?.split(/[|,]/)
+                .map((item) => item.trim())
+                .filter(Boolean)
+                .slice(0, 2)
+                .join(" • ") || "غير محدد";
+
+            const reviewUrl =
+              `/brokers/${broker.slug}`;
+
+            const accountUrl =
+              broker.real_account_url?.trim();
+
+            const canOpenAccount =
+              Boolean(
+                accountUrl &&
+                /^https:\/\//i.test(accountUrl)
+              );
+
+            return (
+              <div
+                key={row.id}
+                className="group relative grid min-w-0 grid-cols-1 gap-3 overflow-hidden rounded-[14px] border border-slate-200 bg-[#f8fbff] p-3 transition hover:border-blue-300 hover:bg-white hover:shadow-sm xl:grid-cols-[minmax(0,1.5fr)_minmax(0,0.7fr)_minmax(0,0.8fr)_minmax(0,1fr)_auto] xl:items-center xl:gap-4 sm:p-4"
+              >
+
+                {/* BROKER IDENTITY */}
+
+                <div className="flex min-w-0 items-center gap-3">
+
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[9px] bg-[#eaf3ff] text-[12px] font-black text-[#176ac8]">
+
+                    {String(row.rank_position).padStart(2, "0")}
+
+                  </span>
+
+                  <Link
+                    href={reviewUrl}
+                    className="relative flex h-[48px] w-[72px] shrink-0 items-center justify-center rounded-[10px] border border-slate-200 bg-white sm:h-[54px] sm:w-[85px]"
+                  >
+
+                    {broker.logo ? (
+                      <Image
+                        src={broker.logo}
+                        alt={`شعار ${broker.name || "شركة التداول"}`}
+                        fill
+                        sizes="85px"
+                        className="object-contain p-2"
+                      />
+                    ) : (
+                      <span className="text-[12px] font-black text-[#176ac8]">
+
+                        {(broker.name || "BA")
+                          .slice(0, 2)
+                          .toUpperCase()}
+
+                      </span>
+                    )}
+
+                  </Link>
+
+                  <div className="min-w-0 flex-1">
+
+                    <Link
+                      href={reviewUrl}
+                      className="block break-words text-[14px] font-black leading-6 text-[#102747] transition hover:text-[#176ac8] sm:text-[17px]"
+                    >
+
+                      <bdi>
+                        {broker.name || "شركة التداول"}
+                      </bdi>
+
+                    </Link>
+
+                  </div>
+
+                </div>
+
+                {/* ACCOUNT DETAILS */}
+
+                <div className="grid grid-cols-3 gap-2 xl:contents">
+
+                  {/* RATING */}
+
+                  <div className="flex min-w-0 flex-col items-center justify-center rounded-[9px] border border-slate-200 bg-white px-2 py-2 text-center xl:rounded-none xl:border-0 xl:bg-transparent xl:p-0">
+
+                    <span className="text-[10px] font-bold text-slate-500 sm:text-[11px]">
+
+                      {row.country_rating !== null
+                        ? "تقييم السعودية"
+                        : "التقييم العام"}
+
+                    </span>
+
+                    <span
+                      dir="ltr"
+                      className="mt-1 inline-flex items-center gap-1 text-[13px] font-black text-amber-700 sm:text-[16px]"
+                    >
+
+                      <span aria-hidden="true">
+                        ★
+                      </span>
+
+                      {ratingText}
+
+                    </span>
+
+                  </div>
+
+                  {/* MINIMUM DEPOSIT */}
+
+                  <div className="flex min-w-0 flex-col items-center justify-center rounded-[9px] border border-slate-200 bg-white px-2 py-2 text-center xl:rounded-none xl:border-0 xl:bg-transparent xl:p-0">
+
+                    <span className="text-[10px] font-bold text-slate-500 sm:text-[11px]">
+
+                      أقل إيداع معروض
+
+                    </span>
+
+                    <span
+                      dir="ltr"
+                      className="mt-1 break-words text-[13px] font-black text-[#102747] sm:text-[16px]"
+                    >
+
+                      {deposit}
+
+                    </span>
+
+                  </div>
+
+                  {/* PLATFORMS */}
+
+                  <div className="flex min-w-0 flex-col items-center justify-center rounded-[9px] border border-slate-200 bg-white px-2 py-2 text-center xl:rounded-none xl:border-0 xl:bg-transparent xl:p-0">
+
+                    <span className="text-[10px] font-bold text-slate-500 sm:text-[11px]">
+
+                      المنصات
+
+                    </span>
+
+                    <span
+                      dir="ltr"
+                      className="mt-1 break-words text-[11px] font-black text-[#102747] [overflow-wrap:anywhere] sm:text-[13px]"
+                    >
+
+                      {platforms}
+
+                    </span>
+
+                  </div>
+
+                </div>
+
+                {/* BROKER ACTION BUTTONS */}
+
+                <div className="grid grid-cols-2 gap-2 xl:flex xl:items-center">
+
+                  {/* REVIEW BUTTON */}
+
+                  <Link
+                    href={reviewUrl}
+                    className="inline-flex min-h-[42px] items-center justify-center gap-1.5 whitespace-nowrap rounded-[10px] border border-[#bdd8f5] bg-white px-3 py-2.5 text-center text-[11px] font-black text-[#176ac8] transition hover:border-[#176ac8] hover:bg-[#eaf3ff] sm:text-[12px]"
+                  >
+
+                    تقييم الشركة
+
+                  </Link>
+
+                  {/* OPEN ACCOUNT BUTTON */}
+
+                  {canOpenAccount && accountUrl ? (
+
+                    <a
+                      href={accountUrl}
+                      target="_blank"
+                      rel="sponsored nofollow noopener noreferrer"
+                      className="inline-flex min-h-[42px] items-center justify-center gap-1.5 whitespace-nowrap rounded-[10px] bg-[#15803d] px-3 py-2.5 text-center text-[11px] font-black text-white transition hover:bg-[#166534] sm:text-[12px]"
+                    >
+
+                      فتح حساب
+
+                      <span aria-hidden="true">
+                        ↗
+                      </span>
+
+                    </a>
+
+                  ) : (
+
+                    <span
+                      aria-disabled="true"
+                      className="inline-flex min-h-[42px] cursor-not-allowed items-center justify-center whitespace-nowrap rounded-[10px] border border-slate-200 bg-slate-100 px-3 py-2.5 text-center text-[11px] font-bold text-slate-400 sm:text-[12px]"
+                    >
+
+                      غير متاح
+
+                    </span>
+
+                  )}
+
+                </div>
+
+              </div>
+            );
+          })}
+
+        </div>
+
+      ) : (
+
+        <div className="p-5 text-center text-[13px] text-slate-600">
+
+          يمكنك مراجعة تصنيف شركات التداول
+          من خلال صفحة المقارنة الكاملة.
+
+        </div>
+
+      )}
+
+      {/* FULL COUNTRY COMPARISON */}
+
+      <div className="border-t border-[#d7e5f4] bg-[#f5f9ff] p-3 sm:p-5">
+
+        <Link
+          href={SAUDI_BROKERS_URL}
+          className="inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-[12px] border border-[#bdd8f5] bg-white px-4 py-3 text-center text-[12px] font-black text-[#176ac8] transition hover:border-[#176ac8] hover:bg-[#176ac8] hover:text-white sm:text-[14px]"
+        >
+
+          عرض المقارنة الكاملة لأفضل شركات التداول في السعودية
+
+          <span aria-hidden="true">
+            ←
+          </span>
+
+        </Link>
+
+        <p className="mt-3 text-center text-[10px] leading-6 text-slate-500 sm:text-[11px]">
+
+          تستند الشركات المعروضة إلى تصنيف
+          بروكر العرب للسعودية. قد تختلف
+          متطلبات الإيداع والتسجيل بحسب
+          الكيان القانوني ودولة الإقامة.
+          لا يمثل التصنيف إثباتاً للترخيص المحلي.
+          تحقق من الموافقات النظامية قبل التسجيل.
+          قد يتلقى بروكر العرب مقابلاً تجارياً
+          عند استخدام بعض روابط فتح الحسابات.
+
+        </p>
+
+      </div>
+
+    </section>
   );
 }
 
@@ -1606,7 +1940,10 @@ function ArticleStructuredData() {
    MAIN ARTICLE PAGE
    ========================================================= */
 
-export default function OpenForexAccountSaudiArabiaPage() {
+export default async function OpenForexAccountSaudiArabiaPage() {
+  const saudiBrokers =
+    await getSaudiArticleBrokers();
+
   return (
     <main
       dir="rtl"
@@ -1758,7 +2095,7 @@ export default function OpenForexAccountSaudiArabiaPage() {
 
 {/* FEATURED SAUDI BROKERS */}
 
-<SaudiBrokerComparison />
+<SaudiBrokerComparison rankings={saudiBrokers} />
 
 {/* TABLE OF CONTENTS */}
 
@@ -2517,7 +2854,11 @@ export default function OpenForexAccountSaudiArabiaPage() {
 
             </ArticleSection>
 
-            {/* MINIMUM DEPOSIT */}
+            {/* SAUDI TOP FIVE BROKERS */}
+
+<SaudiTopFiveBrokers rankings={saudiBrokers} />
+
+{/* MINIMUM DEPOSIT */}
 
             <ArticleSection
               id="minimum-deposit"

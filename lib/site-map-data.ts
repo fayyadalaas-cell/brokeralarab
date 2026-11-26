@@ -188,12 +188,17 @@ export const ARTICLE_PAGES: ArticleSitemapEntry[] = [
   },
   {
     slug: "open-forex-account-saudi-arabia",
-    lastModified: "2026-11-24",
+    lastModified: "2026-11-25",
+    ar: true,
+    en: true,
+  },
+  {
+    slug: "open-forex-account-kuwait",
+    lastModified: "2026-11-25",
     ar: true,
     en: true,
   },
 ];
-
 
 export const EVENT_SLUGS = [
   "forex-expo-dubai-2026",
