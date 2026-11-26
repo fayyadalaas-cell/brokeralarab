@@ -346,7 +346,7 @@ export default function HomeArticles() {
           ORIGINAL DESIGN — UNCHANGED
       ================================================== */}
 
-      <div className="hidden gap-4 sm:grid sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+      <div className="hidden min-w-0 grid-cols-3 gap-3 sm:grid lg:gap-4 xl:gap-5">
 
         {desktopArticles.map((article) => (
 
@@ -358,20 +358,20 @@ export default function HomeArticles() {
             {/* ARTICLE IMAGE */}
 
             <Link
-              href={`/articles/${article.slug}`}
-              aria-label={article.titleAr}
-              className="relative block h-[210px] w-full shrink-0 overflow-hidden bg-[#edf3fa] sm:h-[220px] lg:h-[240px]"
-            >
+  href={`/articles/${article.slug}`}
+  aria-label={article.titleAr}
+  className="relative block aspect-[16/10] w-full shrink-0 overflow-hidden bg-[#edf3fa] xl:aspect-auto xl:h-[240px]"
+>
 
               {article.image ? (
 
                 <Image
-                  src={article.image}
-                  alt={article.titleAr}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover transition duration-500 group-hover:scale-[1.03]"
-                />
+  src={article.image}
+  alt={article.titleAr}
+  fill
+  sizes="(min-width: 1600px) 500px, (min-width: 640px) 33vw, 100vw"
+  className="object-cover transition duration-500 group-hover:scale-[1.03]"
+/>
 
               ) : (
 
@@ -412,32 +412,32 @@ export default function HomeArticles() {
 
             {/* ARTICLE CONTENT */}
 
-            <div className="flex flex-1 flex-col p-4 sm:p-5">
+<div className="flex min-w-0 flex-1 flex-col p-3 lg:p-4 xl:p-5">
 
-              {/* CATEGORY AND DATE */}
+  {/* CATEGORY AND DATE */}
 
-              <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+  <div className="mb-2 flex min-w-0 flex-wrap items-center justify-between gap-1.5 xl:mb-3 xl:gap-2">
 
-                <span className="rounded-md bg-[#edf3fc] px-2.5 py-1 text-[12px] font-bold text-brand-600">
+    <span className="rounded-md bg-[#edf3fc] px-2 py-1 text-[10px] font-bold text-brand-600 lg:text-[11px] xl:px-2.5 xl:text-[12px]">
 
-                  {article.categoryAr}
+      {article.categoryAr}
 
-                </span>
+    </span>
 
-                <time
-                  dateTime={article.publishedAt}
-                  className="text-[12px] font-semibold text-slate-600"
-                >
+    <time
+      dateTime={article.publishedAt}
+      className="text-[10px] font-semibold text-slate-600 lg:text-[11px] xl:text-[12px]"
+    >
 
-                  {formatDate(article.publishedAt)}
+      {formatDate(article.publishedAt)}
 
-                </time>
+    </time>
 
-              </div>
+  </div>
 
               {/* ARTICLE TITLE */}
 
-              <h3 className="text-[18px] font-black leading-[1.65] text-[#10233f] lg:text-[21px]">
+<h3 className="break-words text-[15px] font-black leading-[1.7] text-[#10233f] lg:text-[18px] xl:text-[21px]">
 
   <Link
     href={`/articles/${article.slug}`}
@@ -450,47 +450,47 @@ export default function HomeArticles() {
 
 </h3>
 
-              {/* ARTICLE DESCRIPTION */}
+{/* ARTICLE DESCRIPTION */}
 
-              <p className="mt-2 min-h-[84px] text-[13px] font-medium leading-7 text-slate-600 sm:text-[15px]">
+<p className="mt-2 line-clamp-3 text-[12px] font-medium leading-6 text-slate-600 lg:text-[13px] xl:line-clamp-none xl:min-h-[84px] xl:text-[15px] xl:leading-7">
 
-                {article.descriptionAr}
+  {article.descriptionAr}
 
-              </p>
+</p>
 
               {/* ARTICLE FOOTER */}
 
-              <div className="mt-auto pt-4">
+<div className="mt-auto pt-3 xl:pt-4">
 
-                <div className="flex items-center justify-between gap-3 border-t border-slate-200 pt-3">
+  <div className="flex min-w-0 flex-wrap items-center justify-between gap-2 border-t border-slate-200 pt-2.5 xl:gap-3 xl:pt-3">
 
-                  <span className="text-[12px] font-medium text-slate-500">
+    <span className="hidden text-[12px] font-medium text-slate-500 lg:inline">
 
-                    فريق بروكر العرب
+      فريق بروكر العرب
 
-                  </span>
+    </span>
 
-                  <Link
-                    href={`/articles/${article.slug}`}
-                    className="group/read inline-flex items-center gap-2 text-[13px] font-black text-brand-600 transition duration-200 hover:text-brand-700"
-                  >
+    <Link
+      href={`/articles/${article.slug}`}
+      className="group/read inline-flex items-center gap-1.5 text-[12px] font-black text-brand-600 transition duration-200 hover:text-brand-700 xl:gap-2 xl:text-[13px]"
+    >
 
-                    اقرأ المقال
+      اقرأ المقال
 
-                    <span
-                      aria-hidden="true"
-                      className="text-[17px] transition-transform duration-200 group-hover/read:-translate-x-1"
-                    >
+      <span
+        aria-hidden="true"
+        className="text-[15px] transition-transform duration-200 group-hover/read:-translate-x-1 xl:text-[17px]"
+      >
 
-                      ←
+        ←
 
-                    </span>
+      </span>
 
-                  </Link>
+    </Link>
 
-                </div>
+  </div>
 
-              </div>
+</div>
 
             </div>
 

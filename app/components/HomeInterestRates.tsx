@@ -427,7 +427,7 @@ export default async function HomeInterestRates() {
     COMPACT FINANCIAL DIRECTORY
 ====================================================== */}
 
-<div className="w-full min-w-0 overflow-hidden rounded-[15px] border border-slate-200 bg-white sm:hidden">
+<div className="w-full min-w-0 overflow-hidden rounded-[15px] border border-slate-200 bg-white md:hidden">
 
   {/* MOBILE TABLE HEADER */}
 
@@ -727,11 +727,242 @@ export default async function HomeInterestRates() {
 </div>
 
 {/* =====================================================
+    TABLET — COMPACT INTEREST RATES TABLE
+    768px — 1279px
+====================================================== */}
+
+<div className="hidden w-full min-w-0 overflow-hidden rounded-[16px] border border-slate-200 bg-white md:block xl:hidden">
+
+  {/* TABLET HEADER */}
+
+  <div className="grid grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,0.8fr)_minmax(0,1fr)_24px] items-center gap-2 bg-[#102e55] px-3 py-3.5 text-[12px] font-bold text-white">
+
+    <span>
+      البنك المركزي
+    </span>
+
+    <span className="text-center">
+      الفائدة الحالية
+    </span>
+
+    <span className="text-center">
+      آخر تغيير
+    </span>
+
+    <span className="text-center">
+      الاجتماع القادم
+    </span>
+
+    <span className="sr-only">
+      التفاصيل
+    </span>
+
+  </div>
+
+  {/* TABLET BANK ROWS */}
+
+  {rows.length > 0 ? (
+
+    <div className="divide-y divide-slate-200">
+
+      {rows.map((bank, index) => {
+
+        const nextMeeting = getNextMeeting(
+          bank.data.meetings
+        );
+
+        const meetingDate = formatMeetingDate(
+          nextMeeting
+        );
+
+        return (
+
+          <Link
+            key={bank.slug}
+            href={`/interest-rates/${bank.slug}`}
+            aria-label={`تفاصيل أسعار الفائدة: ${bank.name}`}
+            className={`group grid min-h-[76px] min-w-0 grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,0.8fr)_minmax(0,1fr)_24px] items-center gap-2 px-3 py-3 transition-colors duration-200 hover:bg-[#eef5ff] ${
+              index % 2 === 0
+                ? "bg-white"
+                : "bg-[#f7f9fc]"
+            }`}
+          >
+
+            {/* CENTRAL BANK */}
+
+            <div className="flex min-w-0 items-center gap-2.5">
+
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-white lg:h-11 lg:w-11">
+
+                <img
+                  src={`https://flagcdn.com/w80/${bank.flag}.png`}
+                  alt=""
+                  width={44}
+                  height={44}
+                  loading="lazy"
+                  className="!h-full !w-full !object-cover"
+                />
+
+              </span>
+
+              <div className="min-w-0">
+
+                <h3 className="break-words text-[12px] font-black leading-5 text-[#10233f] transition-colors group-hover:text-brand-600 lg:text-[14px] lg:leading-6">
+
+                  {bank.name}
+
+                </h3>
+
+                <span
+                  dir="ltr"
+                  className="mt-0.5 block w-fit text-[10px] font-bold tracking-wide text-slate-500"
+                >
+
+                  {bank.data.currency_code ||
+                    bank.currency}
+
+                </span>
+
+              </div>
+
+            </div>
+
+            {/* CURRENT INTEREST RATE */}
+
+            <div
+              dir="ltr"
+              className="min-w-0 text-center"
+            >
+
+              <strong className="text-[14px] font-black leading-6 tabular-nums text-[#194b92] lg:text-[17px]">
+
+                {getCurrentRate(bank.data)}
+
+              </strong>
+
+            </div>
+
+            {/* LAST RATE CHANGE */}
+
+            <div className="flex min-w-0 items-center justify-center">
+
+              <RateChange
+                value={bank.data.last_change_bps}
+              />
+
+            </div>
+
+            {/* NEXT CENTRAL BANK MEETING */}
+
+            <div className="min-w-0 text-center">
+
+              {meetingDate ? (
+
+                <time
+                  dateTime={nextMeeting ?? undefined}
+                  className="flex flex-col items-center justify-center gap-0.5"
+                >
+
+                  <span className="text-[12px] font-black leading-5 text-[#194b92] lg:text-[14px]">
+
+                    {meetingDate.dayMonth}
+
+                  </span>
+
+                  <span className="text-[10px] font-medium text-slate-500">
+
+                    {meetingDate.year}
+
+                  </span>
+
+                </time>
+
+              ) : (
+
+                <span className="text-[11px] font-medium text-slate-400">
+
+                  غير محدد
+
+                </span>
+
+              )}
+
+            </div>
+
+            {/* DETAILS ARROW */}
+
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#e7effa] text-[#194b92] transition-colors group-hover:bg-[#194b92] group-hover:text-white">
+
+              <ChevronLeft
+                size={14}
+                strokeWidth={2}
+                aria-hidden="true"
+              />
+
+            </span>
+
+          </Link>
+
+        );
+
+      })}
+
+    </div>
+
+  ) : (
+
+    <div className="px-4 py-10 text-center text-[13px] font-medium text-slate-500">
+
+      تعذر عرض بيانات أسعار الفائدة حالياً.
+
+    </div>
+
+  )}
+
+  {/* TABLET FOOTER */}
+
+  <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 bg-[#f1f5f9] px-4 py-3">
+
+    <span className="text-[11px] font-semibold text-slate-600">
+
+      بيانات السياسة النقدية للبنوك المركزية
+
+    </span>
+
+    <span className="text-[10px] font-medium text-slate-500">
+
+      100 نقطة أساس (bps) = نقطة مئوية واحدة
+
+    </span>
+
+  </div>
+
+  {/* VIEW ALL INTEREST RATES */}
+
+  <Link
+    href="/interest-rates"
+    className="group flex min-h-[44px] items-center justify-center gap-2 bg-gradient-to-l from-[#102e55] to-[#194b92] px-3 text-[12px] font-black text-white transition hover:brightness-110"
+  >
+
+    عرض جميع أسعار الفائدة العالمية
+
+    <ChevronLeft
+      size={15}
+      strokeWidth={2}
+      aria-hidden="true"
+      className="transition-transform group-hover:-translate-x-1"
+    />
+
+  </Link>
+
+</div>
+
+{/* =====================================================
     DESKTOP — ORIGINAL INTEREST RATES TABLE
     UNCHANGED
 ====================================================== */}
 
-<div className="hidden min-w-0 overflow-hidden rounded-[18px] border border-slate-200 bg-white sm:block">
+<div className="hidden w-full min-w-0 overflow-hidden rounded-[18px] border border-slate-200 bg-white xl:block">
 
         {rows.length > 0 ? (
 
