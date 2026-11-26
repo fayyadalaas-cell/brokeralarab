@@ -63,11 +63,9 @@ const ARTICLE = {
 const HERO_IMAGE =
   "/articles/open-forex-account-kuwait.webp";
 
-const ARTICLE_READY = false;
-
-const HERO_IMAGE_READY = false;
-
-const ARABIC_VERSION_READY = false;
+const ARTICLE_READY = true;
+const HERO_IMAGE_READY = true;
+const ARABIC_VERSION_READY = true;
 
 const KUWAIT_BROKERS_URL =
   "/en/best-brokers/kuwait";
