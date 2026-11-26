@@ -159,7 +159,7 @@ export default function HomeArticles() {
                 className="transition hover:text-brand-600"
               >
 
-                {featuredArticle.titleAr}
+                {featuredArticle.shortTitleAr || featuredArticle.titleAr}
 
               </Link>
 
@@ -293,9 +293,9 @@ export default function HomeArticles() {
 
                     <h3 className="line-clamp-3 text-[13px] font-black leading-[1.65] text-[#10233f] transition group-hover:text-brand-600">
 
-                      {article.titleAr}
+  {article.shortTitleAr || article.titleAr}
 
-                    </h3>
+</h3>
 
                     {/* ARTICLE DATE */}
 
@@ -439,16 +439,16 @@ export default function HomeArticles() {
 
               <h3 className="text-[18px] font-black leading-[1.65] text-[#10233f] lg:text-[21px]">
 
-                <Link
-                  href={`/articles/${article.slug}`}
-                  className="transition hover:text-brand-600"
-                >
+  <Link
+    href={`/articles/${article.slug}`}
+    className="transition hover:text-brand-600"
+  >
 
-                  {article.titleAr}
+    {article.shortTitleAr || article.titleAr}
 
-                </Link>
+  </Link>
 
-              </h3>
+</h3>
 
               {/* ARTICLE DESCRIPTION */}
 

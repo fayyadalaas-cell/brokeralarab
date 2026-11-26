@@ -173,9 +173,11 @@ export type ArticleSitemapEntry = {
   ar: boolean;
   en: boolean;
 
-  image?: string;
+    image?: string;
   titleAr: string;
   titleEn: string;
+  shortTitleAr?: string;
+  shortTitleEn?: string;
   descriptionAr: string;
   descriptionEn: string;
   categoryAr: string;
@@ -201,6 +203,10 @@ export const ARTICLE_PAGES: ArticleSitemapEntry[] = [
     titleAr: "أكبر انهيارات أسعار الذهب عبر التاريخ",
 
     titleEn: "Major Gold Price Crashes Throughout History",
+
+    shortTitleAr: "أكبر انهيارات الذهب عبر التاريخ",
+
+    shortTitleEn: "Major Gold Price Crashes in History",
 
     descriptionAr:
       "دراسة تاريخية لأبرز انهيارات أسعار الذهب والعوامل التي أدت إلى تراجع الأسعار.",
@@ -232,6 +238,10 @@ export const ARTICLE_PAGES: ArticleSitemapEntry[] = [
     titleEn:
       "How Gold Prices React to Federal Reserve Decisions",
 
+    shortTitleAr: "تأثير قرارات الفيدرالي على الذهب",
+
+    shortTitleEn: "How Fed Decisions Affect Gold",
+
     descriptionAr:
       "تحليل العلاقة بين قرارات الفائدة الأمريكية وتحركات أسعار الذهب في الأسواق المالية.",
 
@@ -261,6 +271,10 @@ export const ARTICLE_PAGES: ArticleSitemapEntry[] = [
 
     titleEn:
       "How to Open a Forex Trading Account in Saudi Arabia",
+
+    shortTitleAr: "كيفية فتح حساب فوركس في السعودية",
+
+    shortTitleEn: "Opening a Forex Account in Saudi Arabia",
 
     descriptionAr:
       "تعرف على شروط فتح حساب فوركس في السعودية للمواطنين والمقيمين، والمستندات المطلوبة للتوثيق، وخطوات التسجيل والإيداع والتحقق من تراخيص شركات التداول.",
@@ -292,6 +306,10 @@ export const ARTICLE_PAGES: ArticleSitemapEntry[] = [
     titleEn:
       "How to Open a Forex Trading Account in Kuwait",
 
+    shortTitleAr: "كيفية فتح حساب فوركس في الكويت",
+
+    shortTitleEn: "Opening a Forex Account in Kuwait",
+
     descriptionAr:
       "دليل فتح حساب فوركس في الكويت للمواطنين والمقيمين، يشمل البطاقة المدنية وتوثيق الحساب وإثبات العنوان والتسجيل ووسائل الدفع بالدينار الكويتي والتحقق من التراخيص.",
 
@@ -321,6 +339,10 @@ export const ARTICLE_PAGES: ArticleSitemapEntry[] = [
 
     titleEn:
       "Best Time to Trade Gold (XAU/USD): A Statistical Study of Intraday Price Movements",
+
+    shortTitleAr: "أفضل أوقات تداول الذهب خلال اليوم",
+
+    shortTitleEn: "Best Time to Trade Gold",
 
     descriptionAr:
       "دراسة إحصائية لأفضل أوقات تداول الذهب بناءً على بيانات تاريخية تمتد لأكثر من 16 عاماً.",
