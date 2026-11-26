@@ -198,6 +198,12 @@ export const ARTICLE_PAGES: ArticleSitemapEntry[] = [
     ar: true,
     en: true,
   },
+  {
+    slug: "best-time-to-trade-gold",
+    lastModified: "2026-11-25",
+    ar: true,
+    en: true,
+  },
 ];
 
 export const EVENT_SLUGS = [
