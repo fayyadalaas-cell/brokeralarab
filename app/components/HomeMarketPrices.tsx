@@ -52,12 +52,19 @@ const INSTRUMENTS = [
     digits: 3,
   },
   {
-    symbol: "USDCADc",
-    label: "USD/CAD",
-    name: "الدولار الأمريكي مقابل الدولار الكندي",
-    icon: "ca",
-    digits: 5,
-  },
+  symbol: "USDCADc",
+  label: "USD/CAD",
+  name: "الدولار الأمريكي مقابل الدولار الكندي",
+  icon: "ca",
+  digits: 5,
+},
+{
+  symbol: "USDCHFc",
+  label: "USD/CHF",
+  name: "الدولار الأمريكي مقابل الفرنك السويسري",
+  icon: "ch",
+  digits: 5,
+},
 ];
 
 type LiveQuote = {
@@ -543,11 +550,188 @@ export default function HomeMarketPrices() {
 
       </div>
 
-      {/* =================================================
-          MARKET PRICES TABLE
-      ================================================== */}
+{/* =================================================
+    TABLET — MARKET PRICES DASHBOARD
+    640px — 1279px
+================================================== */}
 
-      <div className="flex min-w-0 flex-1 flex-col overflow-hidden rounded-[15px] border border-slate-200 bg-white sm:rounded-[18px]">
+<div className="hidden min-w-0 flex-col gap-2.5 sm:flex xl:hidden">
+
+  {/* TABLET MARKET PRICES GRID */}
+
+  <div className="grid min-w-0 grid-cols-2 gap-2.5 lg:gap-3">
+
+    {INSTRUMENTS.map((item, index) => {
+
+      const direction =
+        directions[item.symbol] ?? "neutral";
+
+      const flash =
+        flashes[item.symbol] ?? "neutral";
+
+      const priceColor =
+        direction === "up"
+          ? "text-emerald-600"
+          : direction === "down"
+            ? "text-rose-600"
+            : "text-slate-900";
+
+      const flashBackground =
+        flash === "up"
+          ? "bg-emerald-100"
+          : flash === "down"
+            ? "bg-rose-100"
+            : "bg-transparent";
+
+      return (
+
+        <div
+          key={item.symbol}
+          title={item.name}
+          className={`flex min-h-[84px] min-w-0 items-center justify-between gap-2 rounded-[13px] border border-slate-200 bg-white px-3 py-3 transition-colors duration-200 hover:border-brand-300 lg:min-h-[92px] lg:px-4 ${
+            index === INSTRUMENTS.length - 1 &&
+            INSTRUMENTS.length % 2 !== 0
+              ? "col-span-2"
+              : ""
+          }`}
+        >
+
+          {/* =========================================
+              INSTRUMENT ICON AND NAME
+          ========================================== */}
+
+          <div className="flex min-w-0 flex-1 items-center gap-2 lg:gap-3">
+
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] bg-[#f1f5f9] lg:h-11 lg:w-11">
+
+              <InstrumentIcon
+                icon={item.icon}
+              />
+
+            </div>
+
+            <div className="min-w-0">
+
+              <span
+                dir="ltr"
+                className="block w-fit text-[13px] font-black leading-5 text-[#10233f] lg:text-[15px]"
+              >
+
+                {item.label}
+
+              </span>
+
+              <span className="mt-1 block text-[10px] font-medium leading-4 text-slate-500 lg:text-[12px] lg:leading-5">
+
+                {item.name}
+
+              </span>
+
+            </div>
+
+          </div>
+
+          {/* =========================================
+              LIVE MARKET PRICE
+          ========================================== */}
+
+          <div
+            dir="ltr"
+            className={`flex shrink-0 items-center justify-end gap-1 rounded-[8px] px-1.5 py-2 transition-colors duration-500 motion-reduce:transition-none lg:gap-1.5 lg:px-2.5 ${flashBackground}`}
+          >
+
+            {/* PRICE DIRECTION */}
+
+            <span
+              aria-hidden="true"
+              className={`inline-flex w-3 shrink-0 items-center justify-center text-[10px] ${priceColor}`}
+            >
+
+              {direction === "up"
+                ? "▲"
+                : direction === "down"
+                  ? "▼"
+                  : ""}
+
+            </span>
+
+            {/* PRICE VALUE */}
+
+            <strong
+              className={`whitespace-nowrap text-[16px] font-black tabular-nums transition-colors duration-300 motion-reduce:transition-none lg:text-[19px] ${priceColor}`}
+            >
+
+              {formatPrice(
+                quotes[item.symbol]?.bid,
+                item.digits
+              )}
+
+            </strong>
+
+          </div>
+
+        </div>
+
+      );
+
+    })}
+
+  </div>
+
+  {/* ===============================================
+      TABLET — UPDATE INFORMATION
+  ================================================ */}
+
+  <div className="flex min-h-[40px] min-w-0 items-center justify-between gap-2 rounded-[10px] border border-slate-200 bg-[#f8fafc] px-3 py-2.5">
+
+    <span
+      className={`flex items-center gap-1.5 text-[11px] font-medium ${
+        hasError
+          ? "text-rose-600"
+          : "text-slate-500"
+      }`}
+    >
+
+      <RefreshCw
+        size={12}
+        aria-hidden="true"
+      />
+
+      {hasError
+        ? "تعذر التحديث"
+        : lastChecked
+          ? "آخر فحص للأسعار"
+          : "جاري التحميل"}
+
+    </span>
+
+    <span
+      dir="ltr"
+      className="text-[11px] font-bold tabular-nums text-slate-600"
+    >
+
+      {lastChecked
+        ? lastChecked.toLocaleTimeString(
+            "en-GB",
+            {
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+            }
+          )
+        : "—"}
+
+    </span>
+
+  </div>
+
+</div>
+
+      {/* =================================================
+    MOBILE + DESKTOP — ORIGINAL MARKET PRICES TABLE
+================================================== */}
+
+<div className="flex min-w-0 flex-1 flex-col overflow-hidden rounded-[15px] border border-slate-200 bg-white sm:hidden xl:flex xl:rounded-[18px]">
 
         {/* ===============================================
             TABLE HEADER
@@ -570,12 +754,14 @@ export default function HomeMarketPrices() {
         </div>
 
         {/* ===============================================
-            PRICE ROWS
-        ================================================ */}
+    PRICE ROWS — MOBILE AND DESKTOP ONLY
+================================================ */}
 
-        <div className="flex flex-1 flex-col divide-y divide-slate-200 px-3 sm:divide-slate-100">
+<div className="flex flex-1 flex-col divide-y divide-slate-200 px-3 sm:divide-slate-100">
 
-          {INSTRUMENTS.map((item) => {
+  {INSTRUMENTS.filter(
+    (item) => item.symbol !== "USDCHFc"
+  ).map((item) => {
 
             const direction =
               directions[item.symbol] ?? "neutral";

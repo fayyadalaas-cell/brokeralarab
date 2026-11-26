@@ -343,166 +343,176 @@ export default function HomeArticlesEn() {
       </div>
 
       {/* =================================================
-          DESKTOP + TABLET
-          3 ARTICLE CARDS
+    DESKTOP + TABLET
+    3 ARTICLE CARDS — RESPONSIVE DESIGN
+================================================== */}
+
+<div className="hidden min-w-0 grid-cols-3 gap-3 sm:grid lg:gap-4 xl:gap-5">
+
+  {desktopArticles.map((article) => (
+
+    <article
+      key={article.slug}
+      className="group flex h-full min-w-0 flex-col overflow-hidden rounded-[18px] border border-slate-200 bg-white transition duration-300 hover:border-brand-300 hover:shadow-[0_10px_30px_rgba(15,23,42,0.07)]"
+    >
+
+      {/* =================================================
+          ARTICLE IMAGE
       ================================================== */}
 
-      <div className="hidden gap-4 sm:grid sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+      <Link
+        href={`/en/articles/${article.slug}`}
+        aria-label={article.titleEn}
+        className="relative block aspect-[16/10] w-full shrink-0 overflow-hidden bg-[#edf3fa] xl:aspect-auto xl:h-[240px]"
+      >
 
-        {desktopArticles.map((article) => (
+        {article.image ? (
 
-          <article
-            key={article.slug}
-            className="group flex h-full min-w-0 flex-col overflow-hidden rounded-[18px] border border-slate-200 bg-white transition duration-300 hover:border-brand-300 hover:shadow-[0_10px_30px_rgba(15,23,42,0.07)]"
+          <Image
+            src={article.image}
+            alt={article.titleEn}
+            fill
+            sizes="(min-width: 1600px) 500px, (min-width: 640px) 33vw, 100vw"
+            className="object-cover transition duration-500 group-hover:scale-[1.03]"
+          />
+
+        ) : (
+
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-[#10233f] to-[#245795]">
+
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              aria-hidden="true"
+              className="h-10 w-10 text-blue-200"
+            >
+
+              <rect
+                x="3"
+                y="4"
+                width="18"
+                height="16"
+                rx="2"
+              />
+
+              <path d="M7 8h10M7 12h10M7 16h6" />
+
+            </svg>
+
+            <span className="text-lg font-black text-white">
+
+              Broker Alarab
+
+            </span>
+
+          </div>
+
+        )}
+
+      </Link>
+
+      {/* =================================================
+          ARTICLE CONTENT
+      ================================================== */}
+
+      <div className="flex min-w-0 flex-1 flex-col p-3 lg:p-4 xl:p-5">
+
+        {/* CATEGORY AND DATE */}
+
+        <div className="mb-2 flex min-w-0 flex-wrap items-center justify-between gap-1.5 xl:mb-3 xl:gap-2">
+
+          <span className="rounded-md bg-[#edf3fc] px-2 py-1 text-[10px] font-bold text-brand-600 lg:text-[11px] xl:px-2.5 xl:text-[12px]">
+
+            {article.categoryEn}
+
+          </span>
+
+          <time
+            dateTime={article.publishedAt}
+            className="text-[10px] font-semibold text-slate-600 lg:text-[11px] xl:text-[12px]"
           >
 
-            {/* ARTICLE IMAGE */}
+            {formatDate(article.publishedAt)}
+
+          </time>
+
+        </div>
+
+        {/* =================================================
+            ARTICLE TITLE
+        ================================================== */}
+
+        <h3 className="break-words text-[15px] font-black leading-[1.7] text-[#10233f] lg:text-[18px] xl:text-[21px]">
+
+          <Link
+            href={`/en/articles/${article.slug}`}
+            className="transition hover:text-brand-600"
+          >
+
+            {article.shortTitleEn || article.titleEn}
+
+          </Link>
+
+        </h3>
+
+        {/* =================================================
+            ARTICLE DESCRIPTION
+        ================================================== */}
+
+        <p className="mt-2 line-clamp-3 text-[12px] font-medium leading-6 text-slate-600 lg:text-[13px] xl:line-clamp-none xl:min-h-[84px] xl:text-[15px] xl:leading-7">
+
+          {article.descriptionEn}
+
+        </p>
+
+        {/* =================================================
+            ARTICLE FOOTER
+        ================================================== */}
+
+        <div className="mt-auto pt-3 xl:pt-4">
+
+          <div className="flex min-w-0 flex-wrap items-center justify-between gap-2 border-t border-slate-200 pt-2.5 xl:gap-3 xl:pt-3">
+
+            <span className="hidden text-[12px] font-medium text-slate-500 lg:inline">
+
+              Broker Alarab Team
+
+            </span>
 
             <Link
               href={`/en/articles/${article.slug}`}
-              aria-label={article.titleEn}
-              className="relative block h-[210px] w-full shrink-0 overflow-hidden bg-[#edf3fa] sm:h-[220px] lg:h-[240px]"
+              className="group/read inline-flex items-center gap-1.5 text-[12px] font-black text-brand-600 transition duration-200 hover:text-brand-700 xl:gap-2 xl:text-[13px]"
             >
 
-              {article.image ? (
+              Read Article
 
-                <Image
-                  src={article.image}
-                  alt={article.titleEn}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover transition duration-500 group-hover:scale-[1.03]"
-                />
+              <span
+                aria-hidden="true"
+                className="text-[15px] transition-transform duration-200 group-hover/read:translate-x-1 xl:text-[17px]"
+              >
 
-              ) : (
+                →
 
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-[#10233f] to-[#245795]">
-
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    aria-hidden="true"
-                    className="h-10 w-10 text-blue-200"
-                  >
-
-                    <rect
-                      x="3"
-                      y="4"
-                      width="18"
-                      height="16"
-                      rx="2"
-                    />
-
-                    <path d="M7 8h10M7 12h10M7 16h6" />
-
-                  </svg>
-
-                  <span className="text-lg font-black text-white">
-
-                    Broker Alarab
-
-                  </span>
-
-                </div>
-
-              )}
+              </span>
 
             </Link>
 
-            {/* ARTICLE CONTENT */}
+          </div>
 
-            <div className="flex flex-1 flex-col p-4 sm:p-5">
-
-              {/* CATEGORY AND DATE */}
-
-              <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-
-                <span className="rounded-md bg-[#edf3fc] px-2.5 py-1 text-[12px] font-bold text-brand-600">
-
-                  {article.categoryEn}
-
-                </span>
-
-                <time
-                  dateTime={article.publishedAt}
-                  className="text-[12px] font-semibold text-slate-600"
-                >
-
-                  {formatDate(article.publishedAt)}
-
-                </time>
-
-              </div>
-
-              {/* ARTICLE TITLE */}
-
-              <h3 className="text-[18px] font-black leading-[1.65] text-[#10233f] lg:text-[21px]">
-
-                <Link
-                  href={`/en/articles/${article.slug}`}
-                  className="transition hover:text-brand-600"
-                >
-
-                  {article.shortTitleEn || article.titleEn}
-
-                </Link>
-
-              </h3>
-
-              {/* ARTICLE DESCRIPTION */}
-
-              <p className="mt-2 min-h-[84px] text-[13px] font-medium leading-7 text-slate-600 sm:text-[15px]">
-
-                {article.descriptionEn}
-
-              </p>
-
-              {/* ARTICLE FOOTER */}
-
-              <div className="mt-auto pt-4">
-
-                <div className="flex items-center justify-between gap-3 border-t border-slate-200 pt-3">
-
-                  <span className="text-[12px] font-medium text-slate-500">
-
-                    Broker Alarab Team
-
-                  </span>
-
-                  <Link
-                    href={`/en/articles/${article.slug}`}
-                    className="group/read inline-flex items-center gap-2 text-[13px] font-black text-brand-600 transition duration-200 hover:text-brand-700"
-                  >
-
-                    Read Article
-
-                    <span
-                      aria-hidden="true"
-                      className="text-[17px] transition-transform duration-200 group-hover/read:translate-x-1"
-                    >
-
-                      →
-
-                    </span>
-
-                  </Link>
-
-                </div>
-
-              </div>
-
-            </div>
-
-          </article>
-
-        ))}
+        </div>
 
       </div>
 
-    </section>
+    </article>
 
-  );
+  ))}
+
+</div>
+
+</section>
+
+);
 
 }

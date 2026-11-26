@@ -163,6 +163,10 @@ const LICENSE_SHORT_NAMES: Record<string, string> = {
   ASIC: "أستراليا",
   CySEC: "قبرص",
   DFSA: "دبي",
+  FSCA: "جنوب أفريقيا",
+  CIRO: "كندا",
+  FSA: "سيشل",
+  CIMA: "جزر كايمان",
 };
 
 /* =========================================================
@@ -306,74 +310,77 @@ export default function HomeTradingTools() {
         </div>
 
         {/* =================================================
-            DESKTOP — TRADING CALCULATORS GRID
-            ORIGINAL DESIGN — UNCHANGED
-        ================================================== */}
+    TABLET + DESKTOP — TRADING CALCULATORS GRID
 
-        <div className="hidden flex-1 auto-rows-fr grid-cols-2 gap-3 sm:grid sm:grid-cols-3 lg:grid-cols-5">
+    TABLET: 5 COLUMNS × 2 ROWS — COMPACT
+    DESKTOP: ORIGINAL DESIGN
+================================================== */}
 
-          {TOOLS.map((item) => {
+<div className="hidden min-w-0 flex-1 auto-rows-fr grid-cols-5 gap-2.5 sm:grid lg:gap-3">
 
-            const Icon = item.icon;
+  {TOOLS.map((item) => {
 
-            return (
+    const Icon = item.icon;
 
-              <Link
-                key={item.href}
-                href={item.href}
-                className="group flex min-h-[170px] min-w-0 flex-col items-center justify-center rounded-[18px] border border-slate-200 bg-white px-2 py-4 text-center transition duration-200 hover:border-brand-300 hover:bg-[#fcfdff] hover:shadow-[0_5px_18px_rgba(15,23,42,0.05)]"
-              >
+    return (
 
-                {/* TOOL ICON */}
+      <Link
+        key={item.href}
+        href={item.href}
+        className="group flex min-h-[115px] min-w-0 flex-col items-center justify-center rounded-[13px] border border-slate-200 bg-white px-1.5 py-3 text-center transition duration-200 hover:border-brand-300 hover:bg-[#fcfdff] hover:shadow-[0_5px_18px_rgba(15,23,42,0.05)] lg:min-h-[125px] xl:min-h-[170px] xl:rounded-[18px] xl:px-2 xl:py-4"
+      >
 
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[13px] bg-[#edf3fc] text-[#194b92] transition duration-200 group-hover:bg-[#194b92] group-hover:text-white">
+        {/* TOOL ICON */}
 
-                  <Icon
-                    size={25}
-                    strokeWidth={1.7}
-                    aria-hidden="true"
-                  />
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[11px] bg-[#edf3fc] text-[#194b92] transition duration-200 group-hover:bg-[#194b92] group-hover:text-white xl:h-12 xl:w-12 xl:rounded-[13px]">
 
-                </span>
+          <Icon
+            size={25}
+            strokeWidth={1.7}
+            aria-hidden="true"
+            className="h-[22px] w-[22px] xl:h-[25px] xl:w-[25px]"
+          />
 
-                {/* TOOL TITLE */}
+        </span>
 
-                <h3 className="mt-3 flex min-h-[40px] items-center justify-center text-[13px] font-black leading-5 text-[#10233f] transition-colors group-hover:text-brand-600 sm:text-[15px]">
+        {/* TOOL TITLE */}
 
-                  {item.title}
+        <h3 className="mt-2 flex min-h-[36px] min-w-0 items-center justify-center break-words text-[12px] font-black leading-5 text-[#10233f] transition-colors group-hover:text-brand-600 lg:text-[14px] xl:mt-3 xl:min-h-[40px] xl:text-[15px]">
 
-                </h3>
+          {item.title}
 
-                {/* TOOL DESCRIPTION */}
+        </h3>
 
-                <p className="mt-0.5 text-[11px] font-medium leading-5 text-slate-500 sm:text-[12px]">
+        {/* TOOL DESCRIPTION — DESKTOP ONLY */}
 
-                  {item.desc}
+        <p className="mt-0.5 hidden text-[12px] font-medium leading-5 text-slate-500 xl:block">
 
-                </p>
+          {item.desc}
 
-                {/* TOOL LINK */}
+        </p>
 
-                <span className="mt-3 flex items-center justify-center gap-1.5 text-[11px] font-bold text-[#194b92]">
+        {/* TOOL LINK — DESKTOP ONLY */}
 
-                  فتح الحاسبة
+        <span className="mt-3 hidden items-center justify-center gap-1.5 text-[11px] font-bold text-[#194b92] xl:flex">
 
-                  <ArrowLeft
-                    size={13}
-                    strokeWidth={2}
-                    aria-hidden="true"
-                    className="transition-transform duration-200 group-hover:-translate-x-1"
-                  />
+          فتح الحاسبة
 
-                </span>
+          <ArrowLeft
+            size={13}
+            strokeWidth={2}
+            aria-hidden="true"
+            className="transition-transform group-hover:-translate-x-1"
+          />
 
-              </Link>
+        </span>
 
-            );
+      </Link>
 
-          })}
+    );
 
-        </div>
+  })}
+
+</div>
 
       </section>
 
@@ -540,12 +547,105 @@ export default function HomeTradingTools() {
 
         </div>
 
+{/* =================================================
+    TABLET — REGULATORY AUTHORITIES
+    4 COLUMNS × 2 ROWS
+================================================== */}
+
+<div className="hidden w-full min-w-0 overflow-hidden rounded-[16px] border border-slate-200 bg-white sm:block xl:hidden">
+
+  {/* TABLET REGULATORY GRID */}
+
+  <div className="grid grid-cols-4">
+
+    {LICENSES.map((item, index) => (
+
+      <Link
+        key={item.code}
+        href={item.href}
+        aria-label={`${item.code} — ${item.title}`}
+        title={item.title}
+        className={`group flex min-h-[115px] min-w-0 flex-col items-center justify-center gap-2 px-2 py-4 text-center transition duration-200 hover:bg-[#edf3fc] ${
+          index % 4 !== 0
+            ? "border-r border-slate-200"
+            : ""
+        } ${
+          index >= 4
+            ? "border-t border-slate-200"
+            : ""
+        }`}
+      >
+
+        {/* REGULATORY FLAG */}
+
+        <span className="flex h-[44px] w-[44px] shrink-0 items-center justify-center overflow-hidden rounded-full border-[3px] border-white bg-slate-100 ring-1 ring-slate-200 transition duration-200 group-hover:ring-blue-300 lg:h-[48px] lg:w-[48px]">
+
+          <img
+            src={`https://flagcdn.com/w80/${item.flag}.png`}
+            alt=""
+            width={48}
+            height={48}
+            loading="lazy"
+            className="h-full w-full object-cover"
+          />
+
+        </span>
+
+        {/* REGULATORY CODE */}
+
+        <span
+          dir="ltr"
+          className="text-[15px] font-black leading-5 text-[#10233f] transition-colors group-hover:text-brand-600 lg:text-[16px]"
+        >
+
+          {item.code}
+
+        </span>
+
+        {/* COUNTRY NAME */}
+
+        <span className="text-[11px] font-medium leading-5 text-slate-500 lg:text-[12px]">
+
+          {LICENSE_SHORT_NAMES[item.code]}
+
+        </span>
+
+      </Link>
+
+    ))}
+
+  </div>
+
+  {/* TABLET FOOTER */}
+
+  <div className="border-t border-slate-200 bg-[#f8fafc] p-2.5">
+
+    <Link
+      href="/licenses"
+      className="group flex min-h-[42px] w-full items-center justify-center gap-2 rounded-[10px] bg-[#194b92] px-3 text-[12px] font-black text-white transition duration-200 hover:bg-brand-600"
+    >
+
+      عرض جميع الهيئات الرقابية
+
+      <ArrowLeft
+        size={15}
+        strokeWidth={2}
+        aria-hidden="true"
+        className="transition-transform group-hover:-translate-x-1"
+      />
+
+    </Link>
+
+  </div>
+
+</div>
+
         {/* =================================================
             DESKTOP — LICENSES CARD
             ORIGINAL DESIGN — UNCHANGED
         ================================================== */}
 
-        <div className="hidden min-w-0 flex-1 flex-col overflow-hidden rounded-[18px] border border-slate-200 bg-white sm:flex">
+        <div className="hidden min-w-0 flex-1 flex-col overflow-hidden rounded-[18px] border border-slate-200 bg-white xl:flex">
 
           {/* TABLE HEADER */}
 

@@ -86,11 +86,24 @@ function selectRandomComparisons(
    BROKER LOGO AND RATING
 ========================================================= */
 
+/* =========================================================
+   BROKER LOGO NORMALIZATION
+========================================================= */
+
 const LOGO_SCALES: Record<string, number> = {
   "capital-com": 1.50,
   "ultima-markets": 1.20,
-  "moneta-markets": 1.45,
-  "justmarkets": 1.45,
+  "moneta-markets": 1.55,
+  "justmarkets": 1.20,
+  "plus500": 1.80,
+  "multibank": 1.75,
+  "markets-com": 1.55,
+  "xm": 1.65,
+  "avatrade": 1.65,
+  "hfm": 1.65,
+  "xs": 1.60,
+  "fxpro": 1.60,
+  "admirals": 1.30,
 };
 
 /* =========================================================
@@ -104,18 +117,11 @@ function BrokerIdentity({
 }) {
 
   const logoScale =
-    LOGO_SCALES[broker.slug.toLowerCase()] ?? 1.65;
-
-  const mobileLogoScale =
-    broker.slug.toLowerCase() === "capital-com"
-      ? 1.40
-      : broker.slug.toLowerCase() === "ultima-markets"
-        ? 1.15
-        : 1.40;
+    LOGO_SCALES[broker.slug.toLowerCase()] ?? 1.55;
 
   return (
 
-    <div className="flex min-w-0 flex-col items-center text-center">
+    <div className="flex w-full min-w-0 flex-col items-center text-center">
 
       {/* BROKER LOGO */}
 
@@ -123,25 +129,29 @@ function BrokerIdentity({
         href={`/en/brokers/${broker.slug}`}
         aria-label={`${broker.name} Review`}
         title={`${broker.name} Review`}
-        className="group/logo flex h-[66px] w-full max-w-[140px] items-center justify-center overflow-hidden px-2 sm:h-[100px] sm:max-w-[190px]"
+        className="group/logo flex h-[66px] w-full min-w-0 items-center justify-center overflow-hidden sm:h-[78px] lg:h-[88px] xl:h-[100px]"
       >
 
         {broker.logo ? (
 
-          <img
-            src={broker.logo}
-            alt={`${broker.name} logo`}
-            loading="lazy"
-            className="h-[52px] w-[125px] max-w-full scale-[var(--mobile-logo-scale)] object-contain mix-blend-multiply transition duration-300 group-hover/logo:opacity-80 sm:h-[76px] sm:w-[150px] sm:scale-[var(--desktop-logo-scale)]"
-            style={{
-              "--mobile-logo-scale": mobileLogoScale,
-              "--desktop-logo-scale": logoScale,
-            } as React.CSSProperties}
-          />
+          <div className="flex h-full w-full min-w-0 max-w-[130px] items-center justify-center sm:max-w-[140px] lg:max-w-[160px] xl:max-w-[190px]">
+
+            <img
+              src={broker.logo}
+              alt={`${broker.name} logo`}
+              loading="lazy"
+              className="block h-[54px] w-full max-w-full object-contain object-center mix-blend-multiply transition-opacity duration-300 group-hover/logo:opacity-80 sm:h-[64px] lg:h-[72px] xl:h-[82px]"
+              style={{
+                transform: `scale(${logoScale})`,
+                transformOrigin: "center center",
+              }}
+            />
+
+          </div>
 
         ) : (
 
-          <span className="text-[13px] font-black leading-5 text-[#10233f] sm:text-[18px]">
+          <span className="break-words text-[13px] font-black leading-5 text-[#10233f] sm:text-[14px] xl:text-[18px]">
 
             {broker.name}
 
@@ -151,7 +161,7 @@ function BrokerIdentity({
 
       </Link>
 
-      {/* BROKER RATING */}
+      {/* FIXED BROKER RATING */}
 
       <div
         dir="ltr"
@@ -160,25 +170,25 @@ function BrokerIdentity({
             ? `${broker.name} rating: ${broker.rating.toFixed(2)} out of 5`
             : `${broker.name} rating unavailable`
         }
-        className="mt-1 flex items-center justify-center gap-1 sm:mt-2 sm:gap-1.5"
+        className="mt-1.5 flex h-[24px] shrink-0 items-center justify-center gap-1 sm:mt-2 xl:gap-1.5"
       >
 
         <span
           aria-hidden="true"
-          className="text-[14px] leading-none text-amber-500 sm:text-[18px]"
+          className="text-[14px] leading-none text-amber-500 xl:text-[18px]"
         >
 
           ★
 
         </span>
 
-        <span className="text-[13px] font-black text-[#10233f] sm:text-[15px]">
+        <span className="text-[13px] font-black tabular-nums text-[#10233f] xl:text-[15px]">
 
           {broker.rating?.toFixed(2) ?? "—"}
 
         </span>
 
-        <span className="text-[10px] font-medium text-slate-400 sm:text-[11px]">
+        <span className="text-[10px] font-medium text-slate-400 xl:text-[11px]">
 
           / 5
 
@@ -189,6 +199,7 @@ function BrokerIdentity({
     </div>
 
   );
+
 }
 
 /* =========================================================
@@ -296,105 +307,123 @@ export default function HomeComparisonsEn({
       </div>
 
       {/* =================================================
-          COMPARISON CARDS
-      ================================================== */}
+    COMPARISON CARDS
+================================================== */}
 
-      <div className="grid grid-cols-1 gap-2.5 sm:gap-3 md:grid-cols-2 md:gap-4 xl:flex-1 xl:auto-rows-fr">
+<div className="grid grid-cols-1 gap-2.5 sm:gap-3 md:grid-cols-2 md:gap-4 xl:flex-1 xl:auto-rows-fr">
 
-        {visibleComparisons.map((comparison) => (
+  {visibleComparisons.map((comparison) => (
 
-          <article
-            key={comparison.slug}
-            className="group relative flex h-full min-w-0 flex-col overflow-hidden rounded-[13px] border border-slate-200 bg-white transition duration-300 hover:border-brand-300 hover:shadow-[0_8px_24px_rgba(15,23,42,0.06)] sm:rounded-[18px]"
-          >
+    <article
+      key={comparison.slug}
+      className="group relative flex h-full min-w-0 flex-col overflow-hidden rounded-[13px] border border-slate-200 bg-white transition duration-300 hover:border-brand-300 hover:shadow-[0_8px_24px_rgba(15,23,42,0.06)] sm:rounded-[18px]"
+    >
 
-            {/* TOP ACCENT */}
+      {/* TOP ACCENT */}
 
-            <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand-500 to-transparent opacity-60" />
+      <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand-500 to-transparent opacity-60" />
 
-            {/* CARD CONTENT */}
+      {/* CARD CONTENT */}
 
-            <div className="flex flex-1 flex-col px-3 pt-2 sm:px-5 sm:pt-4">
+      <div className="flex flex-1 flex-col px-3 pt-2 sm:px-5 sm:pt-4">
 
-              {/* =========================================
-                  BROKER IDENTITIES
-              ========================================== */}
+        {/* =============================================
+            BROKER IDENTITIES
+        ============================================== */}
 
-              <div className="grid flex-1 grid-cols-[minmax(0,1fr)_32px_minmax(0,1fr)] items-center gap-2 py-1 sm:grid-cols-[minmax(0,1fr)_44px_minmax(0,1fr)] sm:py-2">
+        <div className="grid min-w-0 flex-1 grid-cols-[minmax(0,1fr)_32px_minmax(0,1fr)] items-center gap-2 py-1 sm:grid-cols-[minmax(0,1fr)_34px_minmax(0,1fr)] lg:grid-cols-[minmax(0,1fr)_38px_minmax(0,1fr)] xl:grid-cols-[minmax(0,1fr)_44px_minmax(0,1fr)] sm:py-2">
 
-                <BrokerIdentity
-                  broker={comparison.broker1}
-                />
+          {/* FIRST BROKER */}
 
-                {/* VS SYMBOL */}
+          <BrokerIdentity
+            broker={comparison.broker1}
+          />
 
-                <div className="flex flex-col items-center justify-center">
+          {/* =============================================
+              VS SYMBOL — CENTERED WITH BROKER LOGOS
+          ============================================== */}
 
-                  <div className="flex h-[32px] w-[32px] items-center justify-center rounded-full border border-[#d5e3f5] bg-[#edf3fc] text-[11px] font-black text-brand-600 sm:h-[44px] sm:w-[44px] sm:text-[14px]">
+          <div className="flex min-w-0 flex-col items-center">
 
-                    VS
+            <div className="flex h-[66px] items-center justify-center sm:h-[78px] lg:h-[88px] xl:h-[100px]">
 
-                  </div>
+              <div className="flex h-[32px] w-[32px] shrink-0 items-center justify-center rounded-full border border-[#d5e3f5] bg-[#edf3fc] text-[11px] font-black text-brand-600 sm:h-[34px] sm:w-[34px] lg:h-[38px] lg:w-[38px] xl:h-[44px] xl:w-[44px] xl:text-[14px]">
 
-                </div>
-
-                <BrokerIdentity
-                  broker={comparison.broker2}
-                />
-
-              </div>
-
-              {/* =========================================
-                  CARD FOOTER
-                  SEO FRIENDLY COMPARISON LINK
-              ========================================== */}
-
-              <div className="mt-auto pt-1 sm:pt-2">
-
-                <div className="flex min-w-0 items-center justify-between gap-3 border-t border-slate-200 py-2 sm:py-3.5">
-
-                  <Link
-                    href={`/en/compare/${comparison.slug}`}
-                    aria-label={`Compare ${comparison.broker1.name} vs ${comparison.broker2.name}`}
-                    className="group/read flex min-h-[32px] min-w-0 flex-1 items-center justify-between gap-2 text-[12px] font-black leading-5 text-[#194b92] transition hover:text-brand-600 sm:min-h-0 sm:gap-3 sm:text-[16px] sm:leading-6"
-                  >
-
-                    <span className="min-w-0 break-words">
-
-                      <bdi>{comparison.broker1.name}</bdi>
-
-                      {" "}vs{" "}
-
-                      <bdi>{comparison.broker2.name}</bdi>
-
-                      {" "}Comparison
-
-                    </span>
-
-                    <span
-                      aria-hidden="true"
-                      className="shrink-0 text-[16px] transition-transform duration-200 group-hover/read:translate-x-1 sm:text-[18px]"
-                    >
-
-                      →
-
-                    </span>
-
-                  </Link>
-
-                </div>
+                VS
 
               </div>
 
             </div>
 
-          </article>
+            {/* RATING ALIGNMENT SPACER */}
 
-        ))}
+            <div
+              aria-hidden="true"
+              className="mt-1.5 h-[24px] sm:mt-2"
+            />
+
+          </div>
+
+          {/* SECOND BROKER */}
+
+          <BrokerIdentity
+            broker={comparison.broker2}
+          />
+
+        </div>
+
+        {/* =============================================
+            CARD FOOTER
+            SEO FRIENDLY COMPARISON LINK
+        ============================================== */}
+
+        <div className="mt-auto pt-1 sm:pt-2">
+
+          <div className="flex min-w-0 items-center justify-between gap-3 border-t border-slate-200 py-2 sm:py-3.5">
+
+            <Link
+              href={`/en/compare/${comparison.slug}`}
+              aria-label={`Compare ${comparison.broker1.name} vs ${comparison.broker2.name}`}
+              className="group/read flex min-h-[32px] min-w-0 flex-1 items-center justify-between gap-2 text-[12px] font-black leading-5 text-[#194b92] transition hover:text-brand-600 sm:min-h-0 sm:gap-3 sm:text-[16px] sm:leading-6"
+            >
+
+              <span className="min-w-0 break-words">
+
+                <bdi>{comparison.broker1.name}</bdi>
+
+                {" "}vs{" "}
+
+                <bdi>{comparison.broker2.name}</bdi>
+
+                {" "}Comparison
+
+              </span>
+
+              <span
+                aria-hidden="true"
+                className="shrink-0 text-[16px] transition-transform duration-200 group-hover/read:translate-x-1 sm:text-[18px]"
+              >
+
+                →
+
+              </span>
+
+            </Link>
+
+          </div>
+
+        </div>
 
       </div>
+
+    </article>
+
+  ))}
+
+</div>
 
     </section>
 
   );
+
 }
