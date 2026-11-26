@@ -3,6 +3,10 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
+/* =========================================================
+   BROKER ALARAB — MARKET HOURS SIDEBAR (ENGLISH)
+========================================================= */
+
 type MarketSession = {
   id: string;
   name: string;
@@ -22,6 +26,10 @@ type MarketState = {
   nextChangeMinutes: number;
   nextChangeType: "open" | "close";
 };
+
+/* =========================================================
+   GLOBAL MARKETS
+========================================================= */
 
 const markets: MarketSession[] = [
   {
@@ -82,6 +90,10 @@ const markets: MarketSession[] = [
   },
 ];
 
+/* =========================================================
+   MARKET TIME HELPERS
+========================================================= */
+
 const weekdays = [
   "Sun",
   "Mon",
@@ -100,67 +112,67 @@ function getMarketTime(
   date: Date,
   timeZone: string
 ) {
-  const formatter = new Intl.DateTimeFormat(
-    "en-US",
-    {
-      timeZone,
-      weekday: "short",
-      hour: "2-digit",
-      minute: "2-digit",
-      hourCycle: "h23",
-    }
-  );
+
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    weekday: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  });
 
   const parts = formatter.formatToParts(date);
 
   const hour = Number(
-    parts.find(
-      (part) => part.type === "hour"
-    )?.value ?? 0
+    parts.find((part) => part.type === "hour")?.value ?? 0
   );
 
   const minute = Number(
-    parts.find(
-      (part) => part.type === "minute"
-    )?.value ?? 0
+    parts.find((part) => part.type === "minute")?.value ?? 0
   );
 
   const weekday =
-    parts.find(
-      (part) => part.type === "weekday"
-    )?.value ?? "Sun";
+    parts.find((part) => part.type === "weekday")?.value ?? "Sun";
 
   return {
     weekday,
     minutes: hour * 60 + minute,
   };
+
 }
 
 function isTradingDay(day: string) {
   return !["Sat", "Sun"].includes(day);
 }
 
-function daysUntilNextTradingDay(
-  day: string
-) {
+function daysUntilNextTradingDay(day: string) {
+
   const current = weekdayIndex(day);
 
   for (let i = 1; i <= 7; i++) {
+
     const next =
       weekdays[(current + i) % 7];
 
     if (isTradingDay(next)) {
       return i;
     }
+
   }
 
   return 1;
+
 }
+
+/* =========================================================
+   CALCULATE MARKET STATE
+========================================================= */
 
 function calculateMarketState(
   market: MarketSession,
   now: Date
 ): MarketState {
+
   const { weekday, minutes } =
     getMarketTime(now, market.timezone);
 
@@ -168,6 +180,7 @@ function calculateMarketState(
     isTradingDay(weekday);
 
   if (!tradingDay) {
+
     const days =
       daysUntilNextTradingDay(weekday);
 
@@ -179,25 +192,21 @@ function calculateMarketState(
       isOpen: false,
       currentMinutes: minutes,
       nextChangeMinutes:
-        days * 24 * 60 -
-        minutes +
-        firstOpen,
+        days * 24 * 60 - minutes + firstOpen,
       nextChangeType: "open",
     };
+
   }
 
-  for (
-    let i = 0;
-    i < market.sessions.length;
-    i++
-  ) {
-    const session =
-      market.sessions[i];
+  for (let i = 0; i < market.sessions.length; i++) {
+
+    const session = market.sessions[i];
 
     if (
       minutes >= session.open &&
       minutes < session.close
     ) {
+
       return {
         market,
         isOpen: true,
@@ -206,9 +215,11 @@ function calculateMarketState(
           session.close - minutes,
         nextChangeType: "close",
       };
+
     }
 
     if (minutes < session.open) {
+
       return {
         market,
         isOpen: false,
@@ -217,7 +228,9 @@ function calculateMarketState(
           session.open - minutes,
         nextChangeType: "open",
       };
+
     }
+
   }
 
   const days =
@@ -231,64 +244,76 @@ function calculateMarketState(
     isOpen: false,
     currentMinutes: minutes,
     nextChangeMinutes:
-      days * 24 * 60 -
-      minutes +
-      firstOpen,
+      days * 24 * 60 - minutes + firstOpen,
     nextChangeType: "open",
   };
+
 }
 
-function formatCountdown(
-  totalMinutes: number
-) {
-  const safeMinutes = Math.max(
-    0,
-    Math.floor(totalMinutes)
-  );
+/* =========================================================
+   FORMAT COUNTDOWN
+========================================================= */
 
-  const days = Math.floor(
-    safeMinutes / 1440
-  );
+function formatCountdown(totalMinutes: number) {
 
-  const hours = Math.floor(
-    (safeMinutes % 1440) / 60
-  );
+  const safeMinutes =
+    Math.max(0, Math.floor(totalMinutes));
+
+  const days =
+    Math.floor(safeMinutes / 1440);
+
+  const hours =
+    Math.floor((safeMinutes % 1440) / 60);
 
   const minutes =
     safeMinutes % 60;
 
   if (days > 0) {
+
     if (hours > 0) {
       return `${days}d ${hours}h`;
     }
 
     return `${days}d`;
+
   }
 
   if (hours > 0) {
+
     if (minutes > 0) {
       return `${hours}h ${minutes}m`;
     }
 
     return `${hours}h`;
+
   }
 
   return `${minutes}m`;
+
 }
 
+/* =========================================================
+   VISITOR TIMEZONE
+========================================================= */
+
 function getVisitorTimezone() {
+
   try {
+
     return Intl.DateTimeFormat()
       .resolvedOptions()
       .timeZone;
+
   } catch {
+
     return "UTC";
+
   }
+
 }
 
-function formatTimezoneName(
-  timezone: string
-) {
+function formatTimezoneName(timezone: string) {
+
   const city = timezone
     .split("/")
     .pop()
@@ -298,10 +323,7 @@ function formatTimezoneName(
     return "Local Time";
   }
 
-  const names: Record<
-    string,
-    string
-  > = {
+  const names: Record<string, string> = {
     Riyadh: "Riyadh",
     Dubai: "Dubai",
     Toronto: "Toronto",
@@ -330,112 +352,105 @@ function formatTimezoneName(
   };
 
   return names[city] ?? city;
+
 }
 
 function formatVisitorTime(
   date: Date,
   timezone: string
 ) {
+
   try {
-    return new Intl.DateTimeFormat(
-      "en-US",
-      {
-        timeZone: timezone,
-        hour: "numeric",
-        minute: "2-digit",
-        hour12: true,
-      }
-    ).format(date);
+
+    return new Intl.DateTimeFormat("en-US", {
+      timeZone: timezone,
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    }).format(date);
+
   } catch {
+
     return "";
+
   }
+
 }
 
 function getUTCOffset(
   date: Date,
   timezone: string
 ) {
+
   try {
-    const parts =
-      new Intl.DateTimeFormat(
-        "en-US",
-        {
-          timeZone: timezone,
-          timeZoneName:
-            "shortOffset",
-        }
-      ).formatToParts(date);
+
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: timezone,
+      timeZoneName: "shortOffset",
+    }).formatToParts(date);
 
     const offset =
       parts.find(
-        (part) =>
-          part.type ===
-          "timeZoneName"
+        (part) => part.type === "timeZoneName"
       )?.value ?? "";
 
-    return offset.replace(
-      "GMT",
-      "UTC"
-    );
+    return offset.replace("GMT", "UTC");
+
   } catch {
+
     return "";
+
   }
+
 }
 
-/* =====================================================
-   REAL SVG FLAGS
-===================================================== */
+/* =========================================================
+   SVG FLAGS
+========================================================= */
 
 function FlagIcon({
   country,
   className = "",
 }: {
-  country:
-    | "US"
-    | "GB"
-    | "JP"
-    | "AU";
+  country: "US" | "GB" | "JP" | "AU";
   className?: string;
 }) {
+
   if (country === "US") {
+
     return (
+
       <svg
         viewBox="0 0 60 40"
         className={className}
         aria-label="United States"
       >
+
         <clipPath id="us-clip-en">
-          <rect
-            width="60"
-            height="40"
-            rx="4"
-          />
+          <rect width="60" height="40" rx="4" />
         </clipPath>
 
         <g clipPath="url(#us-clip-en)">
+
           <rect
             width="60"
             height="40"
             fill="#fff"
           />
 
-          {[
-            0,
-            6.15,
-            12.3,
-            18.45,
-            24.6,
-            30.75,
-            36.9,
-          ].map((y) => (
-            <rect
-              key={y}
-              y={y}
-              width="60"
-              height="3.08"
-              fill="#B22234"
-            />
-          ))}
+          {[0, 6.15, 12.3, 18.45, 24.6, 30.75, 36.9].map(
+            (y) => (
+
+              <rect
+                key={y}
+                y={y}
+                width="60"
+                height="3.08"
+                fill="#B22234"
+              />
+
+            )
+          )}
 
           <rect
             width="26"
@@ -462,41 +477,42 @@ function FlagIcon({
             [11.5, 16],
             [16.5, 16],
             [21.5, 16],
-          ].map(
-            (
-              [cx, cy],
-              index
-            ) => (
-              <circle
-                key={index}
-                cx={cx}
-                cy={cy}
-                r="0.9"
-                fill="#fff"
-              />
-            )
-          )}
+          ].map(([cx, cy], index) => (
+
+            <circle
+              key={index}
+              cx={cx}
+              cy={cy}
+              r="0.9"
+              fill="#fff"
+            />
+
+          ))}
+
         </g>
+
       </svg>
+
     );
+
   }
 
   if (country === "GB") {
+
     return (
+
       <svg
         viewBox="0 0 60 40"
         className={className}
         aria-label="United Kingdom"
       >
+
         <clipPath id="gb-clip-en">
-          <rect
-            width="60"
-            height="40"
-            rx="4"
-          />
+          <rect width="60" height="40" rx="4" />
         </clipPath>
 
         <g clipPath="url(#gb-clip-en)">
+
           <rect
             width="60"
             height="40"
@@ -526,18 +542,25 @@ function FlagIcon({
             stroke="#C8102E"
             strokeWidth="7"
           />
+
         </g>
+
       </svg>
+
     );
+
   }
 
   if (country === "JP") {
+
     return (
+
       <svg
         viewBox="0 0 60 40"
         className={className}
         aria-label="Japan"
       >
+
         <rect
           width="60"
           height="40"
@@ -551,25 +574,27 @@ function FlagIcon({
           r="10"
           fill="#BC002D"
         />
+
       </svg>
+
     );
+
   }
 
   return (
+
     <svg
       viewBox="0 0 60 40"
       className={className}
       aria-label="Australia"
     >
+
       <clipPath id="au-clip-en">
-        <rect
-          width="60"
-          height="40"
-          rx="4"
-        />
+        <rect width="60" height="40" rx="4" />
       </clipPath>
 
       <g clipPath="url(#au-clip-en)">
+
         <rect
           width="60"
           height="40"
@@ -577,6 +602,7 @@ function FlagIcon({
         />
 
         <g transform="scale(.5)">
+
           <path
             d="M0 0L60 40M60 0L0 40"
             stroke="#fff"
@@ -600,52 +626,29 @@ function FlagIcon({
             stroke="#C8102E"
             strokeWidth="7"
           />
+
         </g>
 
-        <circle
-          cx="43"
-          cy="10"
-          r="2"
-          fill="#fff"
-        />
+        <circle cx="43" cy="10" r="2" fill="#fff" />
+        <circle cx="49" cy="19" r="1.7" fill="#fff" />
+        <circle cx="40" cy="27" r="1.7" fill="#fff" />
+        <circle cx="53" cy="29" r="1.4" fill="#fff" />
+        <circle cx="31" cy="31" r="2.2" fill="#fff" />
 
-        <circle
-          cx="49"
-          cy="19"
-          r="1.7"
-          fill="#fff"
-        />
-
-        <circle
-          cx="40"
-          cy="27"
-          r="1.7"
-          fill="#fff"
-        />
-
-        <circle
-          cx="53"
-          cy="29"
-          r="1.4"
-          fill="#fff"
-        />
-
-        <circle
-          cx="31"
-          cy="31"
-          r="2.2"
-          fill="#fff"
-        />
       </g>
+
     </svg>
+
   );
+
 }
 
-/* =====================================================
-   SIDEBAR
-===================================================== */
+/* =========================================================
+   MAIN SIDEBAR COMPONENT
+========================================================= */
 
 export default function MarketHoursSidebarEn() {
+
   const [now, setNow] =
     useState<Date | null>(null);
 
@@ -653,49 +656,42 @@ export default function MarketHoursSidebarEn() {
     useState("");
 
   useEffect(() => {
+
     setNow(new Date());
 
     setTimezone(
       getVisitorTimezone()
     );
 
-    const interval =
-      window.setInterval(() => {
-        setNow(new Date());
-      }, 30_000);
+    const interval = window.setInterval(() => {
+
+      setNow(new Date());
+
+    }, 30_000);
 
     return () =>
-      window.clearInterval(
-        interval
-      );
+      window.clearInterval(interval);
+
   }, []);
 
-  const marketStates =
-    useMemo(() => {
-      if (!now) {
-        return [];
-      }
+  const marketStates = useMemo(() => {
 
-      return markets.map(
-        (market) =>
-          calculateMarketState(
-            market,
-            now
-          )
-      );
-    }, [now]);
+    if (!now) return [];
 
-  const openMarkets =
-    marketStates.filter(
-      (item) => item.isOpen
+    return markets.map((market) =>
+      calculateMarketState(market, now)
     );
 
-  const nextMarket = [
-    ...marketStates,
-  ]
-    .filter(
-      (item) => !item.isOpen
-    )
+  }, [now]);
+
+  const openMarkets = marketStates.filter(
+    (item) => item.isOpen
+  );
+
+  const nextMarket = [...marketStates]
+
+    .filter((item) => !item.isOpen)
+
     .sort(
       (a, b) =>
         a.nextChangeMinutes -
@@ -703,275 +699,310 @@ export default function MarketHoursSidebarEn() {
     )[0];
 
   const featuredMarket =
+
     openMarkets.find(
-      (item) =>
-        item.market.id === "us"
+      (item) => item.market.id === "us"
     ) ??
+
     openMarkets[0] ??
+
     nextMarket;
 
   const visitorTime =
     now && timezone
-      ? formatVisitorTime(
-          now,
-          timezone
-        )
+      ? formatVisitorTime(now, timezone)
       : "";
 
   const utcOffset =
     now && timezone
-      ? getUTCOffset(
-          now,
-          timezone
-        )
+      ? getUTCOffset(now, timezone)
       : "";
 
   return (
+
     <div
       dir="ltr"
-      className="
-        overflow-hidden
-        rounded-[22px]
-        border
-        border-slate-200
-        bg-white
-        shadow-[0_10px_28px_rgba(15,23,42,0.055)]
-      "
+      lang="en"
+      className="flex h-full min-w-0 flex-1 flex-col"
     >
-      {/* =====================================================
-          HEADER
-      ====================================================== */}
-      <div className="border-b border-slate-100 bg-[linear-gradient(135deg,#f8fbff_0%,#eef5ff_100%)] px-4 pb-3 pt-3">
 
-        <div className="flex items-center justify-between gap-3">
+      {/* =================================================
+          EXTERNAL SECTION HEADER
+      ================================================== */}
 
-          <div className="flex min-w-0 items-center gap-3">
+      <div className="mb-4 flex min-h-[44px] shrink-0 items-center">
 
-            {/* 24H CLOCK */}
-            <div className="relative flex h-12 w-12 shrink-0 items-center justify-center">
+        <h2 className="min-w-0 text-[24px] font-black leading-8 tracking-tight text-[#10233f]">
 
-              <div className="absolute inset-0 rounded-full bg-[#0a1d36] shadow-[0_6px_16px_rgba(15,23,42,0.22)]" />
+          <Link
+            href="/en/tools/market-hours"
+            className="group/title inline-flex items-center gap-2 transition duration-200 hover:text-brand-600"
+          >
 
-              <div className="absolute inset-[3px] rounded-full border border-blue-400/50" />
+            Market Status
 
-              <div className="absolute inset-[7px] rounded-full bg-[#102a4c]" />
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+              className="shrink-0 transition-transform duration-200 group-hover/title:translate-x-1"
+            >
 
-              <span className="absolute right-[5px] top-[7px] h-[14px] w-[14px] rounded-tr-full border-r-[3px] border-t-[3px] border-blue-400" />
+              <path d="m9 18 6-6-6-6" />
 
-              <span className="absolute bottom-[6px] left-[6px] h-[13px] w-[13px] rounded-bl-full border-b-[3px] border-l-[3px] border-cyan-400" />
+            </svg>
 
-              <div className="relative z-10 flex h-[28px] w-[28px] items-center justify-center rounded-full border border-white/10 bg-[#07182d] shadow-[0_2px_8px_rgba(0,0,0,0.22)]">
+          </Link>
 
-                <span className="text-[10px] font-black leading-none tracking-[-0.04em] text-white">
-                  24H
-                </span>
-
-              </div>
-
-              <span className="absolute bottom-[8px] right-[7px] z-20 h-[5px] w-[5px] rounded-full border border-[#0a1d36] bg-rose-400 shadow-[0_0_6px_rgba(251,113,133,0.7)]" />
-
-            </div>
-
-            {/* TITLE */}
-            <div className="min-w-0">
-
-              <div className="flex items-center gap-2">
-
-                <h3 className="text-[14px] font-black text-[#07111f]">
-                  Market Status
-                </h3>
-
-                <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[7px] font-black text-emerald-700">
-
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-
-                  LIVE
-
-                </span>
-
-              </div>
-
-              <p className="mt-0.5 text-[8.5px] font-semibold text-slate-500">
-                Based on your local time
-              </p>
-
-            </div>
-
-          </div>
-
-        </div>
-
-        {/* LOCAL TIME */}
-        <div className="mt-2.5 flex items-center justify-between rounded-[13px] border border-brand-100 bg-white px-3 py-2 shadow-[0_3px_10px_rgba(15,23,42,0.05)]">
-
-          <div className="text-left">
-
-            <div className="text-[8px] font-bold text-slate-400">
-              Your Time
-            </div>
-
-            <div className="mt-0.5 text-[10px] font-black text-slate-700">
-              {timezone
-                ? formatTimezoneName(
-                    timezone
-                  )
-                : "Detecting..."}
-            </div>
-
-          </div>
-
-          <div className="text-right">
-
-            <div className="text-[16px] font-black text-brand-600">
-              {visitorTime ||
-                "--:--"}
-            </div>
-
-            <div className="mt-0.5 text-[8px] font-bold text-slate-400">
-              {utcOffset ||
-                "UTC"}
-            </div>
-
-          </div>
-
-        </div>
+        </h2>
 
       </div>
 
-      {!now ? (
-        <div className="space-y-2 p-3">
+      {/* =================================================
+          MARKET HOURS CARD
+      ================================================== */}
 
-          {[1, 2, 3].map(
-            (item) => (
+      <div
+        className="
+          flex min-h-0 flex-1 flex-col justify-between
+          overflow-hidden rounded-[18px]
+          border border-slate-200
+          bg-white
+        "
+      >
+
+        {/* ===============================================
+            LOCAL TIME HEADER
+        ================================================ */}
+
+        <div className="border-b border-slate-100 bg-[#f8fafc] px-3 pb-3 pt-3">
+
+          <div className="mb-2 flex items-center justify-between gap-2">
+
+            <span className="text-[11px] font-semibold text-slate-500">
+
+              Based on your local time
+
+            </span>
+
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-[8px] font-black text-emerald-700">
+
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+
+              LIVE
+
+            </span>
+
+          </div>
+
+          {/* VISITOR TIME */}
+
+          <div className="flex items-center justify-between rounded-[12px] border border-slate-200 bg-white px-3 py-2">
+
+            <div className="text-left">
+
+              <div className="text-[8px] font-bold text-slate-400">
+
+                Your Time
+
+              </div>
+
+              <div className="mt-0.5 text-[10px] font-black text-slate-700">
+
+                {timezone
+                  ? formatTimezoneName(timezone)
+                  : "Detecting..."}
+
+              </div>
+
+            </div>
+
+            <div
+              dir="ltr"
+              className="text-right"
+            >
+
+              <div className="text-[16px] font-black text-brand-600">
+
+                {visitorTime || "--:--"}
+
+              </div>
+
+              <div className="mt-0.5 text-[8px] font-bold text-slate-400">
+
+                {utcOffset || "UTC"}
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        {/* ===============================================
+            LOADING STATE
+        ================================================ */}
+
+        {!now ? (
+
+          <div className="space-y-2 p-3">
+
+            {[1, 2, 3].map((item) => (
+
               <div
                 key={item}
                 className="h-[54px] animate-pulse rounded-[14px] bg-slate-100"
               />
-            )
-          )}
 
-        </div>
-      ) : (
-        <>
-          {/* =====================================================
-              FEATURED MARKET
-          ====================================================== */}
-          {featuredMarket && (
-            <div className="px-3 pb-2 pt-3">
+            ))}
 
-              <div
-                className={`
-                  relative overflow-hidden rounded-[18px] border
-                  px-3.5 py-3.5
-                  ${
-                    featuredMarket.isOpen
-                      ? "border-emerald-200 bg-[linear-gradient(135deg,#ffffff_0%,#f1fcf7_100%)] shadow-[0_6px_18px_rgba(16,185,129,0.07)]"
-                      : "border-slate-200 bg-white"
-                  }
-                `}
-              >
-                {featuredMarket.isOpen && (
-                  <div className="absolute inset-y-0 left-0 w-[3px] bg-emerald-400" />
-                )}
+          </div>
 
-                {/* TOP */}
-                <div className="flex items-center justify-between gap-3">
+        ) : (
 
-                  <div className="flex min-w-0 items-center gap-2.5">
+          <>
 
-                    {/* ROUND FLAG */}
-                    <div className="flex h-[34px] w-[34px] shrink-0 items-center justify-center overflow-hidden rounded-full border-[2px] border-white bg-slate-100 shadow-[0_2px_8px_rgba(15,23,42,0.14)] ring-1 ring-slate-200">
+            {/* ===========================================
+                FEATURED MARKET
+            ============================================ */}
 
-                      <FlagIcon
-                        country={
-                          featuredMarket
-                            .market
-                            .code as
-                            | "US"
-                            | "GB"
-                            | "JP"
-                            | "AU"
-                        }
-                        className="h-full w-full scale-[1.42]"
-                      />
+            {featuredMarket && (
 
-                    </div>
+              <div className="px-3 pb-1.5 pt-2">
 
-                    <div className="min-w-0">
+                <div
+                  className={`
+                    relative overflow-hidden rounded-[16px] border
+                    px-3 py-2.5
+                    ${
+                      featuredMarket.isOpen
+                        ? "border-emerald-200 bg-[linear-gradient(135deg,#ffffff_0%,#f1fcf7_100%)] shadow-[0_6px_18px_rgba(16,185,129,0.07)]"
+                        : "border-slate-200 bg-white"
+                    }
+                  `}
+                >
 
-                      <div className="whitespace-nowrap text-[13px] font-black leading-tight text-[#0b172a]">
-                        {
-                          featuredMarket
-                            .market
-                            .name
-                        }
-                      </div>
+                  {/* OPEN MARKET ACCENT */}
 
-                      <div className="mt-0.5 text-[7px] font-bold text-slate-400">
-                        {
-                          featuredMarket
-                            .market
-                            .shortName
-                        }
-                      </div>
+                  {featuredMarket.isOpen && (
 
-                    </div>
+                    <div className="absolute inset-y-0 left-0 w-[3px] bg-emerald-400" />
 
-                  </div>
+                  )}
 
-                  {/* STATUS */}
-                  <div
-                    className={`
-                      inline-flex shrink-0 items-center gap-1.5
-                      rounded-full px-2.5 py-1.5
-                      text-[7.5px] font-black
-                      ${
-                        featuredMarket.isOpen
-                          ? "bg-emerald-100 text-emerald-700"
-                          : "bg-slate-100 text-slate-500"
-                      }
-                    `}
-                  >
-
-                    <span
-                      className={`h-1.5 w-1.5 rounded-full ${
-                        featuredMarket.isOpen
-                          ? "bg-emerald-500 shadow-[0_0_0_3px_rgba(16,185,129,0.10)]"
-                          : "bg-slate-400"
-                      }`}
-                    />
-
-                    {featuredMarket.isOpen
-                      ? "Open Now"
-                      : "Closed"}
-
-                  </div>
-
-                </div>
-
-                {/* COUNTDOWN */}
-                <div className="mt-3 border-t border-emerald-100/70 pt-2.5">
+                  {/* MARKET IDENTITY */}
 
                   <div className="flex items-center justify-between gap-3">
 
-                    <span className="text-[8px] font-bold text-slate-400">
-                      {featuredMarket.nextChangeType ===
-                      "close"
-                        ? "Closes in"
-                        : "Opens in"}
-                    </span>
+                    <div className="flex min-w-0 items-center gap-2.5">
 
-                    <span
-                      className={`whitespace-nowrap text-[14px] font-black tracking-[-0.02em] ${
-                        featuredMarket.isOpen
-                          ? "text-emerald-700"
-                          : "text-brand-600"
-                      }`}
+                      {/* ROUND FLAG */}
+
+                      <div className="flex h-[34px] w-[34px] shrink-0 items-center justify-center overflow-hidden rounded-full border-[2px] border-white bg-slate-100 shadow-[0_2px_8px_rgba(15,23,42,0.14)] ring-1 ring-slate-200">
+
+                        <FlagIcon
+                          country={
+                            featuredMarket.market.code as
+                              | "US"
+                              | "GB"
+                              | "JP"
+                              | "AU"
+                          }
+                          className="h-full w-full scale-[1.42]"
+                        />
+
+                      </div>
+
+                      {/* MARKET NAME */}
+
+                      <div className="min-w-0">
+
+                        <div className="whitespace-nowrap text-[13px] font-black leading-tight text-[#0b172a]">
+
+                          {featuredMarket.market.name}
+
+                        </div>
+
+                        <div
+                          dir="ltr"
+                          className="mt-0.5 text-left text-[7px] font-bold text-slate-400"
+                        >
+
+                          {featuredMarket.market.shortName}
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    {/* MARKET STATUS */}
+
+                    <div
+                      className={`
+                        inline-flex shrink-0 items-center gap-1.5
+                        rounded-full px-2.5 py-1.5
+                        text-[7.5px] font-black
+                        ${
+                          featuredMarket.isOpen
+                            ? "bg-emerald-100 text-emerald-700"
+                            : "bg-slate-100 text-slate-500"
+                        }
+                      `}
                     >
-                      {formatCountdown(
-                        featuredMarket.nextChangeMinutes
-                      )}
-                    </span>
+
+                      <span
+                        className={`h-1.5 w-1.5 rounded-full ${
+                          featuredMarket.isOpen
+                            ? "bg-emerald-500 shadow-[0_0_0_3px_rgba(16,185,129,0.10)]"
+                            : "bg-slate-400"
+                        }`}
+                      />
+
+                      {featuredMarket.isOpen
+                        ? "Open Now"
+                        : "Closed"}
+
+                    </div>
+
+                  </div>
+
+                  {/* FEATURED MARKET COUNTDOWN */}
+
+                  <div className="mt-2 border-t border-emerald-100/70 pt-1.5">
+
+                    <div className="flex items-center justify-between gap-3">
+
+                      <span className="text-[8px] font-bold text-slate-400">
+
+                        {featuredMarket.nextChangeType === "close"
+                          ? "Closes in"
+                          : "Opens in"}
+
+                      </span>
+
+                      <span
+                        className={`whitespace-nowrap text-[14px] font-black tracking-[-0.02em] ${
+                          featuredMarket.isOpen
+                            ? "text-emerald-700"
+                            : "text-brand-600"
+                        }`}
+                      >
+
+                        {formatCountdown(
+                          featuredMarket.nextChangeMinutes
+                        )}
+
+                      </span>
+
+                    </div>
 
                   </div>
 
@@ -979,39 +1010,32 @@ export default function MarketHoursSidebarEn() {
 
               </div>
 
-            </div>
-          )}
+            )}
 
-          {/* =====================================================
-              OTHER MARKETS
-          ====================================================== */}
-          <div className="px-3 pb-2.5 pt-1">
+            {/* ===========================================
+                OTHER MARKETS
+            ============================================ */}
 
-            <div className="overflow-hidden rounded-[16px] border border-slate-100 bg-[#fbfcfe]">
+            <div className="px-3 pb-1.5 pt-1">
 
-              {marketStates
-                .filter(
-                  (item) =>
-                    item.market.id !==
-                    featuredMarket
-                      ?.market.id
-                )
-                .map(
-                  (
-                    item,
-                    index,
-                    array
-                  ) => (
+              <div className="overflow-hidden rounded-[16px] border border-slate-100 bg-[#fbfcfe]">
+
+                {marketStates
+
+                  .filter(
+                    (item) =>
+                      item.market.id !==
+                      featuredMarket?.market.id
+                  )
+
+                  .map((item, index, array) => (
+
                     <div
-                      key={
-                        item.market.id
-                      }
+                      key={item.market.id}
                       className={`
-                        px-3 py-2.5
+                        px-3 py-2
                         ${
-                          index !==
-                          array.length -
-                            1
+                          index !== array.length - 1
                             ? "border-b border-slate-100"
                             : ""
                         }
@@ -1022,18 +1046,20 @@ export default function MarketHoursSidebarEn() {
                         }
                       `}
                     >
+
                       {/* MARKET ROW */}
+
                       <div className="flex items-center justify-between gap-3">
 
                         <div className="flex min-w-0 items-center gap-2.5">
 
                           {/* ROUND FLAG */}
+
                           <div className="flex h-[28px] w-[28px] shrink-0 items-center justify-center overflow-hidden rounded-full border-[2px] border-white bg-slate-100 shadow-[0_1px_5px_rgba(15,23,42,0.12)] ring-1 ring-slate-200">
 
                             <FlagIcon
                               country={
-                                item.market
-                                  .code as
+                                item.market.code as
                                   | "US"
                                   | "GB"
                                   | "JP"
@@ -1044,29 +1070,31 @@ export default function MarketHoursSidebarEn() {
 
                           </div>
 
+                          {/* MARKET NAME */}
+
                           <div className="min-w-0">
 
                             <div className="truncate text-[10.5px] font-black text-slate-800">
-                              {
-                                item
-                                  .market
-                                  .name
-                              }
+
+                              {item.market.name}
+
                             </div>
 
-                            <div className="mt-[1px] truncate text-[6.5px] font-semibold text-slate-400">
-                              {
-                                item
-                                  .market
-                                  .shortName
-                              }
+                            <div
+                              dir="ltr"
+                              className="mt-[1px] truncate text-left text-[6.5px] font-semibold text-slate-400"
+                            >
+
+                              {item.market.shortName}
+
                             </div>
 
                           </div>
 
                         </div>
 
-                        {/* STATUS */}
+                        {/* MARKET STATUS */}
+
                         <div
                           className={`
                             inline-flex shrink-0 items-center gap-1.5
@@ -1096,146 +1124,150 @@ export default function MarketHoursSidebarEn() {
 
                       </div>
 
-                      {/* COUNTDOWN */}
-                      <div className="mt-2 flex items-center justify-between pl-[38px]">
+                      {/* MARKET COUNTDOWN */}
 
-                        <span className="text-[7.25px] font-bold text-slate-400">
-                          {item.nextChangeType ===
-                          "close"
+                      <div className="mt-1 flex items-center justify-between pl-[38px]">
+
+                        <span className="text-[7px] font-bold text-slate-400">
+
+                          {item.nextChangeType === "close"
                             ? "Closes in"
                             : "Opens in"}
+
                         </span>
 
                         <span
-                          className={`whitespace-nowrap text-[9.75px] font-black ${
+                          className={`whitespace-nowrap text-[9.5px] font-black ${
                             item.isOpen
                               ? "text-emerald-700"
                               : "text-slate-700"
                           }`}
                         >
+
                           {formatCountdown(
                             item.nextChangeMinutes
                           )}
+
                         </span>
 
                       </div>
 
                     </div>
-                  )
-                )}
+
+                  ))}
+
+              </div>
 
             </div>
 
-          </div>
+            {/* ===========================================
+                NEXT MARKET
+            ============================================ */}
 
-          {/* =====================================================
-              NEXT MARKET
-          ====================================================== */}
-          {nextMarket && (
-            <div className="border-t border-slate-100 bg-[#fbfdff] px-3 py-2.5">
+            {nextMarket && (
 
-              <div className="flex items-center justify-between gap-3 rounded-[11px] bg-brand-50/45 px-2.5 py-2">
+              <div className="border-t border-slate-100 bg-[#fbfdff] px-3 py-1.5">
 
-                <div className="flex min-w-0 items-center gap-2.5">
+                <div className="flex items-center justify-between gap-3 rounded-[11px] bg-brand-50/45 px-2.5 py-1.5">
 
-                  <div className="flex h-[25px] w-[25px] shrink-0 items-center justify-center overflow-hidden rounded-full border-[2px] border-white bg-slate-100 shadow-sm ring-1 ring-slate-200">
+                  <div className="flex min-w-0 items-center gap-2.5">
 
-                    <FlagIcon
-                      country={
-                        nextMarket
-                          .market
-                          .code as
-                          | "US"
-                          | "GB"
-                          | "JP"
-                          | "AU"
-                      }
-                      className="h-full w-full scale-[1.4]"
-                    />
+                    {/* NEXT MARKET FLAG */}
 
-                  </div>
+                    <div className="flex h-[25px] w-[25px] shrink-0 items-center justify-center overflow-hidden rounded-full border-[2px] border-white bg-slate-100 shadow-sm ring-1 ring-slate-200">
 
-                  <div>
+                      <FlagIcon
+                        country={
+                          nextMarket.market.code as
+                            | "US"
+                            | "GB"
+                            | "JP"
+                            | "AU"
+                        }
+                        className="h-full w-full scale-[1.4]"
+                      />
 
-                    <div className="text-[6.75px] font-bold text-brand-500">
-                      Next Market
                     </div>
 
-                    <div className="mt-[1px] text-[9.25px] font-black text-slate-700">
-                      {
-                        nextMarket
-                          .market
-                          .name
-                      }
+                    <div>
+
+                      <div className="text-[6.75px] font-bold text-brand-500">
+
+                        Next Market
+
+                      </div>
+
+                      <div className="mt-[1px] text-[9.25px] font-black text-slate-700">
+
+                        {nextMarket.market.name}
+
+                      </div>
+
                     </div>
 
                   </div>
 
-                </div>
+                  {/* NEXT OPENING COUNTDOWN */}
 
-                <div className="shrink-0 text-right">
+                  <div className="shrink-0 text-right">
 
-                  <div className="text-[6.75px] font-bold text-slate-400">
-                    Opens in
-                  </div>
+                    <div className="text-[6.75px] font-bold text-slate-400">
 
-                  <div className="mt-[1px] whitespace-nowrap text-[9.25px] font-black text-brand-600">
-                    {formatCountdown(
-                      nextMarket.nextChangeMinutes
-                    )}
+                      Opens in
+
+                    </div>
+
+                    <div className="mt-[1px] whitespace-nowrap text-[9.25px] font-black text-brand-600">
+
+                      {formatCountdown(
+                        nextMarket.nextChangeMinutes
+                      )}
+
+                    </div>
+
                   </div>
 
                 </div>
 
               </div>
 
+            )}
+
+            {/* ===========================================
+                VIEW ALL MARKET HOURS
+            ============================================ */}
+
+            <div className="border-t border-slate-100 bg-white px-3 py-2">
+
+              <Link
+                href="/en/tools/market-hours"
+                className="group flex h-[40px] w-full items-center justify-center gap-2 rounded-[11px] bg-brand-600 px-4 text-[11px] font-black text-white shadow-[0_8px_18px_rgba(37,99,235,0.16)] transition duration-300 hover:-translate-y-0.5 hover:bg-brand-700"
+              >
+
+                <span>
+
+                  View All Market Hours
+
+                </span>
+
+                <span className="text-[13px] transition group-hover:translate-x-1">
+
+                  →
+
+                </span>
+
+              </Link>
+
             </div>
-          )}
 
-          {/* =====================================================
-              CTA
-          ====================================================== */}
-          <div className="border-t border-slate-100 bg-white p-3">
+          </>
 
-            <Link
-              href="/en/tools/market-hours"
-              className="
-                group
-                flex
-                h-[44px]
-                w-full
-                items-center
-                justify-center
-                gap-2
-                rounded-[14px]
-                bg-brand-600
-                px-4
-                text-[10.5px]
-                font-black
-                text-white
-                shadow-[0_8px_18px_rgba(37,99,235,0.16)]
-                transition
-                duration-300
-                hover:-translate-y-0.5
-                hover:bg-brand-700
-              "
-            >
+        )}
 
-              <span>
-                View All Market Hours
-              </span>
-
-              <span className="text-[13px] transition group-hover:translate-x-1">
-                →
-              </span>
-
-            </Link>
-
-          </div>
-
-        </>
-      )}
+      </div>
 
     </div>
+
   );
+
 }

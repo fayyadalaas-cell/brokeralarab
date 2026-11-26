@@ -142,6 +142,20 @@ const BIAS: Record<
 };
 
 /* ============================================================
+   DAILY PIVOT LEVEL ORDER
+============================================================ */
+
+const PIVOT_KEYS = [
+  "R3",
+  "R2",
+  "R1",
+  "P",
+  "S1",
+  "S2",
+  "S3",
+] as const;
+
+/* ============================================================
    FORMATTERS
 ============================================================ */
 
@@ -210,12 +224,14 @@ function TechnicalGauge({
   neutral,
   label,
   color,
+  compact = false,
 }: {
   buy: number | null;
   sell: number | null;
   neutral: number | null;
   label: string;
   color: string;
+  compact?: boolean;
 }) {
   const total =
     buy !== null &&
@@ -235,17 +251,21 @@ function TechnicalGauge({
         )
       : 0.5;
 
-  const radius = 85;
-  const cx = 120;
-  const cy = 105;
+  const radiusX = 85;
+const radiusY = compact ? 95 : 85;
 
-  const x =
-    cx - radius * Math.cos(Math.PI * position);
+const cx = 120;
+const cy = compact ? 115 : 105;
 
-  const y =
-    cy - radius * Math.sin(Math.PI * position);
+const x =
+  cx - radiusX * Math.cos(Math.PI * position);
 
-  const arc = "M35 105 A85 85 0 0 1 205 105";
+const y =
+  cy - radiusY * Math.sin(Math.PI * position);
+
+const arc = compact
+  ? "M35 115 A85 95 0 0 1 205 115"
+  : "M35 105 A85 85 0 0 1 205 105";
 
   const segments = [
     { color: "#e11d48", start: 0, size: 25 },
@@ -450,7 +470,13 @@ export default function HomeTechnicalSnapshotEn({
     );
 
   const [quote, setQuote] =
-    useState<LiveQuote | null>(null);
+  useState<LiveQuote | null>(null);
+
+const [technicalLoading, setTechnicalLoading] =
+  useState(false);
+
+const [dailyLoading, setDailyLoading] =
+  useState(false);
 
   const activeTechnical =
     technical?.symbol === symbol &&
@@ -594,180 +620,262 @@ export default function HomeTechnicalSnapshotEn({
   }, [symbol]);
 
   /* ============================================================
-     TECHNICAL ANALYSIS — SELECTED TIMEFRAME
-  ============================================================ */
+   TECHNICAL ANALYSIS — SELECTED TIMEFRAME
+============================================================ */
 
-  useEffect(() => {
-    let cancelled = false;
-    let running = false;
+useEffect(() => {
 
-    async function loadTechnical() {
-      if (running) return;
-      running = true;
+  let cancelled = false;
+  let running = false;
 
-      try {
-        const { base, headers } = supabaseConfig();
+  async function loadTechnical() {
 
-        const endpoint = new URL(
-          `${base}/rest/v1/broker_technical_analysis_latest`
-        );
+    if (running) return;
 
-        endpoint.searchParams.set("select", "*");
-        endpoint.searchParams.set(
-          "symbol",
-          `eq.${symbol}`
-        );
-        endpoint.searchParams.set(
-          "timeframe",
-          `eq.${timeframe}`
-        );
-        endpoint.searchParams.set("limit", "1");
+    running = true;
 
-        const response = await fetch(
-          endpoint.toString(),
-          {
-            headers,
-            cache: "no-store",
-          }
-        );
+    setTechnicalLoading(true);
 
-        if (!response.ok) {
-          throw new Error(
-            `Technical HTTP ${response.status}`
-          );
+    try {
+
+      const { base, headers } = supabaseConfig();
+
+      const endpoint = new URL(
+        `${base}/rest/v1/broker_technical_analysis_latest`
+      );
+
+      endpoint.searchParams.set(
+        "select",
+        "*"
+      );
+
+      endpoint.searchParams.set(
+        "symbol",
+        `eq.${symbol}`
+      );
+
+      endpoint.searchParams.set(
+        "timeframe",
+        `eq.${timeframe}`
+      );
+
+      endpoint.searchParams.set(
+        "limit",
+        "1"
+      );
+
+      const response = await fetch(
+        endpoint.toString(),
+        {
+          headers,
+          cache: "no-store",
         }
+      );
 
-        const rows: HomeTechnicalRow[] =
-          await response.json();
+      if (!response.ok) {
 
-        if (!cancelled) {
-          setTechnical(rows[0] ?? null);
-        }
-      } catch (error) {
-        console.error("English home technical:", error);
+        throw new Error(
+          `Technical HTTP ${response.status}`
+        );
 
-        if (!cancelled) {
-          setTechnical(null);
-        }
-      } finally {
-        running = false;
       }
+
+      const rows: HomeTechnicalRow[] =
+        await response.json();
+
+      if (!cancelled) {
+
+        setTechnical(rows[0] ?? null);
+
+      }
+
+    } catch (error) {
+
+      console.error(
+        "English home technical:",
+        error
+      );
+
+      if (!cancelled) {
+
+        setTechnical(null);
+
+      }
+
+    } finally {
+
+      running = false;
+
+      if (!cancelled) {
+
+        setTechnicalLoading(false);
+
+      }
+
     }
 
-    void loadTechnical();
+  }
 
-    const interval = window.setInterval(() => {
-      if (document.visibilityState === "visible") {
-        void loadTechnical();
-      }
-    }, 5 * 60 * 1000);
+  void loadTechnical();
 
-    return () => {
-      cancelled = true;
-      window.clearInterval(interval);
-    };
-  }, [symbol, timeframe]);
+  const interval = window.setInterval(() => {
+
+    if (document.visibilityState === "visible") {
+
+      void loadTechnical();
+
+    }
+
+  }, 5 * 60 * 1000);
+
+  return () => {
+
+    cancelled = true;
+
+    window.clearInterval(interval);
+
+  };
+
+}, [symbol, timeframe]);
 
   /* ============================================================
-     DAILY CLASSIC PIVOTS — ALWAYS D1
-  ============================================================ */
+   DAILY CLASSIC PIVOTS — ALWAYS D1
+============================================================ */
 
-  useEffect(() => {
-    let cancelled = false;
-    let running = false;
+useEffect(() => {
 
-    async function loadDailyPivot() {
-      if (running) return;
-      running = true;
+  let cancelled = false;
+  let running = false;
 
-      try {
-        const { base, headers } = supabaseConfig();
+  async function loadDailyPivot() {
 
-        const endpoint = new URL(
-          `${base}/rest/v1/broker_daily_pivot_levels_latest`
-        );
+    if (running) return;
 
-        endpoint.searchParams.set(
-          "select",
-          "symbol,method,pivot,r1,r2,r3,s1,s2,s3,calculated_at_utc"
-        );
+    running = true;
 
-        endpoint.searchParams.set(
-          "symbol",
-          `eq.${symbol}`
-        );
+    setDailyLoading(true);
 
-        endpoint.searchParams.set(
-          "method",
-          "eq.classic"
-        );
+    try {
 
-        endpoint.searchParams.set("limit", "1");
+      const { base, headers } = supabaseConfig();
 
-        const response = await fetch(
-          endpoint.toString(),
-          {
-            headers,
-            cache: "no-store",
-          }
-        );
+      const endpoint = new URL(
+        `${base}/rest/v1/broker_daily_pivot_levels_latest`
+      );
 
-        if (!response.ok) {
-          throw new Error(
-            `Daily Pivot HTTP ${response.status}`
-          );
+      endpoint.searchParams.set(
+        "select",
+        "symbol,method,pivot,r1,r2,r3,s1,s2,s3,calculated_at_utc"
+      );
+
+      endpoint.searchParams.set(
+        "symbol",
+        `eq.${symbol}`
+      );
+
+      endpoint.searchParams.set(
+        "method",
+        "eq.classic"
+      );
+
+      endpoint.searchParams.set(
+        "limit",
+        "1"
+      );
+
+      const response = await fetch(
+        endpoint.toString(),
+        {
+          headers,
+          cache: "no-store",
         }
+      );
 
-        const rows: HomePivotRow[] =
-          await response.json();
+      if (!response.ok) {
 
-        if (!cancelled) {
-          setPivot(rows[0] ?? null);
-        }
-      } catch (error) {
-        console.error(
-          "English home daily pivot:",
-          error
+        throw new Error(
+          `Daily Pivot HTTP ${response.status}`
         );
 
-        if (!cancelled) {
-          setPivot(null);
-        }
-      } finally {
-        running = false;
       }
+
+      const rows: HomePivotRow[] =
+        await response.json();
+
+      if (!cancelled) {
+
+        setPivot(rows[0] ?? null);
+
+      }
+
+    } catch (error) {
+
+      console.error(
+        "English home daily pivot:",
+        error
+      );
+
+      if (!cancelled) {
+
+        setPivot(null);
+
+      }
+
+    } finally {
+
+      running = false;
+
+      if (!cancelled) {
+
+        setDailyLoading(false);
+
+      }
+
     }
 
-    void loadDailyPivot();
+  }
 
-    const interval = window.setInterval(() => {
-      if (document.visibilityState === "visible") {
-        void loadDailyPivot();
-      }
-    }, 60 * 1000);
+  void loadDailyPivot();
 
-    const onVisible = () => {
-      if (document.visibilityState === "visible") {
-        void loadDailyPivot();
-      }
-    };
+  const interval = window.setInterval(() => {
 
-    document.addEventListener(
+    if (document.visibilityState === "visible") {
+
+      void loadDailyPivot();
+
+    }
+
+  }, 60 * 1000);
+
+  const onVisible = () => {
+
+    if (document.visibilityState === "visible") {
+
+      void loadDailyPivot();
+
+    }
+
+  };
+
+  document.addEventListener(
+    "visibilitychange",
+    onVisible
+  );
+
+  return () => {
+
+    cancelled = true;
+
+    window.clearInterval(interval);
+
+    document.removeEventListener(
       "visibilitychange",
       onVisible
     );
 
-    return () => {
-      cancelled = true;
+  };
 
-      window.clearInterval(interval);
-
-      document.removeEventListener(
-        "visibilitychange",
-        onVisible
-      );
-    };
-  }, [symbol]);
+}, [symbol]);
 
   /* ============================================================
      DATA INTERPRETATION
@@ -881,6 +989,644 @@ export default function HomeTechnicalSnapshotEn({
       bar: "bg-rose-500",
     },
   ];
+
+  /* ============================================================
+   COMPACT HOMEPAGE RENDER — ENGLISH
+============================================================ */
+
+if (!hubMode) {
+
+  return (
+
+    <section
+      id="home-technical-analysis"
+      aria-labelledby="home-technical-title"
+      dir="ltr"
+      lang="en"
+      className="mx-auto flex w-full min-w-0 flex-col py-3 sm:py-4 xl:flex-1"
+    >
+
+      {/* EXTERNAL SECTION HEADER */}
+
+      <div className="mb-4 flex min-h-[44px] shrink-0 items-center">
+
+        <h2
+          id="home-technical-title"
+          className="min-w-0 text-[18px] font-black leading-8 tracking-tight text-[#10233f] sm:text-[24px]"
+        >
+
+          <Link
+            href="/en/technical-analysis"
+            className="group/title inline-flex items-center gap-2 transition duration-200 hover:text-brand-600"
+          >
+
+            Market Technical Analysis
+
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+              className="shrink-0 transition-transform duration-200 group-hover/title:translate-x-1"
+            >
+
+              <path d="m9 18 6-6-6-6" />
+
+            </svg>
+
+          </Link>
+
+        </h2>
+
+      </div>
+
+      {/* =================================================
+          MAIN TECHNICAL CARD
+      ================================================== */}
+
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden rounded-[18px] border border-slate-200 bg-white">
+
+        {/* ===============================================
+            MARKET CONTROLS
+        ================================================ */}
+
+        <div className="grid grid-cols-[minmax(0,1fr)_80px] items-end gap-2 border-b border-slate-200 bg-[#f8fafc] p-3 sm:grid-cols-[minmax(0,1fr)_100px_minmax(0,1fr)] sm:gap-3">
+
+          {/* INSTRUMENT */}
+
+          <label className="block min-w-0">
+
+            <span className="mb-1 block text-[11px] font-bold text-slate-500">
+
+              Instrument
+
+            </span>
+
+            <select
+              value={symbol}
+              onChange={(event) =>
+                setSymbol(event.target.value)
+              }
+              className="h-10 w-full min-w-0 rounded-[10px] border border-slate-200 bg-white px-2 text-[12px] font-bold text-[#10233f] outline-none transition focus:border-brand-500"
+            >
+
+              {INSTRUMENTS.map((item) => (
+
+                <option
+                  key={item.symbol}
+                  value={item.symbol}
+                >
+
+                  {item.label}
+
+                </option>
+
+              ))}
+
+            </select>
+
+          </label>
+
+          {/* TIMEFRAME */}
+
+          <label className="block min-w-0">
+
+            <span className="mb-1 block text-[11px] font-bold text-slate-500">
+
+              Timeframe
+
+            </span>
+
+            <select
+              dir="ltr"
+              value={timeframe}
+              onChange={(event) =>
+                setTimeframe(
+                  event.target.value as Timeframe
+                )
+              }
+              className="h-10 w-full rounded-[10px] border border-slate-200 bg-white px-2 text-center text-[12px] font-black text-[#10233f] outline-none transition focus:border-brand-500"
+            >
+
+              {TIMEFRAMES.map((tf) => (
+
+                <option key={tf} value={tf}>
+
+                  {tf}
+
+                </option>
+
+              ))}
+
+            </select>
+
+          </label>
+
+          {/* CURRENT PRICE */}
+
+          <div className="col-span-2 flex h-10 min-w-0 items-center justify-between gap-2 rounded-[10px] border border-slate-200 bg-white px-3 sm:col-span-1">
+
+            <span className="flex items-center gap-1.5 whitespace-nowrap text-[11px] font-bold text-slate-500">
+
+              <Zap
+                size={13}
+                className="text-brand-500"
+              />
+
+              Current Price
+
+            </span>
+
+            <strong
+              dir="ltr"
+              className="whitespace-nowrap text-[20px] font-black tabular-nums text-brand-600 sm:text-[18px]"
+            >
+
+              {priceText(livePrice, symbol)}
+
+            </strong>
+
+          </div>
+
+        </div>
+
+        {/* ===============================================
+            COMPACT TECHNICAL DASHBOARD
+        ================================================ */}
+
+        <div className="flex flex-1 flex-col gap-2.5 p-3 sm:gap-3">
+
+          {/* =============================================
+              TWO TECHNICAL PANELS
+          ============================================== */}
+
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
+
+            {/* ===========================================
+                TECHNICAL GAUGE
+            ============================================ */}
+
+            <div className="flex min-w-0 flex-col rounded-[13px] border border-slate-200 bg-white p-2 sm:p-3">
+
+              {/* PANEL HEADER */}
+
+              <div className="flex flex-wrap items-center justify-between gap-1">
+
+                <h3 className="flex items-center gap-1.5 text-[12px] font-black text-[#10233f] sm:text-[14px]">
+
+                  <Gauge
+                    size={15}
+                    className="text-brand-600"
+                  />
+
+                  Technical Rating
+
+                </h3>
+
+                <span className="rounded-md bg-[#edf3fc] px-2 py-0.5 text-[10px] font-bold text-brand-600">
+
+                  {timeframe}
+
+                </span>
+
+              </div>
+
+              {/* TECHNICAL GAUGE CHART */}
+
+<div className="mx-auto flex w-full max-w-[245px] flex-1 items-center justify-center py-0 sm:max-w-[225px]">
+
+  <TechnicalGauge
+    buy={buy}
+    sell={sell}
+    neutral={neutral}
+    label={gaugeLabel}
+    color={gaugeColor}
+    compact
+  />
+
+</div>
+
+            </div>
+
+            {/* ===========================================
+                INDICATOR SIGNALS
+            ============================================ */}
+
+            <div className="flex min-w-0 flex-col rounded-[13px] border border-slate-200 bg-white p-2 sm:p-3">
+
+              {/* PANEL HEADER */}
+
+              <div className="flex flex-wrap items-center justify-between gap-1">
+
+                <h3 className="flex items-center gap-1.5 text-[12px] font-black text-[#10233f] sm:text-[14px]">
+
+                  <BarChart3
+                    size={15}
+                    className="text-brand-600"
+                  />
+
+                  Indicator Signals
+
+                </h3>
+
+                <span className="text-[10px] font-bold text-slate-500">
+
+                  Total: {total || "—"}
+
+                </span>
+
+              </div>
+
+              {/* SIGNAL COUNTS AND PERCENTAGES */}
+
+              <div className="mt-2 grid flex-1 grid-cols-3 gap-1 sm:mt-3 sm:gap-2">
+
+                {signalItems.map((item) => (
+
+                  <div
+                    key={item.label}
+                    className={`flex min-w-0 flex-col items-center justify-center rounded-[9px] px-0.5 py-3 text-center sm:rounded-[12px] sm:px-2 sm:py-2.5 ${item.bg}`}
+                  >
+
+                    <p
+                      className={`text-[27px] font-black leading-8 ${item.color} sm:text-[30px]`}
+                    >
+
+                      {item.value ?? "—"}
+
+                    </p>
+
+                    <p
+                      className={`mt-1 text-[10px] font-bold sm:text-[12px] ${item.color}`}
+                    >
+
+                      {item.label}
+
+                    </p>
+
+                    <p
+                      dir="ltr"
+                      className={`mt-1 text-[10px] font-semibold tabular-nums sm:text-[12px] ${item.color}`}
+                    >
+
+                      {total > 0 && item.value !== null
+                        ? `${((item.value / total) * 100).toFixed(1)}%`
+                        : "—"}
+
+                    </p>
+
+                  </div>
+
+                ))}
+
+              </div>
+
+              {/* DISTRIBUTION BAR */}
+
+              <div className="mt-2.5 flex h-2 overflow-hidden rounded-full bg-slate-100 sm:mt-3">
+
+                {signalItems.map((item) => (
+
+                  <div
+                    key={item.label}
+                    className={item.bar}
+                    style={{
+                      width:
+                        total > 0
+                          ? `${((item.value ?? 0) / total) * 100}%`
+                          : "0%",
+                    }}
+                  />
+
+                ))}
+
+              </div>
+
+              {/* INDICATORS FOOTER */}
+
+              <div className="mt-2 text-center text-[10px] font-medium text-slate-500 sm:text-[11px]">
+
+                {technicalLoading
+                  ? "Updating indicators..."
+                  : `Total technical signals: ${total || "—"}`}
+
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* =============================================
+              DAILY PIVOT LEVELS
+
+              MOBILE: P + RESISTANCE + SUPPORT
+              DESKTOP: SEVEN HORIZONTAL LEVELS
+          ============================================== */}
+
+          <div className="overflow-hidden rounded-[13px] border border-slate-200">
+
+            {/* PIVOT HEADER */}
+
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 bg-[#f8fafc] px-3 py-2">
+
+              <h3 className="flex items-center gap-1.5 text-[13px] font-black text-[#10233f] sm:text-[14px]">
+
+                <Layers3
+                  size={15}
+                  className="text-brand-600"
+                />
+
+                Daily Pivot Levels
+
+              </h3>
+
+              <span className="rounded-md border border-blue-100 bg-white px-2 py-0.5 text-[10px] font-bold text-brand-600">
+
+                Classic · D1
+
+              </span>
+
+            </div>
+
+            {/* ===========================================
+                MOBILE PIVOT LEVELS
+            ============================================ */}
+
+            <div className="space-y-2 p-2.5 sm:hidden">
+
+              {/* MAIN PIVOT POINT */}
+
+              <div className="flex min-w-0 items-center justify-between gap-2 rounded-[9px] border border-blue-200 bg-blue-50 px-3 py-2.5">
+
+                <div className="flex min-w-0 items-center gap-2">
+
+                  <span
+                    dir="ltr"
+                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-blue-100 text-[12px] font-black text-blue-700"
+                  >
+
+                    P
+
+                  </span>
+
+                  <span className="text-[11px] font-bold text-blue-700">
+
+                    Pivot Point
+
+                  </span>
+
+                </div>
+
+                <strong
+                  dir="ltr"
+                  className="whitespace-nowrap text-[16px] font-black tabular-nums text-blue-700"
+                >
+
+                  {priceText(levels.P, symbol)}
+
+                </strong>
+
+              </div>
+
+              {/* RESISTANCE LEVELS */}
+
+              <div>
+
+                <div className="mb-1.5 flex items-center gap-1.5">
+
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+
+                  <span className="text-[10px] font-bold text-emerald-700">
+
+                    Resistance Levels
+
+                  </span>
+
+                </div>
+
+                <div className="grid grid-cols-3 gap-1.5">
+
+                  {["R1", "R2", "R3"].map((level) => (
+
+                    <div
+                      key={level}
+                      className="flex min-w-0 flex-col items-center justify-center gap-1 rounded-[8px] border border-emerald-100 bg-emerald-50 px-1 py-2"
+                    >
+
+                      <span
+                        dir="ltr"
+                        className="text-[11px] font-bold text-emerald-700"
+                      >
+
+                        {level}
+
+                      </span>
+
+                      <span
+                        dir="ltr"
+                        className="whitespace-nowrap text-[12px] font-black tabular-nums text-emerald-700"
+                      >
+
+                        {priceText(levels[level], symbol)}
+
+                      </span>
+
+                    </div>
+
+                  ))}
+
+                </div>
+
+              </div>
+
+              {/* SUPPORT LEVELS */}
+
+              <div>
+
+                <div className="mb-1.5 flex items-center gap-1.5">
+
+                  <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
+
+                  <span className="text-[10px] font-bold text-rose-700">
+
+                    Support Levels
+
+                  </span>
+
+                </div>
+
+                <div className="grid grid-cols-3 gap-1.5">
+
+                  {["S1", "S2", "S3"].map((level) => (
+
+                    <div
+                      key={level}
+                      className="flex min-w-0 flex-col items-center justify-center gap-1 rounded-[8px] border border-rose-100 bg-rose-50 px-1 py-2"
+                    >
+
+                      <span
+                        dir="ltr"
+                        className="text-[11px] font-bold text-rose-700"
+                      >
+
+                        {level}
+
+                      </span>
+
+                      <span
+                        dir="ltr"
+                        className="whitespace-nowrap text-[12px] font-black tabular-nums text-rose-700"
+                      >
+
+                        {priceText(levels[level], symbol)}
+
+                      </span>
+
+                    </div>
+
+                  ))}
+
+                </div>
+
+              </div>
+
+            </div>
+
+            {/* ===========================================
+                DESKTOP PIVOT LEVELS
+            ============================================ */}
+
+            <div className="hidden grid-cols-7 gap-1.5 p-2.5 sm:grid">
+
+              {PIVOT_KEYS.map((level) => {
+
+                const isPivot =
+                  level === "P";
+
+                const isResistance =
+                  level.startsWith("R");
+
+                const color = isPivot
+                  ? "border-blue-100 bg-blue-50 text-blue-700"
+                  : isResistance
+                    ? "border-emerald-100 bg-emerald-50 text-emerald-700"
+                    : "border-rose-100 bg-rose-50 text-rose-700";
+
+                return (
+
+                  <div
+                    key={level}
+                    className={`flex min-w-0 flex-col items-center justify-center gap-1 rounded-[8px] border px-1 py-2 ${color}`}
+                  >
+
+                    <span
+                      dir="ltr"
+                      className="text-[11px] font-bold"
+                    >
+
+                      {level}
+
+                    </span>
+
+                    <span
+                      dir="ltr"
+                      className="whitespace-nowrap text-[11px] font-black tabular-nums sm:text-[12px] lg:text-[13px]"
+                    >
+
+                      {priceText(
+                        levels[level],
+                        symbol
+                      )}
+
+                    </span>
+
+                  </div>
+
+                );
+
+              })}
+
+            </div>
+
+            {/* PIVOT UPDATE INFORMATION */}
+
+            <div className="flex flex-wrap items-center justify-between gap-2 px-3 pb-2 text-[10px] text-slate-500">
+
+              <span>
+
+                {dailyLoading
+                  ? "Updating pivot levels..."
+                  : "Last daily pivot calculation"}
+
+              </span>
+
+              <span className="font-bold">
+
+                {dateText(
+                  activePivot?.calculated_at_utc
+                )}
+
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        {/* ===============================================
+            COLLAPSIBLE METHODOLOGY
+        ================================================ */}
+
+        <details className="group border-t border-slate-200 bg-[#f8fafc] px-3 py-2.5">
+
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-2 text-[11px] font-bold text-slate-600">
+
+            <span className="flex items-center gap-1.5">
+
+              <Clock3
+                size={13}
+                className="text-brand-600"
+              />
+
+              Data & Calculation Methodology
+
+            </span>
+
+            <ChevronDown
+              size={14}
+              className="transition-transform group-open:rotate-180"
+            />
+
+          </summary>
+
+          <div className="mt-2 border-t border-slate-200 pt-2 text-[11px] leading-6 text-slate-500">
+
+            Live prices are checked every 5 seconds while
+            the page is visible. Technical ratings are
+            based on the selected timeframe. Daily pivot
+            levels are calculated using the Classic Pivot
+            method and data from the previous reference
+            candle. All data is provided for analytical
+            and educational purposes and does not
+            constitute a trading recommendation.
+
+          </div>
+
+        </details>
+
+      </div>
+
+    </section>
+
+  );
+
+}
 
   /* ============================================================
      RENDER
