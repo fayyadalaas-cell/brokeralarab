@@ -5,6 +5,7 @@ import Image from "next/image";
 
 import {
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   type ReactNode,
@@ -1050,8 +1051,15 @@ export default function EnglishHeader({
 
   const pathname = usePathname();
 
-  const headerRef =
+    const headerRef =
     useRef<HTMLElement>(null);
+
+  const desktopPanelRef =
+    useRef<HTMLDivElement>(null);
+
+  const desktopCloseTimerRef = useRef<
+    ReturnType<typeof setTimeout> | null
+  >(null);
 
   const mobileButtonRef =
     useRef<HTMLButtonElement>(null);
@@ -1062,8 +1070,99 @@ export default function EnglishHeader({
     >
   >({});
 
-  const [activeMenu, setActiveMenu] =
+    const [activeMenu, setActiveMenu] =
     useState<MenuKey | null>(null);
+
+  /* =====================================================
+     DESKTOP MEGA MENU — HOVER CONTROL
+  ====================================================== */
+
+  function cancelDesktopMenuClose() {
+    if (desktopCloseTimerRef.current !== null) {
+      clearTimeout(desktopCloseTimerRef.current);
+      desktopCloseTimerRef.current = null;
+    }
+  }
+
+  function scheduleDesktopMenuClose() {
+    cancelDesktopMenuClose();
+
+    desktopCloseTimerRef.current = setTimeout(() => {
+      setActiveMenu(null);
+      desktopCloseTimerRef.current = null;
+    }, 300);
+  }
+
+  useEffect(() => {
+    return () => {
+      if (desktopCloseTimerRef.current !== null) {
+        clearTimeout(desktopCloseTimerRef.current);
+      }
+    };
+  }, []);
+
+  /* =====================================================
+     DESKTOP MEGA MENU — DYNAMIC POSITION (LTR)
+  ====================================================== */
+
+  useLayoutEffect(() => {
+    if (!activeMenu) return;
+
+    function positionDesktopPanel() {
+      const panel = desktopPanelRef.current;
+
+      const button = activeMenu
+        ? desktopButtonsRef.current[activeMenu]
+        : null;
+
+      if (!panel || !button) return;
+
+      const container = panel.offsetParent;
+
+      if (!(container instanceof HTMLElement)) return;
+
+      const buttonRect = button.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+
+      const panelWidth = panel.offsetWidth;
+      const viewportWidth =
+        document.documentElement.clientWidth;
+
+      const viewportPadding = 20;
+
+      const preferredLeft = buttonRect.left;
+
+      const maximumLeft = Math.max(
+        viewportPadding,
+        viewportWidth - panelWidth - viewportPadding
+      );
+
+      const safeLeft = Math.max(
+        viewportPadding,
+        Math.min(preferredLeft, maximumLeft)
+      );
+
+      panel.style.left = `${
+        safeLeft -
+        containerRect.left -
+        container.clientLeft
+      }px`;
+    }
+
+    positionDesktopPanel();
+
+    window.addEventListener(
+      "resize",
+      positionDesktopPanel
+    );
+
+    return () => {
+      window.removeEventListener(
+        "resize",
+        positionDesktopPanel
+      );
+    };
+  }, [activeMenu]);
 
   const [mobileOpen, setMobileOpen] =
     useState(false);
@@ -2122,11 +2221,10 @@ export default function EnglishHeader({
               DESKTOP NAVIGATION
           ============================================ */}
 
-          <nav
+                    <nav
             aria-label="Main navigation"
-            onMouseLeave={() => {
-              setActiveMenu(null);
-            }}
+            onMouseEnter={cancelDesktopMenuClose}
+            onMouseLeave={scheduleDesktopMenuClose}
             onBlur={(event) => {
 
               if (
@@ -2201,9 +2299,10 @@ export default function EnglishHeader({
 
                 return (
 
-                  <div
+                                    <div
                     key={item.id}
                     onMouseEnter={() => {
+                      cancelDesktopMenuClose();
                       setActiveMenu(item.id);
                     }}
                     className="flex h-[76px] items-center"
@@ -2311,11 +2410,13 @@ export default function EnglishHeader({
                 DESKTOP MEGA MENU
             ========================================== */}
 
-            {activeMenu && activeMenuInfo && (
+                        {activeMenu && activeMenuInfo && (
 
               <div
+                ref={desktopPanelRef}
                 id={`desktop-menu-en-${activeMenu}`}
-                className={`absolute left-1/2 top-full z-50 max-w-[calc(100vw-40px)] -translate-x-1/2 pt-1.5 ${PANEL_WIDTHS[activeMenu]}`}
+                onMouseEnter={cancelDesktopMenuClose}
+                className={`absolute left-0 top-full z-50 max-w-[calc(100vw-40px)] pt-1 ${PANEL_WIDTHS[activeMenu]}`}
               >
 
                 <div className="max-h-[calc(100dvh-100px)] overflow-y-auto rounded-[20px] border border-slate-200 bg-white shadow-[0_20px_65px_rgba(15,23,42,0.16)]">
