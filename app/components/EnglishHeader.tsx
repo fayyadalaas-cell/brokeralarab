@@ -2,196 +2,275 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import MobileNavMenu from "@/app/components/MobileNavMenu";
 
-const brokerLogoMap: Record<string, string> = {
-  activtrades: "/brokers/activtrade.png",
-  activtrade: "/brokers/activtrade.png",
-  alpari: "/brokers/alpari.png",
-  avatrade: "/brokers/avatrade.png",
-  equiti: "/brokers/equiti.png",
-  exness: "/brokers/exness.png",
-  "exness-platform": "/brokers/exness-platform.png",
-  exness2: "/brokers/exness2.png",
-  fxpro: "/brokers/FxPro.png",
-  "ic-markets": "/brokers/ic-markets.png",
-  icmarkets: "/brokers/ic-markets.png",
-  justmarkets: "/brokers/justmarkets.png",
-  justmarket: "/brokers/justmarket.png",
-  "just-markets": "/brokers/justmarkets.png",
-  pepperstone: "/brokers/pepperstone.png",
-  vantage: "/brokers/vantage.png",
-  xm: "/brokers/xm.png",
-  xs: "/brokers/xs.png",
-  multibank: "/brokers/MultibankGroup.png",
-  "multi-bank": "/brokers/MultibankGroup.png",
-  "multi-bank-group": "/brokers/MultibankGroup.png",
-    "markets-com": "/brokers/markets-com.png",
-  marketscom: "/brokers/markets-com.png",
-  plus500: "/brokers/plus500.png",
-  "capital-com": "/brokers/capital-com.png",
+import {
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
+
+import { usePathname } from "next/navigation";
+
+import {
+  ArrowRight,
+  ChevronDown,
+  ShieldCheck,
+  Scale,
+  Trophy,
+  Newspaper,
+  ChartCandlestick,
+  Calculator,
+  GraduationCap,
+  BookOpen,
+  Globe2,
+  CalendarDays,
+  Clock,
+  Percent,
+  TrendingUp,
+  Building2,
+  Menu,
+  X,
+  Mail,
+  FileText,
+  type LucideIcon,
+} from "lucide-react";
+
+/* =========================================================
+   BROKER ALARAB
+   ENGLISH HEADER — MEGA NAVIGATION V2
+========================================================= */
+
+type NavigationItem = {
+  label: string;
+  href: string;
+  description?: string;
+  icon?: LucideIcon;
 };
 
-function getBrokerLogo(slug: string): string {
-  return brokerLogoMap[slug] || "/brokers/BrokerLogo.png";
-}
+type BrokerItem = {
+  slug: string;
+  name: string;
+  name_en?: string | null;
+  logo?: string | null;
+  rating?: number | string | null;
+};
 
-function getLearnTradingTitle(item: any) {
-  if (item.href === "/learn-trading/how-to-start-trading-from-zero") {
-    return "How to Start Trading from Zero";
+type CountryItem = {
+  label: string;
+  shortLabel: string;
+  href: string;
+  flag?: string;
+};
+
+type ComparisonItem = {
+  label: string;
+  href: string;
+};
+
+type LearningItem = {
+  title: string;
+  title_en?: string | null;
+  href: string;
+};
+
+type HeaderProps = {
+  topBrokers?: BrokerItem[];
+  countryMenuItems?: CountryItem[];
+  featuredCategories?: unknown[];
+  featuredComparisons?: ComparisonItem[];
+  learnTradingMenuItems?: LearningItem[];
+  wide?: boolean;
+};
+
+type MenuKey =
+  | "reviews"
+  | "comparisons"
+  | "best-brokers"
+  | "licenses"
+  | "articles"
+  | "markets"
+  | "education";
+
+const EMPTY_BROKERS: BrokerItem[] = [];
+const EMPTY_COMPARISONS: ComparisonItem[] = [];
+const EMPTY_LEARNING_ITEMS: LearningItem[] = [];
+
+/* =========================================================
+   FUTURE SECTIONS
+   ENABLE ONLY AFTER PAGES ARE PUBLISHED
+========================================================= */
+
+const NAVIGATION_FEATURES = {
+  brokerNews: false,
+  articleCategories: false,
+};
+
+/* =========================================================
+   ENGLISH URL HELPER
+========================================================= */
+
+function englishHref(href: string): string {
+  if (href === "/") {
+    return "/en";
   }
 
-  return item.title_en || item.title || "Learn Trading";
-}
-
-function getLearnTradingHref(item: any) {
-  if (item.href?.startsWith("/en/")) {
-    return item.href;
+  if (href === "/en" || href.startsWith("/en/")) {
+    return href;
   }
 
-  return `/en${item.href}`;
+  return `/en${href.startsWith("/") ? href : `/${href}`}`;
 }
 
-const tradingToolsEn = [
-  { title: "Risk Calculator", href: "/en/tools/risk-calculator" },
-  { title: "Lot Size Calculator", href: "/en/tools/lot-size-calculator" },
-  { title: "Pip Calculator", href: "/en/tools/pip-calculator" },
-  { title: "Profit Calculator", href: "/en/tools/profit-calculator" },
-  { title: "Margin Calculator", href: "/en/tools/margin-calculator" },
-  { title: "Fibonacci Calculator", href: "/en/tools/fibonacci-calculator" },
-  { title: "Pivot Point Calculator", href: "/en/tools/pivot-point-calculator" },
-  { title: "Compound Calculator", href: "/en/tools/compound-calculator" },
-];
+/* =========================================================
+   MAIN NAVIGATION
+========================================================= */
 
-const verificationToolsEn = [
+const MAIN_NAVIGATION: {
+  id: MenuKey;
+  title: string;
+  href: string;
+  icon: LucideIcon;
+  panelTitle: string;
+  description: string;
+}[] = [
   {
-    title: "Verify a Broker License",
-    desc: "Search any forex broker by name or license number and verify its regulatory status.",
+    id: "reviews",
+    title: "Broker Reviews",
+    href: "/en/brokers",
+    icon: Building2,
+    panelTitle: "Forex & CFD Broker Reviews",
+    description:
+      "Independent reviews of global forex and CFD brokers",
+  },
+  {
+    id: "comparisons",
+    title: "Comparisons",
+    href: "/en/compare",
+    icon: Scale,
+    panelTitle: "Broker & Trading Account Comparisons",
+    description:
+      "Compare brokers, trading accounts, fees and trading conditions",
+  },
+  {
+    id: "best-brokers",
+    title: "Best Brokers",
+    href: "/en/best-brokers",
+    icon: Trophy,
+    panelTitle: "Best Forex & CFD Brokers",
+    description:
+      "Explore the best trading brokers by country and category",
+  },
+  {
+    id: "licenses",
+    title: "Regulation",
     href: "/en/licenses",
+    icon: ShieldCheck,
+    panelTitle: "Licenses & Regulatory Authorities",
+    description:
+      "Explore financial regulators and verify broker licenses",
+  },
+  {
+    id: "articles",
+    title: "Articles & News",
+    href: "/en/articles",
+    icon: Newspaper,
+    panelTitle: "Articles & News",
+    description:
+      "Market research, trading guides and forex industry news",
+  },
+  {
+    id: "markets",
+    title: "Markets & Analysis",
+    href: "/en/technical-analysis",
+    icon: ChartCandlestick,
+    panelTitle: "Financial Markets & Technical Analysis",
+    description:
+      "Explore technical analysis, financial data and global markets",
+  },
+  {
+    id: "education",
+    title: "Tools & Education",
+    href: "/en/tools",
+    icon: Calculator,
+    panelTitle: "Trading Tools & Education",
+    description:
+      "Financial calculators and educational trading resources",
   },
 ];
 
-const accountTypePagesEn = [
-  {
-    title: "Best Cent Account Brokers",
-    shortLabel: "Cent Accounts",
-    href: "/en/best-brokers/accounts/cent",
-    symbol: "¢",
-  },
-  {
-    title: "Best Standard Account Brokers",
-    shortLabel: "Standard Accounts",
-    href: "/en/best-brokers/accounts/standard",
-    symbol: "S",
-  },
-  {
-    title: "Best Raw Spread Brokers",
-    shortLabel: "Raw Spread Accounts",
-    href: "/en/best-brokers/accounts/raw-spread",
-    symbol: "R",
-  },
-];
+/* =========================================================
+   BEST BROKERS BY COUNTRY
+   ENGLISH INTERNATIONAL MARKETS
+========================================================= */
 
-const mainLinkClass =
-  "inline-flex items-center gap-2 whitespace-nowrap rounded-full px-4 py-2.5 text-[14px] font-extrabold text-slate-700 transition hover:bg-slate-100 xl:px-5";
-
-const dropdownClass =
-  "invisible absolute left-0 top-full z-50 mt-3 translate-y-2 rounded-[28px] border border-slate-200 bg-white p-4 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.14)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100";
-
-  const wideDropdownClass =
-  "invisible absolute left-1/2 top-full z-50 mt-3 w-[1020px] max-w-[calc(100vw-32px)] -translate-x-1/2 translate-y-2 rounded-[28px] border border-slate-200 bg-white p-5 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.14)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100";
-
-const menuCardClass =
-  "rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-[13px] font-extrabold text-slate-700 transition hover:border-blue-300 hover:bg-brand-50 hover:text-brand-600";
-
-const logoBoxClass =
-  "flex h-11 w-16 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm";
-
-export default function EnglishHeader({
-  topBrokers,
-  countryMenuItems,
-  featuredCategories,
-  featuredComparisons,
-  learnTradingMenuItems,
-}: any) {
-  const extendedCountryMenuItems = [
+const COUNTRY_MENU_ITEMS: CountryItem[] = [
   {
     label: "Best Forex Brokers in Vietnam",
     shortLabel: "Vietnam",
     href: "/en/best-brokers/vietnam",
     flag: "https://flagcdn.com/w80/vn.png",
   },
-
   {
     label: "Best Forex Brokers in Indonesia",
     shortLabel: "Indonesia",
     href: "/en/best-brokers/indonesia",
     flag: "https://flagcdn.com/w80/id.png",
   },
-
   {
     label: "Best Forex Brokers in Malaysia",
     shortLabel: "Malaysia",
     href: "/en/best-brokers/malaysia",
     flag: "https://flagcdn.com/w80/my.png",
   },
-
   {
     label: "Best Forex Brokers in the United Kingdom",
     shortLabel: "UK",
     href: "/en/best-brokers/united-kingdom",
     flag: "https://flagcdn.com/w80/gb.png",
   },
-
   {
     label: "Best Forex Brokers in Australia",
     shortLabel: "Australia",
     href: "/en/best-brokers/australia",
     flag: "https://flagcdn.com/w80/au.png",
   },
-
   {
     label: "Best Forex Brokers in South Africa",
     shortLabel: "South Africa",
     href: "/en/best-brokers/south-africa",
     flag: "https://flagcdn.com/w80/za.png",
   },
-
   {
     label: "Best Forex Brokers in Singapore",
     shortLabel: "Singapore",
     href: "/en/best-brokers/singapore",
     flag: "https://flagcdn.com/w80/sg.png",
   },
-
   {
-  label: "Best Forex Brokers in Ghana",
-  shortLabel: "Ghana",
-  href: "/en/best-brokers/ghana",
-  flag: "https://flagcdn.com/w80/gh.png",
-},
-
+    label: "Best Forex Brokers in Ghana",
+    shortLabel: "Ghana",
+    href: "/en/best-brokers/ghana",
+    flag: "https://flagcdn.com/w80/gh.png",
+  },
   {
     label: "Best Forex Brokers in Nigeria",
     shortLabel: "Nigeria",
     href: "/en/best-brokers/nigeria",
     flag: "https://flagcdn.com/w80/ng.png",
   },
-
   {
     label: "Best Forex Brokers in Thailand",
     shortLabel: "Thailand",
     href: "/en/best-brokers/thailand",
     flag: "https://flagcdn.com/w80/th.png",
   },
-
   {
     label: "Best Forex Brokers in the Philippines",
     shortLabel: "Philippines",
     href: "/en/best-brokers/philippines",
     flag: "https://flagcdn.com/w80/ph.png",
   },
-
   {
     label: "Best Forex Brokers in Kenya",
     shortLabel: "Kenya",
@@ -200,1008 +279,2422 @@ export default function EnglishHeader({
   },
 ];
 
-    return (
-    <header
-      dir="ltr"
-      className="sticky top-0 z-50 border-b border-slate-200/90 bg-white/95 backdrop-blur-md"
+/* =========================================================
+   BEST BROKER CATEGORIES
+========================================================= */
+
+const MARKET_CATEGORIES: NavigationItem[] = [
+  {
+    label: "Best Forex Brokers",
+    href: "/en/best-brokers",
+  },
+  {
+    label: "Best Stock Brokers",
+    href: "/en/best-brokers/stocks",
+  },
+  {
+    label: "Best Commodity Brokers",
+    href: "/en/best-brokers/commodities",
+  },
+  {
+    label: "Best Indices Brokers",
+    href: "/en/best-brokers/indices",
+  },
+  {
+    label: "Best Gold Brokers",
+    href: "/en/best-brokers/gold",
+  },
+  {
+    label: "Best Brokers for Beginners",
+    href: "/en/best-brokers/beginners",
+  },
+  {
+    label: "Lowest Spread Brokers",
+    href: "/en/lowest-spread-brokers",
+  },
+  {
+    label: "Low Deposit Brokers",
+    href: "/en/best-brokers/low-minimum-deposit",
+  },
+];
+
+/* =========================================================
+   ACCOUNT TYPES
+   DISPLAYED IN COMPARISONS ONLY
+========================================================= */
+
+const ACCOUNT_TYPES: NavigationItem[] = [
+  {
+    label: "Best Cent Account Brokers",
+    href: "/en/best-brokers/accounts/cent",
+    description: "Trading accounts with smaller trade sizes",
+  },
+  {
+    label: "Best Standard Account Brokers",
+    href: "/en/best-brokers/accounts/standard",
+    description: "Explore standard trading accounts",
+  },
+  {
+    label: "Best Raw Spread Account Brokers",
+    href: "/en/best-brokers/accounts/raw-spread",
+    description: "Trading accounts with low raw spreads",
+  },
+];
+
+/* =========================================================
+   REGULATORY AUTHORITIES
+========================================================= */
+
+const REGULATORS = [
+  {
+    code: "FCA",
+    country: "United Kingdom",
+    href: "/en/licenses/fca",
+  },
+  {
+    code: "CySEC",
+    country: "Cyprus",
+    href: "/en/licenses/cysec",
+  },
+  {
+    code: "ASIC",
+    country: "Australia",
+    href: "/en/licenses/asic",
+  },
+  {
+    code: "DFSA",
+    country: "Dubai",
+    href: "/en/licenses/dfsa",
+  },
+  {
+    code: "SCA",
+    country: "United Arab Emirates",
+    href: "/en/licenses/sca",
+  },
+  {
+    code: "ADGM FSRA",
+    country: "Abu Dhabi",
+    href: "/en/licenses/adgm-fsra",
+  },
+  {
+    code: "JSC",
+    country: "Jordan",
+    href: "/en/licenses/jsc",
+  },
+  {
+    code: "FSCA",
+    country: "South Africa",
+    href: "/en/licenses/fsca",
+  },
+  {
+    code: "BaFin",
+    country: "Germany",
+    href: "/en/licenses/bafin",
+  },
+  {
+    code: "NFA",
+    country: "United States",
+    href: "/en/licenses/nfa",
+  },
+  {
+    code: "CIRO",
+    country: "Canada",
+    href: "/en/licenses/ciro",
+  },
+  {
+    code: "FSA",
+    country: "Seychelles",
+    href: "/en/licenses/fsa",
+  },
+  {
+    code: "SCB",
+    country: "The Bahamas",
+    href: "/en/licenses/scb",
+  },
+  {
+    code: "FSC BVI",
+    country: "British Virgin Islands",
+    href: "/en/licenses/fsc-bvi",
+  },
+  {
+    code: "CIMA",
+    country: "Cayman Islands",
+    href: "/en/licenses/cima",
+  },
+  {
+    code: "FSC Mauritius",
+    country: "Mauritius",
+    href: "/en/licenses/fsc-mauritius",
+  },
+];
+
+/* =========================================================
+   TRADING TOOLS & CALCULATORS
+========================================================= */
+
+const TRADING_TOOLS: NavigationItem[] = [
+  {
+    label: "Risk Calculator",
+    href: "/en/tools/risk-calculator",
+  },
+  {
+    label: "Lot Size Calculator",
+    href: "/en/tools/lot-size-calculator",
+  },
+  {
+    label: "Pip Calculator",
+    href: "/en/tools/pip-calculator",
+  },
+  {
+    label: "Profit Calculator",
+    href: "/en/tools/profit-calculator",
+  },
+  {
+    label: "Margin Calculator",
+    href: "/en/tools/margin-calculator",
+  },
+  {
+    label: "Fibonacci Calculator",
+    href: "/en/tools/fibonacci-calculator",
+  },
+  {
+    label: "Pivot Point Calculator",
+    href: "/en/tools/pivot-point-calculator",
+  },
+  {
+    label: "Compound Calculator",
+    href: "/en/tools/compound-calculator",
+  },
+];
+
+/* =========================================================
+   GLOBAL MARKET DATA
+========================================================= */
+
+const MARKET_LINKS: NavigationItem[] = [
+  {
+    label: "Global Interest Rates",
+    href: "/en/interest-rates",
+    description:
+      "Central bank decisions and meetings",
+    icon: Percent,
+  },
+  {
+    label: "Global Market Hours",
+    href: "/en/tools/market-hours",
+    description:
+      "Global market opening and closing times",
+    icon: Clock,
+  },
+];
+
+/* =========================================================
+   TRADING EDUCATION
+========================================================= */
+
+const EDUCATION_LINKS: NavigationItem[] = [
+  {
+    label: "Trading Strategies",
+    description:
+      "Explore forex trading methods and strategies",
+    href: "/en/strategies",
+    icon: TrendingUp,
+  },
+  {
+    label: "Economic Indicators",
+    description:
+      "Understand economic data and its market impact",
+    href: "/en/learn-trading/economic-indicators",
+    icon: ChartCandlestick,
+  },
+];
+
+/* =========================================================
+   PANEL WIDTHS
+   MATCHING ARABIC HEADER V2
+========================================================= */
+
+const PANEL_WIDTHS: Record<MenuKey, string> = {
+  reviews: "w-[780px]",
+  comparisons: "w-[850px]",
+  "best-brokers": "w-[880px]",
+  licenses: "w-[880px]",
+  articles: "w-[780px]",
+  markets: "w-[740px]",
+  education: "w-[920px]",
+};
+
+/* =========================================================
+   SHARED SECTION HEADING
+========================================================= */
+
+function SectionHeading({
+  title,
+  icon: Icon,
+}: {
+  title: string;
+  icon?: LucideIcon;
+}) {
+  return (
+    <div className="mb-3 flex items-center gap-2">
+
+      {Icon && (
+        <Icon
+          size={17}
+          strokeWidth={2}
+          className="shrink-0 text-[#194b92]"
+          aria-hidden="true"
+        />
+      )}
+
+      <h4 className="text-[13px] font-black text-[#10233f]">
+        {title}
+      </h4>
+
+    </div>
+  );
+}
+
+/* =========================================================
+   STANDARD MENU LINK
+========================================================= */
+
+function MenuLink({
+  item,
+  onClose,
+}: {
+  item: NavigationItem;
+  onClose?: () => void;
+}) {
+  const Icon = item.icon;
+
+  return (
+    <Link
+      href={item.href}
+      prefetch={false}
+      onClick={onClose}
+      className="group/item flex min-h-[44px] min-w-0 items-center gap-3 rounded-[11px] border border-transparent px-3 py-2.5 transition-colors duration-150 hover:border-[#d5e3f5] hover:bg-[#edf3fc] focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-500"
     >
-      <div className="mx-auto w-full max-w-[1560px] px-4 sm:px-6 lg:px-8">
-        <div
-          className="relative flex h-16 items-center justify-between 2xl:h-20"
-          dir="ltr"
-        >
-          <a
-  href="/en"
-  aria-label="Back to homepage"
-  className="min-w-0 shrink-0 lg:justify-self-start"
->
-  <Image
-    src="/logo/Asset 1@3x.png"
-    alt="Broker Alarab"
-    width={300}
-    height={90}
-    priority
-    className="h-auto w-[130px] sm:w-[155px] 2xl:w-[180px]"
-  />
-</a>
 
-          <nav className="mx-8 hidden flex-1 items-center justify-evenly gap-2 2xl:flex xl:mx-12 xl:gap-4">
-            {/* REVIEWS */}
-            <div className="group relative">
-              <Link href="/en/brokers" className={mainLinkClass}>
-                Broker Reviews
-                <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
-                  ▼
-                </span>
-              </Link>
+      {Icon && (
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-[#edf3fc] text-[#194b92] transition-colors group-hover/item:bg-[#194b92] group-hover/item:text-white">
 
-              <div className={`${dropdownClass} w-[420px]`}>
-                <div className="px-3 pb-2 pt-1 text-xs font-black tracking-wide text-slate-500">
-                  Top 5 Reviews Right Now
-                </div>
+          <Icon
+            size={17}
+            strokeWidth={2}
+            aria-hidden="true"
+          />
 
-                {topBrokers.length > 0 ? (
-                  topBrokers.map((broker: any) => (
-                    <Link
-                      key={broker.slug}
-                      href={`/en/brokers/${broker.slug}`}
-                      className={`${menuCardClass} mb-2 flex items-center justify-between gap-4`}
-                    >
-                      <div className="min-w-0 text-left">
-                        <div className="text-[15px] font-extrabold text-slate-800">
-                          {broker.name_en || broker.name} Review
-                        </div>
-                      </div>
+        </span>
+      )}
 
-                      <div className={logoBoxClass}>
-                        <Image
-                          src={broker.logo || getBrokerLogo(broker.slug)}
-                          alt={broker.name_en || broker.name}
-                          width={40}
-                          height={40}
-                          className="h-full w-full object-contain p-1"
-                        />
-                      </div>
-                    </Link>
-                  ))
-                ) : (
-                  <div className="px-3 py-3 text-sm font-bold text-slate-500">
-                    No reviews available right now.
-                  </div>
-                )}
+      <div className="min-w-0 flex-1">
 
-                <Link
-                  href="/en/brokers"
-                  className="mt-1 block rounded-2xl px-3 py-3 text-sm font-extrabold text-brand-600 transition hover:bg-brand-50"
-                >
-                  View All Reviews →
-                </Link>
-              </div>
-            </div>
+        <span className="block text-[13px] font-bold leading-6 text-[#10233f] group-hover/item:text-[#194b92]">
+          {item.label}
+        </span>
 
-            
-{/* ===================================================
-    COMPARE - BROKERS & ACCOUNTS
-=================================================== */}
-<div className="group relative">
-  <Link href="/en/compare" className={mainLinkClass}>
-    Comparisons
-    <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
-      ▼
-    </span>
-  </Link>
+        {item.description && (
+          <span className="mt-0.5 block text-[11px] font-medium leading-5 text-slate-500">
+            {item.description}
+          </span>
+        )}
 
-  <div
-    className={`${dropdownClass} w-[500px] max-w-[calc(100vw-32px)]`}
-    dir="ltr"
-  >
-    {/* HEADER */}
-    <div className="mb-4 flex items-start justify-between gap-3 px-1">
-      <div>
-        <h3 className="text-[14px] font-black text-slate-950">
-          Broker & Trading Account Comparisons
-        </h3>
-        <p className="mt-1 text-[10px] font-semibold text-slate-500">
-          Compare brokers and accounts to find your best fit
-        </p>
       </div>
 
-      <span className="shrink-0 rounded-full bg-brand-50 px-2.5 py-1 text-[9px] font-black text-brand-600">
-        Compare
-      </span>
-    </div>
+      <ArrowRight
+        size={14}
+        strokeWidth={2}
+        className="shrink-0 text-slate-400 transition-transform group-hover/item:translate-x-0.5 group-hover/item:text-[#194b92]"
+        aria-hidden="true"
+      />
 
-    {/* BROKER COMPARISONS */}
-    <div className="mb-2 flex items-center justify-between px-1">
-      <h4 className="text-[12px] font-black text-slate-800">
-        Broker Comparisons
-      </h4>
-      <span className="text-[9px] font-bold text-slate-400">
-        Popular Comparisons
-      </span>
-    </div>
+    </Link>
+  );
+}
 
-    <div className="space-y-2">
-      {featuredComparisons.slice(0, 4).map((item: any) => {
-        const parts = item.label.split(" vs ");
+/* =========================================================
+   MENU FOOTER LINK
+========================================================= */
+
+function FooterLink({
+  href,
+  label,
+  onClose,
+  primary = false,
+}: {
+  href: string;
+  label: string;
+  onClose?: () => void;
+  primary?: boolean;
+}) {
+  return (
+    <Link
+      href={href}
+      prefetch={false}
+      onClick={onClose}
+      className={`flex min-h-[44px] items-center justify-center gap-2 rounded-[11px] border px-3 py-2.5 text-center text-[12px] font-black transition-colors ${
+        primary
+          ? "border-[#194b92] bg-[#194b92] text-white hover:bg-[#123c79]"
+          : "border-[#d5e3f5] bg-[#edf3fc] text-[#194b92] hover:bg-[#e1ebfa]"
+      }`}
+    >
+
+      {label}
+
+      <ArrowRight
+        size={15}
+        strokeWidth={2}
+        className="shrink-0"
+        aria-hidden="true"
+      />
+
+    </Link>
+  );
+}
+
+/* =========================================================
+   FEATURED MENU CARD
+========================================================= */
+
+function FeaturedLink({
+  item,
+  onClose,
+}: {
+  item: NavigationItem;
+  onClose?: () => void;
+}) {
+  const Icon = item.icon ?? FileText;
+
+  return (
+    <Link
+      href={item.href}
+      prefetch={false}
+      onClick={onClose}
+      className="group/featured flex min-h-[76px] min-w-0 items-center gap-3 rounded-[14px] border border-[#d5e3f5] bg-gradient-to-r from-[#edf3fc] to-white p-3.5 transition-colors hover:border-[#94b5e3] hover:bg-[#edf3fc]"
+    >
+
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#194b92] text-white">
+
+        <Icon
+          size={22}
+          strokeWidth={1.8}
+          aria-hidden="true"
+        />
+
+      </span>
+
+      <div className="min-w-0 flex-1">
+
+        <span className="block text-[13px] font-black leading-6 text-[#10233f] group-hover/featured:text-[#194b92]">
+          {item.label}
+        </span>
+
+        {item.description && (
+          <span className="mt-0.5 block text-[11px] leading-5 text-slate-500">
+            {item.description}
+          </span>
+        )}
+
+      </div>
+
+      <ArrowRight
+        size={17}
+        strokeWidth={2}
+        className="shrink-0 text-[#194b92]"
+        aria-hidden="true"
+      />
+
+    </Link>
+  );
+}
+
+/* =========================================================
+   STANDARD BORDERED CARD
+   USED BY MARKETS & EDUCATION
+========================================================= */
+
+function BorderedMenuLink({
+  item,
+  onClose,
+}: {
+  item: NavigationItem;
+  onClose?: () => void;
+}) {
+  const Icon = item.icon ?? TrendingUp;
+
+  return (
+    <Link
+      href={item.href}
+      prefetch={false}
+      onClick={onClose}
+      className="group/entry flex min-h-[74px] min-w-0 flex-1 items-center gap-3 rounded-[12px] border border-slate-200 bg-[#f8fafc] px-3 py-2.5 transition-colors duration-200 hover:border-[#c5d9f2] hover:bg-[#edf3fc]"
+    >
+
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] bg-[#e7eef9] text-[#194b92] transition-colors group-hover/entry:bg-[#194b92] group-hover/entry:text-white">
+
+        <Icon
+          size={19}
+          strokeWidth={1.8}
+          aria-hidden="true"
+        />
+
+      </span>
+
+      <div className="min-w-0 flex-1">
+
+        <span className="block text-[13px] font-extrabold leading-6 text-[#10233f]">
+
+          {item.label}
+
+        </span>
+
+        {item.description && (
+          <span className="mt-0.5 block text-[11px] font-medium leading-5 text-slate-500">
+
+            {item.description}
+
+          </span>
+        )}
+
+      </div>
+
+      <ArrowRight
+        size={14}
+        strokeWidth={2}
+        aria-hidden="true"
+        className="shrink-0 text-slate-400 transition-transform group-hover/entry:translate-x-0.5 group-hover/entry:text-[#194b92]"
+      />
+
+    </Link>
+  );
+}
+
+/* =========================================================
+   FUTURE SECTION
+   COMING SOON — WITHOUT BROKEN LINKS
+========================================================= */
+
+function UpcomingLink({
+  label,
+  description,
+  icon: Icon,
+}: {
+  label: string;
+  description: string;
+  icon: LucideIcon;
+}) {
+  return (
+    <div className="flex min-h-[66px] items-center gap-3 rounded-[12px] border border-dashed border-slate-200 bg-slate-50 p-3">
+
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-200/70 text-slate-500">
+
+        <Icon
+          size={17}
+          aria-hidden="true"
+        />
+
+      </span>
+
+      <div className="min-w-0 flex-1">
+
+        <span className="block text-[13px] font-bold text-slate-600">
+
+          {label}
+
+        </span>
+
+        <span className="mt-1 block text-[10px] leading-5 text-slate-500">
+
+          {description}
+
+        </span>
+
+      </div>
+
+      <span className="shrink-0 rounded-full bg-white px-2 py-1 text-[10px] font-bold text-slate-500">
+
+        Soon
+
+      </span>
+
+    </div>
+  );
+}
+
+/* =========================================================
+   BROKER DISPLAY NAMES
+========================================================= */
+
+const BROKER_DISPLAY_NAMES: Record<string, string> = {
+  exness: "Exness",
+  xm: "XM",
+  pepperstone: "Pepperstone",
+  fxpro: "FxPro",
+  avatrade: "AvaTrade",
+  alpari: "Alpari",
+  xs: "XS",
+  equiti: "Equiti",
+  vantage: "Vantage",
+  "ic-markets": "IC Markets",
+  "capital-com": "Capital.com",
+  "markets-com": "Markets.com",
+  "fp-markets": "FP Markets",
+  activtrades: "ActivTrades",
+  justmarkets: "JustMarkets",
+  tickmill: "Tickmill",
+  multibank: "MultiBank Group",
+  "multibank-group": "MultiBank Group",
+  thinkmarkets: "ThinkMarkets",
+  hfm: "HFM",
+  plus500: "Plus500",
+  oneroyal: "OneRoyal",
+  "ultima-markets": "Ultima Markets",
+  "moneta-markets": "Moneta Markets",
+  admirals: "Admirals",
+  fbs: "FBS",
+  infinox: "INFINOX",
+  etoro: "eToro",
+  eightcap: "Eightcap",
+};
+
+function getComparisonSlugs(
+  href: string
+): [string, string] | null {
+
+  const slug = href
+    .split("?")[0]
+    .split("#")[0]
+    .split("/")
+    .filter(Boolean)
+    .pop();
+
+  if (!slug) {
+    return null;
+  }
+
+  const parts = slug.split("-vs-");
+
+  if (parts.length !== 2) {
+    return null;
+  }
+
+  if (!parts[0] || !parts[1]) {
+    return null;
+  }
+
+  return [parts[0], parts[1]];
+}
+
+/* =========================================================
+   RANDOM HEADER COMPARISONS
+   SIX COMPARISONS — UNIQUE BROKERS WHEN POSSIBLE
+========================================================= */
+
+function selectHeaderComparisons(
+  comparisons: ComparisonItem[],
+  count: number = 6,
+  randomize: boolean = true
+): ComparisonItem[] {
+
+  if (count <= 0) {
+    return [];
+  }
+
+  const uniqueComparisons = Array.from(
+    new Map(
+      comparisons
+        .filter(
+          (item) => item.href && item.label
+        )
+        .map((item) => [
+          englishHref(item.href),
+          {
+            ...item,
+            href: englishHref(item.href),
+          },
+        ] as const)
+    ).values()
+  );
+
+  const available = [...uniqueComparisons];
+
+  /* RANDOM SHUFFLE */
+
+  if (randomize) {
+
+    for (
+      let i = available.length - 1;
+      i > 0;
+      i--
+    ) {
+
+      const j = Math.floor(
+        Math.random() * (i + 1)
+      );
+
+      [available[i], available[j]] = [
+        available[j],
+        available[i],
+      ];
+
+    }
+
+  }
+
+  const selected: ComparisonItem[] = [];
+
+  const usedBrokers = new Set<string>();
+
+  const usedComparisons = new Set<string>();
+
+  /* FIRST PASS — NO REPEATED BROKERS */
+
+  for (const comparison of available) {
+
+    const parts =
+      getComparisonSlugs(comparison.href) ??
+      comparison.label
+        .split(/\s+vs\s+/i)
+        .map((name) => name.trim().toLowerCase());
+
+    if (parts.length !== 2) {
+      continue;
+    }
+
+    const [broker1, broker2] = parts;
+
+    if (
+      !broker1 ||
+      !broker2 ||
+      broker1 === broker2 ||
+      usedBrokers.has(broker1) ||
+      usedBrokers.has(broker2)
+    ) {
+      continue;
+    }
+
+    const pairKey = [
+      broker1,
+      broker2,
+    ].sort().join("-vs-");
+
+    if (usedComparisons.has(pairKey)) {
+      continue;
+    }
+
+    selected.push(comparison);
+
+    usedBrokers.add(broker1);
+    usedBrokers.add(broker2);
+
+    usedComparisons.add(pairKey);
+
+    if (selected.length >= count) {
+      return selected;
+    }
+
+  }
+
+  /* SECOND PASS — FILL EMPTY POSITIONS */
+
+  for (const comparison of available) {
+
+    const parts =
+      getComparisonSlugs(comparison.href) ??
+      comparison.label
+        .split(/\s+vs\s+/i)
+        .map((name) => name.trim().toLowerCase());
+
+    if (
+      parts.length !== 2 ||
+      !parts[0] ||
+      !parts[1] ||
+      parts[0] === parts[1]
+    ) {
+      continue;
+    }
+
+    const pairKey = [...parts]
+      .sort()
+      .join("-vs-");
+
+    if (usedComparisons.has(pairKey)) {
+      continue;
+    }
+
+    selected.push(comparison);
+
+    usedComparisons.add(pairKey);
+
+    if (selected.length >= count) {
+      break;
+    }
+
+  }
+
+  return selected;
+
+}
+
+/* =========================================================
+   MAIN ENGLISH HEADER
+========================================================= */
+
+export default function EnglishHeader({
+  topBrokers = EMPTY_BROKERS,
+  featuredComparisons = EMPTY_COMPARISONS,
+  learnTradingMenuItems = EMPTY_LEARNING_ITEMS,
+  wide = true,
+}: HeaderProps) {
+
+  const pathname = usePathname();
+
+  const headerRef =
+    useRef<HTMLElement>(null);
+
+  const mobileButtonRef =
+    useRef<HTMLButtonElement>(null);
+
+  const desktopButtonsRef = useRef<
+    Partial<
+      Record<MenuKey, HTMLButtonElement | null>
+    >
+  >({});
+
+  const [activeMenu, setActiveMenu] =
+    useState<MenuKey | null>(null);
+
+  const [mobileOpen, setMobileOpen] =
+    useState(false);
+
+  const [mobileSection, setMobileSection] =
+    useState<MenuKey | null>(null);
+
+  /* =====================================================
+     RANDOM COMPARISONS — SIX PER PAGE LOAD
+  ====================================================== */
+
+  const [
+    visibleComparisons,
+    setVisibleComparisons,
+  ] = useState<ComparisonItem[]>(() =>
+    selectHeaderComparisons(
+      featuredComparisons,
+      6,
+      false
+    )
+  );
+
+  useEffect(() => {
+
+    setVisibleComparisons(
+      selectHeaderComparisons(
+        featuredComparisons,
+        6,
+        true
+      )
+    );
+
+  }, [featuredComparisons]);
+
+  /* =====================================================
+     UNIQUE BROKERS — MAXIMUM FIFTEEN
+  ====================================================== */
+
+  const visibleBrokers = Array.from(
+    new Map(
+      topBrokers
+        .filter(
+          (broker) =>
+            broker.slug &&
+            (broker.name_en || broker.name)
+        )
+        .map((broker) => [
+          broker.slug,
+          broker,
+        ] as const)
+    ).values()
+  ).slice(0, 15);
+
+  /* =====================================================
+     BROKER NAME LOOKUP
+  ====================================================== */
+
+  const brokerNameMap = new Map(
+    topBrokers.map((broker) => [
+      broker.slug,
+      broker.name_en || broker.name,
+    ] as const)
+  );
+
+  function getBrokerDisplayName(
+    slug: string | undefined,
+    fallback: string
+  ) {
+
+    if (!slug) {
+      return fallback;
+    }
+
+    return (
+      BROKER_DISPLAY_NAMES[slug] ||
+      brokerNameMap.get(slug) ||
+      fallback
+    );
+
+  }
+
+  /* =====================================================
+     LEARN TRADING STARTER GUIDE
+  ====================================================== */
+
+  const starterGuide =
+    learnTradingMenuItems.find(
+      (item) =>
+        item.href?.endsWith(
+          "/how-to-start-trading-from-zero"
+        )
+    );
+
+  const starterGuideHref = starterGuide
+    ? englishHref(starterGuide.href)
+    : "/en/learn-trading";
+
+  /* =====================================================
+     CLOSE MENUS
+  ====================================================== */
+
+  function closeMenus() {
+
+    setActiveMenu(null);
+    setMobileOpen(false);
+    setMobileSection(null);
+
+  }
+
+  /* =====================================================
+     CLOSE AFTER NAVIGATION
+  ====================================================== */
+
+  useEffect(() => {
+
+    setActiveMenu(null);
+    setMobileOpen(false);
+    setMobileSection(null);
+
+  }, [pathname]);
+
+  /* =====================================================
+     OUTSIDE CLICK & ESCAPE KEY
+  ====================================================== */
+
+  useEffect(() => {
+
+    function handleOutsideClick(
+      event: PointerEvent
+    ) {
+
+      if (
+        headerRef.current &&
+        !headerRef.current.contains(
+          event.target as Node
+        )
+      ) {
+
+        setActiveMenu(null);
+        setMobileOpen(false);
+        setMobileSection(null);
+
+      }
+
+    }
+
+    function handleEscape(
+      event: KeyboardEvent
+    ) {
+
+      if (event.key !== "Escape") {
+        return;
+      }
+
+      if (mobileOpen) {
+
+        setMobileOpen(false);
+        setMobileSection(null);
+
+        mobileButtonRef.current?.focus();
+
+      } else if (activeMenu) {
+
+        const previousMenu = activeMenu;
+
+        setActiveMenu(null);
+
+        desktopButtonsRef.current[
+          previousMenu
+        ]?.focus();
+
+      }
+
+    }
+
+    document.addEventListener(
+      "pointerdown",
+      handleOutsideClick
+    );
+
+    document.addEventListener(
+      "keydown",
+      handleEscape
+    );
+
+    return () => {
+
+      document.removeEventListener(
+        "pointerdown",
+        handleOutsideClick
+      );
+
+      document.removeEventListener(
+        "keydown",
+        handleEscape
+      );
+
+    };
+
+  }, [activeMenu, mobileOpen]);
+
+  /* =====================================================
+     RESET MENUS ON SCREEN SIZE CHANGE
+  ====================================================== */
+
+  useEffect(() => {
+
+    const mediaQuery = window.matchMedia(
+      "(min-width: 1536px)"
+    );
+
+    function handleScreenChange() {
+
+      setActiveMenu(null);
+      setMobileOpen(false);
+      setMobileSection(null);
+
+    }
+
+    mediaQuery.addEventListener(
+      "change",
+      handleScreenChange
+    );
+
+    return () => {
+
+      mediaQuery.removeEventListener(
+        "change",
+        handleScreenChange
+      );
+
+    };
+
+  }, []);
+
+  /* =====================================================
+     MENU CONTENT
+     SHARED BY DESKTOP, TABLET & MOBILE
+  ====================================================== */
+
+  function renderMenuContent(
+    menu: MenuKey
+  ): ReactNode {
+
+    switch (menu) {
+
+      /* =================================================
+         01 — BROKER REVIEWS
+      ================================================== */
+
+      case "reviews":
 
         return (
-          <Link
-            key={item.href}
-            href={item.href.startsWith("/en/") ? item.href : `/en${item.href}`}
-            className="group/compare flex min-h-[48px] items-center justify-center rounded-[14px] border border-slate-200 bg-slate-50 px-3 py-2 transition hover:border-brand-200 hover:bg-brand-50"
-          >
-            <div className="grid w-full max-w-[330px] grid-cols-[minmax(0,1fr)_36px_minmax(0,1fr)] items-center gap-3">
-              <span className="truncate text-center text-[12px] font-black text-slate-800 group-hover/compare:text-brand-600">
-                {parts[0]}
-              </span>
 
-              <span className="flex h-7 w-9 items-center justify-center rounded-full bg-white text-[10px] font-black text-slate-500">
-                VS
-              </span>
+          <div className="space-y-3">
 
-              <span className="truncate text-center text-[12px] font-black text-slate-800 group-hover/compare:text-brand-600">
-                {parts[1]}
-              </span>
+            {visibleBrokers.length > 0 ? (
+
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+
+  {visibleBrokers.map((broker, index) => (
+
+    <Link
+      key={broker.slug}
+      href={`/en/brokers/${broker.slug}`}
+      prefetch={false}
+      onClick={closeMenus}
+      className={`group/broker min-h-[48px] min-w-0 items-center justify-between gap-2 rounded-[10px] border border-slate-200 bg-[#f8fafc] px-3 py-2.5 transition-colors hover:border-[#c5d9f2] hover:bg-[#edf3fc] ${
+        index >= 10
+          ? "hidden sm:flex"
+          : "flex"
+      }`}
+    >
+
+      <span className="min-w-0 text-[13px] font-extrabold leading-5 text-[#10233f] group-hover/broker:text-[#194b92]">
+
+        {broker.name_en || broker.name} Review
+
+      </span>
+
+      <ArrowRight
+        size={13}
+        className="shrink-0 text-slate-400 group-hover/broker:text-[#194b92]"
+        aria-hidden="true"
+      />
+
+    </Link>
+
+  ))}
+
+</div>
+
+            ) : (
+
+              <p className="rounded-lg bg-slate-50 p-4 text-sm text-slate-500">
+
+                Explore our broker directory to view all reviews.
+
+              </p>
+
+            )}
+
+            <div className="grid gap-2 border-t border-slate-200 pt-4 sm:grid-cols-2">
+
+              <FooterLink
+                href="/en/brokers"
+                label="View All Broker Reviews"
+                onClose={closeMenus}
+                primary
+              />
+
+              <FooterLink
+                href="/en/how-we-review-brokers"
+                label="How We Review Brokers"
+                onClose={closeMenus}
+              />
+
             </div>
-          </Link>
+
+          </div>
+
         );
-      })}
-    </div>
 
-    {/* ACCOUNT COMPARISONS */}
-    <div className="mt-4 border-t border-slate-100 pt-3">
-      <div className="mb-2 flex items-center justify-between px-1">
-        <h4 className="text-[12px] font-black text-slate-800">
-          Trading Account Comparisons
-        </h4>
+      /* =================================================
+         02 — BROKER & ACCOUNT COMPARISONS
+      ================================================== */
 
-        <span className="rounded-full bg-brand-50 px-2 py-1 text-[9px] font-black text-brand-600">
-          NEW
-        </span>
-      </div>
+      case "comparisons":
 
-      <Link
-        href="/en/compare-accounts"
-        className="group/account flex min-h-[65px] items-center gap-3 rounded-[14px] border border-slate-200 bg-slate-50 px-3 py-3 transition hover:border-brand-200 hover:bg-brand-50"
-      >
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-[13px] font-black text-brand-600 shadow-sm">
-          VS
-        </span>
+        return (
 
-        <div className="min-w-0 flex-1">
-          <div className="text-[12px] font-black text-slate-800 group-hover/account:text-brand-600">
-            Compare Any Two Trading Accounts
-          </div>
+          <div className="grid min-w-0 gap-5 sm:grid-cols-2">
 
-          <div className="mt-1 text-[10px] font-semibold text-slate-500">
-            Compare spreads, commissions and minimum deposits
-          </div>
-        </div>
+            {/* =========================================
+                BROKER COMPARISONS
+            ========================================== */}
 
-        <span className="text-[13px] font-black text-brand-600">
-          →
-        </span>
-      </Link>
-    </div>
+            <div className="flex min-w-0 flex-col">
 
-    {/* FOOTER */}
-    <div className="mt-4 grid grid-cols-2 gap-2 border-t border-slate-100 pt-3">
-      <Link
-        href="/en/compare"
-        className="flex min-h-[48px] items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-2 text-center text-[10px] font-black text-slate-700 transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-600"
-      >
-        All Broker Comparisons
-        <span>→</span>
-      </Link>
+              <SectionHeading
+                title="Broker Comparisons"
+                icon={Scale}
+              />
 
-      <Link
-        href="/en/compare-accounts"
-        className="flex min-h-[48px] items-center justify-center gap-2 rounded-xl border border-brand-100 bg-brand-50 px-2 text-center text-[10px] font-black text-brand-600 transition hover:border-brand-200 hover:bg-brand-100"
-      >
-        All Account Comparisons
-        <span>→</span>
-      </Link>
-    </div>
-  </div>
-</div>
+              <div className="space-y-2">
 
+                {visibleComparisons.map((item) => {
 
-                          {/* ===================================================
-                BEST BROKERS
-            =================================================== */}
-            <div className="group relative">
-              <Link href="/en/best-brokers" className={mainLinkClass}>
-                Best Brokers
+                  const parts =
+                    item.label.split(/\s+vs\s+/i);
 
-                <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
-                  ▼
-                </span>
-              </Link>
+                  const slugs =
+                    getComparisonSlugs(item.href);
 
-              <div className={wideDropdownClass}>
-                <div className="grid grid-cols-[1.12fr_0.95fr_1.05fr] gap-5">
+                  const firstName =
+                    getBrokerDisplayName(
+                      slugs?.[0],
+                      parts[0] || ""
+                    );
 
-                  {/* ===================================================
-                      COUNTRIES
-                  =================================================== */}
-                  <div className="flex flex-col border-r border-slate-200 pr-5">
-                    <div className="mb-3 flex min-h-[44px] items-start justify-between gap-3">
-                      <div>
-                        <h3 className="text-[14px] font-black text-slate-950">
-                          Best Brokers by Country
-                        </h3>
+                  const secondName =
+                    getBrokerDisplayName(
+                      slugs?.[1],
+                      parts[1] || ""
+                    );
 
-                        <p className="mt-1 text-[10px] font-semibold text-slate-500">
-                          Find brokers available in your country
-                        </p>
-                      </div>
+                  if (!firstName || !secondName) {
 
-                      <span className="shrink-0 rounded-full bg-brand-50 px-2.5 py-1 text-[9px] font-black text-brand-600">
-                        By Location
+                    return (
+
+                      <MenuLink
+                        key={item.href}
+                        item={{
+                          label: item.label,
+                          href: englishHref(item.href),
+                        }}
+                        onClose={closeMenus}
+                      />
+
+                    );
+
+                  }
+
+                  return (
+
+                    <Link
+                      key={item.href}
+                      href={englishHref(item.href)}
+                      prefetch={false}
+                      onClick={closeMenus}
+                      className="group/comparison grid min-h-[44px] grid-cols-[minmax(0,1fr)_32px_minmax(0,1fr)] items-center gap-2 rounded-[10px] border border-slate-200 bg-[#f8fafc] px-3 py-2 transition-colors hover:border-[#c5d9f2] hover:bg-[#edf3fc]"
+                    >
+
+                      <span className="min-w-0 text-center text-[12px] font-extrabold leading-5 text-[#10233f] group-hover/comparison:text-[#194b92]">
+
+                        {firstName}
+
                       </span>
-                    </div>
 
-                    <div className="grid grid-cols-3 gap-2.5">
-                      {extendedCountryMenuItems.map((item: any) => (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          title={item.label}
-                          className="group/country flex h-[46px] items-center gap-2.5 rounded-[14px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-brand-50"
-                        >
-                          <img
-                            src={item.flag}
-                            alt={item.shortLabel}
-                            className="h-6 w-6 shrink-0 rounded-full border border-white object-cover shadow-sm"
-                          />
+                      <span className="flex h-7 w-8 items-center justify-center rounded-full bg-[#e5edf9] text-[10px] font-black text-[#194b92]">
 
-                          <span className="min-w-0 flex-1 text-center text-[11px] font-black text-slate-700 transition group-hover/country:text-brand-600">
-                            {item.shortLabel}
-                          </span>
-                        </Link>
-                      ))}
-                    </div>
+                        VS
 
-                    <Link
-                      href="/en/best-brokers"
-                      className="mt-4 flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-brand-100 bg-brand-50/60 px-3 text-[12px] font-black text-brand-600 transition hover:border-brand-200 hover:bg-brand-100"
-                    >
-                      View All Countries
-                      <span className="text-sm">→</span>
-                    </Link>
-                  </div>
+                      </span>
 
-                  {/* ===================================================
-                      CATEGORIES
-                  =================================================== */}
-                  <div className="flex flex-col border-r border-slate-200 pr-5">
-                    <div className="mb-3 min-h-[44px]">
-                      <h3 className="text-[14px] font-black text-slate-950">
-                        Best Brokers by Category
-                      </h3>
+                      <span className="min-w-0 text-center text-[12px] font-extrabold leading-5 text-[#10233f] group-hover/comparison:text-[#194b92]">
 
-                      <p className="mt-1 text-[10px] font-semibold text-slate-500">
-                        Choose a market or trading category
-                      </p>
-                    </div>
+                        {secondName}
 
-                    {/* MARKETS */}
-                    <div>
-                      <div className="mb-2 text-[9px] font-black uppercase tracking-wide text-slate-400">
-                        By Market
-                      </div>
+                      </span>
 
-                      <div className="grid grid-cols-2 gap-2">
-                        <Link
-                          href="/en/best-brokers"
-                          className="group/market flex h-[60px] items-center gap-3 rounded-[14px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-brand-50"
-                        >
-                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-blue-50 text-[9px] font-black text-brand-600 transition group-hover/market:bg-brand-600 group-hover/market:text-white">
-                            FX
-                          </span>
-
-                          <span className="text-[11px] font-black text-slate-700 transition group-hover/market:text-brand-600">
-                            Forex
-                          </span>
-                        </Link>
-
-                        <Link
-                          href="/en/best-brokers/stocks"
-                          className="group/market flex h-[60px] items-center gap-3 rounded-[14px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-brand-50"
-                        >
-                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-blue-50 text-[10px] font-black text-brand-600 transition group-hover/market:bg-brand-600 group-hover/market:text-white">
-                            S
-                          </span>
-
-                          <span className="text-[11px] font-black text-slate-700 transition group-hover/market:text-brand-600">
-                            Stocks
-                          </span>
-                        </Link>
-
-                        <Link
-                          href="/en/best-brokers/indices"
-                          className="group/market flex h-[60px] items-center gap-3 rounded-[14px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-brand-50"
-                        >
-                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-blue-50 text-[10px] font-black text-brand-600 transition group-hover/market:bg-brand-600 group-hover/market:text-white">
-                            I
-                          </span>
-
-                          <span className="text-[11px] font-black text-slate-700 transition group-hover/market:text-brand-600">
-                            Indices
-                          </span>
-                        </Link>
-
-                        <Link
-                          href="/en/best-brokers/commodities"
-                          className="group/market flex h-[60px] items-center gap-3 rounded-[14px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-brand-50"
-                        >
-                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-blue-50 text-[10px] font-black text-brand-600 transition group-hover/market:bg-brand-600 group-hover/market:text-white">
-                            C
-                          </span>
-
-                          <span className="text-[11px] font-black text-slate-700 transition group-hover/market:text-brand-600">
-                            Commodities
-                          </span>
-                        </Link>
-                      </div>
-                    </div>
-
-                    {/* POPULAR CATEGORIES */}
-                    <div className="mt-3">
-                      <div className="mb-2 text-[9px] font-black uppercase tracking-wide text-slate-400">
-                        Popular Categories
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-2">
-                        {[
-                          {
-                            label: "Gold Trading",
-                            href: "/en/best-brokers/gold",
-                            symbol: "Au",
-                          },
-                          {
-                            label: "Low Spreads",
-                            href: "/en/lowest-spread-brokers",
-                            symbol: "↔",
-                          },
-                          {
-                            label: "Low Deposit",
-                            href: "/en/best-brokers/low-minimum-deposit",
-                            symbol: "$",
-                          },
-                          {
-                            label: "Scalping",
-                            href: "/en/best-brokers/scalping",
-                            symbol: "⚡",
-                          },
-                        ].map((item) => (
-                          <Link
-                            key={item.href}
-                            href={item.href}
-                            className="group/category flex h-[52px] items-center gap-2.5 rounded-[13px] border border-slate-200 bg-slate-50 px-2.5 transition hover:border-brand-200 hover:bg-brand-50"
-                          >
-                            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-slate-100 bg-white text-[9px] font-black text-brand-600 shadow-sm">
-                              {item.symbol}
-                            </span>
-
-                            <span className="min-w-0 text-[10px] font-black leading-4 text-slate-700 transition group-hover/category:text-brand-600">
-                              {item.label}
-                            </span>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-
-                    <Link
-                      href="/en/best-brokers"
-                      className="mt-4 flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-brand-100 bg-brand-50/60 px-3 text-[12px] font-black text-brand-600 transition hover:border-brand-200 hover:bg-brand-100"
-                    >
-                      View Best Brokers
-                      <span className="text-sm">→</span>
-                    </Link>
-                  </div>
-
-                  {/* ===================================================
-                      ACCOUNT TYPES
-                  =================================================== */}
-                  <div className="flex flex-col">
-                    <div className="mb-3 min-h-[44px]">
-                      <h3 className="text-[14px] font-black text-slate-950">
-                        Best Brokers by Account Type
-                      </h3>
-
-                      <p className="mt-1 text-[10px] font-semibold text-slate-500">
-                        Compare accounts for your trading style
-                      </p>
-                    </div>
-
-                    <div className="space-y-2">
-                      {accountTypePagesEn.map((item) => (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          title={item.title}
-                          className="group/account flex h-[56px] items-center gap-3 rounded-[14px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-brand-50"
-                        >
-                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-white text-[13px] font-black text-brand-600 shadow-sm transition group-hover/account:border-brand-200 group-hover/account:bg-brand-600 group-hover/account:text-white">
-                            {item.symbol}
-                          </span>
-
-                          <div className="min-w-0 flex-1">
-                            <span className="block text-[11px] font-black leading-5 text-slate-800 transition group-hover/account:text-brand-600">
-                              {item.shortLabel}
-                            </span>
-
-                            <span className="mt-0.5 block text-[9px] font-semibold text-slate-500">
-                              Compare top brokers
-                            </span>
-                          </div>
-
-                          <span className="shrink-0 text-[12px] font-black text-slate-400 transition group-hover/account:translate-x-0.5 group-hover/account:text-brand-600">
-                            →
-                          </span>
-                        </Link>
-                      ))}
-                    </div>
-
-                    {/* ACCOUNT GUIDE */}
-                    <Link
-                      href="/en/best-brokers"
-                      className="group/guide mt-3 overflow-hidden rounded-[16px] border border-brand-100 bg-gradient-to-r from-brand-50/80 to-white transition hover:border-brand-200 hover:shadow-sm"
-                    >
-                      <div className="flex items-center gap-3 p-3">
-                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-600 text-[15px] font-black text-white shadow-sm">
-                          ?
-                        </span>
-
-                        <div className="min-w-0 flex-1">
-                          <div className="text-[10px] font-black text-slate-800 transition group-hover/guide:text-brand-600">
-                            Which account is right for me?
-                          </div>
-
-                          <div className="mt-0.5 text-[9px] font-semibold leading-4 text-slate-500">
-                            Compare the main account types
-                          </div>
-                        </div>
-
-                        <span className="text-[13px] font-black text-brand-600 transition group-hover/guide:translate-x-0.5">
-                          →
-                        </span>
-                      </div>
                     </Link>
 
-                    <div className="mt-3 border-t border-slate-100 pt-3">
-                      <div className="grid grid-cols-2 gap-2">
-                        <Link
-                          href="/en/best-brokers/low-minimum-deposit"
-                          className="rounded-xl bg-slate-50 px-2 py-2.5 text-center transition hover:bg-brand-50"
-                        >
-                          <span className="block text-[9px] font-black text-slate-700">
-                            Smaller Capital
-                          </span>
+                  );
 
-                          <span className="mt-0.5 block text-[8px] font-bold text-slate-400">
-                            Low Deposit
-                          </span>
-                        </Link>
+                })}
 
-                        <Link
-                          href="/en/lowest-spread-brokers"
-                          className="rounded-xl bg-slate-50 px-2 py-2.5 text-center transition hover:bg-brand-50"
-                        >
-                          <span className="block text-[9px] font-black text-slate-700">
-                            Active Trading
-                          </span>
-
-                          <span className="mt-0.5 block text-[8px] font-bold text-slate-400">
-                            Lower Spreads
-                          </span>
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
               </div>
+
+              <div className="mt-auto pt-4">
+
+                <FooterLink
+                  href="/en/compare"
+                  label="All Broker Comparisons"
+                  onClose={closeMenus}
+                  primary
+                />
+
+              </div>
+
             </div>
 
-            {/* ===================================================
-                LICENSES
-            =================================================== */}
-            <div className="group relative">
-              <Link href="/en/licenses" className={mainLinkClass}>
-                Licenses
+            {/* =========================================
+                TRADING ACCOUNT COMPARISONS
+            ========================================== */}
 
-                <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
-                  ▼
-                </span>
-              </Link>
+            <div className="flex min-w-0 flex-col border-slate-200 sm:border-l sm:pl-5">
 
-              <div className={`${dropdownClass} w-[500px]`}>
-                {/* HEADER */}
-                <div className="mb-4">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-brand-50 text-[12px] font-black text-brand-600">
-                          ✓
-                        </span>
+              <SectionHeading
+                title="Trading Account Comparisons"
+                icon={Scale}
+              />
 
-                        <h3 className="text-[14px] font-black text-slate-950">
-                          Broker Licenses & Regulators
-                        </h3>
-                      </div>
+              <FeaturedLink
+                item={{
+                  label: "Compare Any Two Trading Accounts",
+                  href: "/en/compare-accounts",
+                  description:
+                    "Compare spreads, commissions, deposits and platforms",
+                  icon: Scale,
+                }}
+                onClose={closeMenus}
+              />
 
-                      <p className="ml-10 mt-1 text-[10px] font-semibold leading-5 text-slate-500">
-                        Explore major financial regulators and broker licenses
-                      </p>
-                    </div>
+              <div className="mt-3 space-y-2">
 
-                    <span className="shrink-0 rounded-full bg-brand-50 px-2.5 py-1 text-[9px] font-black text-brand-600">
-                      License Guide
-                    </span>
-                  </div>
-                </div>
+                {ACCOUNT_TYPES.map((item) => (
 
-                {/* REGULATORS */}
-                <div>
-                  <div className="mb-2 text-[9px] font-black uppercase tracking-wide text-slate-400">
-                    Major Regulators
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2">
-                    {[
-                      {
-                        code: "FCA",
-                        country: "United Kingdom",
-                        href: "/en/licenses/fca",
-                      },
-                      {
-                        code: "ASIC",
-                        country: "Australia",
-                        href: "/en/licenses/asic",
-                      },
-                      {
-                        code: "CySEC",
-                        country: "Cyprus",
-                        href: "/en/licenses/cysec",
-                      },
-                      {
-                        code: "DFSA",
-                        country: "Dubai",
-                        href: "/en/licenses/dfsa",
-                      },
-                      {
-                        code: "FSCA",
-                        country: "South Africa",
-                        href: "/en/licenses/fsca",
-                      },
-                      {
-                        code: "SCA",
-                        country: "UAE",
-                        href: "/en/licenses/sca",
-                      },
-                      {
-                        code: "FSA",
-                        country: "Seychelles",
-                        href: "/en/licenses/fsa",
-                      },
-                      {
-                        code: "CIMA",
-                        country: "Cayman Islands",
-                        href: "/en/licenses/cima",
-                      },
-                    ].map((regulator) => (
-                      <Link
-                        key={regulator.href}
-                        href={regulator.href}
-                        className="group/license flex h-[58px] items-center gap-3 rounded-[14px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-brand-50"
-                      >
-                        <span className="flex h-9 min-w-[48px] shrink-0 items-center justify-center rounded-[10px] border border-slate-100 bg-white px-2 text-[10px] font-black text-brand-600 shadow-sm transition group-hover/license:border-brand-100 group-hover/license:bg-brand-600 group-hover/license:text-white">
-                          {regulator.code}
-                        </span>
-
-                        <div className="min-w-0 flex-1">
-                          <span className="block text-[11px] font-black text-slate-800 transition group-hover/license:text-brand-600">
-                            {regulator.code} License
-                          </span>
-
-                          <span className="mt-0.5 block text-[9px] font-semibold text-slate-500">
-                            {regulator.country}
-                          </span>
-                        </div>
-
-                        <span className="shrink-0 text-[11px] font-black text-slate-400 transition group-hover/license:translate-x-0.5 group-hover/license:text-brand-600">
-                          →
-                        </span>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-
-                {/* LICENSE CHECK */}
-                <Link
-                  href="/en/licenses"
-                  className="group/check mt-4 block overflow-hidden rounded-[16px] border border-brand-100 bg-gradient-to-r from-brand-50/80 to-white transition hover:border-brand-200 hover:shadow-sm"
-                >
-                  <div className="flex items-center gap-3 p-3.5">
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-600 text-[17px] font-black text-white shadow-sm">
-                      ✓
-                    </span>
-
-                    <div className="min-w-0 flex-1">
-                      <div className="text-[12px] font-black text-slate-900 transition group-hover/check:text-brand-600">
-                        Verify a Broker License
-                      </div>
-
-                      <div className="mt-1 text-[9px] font-semibold leading-5 text-slate-500">
-                        Search by broker name or license number and check the regulator
-                      </div>
-                    </div>
-
-                    <span className="text-[14px] font-black text-brand-600 transition group-hover/check:translate-x-0.5">
-                      →
-                    </span>
-                  </div>
-                </Link>
-
-                {/* FOOTER CTA */}
-                <Link
-                  href="/en/licenses"
-                  className="mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-brand-100 bg-brand-50/60 px-3 text-[12px] font-black text-brand-600 transition hover:border-brand-200 hover:bg-brand-100"
-                >
-                  View All Licenses & Regulators
-                  <span className="text-sm">→</span>
-                </Link>
-              </div>
-            </div>
-
-            {/* ===================================================
-                TRADING TOOLS
-            =================================================== */}
-            <div className="group relative">
-              <Link href="/en/tools" className={mainLinkClass}>
-                Tools
-
-                <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
-                  ▼
-                </span>
-              </Link>
-
-              <div className={`${dropdownClass} w-[500px]`}>
-                {/* HEADER */}
-                <div className="mb-4">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-brand-50 text-[13px] font-black text-brand-600">
-                          ∑
-                        </span>
-
-                        <h3 className="text-[14px] font-black text-slate-950">
-                          Trading Tools & Calculators
-                        </h3>
-                      </div>
-
-                      <p className="ml-10 mt-1 text-[10px] font-semibold leading-5 text-slate-500">
-                        Calculate risk, position size, margin and potential results
-                      </p>
-                    </div>
-
-                    <span className="shrink-0 rounded-full bg-brand-50 px-2.5 py-1 text-[9px] font-black text-brand-600">
-                      Free Tools
-                    </span>
-                  </div>
-                </div>
-
-                {/* FEATURED TOOLS */}
-                <div>
-                  <div className="mb-2 text-[9px] font-black uppercase tracking-wide text-slate-400">
-                    Popular Trading Tools
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2">
-                    {tradingToolsEn.slice(0, 8).map((tool, index) => {
-                      const toolSymbols = [
-                        "%",
-                        "L",
-                        "P",
-                        "$",
-                        "M",
-                        "ƒ",
-                        "R",
-                        "+",
-                      ];
-
-                      return (
-                        <Link
-                          key={tool.href}
-                          href={tool.href}
-                          className="group/tool flex h-[58px] items-center gap-3 rounded-[14px] border border-slate-200 bg-slate-50 px-3 transition hover:border-brand-200 hover:bg-brand-50"
-                        >
-                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] border border-slate-100 bg-white text-[11px] font-black text-brand-600 shadow-sm transition group-hover/tool:border-brand-100 group-hover/tool:bg-brand-600 group-hover/tool:text-white">
-                            {toolSymbols[index] ?? "•"}
-                          </span>
-
-                          <span className="min-w-0 flex-1 text-[11px] font-black leading-5 text-slate-800 transition group-hover/tool:text-brand-600">
-                            {tool.title}
-                          </span>
-
-                          <span className="shrink-0 text-[11px] font-black text-slate-400 transition group-hover/tool:translate-x-0.5 group-hover/tool:text-brand-600">
-                            →
-                          </span>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                
-{/* ECONOMIC DATA */}
-<div className="mt-4 border-t border-slate-100 pt-3">
-  <div className="mb-2 flex items-center justify-between px-1">
-    <h4 className="text-[11px] font-black text-slate-800">
-      Economic Data
-    </h4>
-
-    <span className="text-[9px] font-bold text-slate-400">
-      Central Banks
-    </span>
-  </div>
-
-  <Link
-    href="/en/interest-rates"
-    className="group/rates flex min-h-[62px] items-center gap-3 rounded-[14px] border border-slate-200 bg-slate-50 px-3 py-2.5 transition hover:border-brand-200 hover:bg-brand-50"
-  >
-    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[11px] border border-brand-100 bg-white text-[19px] font-black text-brand-600 shadow-sm transition group-hover/rates:border-brand-200 group-hover/rates:bg-brand-600 group-hover/rates:text-white">
-      %
-    </span>
-
-    <div className="min-w-0 flex-1 text-left">
-      <div className="text-[12px] font-black text-slate-800 transition group-hover/rates:text-brand-600">
-        Global Interest Rates
-      </div>
-
-      <div className="mt-1 text-[9px] font-semibold text-slate-500">
-        8 Central Banks · Decisions & Meetings
-      </div>
-    </div>
-
-    <span className="shrink-0 text-[13px] font-black text-slate-400 transition group-hover/rates:translate-x-0.5 group-hover/rates:text-brand-600">
-      →
-    </span>
-  </Link>
-</div>
-
-
-                {/* FOOTER CTA */}
-                <Link
-                  href="/en/tools"
-                  className="mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-brand-100 bg-brand-50/60 px-3 text-[12px] font-black text-brand-600 transition hover:border-brand-200 hover:bg-brand-100"
-                >
-                  View All Trading Tools
-                  <span className="text-sm">→</span>
-                </Link>
-              </div>
-            </div>
-
-            {/* ===================================================
-                LEARN TRADING
-            =================================================== */}
-            <div className="group relative">
-              <Link
-                href="/en/learn-trading"
-                className={mainLinkClass}
-              >
-                Learn Trading
-
-                <span className="text-[10px] text-slate-400 transition duration-200 group-hover:rotate-180">
-                  ▼
-                </span>
-              </Link>
-
-              <div className={`${dropdownClass} w-[500px]`}>
-                {/* HEADER */}
-                <div className="mb-4">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-brand-50 text-[13px] font-black text-brand-600">
-                          📘
-                        </span>
-
-                        <h3 className="text-[14px] font-black text-slate-950">
-                          Learn Trading Step by Step
-                        </h3>
-                      </div>
-
-                      <p className="ml-10 mt-1 text-[10px] font-semibold leading-5 text-slate-500">
-                        Guides, market concepts and trading strategies
-                      </p>
-                    </div>
-
-                    <span className="shrink-0 rounded-full bg-brand-50 px-2.5 py-1 text-[9px] font-black text-brand-600">
-                      Learning Hub
-                    </span>
-                  </div>
-                </div>
-
-                {/* MAIN GUIDE */}
-                {learnTradingMenuItems.slice(0, 1).map((item: any) => (
-                  <Link
+                  <MenuLink
                     key={item.href}
-                    href={getLearnTradingHref(item)}
-                    className="group/learn block overflow-hidden rounded-[16px] border border-brand-100 bg-gradient-to-r from-brand-50/80 to-white transition hover:border-brand-200 hover:shadow-sm"
-                  >
-                    <div className="flex items-center gap-3 p-3.5">
-                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-600 text-[15px] font-black text-white shadow-sm">
-                        01
-                      </span>
+                    item={item}
+                    onClose={closeMenus}
+                  />
 
-                      <div className="min-w-0 flex-1">
-                        <div className="text-[12px] font-black leading-6 text-slate-900 transition group-hover/learn:text-brand-600">
-                          {getLearnTradingTitle(item)}
-                        </div>
-
-                        <div className="mt-0.5 text-[9px] font-semibold leading-5 text-slate-500">
-                          Start with the fundamentals of online trading
-                        </div>
-                      </div>
-
-                      <span className="shrink-0 text-[14px] font-black text-brand-600 transition group-hover/learn:translate-x-0.5">
-                        →
-                      </span>
-                    </div>
-                  </Link>
                 ))}
 
-                {/* TOPICS */}
-                <div className="mt-4">
-                  <div className="mb-2 text-[9px] font-black uppercase tracking-wide text-slate-400">
-                    Explore Trading Topics
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2">
-                    <Link
-                      href="/en/learn-trading/economic-indicators"
-                      className="group/topic flex min-h-[82px] flex-col justify-between rounded-[14px] border border-slate-200 bg-slate-50 p-3 transition hover:border-brand-200 hover:bg-brand-50"
-                    >
-                      <div className="flex items-start justify-between gap-2">
-                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] border border-slate-100 bg-white text-[12px] font-black text-brand-600 shadow-sm transition group-hover/topic:bg-brand-600 group-hover/topic:text-white">
-                          %
-                        </span>
-
-                        <span className="text-[11px] font-black text-slate-400 transition group-hover/topic:translate-x-0.5 group-hover/topic:text-brand-600">
-                          →
-                        </span>
-                      </div>
-
-                      <div className="mt-3">
-                        <div className="text-[11px] font-black leading-5 text-slate-800 transition group-hover/topic:text-brand-600">
-                          Economic Indicators
-                        </div>
-
-                        <div className="mt-0.5 text-[8px] font-semibold leading-4 text-slate-500">
-                          How data moves financial markets
-                        </div>
-                      </div>
-                    </Link>
-
-                    <Link
-                      href="/en/strategies"
-                      className="group/topic flex min-h-[82px] flex-col justify-between rounded-[14px] border border-slate-200 bg-slate-50 p-3 transition hover:border-brand-200 hover:bg-brand-50"
-                    >
-                      <div className="flex items-start justify-between gap-2">
-                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] border border-slate-100 bg-white text-[11px] font-black text-brand-600 shadow-sm transition group-hover/topic:bg-brand-600 group-hover/topic:text-white">
-                          ↗
-                        </span>
-
-                        <span className="text-[11px] font-black text-slate-400 transition group-hover/topic:translate-x-0.5 group-hover/topic:text-brand-600">
-                          →
-                        </span>
-                      </div>
-
-                      <div className="mt-3">
-                        <div className="text-[11px] font-black leading-5 text-slate-800 transition group-hover/topic:text-brand-600">
-                          Forex Strategies
-                        </div>
-
-                        <div className="mt-0.5 text-[8px] font-semibold leading-4 text-slate-500">
-                          Trading methods and strategies
-                        </div>
-                      </div>
-                    </Link>
-                  </div>
-                </div>
-
-                {/* LEARNING PATH */}
-                <div className="mt-4 border-t border-slate-100 pt-3">
-                  <div className="mb-2 text-[9px] font-black uppercase tracking-wide text-slate-400">
-                    Learning Path
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-2">
-                    <div className="rounded-[12px] bg-slate-50 px-2 py-2.5 text-center">
-                      <span className="mx-auto flex h-6 w-6 items-center justify-center rounded-full bg-brand-50 text-[9px] font-black text-brand-600">
-                        1
-                      </span>
-
-                      <span className="mt-1.5 block text-[9px] font-black text-slate-700">
-                        Basics
-                      </span>
-
-                      <span className="mt-0.5 block text-[8px] font-semibold text-slate-400">
-                        Learn Trading
-                      </span>
-                    </div>
-
-                    <div className="rounded-[12px] bg-slate-50 px-2 py-2.5 text-center">
-                      <span className="mx-auto flex h-6 w-6 items-center justify-center rounded-full bg-brand-50 text-[9px] font-black text-brand-600">
-                        2
-                      </span>
-
-                      <span className="mt-1.5 block text-[9px] font-black text-slate-700">
-                        Market Analysis
-                      </span>
-
-                      <span className="mt-0.5 block text-[8px] font-semibold text-slate-400">
-                        Read the Market
-                      </span>
-                    </div>
-
-                    <div className="rounded-[12px] bg-slate-50 px-2 py-2.5 text-center">
-                      <span className="mx-auto flex h-6 w-6 items-center justify-center rounded-full bg-brand-50 text-[9px] font-black text-brand-600">
-                        3
-                      </span>
-
-                      <span className="mt-1.5 block text-[9px] font-black text-slate-700">
-                        Strategies
-                      </span>
-
-                      <span className="mt-0.5 block text-[8px] font-semibold text-slate-400">
-                        Build Your Approach
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* FOOTER CTA */}
-                <Link
-                  href="/en/learn-trading"
-                  className="mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-brand-100 bg-brand-50/60 px-3 text-[12px] font-black text-brand-600 transition hover:border-brand-200 hover:bg-brand-100"
-                >
-                  View All Trading Guides
-                  <span className="text-sm">→</span>
-                </Link>
               </div>
+
+              <div className="mt-auto pt-4">
+
+                <FooterLink
+                  href="/en/compare-accounts"
+                  label="All Account Comparisons"
+                  onClose={closeMenus}
+                />
+
+              </div>
+
             </div>
 
-            
-<Link href="/en/contact" className={mainLinkClass}>
-  Contact Us
-</Link>
+          </div>
+
+        );
+
+      /* =================================================
+         03 — BEST BROKERS
+      ================================================== */
+
+      case "best-brokers":
+
+        return (
+
+          <div className="space-y-4">
+
+            <div className="grid min-w-0 gap-5 sm:grid-cols-2">
+
+              {/* =======================================
+                  BEST BROKERS BY COUNTRY
+              ======================================== */}
+
+              <div className="min-w-0">
+
+                <SectionHeading
+                  title="Best Brokers by Country"
+                  icon={Globe2}
+                />
+
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+
+                  {COUNTRY_MENU_ITEMS.map((item) => (
+
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      prefetch={false}
+                      title={item.label}
+                      onClick={closeMenus}
+                      className="group/country flex min-h-[48px] min-w-0 items-center justify-center gap-2 rounded-[10px] border border-slate-200 bg-[#f8fafc] px-2 py-2 transition-colors hover:border-[#c5d9f2] hover:bg-[#edf3fc]"
+                    >
+
+                      {item.flag && (
+
+                        <img
+                          src={item.flag}
+                          alt=""
+                          loading="lazy"
+                          width={24}
+                          height={24}
+                          className="h-6 w-6 shrink-0 rounded-full border border-white object-cover shadow-sm"
+                        />
+
+                      )}
+
+                      <span className="min-w-0 text-center text-[12px] font-bold leading-5 text-[#10233f] transition-colors group-hover/country:text-[#194b92]">
+
+                        {item.shortLabel}
+
+                      </span>
+
+                    </Link>
+
+                  ))}
+
+                </div>
+
+              </div>
+
+              {/* =======================================
+                  BEST BROKERS BY CATEGORY
+              ======================================== */}
+
+              <div className="min-w-0 border-slate-200 sm:border-l sm:pl-5">
+
+                <SectionHeading
+                  title="Best Brokers by Category"
+                  icon={Trophy}
+                />
+
+                <div className="grid grid-cols-2 gap-2">
+
+                  {MARKET_CATEGORIES.map((item) => (
+
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      prefetch={false}
+                      onClick={closeMenus}
+                      className="group/category flex min-h-[48px] min-w-0 items-center justify-between gap-2 rounded-[10px] border border-slate-200 bg-[#f8fafc] px-3 py-2 transition-colors hover:border-[#c5d9f2] hover:bg-[#edf3fc]"
+                    >
+
+                      <span className="min-w-0 flex-1 text-[12px] font-bold leading-5 text-[#10233f] transition-colors group-hover/category:text-[#194b92]">
+
+                        {item.label}
+
+                      </span>
+
+                      <ArrowRight
+                        size={13}
+                        strokeWidth={2}
+                        aria-hidden="true"
+                        className="shrink-0 text-slate-400 transition-transform group-hover/category:translate-x-0.5 group-hover/category:text-[#194b92]"
+                      />
+
+                    </Link>
+
+                  ))}
+
+                </div>
+
+              </div>
+
+            </div>
+
+            <div className="border-t border-slate-200 pt-4">
+
+              <FooterLink
+                href="/en/best-brokers"
+                label="Explore All Best Broker Categories"
+                onClose={closeMenus}
+                primary
+              />
+
+            </div>
+
+          </div>
+
+        );
+
+      /* =================================================
+         04 — LICENSES & REGULATION
+      ================================================== */
+
+      case "licenses":
+
+        return (
+
+          <div className="space-y-3">
+
+            {/* =========================================
+                REGULATORY AUTHORITIES
+            ========================================== */}
+
+            <div>
+
+              <SectionHeading
+                title="Global Regulatory Authorities"
+                icon={ShieldCheck}
+              />
+
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+
+  {REGULATORS.map((regulator, index) => (
+
+    <Link
+      key={regulator.code}
+      href={regulator.href}
+      prefetch={false}
+      onClick={closeMenus}
+      className={`group/license relative min-h-[52px] min-w-0 flex-col items-center justify-center gap-0.5 rounded-[10px] border border-slate-200 bg-[#f8fafc] px-2 py-1.5 text-center transition-colors duration-200 hover:border-[#c5d9f2] hover:bg-[#edf3fc] ${
+        index >= 10
+          ? "hidden sm:flex"
+          : "flex"
+      }`}
+    >
+
+      <span className="text-[14px] font-black leading-5 text-[#194b92] transition-colors group-hover/license:text-brand-600">
+
+        {regulator.code}
+
+      </span>
+
+      <span className="text-[11px] font-semibold leading-5 text-slate-500">
+
+        {regulator.country}
+
+      </span>
+
+    </Link>
+
+  ))}
+
+</div>
+
+            </div>
+
+            {/* =========================================
+                LICENSE VERIFICATION
+            ========================================== */}
+
+            <div className="border-t border-slate-200 pt-3">
+
+              <FeaturedLink
+                item={{
+                  label: "Verify a Broker License",
+                  description:
+                    "Search by broker name or license number and explore its regulatory status",
+                  href: "/en/licenses#license-search",
+                  icon: ShieldCheck,
+                }}
+                onClose={closeMenus}
+              />
+
+            </div>
+
+            <FooterLink
+              href="/en/licenses"
+              label="View All Licenses & Regulatory Authorities"
+              onClose={closeMenus}
+              primary
+            />
+
+          </div>
+
+        );
+
+      /* =================================================
+         05 — ARTICLES & BROKER NEWS
+      ================================================== */
+
+      case "articles":
+
+  return (
+
+    <div className="space-y-4">
+
+      <div className="grid min-w-0 gap-5 sm:grid-cols-2 sm:max-2xl:[&>div>div:last-child]:grid sm:max-2xl:[&>div>div:last-child]:grid-rows-2 sm:max-2xl:[&>div>div:last-child>*]:min-h-[72px]">
+
+        {/* =======================================
+            ARTICLES & GUIDES
+        ======================================== */}
+
+        <div className="min-w-0">
+
+          <SectionHeading
+            title="Articles & Guides"
+            icon={BookOpen}
+          />
+
+          <div className="space-y-2 sm:max-2xl:space-y-0 sm:max-2xl:gap-2 [&_span.text-slate-500]:truncate">
+
+            <MenuLink
+              item={{
+                label: "Markets & Economy Articles",
+                description: "Financial research and reports",
+                href:
+                  NAVIGATION_FEATURES.articleCategories
+                    ? "/en/articles/category/markets-economy"
+                    : "/en/articles",
+                icon: TrendingUp,
+              }}
+              onClose={closeMenus}
+            />
+
+            <MenuLink
+              item={{
+                label: "Trading Guides by Country",
+                description: "Accounts, payments and regulation",
+                href:
+                  NAVIGATION_FEATURES.articleCategories
+                    ? "/en/articles/category/country-guides"
+                    : "/en/articles",
+                icon: Globe2,
+              }}
+              onClose={closeMenus}
+            />
+
+          </div>
+
+        </div>
+
+        {/* =======================================
+            TRADING INDUSTRY NEWS
+        ======================================== */}
+
+        <div className="min-w-0 border-slate-200 sm:border-l sm:pl-5">
+
+          <SectionHeading
+            title="Trading Industry News"
+            icon={Newspaper}
+          />
+
+          <div className="space-y-2 sm:max-2xl:space-y-0 sm:max-2xl:gap-2 [&_span.text-slate-500]:truncate">
+
+            {NAVIGATION_FEATURES.brokerNews ? (
+
+              <MenuLink
+                item={{
+                  label: "Forex Broker News",
+                  description: "Latest broker news and updates",
+                  href: "/en/forex-broker-news",
+                  icon: Newspaper,
+                }}
+                onClose={closeMenus}
+              />
+
+            ) : (
+
+              <UpcomingLink
+                label="Forex Broker News"
+                description="Latest broker news and updates"
+                icon={Newspaper}
+              />
+
+            )}
+
+            <MenuLink
+              item={{
+                label: "Financial Expos & Conferences",
+                description: "Global financial events",
+                href: "/en/events",
+                icon: CalendarDays,
+              }}
+              onClose={closeMenus}
+            />
+
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* =======================================
+          ALL ARTICLES & REPORTS
+      ======================================== */}
+
+      <div className="border-t border-slate-200 pt-4">
+
+        <FooterLink
+          href="/en/articles"
+          label="View All Articles & Reports"
+          onClose={closeMenus}
+          primary
+        />
+
+      </div>
+
+    </div>
+
+  );
+
+      /* =================================================
+         06 — MARKETS & ANALYSIS
+      ================================================== */
+
+      case "markets":
+
+        return (
+
+          <div className="space-y-3">
+
+            {/* =========================================
+                TECHNICAL ANALYSIS
+            ========================================== */}
+
+            <FeaturedLink
+              item={{
+                label: "Financial Market Technical Analysis",
+                description:
+                  "Technical analysis of gold, silver, currencies and technical indicators",
+                href: "/en/technical-analysis",
+                icon: ChartCandlestick,
+              }}
+              onClose={closeMenus}
+            />
+
+            {/* =========================================
+                GLOBAL MARKET DATA
+            ========================================== */}
+
+            <div>
+
+              <SectionHeading
+                title="Global Markets & Financial Data"
+                icon={TrendingUp}
+              />
+
+              <div className="grid gap-2 sm:grid-cols-2">
+
+                {MARKET_LINKS.map((item) => (
+
+                  <BorderedMenuLink
+                    key={item.href}
+                    item={item}
+                    onClose={closeMenus}
+                  />
+
+                ))}
+
+              </div>
+
+            </div>
+
+          </div>
+
+        );
+
+      /* =================================================
+         07 — TRADING TOOLS & EDUCATION
+      ================================================== */
+
+      case "education":
+
+        return (
+
+          <div className="grid min-w-0 gap-5 sm:grid-cols-[1.15fr_1fr]">
+
+            {/* =========================================
+                TRADING TOOLS & CALCULATORS
+            ========================================== */}
+
+            <div className="flex min-w-0 flex-col">
+
+              <SectionHeading
+                title="Trading Tools & Calculators"
+                icon={Calculator}
+              />
+
+              <div className="grid flex-1 grid-cols-2 gap-2">
+
+                {TRADING_TOOLS.map((item) => (
+
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    prefetch={false}
+                    onClick={closeMenus}
+                    className="group/tool flex min-h-[58px] min-w-0 items-center justify-between gap-2 rounded-[10px] border border-slate-200 bg-[#f8fafc] px-3 py-2.5 transition-colors duration-200 hover:border-[#c5d9f2] hover:bg-[#edf3fc]"
+                  >
+
+                    <span className="min-w-0 flex-1 text-[12px] font-bold leading-5 text-[#10233f] transition-colors group-hover/tool:text-[#194b92]">
+
+                      {item.label}
+
+                    </span>
+
+                    <ArrowRight
+                      size={13}
+                      strokeWidth={2}
+                      aria-hidden="true"
+                      className="shrink-0 text-slate-400 transition-transform group-hover/tool:translate-x-0.5 group-hover/tool:text-[#194b92]"
+                    />
+
+                  </Link>
+
+                ))}
+
+              </div>
+
+              <div className="mt-auto pt-4">
+
+                <FooterLink
+                  href="/en/tools"
+                  label="All Trading Tools & Calculators"
+                  onClose={closeMenus}
+                  primary
+                />
+
+              </div>
+
+            </div>
+
+            {/* =========================================
+                TRADING EDUCATION
+            ========================================== */}
+
+            <div className="flex min-w-0 flex-col border-slate-200 sm:border-l sm:pl-5">
+
+              <SectionHeading
+                title="Learn Trading"
+                icon={GraduationCap}
+              />
+
+              <div className="flex flex-1 flex-col gap-2">
+
+                <FeaturedLink
+                  item={{
+                    label: "Learn Trading from Scratch",
+                    description:
+                      "A complete guide to trading fundamentals and financial markets",
+                    href: starterGuideHref,
+                    icon: BookOpen,
+                  }}
+                  onClose={closeMenus}
+                />
+
+                {EDUCATION_LINKS.map((item) => (
+
+                  <BorderedMenuLink
+                    key={item.href}
+                    item={item}
+                    onClose={closeMenus}
+                  />
+
+                ))}
+
+              </div>
+
+              <div className="mt-auto pt-4">
+
+                <FooterLink
+                  href="/en/learn-trading"
+                  label="All Trading Lessons & Guides"
+                  onClose={closeMenus}
+                />
+
+              </div>
+
+            </div>
+
+          </div>
+
+        );
+
+      default:
+
+        return null;
+
+    }
+
+  }
+
+  /* =====================================================
+     ACTIVE MENU INFORMATION
+  ====================================================== */
+
+  const activeMenuInfo =
+    MAIN_NAVIGATION.find(
+      (item) => item.id === activeMenu
+    );
+
+  /* =====================================================
+     HEADER RENDER
+  ====================================================== */
+
+  return (
+
+    <header
+      ref={headerRef}
+      dir="ltr"
+      className="sticky top-0 z-50 border-b border-slate-200 bg-white"
+    >
+
+      <div
+        className={`relative mx-auto w-full ${
+          wide
+            ? "max-w-[1560px]"
+            : "max-w-7xl"
+        } px-4 sm:px-6`}
+      >
+
+        <div className="flex h-16 items-center justify-between gap-3 2xl:h-[76px] 2xl:gap-4">
+
+          {/* ===========================================
+              BROKER ALARAB — ENGLISH LOGO
+          ============================================ */}
+
+          <Link
+            href="/en"
+            aria-label="Broker Alarab — Homepage"
+            onClick={closeMenus}
+            className="shrink-0"
+          >
+
+            <Image
+              src="/logo/Asset 1@3x.png"
+              alt="Broker Alarab"
+              width={300}
+              height={90}
+              priority
+              className="h-auto w-[130px] sm:w-[155px] 2xl:w-[160px]"
+            />
+
+          </Link>
+
+          {/* ===========================================
+              DESKTOP NAVIGATION
+          ============================================ */}
+
+          <nav
+            aria-label="Main navigation"
+            onMouseLeave={() => {
+              setActiveMenu(null);
+            }}
+            onBlur={(event) => {
+
+              if (
+                !event.currentTarget.contains(
+                  event.relatedTarget as Node
+                )
+              ) {
+
+                setActiveMenu(null);
+
+              }
+
+            }}
+            className="hidden min-w-0 flex-1 items-center justify-center 2xl:flex"
+          >
+
+            {/* =========================================
+                MAIN NAVIGATION ITEMS
+            ========================================== */}
+
+            <div className="flex min-w-0 items-center justify-center gap-1 min-[1700px]:gap-3">
+
+              {MAIN_NAVIGATION.map((item) => {
+
+                const isOpen =
+                  activeMenu === item.id;
+
+                const isCurrent =
+                  pathname === item.href ||
+                  pathname.startsWith(
+                    `${item.href}/`
+                  ) ||
+                  (
+                    item.id === "comparisons" &&
+                    pathname.startsWith(
+                      "/en/compare-accounts"
+                    )
+                  ) ||
+                  (
+                    item.id === "markets" &&
+                    (
+                      pathname.startsWith(
+                        "/en/interest-rates"
+                      ) ||
+                      pathname.startsWith(
+                        "/en/tools/market-hours"
+                      )
+                    )
+                  ) ||
+                  (
+                    item.id === "articles" &&
+                    (
+                      pathname.startsWith(
+                        "/en/events"
+                      ) ||
+                      pathname.startsWith(
+                        "/en/forex-broker-news"
+                      )
+                    )
+                  ) ||
+                  (
+                    item.id === "education" &&
+                    (
+                      pathname.startsWith(
+                        "/en/learn-trading"
+                      ) ||
+                      pathname.startsWith(
+                        "/en/strategies"
+                      )
+                    )
+                  );
+
+                return (
+
+                  <div
+                    key={item.id}
+                    onMouseEnter={() => {
+                      setActiveMenu(item.id);
+                    }}
+                    className="flex h-[76px] items-center"
+                  >
+
+                    <button
+                      ref={(element) => {
+
+                        desktopButtonsRef.current[
+                          item.id
+                        ] = element;
+
+                      }}
+                      type="button"
+                      aria-expanded={isOpen}
+                      aria-controls={
+                        isOpen
+                          ? `desktop-menu-en-${item.id}`
+                          : undefined
+                      }
+                      onClick={() => {
+
+                        setActiveMenu(
+                          isOpen
+                            ? null
+                            : item.id
+                        );
+
+                      }}
+                      onKeyDown={(event) => {
+
+                        if (
+                          event.key === "ArrowDown"
+                        ) {
+
+                          event.preventDefault();
+
+                          setActiveMenu(item.id);
+
+                          requestAnimationFrame(() => {
+
+                            document
+                              .getElementById(
+                                `desktop-menu-en-${item.id}`
+                              )
+                              ?.querySelector<HTMLAnchorElement>(
+                                "a"
+                              )
+                              ?.focus();
+
+                          });
+
+                        }
+
+                      }}
+                      className={`inline-flex min-h-[44px] items-center gap-1.5 whitespace-nowrap rounded-[10px] px-2.5 text-[13px] font-extrabold transition-colors min-[1700px]:gap-2 min-[1700px]:px-3 min-[1700px]:text-[14px] ${
+                        isOpen || isCurrent
+                          ? "bg-[#edf3fc] text-[#194b92]"
+                          : "text-[#263b55] hover:bg-slate-100 hover:text-[#194b92]"
+                      }`}
+                    >
+
+                      {item.title}
+
+                      <ChevronDown
+                        size={13}
+                        strokeWidth={2.3}
+                        aria-hidden="true"
+                        className={`shrink-0 text-slate-400 transition-transform duration-200 ${
+                          isOpen
+                            ? "rotate-180 text-[#194b92]"
+                            : ""
+                        }`}
+                      />
+
+                    </button>
+
+                  </div>
+
+                );
+
+              })}
+
+              {/* =======================================
+                  CONTACT US
+              ======================================== */}
+
+              <Link
+                href="/en/contact"
+                prefetch={false}
+                onMouseEnter={() => {
+                  setActiveMenu(null);
+                }}
+                onClick={closeMenus}
+                className="inline-flex min-h-[44px] shrink-0 items-center whitespace-nowrap rounded-[10px] px-2.5 text-[13px] font-extrabold text-[#263b55] transition-colors hover:bg-[#edf3fc] hover:text-[#194b92] min-[1700px]:px-3 min-[1700px]:text-[14px]"
+              >
+
+                Contact Us
+
+              </Link>
+
+            </div>
+
+            {/* =========================================
+                DESKTOP MEGA MENU
+            ========================================== */}
+
+            {activeMenu && activeMenuInfo && (
+
+              <div
+                id={`desktop-menu-en-${activeMenu}`}
+                className={`absolute left-1/2 top-full z-50 max-w-[calc(100vw-40px)] -translate-x-1/2 pt-1.5 ${PANEL_WIDTHS[activeMenu]}`}
+              >
+
+                <div className="max-h-[calc(100dvh-100px)] overflow-y-auto rounded-[20px] border border-slate-200 bg-white shadow-[0_20px_65px_rgba(15,23,42,0.16)]">
+
+                  {/* ===================================
+                      TOP BLUE ACCENT
+                  ==================================== */}
+
+                  <div className="h-[3px] bg-gradient-to-r from-[#194b92] via-[#4b9bd5] to-[#194b92]" />
+
+                  {/* ===================================
+                      PANEL HEADER
+                  ==================================== */}
+
+                  <div className="flex items-center justify-between gap-4 border-b border-slate-200 bg-[#f8fafc] px-5 py-4">
+
+                    <div className="flex min-w-0 items-center gap-3">
+
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#e7eef9] text-[#194b92]">
+
+                        <activeMenuInfo.icon
+                          size={22}
+                          strokeWidth={1.8}
+                          aria-hidden="true"
+                        />
+
+                      </div>
+
+                      <div className="min-w-0">
+
+                        <div className="text-[16px] font-black text-[#10233f]">
+
+                          {activeMenuInfo.panelTitle}
+
+                        </div>
+
+                        <p className="mt-1 text-[11px] font-medium leading-5 text-slate-500">
+
+                          {activeMenuInfo.description}
+
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                    <button
+                      type="button"
+                      aria-label="Close menu"
+                      onClick={() => {
+
+                        const previousMenu =
+                          activeMenu;
+
+                        setActiveMenu(null);
+
+                        desktopButtonsRef.current[
+                          previousMenu
+                        ]?.focus();
+
+                      }}
+                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-200 hover:text-[#10233f]"
+                    >
+
+                      <X
+                        size={17}
+                        aria-hidden="true"
+                      />
+
+                    </button>
+
+                  </div>
+
+                  {/* ===================================
+                      PANEL CONTENT
+                  ==================================== */}
+
+                  <div className="p-5">
+
+                    {renderMenuContent(activeMenu)}
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            )}
 
           </nav>
 
-          <div className="hidden min-w-[125px] items-center justify-start pl-3 2xl:flex xl:pl-5">
+          {/* ===========================================
+              DESKTOP LANGUAGE SWITCH
+          ============================================ */}
+
+          <div className="hidden shrink-0 2xl:flex">
+
             <Link
               href="/"
-              className="inline-flex items-center rounded-full border border-blue-300 bg-white px-3 py-1.5 text-[12px] font-bold text-brand-600 shadow-sm transition hover:border-blue-400 hover:bg-brand-50"
+              lang="ar"
+              prefetch={false}
+              onClick={closeMenus}
+              className="inline-flex min-h-[35px] items-center gap-1.5 rounded-full border border-[#c5d9f2] px-3 text-[12px] font-extrabold text-[#194b92] transition-colors hover:border-[#194b92] hover:bg-[#edf3fc]"
             >
+
+              <Globe2
+                size={13}
+                aria-hidden="true"
+              />
+
               العربية
+
             </Link>
+
           </div>
 
-          <MobileNavMenu
-            topBrokers={topBrokers}
-            countryMenuItems={countryMenuItems}
-            featuredCategories={featuredCategories}
-            featuredComparisons={featuredComparisons}
-            learnTradingMenuItems={learnTradingMenuItems}
-          />
+          {/* ===========================================
+              MOBILE & TABLET MENU BUTTON
+          ============================================ */}
+
+          <button
+            ref={mobileButtonRef}
+            type="button"
+            aria-label={
+              mobileOpen
+                ? "Close main menu"
+                : "Open main menu"
+            }
+            aria-expanded={mobileOpen}
+            aria-controls={
+              mobileOpen
+                ? "mobile-navigation-en"
+                : undefined
+            }
+            onClick={() => {
+
+              setActiveMenu(null);
+
+              setMobileOpen(
+                (previous) => !previous
+              );
+
+              setMobileSection(null);
+
+            }}
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-[#10233f] transition-colors hover:border-[#c5d9f2] hover:bg-[#edf3fc] 2xl:hidden"
+          >
+
+            {mobileOpen ? (
+
+              <X
+                size={21}
+                strokeWidth={2}
+                aria-hidden="true"
+              />
+
+            ) : (
+
+              <Menu
+                size={21}
+                strokeWidth={2}
+                aria-hidden="true"
+              />
+
+            )}
+
+          </button>
+
         </div>
+
       </div>
+
+      {/* ===============================================
+          MOBILE & TABLET NAVIGATION
+      ================================================ */}
+
+      {mobileOpen && (
+
+        <div className="absolute inset-x-0 top-full z-50 2xl:hidden">
+
+          <nav
+            id="mobile-navigation-en"
+            aria-label="Mobile and tablet navigation"
+            className="mx-auto max-h-[calc(100dvh-64px)] w-full overflow-y-auto overscroll-contain border-t border-slate-200 bg-white px-4 py-4 shadow-[0_20px_45px_rgba(15,23,42,0.15)] sm:px-6"
+          >
+
+            <div className="mx-auto max-w-3xl space-y-2">
+
+              {/* =======================================
+                  MOBILE MENU HEADING
+              ======================================== */}
+
+              <div className="mb-3 flex items-center justify-between border-b border-slate-200 pb-4">
+
+                <span className="text-[14px] font-black text-[#10233f] md:max-2xl:text-[17px]">
+
+                  Explore Broker Alarab
+
+                </span>
+
+                <Link
+                  href="/"
+                  lang="ar"
+                  prefetch={false}
+                  onClick={closeMenus}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-[#c5d9f2] px-3 py-1.5 text-[12px] font-bold text-[#194b92]"
+                >
+
+                  <Globe2
+                    size={13}
+                    aria-hidden="true"
+                  />
+
+                  العربية
+
+                </Link>
+
+              </div>
+
+              {/* =======================================
+                  MOBILE ACCORDION SECTIONS
+              ======================================== */}
+
+              {MAIN_NAVIGATION.map((item) => {
+
+                const Icon = item.icon;
+
+                const isExpanded =
+                  mobileSection === item.id;
+
+                return (
+
+                  <div
+                    key={item.id}
+                    className={`overflow-hidden rounded-[13px] border transition-colors ${
+                      isExpanded
+                        ? "border-[#c5d9f2]"
+                        : "border-slate-200"
+                    }`}
+                  >
+
+                    <button
+                      type="button"
+                      aria-expanded={isExpanded}
+                      aria-controls={
+                        isExpanded
+                          ? `mobile-menu-en-${item.id}`
+                          : undefined
+                      }
+                      onClick={() => {
+
+                        setMobileSection(
+                          isExpanded
+                            ? null
+                            : item.id
+                        );
+
+                      }}
+                      className={`flex min-h-[54px] w-full items-center gap-3 px-3 py-2.5 text-left transition-colors ${
+                        isExpanded
+                          ? "bg-[#edf3fc]"
+                          : "bg-[#f8fafc]"
+                      }`}
+                    >
+
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-[#194b92]">
+
+                        <Icon
+                          size={18}
+                          strokeWidth={2}
+                          aria-hidden="true"
+                        />
+
+                      </span>
+
+                      <span className="min-w-0 flex-1 text-[13px] font-black text-[#10233f] md:max-2xl:text-[16px]">
+
+                        {item.title}
+
+                      </span>
+
+                      <ChevronDown
+                        size={17}
+                        strokeWidth={2}
+                        aria-hidden="true"
+                        className={`shrink-0 text-slate-400 transition-transform ${
+                          isExpanded
+                            ? "rotate-180 text-[#194b92]"
+                            : ""
+                        }`}
+                      />
+
+                    </button>
+
+                    {isExpanded && (
+
+                      <div
+                        id={`mobile-menu-en-${item.id}`}
+                        className="border-t border-[#d5e3f5] bg-white p-3 sm:p-4"
+                      >
+
+                        {renderMenuContent(item.id)}
+
+                      </div>
+
+                    )}
+
+                  </div>
+
+                );
+
+              })}
+
+              {/* =======================================
+                  MOBILE CONTACT US
+              ======================================== */}
+
+              <Link
+                href="/en/contact"
+                prefetch={false}
+                onClick={closeMenus}
+                className="flex min-h-[54px] items-center gap-3 rounded-[13px] border border-slate-200 bg-[#f8fafc] px-3 py-2.5 transition-colors hover:bg-[#edf3fc]"
+              >
+
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-[#194b92]">
+
+                  <Mail
+                    size={18}
+                    strokeWidth={2}
+                    aria-hidden="true"
+                  />
+
+                </span>
+
+                <span className="flex-1 text-[13px] font-black text-[#10233f] md:max-2xl:text-[16px]">
+
+                  Contact Us
+
+                </span>
+
+                <ArrowRight
+                  size={17}
+                  className="text-slate-400"
+                  aria-hidden="true"
+                />
+
+              </Link>
+
+              {/* =======================================
+                  MOBILE FOOTER
+              ======================================== */}
+
+              <div className="pt-3">
+
+                <FooterLink
+                  href="/en/brokers"
+                  label="Explore All Forex & CFD Brokers"
+                  onClose={closeMenus}
+                  primary
+                />
+
+              </div>
+
+              <p className="pb-2 pt-3 text-center text-[10px] font-medium leading-5 text-slate-400">
+
+                Broker Alarab — Independent Broker Reviews & Comparisons
+
+              </p>
+
+            </div>
+
+          </nav>
+
+        </div>
+
+      )}
+
     </header>
+
   );
+
 }

@@ -169,13 +169,137 @@ const featuredCategories: MenuLink[] = [
   { href: "/compare", label: "أفضل المقارنات بين الوسطاء" },
 ];
 
-const featuredComparisons: MenuLink[] = [
-  { href: "/compare/exness-vs-xm", label: "Exness vs XM" },
-  { href: "/compare/fxpro-vs-avatrade", label: "Fxpro vs AvaTrade" },
-  { href: "/compare/xm-vs-pepperstone", label: "XM vs Pepperstone" },
-  { href: "/compare/alpari-vs-xs", label: "Alpari vs XS" },
-  { href: "/compare/equiti-vs-vantage", label: "Equiti vs Vantage" },
-];
+/* =========================================================
+   HEADER — DYNAMIC BROKER COMPARISONS
+========================================================= */
+
+async function getFeaturedComparisons(): Promise<MenuLink[]> {
+
+  const supabaseUrl =
+    process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+  const supabaseAnonKey =
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return [];
+  }
+
+  try {
+
+    const query =
+      "select=id,name,name_en,slug,is_full_review&publication_status=eq.published";
+
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/brokers?${query}`,
+      {
+        headers: {
+          apikey: supabaseAnonKey,
+          Authorization: `Bearer ${supabaseAnonKey}`,
+        },
+        next: {
+          revalidate: 3600,
+          tags: ["header-broker-comparisons"],
+        },
+      }
+    );
+
+    if (!response.ok) {
+
+      console.error(
+        "Failed to load header comparisons:",
+        response.status
+      );
+
+      return [];
+
+    }
+
+    const rows: Array<{
+      id: number;
+      name: string | null;
+      name_en: string | null;
+      slug: string | null;
+      is_full_review: boolean;
+    }> = await response.json();
+
+    /* FULL REVIEW BROKERS ONLY */
+
+    const eligibleBrokers: {
+      id: number;
+      name: string;
+      slug: string;
+    }[] = [];
+
+    const seenBrokerSlugs =
+      new Set<string>();
+
+    for (const broker of rows) {
+
+      if (
+        broker.is_full_review !== true ||
+        !broker.name ||
+        !broker.slug ||
+        seenBrokerSlugs.has(broker.slug)
+      ) {
+        continue;
+      }
+
+      seenBrokerSlugs.add(broker.slug);
+
+      eligibleBrokers.push({
+        id: broker.id,
+        name: broker.name,
+        slug: broker.slug,
+      });
+
+    }
+
+    /* GENERATE UNIQUE BROKER COMPARISONS */
+
+    const comparisons: MenuLink[] = [];
+
+    for (
+      let i = 0;
+      i < eligibleBrokers.length;
+      i++
+    ) {
+
+      for (
+        let j = i + 1;
+        j < eligibleBrokers.length;
+        j++
+      ) {
+
+        const broker1 = eligibleBrokers[i];
+
+        const broker2 = eligibleBrokers[j];
+
+        comparisons.push({
+          href: `/compare/${broker1.slug}-vs-${broker2.slug}`,
+          label: `${broker1.name} vs ${broker2.name}`,
+        });
+
+      }
+
+    }
+
+    return comparisons;
+
+  } catch (error) {
+
+    console.error(
+      "Header comparisons error:",
+      error
+    );
+
+    return [];
+
+  }
+
+}
+
+/* ================= END HEADER COMPARISONS ================= */
 
 const learnTradingMenuItems: LearnTradingMenuItem[] = [
   {
@@ -200,7 +324,7 @@ async function getTopBrokers(): Promise<BrokerMenuItem[]> {
   }
 
   const query =
-  "select=name,name_en,slug,rating&slug=not.is.null&publication_status=eq.published&is_full_review=eq.true&order=rating.desc&limit=5";
+  "select=name,name_en,slug,rating&slug=not.is.null&publication_status=eq.published&is_full_review=eq.true&order=rating.desc&limit=15";
 
   const response = await fetch(
     `${supabaseUrl}/rest/v1/brokers?${query}`,
@@ -262,7 +386,17 @@ const pathname = headersList.get("x-pathname") || "";
 const isEnglish = pathname.startsWith("/en");
 const isArabicHome = !isEnglish && (pathname === "/" || pathname === "");
 
-const topBrokers = await getTopBrokers();
+/* =========================================================
+   HEADER — LOAD BROKERS AND COMPARISONS
+========================================================= */
+
+const [
+  topBrokers,
+  featuredComparisons,
+] = await Promise.all([
+  getTopBrokers(),
+  getFeaturedComparisons(),
+]);
 
   return (
     <html lang={isEnglish ? "en" : "ar"} dir={isEnglish ? "ltr" : "rtl"}>
