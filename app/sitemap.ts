@@ -6,9 +6,13 @@ import {
   TOOL_SLUGS,
   STATIC_PAGES,
   STATIC_PAGES_EN,
-  ARTICLE_PAGES,
   EVENT_SLUGS,
 } from "@/lib/site-map-data";
+
+import {
+  EDITORIAL_CATEGORIES,
+  getEditorialCategoryHref,
+} from "@/lib/editorial";
 
 
 // فعّلها لاحقًا لما تجهز صفحات الدول الإنجليزية
@@ -827,78 +831,448 @@ const countryPagesEN: MetadataRoute.Sitemap =
   }));
 
 
-/* =====================================================
-   ARTICLES — ARABIC / ENGLISH SITEMAP
+  /* =====================================================
+     EDITORIAL SYSTEM — AUTOMATIC SITEMAP
 
-   Generated from ARTICLE_PAGES in site-map-data.ts.
+     Source: Supabase published editorial views
 
-   Only published language versions are included.
+     - Published Arabic articles
+     - Published English articles
+     - Language-specific lastModified
+     - Reciprocal hreflang
+     - Active editorial category hubs
+     - Automatic article discovery
+     - Paginated database fetching
+  ===================================================== */
 
-   Reciprocal hreflang is added only when
-   both language versions are published.
-   ===================================================== */
+  type EditorialSitemapRow = {
+    slug: string;
+    category_slug: string;
+    href: string;
+    published_at: string;
+    updated_at: string | null;
+  };
 
-const articlePages: MetadataRoute.Sitemap =
-  ARTICLE_PAGES.flatMap((article) => {
-    const cleanSlug = article.slug
-      .trim()
-      .replace(/^\/+|\/+$/g, "");
+  /* =====================================================
+     LOAD ALL PUBLISHED ARTICLES
 
-    if (!cleanSlug || (!article.ar && !article.en)) {
-      return [];
+     Pagination prevents the Supabase default row limit
+     from excluding articles as the website grows.
+  ===================================================== */
+
+  async function loadEditorialSitemapRows(
+    language: "ar" | "en"
+  ): Promise<EditorialSitemapRow[]> {
+
+    const view =
+      language === "ar"
+        ? "editorial_articles_ar"
+        : "editorial_articles_en";
+
+    const batchSize = 500;
+
+    const rows: EditorialSitemapRow[] = [];
+
+    let offset = 0;
+
+    while (true) {
+
+      const { data, error } = await supabase
+        .from(view)
+        .select(`
+          slug,
+          category_slug,
+          href,
+          published_at,
+          updated_at
+        `)
+        .order("id", {
+          ascending: true,
+        })
+        .range(
+          offset,
+          offset + batchSize - 1
+        );
+
+      if (error) {
+
+        console.error(
+          `[Sitemap] Editorial articles (${language}):`,
+          error.message
+        );
+
+        throw new Error(
+          `Failed to load ${language} editorial sitemap`
+        );
+
+      }
+
+      const batch =
+        (data ?? []) as EditorialSitemapRow[];
+
+      rows.push(...batch);
+
+      if (batch.length < batchSize) {
+        break;
+      }
+
+      offset += batchSize;
+
     }
 
-    const arabicUrl =
-      `${BASE_URL}/articles/${cleanSlug}`;
+    return rows;
 
-    const englishUrl =
-      `${BASE_URL}/en/articles/${cleanSlug}`;
+  }
 
-    const parsedDate = new Date(
-      `${article.lastModified}T00:00:00.000Z`
+  /* =====================================================
+     FETCH EDITORIAL DATA
+  ===================================================== */
+
+  const [
+    arabicEditorialArticles,
+    englishEditorialArticles,
+    editorialCategoriesResult,
+  ] = await Promise.all([
+
+    loadEditorialSitemapRows("ar"),
+
+    loadEditorialSitemapRows("en"),
+
+    supabase
+      .from("editorial_categories")
+      .select(`
+        id,
+        slug,
+        is_active,
+        updated_at
+      `)
+      .eq("is_active", true)
+      .order("sort_order", {
+        ascending: true,
+      }),
+
+  ]);
+
+  if (editorialCategoriesResult.error) {
+
+    console.error(
+      "[Sitemap] Editorial categories:",
+      editorialCategoriesResult.error.message
     );
 
-    const lastModified =
-      Number.isNaN(parsedDate.getTime())
-        ? LAST_SIGNIFICANT_UPDATE
-        : parsedDate;
+    throw new Error(
+      "Failed to load editorial categories"
+    );
+
+  }
+
+  const editorialCategories =
+    editorialCategoriesResult.data ?? [];
+
+  /* =====================================================
+     ARTICLE TRANSLATION LOOKUP
+  ===================================================== */
+
+  const arabicArticleMap = new Map(
+    arabicEditorialArticles.map(
+      (article) => [
+        article.slug,
+        article,
+      ] as const
+    )
+  );
+
+  const englishArticleMap = new Map(
+    englishEditorialArticles.map(
+      (article) => [
+        article.slug,
+        article,
+      ] as const
+    )
+  );
+
+  /* =====================================================
+     ARTICLE LAST MODIFIED
+  ===================================================== */
+
+  function editorialArticleModified(
+    article: EditorialSitemapRow
+  ): Date {
+
+    const published = validModifiedDate(
+      article.published_at,
+      LAST_SIGNIFICANT_UPDATE
+    );
+
+    const updated = validModifiedDate(
+      article.updated_at,
+      published
+    );
+
+    return updated.getTime() >= published.getTime()
+      ? updated
+      : published;
+
+  }
+
+  /* =====================================================
+     LATEST CONTENT UPDATE FOR EDITORIAL HUBS
+  ===================================================== */
+
+  function editorialHubModified(
+    articles: EditorialSitemapRow[]
+  ): Date | undefined {
+
+    if (articles.length === 0) {
+      return undefined;
+    }
+
+    return articles.reduce<Date>(
+      (latest, article) => {
+
+        const modified =
+          editorialArticleModified(article);
+
+        return modified.getTime() >
+          latest.getTime()
+          ? modified
+          : latest;
+
+      },
+      editorialArticleModified(articles[0])
+    );
+
+  }
+
+  /* =====================================================
+     INDIVIDUAL ARTICLE URLS
+  ===================================================== */
+
+  const articlePages: MetadataRoute.Sitemap = [];
+
+  for (const article of arabicEditorialArticles) {
+
+    const translation =
+      englishArticleMap.get(article.slug);
+
+    const articleUrl =
+      `${BASE_URL}${article.href}`;
+
+    articlePages.push({
+
+      url: articleUrl,
+
+      lastModified:
+        editorialArticleModified(article),
+
+      ...(translation
+        ? {
+
+            alternates: {
+              languages: {
+                ar: articleUrl,
+                en: `${BASE_URL}${translation.href}`,
+              },
+            },
+
+          }
+        : {}),
+
+    });
+
+  }
+
+  for (const article of englishEditorialArticles) {
+
+    const translation =
+      arabicArticleMap.get(article.slug);
+
+    const articleUrl =
+      `${BASE_URL}${article.href}`;
+
+    articlePages.push({
+
+      url: articleUrl,
+
+      lastModified:
+        editorialArticleModified(article),
+
+      ...(translation
+        ? {
+
+            alternates: {
+              languages: {
+                ar: `${BASE_URL}${translation.href}`,
+                en: articleUrl,
+              },
+            },
+
+          }
+        : {}),
+
+    });
+
+  }
+
+  /* =====================================================
+     EDITORIAL HUB — ALL ARTICLES
+  ===================================================== */
+
+  const editorialHubPages: MetadataRoute.Sitemap = [
+
+    {
+
+      url: `${BASE_URL}/articles`,
+
+      lastModified:
+        editorialHubModified(
+          arabicEditorialArticles
+        ),
+
+      alternates: {
+        languages: {
+          ar: `${BASE_URL}/articles`,
+          en: `${BASE_URL}/en/articles`,
+        },
+      },
+
+    },
+
+    {
+
+      url: `${BASE_URL}/en/articles`,
+
+      lastModified:
+        editorialHubModified(
+          englishEditorialArticles
+        ),
+
+      alternates: {
+        languages: {
+          ar: `${BASE_URL}/articles`,
+          en: `${BASE_URL}/en/articles`,
+        },
+      },
+
+    },
+
+  ];
+
+  /* =====================================================
+     ACTIVE EDITORIAL CATEGORY HUBS
+  ===================================================== */
+
+  for (const category of editorialCategories) {
+
+    const arabicCategoryArticles =
+      arabicEditorialArticles.filter(
+        (article) =>
+          article.category_slug === category.slug
+      );
+
+    const englishCategoryArticles =
+      englishEditorialArticles.filter(
+        (article) =>
+          article.category_slug === category.slug
+      );
+
+    const arabicUrl =
+      `${BASE_URL}${getEditorialCategoryHref(
+        category.slug,
+        "ar"
+      )}`;
+
+    const englishUrl =
+      `${BASE_URL}${getEditorialCategoryHref(
+        category.slug,
+        "en"
+      )}`;
+
+    const isEvents =
+      category.slug === EDITORIAL_CATEGORIES.EVENTS;
+
+    const includeArabic =
+      isEvents ||
+      arabicCategoryArticles.length > 0;
+
+    const includeEnglish =
+      isEvents
+        ? ENABLE_EN_EVENT_PAGES
+        : englishCategoryArticles.length > 0;
 
     const hasBothLanguages =
-      article.ar && article.en;
+      includeArabic && includeEnglish;
 
     const alternates = hasBothLanguages
       ? {
+
           languages: {
             ar: arabicUrl,
             en: englishUrl,
           },
+
         }
       : undefined;
 
-    const pages: MetadataRoute.Sitemap = [];
+    if (includeArabic) {
 
-    if (article.ar) {
-      pages.push({
+      editorialHubPages.push({
+
         url: arabicUrl,
-        lastModified,
+
+        lastModified: isEvents
+          ? undefined
+          : editorialHubModified(
+              arabicCategoryArticles
+            ),
+
         ...(alternates ? { alternates } : {}),
+
       });
+
     }
 
-    if (article.en) {
-      pages.push({
+    if (includeEnglish) {
+
+      editorialHubPages.push({
+
         url: englishUrl,
-        lastModified,
+
+        lastModified: isEvents
+          ? undefined
+          : editorialHubModified(
+              englishCategoryArticles
+            ),
+
         ...(alternates ? { alternates } : {}),
+
       });
+
     }
 
-    return pages;
-  });
+  }
 
-console.log(
-  `[Sitemap] Articles: ${articlePages.length} URLs`
-);
+  /* =====================================================
+     EDITORIAL SITEMAP SUMMARY
+  ===================================================== */
+
+  console.log(
+    `[Sitemap] Editorial articles: ` +
+    `${arabicEditorialArticles.length} AR, ` +
+    `${englishEditorialArticles.length} EN`
+  );
+
+  console.log(
+    `[Sitemap] Editorial hubs: ` +
+    `${editorialHubPages.length} URLs`
+  );
+
+  console.log(
+    `[Sitemap] Total editorial URLs: ` +
+    `${articlePages.length + editorialHubPages.length}`
+  );
+
+  /* ================= END EDITORIAL SITEMAP ================= */
 
 
   const eventPages = EVENT_SLUGS.map((slug) => ({
@@ -988,34 +1362,92 @@ console.log(
 
 
   
-return [
-  ...staticPages,
-  ...staticPagesEN,
+  /* =====================================================
+     FINAL SITEMAP
+     Preserve all existing website sections
+  ===================================================== */
 
-  // Articles — Arabic & English
-  ...articlePages,
+  const allPages: MetadataRoute.Sitemap = [
 
-  ...toolPages,
+    ...staticPages,
+    ...staticPagesEN,
 
+    // Editorial articles and category hubs
+    ...articlePages,
+    ...editorialHubPages,
+
+    // Trading tools
+    ...toolPages,
     ...toolPagesEN,
+
+    // Country rankings
     ...countryPages,
     ...countryPagesEN,
-    
+
+    // Broker reviews
     ...brokerPages,
     ...brokerPagesEN,
+
+    // Account opening guides
     ...openAccountPages,
     ...openAccountPagesEN,
+
+    // Trading accounts
     ...accountPages,
     ...accountPagesEN,
 
+    // Broker comparisons
     ...comparePages,
     ...comparePagesEN,
+
+    // Account comparisons
     ...accountComparisonPages,
     ...accountComparisonPagesEN,
+
+    // Financial events
     ...eventPages,
     ...eventPagesEN,
+
+    // Regulatory authorities
     ...regulatorPages,
     ...regulatorPagesEN,
+
+    // Central bank interest rates
     ...interestRatePages,
+
   ];
+
+  /* =====================================================
+     REMOVE DUPLICATE URLS
+  ===================================================== */
+
+  const uniquePages = new Map<
+    string,
+    MetadataRoute.Sitemap[number]
+  >();
+
+  for (const page of allPages) {
+
+    if (!uniquePages.has(page.url)) {
+
+      uniquePages.set(
+        page.url,
+        page
+      );
+
+    }
+
+  }
+
+  const finalPages =
+    Array.from(uniquePages.values());
+
+  console.log(
+    `[Sitemap] Total unique URLs: ${finalPages.length}`
+  );
+
+  return finalPages;
+
 }
+
+/* ================= END SITEMAP ================= */

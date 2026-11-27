@@ -1,24 +1,36 @@
-import type { Metadata } from "next";
-import type { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
+
+import {
+  ArticleSection,
+  SubHeading,
+  Paragraph,
+  Strong,
+  ArticleList,
+  Note,
+  FAQItem,
+} from "@/app/components/editorial/ArticleComponents";
+
+import ArticleLayout from "@/app/components/editorial/ArticleLayout";
+
+import {
+  createArticleMetadata,
+  ArticleStructuredData,
+  type ArticleSEOConfig,
+} from "@/app/components/editorial/ArticleSEO";
 
 export const dynamic = "force-dynamic";
 
 /* =========================================================
    BROKER ALARAB
-   ARTICLE PAGE — OPEN FOREX ACCOUNT IN KUWAIT
-   Next.js App Router / Server Component
-   ========================================================= */
-
-const SITE = "https://brokeralarab.com";
+   ARABIC ARTICLE — OPEN FOREX ACCOUNT IN KUWAIT
+========================================================= */
 
 const SLUG = "open-forex-account-kuwait";
-const PATH = `/articles/${SLUG}`;
-const URL = `${SITE}${PATH}`;
 
 const ARTICLE = {
+
   title:
     "كيفية فتح حساب فوركس في الكويت – الشروط وخطوات التسجيل",
 
@@ -34,7 +46,7 @@ const ARTICLE = {
   description:
     "دليل فتح حساب فوركس في الكويت للمواطنين والمقيمين، يشمل البطاقة المدنية وتوثيق الحساب وإثبات العنوان والتسجيل ووسائل الدفع بالدينار الكويتي والتحقق من التراخيص.",
 
-  category: "مقالات وأدلة التداول",
+  category: "أدلة تداول الفوركس حسب الدولة",
 
   subcategory: "التداول في الكويت",
 
@@ -45,6 +57,7 @@ const ARTICLE = {
   publisher: "بروكر العرب",
 
   published: "2026-11-25",
+
   modified: "2026-11-25",
 
   heroAlt:
@@ -52,14 +65,11 @@ const ARTICLE = {
 
   heroCaption:
     "صورة توضيحية لمتطلبات تسجيل وتوثيق حسابات تداول الفوركس للمواطنين والمقيمين في الكويت.",
+
 };
 
 const HERO_IMAGE =
   "/articles/open-forex-account-kuwait.webp";
-
-const ARTICLE_READY = true;
-const HERO_IMAGE_READY = true;
-const ENGLISH_VERSION_READY = true;
 
 const KUWAIT_BROKERS_URL =
   "/best-brokers/kuwait";
@@ -81,85 +91,83 @@ const ARTICLE_KEYWORDS = [
   "تطبيق هويتي وتوثيق حساب التداول",
 ];
 
-export const metadata: Metadata = {
-  title: ARTICLE.seoTitle,
+/* =========================================================
+   SEO METADATA
+========================================================= */
+
+const ARTICLE_SEO: ArticleSEOConfig = {
+
+  language: "ar",
+
+  slug: SLUG,
+
+  title: ARTICLE.title,
+
+  seoTitle: ARTICLE.seoTitle,
+
   description: ARTICLE.description,
 
-  alternates: {
-    canonical: URL,
+  category: ARTICLE.subcategory,
 
-    languages: {
-      ar: URL,
+  categoryName: ARTICLE.category,
 
-      ...(ENGLISH_VERSION_READY
-        ? {
-            en: `${SITE}/en/articles/${SLUG}`,
-          }
-        : {}),
+  categoryHref:
+    "/articles/category/forex-trading-guides-by-country",
+
+  author: ARTICLE.publisher,
+
+  published: ARTICLE.published,
+
+  modified: ARTICLE.modified,
+
+  image: HERO_IMAGE,
+
+  imageAlt: ARTICLE.heroAlt,
+
+  imageWidth: 1774,
+
+  imageHeight: 887,
+
+  hasTranslation: true,
+
+  indexable: true,
+
+  tags: ARTICLE_KEYWORDS,
+
+  keywords: ARTICLE_KEYWORDS,
+
+  about: [
+    {
+      "@type": "Thing",
+      name: "Foreign Exchange Trading",
     },
-  },
-
-  openGraph: {
-    type: "article",
-    url: URL,
-
-    title: ARTICLE.title,
-    description: ARTICLE.description,
-
-    siteName: "Broker Alarab",
-
-    locale: "ar_KW",
-
-    ...(ENGLISH_VERSION_READY
-      ? { alternateLocale: ["en_US"] }
-      : {}),
-
-    publishedTime: ARTICLE.published,
-    modifiedTime: ARTICLE.modified,
-
-    section: ARTICLE.subcategory,
-
-    tags: ARTICLE_KEYWORDS,
-
-    images: HERO_IMAGE_READY
-      ? [
-          {
-            url: `${SITE}${HERO_IMAGE}`,
-            width: 1774,
-            height: 887,
-            alt: ARTICLE.heroAlt,
-          },
-        ]
-      : [],
-  },
-
-  twitter: {
-    card: HERO_IMAGE_READY
-      ? "summary_large_image"
-      : "summary",
-
-    title: ARTICLE.seoTitle,
-    description: ARTICLE.description,
-
-    images: HERO_IMAGE_READY
-      ? [`${SITE}${HERO_IMAGE}`]
-      : [],
-  },
-
-  robots: {
-    index: ARTICLE_READY,
-    follow: true,
-
-    googleBot: {
-      index: ARTICLE_READY,
-      follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
+    {
+      "@type": "Thing",
+      name: "Trading Accounts",
     },
-  },
+    {
+      "@type": "Thing",
+      name: "Know Your Customer",
+    },
+    {
+      "@type": "Thing",
+      name: "Financial Regulation",
+    },
+  ],
+
 };
 
+const baseMetadata =
+  createArticleMetadata(ARTICLE_SEO);
+
+export const metadata = {
+  ...baseMetadata,
+
+  openGraph: {
+    ...baseMetadata.openGraph,
+    locale: "ar_KW",
+  },
+};
 
 /* =========================================================
    ARTICLE DATA
@@ -447,326 +455,6 @@ const sources = [
   },
 ];
 
-/* =========================================================
-   SHARED ARTICLE DESIGN COMPONENTS
-   These can later move to /components/articles/
-   ========================================================= */
-
-function ArticleSection({
-  id,
-  eyebrow,
-  title,
-  children,
-}: {
-  id: string;
-  eyebrow?: string;
-  title: string;
-  children: ReactNode;
-}) {
-  return (
-    <section
-      id={id}
-      className="scroll-mt-24 border-b border-slate-100 py-5 last:border-0 sm:py-7"
-    >
-      {eyebrow && (
-        <span className="mb-2 block text-[11px] font-extrabold text-[#176ac8] sm:text-xs">
-          {eyebrow}
-        </span>
-      )}
-
-      <h2 className="border-r-[4px] border-[#2587e7] pr-3 text-[22px] font-black leading-[1.5] tracking-tight text-[#101d35] sm:pr-4 sm:text-[29px]">
-        {title}
-      </h2>
-
-      <div className="mt-4 space-y-4 text-[14px] leading-[2.05] text-slate-700 sm:text-[16px] sm:leading-[2]">
-        {children}
-      </div>
-    </section>
-  );
-}
-
-function SubHeading({
-  children,
-}: {
-  children: ReactNode;
-}) {
-  return (
-    <h3 className="!mt-8 text-[17px] font-black leading-[1.7] text-[#102a4a] sm:text-[20px]">
-      {children}
-    </h3>
-  );
-}
-
-function Paragraph({
-  children,
-}: {
-  children: ReactNode;
-}) {
-  return <p>{children}</p>;
-}
-
-function Strong({
-  children,
-}: {
-  children: ReactNode;
-}) {
-  return (
-    <strong className="font-black text-[#11294b]">
-      {children}
-    </strong>
-  );
-}
-
-function ArticleList({
-  items,
-}: {
-  items: ReactNode[];
-}) {
-  return (
-    <ul className="space-y-3">
-      {items.map((item, index) => (
-        <li
-          key={index}
-          className="flex items-start gap-3"
-        >
-          <span className="mt-[11px] h-2 w-2 shrink-0 rounded-full bg-[#2587e7]" />
-          <span className="min-w-0 flex-1">
-            {item}
-          </span>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function Note({
-  title,
-  children,
-  tone = "blue",
-}: {
-  title: string;
-  children: ReactNode;
-  tone?: "blue" | "amber";
-}) {
-  const amber = tone === "amber";
-
-  return (
-    <aside
-      className={`!my-5 rounded-[15px] border p-4 sm:p-5 ${
-        amber
-          ? "border-amber-200 bg-[#fffbef]"
-          : "border-blue-100 bg-[#f1f7fe]"
-      }`}
-    >
-      <div
-        className={`text-[13px] font-black sm:text-[15px] ${
-          amber ? "text-amber-900" : "text-[#10549f]"
-        }`}
-      >
-        {title}
-      </div>
-
-      <div className="mt-2 text-[13px] leading-[2] text-slate-700 sm:text-[14px]">
-        {children}
-      </div>
-    </aside>
-  );
-}
-
-/* =========================================================
-   HERO IMAGE PLACEHOLDER
-   ========================================================= */
-
-
-/* =========================================================
-   ARTICLE HERO IMAGE
-   Responsive / SEO / Optimized
-   ========================================================= */
-
-function ArticleHeroImage() {
-  if (!HERO_IMAGE_READY) {
-    return null;
-  }
-
-  return (
-    <figure className="mt-6 sm:mt-8">
-
-      <div className="relative aspect-[2/1] w-full overflow-hidden rounded-[18px] border border-slate-200 bg-[#071a31] shadow-[0_12px_35px_rgba(15,23,42,0.10)] sm:rounded-[22px]">
-
-        <Image
-          src={HERO_IMAGE}
-          alt={ARTICLE.heroAlt}
-          fill
-          priority
-          quality={75}
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 95vw, (max-width: 1520px) 92vw, 1440px"
-          className="object-cover object-center"
-        />
-
-      </div>
-
-      <figcaption className="mt-2 text-center text-[11px] leading-6 text-slate-500 sm:text-[12px]">
-        {ARTICLE.heroCaption}
-      </figcaption>
-
-    </figure>
-  );
-}
-
-
-/* =========================================================
-   TABLE OF CONTENTS
-   ========================================================= */
-
-
-/* =========================================================
-   ARTICLE TABLE OF CONTENTS
-   Compact / Responsive / SEO-friendly
-   ========================================================= */
-
-
-/* =========================================================
-   TABLE OF CONTENTS
-   Mobile: compact expandable menu
-   Desktop: original 3-column layout
-   ========================================================= */
-
-function TableOfContents() {
-  return (
-    <>
-      {/* =========================
-          MOBILE ONLY
-          ========================= */}
-
-      <nav
-        aria-label="فهرس المقال للموبايل"
-        className="my-5 sm:hidden"
-      >
-        <details className="group overflow-hidden rounded-[16px] border border-[#dce6f2] bg-white shadow-sm">
-
-          <summary className="flex min-h-[65px] cursor-pointer list-none items-center gap-3 px-3.5 py-3 [&::-webkit-details-marker]:hidden">
-
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[11px] bg-[#eaf3ff] text-[#176ac8]">
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M8 6h13" />
-                <path d="M8 12h13" />
-                <path d="M8 18h13" />
-                <path d="M3 6h.01" />
-                <path d="M3 12h.01" />
-                <path d="M3 18h.01" />
-              </svg>
-            </span>
-
-            <span className="min-w-0 flex-1">
-              <span className="block text-[14px] font-black text-[#102747]">
-                محتويات المقال
-              </span>
-
-              <span className="mt-0.5 block text-[10px] text-slate-500">
-                {contents.length} قسماً • اضغط لاستعراضها
-              </span>
-            </span>
-
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-blue-100 bg-[#f5f9ff] text-[#176ac8] transition-transform group-open:rotate-180">
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="m6 9 6 6 6-6" />
-              </svg>
-            </span>
-          </summary>
-
-          <div className="border-t border-slate-100 bg-[#f8fbff] p-2.5">
-            <div className="grid grid-cols-2 gap-2">
-              {contents.map((item, index) => (
-                <a
-                  key={item.id}
-                  href={`#${item.id}`}
-                  className="flex min-h-[45px] min-w-0 items-center gap-2 rounded-[10px] border border-slate-200 bg-white px-2.5 py-2 text-right transition active:bg-blue-50"
-                >
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-[#eaf3ff] text-[9px] font-black text-[#176ac8]">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-
-                  <span className="min-w-0 flex-1 text-[10px] font-extrabold leading-4 text-[#243b57]">
-                    {item.label}
-                  </span>
-                </a>
-              ))}
-            </div>
-          </div>
-        </details>
-      </nav>
-
-      {/* =========================
-          DESKTOP / TABLET
-          ========================= */}
-
-      <nav
-        aria-label="فهرس محتويات المقال"
-        className="my-6 hidden overflow-hidden rounded-[20px] border border-[#dce6f2] bg-white shadow-[0_8px_28px_rgba(15,23,42,0.04)] sm:block"
-      >
-        <div className="flex items-center justify-between gap-3 border-b border-[#e5edf6] bg-[linear-gradient(270deg,#f3f8ff_0%,#ffffff_100%)] px-6 py-5">
-
-          <div>
-            <h2 className="text-[19px] font-black text-[#102747]">
-              محتويات المقال
-            </h2>
-
-            <p className="mt-1 text-[12px] text-slate-500">
-              انتقل مباشرة إلى القسم الذي يهمك
-            </p>
-          </div>
-
-          <span className="rounded-full border border-blue-100 bg-[#eaf3ff] px-3 py-1.5 text-[11px] font-black text-[#1765b5]">
-            {contents.length} موضوعاً
-          </span>
-        </div>
-
-        <div className="grid grid-cols-2 gap-2.5 p-5 xl:grid-cols-3">
-          {contents.map((item, index) => (
-            <a
-              key={item.id}
-              href={`#${item.id}`}
-              className="group flex min-h-[54px] min-w-0 items-center gap-3 rounded-[12px] border border-[#e8eef6] bg-[#f8fafc] px-3 py-2.5 text-right transition-all duration-200 hover:-translate-y-0.5 hover:border-[#aacdf4] hover:bg-[#edf6ff]"
-            >
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[9px] bg-white text-[11px] font-black text-[#176ac8] shadow-sm ring-1 ring-[#e2ebf6] transition group-hover:bg-[#176ac8] group-hover:text-white">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-
-              <span className="min-w-0 flex-1 text-[12px] font-extrabold leading-5 text-[#243b57] group-hover:text-[#176ac8]">
-                {item.label}
-              </span>
-
-              <span className="text-[#9aacc2] group-hover:text-[#176ac8]">
-                ‹
-              </span>
-            </a>
-          ))}
-        </div>
-      </nav>
-    </>
-  );
-}
-
 
 
 /* =========================================================
@@ -1040,25 +728,6 @@ function AccountTypesGrid() {
    FAQ COMPONENT
    ========================================================= */
 
-function FAQItem({
-  question,
-  children,
-}: {
-  question: string;
-  children: ReactNode;
-}) {
-  return (
-    <div className="border-b border-slate-200 py-5 first:pt-0 last:border-0 last:pb-0">
-      <h3 className="text-[15px] font-black leading-7 text-[#102747] sm:text-[17px]">
-        {question}
-      </h3>
-
-      <div className="mt-2 text-[13px] leading-[2] text-slate-600 sm:text-[15px]">
-        {children}
-      </div>
-    </div>
-  );
-}
 
 
 /* =========================================================
@@ -1962,311 +1631,97 @@ function ImportantInternalLinks() {
 }
 
 /* =========================================================
-   STRUCTURED DATA
-   ========================================================= */
-
-function ArticleStructuredData() {
-  if (!ARTICLE_READY) {
-    return null;
-  }
-
-  const articleJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-
-    "@id": `${URL}#article`,
-
-    headline: ARTICLE.title,
-    description: ARTICLE.description,
-
-    url: URL,
-    inLanguage: "ar",
-
-    datePublished: ARTICLE.published,
-    dateModified: ARTICLE.modified,
-
-    articleSection: ARTICLE.subcategory,
-
-    mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": URL,
-    },
-
-    ...(HERO_IMAGE_READY
-      ? {
-          image: {
-            "@type": "ImageObject",
-            url: `${SITE}${HERO_IMAGE}`,
-            width: 1774,
-            height: 887,
-          },
-        }
-      : {}),
-
-    author: {
-      "@type": "Organization",
-      name: ARTICLE.publisher,
-      url: SITE,
-    },
-
-    publisher: {
-      "@type": "Organization",
-      name: "Broker Alarab",
-      url: SITE,
-    },
-
-    isPartOf: {
-      "@type": "WebSite",
-      name: "Broker Alarab",
-      url: SITE,
-    },
-
-    keywords: ARTICLE_KEYWORDS,
-
-    about: [
-      {
-        "@type": "Thing",
-        name: "Foreign Exchange Trading",
-      },
-      {
-        "@type": "Thing",
-        name: "Trading Accounts",
-      },
-      {
-        "@type": "Thing",
-        name: "Know Your Customer",
-      },
-      {
-        "@type": "Thing",
-        name: "Financial Regulation",
-      },
-    ],
-
-    spatialCoverage: {
-  "@type": "Country",
-  name: "Kuwait",
-},
-
-    citation: sources.map((source) => ({
-      "@type": "CreativeWork",
-      name: source.title,
-      url: source.url,
-    })),
-  };
-
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "الرئيسية",
-        item: SITE,
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: ARTICLE.breadcrumb,
-        item: URL,
-      },
-    ],
-  };
-
-  const serialize = (value: unknown) =>
-    JSON.stringify(value).replace(/</g, "\\u003c");
-
-  return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: serialize(articleJsonLd),
-        }}
-      />
-
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: serialize(breadcrumbJsonLd),
-        }}
-      />
-    </>
-  );
-}
-
-/* =========================================================
-   MAIN ARTICLE PAGE
-   ========================================================= */
+   MAIN ARABIC ARTICLE PAGE
+========================================================= */
 
 export default async function OpenForexAccountKuwaitPage() {
+
   const kuwaitBrokers =
     await getKuwaitArticleBrokers();
 
   return (
-    <main
-      dir="rtl"
-      lang="ar"
-      className="min-h-screen overflow-x-clip bg-[#f5f7fb] text-slate-900"
+
+    <ArticleLayout
+
+      language="ar"
+
+      slug={SLUG}
+
+      title={`${ARTICLE.titleMain} –`}
+
+      titleHighlight={ARTICLE.titleHighlight}
+
+      description={ARTICLE.description}
+
+      category={ARTICLE.category}
+
+      categoryHref="/articles/category/forex-trading-guides-by-country"
+
+      subcategory={`🇰🇼 ${ARTICLE.subcategory}`}
+
+      articleType={ARTICLE.articleType}
+
+      breadcrumbTitle={ARTICLE.breadcrumb}
+
+      author="فريق بروكر العرب"
+
+      published={ARTICLE.published}
+
+      modified={ARTICLE.modified}
+
+      heroImage={HERO_IMAGE}
+
+      heroImageAlt={ARTICLE.heroAlt}
+
+      heroImageCaption={ARTICLE.heroCaption}
+
+      contents={contents}
+
+      structuredData={
+        <ArticleStructuredData
+          config={{
+            ...ARTICLE_SEO,
+            sources,
+          }}
+        />
+      }
+
+      introduction={
+
+        <>
+
+          <Paragraph>
+            إذا كنت تقيم في الكويت وترغب في فتح حساب
+            لتداول العملات الأجنبية، فقد تكون لديك
+            تساؤلات حول إمكانية التسجيل بالبطاقة
+            المدنية، واستخدام تطبيق هويتي في التوثيق،
+            وتمويل الحساب بالدينار الكويتي، والفرق
+            بين شركات الاستثمار المحلية ومنصات
+            الفوركس الدولية.
+          </Paragraph>
+
+          <Paragraph>
+            تختلف الإجابات بحسب جنسيتك وإقامتك
+            ونوع المنتج المالي والجهة التي ستفتح
+            الحساب لديها. لذلك أعد فريق{" "}
+            <Strong>بروكر العرب</Strong>{" "}
+            هذا الدليل لمساعدة المتداول في الكويت
+            على فهم متطلبات التسجيل والتحقق من
+            الشركات وتجنب المشكلات المرتبطة
+            بالمستندات والتحويلات المالية.
+          </Paragraph>
+
+          {/* FEATURED KUWAIT BROKERS */}
+
+          <KuwaitBrokerComparison
+            rankings={kuwaitBrokers}
+          />
+
+        </>
+
+      }
+
     >
-
-      <ArticleStructuredData />
-
-      {/* ARTICLE HEADER */}
-
-      <header className="border-b border-slate-200 bg-white">
-
-        <div className="mx-auto max-w-[1520px] px-4 pb-8 pt-6 sm:px-6 sm:pb-12 sm:pt-9">
-
-          <nav
-            aria-label="مسار التنقل"
-            className="flex flex-wrap items-center gap-2 text-[11px] font-bold text-slate-500 sm:text-[12px]"
-          >
-
-            <Link
-              href="/"
-              className="transition hover:text-blue-600"
-            >
-              الرئيسية
-            </Link>
-
-            <span aria-hidden="true">/</span>
-
-            <span>{ARTICLE.category}</span>
-
-            <span aria-hidden="true">/</span>
-
-            <span className="text-[#145ca8]">
-              {ARTICLE.breadcrumb}
-            </span>
-
-          </nav>
-
-          {/* CATEGORY */}
-
-          <div className="mt-6 flex flex-wrap items-center gap-2">
-
-            <span className="inline-flex items-center gap-2 rounded-full bg-[#eaf3ff] px-3 py-1.5 text-[10px] font-black text-[#1765b5] sm:text-[11px]">
-
-              <span
-                aria-hidden="true"
-                className="text-[16px]"
-              >
-                🇰🇼
-              </span>
-
-              {ARTICLE.subcategory}
-
-            </span>
-
-            <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[10px] font-bold text-slate-600 sm:text-[11px]">
-              {ARTICLE.articleType}
-            </span>
-
-          </div>
-
-          {/* H1 */}
-
-          <h1 className="mt-5 w-full max-w-full whitespace-normal break-words text-[27px] font-black leading-[1.4] tracking-[-0.025em] text-[#0c1e38] sm:text-[34px] lg:text-[clamp(29px,3vw,48px)]">
-  {ARTICLE.titleMain}{" – "}
-  <span className="text-[#176ac8]">
-    {ARTICLE.titleHighlight}
-  </span>
-</h1>
-
-          <p className="mt-4 w-full text-[14px] leading-[2] text-slate-600 sm:text-[17px] sm:leading-[1.9]">
-            {ARTICLE.description}
-          </p>
-
-          {/* AUTHOR AND DATE */}
-
-<div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-slate-100 pt-4 text-[11px] font-bold text-slate-500 sm:text-[12px]">
-
-  <span>
-    إعداد:{" "}
-
-    <strong className="text-[#102747]">
-      فريق بروكر العرب
-    </strong>
-
-  </span>
-
-  <span className="hidden text-slate-300 sm:inline">
-    |
-  </span>
-
-  <time dateTime={ARTICLE.modified}>
-
-    آخر تحديث:{" "}
-
-    {new Intl.DateTimeFormat("ar-KW", {
-      calendar: "gregory",
-      numberingSystem: "latn",
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-      timeZone: "UTC",
-    }).format(new Date(ARTICLE.modified))}
-
-  </time>
-
-  <span className="hidden text-slate-300 sm:inline">
-    |
-  </span>
-
-  <span>{ARTICLE.articleType}</span>
-
-</div>
-
-<ArticleHeroImage />
-
-        </div>
-
-      </header>
-
-      {/* ARTICLE BODY */}
-
-      <div className="mx-auto max-w-[1520px] px-3 py-6 sm:px-6 sm:py-10">
-
-        <article className="overflow-hidden rounded-[19px] border border-slate-200 bg-white shadow-[0_12px_35px_rgba(15,23,42,0.035)] sm:rounded-[24px]">
-
-          <div className="px-4 py-6 sm:px-8 sm:py-9 lg:px-12">
-
-            {/* INTRODUCTION */}
-
-<div className="space-y-4 text-[14px] leading-[2.1] text-slate-700 sm:text-[16px] sm:leading-[2]">
-
-  <Paragraph>
-    إذا كنت تقيم في الكويت وترغب في فتح حساب
-    لتداول العملات الأجنبية، فقد تكون لديك
-    تساؤلات حول إمكانية التسجيل بالبطاقة
-    المدنية، واستخدام تطبيق هويتي في التوثيق،
-    وتمويل الحساب بالدينار الكويتي، والفرق
-    بين شركات الاستثمار المحلية ومنصات
-    الفوركس الدولية.
-  </Paragraph>
-
-  <Paragraph>
-    تختلف الإجابات بحسب جنسيتك وإقامتك
-    ونوع المنتج المالي والجهة التي ستفتح
-    الحساب لديها. لذلك أعد فريق{" "}
-    <Strong>بروكر العرب</Strong>{" "}
-    هذا الدليل لمساعدة المتداول في الكويت
-    على فهم متطلبات التسجيل والتحقق من
-    الشركات وتجنب المشكلات المرتبطة
-    بالمستندات والتحويلات المالية.
-  </Paragraph>
-
-</div>
-
-{/* FEATURED KUWAIT BROKERS */}
-
-<KuwaitBrokerComparison rankings={kuwaitBrokers} />
-
-{/* TABLE OF CONTENTS */}
-
-<TableOfContents />
 
 {/* BEFORE OPENING */}
 
@@ -3741,14 +3196,10 @@ export default async function OpenForexAccountKuwaitPage() {
                 </span>
               </Link>
 
-            </footer>
+                        </footer>
 
-          </div>
+    </ArticleLayout>
 
-        </article>
-
-      </div>
-
-    </main>
   );
+
 }

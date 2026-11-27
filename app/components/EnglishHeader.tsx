@@ -103,7 +103,7 @@ const EMPTY_LEARNING_ITEMS: LearningItem[] = [];
 
 const NAVIGATION_FEATURES = {
   brokerNews: false,
-  articleCategories: false,
+  articleCategories: true,
 };
 
 /* =========================================================
@@ -1785,30 +1785,30 @@ export default function EnglishHeader({
           <div className="space-y-2 sm:max-2xl:space-y-0 sm:max-2xl:gap-2 [&_span.text-slate-500]:truncate">
 
             <MenuLink
-              item={{
-                label: "Markets & Economy Articles",
-                description: "Financial research and reports",
-                href:
-                  NAVIGATION_FEATURES.articleCategories
-                    ? "/en/articles/category/markets-economy"
-                    : "/en/articles",
-                icon: TrendingUp,
-              }}
-              onClose={closeMenus}
-            />
+  item={{
+    label: "Markets & Economy Articles",
+    description: "Financial research and reports",
+    href:
+      NAVIGATION_FEATURES.articleCategories
+        ? "/en/articles/category/financial-markets-economy"
+        : "/en/articles",
+    icon: TrendingUp,
+  }}
+  onClose={closeMenus}
+/>
 
-            <MenuLink
-              item={{
-                label: "Trading Guides by Country",
-                description: "Accounts, payments and regulation",
-                href:
-                  NAVIGATION_FEATURES.articleCategories
-                    ? "/en/articles/category/country-guides"
-                    : "/en/articles",
-                icon: Globe2,
-              }}
-              onClose={closeMenus}
-            />
+<MenuLink
+  item={{
+    label: "Trading Guides by Country",
+    description: "Accounts, payments and regulation",
+    href:
+      NAVIGATION_FEATURES.articleCategories
+        ? "/en/articles/category/forex-trading-guides-by-country"
+        : "/en/articles",
+    icon: Globe2,
+  }}
+  onClose={closeMenus}
+/>
 
           </div>
 

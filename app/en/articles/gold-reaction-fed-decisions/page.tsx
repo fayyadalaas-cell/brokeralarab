@@ -1,24 +1,33 @@
-
-import type { Metadata } from "next";
-import type { ReactNode } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
+
+import {
+  ArticleSection,
+  SubHeading,
+  Paragraph,
+  Strong,
+  ArticleList,
+  Note,
+  FAQItem,
+} from "@/app/components/editorial/ArticleComponents";
+
+import ArticleLayout from "@/app/components/editorial/ArticleLayout";
+
+import {
+  createArticleMetadata,
+  ArticleStructuredData,
+  type ArticleSEOConfig,
+} from "@/app/components/editorial/ArticleSEO";
 
 /* =========================================================
    BROKER ALARAB
-   ARTICLE PAGE — GOLD PRICE CRASHES HISTORY
-   Next.js App Router / Server Component
-   ========================================================= */
+   ENGLISH ARTICLE — GOLD REACTION TO FED DECISIONS
+========================================================= */
 
-const SITE = "https://brokeralarab.com";
 const SLUG = "gold-reaction-fed-decisions";
 
-const PATH = `/en/articles/${SLUG}`;
-const URL = `${SITE}${PATH}`;
-const AR_URL = `${SITE}/articles/${SLUG}`;
-
 const ARTICLE = {
+
   title:
     "How Do Fed Interest Rate Decisions Affect Gold Prices? A Study of 41 FOMC Meetings",
 
@@ -34,13 +43,18 @@ const ARTICLE = {
   description:
     "Explore gold price reactions to 41 FOMC meetings from 2021 to 2026, including rate hikes, cuts, holds, first-hour volatility and price reversals.",
 
-  category: "Research & Analysis",
+  category: "Markets & Economy",
+
   subcategory: "Gold & Interest Rates",
+
   articleType: "Statistical Research",
+
   breadcrumb: "Gold and Fed Rate Decisions",
+
   publisher: "Broker Alarab",
 
   published: "2026-11-23",
+
   modified: "2026-11-23",
 
   heroAlt:
@@ -48,13 +62,12 @@ const ARTICLE = {
 
   heroCaption:
     "Illustration of the relationship between US monetary policy and gold prices. The chart is illustrative and does not represent actual market data.",
+
 };
 
 const HERO_IMAGE =
   "/articles/gold-fed-decisions-hero.webp";
 
-const ARTICLE_READY = true;
-const HERO_IMAGE_READY = true;
 const FEATURED_BROKERS_READY = true;
 
 const ARTICLE_KEYWORDS = [
@@ -71,74 +84,79 @@ const ARTICLE_KEYWORDS = [
   "Gold price volatility",
 ];
 
-export const metadata: Metadata = {
-  title: ARTICLE.seoTitle,
+/* =========================================================
+   SEO METADATA
+========================================================= */
+
+const ARTICLE_SEO: ArticleSEOConfig = {
+
+  language: "en",
+
+  slug: SLUG,
+
+  title: ARTICLE.title,
+
+  seoTitle: ARTICLE.seoTitle,
+
   description: ARTICLE.description,
 
-  alternates: {
-    canonical: URL,
+  category: ARTICLE.subcategory,
 
-    languages: {
-      ar: AR_URL,
-      en: URL,
+  categoryName: ARTICLE.category,
+
+  categoryHref:
+    "/en/articles/category/financial-markets-economy",
+
+  author: ARTICLE.publisher,
+
+  published: ARTICLE.published,
+
+  modified: ARTICLE.modified,
+
+  image: HERO_IMAGE,
+
+  imageAlt: ARTICLE.heroAlt,
+
+  imageWidth: 1774,
+
+  imageHeight: 887,
+
+  hasTranslation: true,
+
+  indexable: true,
+
+  tags: ARTICLE_KEYWORDS,
+
+  keywords: ARTICLE_KEYWORDS,
+
+  about: [
+    {
+      "@type": "Thing",
+      name: "Gold",
     },
-  },
-
-  openGraph: {
-    type: "article",
-    url: URL,
-    title: ARTICLE.title,
-    description: ARTICLE.description,
-    siteName: "Broker Alarab",
-
-    locale: "en_US",
-    alternateLocale: ["ar_AR"],
-
-    publishedTime: ARTICLE.published,
-    modifiedTime: ARTICLE.modified,
-
-    section: ARTICLE.subcategory,
-
-    tags: ARTICLE_KEYWORDS,
-
-    images: HERO_IMAGE_READY
-      ? [
-          {
-            url: `${SITE}${HERO_IMAGE}`,
-            width: 1774,
-            height: 887,
-            alt: ARTICLE.heroAlt,
-          },
-        ]
-      : [],
-  },
-
-  twitter: {
-    card: HERO_IMAGE_READY
-      ? "summary_large_image"
-      : "summary",
-
-    title: ARTICLE.seoTitle,
-    description: ARTICLE.description,
-
-    images: HERO_IMAGE_READY
-      ? [`${SITE}${HERO_IMAGE}`]
-      : [],
-  },
-
-  robots: {
-    index: ARTICLE_READY,
-    follow: true,
-
-    googleBot: {
-      index: ARTICLE_READY,
-      follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
+    {
+      "@type": "Organization",
+      name: "Federal Reserve",
+      url: "https://www.federalreserve.gov/",
     },
-  },
+    {
+      "@type": "Thing",
+      name: "Monetary Policy",
+    },
+    {
+      "@type": "Thing",
+      name: "Interest Rates",
+    },
+    {
+      "@type": "Thing",
+      name: "XAUUSD",
+    },
+  ],
+
 };
+
+export const metadata =
+  createArticleMetadata(ARTICLE_SEO);
 
 /* =========================================================
    ARTICLE DATA
@@ -387,326 +405,7 @@ const sources = [
   },
 ];
 
-/* =========================================================
-   SHARED ARTICLE DESIGN COMPONENTS
-   These can later move to /components/articles/
-   ========================================================= */
 
-function ArticleSection({
-  id,
-  eyebrow,
-  title,
-  children,
-}: {
-  id: string;
-  eyebrow?: string;
-  title: string;
-  children: ReactNode;
-}) {
-  return (
-    <section
-      id={id}
-      className="scroll-mt-24 border-b border-slate-100 py-5 last:border-0 sm:py-7"
-    >
-      {eyebrow && (
-        <span className="mb-2 block text-[11px] font-extrabold text-[#176ac8] sm:text-xs">
-          {eyebrow}
-        </span>
-      )}
-
-      <h2 className="border-l-[4px] border-[#2587e7] pl-3 text-[22px] font-black leading-[1.4] tracking-tight text-[#101d35] sm:pl-4 sm:text-[29px]">
-        {title}
-      </h2>
-
-      <div className="mt-4 space-y-4 text-[14px] leading-[1.85] text-slate-700 sm:text-[16px] sm:leading-[1.9]">
-        {children}
-      </div>
-    </section>
-  );
-}
-
-function SubHeading({
-  children,
-}: {
-  children: ReactNode;
-}) {
-  return (
-    <h3 className="!mt-8 text-[17px] font-black leading-[1.7] text-[#102a4a] sm:text-[20px]">
-      {children}
-    </h3>
-  );
-}
-
-function Paragraph({
-  children,
-}: {
-  children: ReactNode;
-}) {
-  return <p>{children}</p>;
-}
-
-function Strong({
-  children,
-}: {
-  children: ReactNode;
-}) {
-  return (
-    <strong className="font-black text-[#11294b]">
-      {children}
-    </strong>
-  );
-}
-
-function ArticleList({
-  items,
-}: {
-  items: ReactNode[];
-}) {
-  return (
-    <ul className="space-y-3">
-      {items.map((item, index) => (
-        <li
-          key={index}
-          className="flex items-start gap-3"
-        >
-          <span className="mt-[11px] h-2 w-2 shrink-0 rounded-full bg-[#2587e7]" />
-          <span className="min-w-0 flex-1">
-            {item}
-          </span>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function Note({
-  title,
-  children,
-  tone = "blue",
-}: {
-  title: string;
-  children: ReactNode;
-  tone?: "blue" | "amber";
-}) {
-  const amber = tone === "amber";
-
-  return (
-    <aside
-      className={`!my-5 rounded-[15px] border p-4 sm:p-5 ${
-        amber
-          ? "border-amber-200 bg-[#fffbef]"
-          : "border-blue-100 bg-[#f1f7fe]"
-      }`}
-    >
-      <div
-        className={`text-[13px] font-black sm:text-[15px] ${
-          amber ? "text-amber-900" : "text-[#10549f]"
-        }`}
-      >
-        {title}
-      </div>
-
-      <div className="mt-2 text-[13px] leading-[2] text-slate-700 sm:text-[14px]">
-        {children}
-      </div>
-    </aside>
-  );
-}
-
-/* =========================================================
-   HERO IMAGE PLACEHOLDER
-   ========================================================= */
-
-
-/* =========================================================
-   ARTICLE HERO IMAGE
-   Responsive / SEO / Optimized
-   ========================================================= */
-
-function ArticleHeroImage() {
-  if (!HERO_IMAGE_READY) {
-    return null;
-  }
-
-  return (
-    <figure className="mt-6 sm:mt-8">
-      <div className="relative aspect-[2/1] w-full overflow-hidden rounded-[18px] border border-slate-200 bg-[#071a31] shadow-[0_12px_35px_rgba(15,23,42,0.10)] sm:rounded-[22px]">
-        <Image
-          src={HERO_IMAGE}
-          alt={ARTICLE.heroAlt}
-          fill
-          priority
-          quality={75}
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 95vw, (max-width: 1520px) 92vw, 1440px"
-          className="object-cover object-center"
-        />
-      </div>
-
-      <figcaption className="mt-2 text-center text-[11px] leading-6 text-slate-500 sm:text-[12px]">
-        {ARTICLE.heroCaption}
-      </figcaption>
-    </figure>
-  );
-}
-
-
-/* =========================================================
-   TABLE OF CONTENTS
-   ========================================================= */
-
-
-/* =========================================================
-   ARTICLE TABLE OF CONTENTS
-   Compact / Responsive / SEO-friendly
-   ========================================================= */
-
-
-/* =========================================================
-   TABLE OF CONTENTS
-   Mobile: compact expandable menu
-   Desktop: original 3-column layout
-   ========================================================= */
-
-function TableOfContents() {
-  return (
-    <>
-      {/* MOBILE TABLE OF CONTENTS */}
-
-      <nav
-        aria-label="Mobile table of contents"
-        className="my-5 sm:hidden"
-      >
-        <details className="group overflow-hidden rounded-[16px] border border-[#dce6f2] bg-white shadow-sm">
-
-          <summary className="flex min-h-[65px] cursor-pointer list-none items-center gap-3 px-3.5 py-3 [&::-webkit-details-marker]:hidden">
-
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[11px] bg-[#eaf3ff] text-[#176ac8]">
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M8 6h13" />
-                <path d="M8 12h13" />
-                <path d="M8 18h13" />
-                <path d="M3 6h.01" />
-                <path d="M3 12h.01" />
-                <path d="M3 18h.01" />
-              </svg>
-            </span>
-
-            <span className="min-w-0 flex-1">
-              <span className="block text-[14px] font-black text-[#102747]">
-                Table of Contents
-              </span>
-
-              <span className="mt-0.5 block text-[10px] text-slate-500">
-                {contents.length} sections • Tap to explore
-              </span>
-            </span>
-
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-blue-100 bg-[#f5f9ff] text-[#176ac8] transition-transform group-open:rotate-180">
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="m6 9 6 6 6-6" />
-              </svg>
-            </span>
-
-          </summary>
-
-          <div className="border-t border-slate-100 bg-[#f8fbff] p-2.5">
-            <div className="grid grid-cols-2 gap-2">
-
-              {contents.map((item, index) => (
-                <a
-                  key={item.id}
-                  href={`#${item.id}`}
-                  className="flex min-h-[48px] min-w-0 items-center gap-2 rounded-[10px] border border-slate-200 bg-white px-2.5 py-2 text-left transition active:bg-blue-50"
-                >
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-[#eaf3ff] text-[9px] font-black text-[#176ac8]">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-
-                  <span className="min-w-0 flex-1 break-words text-[10px] font-extrabold leading-4 text-[#243b57]">
-                    {item.label}
-                  </span>
-                </a>
-              ))}
-
-            </div>
-          </div>
-
-        </details>
-      </nav>
-
-      {/* DESKTOP TABLE OF CONTENTS */}
-
-      <nav
-        aria-label="Article table of contents"
-        className="my-6 hidden overflow-hidden rounded-[20px] border border-[#dce6f2] bg-white shadow-[0_8px_28px_rgba(15,23,42,0.04)] sm:block"
-      >
-        <div className="flex items-center justify-between gap-3 border-b border-[#e5edf6] bg-[linear-gradient(90deg,#f3f8ff_0%,#ffffff_100%)] px-6 py-5">
-
-          <div>
-            <h2 className="text-[19px] font-black text-[#102747]">
-              Table of Contents
-            </h2>
-
-            <p className="mt-1 text-[12px] text-slate-500">
-              Jump directly to the section you want to explore
-            </p>
-          </div>
-
-          <span className="rounded-full border border-blue-100 bg-[#eaf3ff] px-3 py-1.5 text-[11px] font-black text-[#1765b5]">
-            {contents.length} sections
-          </span>
-
-        </div>
-
-        <div className="grid grid-cols-2 gap-2.5 p-5 xl:grid-cols-3">
-
-          {contents.map((item, index) => (
-            <a
-              key={item.id}
-              href={`#${item.id}`}
-              className="group flex min-h-[54px] min-w-0 items-center gap-3 rounded-[12px] border border-[#e8eef6] bg-[#f8fafc] px-3 py-2.5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-[#aacdf4] hover:bg-[#edf6ff]"
-            >
-
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[9px] bg-white text-[11px] font-black text-[#176ac8] shadow-sm ring-1 ring-[#e2ebf6] transition group-hover:bg-[#176ac8] group-hover:text-white">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-
-              <span className="min-w-0 flex-1 text-[12px] font-extrabold leading-5 text-[#243b57] group-hover:text-[#176ac8]">
-                {item.label}
-              </span>
-
-              <span className="text-[#9aacc2] group-hover:text-[#176ac8]">
-                ›
-              </span>
-
-            </a>
-          ))}
-
-        </div>
-      </nav>
-    </>
-  );
-}
 
 /* =========================================================
    HISTORICAL TABLE
@@ -1376,25 +1075,6 @@ function PercentageReactionChart() {
   );
 }
 
-function FAQItem({
-  question,
-  children,
-}: {
-  question: string;
-  children: ReactNode;
-}) {
-  return (
-    <div className="border-b border-slate-200 py-5 first:pt-0 last:border-0 last:pb-0">
-      <h3 className="text-[15px] font-black leading-7 text-[#102747] sm:text-[17px]">
-        {question}
-      </h3>
-
-      <div className="mt-2 text-[13px] leading-[2] text-slate-600 sm:text-[15px]">
-        {children}
-      </div>
-    </div>
-  );
-}
 
 
 /* =========================================================
@@ -1669,324 +1349,118 @@ function FeaturedGoldBrokers({
 
 
 /* =========================================================
-   STRUCTURED DATA
-   ========================================================= */
-
-function ArticleStructuredData() {
-  if (!ARTICLE_READY) {
-    return null;
-  }
-
-  const articleJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-
-    "@id": `${URL}#article`,
-
-    headline: ARTICLE.title,
-    description: ARTICLE.description,
-
-    ...(HERO_IMAGE_READY
-      ? {
-          image: {
-            "@type": "ImageObject",
-            url: `${SITE}${HERO_IMAGE}`,
-            width: 1774,
-            height: 887,
-          },
-        }
-      : {}),
-
-    inLanguage: "en",
-
-    mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": URL,
-    },
-
-    url: URL,
-
-    datePublished: ARTICLE.published,
-    dateModified: ARTICLE.modified,
-
-    articleSection: ARTICLE.subcategory,
-
-    author: {
-      "@type": "Organization",
-      name: ARTICLE.publisher,
-      url: `${SITE}/en`,
-    },
-
-    publisher: {
-      "@type": "Organization",
-      name: "Broker Alarab",
-      url: SITE,
-    },
-
-    isPartOf: {
-      "@type": "WebSite",
-      name: "Broker Alarab",
-      url: SITE,
-    },
-
-    keywords: ARTICLE_KEYWORDS,
-
-    about: [
-      {
-        "@type": "Thing",
-        name: "Gold",
-      },
-      {
-        "@type": "Organization",
-        name: "Federal Reserve",
-        url: "https://www.federalreserve.gov/",
-      },
-      {
-        "@type": "Thing",
-        name: "Monetary Policy",
-      },
-      {
-        "@type": "Thing",
-        name: "Interest Rates",
-      },
-      {
-        "@type": "Thing",
-        name: "XAUUSD",
-      },
-    ],
-
-    citation: sources.map((source) => ({
-      "@type": "CreativeWork",
-      name: source.title,
-      url: source.url,
-    })),
-  };
-
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: `${SITE}/en`,
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: ARTICLE.title,
-        item: URL,
-      },
-    ],
-  };
-
-  const serialize = (value: unknown) =>
-    JSON.stringify(value).replace(/</g, "\\u003c");
-
-  return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: serialize(articleJsonLd),
-        }}
-      />
-
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: serialize(breadcrumbJsonLd),
-        }}
-      />
-    </>
-  );
-}
-
-/* =========================================================
-   MAIN ARTICLE PAGE
-   ========================================================= */
+   MAIN ENGLISH ARTICLE PAGE
+========================================================= */
 
 export default async function GoldFedDecisionsArticlePage() {
+
   const featuredGoldBrokers = FEATURED_BROKERS_READY
     ? await getArticleGoldBrokers()
     : [];
 
   return (
-    <main
-      dir="ltr"
-      lang="en"
-      className="min-h-screen overflow-x-clip bg-[#f5f7fb] text-slate-900"
+
+    <ArticleLayout
+
+      language="en"
+
+      slug={SLUG}
+
+      title={ARTICLE.titleMain}
+
+      titleHighlight={ARTICLE.titleHighlight}
+
+      description={ARTICLE.description}
+
+      category={ARTICLE.category}
+
+      categoryHref="/en/articles/category/financial-markets-economy"
+
+      subcategory={ARTICLE.subcategory}
+
+      articleType={ARTICLE.articleType}
+
+      breadcrumbTitle={ARTICLE.breadcrumb}
+
+      author="Broker Alarab Research Team"
+
+      published={ARTICLE.published}
+
+      modified={ARTICLE.modified}
+
+      heroImage={HERO_IMAGE}
+
+      heroImageAlt={ARTICLE.heroAlt}
+
+      heroImageCaption={ARTICLE.heroCaption}
+
+      contents={contents}
+
+      structuredData={
+        <ArticleStructuredData
+          config={{
+            ...ARTICLE_SEO,
+            sources,
+          }}
+        />
+      }
+
+      introduction={
+
+        <>
+
+          <Paragraph>
+            Federal Reserve interest rate decisions
+            are among the most closely watched economic
+            events in the global gold market. Changes
+            in US monetary policy can influence the
+            US dollar, Treasury yields, inflation
+            expectations and investor demand for
+            precious metals.
+          </Paragraph>
+
+          <Paragraph>
+            A widely held assumption among gold
+            traders is that higher interest rates
+            push gold prices lower, while interest
+            rate cuts support higher prices.
+            Historical market reactions, however,
+            reveal a more complex relationship.
+          </Paragraph>
+
+          <Paragraph>
+            Gold can rally following a Fed rate hike,
+            decline after a rate cut or experience
+            substantial price movements even when
+            the Federal Reserve leaves interest rates
+            unchanged.
+          </Paragraph>
+
+          <Paragraph>
+            In this statistical research report,{" "}
+            <Strong>Broker Alarab</Strong>{" "}
+            examines published XAU/USD price reactions
+            across 41 Federal Open Market Committee
+            (FOMC) meetings between November 2021
+            and October 2026.
+          </Paragraph>
+
+          <Paragraph>
+            The analysis compares gold price direction,
+            absolute price changes, percentage
+            movements and directional reversals
+            following rate hikes, rate cuts and
+            unchanged interest rate decisions.
+            It also examines separate historical
+            research covering gold performance during
+            the trading sessions following Fed announcements.
+          </Paragraph>
+
+                </>
+
+      }
+
     >
-
-      <ArticleStructuredData />
-
-      {/* HEADER / ARTICLE INTRO */}
-
-      <header className="border-b border-slate-200 bg-white">
-
-        <div className="mx-auto max-w-[1520px] px-4 pb-8 pt-6 sm:px-6 sm:pb-12 sm:pt-9">
-
-          {/* BREADCRUMB */}
-
-          <nav
-            aria-label="Breadcrumb"
-            className="flex flex-wrap items-center gap-2 text-[11px] font-bold text-slate-500 sm:text-[12px]"
-          >
-
-            <Link
-              href="/en"
-              className="transition hover:text-blue-600"
-            >
-              Home
-            </Link>
-
-            <span aria-hidden="true">/</span>
-
-            <span>{ARTICLE.category}</span>
-
-            <span aria-hidden="true">/</span>
-
-            <span className="text-[#145ca8]">
-              {ARTICLE.breadcrumb}
-            </span>
-
-          </nav>
-
-          {/* ARTICLE CATEGORY */}
-
-          <div className="mt-6 flex flex-wrap items-center gap-2">
-
-            <span className="rounded-full bg-[#eaf3ff] px-3 py-1.5 text-[10px] font-black text-[#1765b5] sm:text-[11px]">
-              {ARTICLE.subcategory}
-            </span>
-
-            <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[10px] font-bold text-slate-600 sm:text-[11px]">
-              {ARTICLE.articleType}
-            </span>
-
-          </div>
-
-          {/* MAIN TITLE */}
-
-          <h1 className="mt-5 w-full text-[27px] font-black leading-[1.3] tracking-[-0.025em] text-[#0c1e38] sm:text-[34px] lg:text-[clamp(29px,3vw,48px)]">
-
-            {ARTICLE.titleMain}{" "}
-
-            <span className="text-[#176ac8]">
-              {ARTICLE.titleHighlight}
-            </span>
-
-          </h1>
-
-          {/* DESCRIPTION */}
-
-          <p className="mt-4 w-full max-w-none text-[14px] leading-[1.85] text-slate-600 sm:text-[17px] sm:leading-[1.85]">
-            {ARTICLE.description}
-          </p>
-
-          {/* ARTICLE METADATA */}
-
-          <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-slate-100 pt-4 text-[11px] font-bold text-slate-500 sm:text-[12px]">
-
-            <span>
-              By{" "}
-              <strong className="text-[#102747]">
-                Broker Alarab Research Team
-              </strong>
-            </span>
-
-            <span className="hidden text-slate-300 sm:inline">
-              |
-            </span>
-
-            <time dateTime={ARTICLE.modified}>
-              Last updated:{" "}
-              {new Intl.DateTimeFormat("en-US", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-                timeZone: "UTC",
-              }).format(new Date(ARTICLE.modified))}
-            </time>
-
-            <span className="hidden text-slate-300 sm:inline">
-              |
-            </span>
-
-            <span>{ARTICLE.articleType}</span>
-
-          </div>
-
-          <ArticleHeroImage />
-
-        </div>
-
-      </header>
-
-      {/* ARTICLE BODY */}
-
-      <div className="mx-auto max-w-[1520px] px-3 py-6 sm:px-6 sm:py-10">
-
-        <article className="overflow-hidden rounded-[19px] border border-slate-200 bg-white shadow-[0_12px_35px_rgba(15,23,42,0.035)] sm:rounded-[24px]">
-
-          <div className="px-4 py-6 sm:px-8 sm:py-9 lg:px-12">
-
-            {/* INTRODUCTION */}
-
-            <div className="space-y-5 text-[14px] leading-[1.85] text-slate-700 sm:text-[16px] sm:leading-[1.9]">
-
-              <Paragraph>
-                Federal Reserve interest rate decisions
-                are among the most closely watched economic
-                events in the global gold market. Changes
-                in US monetary policy can influence the
-                US dollar, Treasury yields, inflation
-                expectations and investor demand for
-                precious metals.
-              </Paragraph>
-
-              <Paragraph>
-                A widely held assumption among gold
-                traders is that higher interest rates
-                push gold prices lower, while interest
-                rate cuts support higher prices.
-                Historical market reactions, however,
-                reveal a more complex relationship.
-              </Paragraph>
-
-              <Paragraph>
-                Gold can rally following a Fed rate hike,
-                decline after a rate cut or experience
-                substantial price movements even when
-                the Federal Reserve leaves interest rates
-                unchanged.
-              </Paragraph>
-
-              <Paragraph>
-                In this statistical research report,{" "}
-                <Strong>Broker Alarab</Strong>{" "}
-                examines published XAU/USD price reactions
-                across 41 Federal Open Market Committee
-                (FOMC) meetings between November 2021
-                and October 2026.
-              </Paragraph>
-
-              <Paragraph>
-                The analysis compares gold price direction,
-                absolute price changes, percentage
-                movements and directional reversals
-                following rate hikes, rate cuts and
-                unchanged interest rate decisions.
-                It also examines separate historical
-                research covering gold performance during
-                the trading sessions following Fed announcements.
-              </Paragraph>
-
-            </div>
-
-            <TableOfContents />
 
             {/* SUMMARY */}
 
@@ -3681,14 +3155,10 @@ export default async function GoldFedDecisionsArticlePage() {
 
               </Link>
 
-            </footer>
+                        </footer>
 
-          </div>
+    </ArticleLayout>
 
-        </article>
-
-      </div>
-
-    </main>
   );
+
 }

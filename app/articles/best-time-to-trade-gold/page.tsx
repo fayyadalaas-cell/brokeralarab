@@ -1,121 +1,153 @@
-
-import type { Metadata } from "next";
-import type { ReactNode } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
+
 import GoldTradingHoursTool from "./GoldTradingHoursTool";
+
+import {
+  ArticleSection,
+  SubHeading,
+  Paragraph,
+  Strong,
+  ArticleList,
+  Note,
+  FAQItem,
+} from "@/app/components/editorial/ArticleComponents";
+
+import ArticleLayout from "@/app/components/editorial/ArticleLayout";
+
+import {
+  createArticleMetadata,
+  ArticleStructuredData,
+  type ArticleSEOConfig,
+} from "@/app/components/editorial/ArticleSEO";
 
 /* =========================================================
    BROKER ALARAB
-   ARTICLE PAGE — BEST TIME TO TRADE GOLD
-   Next.js App Router / Server Component
-   ========================================================= */
+   ARABIC ARTICLE — BEST TIME TO TRADE GOLD
+========================================================= */
 
-const SITE = "https://brokeralarab.com";
 const SLUG = "best-time-to-trade-gold";
-const PATH = `/articles/${SLUG}`;
-const URL = `${SITE}${PATH}`;
 
 const ARTICLE = {
+
   title:
     "أفضل أوقات تداول الذهب خلال اليوم – دراسة إحصائية لحركة الأسعار",
 
   seoTitle:
     "أفضل أوقات تداول الذهب خلال اليوم – دراسة إحصائية",
 
+  titleMain:
+    "أفضل أوقات تداول الذهب خلال اليوم –",
+
+  titleHighlight:
+    "دراسة إحصائية لحركة الأسعار",
+
   description:
     "اكتشف أفضل أوقات تداول الذهب بناءً على دراسة بيانات تاريخية تمتد لأكثر من 16 عاماً، ومقارنة حركة الأسعار حسب الساعة واليوم وجلسات التداول بتوقيت السعودية والكويت والإمارات.",
 
-  category: "مقالات وتحليلات",
+  heroDescription:
+    "دراسة لحركة أسعار الذهب مقابل الدولار الأمريكي خلال ساعات اليوم وجلسات التداول العالمية، بهدف تحديد الفترات الأكثر نشاطاً وتقلباً، ومقارنة أوقات التداول بتوقيت السعودية والكويت والإمارات وبقية الدول العربية.",
+
+  category: "مقالات الأسواق والاقتصاد",
+
   subcategory: "الذهب والأسواق",
+
+  articleType: "دراسة إحصائية",
+
+  breadcrumb: "أفضل أوقات تداول الذهب",
+
   publisher: "بروكر العرب",
+
   published: "2026-11-25",
+
   modified: "2026-11-25",
+
+  heroAlt:
+    "أفضل أوقات تداول الذهب خلال اليوم وتحليل حركة أسعار XAU/USD خلال جلسات التداول العالمية",
+
+  heroCaption:
+    "صورة توضيحية لحركة الذهب خلال جلسات التداول العالمية واختلاف مستويات التقلب خلال ساعات اليوم.",
+
 };
 
 const HERO_IMAGE =
   "/articles/best-time-to-trade-gold.webp";
 
 /* =========================================================
-   METADATA
-   ========================================================= */
+   SEO METADATA
+========================================================= */
 
-export const metadata: Metadata = {
-  title: ARTICLE.seoTitle,
+const ARTICLE_SEO: ArticleSEOConfig = {
+
+  language: "ar",
+
+  slug: SLUG,
+
+  title: ARTICLE.title,
+
+  seoTitle: ARTICLE.seoTitle,
 
   description: ARTICLE.description,
 
+  category: ARTICLE.subcategory,
+
+  categoryName: ARTICLE.category,
+
+  categoryHref:
+    "/articles/category/financial-markets-economy",
+
+  author: ARTICLE.publisher,
+
+  published: ARTICLE.published,
+
+  modified: ARTICLE.modified,
+
+  image: HERO_IMAGE,
+
+  imageAlt: ARTICLE.heroAlt,
+
+  imageWidth: 1774,
+
+  imageHeight: 887,
+
+  hasTranslation: true,
+
+  indexable: true,
+
+  about: [
+    {
+      "@type": "Thing",
+      name: "تداول الذهب",
+    },
+    {
+      "@type": "Thing",
+      name: "XAU/USD",
+    },
+    {
+      "@type": "Thing",
+      name: "التقلبات السعرية خلال اليوم",
+    },
+  ],
+
+};
+
+const baseMetadata =
+  createArticleMetadata(ARTICLE_SEO);
+
+export const metadata = {
+  ...baseMetadata,
+
   alternates: {
-    canonical: URL,
+    ...baseMetadata.alternates,
 
     languages: {
-      ar: URL,
-      en: `${SITE}/en/articles/${SLUG}`,
-      "x-default": `${SITE}/en/articles/${SLUG}`,
-    },
-  },
+      ...baseMetadata.alternates?.languages,
 
-  openGraph: {
-    type: "article",
-
-    url: URL,
-
-    title: ARTICLE.title,
-
-    description: ARTICLE.description,
-
-    siteName: "Broker Alarab",
-
-    locale: "ar_AR",
-
-    alternateLocale: ["en_US"],
-
-    publishedTime: ARTICLE.published,
-
-    modifiedTime: ARTICLE.modified,
-
-    section: ARTICLE.subcategory,
-
-    images: [
-      {
-        url: `${SITE}${HERO_IMAGE}`,
-        width: 1774,
-        height: 887,
-        alt: ARTICLE.title,
-      },
-    ],
-  },
-
-  twitter: {
-    card: "summary_large_image",
-
-    title: ARTICLE.seoTitle,
-
-    description: ARTICLE.description,
-
-    images: [`${SITE}${HERO_IMAGE}`],
-  },
-
-  robots: {
-    index: true,
-
-    follow: true,
-
-    googleBot: {
-      index: true,
-
-      follow: true,
-
-      "max-image-preview": "large",
-
-      "max-snippet": -1,
-
-      "max-video-preview": -1,
+      "x-default":
+        `https://brokeralarab.com/en/articles/${SLUG}`,
     },
   },
 };
-
 
 /* =========================================================
    ARTICLE DATA
@@ -424,330 +456,7 @@ const sources = [
   },
 ];
 
-/* =========================================================
-   SHARED ARTICLE DESIGN COMPONENTS
-   These can later move to /components/articles/
-   ========================================================= */
 
-function ArticleSection({
-  id,
-  eyebrow,
-  title,
-  children,
-}: {
-  id: string;
-  eyebrow?: string;
-  title: string;
-  children: ReactNode;
-}) {
-  return (
-    <section
-      id={id}
-      className="scroll-mt-24 border-b border-slate-100 py-5 last:border-0 sm:py-7"
-    >
-      {eyebrow && (
-        <span className="mb-2 block text-[11px] font-extrabold text-[#176ac8] sm:text-xs">
-          {eyebrow}
-        </span>
-      )}
-
-      <h2 className="border-r-[4px] border-[#2587e7] pr-3 text-[22px] font-black leading-[1.5] tracking-tight text-[#101d35] sm:pr-4 sm:text-[29px]">
-        {title}
-      </h2>
-
-      <div className="mt-4 space-y-4 text-[14px] leading-[2.05] text-slate-700 sm:text-[16px] sm:leading-[2]">
-        {children}
-      </div>
-    </section>
-  );
-}
-
-function SubHeading({
-  children,
-}: {
-  children: ReactNode;
-}) {
-  return (
-    <h3 className="!mt-8 text-[17px] font-black leading-[1.7] text-[#102a4a] sm:text-[20px]">
-      {children}
-    </h3>
-  );
-}
-
-function Paragraph({
-  children,
-}: {
-  children: ReactNode;
-}) {
-  return <p>{children}</p>;
-}
-
-function Strong({
-  children,
-}: {
-  children: ReactNode;
-}) {
-  return (
-    <strong className="font-black text-[#11294b]">
-      {children}
-    </strong>
-  );
-}
-
-function ArticleList({
-  items,
-}: {
-  items: ReactNode[];
-}) {
-  return (
-    <ul className="space-y-3">
-      {items.map((item, index) => (
-        <li
-          key={index}
-          className="flex items-start gap-3"
-        >
-          <span className="mt-[11px] h-2 w-2 shrink-0 rounded-full bg-[#2587e7]" />
-          <span className="min-w-0 flex-1">
-            {item}
-          </span>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function Note({
-  title,
-  children,
-  tone = "blue",
-}: {
-  title: string;
-  children: ReactNode;
-  tone?: "blue" | "amber";
-}) {
-  const amber = tone === "amber";
-
-  return (
-    <aside
-      className={`!my-5 rounded-[15px] border p-4 sm:p-5 ${
-        amber
-          ? "border-amber-200 bg-[#fffbef]"
-          : "border-blue-100 bg-[#f1f7fe]"
-      }`}
-    >
-      <div
-        className={`text-[13px] font-black sm:text-[15px] ${
-          amber ? "text-amber-900" : "text-[#10549f]"
-        }`}
-      >
-        {title}
-      </div>
-
-      <div className="mt-2 text-[13px] leading-[2] text-slate-700 sm:text-[14px]">
-        {children}
-      </div>
-    </aside>
-  );
-}
-
-/* =========================================================
-   HERO IMAGE PLACEHOLDER
-   ========================================================= */
-
-
-/* =========================================================
-   ARTICLE HERO IMAGE
-   Responsive / SEO / Optimized
-   ========================================================= */
-
-function ArticleHeroImage() {
-  return (
-    <figure className="mt-6 sm:mt-8">
-      <div className="relative aspect-[2/1] w-full overflow-hidden rounded-[18px] border border-slate-200 bg-[#071a31] shadow-[0_12px_35px_rgba(15,23,42,0.10)] sm:rounded-[22px]">
-        <Image
-          src={HERO_IMAGE}
-          alt="أفضل أوقات تداول الذهب خلال اليوم وتحليل حركة أسعار XAU/USD خلال جلسات التداول العالمية"
-          fill
-          priority
-          quality={85}
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 95vw, (max-width: 1520px) 92vw, 1440px"
-          className="object-cover object-center"
-        />
-      </div>
-
-      <figcaption className="mt-2 text-center text-[11px] leading-6 text-slate-500 sm:text-[12px]">
-        صورة توضيحية لحركة الذهب خلال جلسات التداول العالمية
-        واختلاف مستويات التقلب خلال ساعات اليوم.
-      </figcaption>
-    </figure>
-  );
-}
-
-
-/* =========================================================
-   TABLE OF CONTENTS
-   ========================================================= */
-
-
-/* =========================================================
-   ARTICLE TABLE OF CONTENTS
-   Compact / Responsive / SEO-friendly
-   ========================================================= */
-
-
-/* =========================================================
-   TABLE OF CONTENTS
-   Mobile: compact expandable menu
-   Desktop: original 3-column layout
-   ========================================================= */
-
-function TableOfContents() {
-  return (
-    <>
-      {/* =========================
-          MOBILE ONLY
-          ========================= */}
-
-      <nav
-        aria-label="فهرس المقال للموبايل"
-        className="my-5 sm:hidden"
-      >
-        <details className="group overflow-hidden rounded-[16px] border border-[#dce6f2] bg-white shadow-sm">
-
-          <summary className="flex min-h-[65px] cursor-pointer list-none items-center gap-3 px-3.5 py-3 [&::-webkit-details-marker]:hidden">
-
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[11px] bg-[#eaf3ff] text-[#176ac8]">
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M8 6h13" />
-                <path d="M8 12h13" />
-                <path d="M8 18h13" />
-                <path d="M3 6h.01" />
-                <path d="M3 12h.01" />
-                <path d="M3 18h.01" />
-              </svg>
-            </span>
-
-            <span className="min-w-0 flex-1">
-              <span className="block text-[14px] font-black text-[#102747]">
-                محتويات المقال
-              </span>
-
-              <span className="mt-0.5 block text-[10px] text-slate-500">
-                {contents.length} قسماً • اضغط لاستعراضها
-              </span>
-            </span>
-
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-blue-100 bg-[#f5f9ff] text-[#176ac8] transition-transform group-open:rotate-180">
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="m6 9 6 6 6-6" />
-              </svg>
-            </span>
-          </summary>
-
-          <div className="border-t border-slate-100 bg-[#f8fbff] p-2.5">
-            <div className="grid grid-cols-2 gap-2">
-              {contents.map((item, index) => (
-                <a
-                  key={item.id}
-                  href={`#${item.id}`}
-                  className="flex min-h-[45px] min-w-0 items-center gap-2 rounded-[10px] border border-slate-200 bg-white px-2.5 py-2 text-right transition active:bg-blue-50"
-                >
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-[#eaf3ff] text-[9px] font-black text-[#176ac8]">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-
-                  <span className="min-w-0 flex-1 text-[10px] font-extrabold leading-4 text-[#243b57]">
-                    {item.label}
-                  </span>
-                </a>
-              ))}
-            </div>
-          </div>
-        </details>
-      </nav>
-
-      {/* =========================
-          DESKTOP / TABLET
-          ========================= */}
-
-      <nav
-        aria-label="فهرس محتويات المقال"
-        className="my-6 hidden overflow-hidden rounded-[20px] border border-[#dce6f2] bg-white shadow-[0_8px_28px_rgba(15,23,42,0.04)] sm:block"
-      >
-        <div className="flex items-center justify-between gap-3 border-b border-[#e5edf6] bg-[linear-gradient(270deg,#f3f8ff_0%,#ffffff_100%)] px-6 py-5">
-
-          <div>
-            <h2 className="text-[19px] font-black text-[#102747]">
-              محتويات المقال
-            </h2>
-
-            <p className="mt-1 text-[12px] text-slate-500">
-              انتقل مباشرة إلى القسم الذي يهمك
-            </p>
-          </div>
-
-          <span className="rounded-full border border-blue-100 bg-[#eaf3ff] px-3 py-1.5 text-[11px] font-black text-[#1765b5]">
-            {contents.length} موضوعاً
-          </span>
-        </div>
-
-        <div className="grid grid-cols-2 gap-2.5 p-5 xl:grid-cols-3">
-          {contents.map((item, index) => (
-            <a
-              key={item.id}
-              href={`#${item.id}`}
-              className="group flex min-h-[54px] min-w-0 items-center gap-3 rounded-[12px] border border-[#e8eef6] bg-[#f8fafc] px-3 py-2.5 text-right transition-all duration-200 hover:-translate-y-0.5 hover:border-[#aacdf4] hover:bg-[#edf6ff]"
-            >
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[9px] bg-white text-[11px] font-black text-[#176ac8] shadow-sm ring-1 ring-[#e2ebf6] transition group-hover:bg-[#176ac8] group-hover:text-white">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-
-              <span className="min-w-0 flex-1 text-[12px] font-extrabold leading-5 text-[#243b57] group-hover:text-[#176ac8]">
-                {item.label}
-              </span>
-
-              <span className="text-[#9aacc2] group-hover:text-[#176ac8]">
-                ‹
-              </span>
-            </a>
-          ))}
-        </div>
-      </nav>
-    </>
-  );
-}
-
-
-
-/* =========================================================
-   HISTORICAL TABLE
-   DESKTOP TABLE + MOBILE CARDS
-   ========================================================= */
-
-
-/* =========================================================
-   FAQ COMPONENT
-   ========================================================= */
 
    /* =========================================================
    RESEARCH SUMMARY CARDS
@@ -2063,25 +1772,6 @@ function GoldRangeProbability() {
   );
 }
 
-function FAQItem({
-  question,
-  children,
-}: {
-  question: string;
-  children: ReactNode;
-}) {
-  return (
-    <div className="border-b border-slate-200 py-5 first:pt-0 last:border-0 last:pb-0">
-      <h3 className="text-[15px] font-black leading-7 text-[#102747] sm:text-[17px]">
-        {question}
-      </h3>
-
-      <div className="mt-2 text-[13px] leading-[2] text-slate-600 sm:text-[15px]">
-        {children}
-      </div>
-    </div>
-  );
-}
 
 
 /* =========================================================
@@ -2653,247 +2343,111 @@ function GoldBrokersComparison({
   );
 }
 
-function ArticleStructuredData() {
-  const articleJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: ARTICLE.title,
-    description: ARTICLE.description,
-    image: {
-  "@type": "ImageObject",
-  url: `${SITE}${HERO_IMAGE}`,
-  width: 1774,
-  height: 887,
-},
-    inLanguage: "ar",
-    mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": URL,
-    },
-    url: URL,
-    datePublished: ARTICLE.published,
-    dateModified: ARTICLE.modified,
-    articleSection: "الذهب والأسواق",
-    author: {
-      "@type": "Organization",
-      name: "بروكر العرب",
-      url: SITE,
-    },
-    publisher: {
-      "@type": "Organization",
-      name: "Broker Alarab",
-      url: SITE,
-    },
-    isPartOf: {
-      "@type": "WebSite",
-      name: "Broker Alarab",
-      url: SITE,
-    },
-  };
-
-  const breadcrumbJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-
-  itemListElement: [
-    {
-      "@type": "ListItem",
-      position: 1,
-      name: "الرئيسية",
-      item: SITE,
-    },
-    {
-      "@type": "ListItem",
-      position: 2,
-      name: "مقالات وأدلة التداول",
-      item: `${SITE}/articles`,
-    },
-    {
-      "@type": "ListItem",
-      position: 3,
-      name: ARTICLE.title,
-      item: URL,
-    },
-  ],
-};
-
-  const serialize = (value: unknown) =>
-    JSON.stringify(value).replace(/</g, "\\u003c");
-
-  return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: serialize(articleJsonLd),
-        }}
-      />
-
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: serialize(breadcrumbJsonLd),
-        }}
-      />
-    </>
-  );
-}
-
 /* =========================================================
-   MAIN ARTICLE PAGE
-   ========================================================= */
+   MAIN ARABIC ARTICLE PAGE
+========================================================= */
 
 export default async function BestTimeToTradeGoldArticlePage() {
-  const featuredGoldBrokers = await getArticleGoldBrokers();
+
+  const featuredGoldBrokers =
+    await getArticleGoldBrokers();
 
   return (
-    <main
-      dir="rtl"
-      className="min-h-screen overflow-x-clip bg-[#f5f7fb] text-slate-900"
+
+    <ArticleLayout
+
+      language="ar"
+
+      slug={SLUG}
+
+      title={ARTICLE.titleMain}
+
+      titleHighlight={ARTICLE.titleHighlight}
+
+      description={ARTICLE.heroDescription}
+
+      category={ARTICLE.category}
+
+      categoryHref="/articles/category/financial-markets-economy"
+
+      subcategory={ARTICLE.subcategory}
+
+      articleType={ARTICLE.articleType}
+
+      breadcrumbTitle={ARTICLE.breadcrumb}
+
+      author="فريق تحليلات بروكر العرب"
+
+      published={ARTICLE.published}
+
+      modified={ARTICLE.modified}
+
+      heroImage={HERO_IMAGE}
+
+      heroImageAlt={ARTICLE.heroAlt}
+
+      heroImageCaption={ARTICLE.heroCaption}
+
+      contents={contents}
+
+      structuredData={
+        <ArticleStructuredData
+          config={{
+            ...ARTICLE_SEO,
+            sources,
+          }}
+        />
+      }
+
+      introduction={
+
+        <>
+
+          <Paragraph>
+            يُعد الذهب مقابل الدولار الأمريكي
+            (XAU/USD) من أبرز الأدوات المالية التي
+            يتداولها المستثمرون والمضاربون في الأسواق
+            العالمية. إلا أن حركة أسعار الذهب لا تتوزع
+            بالتساوي على جميع ساعات التداول، إذ تختلف
+            مستويات النشاط والتقلب والسيولة باختلاف
+            الجلسات العالمية والظروف الاقتصادية.
+          </Paragraph>
+
+          <Paragraph>
+            ويسعى العديد من المتداولين إلى معرفة
+            <Strong> أفضل أوقات تداول الذهب </Strong>
+            خلال اليوم، سواء بهدف المضاربة قصيرة الأجل
+            أو التداول اليومي أو اختيار توقيت مناسب
+            لتنفيذ صفقاتهم.
+          </Paragraph>
+
+          <Paragraph>
+            وبدلاً من الاعتماد على الافتراضات الشائعة،
+            يهدف هذا البحث من <Strong>بروكر العرب</Strong>{" "}
+            إلى دراسة حركة الذهب باستخدام بيانات
+            تاريخية، ومقارنة نطاقات الحركة السعرية
+            خلال ساعات اليوم وأيام الأسبوع والجلسات
+            العالمية.
+          </Paragraph>
+
+          <Note title="عن الدراسة الإحصائية">
+
+            تستعرض هذه الدراسة الأنماط التاريخية لحركة
+            أسعار الذهب خلال ساعات اليوم وأيام الأسبوع
+            وجلسات التداول العالمية، بالاعتماد على بيانات
+            الأسعار التاريخية من HistData. وتهدف إلى تحديد
+            الفترات الأكثر نشاطاً وتقلباً في سوق الذهب
+            باستخدام التحليل الإحصائي للبيانات التاريخية.
+            ولا تضمن النتائج تكرار هذه الأنماط مستقبلاً،
+            كما لا تمثل توصيات تداول أو توقعات لحركة الأسعار.
+
+          </Note>
+
+        </>
+
+      }
+
     >
-      <ArticleStructuredData />
-
-      {/* ARTICLE HEADER */}
-
-      <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto max-w-[1520px] px-4 pb-8 pt-6 sm:px-6 sm:pb-12 sm:pt-9">
-
-          {/* BREADCRUMB */}
-
-          <nav
-            aria-label="مسار التنقل"
-            className="flex flex-wrap items-center gap-2 text-[11px] font-bold text-slate-500 sm:text-[12px]"
-          >
-            <Link href="/" className="hover:text-blue-600">
-              الرئيسية
-            </Link>
-
-            <span aria-hidden="true">/</span>
-
-            <Link href="/articles" className="hover:text-blue-600">
-              مقالات وأدلة التداول
-            </Link>
-
-            <span aria-hidden="true">/</span>
-
-            <span className="text-[#145ca8]">
-              أفضل أوقات تداول الذهب
-            </span>
-          </nav>
-
-          {/* CATEGORY */}
-
-          <div className="mt-6 flex flex-wrap items-center gap-2">
-            <span className="rounded-full bg-[#eaf3ff] px-3 py-1.5 text-[10px] font-black text-[#1765b5] sm:text-[11px]">
-              الذهب والأسواق
-            </span>
-
-            <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[10px] font-bold text-slate-600 sm:text-[11px]">
-              دراسة إحصائية
-            </span>
-          </div>
-
-          {/* ARTICLE TITLE */}
-
-          <h1 className="mt-5 w-full text-[27px] font-black leading-[1.4] tracking-[-0.025em] text-[#0c1e38] sm:text-[34px] lg:text-[clamp(29px,3vw,48px)]">
-            أفضل أوقات تداول الذهب خلال اليوم –{" "}
-            <span className="text-[#176ac8]">
-              دراسة إحصائية لحركة الأسعار
-            </span>
-          </h1>
-
-          <p className="mt-4 w-full max-w-none text-[14px] leading-[2] text-slate-600 sm:text-[17px] sm:leading-[1.9]">
-            دراسة لحركة أسعار الذهب مقابل الدولار الأمريكي
-            خلال ساعات اليوم وجلسات التداول العالمية،
-            بهدف تحديد الفترات الأكثر نشاطاً وتقلباً،
-            ومقارنة أوقات التداول بتوقيت السعودية والكويت
-            والإمارات وبقية الدول العربية.
-          </p>
-
-          {/* METADATA */}
-
-          <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-slate-100 pt-4 text-[11px] font-bold text-slate-500 sm:text-[12px]">
-            <span>
-              إعداد:{" "}
-              <strong className="text-[#102747]">
-                فريق تحليلات بروكر العرب
-              </strong>
-            </span>
-
-            <span className="hidden text-slate-300 sm:inline">
-              |
-            </span>
-
-            <time dateTime={ARTICLE.modified}>
-              آخر تحديث: 25 نوفمبر 2026
-            </time>
-
-            <span className="hidden text-slate-300 sm:inline">
-              |
-            </span>
-
-            <span>بحث وتحليل إحصائي</span>
-          </div>
-
-          {/* HERO IMAGE */}
-
-          <ArticleHeroImage />
-
-        </div>
-      </header>
-
-      {/* ARTICLE BODY */}
-
-      <div className="mx-auto max-w-[1520px] px-3 py-6 sm:px-6 sm:py-10">
-        <article className="overflow-hidden rounded-[19px] border border-slate-200 bg-white shadow-[0_12px_35px_rgba(15,23,42,0.035)] sm:rounded-[24px]">
-
-          <div className="px-4 py-6 sm:px-8 sm:py-9 lg:px-12">
-
-            {/* INTRODUCTION */}
-
-            <div className="space-y-5 text-[14px] leading-[2.15] text-slate-700 sm:text-[16px] sm:leading-[2.1]">
-
-              <Paragraph>
-                يُعد الذهب مقابل الدولار الأمريكي
-                (XAU/USD) من أبرز الأدوات المالية التي
-                يتداولها المستثمرون والمضاربون في الأسواق
-                العالمية. إلا أن حركة أسعار الذهب لا تتوزع
-                بالتساوي على جميع ساعات التداول، إذ تختلف
-                مستويات النشاط والتقلب والسيولة باختلاف
-                الجلسات العالمية والظروف الاقتصادية.
-              </Paragraph>
-
-              <Paragraph>
-                ويسعى العديد من المتداولين إلى معرفة
-                <Strong> أفضل أوقات تداول الذهب </Strong>
-                خلال اليوم، سواء بهدف المضاربة قصيرة الأجل
-                أو التداول اليومي أو اختيار توقيت مناسب
-                لتنفيذ صفقاتهم.
-              </Paragraph>
-
-              <Paragraph>
-                وبدلاً من الاعتماد على الافتراضات الشائعة،
-                يهدف هذا البحث من <Strong>بروكر العرب</Strong>{" "}
-                إلى دراسة حركة الذهب باستخدام بيانات
-                تاريخية، ومقارنة نطاقات الحركة السعرية
-                خلال ساعات اليوم وأيام الأسبوع والجلسات
-                العالمية.
-              </Paragraph>
-
-              <Note title="عن الدراسة الإحصائية">
-  تستعرض هذه الدراسة الأنماط التاريخية لحركة
-  أسعار الذهب خلال ساعات اليوم وأيام الأسبوع
-  وجلسات التداول العالمية، بالاعتماد على بيانات
-  الأسعار التاريخية من HistData. وتهدف إلى تحديد
-  الفترات الأكثر نشاطاً وتقلباً في سوق الذهب
-  باستخدام التحليل الإحصائي للبيانات التاريخية.
-  ولا تضمن النتائج تكرار هذه الأنماط مستقبلاً،
-  كما لا تمثل توصيات تداول أو توقعات لحركة الأسعار.
-</Note>
-
-            </div>
-
-            <TableOfContents />
 
             {/* RESEARCH SUMMARY */}
 
@@ -4234,12 +3788,8 @@ export default async function BestTimeToTradeGoldArticlePage() {
 
 </ArticleSection>
 
-            
+    </ArticleLayout>
 
-          </div>
-        </article>
-      </div>
-
-    </main>
   );
+
 }

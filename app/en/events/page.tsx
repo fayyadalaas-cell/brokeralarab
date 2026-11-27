@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import EditorialNavigation from "@/app/components/editorial/EditorialNavigation";
 
 export const metadata = {
   title: "Forex Expos and Conferences 2026",
@@ -635,6 +636,15 @@ export default async function EventsPage() {
       />
 
       <section className="mx-auto w-full max-w-[1520px] px-3 pb-0 pt-4 sm:px-6 sm:pb-0 sm:pt-7 lg:px-8">
+        
+        {/* EDITORIAL NAVIGATION */}
+
+<div className="mb-4 sm:mb-5">
+  <EditorialNavigation
+    language="en"
+    activeCategory="events"
+  />
+</div>
         <div className="overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.06)] sm:rounded-[32px]">
           {/* HERO */}
           <div className="relative overflow-hidden border-b border-slate-100 bg-[linear-gradient(135deg,#eef5ff_0%,#ffffff_52%,#e8f1ff_100%)]">

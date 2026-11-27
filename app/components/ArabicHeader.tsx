@@ -96,7 +96,7 @@ type MenuKey =
 
 const NAVIGATION_FEATURES = {
   brokerNews: false,
-  articleCategories: false,
+  articleCategories: true,
 };
 
 /* =========================================================
@@ -1581,30 +1581,30 @@ useEffect(() => {
           <div className="space-y-2 sm:max-2xl:space-y-0 sm:max-2xl:gap-2 [&_span.text-slate-500]:truncate">
 
             <MenuLink
-              item={{
-                label: "مقالات الأسواق والاقتصاد",
-                description: "تقارير ودراسات مالية",
-                href:
-                  NAVIGATION_FEATURES.articleCategories
-                    ? "/articles/category/markets-economy"
-                    : "/articles",
-                icon: TrendingUp,
-              }}
-              onClose={closeMenus}
-            />
+  item={{
+    label: "مقالات الأسواق والاقتصاد",
+    description: "تقارير ودراسات مالية",
+    href:
+      NAVIGATION_FEATURES.articleCategories
+        ? "/articles/category/financial-markets-economy"
+        : "/articles",
+    icon: TrendingUp,
+  }}
+  onClose={closeMenus}
+/>
 
-            <MenuLink
-              item={{
-                label: "أدلة التداول حسب الدولة",
-                description: "الحسابات والإيداع والتراخيص",
-                href:
-                  NAVIGATION_FEATURES.articleCategories
-                    ? "/articles/category/country-guides"
-                    : "/articles",
-                icon: Globe2,
-              }}
-              onClose={closeMenus}
-            />
+<MenuLink
+  item={{
+    label: "أدلة التداول حسب الدولة",
+    description: "الحسابات والإيداع والتراخيص",
+    href:
+      NAVIGATION_FEATURES.articleCategories
+        ? "/articles/category/forex-trading-guides-by-country"
+        : "/articles",
+    icon: Globe2,
+  }}
+  onClose={closeMenus}
+/>
 
           </div>
 

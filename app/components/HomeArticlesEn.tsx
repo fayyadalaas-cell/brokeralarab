@@ -1,39 +1,81 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ARTICLE_PAGES } from "@/lib/site-map-data";
+
+import {
+  getHomepageArticles,
+} from "@/lib/editorial";
 
 /* =========================================================
-   BROKER ALARAB — LATEST ARTICLES (ENGLISH)
+   BROKER ALARAB — HOMEPAGE EDITORIAL ARTICLES (ENGLISH)
+
+   Source: Supabase Editorial System
+   Selection: Manual Priority + Latest Articles
 
    Mobile: 1 featured article + 4 compact articles
-   Desktop: 3 articles
+   Desktop: 3 articles — original desktop design
 ========================================================= */
 
-export default function HomeArticlesEn() {
+export default async function HomeArticlesEn() {
 
   /* =====================================================
-     ARTICLE SELECTION
+     FETCH HOMEPAGE ARTICLES
+     Manual selection with automatic latest fallback
   ====================================================== */
 
-  const latestArticles = [...ARTICLE_PAGES]
-    .reverse()
-    .filter((article) => article.en === true)
-    .sort(
-      (a, b) =>
-        new Date(b.publishedAt).getTime() -
-        new Date(a.publishedAt).getTime()
-    )
-    .slice(0, 5);
+  const editorialArticles =
+    await getHomepageArticles("en", 5);
+
+  /* =====================================================
+     MAP DATABASE FIELDS
+     Preserve existing homepage design
+  ====================================================== */
+
+  const latestArticles = editorialArticles.map(
+    (article) => ({
+
+      slug: article.slug,
+
+      titleEn: article.title,
+
+      shortTitleEn:
+        article.short_title || article.title,
+
+      descriptionEn:
+        article.description || "",
+
+      categoryEn:
+        article.subcategory ||
+        article.category_name,
+
+      image:
+        article.cover_image || null,
+
+      publishedAt:
+        article.published_at,
+
+    })
+  );
+
+  /* =====================================================
+     EMPTY STATE
+  ====================================================== */
 
   if (latestArticles.length === 0) {
     return null;
   }
 
-  const desktopArticles = latestArticles.slice(0, 3);
+  /* =====================================================
+     RESPONSIVE ARTICLE SELECTION
+  ====================================================== */
 
-  const featuredArticle = latestArticles[0];
+  const desktopArticles =
+    latestArticles.slice(0, 3);
 
-  const mobileArticles = latestArticles.slice(1, 5);
+  const featuredArticle =
+    latestArticles[0];
+
+  const mobileArticles =
+    latestArticles.slice(1, 5);
 
   /* =====================================================
      DATE FORMATTER

@@ -1,5 +1,9 @@
 export const BASE_URL = "https://brokeralarab.com";
 
+/* =========================================================
+   TRADING TOOLS
+========================================================= */
+
 export const TOOL_SLUGS = [
   "risk-calculator",
   "margin-calculator",
@@ -13,6 +17,10 @@ export const TOOL_SLUGS = [
   "pivot-point-calculator",
   "market-hours",
 ];
+
+/* =========================================================
+   STATIC PAGES — ARABIC
+========================================================= */
 
 export const STATIC_PAGES = [
   "",
@@ -54,7 +62,7 @@ export const STATIC_PAGES = [
   // Licenses
   "licenses",
 
-    // Technical Analysis Hub
+  // Technical Analysis Hub
   "technical-analysis",
 
   // Forex Strategies Hub
@@ -81,6 +89,10 @@ export const STATIC_PAGES = [
   "privacy-policy",
   "terms-and-conditions",
 ];
+
+/* =========================================================
+   STATIC PAGES — ENGLISH
+========================================================= */
 
 export const STATIC_PAGES_EN = [
   "en",
@@ -110,8 +122,8 @@ export const STATIC_PAGES_EN = [
   "en/learn-trading/how-to-start-trading-from-zero",
   "en/learn-trading/economic-indicators",
   "en/learn-trading/spread",
-  "en/learn-trading/margin",
   "en/learn-trading/leverage",
+  "en/learn-trading/margin",
   "en/learn-trading/lot",
   "en/learn-trading/stop-loss",
   "en/learn-trading/take-profit",
@@ -122,9 +134,9 @@ export const STATIC_PAGES_EN = [
   // Licenses
   "en/licenses",
 
-    // Technical Analysis Hub
+  // Technical Analysis Hub
   "en/technical-analysis",
-  
+
   // Forex Strategies Hub
   "en/strategies",
 
@@ -150,215 +162,29 @@ export const STATIC_PAGES_EN = [
   "en/terms-and-conditions",
 ];
 
+/* =========================================================
+   EDITORIAL ARTICLES & CATEGORIES
+
+   Managed automatically through Supabase:
+
+   - editorial_articles
+   - editorial_categories
+   - editorial_articles_ar
+   - editorial_articles_en
+
+   Individual article URLs and editorial category hubs
+   are generated automatically in app/sitemap.ts.
+
+   Do not register new articles manually in this file.
+========================================================= */
 
 /* =========================================================
-   ARTICLES — CENTRAL SITEMAP REGISTRY
-
-   Add every newly published article here.
-
-   The sitemap automatically generates:
-   - Arabic article URL
-   - English article URL
-   - Accurate lastModified date
-   - Reciprocal hreflang when both languages exist
-
-   Set ar / en to true only when the actual
-   corresponding page is published and indexable.
-   ========================================================= */
-
-export type ArticleSitemapEntry = {
-  slug: string;
-  lastModified: string;
-  publishedAt: string;
-  ar: boolean;
-  en: boolean;
-
-    image?: string;
-  titleAr: string;
-  titleEn: string;
-  shortTitleAr?: string;
-  shortTitleEn?: string;
-  descriptionAr: string;
-  descriptionEn: string;
-  categoryAr: string;
-  categoryEn: string;
-};
-
-export const ARTICLE_PAGES: ArticleSitemapEntry[] = [
-
-  /* =====================================================
-     ARTICLE 01 — GOLD PRICE CRASHES
-  ===================================================== */
-
-  {
-    slug: "gold-price-crashes-history",
-    lastModified: "2026-11-23",
-    publishedAt: "2026-11-23",
-
-    ar: true,
-    en: true,
-
-    image: "/articles/gold-crashes-hero-updated.webp",
-
-    titleAr: "أكبر انهيارات أسعار الذهب عبر التاريخ",
-
-    titleEn: "Major Gold Price Crashes Throughout History",
-
-    shortTitleAr: "أكبر انهيارات الذهب عبر التاريخ",
-
-    shortTitleEn: "Major Gold Price Crashes in History",
-
-    descriptionAr:
-      "دراسة تاريخية لأبرز انهيارات أسعار الذهب والعوامل التي أدت إلى تراجع الأسعار.",
-
-    descriptionEn:
-      "A historical study of major gold price crashes and the factors behind them.",
-
-    categoryAr: "الذهب والأسواق",
-    categoryEn: "Gold and Financial Markets",
-  },
-
-  /* =====================================================
-     ARTICLE 02 — GOLD AND FED DECISIONS
-  ===================================================== */
-
-  {
-    slug: "gold-reaction-fed-decisions",
-    lastModified: "2026-11-23",
-    publishedAt: "2026-11-23",
-
-    ar: true,
-    en: true,
-
-    image: "/articles/gold-fed-decisions-hero.webp",
-
-    titleAr:
-      "كيف تتفاعل أسعار الذهب مع قرارات الفيدرالي الأمريكي؟",
-
-    titleEn:
-      "How Gold Prices React to Federal Reserve Decisions",
-
-    shortTitleAr: "تأثير قرارات الفيدرالي على الذهب",
-
-    shortTitleEn: "How Fed Decisions Affect Gold",
-
-    descriptionAr:
-      "تحليل العلاقة بين قرارات الفائدة الأمريكية وتحركات أسعار الذهب في الأسواق المالية.",
-
-    descriptionEn:
-      "An analysis of the relationship between Federal Reserve interest rate decisions and gold prices.",
-
-    categoryAr: "الذهب والأسواق",
-    categoryEn: "Gold and Financial Markets",
-  },
-
-  /* =====================================================
-     ARTICLE 03 — SAUDI ARABIA
-  ===================================================== */
-
-  {
-    slug: "open-forex-account-saudi-arabia",
-    lastModified: "2026-11-25",
-    publishedAt: "2026-11-24",
-
-    ar: true,
-    en: true,
-
-    image: "/articles/open-forex-account-saudi-arabia.webp",
-
-    titleAr:
-      "كيفية فتح حساب فوركس في السعودية – الشروط وخطوات التسجيل",
-
-    titleEn:
-      "How to Open a Forex Trading Account in Saudi Arabia",
-
-    shortTitleAr: "كيفية فتح حساب فوركس في السعودية",
-
-    shortTitleEn: "Opening a Forex Account in Saudi Arabia",
-
-    descriptionAr:
-      "تعرف على شروط فتح حساب فوركس في السعودية للمواطنين والمقيمين، والمستندات المطلوبة للتوثيق، وخطوات التسجيل والإيداع والتحقق من تراخيص شركات التداول.",
-
-    descriptionEn:
-      "A guide to opening a forex trading account, choosing a broker and understanding registration requirements in Saudi Arabia.",
-
-    categoryAr: "أدلة التداول",
-    categoryEn: "Trading Guides",
-  },
-
-  /* =====================================================
-     ARTICLE 04 — KUWAIT
-  ===================================================== */
-
-  {
-    slug: "open-forex-account-kuwait",
-    lastModified: "2026-11-25",
-    publishedAt: "2026-11-25",
-
-    ar: true,
-    en: true,
-
-    image: "/articles/open-forex-account-kuwait.webp",
-
-    titleAr:
-      "كيفية فتح حساب فوركس في الكويت – الشروط وخطوات التسجيل",
-
-    titleEn:
-      "How to Open a Forex Trading Account in Kuwait",
-
-    shortTitleAr: "كيفية فتح حساب فوركس في الكويت",
-
-    shortTitleEn: "Opening a Forex Account in Kuwait",
-
-    descriptionAr:
-      "دليل فتح حساب فوركس في الكويت للمواطنين والمقيمين، يشمل البطاقة المدنية وتوثيق الحساب وإثبات العنوان والتسجيل ووسائل الدفع بالدينار الكويتي والتحقق من التراخيص.",
-
-    descriptionEn:
-      "A guide to opening a forex trading account and choosing a suitable broker in Kuwait.",
-
-    categoryAr: "أدلة التداول",
-    categoryEn: "Trading Guides",
-  },
-
-  /* =====================================================
-     ARTICLE 05 — BEST TIME TO TRADE GOLD
-  ===================================================== */
-
-  {
-    slug: "best-time-to-trade-gold",
-    lastModified: "2026-11-25",
-    publishedAt: "2026-11-25",
-
-    ar: true,
-    en: true,
-
-    image: "/articles/best-time-to-trade-gold.webp",
-
-    titleAr:
-      "أفضل أوقات تداول الذهب خلال اليوم – دراسة إحصائية لحركة الأسعار",
-
-    titleEn:
-      "Best Time to Trade Gold (XAU/USD): A Statistical Study of Intraday Price Movements",
-
-    shortTitleAr: "أفضل أوقات تداول الذهب خلال اليوم",
-
-    shortTitleEn: "Best Time to Trade Gold",
-
-    descriptionAr:
-      "دراسة إحصائية لأفضل أوقات تداول الذهب بناءً على بيانات تاريخية تمتد لأكثر من 16 عاماً.",
-
-    descriptionEn:
-      "A statistical study of the best gold trading hours based on more than 16 years of historical data.",
-
-    categoryAr: "الذهب والأسواق",
-    categoryEn: "Gold and Financial Markets",
-  },
-
-];
+   FINANCIAL EVENTS
+========================================================= */
 
 export const EVENT_SLUGS = [
   "forex-expo-dubai-2026",
-  "forex-traders-expo-summit-dubai-2026", // New - November 2026
+  "forex-traders-expo-summit-dubai-2026",
   "money-expo-abu-dhabi-2026",
   "jeddah-fintech-week-2026",
   "profx-expo-africa-2026",
@@ -367,7 +193,12 @@ export const EVENT_SLUGS = [
   "blockchain-life-ai-future-week-dubai-2026",
 ];
 
+/* =========================================================
+   URL HELPER
+========================================================= */
 
 export function url(path: string) {
   return path ? `${BASE_URL}/${path}` : BASE_URL;
 }
+
+/* ================= END SITEMAP DATA ================= */
