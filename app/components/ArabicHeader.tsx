@@ -95,7 +95,7 @@ type MenuKey =
 ========================================================= */
 
 const NAVIGATION_FEATURES = {
-  brokerNews: false,
+  brokerNews: true,
   articleCategories: true,
 };
 

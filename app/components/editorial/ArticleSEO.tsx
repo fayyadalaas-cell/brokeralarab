@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import {
+  EDITORIAL_CATEGORIES,
   getEditorialArticle,
   type EditorialLanguage,
 } from "@/lib/editorial";
@@ -361,6 +362,19 @@ export async function ArticleStructuredData({
   }
 
   /* =============================================
+     AUTOMATIC ARTICLE SCHEMA TYPE
+
+     Forex Broker News: NewsArticle
+     Research & Trading Guides: Article
+  ============================================== */
+
+  const schemaType =
+    editorialArticle?.category_slug ===
+    EDITORIAL_CATEGORIES.BROKER_NEWS
+      ? "NewsArticle"
+      : "Article";
+
+  /* =============================================
      ARTICLE SCHEMA
   ============================================== */
 
@@ -368,7 +382,7 @@ export async function ArticleStructuredData({
 
     "@context": "https://schema.org",
 
-    "@type": "Article",
+    "@type": schemaType,
 
     "@id": `${url}#article`,
 
@@ -426,11 +440,7 @@ export async function ArticleStructuredData({
         }
       : {}),
 
-    ...(config.keywords?.length
-      ? { keywords: config.keywords }
-      : {}),
-
-    ...(config.keywords?.length
+        ...(config.keywords?.length
       ? { keywords: config.keywords }
       : {}),
 
