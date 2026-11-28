@@ -126,11 +126,17 @@ const sources = [
       "https://www.bls.gov/cpi/",
   },
   {
-    title:
-      "World Bank – Commodity Markets",
-    url:
-      "https://www.worldbank.org/en/research/commodity-markets",
-  },
+  title:
+    "World Bank – Commodity Markets",
+  url:
+    "https://www.worldbank.org/en/research/commodity-markets",
+},
+{
+  title:
+    "Federal Reserve – H.10 Foreign Exchange Rates (November 20, 2026)",
+  url:
+    "https://www.federalreserve.gov/releases/h10/",
+},
 ];
 
 /* =========================================================
@@ -182,26 +188,32 @@ const ARTICLE_SEO: ArticleSEOConfig = {
   ],
 
   keywords: [
-    "gold price forecast 2027",
-    "gold price prediction 2027",
-    "gold outlook 2027",
-    "gold price forecast by major banks",
-    "will gold prices rise in 2027",
-    "gold price predictions by investment banks",
-    "XAUUSD forecast 2027",
-    "gold price target 2027",
-    "Goldman Sachs gold forecast 2027",
-    "J.P. Morgan gold forecast 2027",
-    "UBS gold price forecast 2027",
-    "gold price per ounce forecast",
-    "gold price per gram forecast 2027",
-    "24 karat gold price forecast",
-    "21 karat gold price forecast",
-    "gold price forecast Saudi Arabia 2027",
-    "gold price forecast UAE 2027",
-    "gold investment outlook 2027",
-    "future of gold prices",
-  ],
+  "gold price forecast 2027",
+  "gold price prediction 2027",
+  "gold outlook 2027",
+  "gold price forecast by major banks",
+  "will gold prices rise in 2027",
+  "gold price predictions by investment banks",
+  "XAUUSD forecast 2027",
+  "gold price target 2027",
+  "Goldman Sachs gold forecast 2027",
+  "J.P. Morgan gold forecast 2027",
+  "UBS gold price forecast 2027",
+  "gold price per ounce forecast",
+  "gold price per gram forecast 2027",
+  "24 karat gold price forecast",
+  "22 karat gold price forecast",
+  "21 karat gold price forecast",
+  "18 karat gold price forecast",
+  "gold price forecast USA 2027",
+  "gold price forecast UK 2027",
+  "gold price forecast Canada 2027",
+  "gold price forecast Australia 2027",
+  "gold price forecast Singapore 2027",
+  "gold price forecast Malaysia 2027",
+  "gold investment outlook 2027",
+  "future of gold prices",
+],
 
   about: [
     {
@@ -290,9 +302,9 @@ const contents = [
     label: "Bullish and Bearish Gold Scenarios",
   },
   {
-    id: "arab-gold-prices",
-    label: "Gold Price Forecasts in Arab Countries",
-  },
+  id: "arab-gold-prices",
+  label: "Gold Price Forecasts by Country for 2027",
+},
   {
     id: "gold-karat-prices",
     label: "Gold Price Forecasts by Karat",
@@ -1218,55 +1230,57 @@ function GoldScenarioCards() {
 }
 
 /* =========================================================
-   GOLD PRICES IN ARAB COUNTRIES
+   GOLD PRICES IN INTERNATIONAL MARKETS
+
+   Exchange rate reference:
+   Federal Reserve H.10
+   November 20, 2026
+
+   Rates expressed in local currency units per USD.
 ========================================================= */
+
+const FX_REFERENCE_DATE = "20 November 2026";
 
 const localMarkets = [
   {
-    country: "Saudi Arabia",
-    flag: "🇸🇦",
-    currency: "Saudi Riyal",
-    code: "SAR",
-    rate: 3.75,
+    country: "United States",
+    currency: "US Dollar",
+    code: "USD",
+    rate: 1,
   },
   {
-    country: "United Arab Emirates",
-    flag: "🇦🇪",
-    currency: "UAE Dirham",
-    code: "AED",
-    rate: 3.6725,
+    country: "United Kingdom",
+    currency: "British Pound",
+    code: "GBP",
+    rate: 1 / 1.3104,
   },
   {
-    country: "Qatar",
-    flag: "🇶🇦",
-    currency: "Qatari Riyal",
-    code: "QAR",
-    rate: 3.64,
+    country: "Canada",
+    currency: "Canadian Dollar",
+    code: "CAD",
+    rate: 1.4323,
   },
   {
-    country: "Bahrain",
-    flag: "🇧🇭",
-    currency: "Bahraini Dinar",
-    code: "BHD",
-    rate: 0.376,
+    country: "Australia",
+    currency: "Australian Dollar",
+    code: "AUD",
+    rate: 1 / 0.6639,
   },
   {
-    country: "Oman",
-    flag: "🇴🇲",
-    currency: "Omani Rial",
-    code: "OMR",
-    rate: 0.3845,
+    country: "Singapore",
+    currency: "Singapore Dollar",
+    code: "SGD",
+    rate: 1.2893,
   },
   {
-    country: "Jordan",
-    flag: "🇯🇴",
-    currency: "Jordanian Dinar",
-    code: "JOD",
-    rate: 0.709,
+    country: "Malaysia",
+    currency: "Malaysian Ringgit",
+    code: "MYR",
+    rate: 4.1100,
   },
 ];
 
-function ArabGoldPricesTable() {
+function InternationalGoldPricesTable() {
 
   return (
 
@@ -1323,16 +1337,20 @@ function ArabGoldPricesTable() {
 
                 <td className={`${tableCellClass} font-bold text-[#102747]`}>
 
-                  <span className="me-2">
-                    {market.flag}
-                  </span>
-
                   {market.country}
 
                 </td>
 
                 <td className={tableCellClass}>
-                  {market.currency}
+
+                  <div className="font-medium">
+                    {market.currency}
+                  </div>
+
+                  <div className="mt-1 text-[11px] font-bold text-[#64748b]">
+                    {market.code}
+                  </div>
+
                 </td>
 
                 {[24, 22, 21, 18].map((karat) => (
@@ -1366,20 +1384,56 @@ function ArabGoldPricesTable() {
 
       </div>
 
-      <div className="border-t border-[#dce6ef] bg-[#f8fafc] p-4 text-[12px] leading-7 text-[#64748b] sm:text-[13px]">
+      <div className="border-t border-[#dce6ef] bg-[#f8fafc] px-4 py-4 text-[12px] leading-7 text-[#64748b] sm:text-[13px]">
 
-        Estimated gold prices per gram are calculated
-        using the average year-end 2027 forecast of{" "}
+        <p>
 
-        <strong dir="ltr">
-          {formatUSD(averageForecast)}
-        </strong>
+          Estimated gold prices per gram are calculated
+          using the average year-end 2027 institutional
+          gold price target of{" "}
 
-        {" "}per troy ounce and approximate nominal
-        exchange rates for currencies pegged to
-        the US dollar. The estimates exclude
-        jewellery manufacturing charges, taxes
-        and dealer margins.
+          <strong dir="ltr" className="text-[#102747]">
+            {formatUSD(averageForecast)}
+          </strong>
+
+          {" "}per troy ounce.
+
+        </p>
+
+        <p className="mt-2">
+
+          Currency conversions use Federal Reserve H.10
+          exchange rates for {FX_REFERENCE_DATE}.
+          These calculations assume unchanged exchange
+          rates for illustration and do not constitute
+          forecasts of currency values in 2027.
+
+        </p>
+
+        <p className="mt-2">
+
+          All figures represent estimated intrinsic
+          gold values in the respective local currencies.
+          Jewellery manufacturing charges, applicable
+          taxes, dealer margins and investment premiums
+          are excluded.
+
+        </p>
+
+        <p className="mt-3">
+
+          Source:{" "}
+
+          <a
+            href="https://www.federalreserve.gov/releases/h10/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-bold text-[#176ac8] hover:underline"
+          >
+            Federal Reserve – Foreign Exchange Rates (H.10)
+          </a>
+
+        </p>
 
       </div>
 
@@ -1979,17 +2033,18 @@ export default function GoldPriceForecast2027PageEn() {
 
           <Paragraph>
 
-            In this research report, the Broker Alarab
-            Research Team examines the major gold price
-            forecasts available as of 27 November 2026,
-            compares institutional price targets,
-            analyses the economic conditions that
-            could support or weaken gold prices,
-            and calculates indicative gold prices
-            per gram across several Middle Eastern
-            markets.
+  In this research report, the Broker Alarab
+  Research Team examines the major gold price
+  forecasts available as of 27 November 2026,
+  compares institutional price targets,
+  analyses the economic conditions that
+  could support or weaken gold prices,
+  and calculates indicative gold prices
+  per gram across six international markets,
+  including the United States, United Kingdom,
+  Canada, Australia, Singapore and Malaysia.
 
-          </Paragraph>
+</Paragraph>
 
         </>
 
@@ -3047,186 +3102,381 @@ export default function GoldPriceForecast2027PageEn() {
       </ArticleSection>
 
       {/* =====================================================
-          11. GOLD PRICES IN ARAB COUNTRIES
-      ====================================================== */}
+    11. GOLD PRICES IN INTERNATIONAL MARKETS
+====================================================== */}
 
-      <ArticleSection
-        id="arab-gold-prices"
-        eyebrow="Middle Eastern Gold Markets"
-        title="Gold Price Forecasts in the Middle East for 2027"
-      >
+<ArticleSection
+  id="arab-gold-prices"
+  eyebrow="International Gold Markets"
+  title="Gold Price Forecasts by Country for 2027"
+>
 
-        <Paragraph>
+  <Paragraph>
 
-          In Middle Eastern markets, consumers
-          and investors frequently monitor gold
-          prices per gram in their local currencies,
-          particularly for 24-karat, 22-karat,
-          21-karat and 18-karat gold.
+    Although international gold prices are
+    primarily quoted in US dollars per troy
+    ounce, investors and consumers frequently
+    evaluate gold prices in their respective
+    local currencies.
 
-          Local gold prices depend on the international
-          price per troy ounce, the exchange rate
-          against the US dollar, gold purity and
-          applicable domestic costs.
+    The domestic value of gold depends on
+    international gold prices, exchange rates,
+    gold purity and additional local market
+    costs.
 
-        </Paragraph>
+  </Paragraph>
 
-        <ArabGoldPricesTable />
+  <Paragraph>
 
-        <SubHeading>
-          Saudi Arabia Gold Price Forecast 2027
-        </SubHeading>
+    The following comparison presents indicative
+    gold prices per gram for six international
+    markets, using the average year-end 2027
+    institutional gold price target of{" "}
 
-        <Paragraph>
+    <Strong>
+      {formatUSD(averageForecast)}
+    </Strong>
 
-          Using the average year-end gold price
-          target within the institutional sample,
-          the indicative price of 24-karat gold
-          in Saudi Arabia amounts to approximately{" "}
+    {" "}per troy ounce and the exchange rate
+    assumptions specified in this report.
 
-          <Strong>
-            SAR{" "}
-            {formatNumber(
-              calculateGramPrice(
-                averageForecast,
-                24,
-                3.75
-              ),
-              2
-            )}
-          </Strong>
+  </Paragraph>
 
-          {" "}per gram, while the estimated
-          intrinsic value of 21-karat gold is{" "}
+  <InternationalGoldPricesTable />
 
-          <Strong>
-            SAR{" "}
-            {formatNumber(
-              calculateGramPrice(
-                averageForecast,
-                21,
-                3.75
-              ),
-              2
-            )}
-          </Strong>
+  <SubHeading>
+    United States Gold Price Forecast 2027
+  </SubHeading>
 
-          {" "}per gram, before jewellery
-          manufacturing charges, taxes and
-          dealer margins.
+  <Paragraph>
 
-        </Paragraph>
+    As gold is internationally priced in US
+    dollars, investors in the United States
+    can evaluate the institutional price
+    forecasts without requiring an additional
+    currency conversion.
 
-        <SubHeading>
-          United Arab Emirates Gold Price Forecast 2027
-        </SubHeading>
+    Based on the average year-end institutional
+    forecast, the indicative intrinsic value
+    of 24-karat gold amounts to approximately{" "}
 
-        <Paragraph>
+    <Strong>
+      USD{" "}
+      {formatNumber(
+        calculateGramPrice(
+          averageForecast,
+          24,
+          localMarkets[0].rate
+        ),
+        2
+      )}
+    </Strong>
 
-          Applying the nominal exchange rate used
-          in this report, the estimated intrinsic
-          value of 24-karat gold in the United
-          Arab Emirates is approximately{" "}
+    {" "}per gram.
 
-          <Strong>
-            AED{" "}
-            {formatNumber(
-              calculateGramPrice(
-                averageForecast,
-                24,
-                3.6725
-              ),
-              2
-            )}
-          </Strong>
+  </Paragraph>
 
-          {" "}per gram.
+  <Paragraph>
 
-          Under the same assumptions, 22-karat
-          gold would have an indicative value of{" "}
+    Federal Reserve monetary policy, real
+    Treasury yields, inflation expectations
+    and investment demand remain important
+    factors when assessing the outlook for
+    gold in the United States.
 
-          <Strong>
-            AED{" "}
-            {formatNumber(
-              calculateGramPrice(
-                averageForecast,
-                22,
-                3.6725
-              ),
-              2
-            )}
-          </Strong>
+  </Paragraph>
 
-          {" "}per gram, excluding additional
-          retail costs.
+  <SubHeading>
+    United Kingdom Gold Price Forecast 2027
+  </SubHeading>
 
-        </Paragraph>
+  <Paragraph>
 
-        <SubHeading>
-          Kuwait Gold Price Forecast 2027
-        </SubHeading>
+    Gold prices in the United Kingdom are
+    influenced by both the international
+    dollar-denominated gold price and the
+    exchange rate of the British pound.
 
-        <Paragraph>
+    Under the exchange rate assumptions
+    used in this report, the indicative
+    value of 24-karat gold is approximately{" "}
 
-          Gold prices in Kuwait are influenced
-          by the international dollar-denominated
-          gold price and the exchange rate of
-          the Kuwaiti dinar against the US dollar.
+    <Strong>
+      GBP{" "}
+      {formatNumber(
+        calculateGramPrice(
+          averageForecast,
+          24,
+          localMarkets[1].rate
+        ),
+        2
+      )}
+    </Strong>
 
-          Because the Kuwaiti dinar is linked
-          to a basket of currencies, conversion
-          results may vary according to the
-          prevailing exchange rate when gold
-          is purchased.
+    {" "}per gram.
 
-        </Paragraph>
+  </Paragraph>
 
-        <SubHeading>
-          Egypt Gold Price Forecast 2027
-        </SubHeading>
+  <Paragraph>
 
-        <Paragraph>
+    A weaker British pound against the
+    US dollar may increase domestic gold
+    prices, while a stronger pound may
+    reduce the local-currency impact of
+    rising international gold prices.
 
-          The exchange rate of the Egyptian pound
-          is an important factor affecting domestic
-          gold prices in Egypt.
+    Bank of England monetary policy and
+    UK economic conditions are therefore
+    relevant considerations for British
+    gold investors.
 
-          Local gold prices may increase even
-          during periods of relatively stable
-          international gold prices if the value
-          of the Egyptian pound declines against
-          the US dollar.
+  </Paragraph>
 
-        </Paragraph>
+  <SubHeading>
+    Canada Gold Price Forecast 2027
+  </SubHeading>
 
-        <Paragraph>
+  <Paragraph>
 
-          Producing a reliable local-currency
-          price estimate for 2027 therefore
-          requires explicit assumptions regarding
-          the future exchange rate, alongside
-          domestic transaction and retail costs.
+    Canadian gold prices reflect international
+    gold market movements and fluctuations
+    in the Canadian dollar against the
+    US dollar.
 
-        </Paragraph>
+    Applying the reference exchange rate
+    used in this report, the indicative
+    value of 24-karat gold in Canada
+    amounts to approximately{" "}
 
-        <SubHeading>
-          Gold Price Outlook for Qatar, Bahrain, Oman and Jordan
-        </SubHeading>
+    <Strong>
+      CAD{" "}
+      {formatNumber(
+        calculateGramPrice(
+          averageForecast,
+          24,
+          localMarkets[2].rate
+        ),
+        2
+      )}
+    </Strong>
 
-        <Paragraph>
+    {" "}per gram.
 
-          The exchange rate arrangements linking
-          these local currencies to the US dollar
-          provide a basis for approximate comparisons
-          between international and domestic gold
-          prices using the nominal conversion
-          rates presented in the table.
+  </Paragraph>
 
-        </Paragraph>
+  <Paragraph>
 
-        <GoldPriceFormula />
+    Canadian investors should consider
+    developments in Bank of Canada monetary
+    policy, domestic inflation, commodity
+    markets and exchange rate movements
+    when evaluating the local gold price
+    outlook.
 
-      </ArticleSection>
+  </Paragraph>
+
+  <SubHeading>
+    Australia Gold Price Forecast 2027
+  </SubHeading>
+
+  <Paragraph>
+
+    Australia is an important participant
+    in the global gold market, with a
+    substantial domestic gold mining
+    industry.
+
+    For Australian investors, gold prices
+    expressed in Australian dollars also
+    depend on movements in the AUD/USD
+    exchange rate.
+
+  </Paragraph>
+
+  <Paragraph>
+
+    Using the average institutional gold
+    price target and the reference currency
+    conversion, the indicative value of
+    24-karat gold amounts to approximately{" "}
+
+    <Strong>
+      AUD{" "}
+      {formatNumber(
+        calculateGramPrice(
+          averageForecast,
+          24,
+          localMarkets[3].rate
+        ),
+        2
+      )}
+    </Strong>
+
+    {" "}per gram.
+
+    Actual domestic prices may differ
+    depending on future currency movements
+    and retail investment costs.
+
+  </Paragraph>
+
+  <SubHeading>
+    Singapore Gold Price Forecast 2027
+  </SubHeading>
+
+  <Paragraph>
+
+    Singapore is an established international
+    financial centre with an active market
+    for precious metals and investment-grade
+    bullion.
+
+    Local gold prices are influenced by
+    international gold prices and the
+    exchange rate of the Singapore dollar
+    against the US dollar.
+
+  </Paragraph>
+
+  <Paragraph>
+
+    Under the assumptions used in this
+    report, the indicative intrinsic
+    value of 24-karat gold in Singapore
+    amounts to approximately{" "}
+
+    <Strong>
+      SGD{" "}
+      {formatNumber(
+        calculateGramPrice(
+          averageForecast,
+          24,
+          localMarkets[4].rate
+        ),
+        2
+      )}
+    </Strong>
+
+    {" "}per gram, before applicable
+    investment premiums and other
+    transaction-related costs.
+
+  </Paragraph>
+
+  <SubHeading>
+    Malaysia Gold Price Forecast 2027
+  </SubHeading>
+
+  <Paragraph>
+
+    Gold is purchased in Malaysia for
+    both investment and jewellery purposes.
+
+    Domestic prices depend on international
+    gold market developments, the Malaysian
+    ringgit exchange rate and the purity
+    of the gold being purchased.
+
+  </Paragraph>
+
+  <Paragraph>
+
+    Based on the average year-end institutional
+    forecast and the exchange rate assumptions
+    used in this report, the indicative
+    intrinsic value of 24-karat gold is
+    approximately{" "}
+
+    <Strong>
+      MYR{" "}
+      {formatNumber(
+        calculateGramPrice(
+          averageForecast,
+          24,
+          localMarkets[5].rate
+        ),
+        2
+      )}
+    </Strong>
+
+    {" "}per gram.
+
+    Under the same assumptions, the estimated
+    value of 22-karat gold amounts to{" "}
+
+    <Strong>
+      MYR{" "}
+      {formatNumber(
+        calculateGramPrice(
+          averageForecast,
+          22,
+          localMarkets[5].rate
+        ),
+        2
+      )}
+    </Strong>
+
+    {" "}per gram, before manufacturing
+    charges and retail margins.
+
+  </Paragraph>
+
+  <SubHeading>
+    How Exchange Rates Affect Local Gold Prices
+  </SubHeading>
+
+  <Paragraph>
+
+    International gold prices and domestic
+    gold prices do not necessarily move
+    at the same rate.
+
+    A depreciation in a local currency
+    against the US dollar may increase
+    the domestic value of gold even when
+    international gold prices remain
+    relatively stable.
+
+  </Paragraph>
+
+  <Paragraph>
+
+    Conversely, appreciation in a local
+    currency may partially offset gains
+    in the international US dollar gold
+    price.
+
+    Investors should therefore consider
+    both gold market conditions and
+    currency exchange rate developments
+    when evaluating local gold price
+    projections for 2027.
+
+  </Paragraph>
+
+  <GoldPriceFormula />
+
+  <Note title="Exchange Rate and Price Forecast Limitations" tone="blue">
+
+    The local-currency gold price estimates
+    presented in this section are mathematical
+    conversions of the selected institutional
+    gold price forecasts.
+
+    The currency exchange rates are based
+    on Federal Reserve H.10 reference data
+    for {FX_REFERENCE_DATE} and are assumed
+    to remain unchanged for calculation
+    purposes only.
+
+    These figures do not represent independent
+    forecasts of exchange rates, domestic
+    retail gold prices or guaranteed investment
+    returns in 2027.
+
+  </Note>
+
+</ArticleSection>
 
       {/* =====================================================
           12. GOLD PRICES BY KARAT
@@ -3772,28 +4022,31 @@ export default function GoldPriceForecast2027PageEn() {
 
         </FAQItem>
 
-        <FAQItem question="What is the gold price forecast for Saudi Arabia in 2027?">
+        <FAQItem question="What could gold cost per gram in the United States in 2027?">
 
-          Based on the average year-end
-          institutional price target and
-          the exchange rate assumption used
-          in this report, the indicative
-          value of 24-karat gold amounts
-          to approximately SAR{" "}
+  Based on the average year-end institutional
+  gold price target included in this report,
+  the indicative intrinsic value of
+  24-karat gold amounts to approximately{" "}
 
-          {formatNumber(
-            calculateGramPrice(
-              averageForecast,
-              24,
-              3.75
-            ),
-            2
-          )}
+  USD{" "}
 
-          {" "}per gram, excluding manufacturing
-          charges, taxes and dealer margins.
+  {formatNumber(
+    calculateGramPrice(
+      averageForecast,
+      24
+    ),
+    2
+  )}
 
-        </FAQItem>
+  {" "}per gram.
+
+  Actual retail gold prices may differ
+  depending on dealer premiums, taxes,
+  manufacturing charges and prevailing
+  market conditions.
+
+</FAQItem>
 
         <FAQItem question="What could 21-karat gold cost per gram in 2027?">
 
@@ -3929,7 +4182,7 @@ export default function GoldPriceForecast2027PageEn() {
             "Calculating the arithmetic mean of year-end price targets without including annual average forecasts.",
             "Identifying forecast publication dates and relevant target periods.",
             "Calculating per-gram gold values using troy ounce weight and gold purity.",
-            "Applying approximate nominal exchange rates when calculating indicative local-currency gold prices.",
+            "Using Federal Reserve H.10 exchange rates for November 20, 2026, held constant for illustrative local-currency gold price calculations rather than forecasting future exchange rates.",
             "Distinguishing published institutional forecasts from hypothetical editorial market scenarios.",
           ]}
         />

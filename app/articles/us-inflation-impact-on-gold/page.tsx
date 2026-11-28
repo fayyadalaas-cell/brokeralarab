@@ -60,10 +60,6 @@ const ARTICLE = {
     "2026-11-27",
 };
 
-/* =========================================================
-   OFFICIAL DATA AND RESEARCH SOURCES
-========================================================= */
-
 const sources = [
   {
     title:
@@ -76,6 +72,24 @@ const sources = [
       "U.S. Bureau of Labor Statistics – CPI Frequently Asked Questions",
     url:
       "https://www.bls.gov/cpi/questions-and-answers.htm",
+  },
+  {
+    title:
+      "U.S. Bureau of Labor Statistics – Consumer Price Index, December 2025",
+    url:
+      "https://www.bls.gov/news.release/archives/cpi_01132026.htm",
+  },
+  {
+    title:
+      "U.S. Bureau of Labor Statistics – Consumer Price Index, October 2026",
+    url:
+      "https://www.bls.gov/news.release/archives/cpi_11102026.htm",
+  },
+  {
+    title:
+      "FRED – Consumer Price Index, Not Seasonally Adjusted (CPIAUCNS)",
+    url:
+      "https://fred.stlouisfed.org/series/CPIAUCNS",
   },
   {
     title:
@@ -118,6 +132,18 @@ const sources = [
       "World Gold Council – Gold's 2024 Performance",
     url:
       "https://www.gold.org/goldhub/gold-focus/2025/01/golds-2024-performance-best-14-years",
+  },
+  {
+    title:
+      "World Gold Council – Gold Market Commentary December 2025",
+    url:
+      "https://www.gold.org/goldhub/research/gold-market-commentary-december-2025",
+  },
+  {
+    title:
+      "World Gold Council – Gold Market Commentary October 2026",
+    url:
+      "https://www.gold.org/goldhub/research/gold-market-commentary-october-2026",
   },
   {
     title:
@@ -231,10 +257,6 @@ const ARTICLE_SEO: ArticleSEOConfig = {
 export const metadata =
   createArticleMetadata(ARTICLE_SEO);
 
-/* =========================================================
-   TABLE OF CONTENTS
-========================================================= */
-
 const contents = [
   {
     id: "key-findings",
@@ -250,11 +272,15 @@ const contents = [
   },
   {
     id: "historical-comparison",
-    label: "المقارنة التاريخية بالأرقام",
+    label: "المقارنة التاريخية 2021–2025",
   },
   {
     id: "historical-analysis",
-    label: "تحليل أداء الذهب 2021–2024",
+    label: "تحليل أداء الذهب 2021–2025",
+  },
+  {
+    id: "gold-inflation-2026",
+    label: "أداء الذهب والتضخم خلال 2026",
   },
   {
     id: "real-interest-rates",
@@ -298,16 +324,6 @@ const contents = [
   },
 ];
 
-/* =========================================================
-   HISTORICAL RESEARCH DATA
-
-   CPI: December year-over-year, all items.
-   GOLD: Annual USD gold returns reported by WGC.
-
-   Real return:
-   ((1 + nominal return) / (1 + CPI inflation) - 1)
-========================================================= */
-
 const historicalData = [
   {
     year: "2021",
@@ -337,10 +353,61 @@ const historicalData = [
     context:
       "الطلب الاستثماري ومشتريات البنوك المركزية والمخاطر الجيوسياسية",
   },
+  {
+    year: "2025",
+    inflation: 2.7,
+    gold: 67.4,
+    context:
+      "ارتفاع الطلب الاستثماري والمخاطر العالمية وضعف الدولار خلال فترات من العام",
+  },
 ];
 
-function formatPercent(value: number) {
-  return `${value > 0 ? "+" : ""}${value.toFixed(1)}%`;
+/* =========================================================
+   2026 YEAR-TO-DATE DATA
+
+   Comparison period:
+   December 2025 to October 2026.
+
+   CPI-U: Not seasonally adjusted.
+   Gold: USD per troy ounce.
+========================================================= */
+
+const currentYearData = {
+  year: "2026",
+  period: "يناير – أكتوبر 2026",
+  goldStartPrice: 4368,
+  goldEndPrice: 3913,
+  cpiStart: 324.054,
+  cpiEnd: 337.511,
+  lastAnnualInflation: 3.7,
+  lastAnnualInflationMonth: "سبتمبر 2026",
+  octoberMonthlyInflation: 0.4,
+};
+
+function formatPercent(
+  value: number,
+  decimals = 1
+) {
+  return `${value > 0 ? "+" : ""}${value.toFixed(decimals)}%`;
+}
+
+function formatNumber(
+  value: number,
+  decimals = 0
+) {
+  return new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  }).format(value);
+}
+
+function calculatePercentageChange(
+  startValue: number,
+  endValue: number
+) {
+  return (
+    ((endValue - startValue) / startValue) * 100
+  );
 }
 
 function calculateRealReturn(
@@ -354,6 +421,36 @@ function calculateRealReturn(
     100
   );
 }
+
+const currentYearGoldReturn =
+  calculatePercentageChange(
+    currentYearData.goldStartPrice,
+    currentYearData.goldEndPrice
+  );
+
+const currentYearInflation =
+  calculatePercentageChange(
+    currentYearData.cpiStart,
+    currentYearData.cpiEnd
+  );
+
+const currentYearRealReturn =
+  calculateRealReturn(
+    currentYearGoldReturn,
+    currentYearInflation
+  );
+
+const highestAnnualGoldReturn =
+  historicalData.reduce((highest, item) =>
+    item.gold > highest.gold ? item : highest
+  );
+
+const highestDecemberInflation =
+  historicalData.reduce((highest, item) =>
+    item.inflation > highest.inflation
+      ? item
+      : highest
+  );
 
 /* =========================================================
    EDITORIAL TABLE COMPONENT
@@ -635,35 +732,31 @@ async function FeaturedGoldBrokers() {
   );
 }
 
-/* =========================================================
-   RESEARCH KEY FINDINGS
-========================================================= */
-
 function ResearchHighlights() {
 
   const highlights = [
     {
-      label: "أعلى تضخم ضمن العينة",
-      value: "7.0%",
-      description: "ديسمبر 2021",
+      label: "أعلى تضخم في ديسمبر ضمن العينة",
+      value: `${highestDecemberInflation.inflation.toFixed(1)}%`,
+      description: `ديسمبر ${highestDecemberInflation.year}`,
       color: "#176ac8",
     },
     {
-      label: "عائد الذهب في 2021",
-      value: "-4.3%",
-      description: "رغم ارتفاع التضخم",
-      color: "#b45309",
-    },
-    {
-      label: "عائد الذهب في 2024",
-      value: "+25.5%",
-      description: "مع تضخم سنوي 2.9%",
+      label: "أعلى عائد سنوي للذهب ضمن العينة",
+      value: formatPercent(highestAnnualGoldReturn.gold),
+      description: `عام ${highestAnnualGoldReturn.year} – تضخم ${highestAnnualGoldReturn.inflation.toFixed(1)}%`,
       color: "#15803d",
     },
     {
-      label: "هدف التضخم طويل الأجل",
-      value: "2%",
-      description: "وفق مؤشر PCE",
+      label: "أداء الذهب خلال 2026",
+      value: formatPercent(currentYearGoldReturn),
+      description: "حتى نهاية أكتوبر",
+      color: "#b45309",
+    },
+    {
+      label: "التضخم التراكمي خلال 2026",
+      value: formatPercent(currentYearInflation, 2),
+      description: "يناير – أكتوبر",
       color: "#102747",
     },
   ];
@@ -704,15 +797,68 @@ function ResearchHighlights() {
   );
 }
 
-/* =========================================================
-   HISTORICAL GOLD VS INFLATION CHART
-========================================================= */
-
 function HistoricalComparisonChart() {
 
-  const baseline = 225;
-  const scale = 6.2;
-  const ticks = [-10, 0, 10, 20, 30];
+  const chartWidth = 720;
+  const chartHeight = 460;
+
+  const plotLeft = 60;
+  const plotRight = 700;
+  const plotTop = 35;
+  const plotBottom = 400;
+
+  const maximumValue = Math.max(
+    ...historicalData.flatMap((item) => [
+      item.inflation,
+      item.gold,
+    ])
+  );
+
+  const minimumValue = Math.min(
+    0,
+    ...historicalData.flatMap((item) => [
+      item.inflation,
+      item.gold,
+    ])
+  );
+
+  const upperLimit = Math.max(
+    10,
+    Math.ceil(maximumValue / 10) * 10
+  );
+
+  const lowerLimit = Math.min(
+    -10,
+    Math.floor(minimumValue / 10) * 10
+  );
+
+  const range = upperLimit - lowerLimit;
+
+  const scale =
+    (plotBottom - plotTop) / range;
+
+  const valueToY = (value: number) =>
+    plotTop + (upperLimit - value) * scale;
+
+  const baseline = valueToY(0);
+
+  const ticks = Array.from(
+    {
+      length:
+        Math.round((upperLimit - lowerLimit) / 10) + 1,
+    },
+    (_, index) => lowerLimit + index * 10
+  );
+
+  const groupWidth =
+    (plotRight - plotLeft) / historicalData.length;
+
+  const barWidth = Math.min(
+    42,
+    groupWidth * 0.32
+  );
+
+  const barGap = 7;
 
   return (
 
@@ -725,7 +871,7 @@ function HistoricalComparisonChart() {
         </h3>
 
         <p className="mt-2 text-[13px] leading-6 text-[#64748b]">
-          مقارنة سنوية للفترة من 2021 إلى 2024
+          مقارنة خمس سنوات مكتملة من 2021 إلى 2025
         </p>
 
       </div>
@@ -737,7 +883,7 @@ function HistoricalComparisonChart() {
           <span className="h-3 w-3 rounded-sm bg-[#176ac8]" />
 
           <span className="text-[12px] font-bold text-[#475569]">
-            التضخم الأمريكي
+            التضخم الأمريكي في ديسمبر
           </span>
 
         </div>
@@ -754,17 +900,20 @@ function HistoricalComparisonChart() {
 
       </div>
 
-      <div dir="ltr" className="px-2 py-5 sm:px-6">
+      <div
+        dir="ltr"
+        className="overflow-x-auto px-2 py-5 sm:px-6"
+      >
 
         <svg
-          viewBox="0 0 600 340"
-          className="h-auto w-full"
+          viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+          className="h-auto w-full min-w-[340px]"
           role="img"
-          aria-label="رسم بياني يقارن معدلات التضخم الأمريكي السنوية في ديسمبر مع عوائد الذهب السنوية خلال 2021 إلى 2024"
+          aria-label="مقارنة معدلات التضخم الأمريكي وعوائد الذهب السنوية من 2021 إلى 2025"
         >
 
           <title>
-            US Inflation vs Gold Annual Returns 2021–2024
+            US Inflation vs Gold Annual Returns 2021–2025
           </title>
 
           {ticks.map((tick) => (
@@ -772,21 +921,21 @@ function HistoricalComparisonChart() {
             <g key={tick}>
 
               <line
-                x1="48"
-                x2="580"
-                y1={baseline - tick * scale}
-                y2={baseline - tick * scale}
+                x1={plotLeft}
+                x2={plotRight}
+                y1={valueToY(tick)}
+                y2={valueToY(tick)}
                 stroke={
                   tick === 0
                     ? "#94a3b8"
                     : "#e3eaf1"
                 }
-                strokeWidth={tick === 0 ? "1.5" : "1"}
+                strokeWidth={tick === 0 ? 1.5 : 1}
               />
 
               <text
-                x="40"
-                y={baseline - tick * scale + 5}
+                x={plotLeft - 10}
+                y={valueToY(tick) + 5}
                 textAnchor="end"
                 fontSize="13"
                 fill="#64748b"
@@ -800,10 +949,19 @@ function HistoricalComparisonChart() {
 
           {historicalData.map((item, index) => {
 
-            const x = 67 + index * 130;
+            const center =
+              plotLeft +
+              groupWidth * index +
+              groupWidth / 2;
+
+            const inflationX =
+              center - barWidth - barGap / 2;
+
+            const goldX =
+              center + barGap / 2;
 
             const inflationHeight =
-              item.inflation * scale;
+              Math.abs(item.inflation) * scale;
 
             const goldHeight =
               Math.abs(item.gold) * scale;
@@ -813,32 +971,40 @@ function HistoricalComparisonChart() {
               <g key={item.year}>
 
                 <rect
-                  x={x}
-                  y={baseline - inflationHeight}
-                  width="43"
+                  x={inflationX}
+                  y={
+                    item.inflation >= 0
+                      ? valueToY(item.inflation)
+                      : baseline
+                  }
+                  width={barWidth}
                   height={inflationHeight}
                   rx="4"
                   fill="#176ac8"
                 />
 
                 <rect
-                  x={x + 49}
+                  x={goldX}
                   y={
                     item.gold >= 0
-                      ? baseline - goldHeight
+                      ? valueToY(item.gold)
                       : baseline
                   }
-                  width="43"
+                  width={barWidth}
                   height={goldHeight}
                   rx="4"
                   fill="#c39a3b"
                 />
 
                 <text
-                  x={x + 21.5}
-                  y={baseline - inflationHeight - 9}
+                  x={inflationX + barWidth / 2}
+                  y={
+                    item.inflation >= 0
+                      ? valueToY(item.inflation) - 9
+                      : valueToY(item.inflation) + 17
+                  }
                   textAnchor="middle"
-                  fontSize="14"
+                  fontSize="13"
                   fontWeight="700"
                   fill="#176ac8"
                 >
@@ -846,14 +1012,14 @@ function HistoricalComparisonChart() {
                 </text>
 
                 <text
-                  x={x + 70.5}
+                  x={goldX + barWidth / 2}
                   y={
                     item.gold >= 0
-                      ? baseline - goldHeight - 9
-                      : baseline + goldHeight + 17
+                      ? valueToY(item.gold) - 9
+                      : valueToY(item.gold) + 17
                   }
                   textAnchor="middle"
-                  fontSize="14"
+                  fontSize="13"
                   fontWeight="700"
                   fill="#927022"
                 >
@@ -861,8 +1027,8 @@ function HistoricalComparisonChart() {
                 </text>
 
                 <text
-                  x={x + 46}
-                  y="322"
+                  x={center}
+                  y={chartHeight - 20}
                   textAnchor="middle"
                   fontSize="15"
                   fontWeight="700"
@@ -883,11 +1049,12 @@ function HistoricalComparisonChart() {
 
       <figcaption className="border-t border-[#dce6ef] bg-[#f7faff] px-5 py-4 text-[12px] leading-6 text-[#64748b]">
 
-        إعداد: فريق تحليلات بروكر العرب، استناداً
-        إلى بيانات التضخم من مكتب إحصاءات العمل
-        الأمريكي، وعوائد الذهب بالدولار الأمريكي
-        المنشورة من مجلس الذهب العالمي. لا تمثل
-        الأعمدة حركة الذهب لحظة صدور بيانات التضخم.
+        إعداد: فريق تحليلات بروكر العرب، استناداً إلى
+        بيانات التضخم من مكتب إحصاءات العمل الأمريكي،
+        وعوائد الذهب بالدولار الأمريكي المنشورة من
+        مجلس الذهب العالمي. تمثل البيانات خمس سنوات
+        ميلادية مكتملة، ولا تقيس حركة الذهب لحظة صدور
+        بيانات التضخم.
 
       </figcaption>
 
@@ -922,8 +1089,247 @@ function HistoricalComparisonTable() {
           )
         ),
       ])}
-      caption="التضخم: تغير مؤشر CPI-U العام بين ديسمبر وديسمبر من العام السابق. عائد الذهب: التغير السنوي بالدولار وفق تقارير مجلس الذهب العالمي. العائد الحقيقي محسوب قبل الرسوم والضرائب."
+      caption="التضخم: تغير مؤشر CPI-U العام غير المعدل موسمياً بين ديسمبر وديسمبر من العام السابق. عائد الذهب: الأداء السنوي بالدولار الأمريكي وفق تقارير مجلس الذهب العالمي. العائد الحقيقي محسوب قبل الرسوم والضرائب، باستخدام معدلات التضخم والعوائد المنشورة."
     />
+
+  );
+}
+
+/* =========================================================
+   GOLD AND INFLATION 2026 – YTD SUMMARY
+========================================================= */
+
+function CurrentYearHighlights() {
+
+  const figures = [
+    {
+      label: "سعر الذهب نهاية 2025",
+      value: `$${formatNumber(currentYearData.goldStartPrice)}`,
+      description: "دولار لكل أونصة تروي",
+      color: "#102747",
+    },
+    {
+      label: "سعر الذهب نهاية أكتوبر 2026",
+      value: `$${formatNumber(currentYearData.goldEndPrice)}`,
+      description: "دولار لكل أونصة تروي",
+      color: "#102747",
+    },
+    {
+      label: "عائد الذهب منذ بداية العام",
+      value: formatPercent(currentYearGoldReturn, 2),
+      description: "يناير – أكتوبر 2026",
+      color: "#b45309",
+    },
+    {
+      label: "التضخم التراكمي",
+      value: formatPercent(currentYearInflation, 2),
+      description: "يناير – أكتوبر 2026",
+      color: "#176ac8",
+    },
+  ];
+
+  return (
+
+    <div className="my-7 grid grid-cols-2 gap-3 lg:grid-cols-4">
+
+      {figures.map((figure) => (
+
+        <div
+          key={figure.label}
+          className="rounded-[15px] border border-[#dce6ef] bg-[#f7faff] px-3 py-5 text-center sm:px-4"
+        >
+
+          <div className="text-[12px] font-bold leading-6 text-[#64748b] sm:text-[13px]">
+            {figure.label}
+          </div>
+
+          <div
+            dir="ltr"
+            style={{ color: figure.color }}
+            className="my-3 text-[26px] font-black leading-tight sm:text-[32px]"
+          >
+            {figure.value}
+          </div>
+
+          <div className="text-[12px] leading-6 text-[#64748b]">
+            {figure.description}
+          </div>
+
+        </div>
+
+      ))}
+
+    </div>
+
+  );
+}
+
+/* =========================================================
+   GOLD AND INFLATION 2026 – DATA TABLE
+========================================================= */
+
+function CurrentYearComparisonTable() {
+
+  return (
+
+    <ResearchTable
+      headers={[
+        "المؤشر",
+        "نهاية 2025",
+        "نهاية أكتوبر 2026",
+        "التغير",
+      ]}
+      rows={[
+        [
+          "سعر أونصة الذهب بالدولار",
+          `$${formatNumber(currentYearData.goldStartPrice)}`,
+          `$${formatNumber(currentYearData.goldEndPrice)}`,
+          formatPercent(currentYearGoldReturn, 2),
+        ],
+        [
+          "مؤشر أسعار المستهلك CPI-U",
+          formatNumber(currentYearData.cpiStart, 3),
+          formatNumber(currentYearData.cpiEnd, 3),
+          formatPercent(currentYearInflation, 2),
+        ],
+      ]}
+      caption="المصادر: مجلس الذهب العالمي ومكتب إحصاءات العمل الأمريكي. أسعار الذهب وفق معيار LBMA Gold Price PM كما وردت في تقارير مجلس الذهب العالمي، وهي مقربة إلى أقرب دولار. مؤشر CPI-U غير معدل موسمياً. التغير محسوب بين نهاية ديسمبر 2025 ونهاية أكتوبر 2026."
+    />
+
+  );
+}
+
+/* =========================================================
+   GOLD AND INFLATION 2026 – PERFORMANCE CHART
+========================================================= */
+
+function CurrentYearComparisonChart() {
+
+  const chartData = [
+    {
+      label: "التضخم التراكمي",
+      value: currentYearInflation,
+      color: "#176ac8",
+    },
+    {
+      label: "عائد الذهب الاسمي",
+      value: currentYearGoldReturn,
+      color: "#c39a3b",
+    },
+    {
+      label: "عائد الذهب الحقيقي",
+      value: currentYearRealReturn,
+      color: "#b45309",
+    },
+  ];
+
+  const maximum = Math.max(
+    5,
+    Math.ceil(
+      Math.max(
+        ...chartData.map((item) =>
+          Math.abs(item.value)
+        )
+      ) / 5
+    ) * 5
+  );
+
+  return (
+
+    <figure className="my-8 overflow-hidden rounded-[18px] border border-[#dce6ef] bg-white">
+
+      <div className="border-b border-[#dce6ef] bg-[#f7faff] px-5 py-5 sm:px-7">
+
+        <h3 className="text-[18px] font-black text-[#102747] sm:text-[22px]">
+          أداء الذهب والتضخم خلال عام 2026
+        </h3>
+
+        <p className="mt-2 text-[13px] leading-6 text-[#64748b]">
+          مقارنة التغير التراكمي من بداية العام حتى نهاية أكتوبر
+        </p>
+
+      </div>
+
+      <div className="space-y-7 p-5 sm:p-7">
+
+        {chartData.map((item) => {
+
+          const barWidth =
+            (Math.abs(item.value) / maximum) * 50;
+
+          const leftPosition =
+            item.value >= 0
+              ? 50
+              : 50 - barWidth;
+
+          return (
+
+            <div key={item.label}>
+
+              <div className="mb-3 flex items-center justify-between gap-3">
+
+                <span className="text-[13px] font-bold text-[#102747] sm:text-[15px]">
+                  {item.label}
+                </span>
+
+                <span
+                  dir="ltr"
+                  style={{ color: item.color }}
+                  className="text-[18px] font-black"
+                >
+                  {formatPercent(item.value, 2)}
+                </span>
+
+              </div>
+
+              <div
+                dir="ltr"
+                className="relative h-10 overflow-hidden rounded-[8px] bg-[#edf2f7]"
+              >
+
+                <div className="absolute bottom-0 left-1/2 top-0 z-10 w-px bg-[#94a3b8]" />
+
+                <div
+                  className="absolute bottom-0 top-0 rounded-[5px]"
+                  style={{
+                    left: `${leftPosition}%`,
+                    width: `${barWidth}%`,
+                    backgroundColor: item.color,
+                  }}
+                />
+
+              </div>
+
+            </div>
+
+          );
+
+        })}
+
+        <div
+          dir="ltr"
+          className="flex justify-between text-[12px] font-medium text-[#64748b]"
+        >
+
+          <span>-{maximum}%</span>
+
+          <span>0%</span>
+
+          <span>+{maximum}%</span>
+
+        </div>
+
+      </div>
+
+      <figcaption className="border-t border-[#dce6ef] bg-[#f7faff] px-5 py-4 text-[12px] leading-7 text-[#64748b]">
+
+        حسابات بروكر العرب بناءً على بيانات BLS ومجلس
+        الذهب العالمي. يغطي الرسم عشرة أشهر من 2026،
+        ولا يمثل عائداً سنوياً كاملاً أو توقعاً لنهاية العام.
+
+      </figcaption>
+
+    </figure>
 
   );
 }
@@ -1786,50 +2192,53 @@ export default function USInflationImpactOnGoldPage() {
 
       <FeaturedGoldBrokers />
 
-      {/* =====================================================
-          SECTION 1
-          KEY FINDINGS
-      ====================================================== */}
-
       <ArticleSection
-        id="key-findings"
-        eyebrow="ملخص التقرير"
-        title="أهم نتائج دراسة التضخم الأمريكي وأسعار الذهب"
-      >
+  id="key-findings"
+  eyebrow="ملخص التقرير"
+  title="أهم نتائج دراسة التضخم الأمريكي وأسعار الذهب"
+>
 
-        <Paragraph>
+  <Paragraph>
 
-          تكشف المقارنة بين معدلات التضخم الأمريكية
-          وعوائد الذهب خلال الفترة من 2021 إلى 2024
-          عن تباين واضح في أداء المعدن الأصفر،
-          بما يؤكد أهمية النظر إلى مجموعة من
-          المتغيرات الاقتصادية بدلاً من التضخم وحده.
+    تكشف المقارنة بين معدلات التضخم الأمريكية
+    وعوائد الذهب خلال خمس سنوات مكتملة من
+    2021 إلى 2025، إلى جانب بيانات الأشهر
+    العشرة الأولى من عام 2026، عن تباين واضح
+    في أداء المعدن الأصفر تحت ظروف اقتصادية
+    ونقدية مختلفة.
 
-        </Paragraph>
+  </Paragraph>
 
-        <ResearchHighlights />
+  <ResearchHighlights />
 
-        <ArticleList
-          items={[
-            "تراجع الذهب بنسبة 4.3% خلال 2021، رغم وصول التضخم السنوي الأمريكي إلى 7% في ديسمبر.",
-            "سجل الذهب ارتفاعاً محدوداً بلغ 0.4% خلال 2022، رغم استمرار التضخم عند مستويات مرتفعة.",
-            "ارتفع الذهب بنسبة 15% خلال 2023، بالتزامن مع انخفاض التضخم السنوي إلى 3.4% في ديسمبر.",
-            "سجل الذهب مكاسب بلغت 25.5% في 2024، بينما بلغ التضخم السنوي 2.9% في نهاية العام.",
-            "العوائد الحقيقية والدولار وتوقعات السياسة النقدية تساعد في تفسير اختلاف أداء الذهب بين الفترات.",
-          ]}
-        />
+  <ArticleList
+    items={[
+      "تراجع الذهب بنسبة 4.3% خلال 2021، رغم وصول التضخم السنوي الأمريكي إلى 7% في ديسمبر.",
+      "سجل الذهب ارتفاعاً محدوداً بلغ 0.4% خلال 2022، رغم استمرار التضخم عند مستويات مرتفعة.",
+      "ارتفع الذهب بنسبة 15% خلال 2023، بالتزامن مع انخفاض التضخم السنوي إلى 3.4% في ديسمبر.",
+      "سجل الذهب مكاسب بلغت 25.5% في 2024، بينما بلغ التضخم السنوي 2.9% في نهاية العام.",
+      "حقق الذهب مكاسب سنوية بلغت 67.4% خلال 2025، رغم تراجع التضخم السنوي إلى 2.7% في ديسمبر.",
+      `خلال الأشهر العشرة الأولى من 2026، سجل الذهب عائداً تقريبياً بلغ ${formatPercent(currentYearGoldReturn, 2)}، مقابل ارتفاع تراكمي في مؤشر أسعار المستهلك بلغ ${formatPercent(currentYearInflation, 2)}.`,
+      "تؤكد المقارنة أهمية العوائد الحقيقية والدولار وتوقعات السياسة النقدية والطلب الاستثماري عند تفسير حركة الذهب.",
+    ]}
+  />
 
-        <Note title="النتيجة الرئيسية للتقرير" tone="blue">
+  <Note title="النتيجة الرئيسية للتقرير" tone="blue">
 
-          لا يمكن الاعتماد على اتجاه التضخم وحده
-          للتنبؤ بحركة أسعار الذهب. الأهم هو فهم
-          كيفية تأثير البيانات على توقعات المستثمرين
-          والعوائد الحقيقية والدولار الأمريكي والطلب
-          على المعدن الأصفر.
+    لا يمكن الاعتماد على اتجاه التضخم وحده للتنبؤ
+    بحركة أسعار الذهب. فقد حقق المعدن الأصفر
+    أقوى مكاسبه السنوية ضمن العينة خلال 2025
+    رغم اعتدال التضخم، ثم تراجع خلال الأشهر
+    العشرة الأولى من 2026 رغم استمرار ارتفاع
+    الأسعار الاستهلاكية.
 
-        </Note>
+    وتوضح هذه النتائج أهمية تحليل التضخم ضمن
+    إطار اقتصادي يشمل العوائد الحقيقية والدولار
+    الأمريكي والسياسة النقدية والطلب على الذهب.
 
-      </ArticleSection>
+  </Note>
+
+</ArticleSection>
 
       {/* =====================================================
           SECTION 2
@@ -2003,212 +2412,651 @@ export default function USInflationImpactOnGoldPage() {
 
       </ArticleSection>
 
-      {/* =====================================================
-          SECTION 4
-          HISTORICAL COMPARISON
-      ====================================================== */}
-
       <ArticleSection
-        id="historical-comparison"
-        eyebrow="البيانات التاريخية"
-        title="مقارنة تاريخية بين التضخم الأمريكي وعوائد الذهب"
+  id="historical-comparison"
+  eyebrow="البيانات التاريخية"
+  title="مقارنة تاريخية بين التضخم الأمريكي وعوائد الذهب 2021–2025"
+>
+
+  <Paragraph>
+
+    لاختبار مدى اتساق الاعتقاد بأن ارتفاع التضخم
+    يؤدي إلى ارتفاع الذهب، نستعرض خمس سنوات
+    ميلادية مكتملة شهدت تغيرات جوهرية في ظروف
+    التضخم والسياسة النقدية والأوضاع المالية
+    والاقتصادية العالمية.
+
+  </Paragraph>
+
+  <Paragraph>
+
+    تغطي المقارنة الفترة الممتدة من بداية عام
+    2021 حتى نهاية عام 2025، بما يشمل مراحل
+    تسارع التضخم، ورفع أسعار الفائدة الأمريكية،
+    وتباطؤ ارتفاع الأسعار، والتحولات التي شهدها
+    الطلب العالمي على الذهب.
+
+  </Paragraph>
+
+  <Paragraph>
+
+    تعتمد المقارنة على معدل التضخم السنوي لمؤشر
+    أسعار المستهلك الأمريكي العام CPI-U في ديسمبر
+    من كل عام، مقابل عائد الذهب السنوي بالدولار
+    الأمريكي كما ورد في تقارير مجلس الذهب العالمي.
+
+  </Paragraph>
+
+  <HistoricalComparisonChart />
+
+  <HistoricalComparisonTable />
+
+  <SubHeading>
+
+    ماذا تكشف المقارنة التاريخية؟
+
+  </SubHeading>
+
+  <Paragraph>
+
+    يوضح الجدول أن الذهب لم يحقق بالضرورة أفضل
+    أداء له خلال السنوات التي شهدت أعلى معدلات
+    التضخم. ففي عام 2021، بلغ التضخم السنوي
+    الأمريكي 7% في ديسمبر، بينما سجل الذهب
+    عائداً سنوياً سالباً.
+
+  </Paragraph>
+
+  <Paragraph>
+
+    وفي المقابل، حقق الذهب خلال عام 2025
+    ارتفاعاً سنوياً بلغ 67.4%، رغم انخفاض
+    معدل التضخم السنوي الأمريكي إلى 2.7%.
+
+  </Paragraph>
+
+  <Paragraph>
+
+    كما يساعد احتساب العائد الحقيقي التقريبي
+    على توضيح الفرق بين الارتفاع الاسمي في
+    قيمة الذهب والتغير الفعلي في قوته الشرائية
+    بعد مراعاة التضخم الأمريكي.
+
+  </Paragraph>
+
+  <Note title="حدود المقارنة التاريخية" tone="blue">
+
+    تشمل المقارنة خمس سنوات مكتملة، ولا تمثل
+    اختباراً إحصائياً شاملاً لارتباط الذهب
+    بالتضخم أو قياساً مستقلاً للعلاقة السببية
+    بين المتغيرين.
+
+    كما أن العوائد السنوية لا تقيس استجابة الذهب
+    خلال الدقائق أو الساعات التالية لصدور بيانات
+    CPI. ويتطلب تحليل تلك الاستجابة بيانات أسعار
+    لحظية وتوقعات تاريخية متزامنة مع كل إعلان.
+
+    تم استبعاد 2026 من الرسم السنوي لأن العام
+    لم يكتمل بعد عند إعداد التقرير، وتُعرض
+    بياناته في قسم مستقل.
+
+  </Note>
+
+</ArticleSection>
+
+{/* =====================================================
+    SECTION 5
+    ANALYSIS BY YEAR – 2021 TO 2025
+====================================================== */}
+
+<ArticleSection
+  id="historical-analysis"
+  eyebrow="قراءة النتائج"
+  title="تحليل أداء الذهب خلال دورات التضخم 2021–2025"
+>
+
+  <SubHeading>
+
+    عام 2021: ارتفاع التضخم وتراجع الذهب
+
+  </SubHeading>
+
+  <Paragraph>
+
+    شهد الاقتصاد الأمريكي خلال 2021 تسارعاً
+    واضحاً في الضغوط التضخمية، بالتزامن مع
+    التعافي من تداعيات جائحة كورونا واضطرابات
+    سلاسل الإمداد وتغير أنماط الطلب.
+
+  </Paragraph>
+
+  <Paragraph>
+
+    وعلى الرغم من وصول التضخم السنوي إلى
+    7% في ديسمبر، سجل الذهب تراجعاً سنوياً
+    بنسبة 4.3% بالدولار الأمريكي.
+
+    وتوضح هذه النتيجة أن الطلب على التحوط من
+    التضخم لم يكن كافياً لضمان ارتفاع المعدن
+    الأصفر خلال تلك الفترة.
+
+  </Paragraph>
+
+  <Paragraph>
+
+    كما لعبت توقعات تحول السياسة النقدية
+    الأمريكية وقوة الدولار خلال أجزاء من العام
+    دوراً مهماً في البيئة الاقتصادية المحيطة
+    بتداول الذهب.
+
+  </Paragraph>
+
+  <SubHeading>
+
+    عام 2022: تضخم مرتفع وتشديد نقدي قوي
+
+  </SubHeading>
+
+  <Paragraph>
+
+    خلال عام 2022، استمر التضخم الأمريكي عند
+    مستويات مرتفعة، وبدأ الاحتياطي الفيدرالي
+    دورة تشديد نقدي قوية، مما ساهم في ارتفاع
+    عوائد السندات وزيادة جاذبية الدولار.
+
+  </Paragraph>
+
+  <Paragraph>
+
+    وعلى الرغم من انتهاء العام بمعدل تضخم
+    سنوي بلغ 6.5%، اكتفى الذهب بمكاسب
+    سنوية محدودة بلغت 0.4%.
+
+  </Paragraph>
+
+  <Paragraph>
+
+    وأشار مجلس الذهب العالمي إلى أن ارتفاع
+    العوائد الحقيقية وقوة الدولار شكلا ضغوطاً
+    مهمة خلال تلك السنة، في حين ساعد الطلب
+    من البنوك المركزية وبعض المستثمرين في
+    موازنة تلك الضغوط.
+
+  </Paragraph>
+
+  <Paragraph>
+
+    وتمثل هذه السنة مثالاً واضحاً على إمكانية
+    تعرض الذهب لضغوط نقدية رغم استمرار التضخم
+    عند مستويات مرتفعة، خصوصاً عندما ترتفع
+    العوائد المتاحة من الأصول البديلة.
+
+  </Paragraph>
+
+  <SubHeading>
+
+    عام 2023: تباطؤ التضخم وصعود الذهب
+
+  </SubHeading>
+
+  <Paragraph>
+
+    مع تراجع معدل التضخم السنوي إلى 3.4%
+    في ديسمبر 2023، سجل الذهب ارتفاعاً
+    سنوياً بلغ نحو 15%، ليحقق أداءً أفضل
+    بكثير مقارنة بالعام السابق.
+
+  </Paragraph>
+
+  <Paragraph>
+
+    وتداخلت خلال هذه المرحلة توقعات السياسة
+    النقدية والمخاطر المالية والجيوسياسية
+    والطلب الاستثماري على الذهب، بما يوضح
+    أن تباطؤ التضخم لا يعني بالضرورة تراجع
+    جاذبية المعدن الأصفر.
+
+  </Paragraph>
+
+  <Paragraph>
+
+    ويبرز هذا الأداء أهمية توقعات المستثمرين
+    بشأن مستقبل أسعار الفائدة، وليس فقط مستوى
+    التضخم المسجل في البيانات الاقتصادية.
+
+  </Paragraph>
+
+  <SubHeading>
+
+    عام 2024: مكاسب قوية رغم اعتدال التضخم
+
+  </SubHeading>
+
+  <Paragraph>
+
+    حقق الذهب مكاسب سنوية بلغت 25.5%
+    خلال 2024، بينما بلغ معدل التضخم
+    الأمريكي 2.9% في ديسمبر.
+
+  </Paragraph>
+
+  <Paragraph>
+
+    ويعكس هذا الأداء أهمية مجموعة من العوامل
+    الأخرى، من بينها الطلب الرسمي والاستثماري
+    على الذهب والمخاطر العالمية، إلى جانب
+    الفترات التي تراجعت خلالها العوائد أو
+    ضعف الدولار الأمريكي.
+
+  </Paragraph>
+
+  <Paragraph>
+
+    وتوضح نتائج 2024 أن قدرة الذهب على تحقيق
+    مكاسب كبيرة لا ترتبط بالضرورة بوجود تضخم
+    مرتفع، بل قد تتأثر أيضاً بتغير اتجاه
+    التدفقات الاستثمارية والظروف المالية العالمية.
+
+  </Paragraph>
+
+  <SubHeading>
+
+    عام 2025: ارتفاع تاريخي للذهب رغم تباطؤ التضخم
+
+  </SubHeading>
+
+  <Paragraph>
+
+    يمثل عام 2025 إحدى أبرز الحالات ضمن
+    الفترة التي يغطيها هذا التقرير، إذ سجل
+    الذهب مكاسب سنوية بلغت{" "}
+
+    <Strong>67.4%</Strong>
+
+    {" "}بالدولار الأمريكي، وفق بيانات مجلس
+    الذهب العالمي، بينما بلغ معدل التضخم
+    السنوي الأمريكي في ديسمبر{" "}
+
+    <Strong>2.7%</Strong>
+
+    .
+
+  </Paragraph>
+
+  <Paragraph>
+
+    وأنهى الذهب عام 2025 عند مستوى يقارب
+    4,368 دولاراً للأونصة، وفق بيانات معيار
+    LBMA Gold Price PM المنشورة ضمن تقرير
+    مجلس الذهب العالمي.
+
+  </Paragraph>
+
+  <Paragraph>
+
+    وأشار تحليل مجلس الذهب العالمي لأداء
+    المعدن الأصفر خلال العام إلى أهمية
+    المخاطر الجيوسياسية ونشاط سوق الخيارات
+    وضعف الدولار وتراجع العوائد خلال فترات
+    من العام.
+
+    كما ساهمت عوامل مرتبطة بالطلب العالمي
+    على الذهب في تشكيل البيئة السوقية التي
+    شهدت هذه المكاسب.
+
+  </Paragraph>
+
+  <div className="my-7 grid grid-cols-2 gap-3 lg:grid-cols-4">
+
+    {[
+      {
+        label: "عائد الذهب في 2025",
+        value: "+67.4%",
+        color: "#15803d",
+      },
+      {
+        label: "التضخم السنوي",
+        value: "2.7%",
+        color: "#176ac8",
+      },
+      {
+        label: "سعر الذهب نهاية العام",
+        value: "$4,368",
+        color: "#102747",
+      },
+      {
+        label: "العائد الحقيقي التقريبي",
+        value: formatPercent(
+          calculateRealReturn(67.4, 2.7),
+          2
+        ),
+        color: "#967020",
+      },
+    ].map((item) => (
+
+      <div
+        key={item.label}
+        className="rounded-[15px] border border-[#dce6ef] bg-[#f7faff] px-3 py-5 text-center sm:px-4"
       >
 
-        <Paragraph>
+        <div className="text-[12px] font-bold leading-6 text-[#64748b] sm:text-[13px]">
+          {item.label}
+        </div>
 
-          لاختبار مدى اتساق الاعتقاد بأن ارتفاع
-          التضخم يؤدي إلى ارتفاع الذهب، نستعرض
-          أربع سنوات متتالية شهدت تغيرات كبيرة
-          في ظروف التضخم والسياسة النقدية
-          والأوضاع المالية العالمية.
+        <div
+          dir="ltr"
+          style={{ color: item.color }}
+          className="mt-4 text-[25px] font-black sm:text-[32px]"
+        >
+          {item.value}
+        </div>
 
-        </Paragraph>
+      </div>
 
-        <Paragraph>
+    ))}
 
-          تعتمد المقارنة على معدل التضخم السنوي
-          لمؤشر CPI العام في ديسمبر من كل عام،
-          مقابل عائد الذهب السنوي بالدولار الأمريكي
-          كما ورد في تقارير مجلس الذهب العالمي.
+  </div>
 
-        </Paragraph>
+  <Paragraph>
 
-        <HistoricalComparisonChart />
+    وتوضح نتائج 2025 أن الذهب يمكن أن يسجل
+    مكاسب تتجاوز معدل التضخم بفارق كبير.
+    ولا يمكن تفسير هذا الفارق بالتضخم وحده،
+    بل يتطلب النظر إلى الظروف النقدية والمالية
+    والطلب الاستثماري والمخاطر العالمية.
 
-        <HistoricalComparisonTable />
+  </Paragraph>
 
-        <Paragraph>
+  <ResearchTable
+    headers={[
+      "السنة",
+      "السياق الاقتصادي",
+    ]}
+    rows={historicalData.map((item) => [
+      item.year,
+      item.context,
+    ])}
+    caption="ملخص تحليلي للظروف الاقتصادية المصاحبة للأداء السنوي خلال 2021–2025، وليس قياساً كمياً لمساهمة كل عامل في عائد الذهب."
+  />
 
-          يوضح الجدول الفرق بين العائد الاسمي للذهب
-          والعائد الحقيقي التقريبي بعد مراعاة التضخم
-          الأمريكي. ويساعد هذا التمييز في تقييم
-          ما إذا كانت مكاسب الذهب قد تجاوزت
-          ارتفاع الأسعار الاستهلاكية خلال الفترة.
+  <Paragraph>
 
-        </Paragraph>
+    وتؤكد الأمثلة التاريخية أن ارتفاع الذهب
+    لا يتطلب بالضرورة تسارع التضخم، وأن الأداء
+    الفعلي قد يتأثر بالسياسة النقدية والطلب
+    الاستثماري والمخاطر بدرجة تفوق التأثير
+    المباشر لمؤشرات الأسعار خلال بعض الفترات.
 
-        <Note title="حدود المقارنة التاريخية" tone="blue">
+  </Paragraph>
 
-          تشمل العينة أربع سنوات فقط، ولا تمثل
-          اختباراً إحصائياً شاملاً لارتباط الذهب
-          بالتضخم. كما أن العوائد السنوية لا تقيس
-          استجابة الذهب خلال الدقائق أو الساعات
-          التالية لصدور بيانات CPI. ويتطلب تحليل
-          تلك الاستجابة بيانات أسعار لحظية وتوقعات
-          تاريخية متزامنة مع كل إعلان.
+  <RelatedResearchCard
+    title="أكبر انهيارات أسعار الذهب في التاريخ"
+    description="دراسة تاريخية حول موجات هبوط الذهب، وحجم الخسائر المسجلة والمدة التي احتاجها المعدن الأصفر لاستعادة قممه السابقة."
+    href="/articles/gold-price-crashes-history"
+  />
 
-        </Note>
+</ArticleSection>
 
-      </ArticleSection>
+{/* =====================================================
+    GOLD AND INFLATION IN 2026
+====================================================== */}
 
-      {/* =====================================================
-          SECTION 5
-          ANALYSIS BY YEAR
-      ====================================================== */}
+<ArticleSection
+  id="gold-inflation-2026"
+  eyebrow="أحدث البيانات الاقتصادية"
+  title="أداء الذهب والتضخم الأمريكي خلال عام 2026"
+>
 
-      <ArticleSection
-        id="historical-analysis"
-        eyebrow="قراءة النتائج"
-        title="تحليل أداء الذهب خلال دورات التضخم 2021–2024"
-      >
+  <Paragraph>
 
-        <SubHeading>
+    بعد المكاسب الكبيرة التي حققها الذهب خلال
+    2025، شهد المعدن الأصفر تحركات متباينة
+    خلال عام 2026، بما في ذلك ارتفاعات سعرية
+    وتراجعات ملحوظة.
 
-          عام 2021: ارتفاع التضخم وتراجع الذهب
+    وتقدم بيانات الأشهر العشرة الأولى من العام
+    مثالاً إضافياً على اختلاف أداء الذهب عن
+    الاتجاه العام للأسعار الاستهلاكية.
 
-        </SubHeading>
+  </Paragraph>
 
-        <Paragraph>
+  <Paragraph>
 
-          شهد الاقتصاد الأمريكي خلال 2021 تسارعاً
-          واضحاً في الضغوط التضخمية، بالتزامن مع
-          التعافي من تداعيات جائحة كورونا واضطرابات
-          سلاسل الإمداد وتغير أنماط الطلب.
+    ولضمان دقة المقارنة، نفصل بيانات عام 2026
+    عن السنوات الميلادية المكتملة، ونستخدم
+    الفترة الممتدة من نهاية ديسمبر 2025 إلى
+    نهاية أكتوبر 2026 لاحتساب تغير سعر الذهب
+    ومؤشر أسعار المستهلك الأمريكي.
 
-        </Paragraph>
+  </Paragraph>
 
-        <Paragraph>
+  <CurrentYearHighlights />
 
-          وعلى الرغم من وصول التضخم السنوي إلى
-          7% في ديسمبر، سجل الذهب تراجعاً سنوياً
-          بنسبة 4.3% بالدولار. وتوضح هذه النتيجة
-          أن الطلب على التحوط من التضخم لم يكن
-          كافياً لضمان ارتفاع المعدن الأصفر خلال
-          تلك الفترة.
+  <SubHeading>
 
-        </Paragraph>
+    مقارنة أداء الذهب والتضخم منذ بداية 2026
 
-        <SubHeading>
+  </SubHeading>
 
-          عام 2022: تضخم مرتفع وتشديد نقدي قوي
+  <CurrentYearComparisonTable />
 
-        </SubHeading>
+  <Paragraph>
 
-        <Paragraph>
+    وفق بيانات مجلس الذهب العالمي، بلغ سعر
+    الذهب نحو{" "}
 
-          خلال 2022، استمر التضخم الأمريكي عند
-          مستويات مرتفعة، وبدأ الاحتياطي الفيدرالي
-          دورة تشديد نقدي قوية، مما ساهم في ارتفاع
-          عوائد السندات وزيادة جاذبية الدولار.
+    <Strong>
+      ${formatNumber(currentYearData.goldStartPrice)}
+    </Strong>
 
-        </Paragraph>
+    {" "}للأونصة في نهاية 2025، مقابل{" "}
 
-        <Paragraph>
+    <Strong>
+      ${formatNumber(currentYearData.goldEndPrice)}
+    </Strong>
 
-          وعلى الرغم من انتهاء العام بمعدل تضخم
-          سنوي بلغ 6.5%، اكتفى الذهب بمكاسب
-          سنوية محدودة بلغت 0.4%.
+    {" "}في نهاية أكتوبر 2026.
 
-        </Paragraph>
+  </Paragraph>
 
-        <Paragraph>
+  <Paragraph>
 
-          وأشار مجلس الذهب العالمي إلى أن ارتفاع
-          العوائد الحقيقية وقوة الدولار شكلا
-          ضغوطاً مهمة خلال تلك السنة، في حين ساعد
-          الطلب من البنوك المركزية وبعض المستثمرين
-          الأفراد في موازنة تلك الضغوط.
+    وباحتساب التغير بين السعرين المنشورين،
+    بلغ العائد الاسمي التقريبي للذهب منذ
+    بداية العام{" "}
 
-        </Paragraph>
+    <Strong>
+      {formatPercent(currentYearGoldReturn, 2)}
+    </Strong>
 
-        <SubHeading>
+    .
 
-          عام 2023: تباطؤ التضخم وصعود الذهب
+  </Paragraph>
 
-        </SubHeading>
+  <Paragraph>
 
-        <Paragraph>
+    وفي الفترة نفسها، ارتفع مؤشر أسعار
+    المستهلك الأمريكي العام غير المعدل
+    موسمياً من{" "}
 
-          مع تراجع معدل التضخم السنوي إلى 3.4%
-          في ديسمبر 2023، سجل الذهب ارتفاعاً
-          سنوياً بلغ نحو 15%، ليحقق أداءً أفضل
-          بكثير مقارنة بالعام السابق.
+    <Strong>
+      {formatNumber(currentYearData.cpiStart, 3)}
+    </Strong>
 
-        </Paragraph>
+    {" "}في ديسمبر 2025 إلى{" "}
 
-        <Paragraph>
+    <Strong>
+      {formatNumber(currentYearData.cpiEnd, 3)}
+    </Strong>
 
-          وتداخلت خلال هذه المرحلة توقعات السياسة
-          النقدية والمخاطر المالية والجيوسياسية
-          والطلب الاستثماري على الذهب، بما يوضح
-          أن تباطؤ التضخم لا يعني بالضرورة تراجع
-          جاذبية المعدن الأصفر.
+    {" "}في أكتوبر 2026.
 
-        </Paragraph>
+  </Paragraph>
 
-        <SubHeading>
+  <Paragraph>
 
-          عام 2024: مكاسب قوية رغم اعتدال التضخم
+    ويعادل ذلك ارتفاعاً تراكمياً في مستوى
+    الأسعار الاستهلاكية بلغ نحو{" "}
 
-        </SubHeading>
+    <Strong>
+      {formatPercent(currentYearInflation, 2)}
+    </Strong>
 
-        <Paragraph>
+    {" "}خلال الأشهر العشرة الأولى من العام.
 
-          حقق الذهب مكاسب سنوية بلغت 25.5%
-          خلال 2024، بينما بلغ معدل التضخم
-          الأمريكي 2.9% في ديسمبر.
+  </Paragraph>
 
-        </Paragraph>
+  <CurrentYearComparisonChart />
 
-        <Paragraph>
+  <SubHeading>
 
-          ويعكس هذا الأداء أهمية مجموعة من
-          العوامل الأخرى، من بينها الطلب الرسمي
-          والاستثماري على الذهب والمخاطر العالمية،
-          إلى جانب الفترات التي تراجعت خلالها
-          العوائد أو ضعف الدولار الأمريكي.
+    العائد الحقيقي للذهب خلال 2026
 
-        </Paragraph>
+  </SubHeading>
 
-        <ResearchTable
-          headers={[
-            "السنة",
-            "السياق الاقتصادي",
-          ]}
-          rows={historicalData.map((item) => [
-            item.year,
-            item.context,
-          ])}
-          caption="ملخص تحليلي للظروف الاقتصادية المصاحبة للأداء السنوي، وليس قياساً كمياً لمساهمة كل عامل في عائد الذهب."
-        />
+  <Paragraph>
 
-        <Paragraph>
+    عند تعديل عائد الذهب الاسمي وفق التغير
+    التراكمي في مؤشر أسعار المستهلك الأمريكي
+    خلال الفترة نفسها، يبلغ العائد الحقيقي
+    التقريبي للذهب{" "}
 
-          وتؤكد هذه الأمثلة أن ارتفاع الذهب لا
-          يتطلب بالضرورة تسارع التضخم، وأن الأداء
-          الفعلي قد يتأثر بالسياسة النقدية والطلب
-          الاستثماري والمخاطر بدرجة تفوق التأثير
-          المباشر لمؤشرات الأسعار خلال بعض الفترات.
+    <Strong>
+      {formatPercent(currentYearRealReturn, 2)}
+    </Strong>
 
-        </Paragraph>
+    .
 
-        <RelatedResearchCard
-          title="أكبر انهيارات أسعار الذهب في التاريخ"
-          description="دراسة تاريخية حول موجات هبوط الذهب، وحجم الخسائر المسجلة والمدة التي احتاجها المعدن الأصفر لاستعادة قممه السابقة."
-          href="/articles/gold-price-crashes-history"
-        />
+  </Paragraph>
 
-      </ArticleSection>
+  <Paragraph>
+
+    وهذا يعني أن القوة الشرائية لقيمة استثمار
+    افتراضي في الذهب بالدولار الأمريكي انخفضت
+    خلال الفترة المدروسة بنسبة أكبر من الانخفاض
+    الاسمي في سعر المعدن، نتيجة استمرار ارتفاع
+    مستوى الأسعار الاستهلاكية.
+
+  </Paragraph>
+
+  <ResearchTable
+    headers={[
+      "مقياس الأداء",
+      "يناير – أكتوبر 2026",
+    ]}
+    rows={[
+      [
+        "العائد الاسمي للذهب",
+        formatPercent(currentYearGoldReturn, 2),
+      ],
+      [
+        "التضخم التراكمي",
+        formatPercent(currentYearInflation, 2),
+      ],
+      [
+        "العائد الحقيقي التقريبي",
+        formatPercent(currentYearRealReturn, 2),
+      ],
+    ]}
+    caption="العائد الحقيقي محسوب باستخدام التغيرات التراكمية للفترة الزمنية نفسها، قبل احتساب الرسوم والضرائب وتكاليف الاستثمار."
+  />
+
+  <SubHeading>
+
+    ما أحدث بيانات التضخم الأمريكي المتاحة؟
+
+  </SubHeading>
+
+  <Paragraph>
+
+    بحسب البيانات المنشورة حتى تاريخ إعداد
+    التقرير، بلغ معدل التضخم السنوي الأمريكي
+    في سبتمبر 2026 نحو{" "}
+
+    <Strong>
+      {currentYearData.lastAnnualInflation.toFixed(1)}%
+    </Strong>
+
+    .
+
+    كما ارتفع مؤشر أسعار المستهلك في أكتوبر
+    بنسبة{" "}
+
+    <Strong>
+      {currentYearData.octoberMonthlyInflation.toFixed(1)}%
+    </Strong>
+
+    {" "}مقارنة بالشهر السابق، بعد التعديل الموسمي.
+
+  </Paragraph>
+
+  <Note title="لماذا لا نعرض التضخم السنوي لأكتوبر 2026؟" tone="blue">
+
+    لم يتمكن مكتب إحصاءات العمل الأمريكي
+    من نشر مؤشرات أكتوبر 2025 لمعظم سلاسل
+    أسعار المستهلك نتيجة توقف التمويل الحكومي
+    خلال تلك الفترة.
+
+    ولذلك لا تتوفر مقارنة سنوية رسمية للمؤشر
+    العام بين أكتوبر 2025 وأكتوبر 2026.
+
+    ولهذا السبب استخدم التقرير قيم مؤشر
+    CPI-U غير المعدل موسمياً في ديسمبر 2025
+    وأكتوبر 2026 لحساب التغير التراكمي خلال
+    الفترة نفسها التي يغطيها عائد الذهب.
+
+  </Note>
+
+  <SubHeading>
+
+    ماذا نتعلم من أداء الذهب خلال 2025 و2026؟
+
+  </SubHeading>
+
+  <Paragraph>
+
+    يقدم التباين بين الفترتين مثالاً عملياً
+    على محدودية الاعتماد على التضخم وحده
+    عند تحليل أسعار الذهب.
+
+    ففي عام 2025، سجل الذهب مكاسب قوية
+    تجاوزت معدل التضخم السنوي بفارق كبير.
+
+    وفي الأشهر العشرة الأولى من 2026،
+    سجل الذهب تراجعاً بالتزامن مع استمرار
+    ارتفاع الأسعار الاستهلاكية.
+
+  </Paragraph>
+
+  <Paragraph>
+
+    ويشير هذا التباين إلى أهمية متابعة تغيرات
+    العوائد الحقيقية وقوة الدولار وتوقعات
+    السياسة النقدية والتدفقات الاستثمارية،
+    بدلاً من افتراض أن التضخم المرتفع يؤدي
+    بالضرورة إلى ارتفاع سعر الذهب.
+
+  </Paragraph>
+
+  <RelatedResearchCard
+    title="توقعات أسعار الذهب 2027: أبرز توقعات البنوك العالمية"
+    description="تقرير بروكر العرب حول توقعات البنوك العالمية لمستقبل أسعار الذهب والسيناريوهات الاقتصادية المحتملة خلال عام 2027."
+    href="/articles/gold-price-forecast-2027"
+  />
+
+  <Note title="الفترة الزمنية للبيانات" tone="amber">
+
+    تمثل بيانات 2026 الفترة الممتدة حتى نهاية
+    أكتوبر فقط، ولا تشمل شهري نوفمبر وديسمبر.
+
+    لذلك لا ينبغي اعتبار هذه النتائج عائداً
+    سنوياً نهائياً أو مقارنتها مباشرة بعوائد
+    السنوات المكتملة دون مراعاة اختلاف طول
+    الفترة الزمنية.
+
+  </Note>
+
+</ArticleSection>
 
       {/* =====================================================
           SECTION 6
@@ -2766,192 +3614,332 @@ export default function USInflationImpactOnGoldPage() {
 
       </ArticleSection>
 
-      {/* =====================================================
-          SECTION 13
-          EDITORIAL CONCLUSION
-      ====================================================== */}
-
       <ArticleSection
-        id="editorial-conclusion"
-        eyebrow="تحليل بروكر العرب"
-        title="الخلاصة: كيف نفهم تأثير التضخم على الذهب بصورة صحيحة؟"
-      >
+  id="editorial-conclusion"
+  eyebrow="تحليل بروكر العرب"
+  title="الخلاصة: كيف نفهم تأثير التضخم على الذهب بصورة صحيحة؟"
+>
 
-        <Paragraph>
+  <Paragraph>
 
-          من منظور فريق تحليلات بروكر العرب،
-          يمثل التضخم الأمريكي أحد المتغيرات
-          المهمة في تحليل أسعار الذهب، لكنه
-          لا يقدم بمفرده تفسيراً كافياً لجميع
-          تحركات المعدن الأصفر.
+    من منظور فريق تحليلات بروكر العرب، يمثل
+    التضخم الأمريكي أحد المتغيرات المهمة في
+    تحليل أسعار الذهب، لكنه لا يقدم بمفرده
+    تفسيراً كافياً لجميع تحركات المعدن الأصفر.
 
-        </Paragraph>
+  </Paragraph>
 
-        <Paragraph>
+  <Paragraph>
 
-          وتظهر البيانات التاريخية خلال
-          الفترة المدروسة أن الذهب قد يسجل
-          خسائر أو مكاسب محدودة في سنوات
-          التضخم المرتفع، بينما قد يحقق
-          ارتفاعات قوية خلال فترات تباطؤ التضخم.
+    وتظهر البيانات التاريخية خلال خمس سنوات
+    مكتملة من 2021 إلى 2025، إلى جانب بيانات
+    الأشهر العشرة الأولى من 2026، أن الذهب قد
+    يسجل خسائر أو مكاسب محدودة خلال فترات
+    التضخم المرتفع، بينما قد يحقق ارتفاعات
+    قوية خلال فترات تباطؤ التضخم.
 
-        </Paragraph>
+  </Paragraph>
 
-        <div className="my-7 rounded-[18px] border border-[#dce6ef] bg-[#f7faff] p-5 sm:p-7">
+  <Paragraph>
 
-          <div className="mb-3 text-[12px] font-bold text-[#176ac8]">
-            الخلاصة التحليلية
-          </div>
+    وتمثل نتائج عام 2025 مثالاً بارزاً على
+    هذه العلاقة، حيث حقق الذهب عائداً سنوياً
+    بلغ 67.4%، مقابل تضخم سنوي أمريكي
+    بلغ 2.7% في ديسمبر.
 
-          <h3 className="mb-5 text-[21px] font-black text-[#102747] sm:text-[25px]">
-            أربعة عوامل رئيسية لفهم حركة الذهب بعد CPI
-          </h3>
+  </Paragraph>
 
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+  <Paragraph>
 
-            {[
-              "مقدار مفاجأة بيانات التضخم",
-              "تغير توقعات السياسة النقدية",
-              "اتجاه العوائد الحقيقية",
-              "اتجاه الدولار والطلب على الذهب",
-            ].map((item, index) => (
+    وفي المقابل، شهدت الأشهر العشرة الأولى
+    من 2026 انخفاضاً في سعر الذهب رغم
+    استمرار ارتفاع مؤشر أسعار المستهلك،
+    مما يعزز أهمية دراسة الظروف النقدية
+    والمالية المحيطة بالسوق.
 
-              <div
-                key={item}
-                className="flex items-center gap-3 rounded-[11px] border border-[#dce6ef] bg-white p-4"
-              >
+  </Paragraph>
 
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#102747] text-[13px] font-bold text-white">
-                  {index + 1}
-                </span>
+  <div className="my-7 rounded-[18px] border border-[#dce6ef] bg-[#f7faff] p-5 sm:p-7">
 
-                <span className="text-[14px] font-bold leading-7 text-[#102747]">
-                  {item}
-                </span>
+    <div className="mb-3 text-[12px] font-bold text-[#176ac8]">
+      الخلاصة التحليلية
+    </div>
 
-              </div>
+    <h3 className="mb-5 text-[21px] font-black text-[#102747] sm:text-[25px]">
+      أربعة عوامل رئيسية لفهم حركة الذهب بعد CPI
+    </h3>
 
-            ))}
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
 
-          </div>
+      {[
+        "مقدار مفاجأة بيانات التضخم",
+        "تغير توقعات السياسة النقدية",
+        "اتجاه العوائد الحقيقية",
+        "اتجاه الدولار والطلب على الذهب",
+      ].map((item, index) => (
+
+        <div
+          key={item}
+          className="flex items-center gap-3 rounded-[11px] border border-[#dce6ef] bg-white p-4"
+        >
+
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#102747] text-[13px] font-bold text-white">
+            {index + 1}
+          </span>
+
+          <span className="text-[14px] font-bold leading-7 text-[#102747]">
+            {item}
+          </span>
 
         </div>
 
-        <Paragraph>
+      ))}
 
-          ولذلك، فإن قراءة بيانات التضخم ضمن
-          إطار اقتصادي متكامل توفر أساساً أفضل
-          لفهم حركة الذهب، مقارنة بالاعتماد على
-          افتراض أن كل ارتفاع في التضخم سيقابله
-          ارتفاع مباشر في سعر المعدن الأصفر.
+    </div>
 
-        </Paragraph>
+  </div>
 
-      </ArticleSection>
+  <SubHeading>
 
-      {/* =====================================================
-          SECTION 14
-          FAQ
-      ====================================================== */}
+    ماذا تعني نتائج التقرير للمتداول والمستثمر؟
 
-      <ArticleSection
-        id="faq"
-        eyebrow="أسئلة وأجوبة"
-        title="الأسئلة الشائعة حول تأثير التضخم الأمريكي على الذهب"
-      >
+  </SubHeading>
 
-        <ResearchFAQ />
+  <Paragraph>
 
-      </ArticleSection>
+    بالنسبة إلى المتداول، فإن متابعة مفاجأة
+    بيانات التضخم وتغير توقعات الفائدة والعوائد
+    والدولار توفر إطاراً أكثر شمولاً لتفسير
+    التحركات قصيرة الأجل في أسعار الذهب.
 
-      {/* =====================================================
-          SECTION 15
-          METHODOLOGY AND SOURCES
-      ====================================================== */}
+  </Paragraph>
 
-      <ArticleSection
-        id="sources"
-        eyebrow="المنهجية والمراجع"
-        title="منهجية التقرير ومصادر البيانات التاريخية"
-      >
+  <Paragraph>
 
-        <Paragraph>
+    أما بالنسبة إلى المستثمر طويل الأجل، فإن
+    تقييم الذهب كأداة محتملة للتحوط يتطلب النظر
+    إلى الأداء الحقيقي بعد التضخم، والأفق
+    الزمني للاستثمار، وتكاليف الاحتفاظ بالأصل،
+    ومدى مساهمته في تنويع المحفظة الاستثمارية.
 
-          أعد فريق تحليلات بروكر العرب هذا
-          التقرير بالاعتماد على البيانات
-          الاقتصادية المنشورة من مكتب إحصاءات
-          العمل الأمريكي والاحتياطي الفيدرالي
-          وقاعدة بيانات FRED، إلى جانب تقارير
-          وأبحاث مجلس الذهب العالمي.
+  </Paragraph>
 
-        </Paragraph>
+  <Paragraph>
 
-        <SubHeading>
+    ولذلك، فإن قراءة بيانات التضخم ضمن إطار
+    اقتصادي متكامل توفر أساساً أفضل لفهم حركة
+    الذهب، مقارنة بالاعتماد على افتراض أن
+    كل ارتفاع في التضخم سيقابله ارتفاع مباشر
+    في سعر المعدن الأصفر.
 
-          منهجية المقارنة التاريخية
+  </Paragraph>
 
-        </SubHeading>
+</ArticleSection>
 
-        <ArticleList
-          items={[
-            "الفترة المدروسة: أربع سنوات كاملة من 2021 إلى 2024.",
-            "التضخم: التغير السنوي لمؤشر أسعار المستهلك الأمريكي العام CPI-U في ديسمبر.",
-            "الذهب: عوائد الذهب السنوية بالدولار الأمريكي وفق تقارير مجلس الذهب العالمي.",
-            "العائد الحقيقي: العائد الاسمي بعد التعديل باستخدام معدل التضخم الأمريكي للفترة المقابلة.",
-            "المقارنة لا تشمل رسوم الوساطة أو التخزين أو الضرائب أو تكاليف التمويل.",
-            "لا تتضمن الدراسة قياساً إحصائياً لرد فعل الذهب اللحظي على إعلانات CPI.",
-          ]}
-        />
+{/* =====================================================
+    FAQ
+====================================================== */}
 
-        <div className="my-6 rounded-[14px] border border-[#dce6ef] bg-[#f7faff] p-5">
+<ArticleSection
+  id="faq"
+  eyebrow="أسئلة وأجوبة"
+  title="الأسئلة الشائعة حول تأثير التضخم الأمريكي على الذهب"
+>
 
-          <div className="mb-3 text-[14px] font-black text-[#102747]">
-            طريقة حساب العائد الحقيقي
-          </div>
+  <ResearchFAQ />
 
-          <div
-            dir="ltr"
-            className="break-words text-center text-[15px] font-bold leading-8 text-[#176ac8] sm:text-[18px]"
-          >
-            Real Return = ((1 + R) / (1 + I) − 1) × 100
-          </div>
+</ArticleSection>
 
-          <p className="mt-3 text-[12px] leading-7 text-[#64748b]">
+{/* =====================================================
+    METHODOLOGY AND SOURCES
+====================================================== */}
 
-            حيث يشير R إلى العائد الاسمي بصيغة
-            عشرية، ويشير I إلى معدل التضخم بصيغة
-            عشرية. تم تقريب النتائج المعروضة
-            إلى منزلة عشرية واحدة.
+<ArticleSection
+  id="sources"
+  eyebrow="المنهجية والمراجع"
+  title="منهجية التقرير ومصادر البيانات التاريخية"
+>
 
-          </p>
+  <Paragraph>
 
-        </div>
+    أعد فريق تحليلات بروكر العرب هذا التقرير
+    بالاعتماد على البيانات الاقتصادية المنشورة
+    من مكتب إحصاءات العمل الأمريكي والاحتياطي
+    الفيدرالي وقاعدة بيانات FRED، إلى جانب
+    تقارير وأبحاث مجلس الذهب العالمي.
 
-        <ArticleSources />
+  </Paragraph>
 
-        <div className="mt-7 rounded-[12px] border border-[#e3eaf1] bg-[#f8fafc] p-4 sm:p-5">
+  <Paragraph>
 
-          <p className="text-[12px] leading-7 text-[#64748b] sm:text-[13px]">
+    تغطي الدراسة المقارنة التاريخية خلال
+    خمس سنوات ميلادية مكتملة من 2021 إلى
+    2025، إضافة إلى مقارنة مستقلة للأشهر
+    العشرة الأولى من 2026.
 
-            <strong className="text-[#102747]">
-              إخلاء المسؤولية:
-            </strong>
+    ويعكس نطاق البيانات المعلومات المتاحة
+    حتى 27 نوفمبر 2026، مع استخدام أكتوبر
+    باعتباره آخر شهر مكتمل تتوفر عنه البيانات
+    اللازمة للمقارنة في التقرير.
 
-            {" "}أعد هذا التقرير لأغراض بحثية
-            وتثقيفية فقط، ولا يمثل توصية استثمارية
-            أو دعوة لشراء أو بيع الذهب أو أي أداة
-            مالية أخرى. الأداء السابق لا يضمن
-            النتائج المستقبلية، وقد تؤدي تقلبات
-            الأسواق واستخدام الرافعة المالية إلى
-            خسارة رأس المال. كما قد يحصل بروكر
-            العرب على مقابل من بعض روابط الإحالة
-            التجارية الموجودة في الموقع.
+  </Paragraph>
 
-          </p>
+  <SubHeading>
 
-        </div>
+    منهجية المقارنة التاريخية 2021–2025
 
-      </ArticleSection>
+  </SubHeading>
+
+  <ArticleList
+    items={[
+      "الفترة المدروسة: خمس سنوات ميلادية مكتملة من 2021 إلى 2025.",
+      "التضخم: التغير السنوي لمؤشر أسعار المستهلك الأمريكي العام CPI-U غير المعدل موسمياً في ديسمبر من كل عام.",
+      "الذهب: عوائد الذهب السنوية بالدولار الأمريكي وفق تقارير مجلس الذهب العالمي.",
+      "العائد الحقيقي: العائد الاسمي بعد التعديل باستخدام معدل التضخم الأمريكي للفترة المقابلة.",
+      "تم عرض عام 2026 في قسم مستقل لتجنب المقارنة المباشرة بين فترة غير مكتملة وسنوات ميلادية مكتملة.",
+      "المقارنة لا تشمل رسوم الوساطة أو التخزين أو الضرائب أو تكاليف التمويل.",
+      "لا تتضمن الدراسة قياساً إحصائياً لرد فعل الذهب اللحظي على إعلانات CPI.",
+    ]}
+  />
+
+  <SubHeading>
+
+    منهجية احتساب أداء الذهب والتضخم خلال 2026
+
+  </SubHeading>
+
+  <ArticleList
+    items={[
+      "الفترة المدروسة: من نهاية ديسمبر 2025 حتى نهاية أكتوبر 2026.",
+      "السعر المرجعي للذهب في بداية الفترة: 4,368 دولاراً للأونصة، وفق تقرير مجلس الذهب العالمي لشهر ديسمبر 2025.",
+      "سعر الذهب في نهاية الفترة: 3,913 دولاراً للأونصة، وفق تقرير مجلس الذهب العالمي لشهر أكتوبر 2026.",
+      "قيمة مؤشر أسعار المستهلك الأمريكي العام غير المعدل موسمياً في ديسمبر 2025: 324.054.",
+      "قيمة مؤشر أسعار المستهلك الأمريكي العام غير المعدل موسمياً في أكتوبر 2026: 337.511.",
+      "التضخم التراكمي محسوب من تغير المؤشر بين بداية الفترة ونهايتها، ولا يمثل معدل التضخم السنوي على أساس 12 شهراً.",
+      "العائد الحقيقي للذهب محسوب باستخدام العائد الاسمي والتضخم التراكمي للفترة نفسها.",
+      "أسعار الذهب المنشورة مقربة إلى أقرب دولار، ولذلك تعد النسب المحسوبة منها تقديرات تقريبية.",
+    ]}
+  />
+
+  <div className="my-6 rounded-[14px] border border-[#dce6ef] bg-[#f7faff] p-5">
+
+    <div className="mb-3 text-[14px] font-black text-[#102747]">
+      طريقة حساب التغير التراكمي في الأسعار
+    </div>
+
+    <div
+      dir="ltr"
+      className="break-words text-center text-[15px] font-bold leading-8 text-[#176ac8] sm:text-[18px]"
+    >
+      Percentage Change = ((End Value / Start Value) − 1) × 100
+    </div>
+
+    <p className="mt-4 text-[12px] leading-7 text-[#64748b]">
+
+      تُستخدم هذه المعادلة لاحتساب التغير
+      في سعر الذهب ومؤشر أسعار المستهلك
+      بين بداية الفترة ونهايتها.
+
+    </p>
+
+  </div>
+
+  <div className="my-6 rounded-[14px] border border-[#dce6ef] bg-[#f7faff] p-5">
+
+    <div className="mb-3 text-[14px] font-black text-[#102747]">
+      طريقة حساب العائد الحقيقي
+    </div>
+
+    <div
+      dir="ltr"
+      className="break-words text-center text-[15px] font-bold leading-8 text-[#176ac8] sm:text-[18px]"
+    >
+      Real Return = ((1 + R) / (1 + I) − 1) × 100
+    </div>
+
+    <p className="mt-3 text-[12px] leading-7 text-[#64748b]">
+
+      يشير R إلى العائد الاسمي بصيغة عشرية،
+      ويشير I إلى معدل التضخم بصيغة عشرية.
+
+      تم تقريب نتائج المقارنة السنوية إلى
+      منزلة عشرية واحدة، ونتائج المقارنة
+      التراكمية لعام 2026 إلى منزلتين عشريتين
+      لأغراض العرض.
+
+    </p>
+
+  </div>
+
+  <SubHeading>
+
+    حدود الدراسة والتحليل
+
+  </SubHeading>
+
+  <Paragraph>
+
+    تمثل النتائج الواردة في التقرير مقارنة
+    وصفية للأداء التاريخي للذهب ومؤشر أسعار
+    المستهلك الأمريكي، ولا تمثل نموذجاً
+    إحصائياً للتنبؤ بأسعار الذهب أو تقديراً
+    مستقلاً للأثر السببي لكل متغير اقتصادي.
+
+  </Paragraph>
+
+  <Paragraph>
+
+    كما أن التغيرات السنوية والتراكمية لا تقيس
+    رد فعل الذهب اللحظي على صدور بيانات
+    التضخم، وهو ما يتطلب دراسة منفصلة تعتمد
+    على أسعار السوق اللحظية والتوقعات
+    الاقتصادية قبل كل إعلان.
+
+  </Paragraph>
+
+  <Paragraph>
+
+    وقد تختلف العوائد الفعلية للمستثمرين
+    باختلاف العملة المحلية وتوقيت الشراء
+    والبيع والرسوم والضرائب ونوع الأداة
+    المالية المستخدمة للاستثمار في الذهب.
+
+  </Paragraph>
+
+  <SubHeading>
+
+    المصادر والمراجع البحثية
+
+  </SubHeading>
+
+  <ArticleSources />
+
+  <div className="mt-7 rounded-[12px] border border-[#e3eaf1] bg-[#f8fafc] p-4 sm:p-5">
+
+    <p className="text-[12px] leading-7 text-[#64748b] sm:text-[13px]">
+
+      <strong className="text-[#102747]">
+        إخلاء المسؤولية:
+      </strong>
+
+      {" "}أعد هذا التقرير لأغراض بحثية
+      وتثقيفية فقط، ولا يمثل توصية استثمارية
+      أو دعوة لشراء أو بيع الذهب أو أي أداة
+      مالية أخرى.
+
+      الأداء السابق لا يضمن النتائج المستقبلية،
+      وقد تؤدي تقلبات الأسواق واستخدام الرافعة
+      المالية إلى خسارة رأس المال.
+
+      كما قد يحصل بروكر العرب على مقابل من
+      بعض روابط الإحالة التجارية الموجودة
+      في الموقع.
+
+    </p>
+
+  </div>
+
+</ArticleSection>
 
     </ArticleLayout>
 
